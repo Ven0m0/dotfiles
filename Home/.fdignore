@@ -1,0 +1,16 @@
+.git/
+*~
+.directory
+.Trash-*
+.Trashes
+.fuse_hidden*
+.nfs*
+*.log
+*.old
+*.tmp
+.*.kate-swp
+*swp.*
+token
+nohup.out
+.thumbnails/
+.cache
