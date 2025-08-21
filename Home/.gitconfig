@@ -109,7 +109,7 @@
 	features = decorations
 	line-numbers = true
 	decorations = true
-	navigate = true  # use n and N to move between diff sections
+	navigate = true
 [protocol]
 	version = 2
 [feature]
@@ -125,8 +125,8 @@
 	cruftThreads = 0
 [maintenance]
 	strategy = incremental
-[include]
-	path = /home/ven0m0/.gitconfig.local
+#[include]
+	#path = /home/ven0m0/.gitconfig.local
 [pager]
 	log = delta
 	reflog = delta
