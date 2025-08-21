@@ -125,8 +125,9 @@
 	cruftThreads = 0
 [maintenance]
 	strategy = incremental
-#[include]
-	#path = /home/ven0m0/.gitconfig.local
+# File to store secrets
+[include]
+	path = /home/ven0m0/.gitconfig.local
 [pager]
 	log = delta
 	reflog = delta
@@ -154,3 +155,10 @@
     hideIfPwdIgnored = yes
 [remote "origin"]
 	prune = true
+# gh cli auth
+[init]
+	defaultBranch = main
+[credential "https://github.com"]
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = !/usr/bin/gh auth git-credential
