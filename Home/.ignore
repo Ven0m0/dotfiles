@@ -1,0 +1,11 @@
+# ~/.ignore
+*.log
+*.tmp
+*.bak
+node_modules/
+target/
+build/
+.git/
+*~
+.directory
+.Trash-*
