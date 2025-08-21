@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# $1 line
+# $2 file
+
+# ? Easier with grep and echo than sed
+grep -xqF -- "$1" "$2" || echo "$1" >>"$2"
