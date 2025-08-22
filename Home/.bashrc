@@ -2,8 +2,8 @@
 
 [[ $- != *i* ]] && return
 #──────────── Helpers ────────────
-has(){ LC_ALL=C command -v -- "$1" &>/dev/null; } # Check for command
-# hasname(){ local x; x=$(LC_ALL=C type -P -- "$1") || return; printf '%s\n' "${x##*/}"; } # Basename of command
+has(){ command -v -- "$1" &>/dev/null; } # Check for command
+# hasname(){ local x; x=$(type -P -- "$1") || return; printf '%s\n' "${x##*/}"; } # Basename of command
 # xprintf(){ printf '%s\n' "$*" 2>/dev/null; } # Print-echo
 # xprintfe(){ printf '%b\n' "$*" 2>/dev/null; } # Print-echo for color
 _ifsource(){ [[ -f "$1" ]] && . -- "$1" 2>/dev/null || :; } # Source file if it exists
@@ -165,7 +165,7 @@ command -v pay-respects &>/dev/null && eval "$(LC_ALL=C pay-respects bash 2>/dev
 #──────────── Functions ────────────
 # Having to set a new script as executable always annoys me.
 runch(){
-  shopt -u nullglob nocaseglob; local s="$1"
+  shopt -u nullglob nocaseglob; local s; s="$1"
   if [[ -z $s ]]; then
     printf 'runch: missing script argument\nUsage: runch <script>\n' >&2; return 2
   fi
