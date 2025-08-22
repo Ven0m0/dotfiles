@@ -7,19 +7,27 @@ syntax on
 set encoding=utf-8
 set background=dark
 set t_Co=256
-set termguicolors
+set termguicolors       " enable true colors support
+set nowrap              "Don't wrap lines
+set linebreak           "Wrap lines at convenient points
+
 set number
 set relativenumber
+
 set smartcase           " Enable smart-case search
 set ignorecase          " Always case-insensitive
+
 set incsearch           " Searches for strings incrementally
 set hlsearch
+
+set smartindent         " Enable smart-indent
 set autoindent          " Auto-indent new lines
 set expandtab           " Use spaces instead of tabs
 set shiftwidth=2        " Number of auto-indent spaces
-set smartindent         " Enable smart-indent
-set smarttab            " Enable smart-tabs
 set softtabstop=2       " Number of spaces per Tab
+set tabstop	=2
+
+set smarttab            " Enable smart-tabs
 set showcmd                     "Show incomplete cmds down the bottom
 set showmode                    "Show current mode down the bottom
 set gcr=a:blinkon0              "Disable cursor blink
@@ -56,8 +64,6 @@ nnoremap P P=`]<C-o>
 filetype plugin on
 filetype indent on
 
-set nowrap       "Don't wrap lines
-set linebreak    "Wrap lines at convenient points
 " ================ Folds ============================
 
 set foldmethod=indent   "fold based on indent
@@ -100,3 +106,43 @@ nnoremap <leader>l <C-w>l
 
 " Don't expand tabs for Makefile
 autocmd FileType make setlocal noexpandtab
+
+if has('gui_running')
+  set t_Co=256
+  set guifont=Roboto\ Mono\ 11
+  set guioptions-=m
+  set guioptions-=T
+  set guioptions-=r
+  set guioptions-=L
+  colorscheme tender
+endif
+
+if $TERM == 'alacritty'
+  set ttymouse=sgr
+endif
+
+" ╔═╗┬  ┬ ┬┌─┐┬┌┐┌  ╔╦╗┌─┐┌┐┌┌─┐┌─┐┌─┐┬─┐
+" ╠═╝│  │ ││ ┬││││  ║║║├─┤│││├─┤│ ┬├┤ ├┬┘
+" ╩  ┴─┘└─┘└─┘┴┘└┘  ╩ ╩┴ ┴┘└┘┴ ┴└─┘└─┘┴└─
+
+call plug#begin()
+Plug 'junegunn/fzf'
+call plug#end()
+
+" Use a line cursor within insert mode and a block cursor everywhere else.
+" Reference chart of values:
+"   Ps = 0  -> blinking block.
+"   Ps = 1  -> blinking block (default).
+"   Ps = 2  -> steady block.
+"   Ps = 3  -> blinking underline.
+"   Ps = 4  -> steady underline.
+"   Ps = 5  -> blinking bar (xterm).
+"   Ps = 6  -> steady bar (xterm).
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+
+" Fix the cursor change timeout between insert and normal mode
+set ttimeout
+set ttimeoutlen=1
+set listchars=tab:>-,trail:~,extends:>,precedes:<,space:.
+set ttyfast
