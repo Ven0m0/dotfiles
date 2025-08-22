@@ -150,9 +150,9 @@
 	stripLeadingSymbols = true
 [bash]
 	showInformativeStatus = false
-	showUntrackedFiles = no
+	showUntrackedFiles = false
 	showDirtyState = false
-    hideIfPwdIgnored = true
+	hideIfPwdIgnored = true
 [remote "origin"]
 	prune = true
 # gh cli auth
