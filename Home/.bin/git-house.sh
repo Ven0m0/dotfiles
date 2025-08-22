@@ -14,7 +14,7 @@ getGitDirs() {
 housekeepGirDir() {
   local dir=$1
   if [ -d "${dir}" -a -d "${dir}/.git" ]; then
-    echo -e "\033[1mGit housekeeping: ${dir}\033[0m"
+    echo -e "\e[1mGit housekeeping: ${dir}\e[0m"
    ## Fetch from remote, twice in case something goes wrong
     git -C "$dir" fetch || git -C "$dir" fetch
 
