@@ -291,6 +291,8 @@ alias ...="cd -- ../.."
 alias ....="cd -- ../../.."
 alias ~="cd -- $HOME"
 alias cd-="cd -- -"
+alias y='yazi'
+
 
 # https://snarky.ca/why-you-should-use-python-m-pip/
 alias pip='python -m pip' py3='python3' py='python'
