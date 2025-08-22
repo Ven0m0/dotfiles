@@ -95,21 +95,18 @@ export CURL_HOME="$HOME"
 export GPG_TTY="$(tty)" TZ="Europe/Berlin" CLICOLOR=1
 
 _ifsource "$HOME/.cargo/env"
-
 if has cargo; then
   export CARGO_HOME="${HOME}/.cargo" RUSTUP_HOME="${HOME}/.rustup"
   _prependpath "${CARGO_HOME}/bin"
-  # # Function to run cargo commands dynamically
-  cargo_run(){
-    local bins=(gg mommy clicker) cmd=(cargo) b
-    for b in "${bins[@]}"; do
-      has "cargo-$b" && cmd+=("$b")
-    done
-    (( ${#cmd[@]} > 1 )) || { echo "No cargo binaries available: ${bins[*]}" >&2; return 1; }
-    "${cmd[@]}" "$@"
-  }
-  alias cargo=cargo_run
 fi
+cargo_run() {
+  local bins=(gg mommy clicker) cmd=(cargo) b
+  for b in "${bins[@]}"; do
+    command -v "cargo-$b" &>/dev/null && cmd+=("$b")
+  done
+  "${cmd[@]}" "$@"
+}
+alias cargo="cargo_run"
 
 export PYTHONOPTIMIZE=2 PYTHONIOENCODING='UTF-8' PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export FD_IGNORE_FILE="${HOME}/.ignore" FIGNORE="argo.lock"
