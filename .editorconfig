@@ -14,14 +14,14 @@ indent_size = 2
 tab_width = 2
 
 # Shell scripts
-[*.sh,*.bash]
+[*.sh,*.bash,.profile,]
 keep_padding = true
 space_redirects = true
 switch_case_indent = true
 function_next_line = true
 binary_next_line = true
 
-[*.bash,*.bashrc]
+[*.bash,*.bashrc,.bash_profile,.bash_logout]
 shell_variant = bash
 trim_trailing_whitespace = true
 insert_final_newline = true
@@ -34,7 +34,7 @@ switch_case_indent = true
 function_next_line = true
 binary_next_line = true
 
-[*.bash*]
+[bash*]
 shell_variant = bash
 trim_trailing_whitespace = true
 insert_final_newline = true
@@ -47,7 +47,7 @@ switch_case_indent = true
 function_next_line = true
 binary_next_line = true
 
-[*.fish]
+[*.fish,fish_variables,fish_plugins]
 indent_size = 4
 
 # Markdown
