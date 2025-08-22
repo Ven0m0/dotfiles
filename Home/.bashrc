@@ -324,6 +324,12 @@ bind '"\C-e": end-of-line'
 bind '"\e[1;5D": backward-word'
 bind '"\e[1;5C": forward-word'
 bind 'set enable-bracketed-paste off'
+#──────────── Jumping ────────────
+if has zoxide; then
+  export _ZO_FZF_OPTS="--info=inline --tiebreak=index --layout=reverse --select-1 --exit-0" _ZO_DOCTOR=0
+  eval "$(LC_ALL=C zoxide init bash 2>/dev/null)" 2>/dev/null
+  alias cd='z'
+fi
 #──────────── Prompt 2 ────────────
 configure_prompt(){
   local LC_ALL=C LANG=C
@@ -365,15 +371,6 @@ if [[ $SHLVL -le 2 ]]; then
       LC_ALL=C hostnamectl 2>/dev/null
     fi
   fi
-fi
-#──────────── Jumping ────────────
-if has zoxide; then
-  export _ZO_FZF_OPTS="--info=inline --tiebreak=index --layout=reverse --select-1 --exit-0"
-  eval "$(LC_ALL=C zoxide init bash 2>/dev/null)" 2>/dev/null || true
-  alias cd='z'
-elif has enhancd; then
-  export ENHANCD_FILTER="$HOME/.cargo/bin/sk:sk:fzf"
-  alias cd='enhancd'
 fi
 #──────────── End ────────────
 dedupe_path(){
