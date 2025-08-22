@@ -360,12 +360,11 @@ configure_prompt(){
 
   # Git
   export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
-  unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM
+  unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWUNTRACKEDFILES
   if command -v __git_ps1 &>/dev/null && [[ ${GIT_PROMPT:-0} -ge 1 ]] && [[ ${PROMPT_COMMAND:-} != *git_ps1* ]]; then
     PROMPT_COMMAND="LC_ALL __git_ps1 2>/dev/null; ${PROMPT_COMMAND:-}"
   fi
-
-  # Only add mommy if not in stealth mode and not already present in PROMPT_COMMAND
+  # Only add if not in stealth mode and not already present in PROMPT_COMMAND
   if command -v mommy &>/dev/null && [[ "${stealth:-0}" -ne 1 ]] && [[ ${PROMPT_COMMAND:-} != *mommy* ]]; then
     PROMPT_COMMAND="LC_ALL=C mommy -1 -s \$?; ${PROMPT_COMMAND:-}" # mommy https://github.com/fwdekker/mommy
     # PROMPT_COMMAND="LC_ALL=C mommy \$?; ${PROMPT_COMMAND:-}" # Shell-mommy https://github.com/sleepymincy/mommy
