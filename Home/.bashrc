@@ -42,8 +42,11 @@ shopt -s histappend cmdhist checkwinsize dirspell cdable_vars \
          globstar nullglob &>/dev/null
 # Disable Ctrl-s, Ctrl-q
 stty -ixon -ixoff -ixany &>/dev/null
-set +H  # disable history expansion that breaks some scripts
-# set -o vi # vi mode
+set +H  &>/dev/null # disable history expansion that breaks some scripts
+#──────────── Vim ────────────
+# set -o vi
+# bind -m vi-command '"\C-e": edit-and-execute-command'
+# bind -m vi-insert  '"\C-e": edit-and-execute-command'
 #──────────── Env ────────────
 _prependpath "$HOME/.local/bin"
 _prependpath "$HOME/bin"
@@ -342,17 +345,26 @@ dedupe_path
 has systemctl && command systemctl --user import-environment PATH &>/dev/null
 #──────────── Prompt 2 ────────────
 configure_prompt(){
+  local LC_ALL=C LANG=C
+  PROMPT_COMMAND="history -a"
   if command -v starship &>/dev/null; then
     eval "$(LC_ALL=C starship init bash 2>/dev/null)" &>/dev/null; return
   fi
   local C_USER='\[\e[35m\]' C_HOST='\[\e[34m\]' YLW='\[\e[33m\]' \
         C_PATH='\[\e[36m\]' C_RESET='\[\e[0m\]' C_ROOT='\[\e[31m\]'
   local USERN HOSTL
-  # Git
-  local GIT_PS1_SHOWDIRTYSTATE=false GIT_PS1_OMITSPARSESTATE=true
+
   [[ "$EUID" -eq 0 ]] && USERN="${C_ROOT}\u${C_RESET}"
   [[ -n "$SSH_CONNECTION" ]] && HOSTL="${YLW}\h${C_RESET}"
   PS1="[${C_USER}\u${C_RESET}@${HOSTL}|${C_PATH}\w${C_RESET}] \$ "
+
+  # Git
+  export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
+  unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM
+  if command -v __git_ps1 &>/dev/null && [[ ${GIT_PROMPT:-0} -ge 1 ]] && [[ ${PROMPT_COMMAND:-} != *git_ps1* ]]; then
+    PROMPT_COMMAND="LC_ALL __git_ps1 2>/dev/null; ${PROMPT_COMMAND:-}"
+  fi
+
   # Only add mommy if not in stealth mode and not already present in PROMPT_COMMAND
   if command -v mommy &>/dev/null && [[ "${stealth:-0}" -ne 1 ]] && [[ ${PROMPT_COMMAND:-} != *mommy* ]]; then
     PROMPT_COMMAND="LC_ALL=C mommy -1 -s \$?; ${PROMPT_COMMAND:-}" # mommy https://github.com/fwdekker/mommy
