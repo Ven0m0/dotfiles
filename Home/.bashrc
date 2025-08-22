@@ -3,7 +3,7 @@
 [[ $- != *i* ]] && return
 #──────────── Helpers ────────────
 has(){ command -v -- "$1" &>/dev/null; } # Check for command
-# hasname(){ local x; x=$(type -P -- "$1") || return; printf '%s\n' "${x##*/}"; } # Basename of command
+hasname(){ local x; x=$(type -P -- "$1") || return; printf '%s\n' "${x##*/}"; } # Basename of command
 # xprintf(){ printf '%s\n' "$*" 2>/dev/null; } # Print-echo
 # xprintfe(){ printf '%b\n' "$*" 2>/dev/null; } # Print-echo for color
 _ifsource(){ [[ -f "$1" ]] && . -- "$1" 2>/dev/null || :; } # Source file if it exists
@@ -93,13 +93,24 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}" \
 export INPUTRC="$HOME/.inputrc"
 export CURL_HOME="$HOME"
 export GPG_TTY="$(tty)" TZ="Europe/Berlin" CLICOLOR=1
-  
-# Cargo / rustenv
+
+_ifsource "$HOME/.cargo/env"
+
 if has cargo; then
-  _ifsource "$HOME/.cargo/env"
   export CARGO_HOME="${HOME}/.cargo" RUSTUP_HOME="${HOME}/.rustup"
   _prependpath "${CARGO_HOME}/bin"
+  # # Function to run cargo commands dynamically
+  cargo_run(){
+    local bins=(gg mommy clicker) cmd=(cargo) b
+    for b in "${bins[@]}"; do
+      has "cargo-$b" && cmd+=("$b")
+    done
+    (( ${#cmd[@]} > 1 )) || { echo "No cargo binaries available: ${bins[*]}" >&2; return 1; }
+    "${cmd[@]}" "$@"
+  }
+  alias cargo=cargo_run
 fi
+
 export PYTHONOPTIMIZE=2 PYTHONIOENCODING='UTF-8' PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export FD_IGNORE_FILE="${HOME}/.ignore" FIGNORE="argo.lock"
 export ZSTD_NBTHREADS=0 ELECTRON_OZONE_PLATFORM_HINT=auto _JAVA_AWT_WM_NONREPARENTING=1 GTK_USE_PORTAL=1
