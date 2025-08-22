@@ -12,4 +12,5 @@ _prependpath() {
 }
 _prependpath "$HOME/.local/bin"
 _prependpath "$HOME/bin"
+_prependpath "$HOME/.bin"
 export PATH
