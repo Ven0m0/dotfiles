@@ -30,6 +30,7 @@ Videos/
 .ssh/*
 !.ssh/config
 .android/*
+.config/gh/hosts.yml
 
 # Backups
 *.bak
