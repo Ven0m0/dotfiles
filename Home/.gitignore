@@ -1,10 +1,5 @@
-# git credential file
-.gitconfig.local
-
-# local files are for host-specific overrides
+# Dotter
 .dotter/local.toml
-
-# ignore caches
 .dotter/cache.toml
 .dotter/cache
 
@@ -31,7 +26,10 @@ Videos/
 
 # Security
 .gnupg/*
-.ssh/
+.gitconfig.local
+.ssh/*
+!.ssh/config
+.android/*
 
 # Backups
 *.bak
@@ -45,9 +43,8 @@ Videos/
 # Rust
 **/*.rs.bk
 **/mutants.out*/
-.cargo/.package-cache
-.cargo/.global-cache
-.cargo/.package-cache-mutate
+.cargo/*
+!.cargo/config.toml
 
 # Logs and temps
 *.log
@@ -63,6 +60,7 @@ token
 nohup.out
 .~lock.*#
 token
+.nv/ComputeCache/
 
 # Linux
 .directory
@@ -91,8 +89,3 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
-
-# Adb
-adbkey
-adbkey.pub
-adb.*
