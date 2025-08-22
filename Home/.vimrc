@@ -29,6 +29,8 @@ set ruler                       "Add the current line and column"
 " This makes vim act like all other editors, buffers can
 " exist in the background without being in a window.
 " http://items.sjbach.com/319/configuring-vim-right
+set autochdir
+set showmatch
 set hidden
 set scrolloff=8         "Start scrolling when we're 8 lines away from margins
 set sidescrolloff=15
@@ -40,6 +42,13 @@ set clipboard=unnamed
 set noswapfile
 set nobackup
 set nowb
+
+" remove trailing whitespace from Python and Fortran files "
+autocmd BufWritePre *.py :%s/\s\+$//e
+autocmd BufWritePre *.f90 :%s/\s\+$//e
+autocmd BufWritePre *.f95 :%s/\s\+$//e
+autocmd BufWritePre *.for :%s/\s\+$//e
+
 " Auto indent pasted text
 nnoremap p p=`]<C-o>
 nnoremap P P=`]<C-o>
