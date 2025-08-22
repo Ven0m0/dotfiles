@@ -151,8 +151,8 @@
 [bash]
 	showInformativeStatus = false
 	showUntrackedFiles = no
-	showDirtyState = no
-    hideIfPwdIgnored = yes
+	showDirtyState = false
+    hideIfPwdIgnored = true
 [remote "origin"]
 	prune = true
 # gh cli auth
