@@ -3,9 +3,9 @@
 [[ $- != *i* ]] && return
 #──────────── Helpers ────────────
 has(){ LC_ALL=C command -v -- "$1" &>/dev/null; } # Check for command
-hasname(){ local x; x=$(LC_ALL=C type -P -- "$1") || return; printf '%s\n' "${x##*/}"; } # Basename of command
-p(){ printf '%s\n' "$*" 2>/dev/null; } # Print-echo
-pe(){ printf '%b\n' "$*" 2>/dev/null; } # Print-echo for color
+# hasname(){ local x; x=$(LC_ALL=C type -P -- "$1") || return; printf '%s\n' "${x##*/}"; } # Basename of command
+# xprintf(){ printf '%s\n' "$*" 2>/dev/null; } # Print-echo
+# xprintfe(){ printf '%b\n' "$*" 2>/dev/null; } # Print-echo for color
 _ifsource(){ [[ -f "$1" ]] && . -- "$1" 2>/dev/null || :; } # Source file if it exists
 _prependpath(){ [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"; } # Only prepend if not already in PATH
 #──────────── Sourcing ────────────
