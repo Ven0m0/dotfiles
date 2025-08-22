@@ -13,8 +13,7 @@ enable=check-unassigned-uppercase
 
 # All optional checks
 enable=all
-
-# shellcheck shell=bash
+external-sources
 
 # List of checks to disable
 #
@@ -31,7 +30,7 @@ disable=SC2154
 # Allow [ ! -z foo ] instead of suggesting -n
 disable=SC2236
 
-disable=SC1079,SC1078,SC1073,SC1072,SC1083,SC1090,SC1091,SC2016,SC2034,SC2312
+disable=SC1079,SC1078,SC1073,SC1072,SC1083,SC1090,SC1091,SC2002,SC2016,SC2034,SC2312
 
 # Add the script directory to the search path for source statements
 source-path=SCRIPTDIR
