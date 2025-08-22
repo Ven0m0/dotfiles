@@ -25,19 +25,21 @@ _ifsource "/usr/share/bash-completion/bash_completion" || _ifsource "/etc/bash_c
 stealth=${stealth:-0} # stealth=1
 #──────────── History / Prompt basics ────────────
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
-HISTSIZE=10000 
+HISTSIZE=1000
 HISTFILESIZE="$HISTSIZE"
 HISTCONTROL="erasedups:ignoreboth"
-HISTIGNORE="&:ls:[bf]g:help:clear:printf:exit:history:bash:fish:?:??"
+HISTIGNORE="&:ls:[bf]g:help:clear:exit:shutdown:reboot:history:fish:?:??"
 HISTTIMEFORMAT='%F %T '
 HISTFILE="$HOME/.bash_history"
 PROMPT_DIRTRIM=2
 PROMPT_COMMAND="history -a"
+export CLICOLOR=1
 #──────────── Core ────────────
 CDPATH=".:$HOME:/"
 ulimit -c 0 &>/dev/null # disable core dumps
 shopt -s histappend cmdhist checkwinsize dirspell cdable_vars \
-         cdspell autocd hostcomplete no_empty_cmd_completion &>/dev/null
+         cdspell autocd hostcomplete no_empty_cmd_completion \
+         globstar nullglob &>/dev/null
 # Disable Ctrl-s, Ctrl-q
 stty -ixon -ixoff -ixany &>/dev/null
 set +H  # disable history expansion that breaks some scripts
@@ -57,10 +59,11 @@ export LANG="${LANG:-C.UTF-8}" \
        LC_MEASUREMENT=C \
        LC_COLLATE=C \
        LC_CTYPE=C
+export TZ="Europe/Berlin"
 
 # Mimalloc & Jemalloc
 # https://github.com/microsoft/mimalloc/blob/main/docs/environment.html
-export MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,trust_madvise:enabled"
+export MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
 export _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 MIMALLOC_SHOW_STATS=0 MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_PURGE_DELAY=25 MIMALLOC_ARENA_EAGER_COMMIT=2
 
 # Delta / bat integration
@@ -92,7 +95,7 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}" \
 # https://www.reddit.com/r/programming/comments/109rjuj/how_setting_the_tz_environment_variable_avoids
 export INPUTRC="$HOME/.inputrc"
 export CURL_HOME="$HOME"
-export GPG_TTY="$(tty)" TZ="Europe/Berlin" CLICOLOR=1
+export GPG_TTY="$(tty)"
 
 _ifsource "$HOME/.cargo/env"
 if has cargo; then
