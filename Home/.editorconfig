@@ -14,14 +14,20 @@ indent_size = 2
 tab_width = 2
 
 # Shell scripts
-[*.sh,*.bash]
+[*.sh,*.bash,.profile]
+indent_style = space
+indent_size = 2
+tab_width = 2
 keep_padding = true
 space_redirects = true
 switch_case_indent = true
 function_next_line = true
 binary_next_line = true
 
-[*.bash]
+[*.bash,*.bashrc,.bash_profile,.bash_logout]
+indent_style = space
+indent_size = 2
+tab_width = 2
 shell_variant = bash
 
 [*.fish]
