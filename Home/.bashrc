@@ -277,21 +277,33 @@ alias chmod='chmod --preserve-root'
 alias chown='chown --preserve-root' 
 alias chgrp='chgrp --preserve-root'
 
-alias histl="history | LC_ALL=C grep " 
-alias findl="LC_ALL=C find . | LC_ALL=C grep " 
-alias psl="ps aux | LC_ALL=C grep "
+alias histl="history | LC_ALL=C grep" 
+alias findl="LC_ALL=C find . | LC_ALL=C grep"
+alias psl="ps aux | LC_ALL=C grep"
 alias topcpu="ps -eo pcpu,pid,user,args | LC_ALL=C sort -k 1 -r | head -10"
 alias diskl='LC_ALL=C lsblk -o NAME,SIZE,TYPE,MOUNTPOINT'
-alias dir='dir --color=auto' 
-alias vdir='vdir --color=auto'
 
 # DIRECTORY NAVIGATION
-alias ..="cd -- .."
-alias ...="cd -- ../.."
-alias ....="cd -- ../../.."
+alias ..='cd -- ..'
+alias ...='cd -- ../..'
+alias ....='cd -- ../../..'
+alias .....='cd -- ../../../..'
+alias ......='cd -- ../../../../..'
 alias ~="cd -- $HOME"
 alias cd-="cd -- -"
+alias dir='dir --color=auto'
+alias vdir='vdir --color=auto'
 alias y='yazi'
+
+# Common use
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias big="expac -H M '%m\t%n' | sort -h | nl"              # Sort installed packages according to size in MB
+alias gitpkg='pacman -Q | grep -i "\-git" | wc -l'          # List amount of -git packages
+
+alias cleanup='sudo pacman -Rns (pacman -Qtdq)'
+alias dmesg="sudo /bin/dmesg -L=always"
 
 
 # https://snarky.ca/why-you-should-use-python-m-pip/
