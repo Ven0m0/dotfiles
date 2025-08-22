@@ -2,7 +2,7 @@
 
 [[ $- != *i* ]] && return
 #──────────── Helpers ────────────
-has(){ command -v -- "$1" &>/dev/null; } # Check for command
+has(){ command -v -- "$1" &>/dev/null || return; } # Check for command
 hasname(){ local x; x=$(type -P -- "$1") || return; printf '%s\n' "${x##*/}"; } # Basename of command
 # xprintf(){ printf '%s\n' "$*" 2>/dev/null; } # Print-echo
 # xprintfe(){ printf '%b\n' "$*" 2>/dev/null; } # Print-echo for color
@@ -324,25 +324,6 @@ bind '"\C-e": end-of-line'
 bind '"\e[1;5D": backward-word'
 bind '"\e[1;5C": forward-word'
 bind 'set enable-bracketed-paste off'
-#──────────── Jumping ────────────
-if has zoxide; then
-  export _ZO_FZF_OPTS="--info=inline --tiebreak=index --layout=reverse --select-1 --exit-0"
-  eval "$(LC_ALL=C zoxide init bash 2>/dev/null)" 2>/dev/null || true
-  alias cd='z'
-elif has enhancd; then
-  export ENHANCD_FILTER="$HOME/.cargo/bin/sk:sk:fzf"
-  alias cd='enhancd'
-fi
-#──────────── End ────────────
-dedupe_path(){
-  local IFS=: dir s; declare -A seen
-  for dir in $PATH; do
-    [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"
-  done
-  [[ -n $s ]] && export PATH="$s"
-}
-dedupe_path
-has systemctl && command systemctl --user import-environment PATH &>/dev/null
 #──────────── Prompt 2 ────────────
 configure_prompt(){
   local LC_ALL=C LANG=C
@@ -385,4 +366,22 @@ if [[ $SHLVL -le 2 ]]; then
     fi
   fi
 fi
-#────────────────────────
+#──────────── Jumping ────────────
+if has zoxide; then
+  export _ZO_FZF_OPTS="--info=inline --tiebreak=index --layout=reverse --select-1 --exit-0"
+  eval "$(LC_ALL=C zoxide init bash 2>/dev/null)" 2>/dev/null || true
+  alias cd='z'
+elif has enhancd; then
+  export ENHANCD_FILTER="$HOME/.cargo/bin/sk:sk:fzf"
+  alias cd='enhancd'
+fi
+#──────────── End ────────────
+dedupe_path(){
+  local IFS=: dir s; declare -A seen
+  for dir in $PATH; do
+    [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"
+  done
+  [[ -n $s ]] && export PATH="$s"
+}
+dedupe_path
+has systemctl && command systemctl --user import-environment PATH &>/dev/null
