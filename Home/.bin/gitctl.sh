@@ -17,7 +17,7 @@ gitctl() {
   fi
   # If the directory exists, just cd into it
   if [ -d "$dir" ]; then
-    cd "$dir" || return
+    cd -- "$dir" || return
     return 0
   fi
   if command -v gix >/dev/null 2>&1; then
@@ -29,9 +29,9 @@ gitctl() {
     #LC_ALL=C LANG=C git clone "$url" "$dir" || return 1
   fi
   # cd into the cloned repo
-  cd "$dir" || return
+  cd -- "$dir" || return
   if [ -d "$dir" ]; then
-    cd "$dir" || return
+    cd -- "$dir" || return
   return 0
   fi
 }
