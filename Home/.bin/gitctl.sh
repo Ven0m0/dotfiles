@@ -21,12 +21,12 @@ gitctl() {
     return 0
   fi
   if command -v gix >/dev/null 2>&1; then
-    gix clone "$url" "$dir" || return 1
+    LC_ALL=C LANG=C gix clone "$url" "$dir" || return 1
   else
     # Clone the repo
-    git clone --depth 1 --single-branch "$url" "$dir" || return 1
-    #git clone --depth 1 --single-branch --shallow-submodules --filter='blob:none' "$url" "$dir" || return 1
-    #git clone "$url" "$dir" || return 1
+    LC_ALL=C LANG=C git clone --depth 1 --single-branch "$url" "$dir" || return 1
+    #LC_ALL=C LANG=C git clone --depth 1 --single-branch --shallow-submodules --filter='blob:none' "$url" "$dir" || return 1
+    #LC_ALL=C LANG=C git clone "$url" "$dir" || return 1
   fi
   # cd into the cloned repo
   cd "$dir" || return
