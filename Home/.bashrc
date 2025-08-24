@@ -77,19 +77,21 @@ if has delta; then
   fi
 fi
 if has bat; then
-  export PAGER=bat BAT_STYLE=auto BAT_THEME=ansi BATPIPE=color GIT_PAGER="${GIT_PAGER:-bat}"
-  alias cat='bat -spp --'
-  alias bat='bat --color auto --'
+  export PAGER=bat BAT_THEME=ansi BATPIPE=color BAT_STYLE=auto
+  alias cat='\bat -pp'
+  alias bat='\bat --color auto'
   has batman && eval "$(LC_ALL=C batman --export-env 2>/dev/null)" 2>/dev/null || true
   has batgrep && alias batgrep='batgrep --rga -S --color 2>/dev/null' || true
 elif has less; then
-  export PAGER=less LESSHISTFILE="-" LESS='-FRXns --mouse --use-color --no-init' GIT_PAGER="${GIT_PAGER:-less}"
+  export PAGER=less
 fi
 if has less; then
-  export LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
-  has lesspipe && eval "$(SHELL=/bin/sh LC_ALL=C lesspipe 2>/dev/null)" 2>/dev/null || true
+  LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
+  LESSHISTFILE="-" LESS='-FrXnsi --mouse --use-color --no-edit-warn --no-vbell --no-histdups'
+  export LESSHISTFILE LESS ESS_TERMCAP_md LESS_TERMCAP_me LESS_TERMCAP_us LESS_TERMCAP_ue LESS_TERMCAP_so LESS_TERMCAP_se
+  has lesspipe && eval "$(SHELL=/bin/sh lesspipe 2>/dev/null)" 2>/dev/null || true
 fi
-
+export GIT_PAGER="${GIT_PAGER:-PAGER}"
 # XDG + misc
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}" \
        XDG_DATA_HOME="${XDG_DATA_HOME:=$HOME/.local/share}" \
