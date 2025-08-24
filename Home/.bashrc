@@ -199,7 +199,6 @@ runch(){
     "./$s"
   fi
 }
-
 sel(){
   local p="${1:-.}"
   [[ -e "$p" ]] || { printf 'sel: not found: %s\n' "$p" >&2; return 1; }
@@ -221,7 +220,15 @@ sel(){
     printf 'sel: not a file/dir: %s\n' "$p" >&2; return 1
   fi
 }
-
+# Function to run cargo commands dynamically
+cargo_run(){
+  local bins=(gg mommy clicker) cmd=(cargo) b
+  for b in "${bins[@]}"; do
+    command -v "cargo-$b" &>/dev/null && cmd+=("$b")
+  done
+  (( ${#cmd[@]} > 1 )) || { echo "No cargo binaries available: ${bins[*]}" >&2; return 1; }
+  "${cmd[@]}" "$@"
+}
 sudo-command-line(){
   printf 'toggle sudo at the beginning of the current or the previous command by hitting ESC twice\n'
   [[ ${#READLINE_LINE} -eq 0 ]] && READLINE_LINE=$(fc -l -n -1 | xargs)
