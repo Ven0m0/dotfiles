@@ -250,6 +250,9 @@ symbreak(){ LC_ALL=C command find -L "${1:-.}" -type l; }
 command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C command hyperfine -w 25 -m 50 -i -- "$@"; }
 
 touchf(){ command mkdir -p -- "$(dirname -- "$1")" && command touch -- "$1"; }
+
+ssh(){ env TERM=xterm-256color command ssh "$@"; }
+
 #──────────── Aliases ────────────
 # Enable aliases to be sudo’ed
 alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
