@@ -155,6 +155,5 @@ murder() (
   ps aux | grep -i "$1" | awk '{print $2}' | xargs kill -9
 }
 
-bgd(){
-  nohub "$@" >/dev/null 2>&1 & disown
-}
+bgd(){ nohup "$@" >/dev/null 2>&1 < /dev/null & disown; }
+bgd_full(){ nohup setsid "$@" >/dev/null 2>&1 < /dev/null & disown; }
