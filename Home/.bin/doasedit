@@ -1,5 +1,6 @@
 #!/bin/sh -e
 
+# https://codeberg.org/TotallyLeGIT/doasedit
 help() {
 	cat - >&2 <<EOF
 doasedit - edit files as root using an unprivileged editor
