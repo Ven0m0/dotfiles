@@ -1,0 +1,118 @@
+#!/bin/bash
+
+# https://github.com/sheepla/fzman
+export LC_ALL=C LANG=C
+set -u o errexit
+
+readonly THIS_CMD="${0##*/}"
+readonly VERSION='0.0.1'
+readonly PROMPT='manpage: '
+
+function _help() {
+	echo -e "\
+${THIS_CMD} -- manpage finder with fzf
+
+USAGE
+    ${THIS_CMD} KEYWORDS...
+    ${THIS_CMD} [OPTIONS]
+
+OPTIONS
+    -h, --help          Show this help message and exit
+    --version           Show version information and exit
+"
+}
+
+function _err() {
+	echo -e "[ \e[31mERR\e[m ] ${*}" >&2
+}
+
+function _test_cmd() {
+	for cmd in "${@}"; do
+		if command -v "${cmd}" &>/dev/null; then
+			return 0
+		else
+			_err "${cmd}: command not found."
+			return 1
+		fi
+	done
+}
+
+function _main() {
+	_test_cmd fzf || return 1
+
+	local -a keywords=()
+
+	while [[ $# -gt 0 ]]; do
+		case "${1}" in
+		-h | --help)
+			_help
+			return 0
+			;;
+		--version)
+			echo "${VERSION}"
+			return 0
+			;;
+		*)
+			keywords+=("${1}")
+			shift
+			;;
+		esac
+	done
+
+	if [[ "${#keywords[@]}" == 0 ]]; then
+		keywords=('.')
+	fi
+
+	_select_manual "${keywords[@]}"
+	return 0
+}
+
+function _select_manual() {
+	man -k "${@}" | sed 's/ * - .*//g' | _fzf_preview
+}
+
+# Map apropos's output to command line arguments for `man`.
+function _entry2args() {
+	local -a arr
+
+	# Expected input form.
+	# - "command(1)"
+	# - "command(1), cmd(1)"
+	# - "command (1)"
+	read -ra arr <<<"${1//[()]/ }"
+
+	echo "${arr[1]}" "${arr[0]}"
+}
+
+function _fzf_preview() {
+	# Export a function to call it in sub bash process for fzf's
+	# `--preview` option.
+	export -f _entry2args
+	local -r lookup='_entry2args {} | xargs -n2 -- man'
+
+	# Specify `bash` as a subprocess for fzf `--preview` option to call a
+	# bash's expoterd shell function in the subprocess. Only bash can
+	# call the function, but the shell, which is invoked as fzf
+	# `--preview`'s subprocess, is described in `SEHLL` environment
+	# variable. So maybe not bash shell is called as the shell if a user
+	# use another shell as login shell.
+	SHELL=bash LANG=C fzf \
+		--layout=reverse \
+		--prompt="${PROMPT}" \
+		--preview="${lookup} 2>/dev/null" \
+		--bind="enter:execute(${lookup})"
+}
+
+# NOTE: Maybe this conditional is a bit strange, but this is for a
+# compatibility about old version's bash. In old version it causes unbound
+# variable error when use parameter expantion with an empty array with `set -o
+# nounset` or `set -u` option. It is also same about potential parameters.
+#
+# A old version of bash, which is installed by default on macOS Big Sur, is
+# 3.2.57(1).
+if [[ $# == 0 ]]; then
+	_main
+else
+	_main "${@}"
+fi
+exit $?
