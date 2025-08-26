@@ -50,10 +50,7 @@ shopt -s histappend cmdhist checkwinsize dirspell cdable_vars \
 # Disable Ctrl-s, Ctrl-q
 stty -ixon -ixoff -ixany &>/dev/null
 set +H  &>/dev/null # disable history expansion that breaks some scripts
-#──────────── Vim ────────────
 # set -o vi
-# bind -m vi-command '"\C-e": edit-and-execute-command'
-# bind -m vi-insert  '"\C-e": edit-and-execute-command'
 #──────────── Env ────────────
 _prependpath "$HOME/.local/bin"
 _prependpath "$HOME/bin"
@@ -67,8 +64,10 @@ export LANG="${LANG:-C.UTF-8}" \
        LANGUAGE="en_US:en:C" \
        LC_MEASUREMENT=C \
        LC_COLLATE=C \
-       LC_CTYPE=C
-export TZ="Europe/Berlin"
+       LC_CTYPE=C \
+       TZ="Europe/Berlin"
+
+SHELL="$(command -v bash 2>/dev/null)"
 
 # Mimalloc & Jemalloc
 # https://github.com/microsoft/mimalloc/blob/main/docs/environment.html
@@ -181,6 +180,12 @@ fuzzy_finders(){
   fi
 }
 fuzzy_finders
+
+fman(){
+  man -k . | fzf -q "$1" --prompt='man> '  --preview $'echo {} | tr -d \'()\' | awk \'{printf "%s ", $2} {print $1}\' | xargs -r man | col -bx | bat -l man -p --color always' | tr -d '()' | awk '{printf "%s ", $2} {print $1}' | xargs -r man
+}
+export MANPAGER="sh -c 'col -bx | bat -l man -p --paging always'"
+
 #──────────── Completions ────────────
 complete -cf sudo 2>/dev/null
 command -v pay-respects &>/dev/null && eval "$(LC_ALL=C pay-respects bash 2>/dev/null)" 2>/dev/null || :
