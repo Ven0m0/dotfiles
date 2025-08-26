@@ -28,6 +28,11 @@ for _src in "${_for_each_source[@]}"; do
 done
 # completions (quiet)
 _ifsource "/usr/share/bash-completion/bash_completion" || _ifsource "/etc/bash_completion"
+
+if [[ -d $HOME/.dotbare ]]; then
+  [[ -f $HOME/.dotbare/dotbare ]] && alias dotbare="$HOME/.dotbare/dotbare"
+  _ifsource "$HOME/.dotbare/dotbare.plugin.bash"
+fi
 #──────────── Stealth ────────────
 stealth=${stealth:-0} # stealth=1
 #──────────── History / Prompt basics ────────────
@@ -420,17 +425,24 @@ dedupe_path
 #──────────── Fetch ────────────
 if [[ $SHLVL -le 2 ]]; then
   if [ "${stealth:-0}" -eq 1 ]; then
-    has fastfetch && LC_ALL=C fastfetch --ds-force-drm --thread --detect-version false 2>/dev/null
+    if has fastfetch; then
+      fetch='LC_ALL=C fastfetch --ds-force-drm --thread --detect-version false'
+      "$fetch"
+    fi
   else
     if has hyfetch; then
-      LC_ALL=C command hyfetch -b fastfetch -m rgb -p transgender 2>/dev/null
+      fetch='LC_ALL=C hyfetch -b fastfetch -m rgb -p transgender'
+      "$fetch"
     elif has fastfetch; then
-      LC_ALL=C command fastfetch --ds-force-drm --thread 2>/dev/null
+      fetch='LC_ALL=C fastfetch --ds-force-drm --thread'
+      "$fetch"
     else
-      LC_ALL=C command hostnamectl 2>/dev/null
+      fetch='LC_ALL=C curl -sf4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Scripts/shell-tools/vnfetch.sh | bash'
+      "$fetch"
     fi
   fi
 fi
+# fetch='LC_ALL=C command hostnamectl 2>/dev/null'
 #──────────── Jumping ────────────
 if has zoxide; then
   export _ZO_DOCTOR='0' _ZO_ECHO='0' _ZO_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}" _ZO_EXCLUDE_DIRS="$HOME:*.git"
