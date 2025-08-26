@@ -1,4 +1,13 @@
---threads 16
---max-depth 6
---fixed-strings
---ignore-file "$HOME/.git"
+-d 6
+-c auto
+-F
+--ignore
+--no-require-git
+--ignore-file "$HOME/.gitignore"
+--ignore-file "$HOME/.ignore"
+--ignore-file "$HOME/.config/fd/ignore"
+--exclude=node_modules
+--exclude='*.pyc'
+--type file
+--type symlink
+--type directory
