@@ -267,6 +267,46 @@ command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C LANG=C command hyperfi
 
 touchf(){ command mkdir -p -- "$(dirname -- "$1")" && command touch -- "$1"; }
 
+cht(){
+  # join all arguments with '/', so “topic sub topic” → “topic/sub/topic”
+  local query="${*// /\/}"
+  # try to fetch the requested cheat‑sheet; on HTTP errors (e.g. 404), fall back to :help
+  if ! curl -sf "cht.sh/$query"; then
+    curl -sf4 "cht.sh/:help"
+  fi
+}
+
+extract() {
+    local c e i
+    (($#)) || return
+    for i; do
+        c=''
+        e=1
+        if [[ ! -r $i ]]; then
+            echo "$0: file is unreadable: \`$i'" >&2
+            continue
+        fi
+        case $i in
+            *.t@(gz|lz|xz|b@(2|z?(2))|a@(z|r?(.@(Z|bz?(2)|gz|lzma|xz|zst)))))
+                   c=(bsdtar xvf);;
+            *.7z)  c=(7z x);;
+            *.Z)   c=(uncompress);;
+            *.bz2) c=(bunzip2);;
+            *.exe) c=(cabextract);;
+            *.gz)  c=(gunzip);;
+            *.rar) c=(unrar x);;
+            *.xz)  c=(unxz);;
+            *.zip) c=(unzip);;
+            *.zst) c=(unzstd);;
+            *)     echo "$0: unrecognized file extension: \`$i'" >&2
+                   continue;;
+        esac
+        command "${c[@]}" "$i"
+        ((e = e || $?))
+    done
+    return "$e"
+}
+
 #──────────── Aliases ────────────
 # Enable aliases to be sudo’ed
 alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
