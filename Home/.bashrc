@@ -251,7 +251,7 @@ command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C command hyperfine -w 2
 
 touchf(){ command mkdir -p -- "$(dirname -- "$1")" && command touch -- "$1"; }
 
-ssh(){ env TERM=xterm-256color command ssh "$@"; }
+
 
 #──────────── Aliases ────────────
 # Enable aliases to be sudo’ed
@@ -259,8 +259,10 @@ alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
 alias mkdir='mkdir -p'
 alias ed='$EDITOR' mi='$EDITOR' smi='sudo $EDITOR'
 alias please='sudo !!'
-alias pacman1='sudo pacman --noconfirm --needed --color=auto'
-alias paru1='paru --skipreview --noconfirm --needed'
+alias pacman='sudo pacman --noconfirm --needed --color=auto'
+alias paru='paru --skipreview --noconfirm --needed'
+alias ssh='env LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh'
+# ssh(){ env TERM=xterm-256color command ssh "$@"; }
 alias cls='clear' c='clear'
 alias ptch='patch -p1 <'
 alias cleansh='curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
@@ -296,13 +298,23 @@ alias topcpu="ps -eo pcpu,pid,user,args | LC_ALL=C sort -k 1 -r | head -10"
 alias diskl='LC_ALL=C lsblk -o NAME,SIZE,TYPE,MOUNTPOINT'
 
 # DIRECTORY NAVIGATION
-alias ..='cd -- ..'
-alias ...='cd -- ../..'
-alias ....='cd -- ../../..'
-alias .....='cd -- ../../../..'
-alias ......='cd -- ../../../../..'
-alias ~="cd -- $HOME"
-alias cd-="cd -- -"
+if has zoxide; then
+  alias ..='z -- ..'
+  alias ...='z -- ../..'
+  alias ....='z -- ../../..'
+  alias .....='z -- ../../../..'
+  alias ......='z -- ../../../../..'
+  alias ~="z -- $HOME"
+  alias cd-="cd -- -"
+else
+  alias ..='cd -- ..'
+  alias ...='cd -- ../..'
+  alias ....='cd -- ../../..'
+  alias .....='cd -- ../../../..'
+  alias ......='cd -- ../../../../..'
+  alias ~="cd -- $HOME"
+  alias cd-="cd -- -"
+fi
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
 alias y='yazi'
@@ -352,12 +364,6 @@ bind '"\e[1;5C": forward-word'
 bind 'set enable-bracketed-paste off'
 # prefixes the line with sudo , if Alt+s is pressed
 bind '"\es": "\C-asudo \C-e"'
-#──────────── Jumping ────────────
-if has zoxide; then
-  export _ZO_FZF_OPTS="--info=inline --tiebreak=index --layout=reverse --select-1 --exit-0" _ZO_DOCTOR=0
-  eval "$(LC_ALL=C zoxide init bash 2>/dev/null)" 2>/dev/null
-  alias cd='z'
-fi
 #──────────── Prompt 2 ────────────
 configure_prompt(){
   local LC_ALL=C LANG=C
@@ -386,6 +392,16 @@ configure_prompt(){
   fi
 }
 configure_prompt
+#──────────── End ────────────
+dedupe_path(){
+  local IFS=: dir s; declare -A seen
+  for dir in $PATH; do
+    [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"
+  done
+  [[ -n $s ]] && export PATH="$s"
+  command -v systemctl &>/dev/null && command systemctl --user import-environment PATH &>/dev/null
+}
+dedupe_path
 #──────────── Fetch ────────────
 if [[ $SHLVL -le 2 ]]; then
   if [ "${stealth:-0}" -eq 1 ]; then
@@ -400,13 +416,9 @@ if [[ $SHLVL -le 2 ]]; then
     fi
   fi
 fi
-#──────────── End ────────────
-dedupe_path(){
-  local IFS=: dir s; declare -A seen
-  for dir in $PATH; do
-    [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"
-  done
-  [[ -n $s ]] && export PATH="$s"
-}
-dedupe_path
-has systemctl && command systemctl --user import-environment PATH &>/dev/null
+#──────────── Jumping ────────────
+if has zoxide; then
+  export _ZO_FZF_OPTS="--info=inline --tiebreak=index --layout=reverse --select-1 --exit-0" _ZO_DOCTOR=0
+  alias cd='z'
+  eval "$(LC_ALL=C zoxide init bash 2>/dev/null)" 2>/dev/null
+fi
