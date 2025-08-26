@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-
+export LC_ALL=C LANG=C
 # From: https://github.com/ericlay/fuzzy-pkg-finder
 ### Help 
 Help() {
@@ -115,7 +115,7 @@ Official() {
     cat /tmp/fpf-packages | fzf -q "$1" -e -m \
         --preview='cat <(pacman -Si {1}) <(pacman -Fl {1} | awk "{print \$2}")' \
         --preview-window=55%:wrap:border-sharp \
-        --layout=reverse \
+        --layout=reverse-list \
         --marker='>>' \
         --header="$(echo -e '\n Select packages to install\n (use TAB to toggle selection)\n\n')" \
         --info=hidden \
@@ -139,7 +139,7 @@ Installed() {
     fzf -q "$1" -e -m \
     --preview='cat <(pacman -Qik {1}) <(echo "") <(pacman -Fl {1} | awk "{print \$2}")' \
     --preview-window=65%:wrap \
-    --layout=reverse \
+    --layout=reverse-list \
     --marker='>>' \
     --header="$(echo -e '\n Select packages to print info\n (use TAB to toggle selection)\n\n')" \
     --info=hidden \
