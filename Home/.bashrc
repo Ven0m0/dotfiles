@@ -343,13 +343,15 @@ bind 'set skip-completed-text on'
 bind 'set colored-stats on'
 bind 'set colored-completion-prefix on'
 bind 'set expand-tilde on'
-bind Space:magic-space
+bind '"Space": magic-space'
 bind '"\C-o": kill-whole-line'
 bind '"\C-a": beginning-of-line'
 bind '"\C-e": end-of-line'
 bind '"\e[1;5D": backward-word'
 bind '"\e[1;5C": forward-word'
 bind 'set enable-bracketed-paste off'
+# prefixes the line with sudo , if Alt+s is pressed
+bind '"\es": "\C-asudo \C-e"'
 #──────────── Jumping ────────────
 if has zoxide; then
   export _ZO_FZF_OPTS="--info=inline --tiebreak=index --layout=reverse --select-1 --exit-0" _ZO_DOCTOR=0
