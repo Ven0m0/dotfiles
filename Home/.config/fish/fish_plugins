@@ -2,13 +2,13 @@ jorgebucaran/fisher
 acomagu/fish-async-prompt
 archelaus/shell-mommy
 oh-my-fish/plugin-xdg
-wk/plugin-ssh-term-helper
 patrickf1/fzf.fish
+gyakovlev/fish-fzy
 kyohsuke/fish-evalcache
 scaryrawr/cheat.sh.fish
 y3owk1n/fish-x
 scaryrawr/zoxide.fish
 eth-p/fish-plugin-sudo
-babarot/enhancd
 eugene-babichenko/fish-codegen-cache
+wk/plugin-ssh-term-helper
 rubiev/plugin-fuck
