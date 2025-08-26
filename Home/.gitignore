@@ -81,9 +81,11 @@ __pycache__
 .pytest_cache/
 *.pyc
 *.pyo
-node_modules
-target
-build
+node_modules/
+target/
+build/
+go/
+.git/
 
 # Windows
 Thumbs.db
