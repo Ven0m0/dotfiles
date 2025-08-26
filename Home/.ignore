@@ -3,6 +3,7 @@
 *.tmp
 *.bak
 node_modules/
+go/
 target/
 build/
 .git/
