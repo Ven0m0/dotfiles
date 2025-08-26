@@ -140,26 +140,26 @@ fi
 fuzzy_finders(){
   local FIND_CMD
   if has fd; then
-    FIND_CMD='fd -tf -F --hidden --exclude .git --exclude node_modules --exclude target'
+    FIND_CMD='LC_ALL=C fd -tf -F --hidden --exclude .git --exclude node_modules --exclude target'
   elif has rg; then
-    FIND_CMD='rg --files --hidden --glob "!.git" --glob "!node_modules" --glob "!target"'
+    FIND_CMD='LC_ALL=C rg --files --hidden --glob "!.git" --glob "!node_modules" --glob "!target"'
   else
-    FIND_CMD='find . -type f ! -path "*/.git/*" ! -path "*/node_modules/*" ! -path "*/target/*"'
+    FIND_CMD='LC_ALL=C find . -type f ! -path "*/.git/*" ! -path "*/node_modules/*" ! -path "*/target/*"'
   fi
   declare -x FZF_DEFAULT_COMMAND="$FIND_CMD"
   declare -x FZF_CTRL_T_COMMAND="$FIND_CMD"
-  declare -x FZF_DEFAULT_OPTS='--info=inline --layout=reverse --tiebreak=index --height=70%'
-  declare -x FZF_CTRL_T_OPTS="--select-1 --exit-0 --preview 'bat -n --color=auto --line-range=:250 -- {} 2>/dev/null || cat -- {} 2>/dev/null'"
-  declare -x FZF_CTRL_R_OPTS="--select-1 --exit-0 --no-sort --exact --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
-  declare -x FZF_ALT_C_OPTS="--select-1 --exit-0 --walker-skip .git,node_modules,target --preview 'tree -C {} 2>/dev/null | head -200'"
+  declare -x FZF_DEFAULT_OPTS='--cycle --border --preview-window=wrap --marker="*" --info=inline --layout=reverse --tiebreak=index --height=70%'
+  declare -x FZF_CTRL_T_OPTS="--select-1 --exit-0 --tiebreak=index --preview 'bat -n --color=auto --line-range=:250 -- {} 2>/dev/null || cat -- {} 2>/dev/null'"
+  declare -x FZF_CTRL_R_OPTS="--select-1 --exit-0 --tiebreak=index --no-sort --exact --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
+  declare -x FZF_ALT_C_OPTS="--select-1 --exit-0 --tiebreak=index --walker-skip .git,node_modules,target --preview 'tree -C {} 2>/dev/null | head -200'"
   declare -x FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=index'
   declare -x FZF_COMPLETION_PATH_OPTS="--info=inline --tiebreak=index --walker file,dir,follow,hidden"
   declare -x FZF_COMPLETION_DIR_OPTS="--info=inline --tiebreak=index --walker dir,follow"
   mkdir -p -- "$HOME/.config/bash/completions" 2>/dev/null
   if has fzf; then
     [[ -f /usr/share/fzf/key-bindings.bash ]] && . "/usr/share/fzf/key-bindings.bash" 2>/dev/null || :
-    if [[ ! -f $HOME/.config/bash/completions/fzf_completion.bash ]]; then
-      fzf --bash 2>/dev/null >| "$HOME/.config/bash/completions/fzf_completion.bash"
+    if [[ -f $HOME/.config/bash/completions/fzf_completion.bash ]]; then
+      LC_ALL=C fzf --bash 2>/dev/null >| "$HOME/.config/bash/completions/fzf_completion.bash"
     fi
     . "$HOME/.config/bash/completions/fzf_completion.bash" 2>/dev/null || :
   fi
@@ -169,7 +169,7 @@ fuzzy_finders(){
     alias fzf='sk ' 2>/dev/null || true
     [[ -f /usr/share/skim/key-bindings.bash ]] && . "/usr/share/skim/key-bindings.bash" 2>/dev/null || :
     if [[ ! -f $HOME/.config/bash/completions/sk_completion.bash ]]; then
-      sk --shell bash 2>/dev/null >| "$HOME/.config/bash/completions/sk_completion.bash"
+      LC_ALL=C sk --shell bash 2>/dev/null >| "$HOME/.config/bash/completions/sk_completion.bash"
     fi
     . "$HOME/.config/bash/completions/sk_completion.bash" 2>/dev/null || :
   fi
@@ -181,7 +181,7 @@ command -v pay-respects &>/dev/null && eval "$(LC_ALL=C pay-respects bash 2>/dev
 # Ghostty
 [[ $TERM == xterm-ghostty && -e "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash" ]] && . "$GHOSTTY_RESOURCES_DIR/shell-integration/bash/ghostty.bash" 2>/dev/null || :
 # Wikiman
-# [[ command -v wikiman &>/dev/null && -f /usr/share/wikiman/widgets/widget.bash ]] && . "/usr/share/wikiman/widgets/widget.bash" 2>/dev/null
+[[ command -v wikiman &>/dev/null && -f /usr/share/wikiman/widgets/widget.bash ]] && . "/usr/share/wikiman/widgets/widget.bash" 2>/dev/null
 #──────────── Functions ────────────
 # Having to set a new script as executable always annoys me.
 runch(){
@@ -192,7 +192,7 @@ runch(){
   if [[ ! -f $s ]]; then
     printf 'runch: file not found: %s\n' "$s" >&2; return 1
   fi
-  if ! command chmod u+x -- "$s" 2>/dev/null; then
+  if ! command chmod +x -- "$s" 2>/dev/null; then
     printf 'runch: cannot make executable: %s\n' "$s" >&2; return 1    
   fi
   if [[ $s == */* ]]; then
@@ -206,17 +206,17 @@ sel(){
   [[ -e "$p" ]] || { printf 'sel: not found: %s\n' "$p" >&2; return 1; }
   if [[ -d "$p" ]]; then
     if has eza; then
-      command eza -al --color=auto --group-directories-first --icons=auto --no-time --no-git --smart-group --no-user --no-permissions -- "$p"
+      LC_ALL=C command eza -al --color=auto --group-directories-first --icons=auto --no-time --no-git --smart-group --no-user --no-permissions -- "$p"
     else
-      command ls -a --color=auto --group-directories-first -- "$p"
+      LC_ALL=C command ls -a --color=auto --group-directories-first -- "$p"
     fi
   elif [[ -f "$p" ]]; then
     if has bat; then
       local bn
       bn=$(basename -- "$p")
-      command bat -sp --color auto --file-name="$bn" -- "$p"
+      LC_ALL=C LANG=C.UTF-8 command bat -sp --color auto --file-name="$bn" -- "$p"
     else
-      command cat -s -- "$p"
+      LC_ALL=C LANG=C.UTF-8 command cat -s -- "$p"
     fi
   else
     printf 'sel: not a file/dir: %s\n' "$p" >&2; return 1
@@ -251,18 +251,16 @@ command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C command hyperfine -w 2
 
 touchf(){ command mkdir -p -- "$(dirname -- "$1")" && command touch -- "$1"; }
 
-
-
 #──────────── Aliases ────────────
 # Enable aliases to be sudo’ed
 alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
 alias mkdir='mkdir -p'
 alias ed='$EDITOR' mi='$EDITOR' smi='sudo $EDITOR'
 alias please='sudo !!'
-alias pacman='sudo pacman --noconfirm --needed --color=auto'
-alias paru='paru --skipreview --noconfirm --needed'
-alias ssh='env LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh'
-# ssh(){ env TERM=xterm-256color command ssh "$@"; }
+alias pacman='LC_ALL=C LANG=C.UTF-8 sudo pacman --noconfirm --needed --color=auto'
+alias paru='LC_ALL=C LANG=C.UTF-8 paru --skipreview --noconfirm --needed'
+alias ssh='LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh'
+# ssh(){ TERM=xterm-256color command ssh "$@"; }
 alias cls='clear' c='clear'
 alias ptch='patch -p1 <'
 alias cleansh='curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
