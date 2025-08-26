@@ -10,14 +10,14 @@ end
 # choose fetch command depending on stealth and available tools
 # set -l stealth 1
 if test "$stealth" = "1"
-  if type -q fastfetch
+  if type -qf fastfetch
     set -g fetch 'fastfetch --detect-version false --users-myself-only --localip-compact --ds-force-drm --thread'
   else
     set -e fetch
   end
-else if type -q hyfetch
+else if type -qf hyfetch
   set -g fetch 'hyfetch -b fastfetch -m rgb -p transgender'
-else if type -q fastfetch
+else if type -qf fastfetch
   set -g fetch 'fastfetch --detect-version false --users-myself-only --localip-compact --ds-force-drm --thread'
 else
   set -e fetch
@@ -48,7 +48,6 @@ if test -d ~/.basher
     set basher ~/.basher/bin
 end
 set -gx PATH $basher $PATH
-# status --is-interactive >/dev/null 2>&1; and source (basher init - fish | psub)
 status --is-interactive >/dev/null 2>&1; and _evalcache basher init - fish 2>/dev/null
 
 set -e LC_ALL
@@ -58,13 +57,13 @@ bind --erase \cv 2>/dev/null
 # Prompt
 _evalcache starship init fish 2>/dev/null
 
-if type -q batman >/dev/null 2>&1
+if type -qf batman
 	_evalcache batman --export-env 2>/dev/null
 end
-if type -q batpipe >/dev/null 2>&1
+if type -qf batpipe
 	_evalcache batpipe 2>/dev/null
 end
-if type -q pay-respects >/dev/null 2>&1
+if type -qf pay-respects
 	_evalcache pay-respects fish --alias 2>/dev/null
 end
 
@@ -72,18 +71,13 @@ end
 if test "$TERM" = "xterm-ghostty" -a -e "$GHOSTTY_RESOURCES_DIR"/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish
     source "$GHOSTTY_RESOURCES_DIR"/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish
 end
-set -gx FZF_LEGACY_KEYBINDINGS 0 2>/dev/null
-set -gx FZF_COMPLETE 1 2>/dev/null
+set -Ux FZF_LEGACY_KEYBINDINGS 0
+set -gx FZF_COMPLETE 3
+_evalcache fzf --fish 2>/dev/null
 bind \cs '__ethp_commandline_toggle_sudo.fish' 2>/dev/null
 # Async prompt
-set -U async_prompt_functions fish_prompt fish_right_prompt
-set -gx async_prompt_enable 1
-
- _evalcache fzf --fish 2>/dev/null
-if type -q zoxide >/dev/null 2>&1
-	set _ZO_FZF_OPTS "--info=inline --tiebreak=index --layout=reverse-list --select-1 --exit-0"
-	_evalcache zoxide init fish 2>/dev/null
-end
+set -Ux async_prompt_functions fish_prompt fish_right_prompt
+set -Ux async_prompt_enable 1
 
 # ─── Abbreviations ─────────────────────────────────────────────────────────
 abbr -a mv mv -iv
@@ -95,3 +89,20 @@ abbr -a df df -h
 abbr -a free free -h
 abbr -a ip ip --color=auto
 abbr -a du du -hcsx
+
+# ─── Path Deduplication ─────────────────────────────────────────────────────────
+set PATH (printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')
+# Deduplicate PATH (preserve order) to prevent PATH bloat across reloads
+#set -l seen
+#set -l newpath
+#for dir in $PATH
+  #if not contains -- $dir $seen 2>/dev/null
+    #set seen $seen $dir
+    #set newpath $newpath $dir
+  #end
+#end
+#set -gx PATH $newpath
+
+if type -qf zoxide
+	_evalcache zoxide init fish 2>/dev/null
+end
