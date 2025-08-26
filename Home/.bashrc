@@ -247,7 +247,7 @@ gcom(){ LC_ALL=C command git add -- . && LC_ALL=C command git commit -m "$1"; }
 lazyg(){ LC_ALL=C command git add -- . && LC_ALL=C command git commit -m -- "$1" && LC_ALL=C command git push; }
 symbreak(){ LC_ALL=C command find -L "${1:-.}" -type l; }
 
-command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C command hyperfine -w 25 -m 50 -i -- "$@"; }
+command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C LANG=C command hyperfine -w 25 -m 50 -i -S bash -- "$@"; }
 
 touchf(){ command mkdir -p -- "$(dirname -- "$1")" && command touch -- "$1"; }
 
@@ -263,8 +263,13 @@ alias ssh='LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh'
 # ssh(){ TERM=xterm-256color command ssh "$@"; }
 alias cls='clear' c='clear'
 alias ptch='patch -p1 <'
-alias cleansh='curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
-alias updatesh='curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
+alias cleansh='curl -fsSL4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
+alias updatesh='curl -fsSL4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
+curlsh(){ 
+  LC_ALL=C LANG=C
+  shellx=$(command -v bash 2>/dev/null || command -v dash 2>/dev/null)"
+  command curl -fsSL4 "$1" | bash
+}
 
 if has eza; then
   alias ls='eza -F --color=auto --group-directories-first --icons=auto'
