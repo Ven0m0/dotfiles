@@ -1,5 +1,26 @@
 source /usr/share/cachyos-fish-config/cachyos-config.fish
 
+# ─── Environment Tweaks ─────────────────────────────────────────────────────────
+set -gx EDITOR micro
+set -gx VISUAL $EDITOR
+set -gx VIEWER $EDITOR
+set -gx GIT_EDITOR $EDITOR
+set -gx SYSTEMD_EDITOR $EDITOR
+set -gx PAGER bat
+# set -gx LESS '-RQsn --no-histdups --mouse --wheel-lines=4'
+set -gx LESSHISTFILE '-'
+set -gx BATPIPE color
+
+# Fuzzy
+set -gx FZF_DEFAULT_OPTS '--inline-info --tiebreak=index --layout=reverse-list --height=70% --select-1 --exit-0'
+set -gx FZF_DEFAULT_COMMAND 'fd -tf -F --strip-cwd-prefix --exclude .git'
+set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
+set -gx SKIM_DEFAULT_COMMAND 'fd -tf -F --strip-cwd-prefix --exclude .git; or rg --files; or find .'
+set -gx SKIM_DEFAULT_OPTIONS $FZF_DEFAULT_OPTS
+set -Ux FZF_LEGACY_KEYBINDINGS 0
+set -Ux FZF_COMPLETE 3
+_evalcache fzf --fish 2>/dev/null
+# ────────────────────────────────────────────────────────────
 set -gx fish_prompt_pwd_dir_length 2
 set -gx __fish_git_prompt_show_informative_status 0
 set -gx __fish_git_prompt_showupstream none
@@ -55,7 +76,9 @@ set -e LC_ALL
 bind --erase \cv 2>/dev/null
 
 # Prompt
-_evalcache starship init fish 2>/dev/null
+if type -qf starship
+	_evalcache starship init fish 2>/dev/null
+end
 
 if type -qf batman
 	_evalcache batman --export-env 2>/dev/null
@@ -66,19 +89,14 @@ end
 if type -qf pay-respects
 	_evalcache pay-respects fish --alias 2>/dev/null
 end
-
 # ─── Ghostty bash integration ─────────────────────────────────────────────────────────
 if test "$TERM" = "xterm-ghostty" -a -e "$GHOSTTY_RESOURCES_DIR"/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish
     source "$GHOSTTY_RESOURCES_DIR"/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish
 end
-set -Ux FZF_LEGACY_KEYBINDINGS 0
-set -gx FZF_COMPLETE 3
-_evalcache fzf --fish 2>/dev/null
 bind \cs '__ethp_commandline_toggle_sudo.fish' 2>/dev/null
 # Async prompt
 set -Ux async_prompt_functions fish_prompt fish_right_prompt
 set -Ux async_prompt_enable 1
-
 # ─── Abbreviations ─────────────────────────────────────────────────────────
 abbr -a mv mv -iv
 abbr -a rm rm -iv
