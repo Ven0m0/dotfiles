@@ -150,7 +150,7 @@ fi
 fuzzy_finders(){
   local FIND_CMD
   if has fd; then
-    FIND_CMD='LC_ALL=C fd -tf -F --hidden --exclude .git --exclude node_modules --exclude target'
+    FIND_CMD='LC_ALL=C fd -tf --hidden --exclude .git --exclude node_modules --exclude target'
   elif has rg; then
     FIND_CMD='LC_ALL=C rg --files --hidden --glob "!.git" --glob "!node_modules" --glob "!target"'
   else
@@ -161,11 +161,11 @@ fuzzy_finders(){
   declare -x FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window="wrap" --smart-case --marker="*" --info=inline --layout=reverse-list --tiebreak=index --height=70%'
   declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'bat -n --color=auto --line-range=:250 -- {} 2>/dev/null || cat -- {} 2>/dev/null'"
   declare -x FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --no-sort --exact --preview 'echo {}' --preview-window="down:3:hidden:wrap" --bind "?:toggle-preview"'
-  declare -x FZF_ALT_C_OPTS="-1 -0 --tiebreak=index --walker-skip .git,node_modules,target --preview "tree -C {} 2>/dev/null | head -200"'
+  declare -x FZF_ALT_C_OPTS='-1 -0 --tiebreak=index --walker-skip .git,node_modules,target --preview "tree -C {} 2>/dev/null | head -200"'
   declare -x FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=index'
-  declare -x FZF_COMPLETION_PATH_OPTS="--info=inline --tiebreak=index --walker file,dir,follow,hidden"
-  declare -x FZF_COMPLETION_DIR_OPTS="--info=inline --tiebreak=index --walker dir,follow"
-  mkdir -p -- "$HOME/.config/bash/completions" 2>/dev/null
+  declare -x FZF_COMPLETION_PATH_OPTS='--info=inline --tiebreak=index --walker file,dir,follow,hidden'
+  declare -x FZF_COMPLETION_DIR_OPTS='--info=inline --tiebreak=index --walker dir,follow'
+  command mkdir -p -- "$HOME/.config/bash/completions" 2>/dev/null
   if has fzf; then
     [[ -f /usr/share/fzf/key-bindings.bash ]] && . "/usr/share/fzf/key-bindings.bash" 2>/dev/null || :
     if [[ -f $HOME/.config/bash/completions/fzf_completion.bash ]]; then
