@@ -3,12 +3,18 @@
 [[ $- != *i* ]] && return
 LC_ALL=C
 #──────────── Helpers ────────────
-has(){ command -v -- "$1" &>/dev/null || return; } # Check for command
-hasname(){ local x; x=$(type -P -- "$1") || return; printf '%s\n' "${x##*/}"; } # Basename of command
-# xprintf(){ printf '%s\n' "$*" 2>/dev/null; } # Print-echo
-# xeprintf(){ printf '%b\n' "$*" 2>/dev/null; } # Print-echo for color
-_ifsource(){ [[ -f "$1" ]] && . -- "$1" 2>/dev/null || :; } # Source file if it exists
-_prependpath(){ [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"; } # Only prepend if not already in PATH
+# Check for command
+has(){ command -v -- "$1" &>/dev/null || return; }
+# Basename of command
+hasname(){ local x=$(type -P -- "$1") && printf '%s\n' "${x##*/}"; }
+# 'echo' as printf
+#xprintf(){ printf '%s\n' "$*"; }
+# 'echo -e' as printf for color
+#xeprintf(){ printf '%b\n' "$*"; }
+# Source file if it exists
+_ifsource(){ [[ -f "$1" ]] && . -- "$1" 2>/dev/null; } 
+# Only prepend if not already in PATH
+_prependpath(){ [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"; } 
 #──────────── Sourcing ────────────
 _ifsource "/etc/bashrc"
 _for_each_source=(
