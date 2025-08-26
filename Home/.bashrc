@@ -1,6 +1,7 @@
 # ~/.bashrc
 
 [[ $- != *i* ]] && return
+LC_ALL=C
 #──────────── Helpers ────────────
 has(){ command -v -- "$1" &>/dev/null || return; } # Check for command
 hasname(){ local x; x=$(type -P -- "$1") || return; printf '%s\n' "${x##*/}"; } # Basename of command
@@ -54,9 +55,8 @@ _prependpath "$HOME/bin"
 # Editor selection: prefer micro, fallback to nano
 _editor_cmd="$(command -v micro 2>/dev/null || :)"; _editor_cmd="${_editor_cmd##*/}"; EDITOR="${_editor_cmd:-nano}"
 export EDITOR VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$EDITOR" FCEDIT="$EDITOR" SUDO_EDITOR="$EDITOR"
-
+unset _editor_cmd 2>/dev/null
 # https://wiki.archlinux.org/title/Locale
-unset LC_ALL _editor_cmd
 export LANG="${LANG:-C.UTF-8}" \
        LANGUAGE="en_US:en:C" \
        LC_MEASUREMENT=C \
@@ -148,10 +148,10 @@ fuzzy_finders(){
   fi
   declare -x FZF_DEFAULT_COMMAND="$FIND_CMD"
   declare -x FZF_CTRL_T_COMMAND="$FIND_CMD"
-  declare -x FZF_DEFAULT_OPTS='--cycle --border --preview-window=wrap --marker="*" --info=inline --layout=reverse --tiebreak=index --height=70%'
-  declare -x FZF_CTRL_T_OPTS="--select-1 --exit-0 --tiebreak=index --preview 'bat -n --color=auto --line-range=:250 -- {} 2>/dev/null || cat -- {} 2>/dev/null'"
-  declare -x FZF_CTRL_R_OPTS="--select-1 --exit-0 --tiebreak=index --no-sort --exact --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
-  declare -x FZF_ALT_C_OPTS="--select-1 --exit-0 --tiebreak=index --walker-skip .git,node_modules,target --preview 'tree -C {} 2>/dev/null | head -200'"
+  declare -x FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window="wrap" --smart-case --marker="*" --info=inline --layout=reverse-list --tiebreak=index --height=70%'
+  declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'bat -n --color=auto --line-range=:250 -- {} 2>/dev/null || cat -- {} 2>/dev/null'"
+  declare -x FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --no-sort --exact --preview 'echo {}' --preview-window="down:3:hidden:wrap" --bind "?:toggle-preview"'
+  declare -x FZF_ALT_C_OPTS="-1 -0 --tiebreak=index --walker-skip .git,node_modules,target --preview "tree -C {} 2>/dev/null | head -200"'
   declare -x FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=index'
   declare -x FZF_COMPLETION_PATH_OPTS="--info=inline --tiebreak=index --walker file,dir,follow,hidden"
   declare -x FZF_COMPLETION_DIR_OPTS="--info=inline --tiebreak=index --walker dir,follow"
@@ -280,7 +280,7 @@ fi
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias mv='\mv -i' 
+alias mv='mv -i' 
 alias cp='cp -i' 
 alias ln='ln -i'
 alias rm='rm -I --preserve-root' 
@@ -290,6 +290,7 @@ alias chown='chown --preserve-root'
 alias chgrp='chgrp --preserve-root'
 
 alias histl="history | LC_ALL=C grep" 
+history | grep -i "${1}"
 alias findl="LC_ALL=C find . | LC_ALL=C grep"
 alias psl="ps aux | LC_ALL=C grep"
 alias topcpu="ps -eo pcpu,pid,user,args | LC_ALL=C sort -k 1 -r | head -10"
@@ -304,6 +305,7 @@ if has zoxide; then
   alias ......='z -- ../../../../..'
   alias ~="z -- $HOME"
   alias cd-="cd -- -"
+  alias cd='z'
 else
   alias ..='cd -- ..'
   alias ...='cd -- ../..'
@@ -312,6 +314,7 @@ else
   alias ......='cd -- ../../../../..'
   alias ~="cd -- $HOME"
   alias cd-="cd -- -"
+  unalias cd 2>/dev/null
 fi
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
@@ -321,12 +324,11 @@ alias y='yazi'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias big="expac -H M '%m\t%n' | sort -h | nl"              # Sort installed packages according to size in MB
-alias gitpkg='pacman -Q | grep -i "\-git" | wc -l'          # List amount of -git packages
+alias big="expac -H M '%m\t%n' | LC_ALL=C sort -h | nl"                      # Sort installed packages according to size in MB
+alias gitpkg='sudo pacman -Q | LC_ALL=C grep -i "\-git" | LC_ALL=C wc -l'    # List amount of -git packages
 
-alias cleanup='sudo pacman -Rns (pacman -Qtdq)'
+alias cleanup='LC_ALL=C sudo pacman -Rns (pacman -Qtdq)'
 alias dmesg="sudo /bin/dmesg -L=always"
-
 
 # https://snarky.ca/why-you-should-use-python-m-pip/
 alias pip='python -m pip' py3='python3' py='python'
@@ -334,9 +336,8 @@ alias pip='python -m pip' py3='python3' py='python'
 alias speedt='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 -'
 
 # Dotfiles
-# git clone --bare git@github.com:Ven0m0/dotfiles.git $HOME/.dotfiles
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-# dotfiles checkout
+# LC_ALL=C git clone --bare git@github.com:Ven0m0/dotfiles.git $HOME/.dotfiles
+alias dotfiles='LC_ALL=C git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 #──────────── Bindings (readline) ────────────
 bind 'set completion-query-items 150'
@@ -381,12 +382,12 @@ configure_prompt(){
   export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
   unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWUNTRACKEDFILES
   if command -v __git_ps1 &>/dev/null && [[ ${GIT_PROMPT:-0} -ge 1 ]] && [[ ${PROMPT_COMMAND:-} != *git_ps1* ]]; then
-    PROMPT_COMMAND="LC_ALL __git_ps1 2>/dev/null; ${PROMPT_COMMAND:-}"
+    PROMPT_COMMAND="LC_ALL=C LANG=C.UTF-8 __git_ps1 2>/dev/null; ${PROMPT_COMMAND:-}"
   fi
   # Only add if not in stealth mode and not already present in PROMPT_COMMAND
   if command -v mommy &>/dev/null && [[ "${stealth:-0}" -ne 1 ]] && [[ ${PROMPT_COMMAND:-} != *mommy* ]]; then
-    PROMPT_COMMAND="LC_ALL=C mommy -1 -s \$?; ${PROMPT_COMMAND:-}" # mommy https://github.com/fwdekker/mommy
-    # PROMPT_COMMAND="LC_ALL=C mommy \$?; ${PROMPT_COMMAND:-}" # Shell-mommy https://github.com/sleepymincy/mommy
+    PROMPT_COMMAND="LC_ALL=C LANG=C.UTF-8 mommy -1 -s \$?; ${PROMPT_COMMAND:-}" # mommy https://github.com/fwdekker/mommy
+    # PROMPT_COMMAND="LC_ALL=C LANG=C.UTF-8 mommy \$?; ${PROMPT_COMMAND:-}" # Shell-mommy https://github.com/sleepymincy/mommy
   fi
 }
 configure_prompt
@@ -397,7 +398,7 @@ dedupe_path(){
     [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"
   done
   [[ -n $s ]] && export PATH="$s"
-  command -v systemctl &>/dev/null && command systemctl --user import-environment PATH &>/dev/null
+  command -v systemctl &>/dev/null && LC_ALL=C command systemctl --user import-environment PATH &>/dev/null
 }
 dedupe_path
 #──────────── Fetch ────────────
@@ -406,17 +407,17 @@ if [[ $SHLVL -le 2 ]]; then
     has fastfetch && LC_ALL=C fastfetch --ds-force-drm --thread --detect-version false 2>/dev/null
   else
     if has hyfetch; then
-      LC_ALL=C hyfetch -b fastfetch -m rgb -p transgender 2>/dev/null
+      LC_ALL=C command hyfetch -b fastfetch -m rgb -p transgender 2>/dev/null
     elif has fastfetch; then
-      LC_ALL=C fastfetch --ds-force-drm --thread 2>/dev/null
+      LC_ALL=C command fastfetch --ds-force-drm --thread 2>/dev/null
     else
-      LC_ALL=C hostnamectl 2>/dev/null
+      LC_ALL=C command hostnamectl 2>/dev/null
     fi
   fi
 fi
 #──────────── Jumping ────────────
 if has zoxide; then
-  export _ZO_FZF_OPTS="--info=inline --tiebreak=index --layout=reverse --select-1 --exit-0" _ZO_DOCTOR=0
-  alias cd='z'
+  export _ZO_DOCTOR='0' _ZO_ECHO='0' _ZO_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}" _ZO_EXCLUDE_DIRS="$HOME:*.git"
   eval "$(LC_ALL=C zoxide init bash 2>/dev/null)" 2>/dev/null
 fi
+unset LC_ALL
