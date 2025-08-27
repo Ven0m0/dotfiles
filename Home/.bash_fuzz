@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 fzf-man(){
 	MAN="/usr/bin/man"
 	if [ -n "$1" ]; then
@@ -88,3 +90,20 @@ fzf-git-status(){
       --preview '(LC_ALL=C git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500' | cut -c4- | sed 's/.* -> //')
   [[ -z $selected ]] && for prog in $(echo $selected); do; $EDITOR $prog; done
 }
+
+
+# Select a docker container to start and attach to
+da(){ cid=$(docker ps -a | sed 1d | fzf -1 -q "$1" | awk '{print $1}'); [[ -n $cid ]] && docker start "$cid" && docker attach "$cid"; }
+
+# Select a running docker container to stop
+ds(){ local cid=$(docker ps | sed 1d | fzf -q "$1" | awk '{print $1}'); [[ -n $cid ]] && docker stop "$cid"; }
+
+# Select a docker container to remove
+drm(){ local cid=$(docker ps -a | sed 1d | fzf -q "$1" | awk '{print $1}'); [[ -n $cid ]] && docker rm "$cid"; }
+# Same as above, but allows multi selection:
+drmm(){ docker ps -a | sed 1d | fzf -q "$1" --no-sort -m --tac | awk '{ print $1 }' | xargs -r docker rm; }
+
+# Select a docker image or images to remove
+drmi(){ docker images | sed 1d | fzf -q "$1" --no-sort -m --tac | awk '{ print $3 }' | xargs -r docker rmi; }
+
+
