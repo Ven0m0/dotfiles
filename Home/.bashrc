@@ -72,7 +72,7 @@ export LANG="${LANG:-C.UTF-8}" \
        LC_CTYPE=C \
        TZ="Europe/Berlin"
 
-SHELL="$(command -v bash 2>/dev/null)"
+SHELL="$(command -pv bash 2>/dev/null)"
 
 # Mimalloc & Jemalloc
 # https://github.com/microsoft/mimalloc/blob/main/docs/environment.html
