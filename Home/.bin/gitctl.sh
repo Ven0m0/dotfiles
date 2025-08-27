@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-LC_ALL=C LANG=C
+export LC_ALL=C LANG=C
 
 gitctl() {
   if [ $# -eq 0 ]; then
@@ -12,8 +12,7 @@ gitctl() {
     dir="$2"
   else
     # Strip trailing slashes and optional .git
-    dir="$(basename "${url%%/}")"
-    dir="${dir%.git}"
+    dir="$(basename "${url%%/}")"; dir="${dir%.git}"
   fi
   # If the directory exists, just cd into it
   if [ -d "$dir" ]; then
