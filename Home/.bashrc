@@ -73,6 +73,7 @@ export LANG="${LANG:-C.UTF-8}" \
        TZ="Europe/Berlin"
 
 SHELL="$(command -pv bash 2>/dev/null)"
+has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 
 # Mimalloc & Jemalloc
 # https://github.com/microsoft/mimalloc/blob/main/docs/environment.html
