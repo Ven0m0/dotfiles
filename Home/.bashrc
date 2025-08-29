@@ -45,7 +45,6 @@ HISTTIMEFORMAT='%F %T '
 HISTFILE="$HOME/.bash_history"
 PROMPT_DIRTRIM=2
 PROMPT_COMMAND="history -a"
-export CLICOLOR=1
 #──────────── Core ────────────
 CDPATH=".:$HOME:/"
 ulimit -c 0 &>/dev/null # disable core dumps
@@ -65,14 +64,14 @@ _editor_cmd="$(command -v micro 2>/dev/null || :)"; _editor_cmd="${_editor_cmd##
 export EDITOR VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$EDITOR" FCEDIT="$EDITOR" SUDO_EDITOR="$EDITOR"
 unset _editor_cmd 2>/dev/null
 # https://wiki.archlinux.org/title/Locale
-export LANG="${LANG:-C.UTF-8}" \
+export LANG="${LANG:=C.UTF-8}" \
        LANGUAGE="en_US:en:C" \
        LC_MEASUREMENT=C \
        LC_COLLATE=C \
        LC_CTYPE=C \
        TZ="Europe/Berlin"
 
-SHELL="$(command -pv bash 2>/dev/null)"
+SHELL="${BASH:-$(command -pv bash 2>/dev/null)}"
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 
 # Mimalloc & Jemalloc
@@ -108,6 +107,7 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}" \
        XDG_DATA_HOME="${XDG_DATA_HOME:=$HOME/.local/share}" \
        XDG_STATE_HOME="${XDG_STATE_HOME:=$HOME/.local/state}" \
        XDG_CACHE_HOME="${XDG_CACHE_HOME:=$HOME/.cache}"
+
 # https://www.reddit.com/r/programming/comments/109rjuj/how_setting_the_tz_environment_variable_avoids
 export INPUTRC="$HOME/.inputrc"
 export CURL_HOME="$HOME"
@@ -142,12 +142,9 @@ if [[ ${XDG_SESSION_TYPE:-} == "wayland" ]]; then
     MOZ_ENABLE_WAYLAND=1 MOZ_ENABLE_XINPUT2=1 QT_WAYLAND_DISABLE_WINDOWDECORATION=1 QT_AUTO_SCREEN_SCALE_FACTOR=1
 fi
 
-export SYSTEMD_COLORS=1
-export LS_COLORS='no=00:fi=00:di=00;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.tga=01;35:*.tiff=01;35:*.png=01;35:*.mpeg=01;35:*.avi=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:*.xml=00;31:'
+export CLICOLOR=1 SYSTEMD_COLORS=1 LS_COLORS='no=00:fi=00:di=00;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.tga=01;35:*.tiff=01;35:*.png=01;35:*.mpeg=01;35:*.avi=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:*.xml=00;31:'
 #if has dircolors; then
-  #eval "$(LC_ALL=C dircolors -b)" &>/dev/null
-#else
-  #export LS_COLORS='no=00:fi=00:di=00;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.tga=01;35:*.tiff=01;35:*.png=01;35:*.mpeg=01;35:*.avi=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:*.xml=00;31:'
+  #eval "$(dircolors -b 2>/dev/null)" &>/dev/null
 #fi
 #──────────── Fuzzy finders ────────────
 fuzzy_finders(){
