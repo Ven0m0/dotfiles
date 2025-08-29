@@ -31,9 +31,23 @@ _ifsource "/usr/share/bash-completion/bash_completion" || _ifsource "/etc/bash_c
 
 # https://github.com/akinomyoga/ble.sh
 if [[ -f $HOME/.local/share/blesh/ble.sh ]]; then
-  . -- "$HOME/.local/share/blesh/ble.sh"
+  . -- "$HOME/.local/share/blesh/ble.sh" 2>/dev/null
+  bleopt complete_auto_complete=1 2>/dev/null
+  bleopt complete_auto_delay=1 2>/dev/null
+  bleopt complete_menu_complete=1 2>/dev/null
+  bleopt complete_menu_filter=1 2>/dev/null
+  bleopt complete_ambiguous=1 2>/dev/null
+  bleopt complete_contract_function_names=1 2>/dev/null
+  bleopt complete_skip_matched=on 2>/dev/null
 elif [[ -f /usr/share/blesh/ble.sh ]]; then
-  . -- "/usr/share/blesh/ble.sh"
+  . -- "/usr/share/blesh/ble.sh" 2>/dev/null
+  bleopt complete_auto_complete=1 2>/dev/null
+  bleopt complete_auto_delay=1 2>/dev/null
+  bleopt complete_menu_complete=1 2>/dev/null
+  bleopt complete_menu_filter=1 2>/dev/null
+  bleopt complete_ambiguous=1 2>/dev/null
+  bleopt complete_contract_function_names=1 2>/dev/null
+  bleopt complete_skip_matched=on 2>/dev/null
 fi
 # https://wiki.archlinux.org/title/Bash#Command_not_found
 _ifsource "/usr/share/doc/pkgfile/command-not-found.bash"
@@ -60,7 +74,8 @@ CDPATH=".:$HOME:/"
 ulimit -c 0 &>/dev/null # disable core dumps
 shopt -s histappend cmdhist checkwinsize dirspell cdable_vars \
          cdspell autocd hostcomplete no_empty_cmd_completion \
-         globstar nullglob &>/dev/null
+         globstar nullglob force_fignore &>/dev/null
+export FIGNORE="argo.lock"
 # Disable Ctrl-s, Ctrl-q
 stty -ixon -ixoff -ixany &>/dev/null
 set +H  &>/dev/null # disable history expansion that breaks some scripts
@@ -138,7 +153,7 @@ cargo_run() {
 alias cargo="cargo_run"
 
 export PYTHONOPTIMIZE=2 PYTHONIOENCODING='UTF-8' PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1
-export FD_IGNORE_FILE="${HOME}/.ignore" FIGNORE="argo.lock"
+export FD_IGNORE_FILE="${HOME}/.ignore"
 export ZSTD_NBTHREADS=0 ELECTRON_OZONE_PLATFORM_HINT=auto _JAVA_AWT_WM_NONREPARENTING=1 GTK_USE_PORTAL=1
 export FLATPAK_FANCY_OUTPUT=1 FLATPAK_TTY_PROGRESS=0 FLATPAK_FORCE_TEXT_AUTH=1
 # Wayland
