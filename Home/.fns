@@ -196,3 +196,34 @@ shortenPath(){
 	fi
 	echo $short_path
 }
+
+fiximg() {
+  local IM IDENTIFY exts
+  # pick the right ImageMagick binary
+  if command -v magick &>/dev/null; then
+    IM="magick convert"
+    IDENTIFY="magick identify"
+  else
+    IM="convert"
+    IDENTIFY="identify"
+  fi
+  local -a exts=(png jpg jpeg webp avif jxl)
+  strip_file() {
+    local f="$1" tmp
+    # check if file has metadata
+    if [[ -n $($IDENTIFY -format "%[EXIF:*]" "$f" 2>/dev/null) ]] || \
+       [[ -n $($IDENTIFY -format "%[IPTC:*]" "$f" 2>/dev/null) ]] || \
+       [[ -n $($IDENTIFY -format "%[Comment]" "$f" 2>/dev/null) ]]; then
+      tmp="${f}.strip.$$"
+      $IM "$f" -strip "$tmp" && mv "$tmp" "$f"
+    fi
+  }
+  if command -v fd &>/dev/null; then
+    fd -t f $(printf -- '-e %s ' "${exts[@]}") -x bash -c 'for f; do strip_file "$f"; done' _ {}
+  elif command -v fdfind &>/dev/null; then
+    fdfind -t f $(printf -- '-e %s ' "${exts[@]}") -x bash -c 'for f; do strip_file "$f"; done' _ {}
+  else
+    find . -type f \( $(printf -- '-iname "*.%s" -o ' "${exts[@]}") -false \) -print0 |
+      xargs -0 -n1 -P"$(nproc)" bash -c 'for f; do strip_file "$f"; done' _
+  fi
+}

@@ -83,6 +83,7 @@ set +H  &>/dev/null # disable history expansion that breaks some scripts
 #──────────── Env ────────────
 _prependpath "$HOME/.local/bin"
 _prependpath "$HOME/bin"
+_prependpath "$HOME/.bin"
 
 # Editor selection: prefer micro, fallback to nano
 _editor_cmd="$(command -v micro 2>/dev/null || :)"; _editor_cmd="${_editor_cmd##*/}"; EDITOR="${_editor_cmd:-nano}"
@@ -284,8 +285,8 @@ sudo-command-line(){
 }
 bind -x '"\e\e": sudo-command-line'
 
-gcom(){ LC_ALL=C command git add -- . && LC_ALL=C command git commit -m "$1"; }
-gpush(){ LC_ALL=C command git add -- . && LC_ALL=C command git commit -m -- "$1" && LC_ALL=C command git push; }
+gcom(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "$1"; }
+gpush(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "${1:-Update}" && LC_ALL=C command git push; }
 symbreak(){ LC_ALL=C command find -L "${1:-.}" -type l; }
 command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C LANG=C command hyperfine -w 25 -m 50 -i -S bash -- "$@"; }
 touchf(){ command mkdir -p -- "$(dirname -- "$1")" && command touch -- "$1"; }
@@ -338,6 +339,8 @@ alias paru='LC_ALL=C LANG=C.UTF-8 paru --skipreview --noconfirm --needed'
 alias ssh='LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh'
 # ssh(){ TERM=xterm-256color command ssh "$@"; }
 alias cls='clear' c='clear'
+alias q='exit'
+alias h='history'
 alias ptch='patch -p1 <'
 alias cleansh='curl -fsSL4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
 alias updatesh='curl -fsSL4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
@@ -360,19 +363,17 @@ fi
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias mv='mv -i' 
-alias cp='cp -i' 
-alias ln='ln -i'
-alias rm='rm -I --preserve-root' 
+alias mv='mv -iv'
+alias cp='cp -iv'
+alias ln='ln -iv'
+alias rm='rm -Iv --preserve-root'
 alias rmd='rm -rf --preserve-root'
 alias chmod='chmod --preserve-root' 
 alias chown='chown --preserve-root' 
 alias chgrp='chgrp --preserve-root'
-
-alias histl="history | LC_ALL=C grep" 
-history | grep -i "${1}"
-alias findl="LC_ALL=C find . | LC_ALL=C grep"
-alias psl="ps aux | LC_ALL=C grep"
+alias histl="history | LC_ALL=C grep -i"
+alias findl="LC_ALL=C find . | LC_ALL=C grep -i"
+alias psl="ps aux | LC_ALL=C grep -i"
 alias topcpu="ps -eo pcpu,pid,user,args | LC_ALL=C sort -k 1 -r | head -10"
 alias diskl='LC_ALL=C lsblk -o NAME,SIZE,TYPE,MOUNTPOINT'
 
