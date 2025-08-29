@@ -31,7 +31,7 @@ _ifsource "/usr/share/bash-completion/bash_completion" || _ifsource "/etc/bash_c
 
 # https://github.com/akinomyoga/ble.sh
 if [[ -f $HOME/.local/share/blesh/ble.sh ]]; then
-  . -- "$HOME/.local/share/blesh/ble.sh" 2>/dev/null
+  . -- "$HOME/.local/share/blesh/ble.sh" --attach=none 2>/dev/null
   bleopt complete_auto_complete=1 2>/dev/null
   bleopt complete_auto_delay=1 2>/dev/null
   bleopt complete_menu_complete=1 2>/dev/null
@@ -40,7 +40,7 @@ if [[ -f $HOME/.local/share/blesh/ble.sh ]]; then
   bleopt complete_contract_function_names=1 2>/dev/null
   bleopt complete_skip_matched=on 2>/dev/null
 elif [[ -f /usr/share/blesh/ble.sh ]]; then
-  . -- "/usr/share/blesh/ble.sh" 2>/dev/null
+  . -- "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null
   bleopt complete_auto_complete=1 2>/dev/null
   bleopt complete_auto_delay=1 2>/dev/null
   bleopt complete_menu_complete=1 2>/dev/null
@@ -511,4 +511,7 @@ if has zoxide; then
   export _ZO_DOCTOR='0' _ZO_ECHO='0' _ZO_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}" _ZO_EXCLUDE_DIRS="$HOME:*.git"
   eval "$(LC_ALL=C zoxide init bash 2>/dev/null)" 2>/dev/null
 fi
+#──────────── Ble.sh final ────────────
+[[ ! ${BLE_VERSION-} ]] || ble-attach
 unset LC_ALL
+
