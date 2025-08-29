@@ -1,6 +1,39 @@
+[General]
+ColorScheme=BreezeDark
+
+[Icons]
+Theme=breeze-dark
+
 [KDE]
 AnimationDurationFactor=0
+
+[KFileDialog Settings]
+Allow Expansion=true
+Automatically select filename extension=true
+Breadcrumb Navigation=false
+Decoration position=2
+LocationCombo Completionmode=5
+PathCombo Completionmode=5
+Show Bookmarks=false
+Show Full Path=false
+Show Inline Previews=true
+Show Preview=false
+Show Speedbar=true
+Show hidden files=true
+Sort by=Name
+Sort directories first=true
+Sort hidden files last=false
+Sort reversed=false
+Speedbar Width=140
+View Style=DetailTree
+
+[PreviewSettings]
+EnableRemoteFolderThumbnail=false
+MaximumRemoteSize=0
 
 [QtQuickRendererSettings]
 RenderLoop=threaded
 SceneGraphBackend=vulkan
+
+[Sounds]
+Enable=false
