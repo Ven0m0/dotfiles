@@ -29,6 +29,13 @@ done
 # completions (quiet)
 _ifsource "/usr/share/bash-completion/bash_completion" || _ifsource "/etc/bash_completion"
 
+# https://github.com/akinomyoga/ble.sh
+if [[ -f $HOME/.local/share/blesh/ble.sh ]]; then
+  . -- "$HOME/.local/share/blesh/ble.sh"
+elif [[ -f /usr/share/blesh/ble.sh ]]; then
+  . -- "/usr/share/blesh/ble.sh"
+fi
+
 if [[ -d $HOME/.dotbare ]]; then
   [[ -f $HOME/.dotbare/dotbare ]] && alias dotbare="$HOME/.dotbare/dotbare"
   _ifsource "$HOME/.dotbare/dotbare.plugin.bash"
@@ -41,7 +48,7 @@ HISTSIZE=1000
 HISTFILESIZE="$HISTSIZE"
 HISTCONTROL="erasedups:ignoreboth"
 HISTIGNORE="&:ls:[bf]g:help:clear:exit:shutdown:reboot:history:fish:?:??"
-HISTTIMEFORMAT='%F %T '
+export HISTTIMEFORMAT="%F %T "
 HISTFILE="$HOME/.bash_history"
 PROMPT_DIRTRIM=2
 PROMPT_COMMAND="history -a"
@@ -418,6 +425,10 @@ bind '"\e[1;5C": forward-word'
 bind 'set enable-bracketed-paste off'
 # prefixes the line with sudo , if Alt+s is pressed
 bind '"\es": "\C-asudo \C-e"'
+# https://wiki.archlinux.org/title/Bash
+run-help(){ help "$READLINE_LINE" 2>/dev/null || man "$READLINE_LINE"; }
+bind -m vi-insert -x '"\eh": run-help'
+bind -m emacs -x     '"\eh": run-help'
 #──────────── Prompt 2 ────────────
 configure_prompt(){
   local LC_ALL=C LANG=C
