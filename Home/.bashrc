@@ -445,7 +445,7 @@ configure_prompt(){
 
   [[ "$EUID" -eq 0 ]] && USERN="${C_ROOT}\u${C_RESET}"
   [[ -n "$SSH_CONNECTION" ]] && HOSTL="${YLW}\h${C_RESET}"
-  PS1="[${C_USER}\u${C_RESET}@${HOSTL}|${C_PATH}\w${C_RESET}] \$? \$ "
+  PS1="[${C_USER}\u${C_RESET}@${HOSTL}|${C_PATH}\w${C_RESET}]>\s>\A|\$? \$ "
   PS2='> ' 
   # Git
   export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
