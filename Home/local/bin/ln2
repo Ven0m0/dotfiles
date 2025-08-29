@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Translated from zsh to bash
+# Credit: https://github.com/mssalvatore/ln2
+
+usage() {
+  echo "Make links between files using an intuitive, memorable syntax."
+  echo ""
+  echo "Usage: $script_name [OPTION]... LINK_NAME > TARGET"
+  echo "  or:  $script_name [OPTION]... TARGET < LINK_NAME"
+  echo ""
+  echo "       See LN(1) for a description of the available options."
+  exit 1
+}
+
+script_name="$(basename "$0")"
+
+# collect all args
+args=("$@")
+
+# handle help / too few args
+if (( $# < 3 )) || [[ " ${args[*]} " == *" -h "* ]] || [[ " ${args[*]} " == *" --help "* ]]; then
+  usage
+fi
+
+# extract operands (last 3 arguments)
+operand_2=${args[-1]}
+operation=${args[-2]}
+operand_1=${args[-3]}
+
+# keep only the options (everything before the last 3 args)
+args=("${args[@]::${#args[@]}-3}")
+
+# validate
+if [[ "$operand_1" == "-"* ]]; then
+  usage
+fi
+
+# determine direction
+if [[ "$operation" == ">" ]]; then
+  target="$operand_2"
+  link_name="$operand_1"
+elif [[ "$operation" == "<" ]]; then
+  target="$operand_1"
+  link_name="$operand_2"
+else
+  usage
+fi
+
+# execute
+ln "${args[@]}" "$target" "$link_name"
