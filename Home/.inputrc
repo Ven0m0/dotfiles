@@ -65,8 +65,7 @@ set bind-tty-special-chars off
 "\e[1;5D": backward-word
 "\e[5C": forward-word
 "\e[5D": backward-word
-"\e\e[C": forward-word
-"\e\e[D": backward-word
+
 # prefixes the line with sudo , if Alt+s is pressed
 "\es": "\C-asudo \C-e"
 
