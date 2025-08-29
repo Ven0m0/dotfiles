@@ -71,7 +71,7 @@ export LANG="${LANG:=C.UTF-8}" \
        LC_CTYPE=C \
        TZ="Europe/Berlin"
 
-SHELL="${BASH:-$(command -pv bash 2>/dev/null)}"
+SHELL="${BASH:-/bin/bash}"
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 
 # Mimalloc & Jemalloc
