@@ -35,6 +35,8 @@ if [[ -f $HOME/.local/share/blesh/ble.sh ]]; then
 elif [[ -f /usr/share/blesh/ble.sh ]]; then
   . -- "/usr/share/blesh/ble.sh"
 fi
+# https://wiki.archlinux.org/title/Bash#Command_not_found
+_ifsource "/usr/share/doc/pkgfile/command-not-found.bash"
 
 if [[ -d $HOME/.dotbare ]]; then
   [[ -f $HOME/.dotbare/dotbare ]] && alias dotbare="$HOME/.dotbare/dotbare"
@@ -52,6 +54,7 @@ export HISTTIMEFORMAT="%F %T "
 HISTFILE="$HOME/.bash_history"
 PROMPT_DIRTRIM=2
 PROMPT_COMMAND="history -a"
+export IGNOREEOF=100
 #──────────── Core ────────────
 CDPATH=".:$HOME:/"
 ulimit -c 0 &>/dev/null # disable core dumps
@@ -442,8 +445,8 @@ configure_prompt(){
 
   [[ "$EUID" -eq 0 ]] && USERN="${C_ROOT}\u${C_RESET}"
   [[ -n "$SSH_CONNECTION" ]] && HOSTL="${YLW}\h${C_RESET}"
-  PS1="[${C_USER}\u${C_RESET}@${HOSTL}|${C_PATH}\w${C_RESET}] \$ "
-
+  PS1="[${C_USER}\u${C_RESET}@${HOSTL}|${C_PATH}\w${C_RESET}] \$? \$ "
+  PS2='> ' 
   # Git
   export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
   unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWUNTRACKEDFILES
