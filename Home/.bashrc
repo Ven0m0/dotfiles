@@ -64,11 +64,10 @@ HISTSIZE=1000
 HISTFILESIZE="$HISTSIZE"
 HISTCONTROL="erasedups:ignoreboth"
 HISTIGNORE="&:ls:[bf]g:help:clear:exit:shutdown:reboot:history:fish:?:??"
-export HISTTIMEFORMAT="%F %T "
+export HISTTIMEFORMAT="%F %T " IGNOREEOF=100
 HISTFILE="$HOME/.bash_history"
 PROMPT_DIRTRIM=2
 PROMPT_COMMAND="history -a"
-export IGNOREEOF=100
 #──────────── Core ────────────
 CDPATH=".:$HOME:/"
 ulimit -c 0 &>/dev/null # disable core dumps
@@ -127,16 +126,17 @@ if has less; then
   export LESSHISTFILE LESS ESS_TERMCAP_md LESS_TERMCAP_me LESS_TERMCAP_us LESS_TERMCAP_ue LESS_TERMCAP_so LESS_TERMCAP_se
   has lesspipe && eval "$(SHELL=/bin/sh lesspipe 2>/dev/null)" 2>/dev/null || true
 fi
-export GIT_PAGER="${GIT_PAGER:-PAGER}"
+export GIT_PAGER="${GIT_PAGER:-$PAGER}"
 # XDG + misc
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}" \
-       XDG_DATA_HOME="${XDG_DATA_HOME:=$HOME/.local/share}" \
-       XDG_STATE_HOME="${XDG_STATE_HOME:=$HOME/.local/state}" \
-       XDG_CACHE_HOME="${XDG_CACHE_HOME:=$HOME/.cache}"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}" \
+       XDG_DATA_HOME="${XDG_DATA_HOME:=${HOME}/.local/share}" \
+       XDG_STATE_HOME="${XDG_STATE_HOME:=${HOME}/.local/state}" \
+       XDG_CACHE_HOME="${XDG_CACHE_HOME:=${HOME}/.cache}"
 
 # https://www.reddit.com/r/programming/comments/109rjuj/how_setting_the_tz_environment_variable_avoids
 export INPUTRC="$HOME/.inputrc"
 export CURL_HOME="$HOME"
+export WGETRC="${XDG_CONFIG_HOME}/wget/wgetrc"
 export GPG_TTY="$(tty)"
 
 _ifsource "$HOME/.cargo/env"
