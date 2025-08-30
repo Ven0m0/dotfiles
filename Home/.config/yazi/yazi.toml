@@ -25,6 +25,7 @@ cache_dir       = ""
 image_delay     = 0
 image_filter    = "triangle"
 image_quality   = 75
+image = "chafa -f kitty -s 1920x1080 -O 6 -c full --symbols all {}"
 
 [opener]
 edit = [
