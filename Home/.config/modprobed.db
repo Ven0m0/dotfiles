@@ -4,6 +4,7 @@ ac97_bus
 acpi_tad
 aesni_intel
 asus_wmi
+cdc_acm
 cec
 coretemp
 crc8
@@ -78,6 +79,7 @@ nvme
 nvme_auth
 nvme_core
 nvme_keyring
+option
 pcspkr
 pkcs8_key_parser
 platform_profile
@@ -96,6 +98,7 @@ sha256_ssse3
 sha512_ssse3
 snd
 snd_compress
+snd_ctl_led
 snd_hda_codec
 snd_hda_codec_alc882
 snd_hda_codec_generic
@@ -152,13 +155,14 @@ spi_nor
 tcp_bbr
 tcp_dctcp
 tcp_htcp
-thunderbolt
+tls
 ttm
 typec
 typec_ucsi
 uas
 ucsi_ccg
 usb_storage
+usb_wwan
 vfat
 video
 wmi
