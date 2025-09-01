@@ -12,7 +12,7 @@ hasname(){ local x=$(type -P -- "$1") && printf '%s\n' "${x##*/}"; }
 # 'echo -e' as printf for color
 #xeprintf(){ printf '%b\n' "$*"; }
 # Source file if it exists
-_ifsource(){ [[ -f "$1" ]] && . -- "$1" 2>/dev/null; } 
+_ifsource(){ [[ -r "$1" ]] && . -- "$1" 2>/dev/null; } 
 # Only prepend if not already in PATH
 _prependpath(){ [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"; } 
 #──────────── Sourcing ────────────
