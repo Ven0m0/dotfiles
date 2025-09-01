@@ -449,9 +449,9 @@ run-help(){ help "$READLINE_LINE" 2>/dev/null || man "$READLINE_LINE"; }
 bind -m vi-insert -x '"\eh": run-help'
 bind -m emacs -x     '"\eh": run-help'
 #──────────── Prompt 2 ────────────
+PROMPT_COMMAND="history -a"
 configure_prompt(){
   local LC_ALL=C LANG=C
-  PROMPT_COMMAND="history -a"
   if command -v starship &>/dev/null; then
     eval "$(LC_ALL=C starship init bash 2>/dev/null)" &>/dev/null; return
   fi
@@ -467,12 +467,12 @@ configure_prompt(){
   export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
   unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWUNTRACKEDFILES
   if command -v __git_ps1 &>/dev/null && [[ ${GIT_PROMPT:-0} -ge 1 ]] && [[ ${PROMPT_COMMAND:-} != *git_ps1* ]]; then
-    PROMPT_COMMAND="LC_ALL=C LANG=C.UTF-8 __git_ps1 2>/dev/null; ${PROMPT_COMMAND:-}"
+    PROMPT_COMMAND="LC_ALL=C LANG=C __git_ps1 2>/dev/null; ${PROMPT_COMMAND:-}"
   fi
   # Only add if not in stealth mode and not already present in PROMPT_COMMAND
   if command -v mommy &>/dev/null && [[ "${stealth:-0}" -ne 1 ]] && [[ ${PROMPT_COMMAND:-} != *mommy* ]]; then
-    PROMPT_COMMAND="LC_ALL=C LANG=C.UTF-8 mommy -1 -s \$?; ${PROMPT_COMMAND:-}" # mommy https://github.com/fwdekker/mommy
-    # PROMPT_COMMAND="LC_ALL=C LANG=C.UTF-8 mommy \$?; ${PROMPT_COMMAND:-}" # Shell-mommy https://github.com/sleepymincy/mommy
+    PROMPT_COMMAND="LC_ALL=C LANG=C mommy -1 -s \$?; ${PROMPT_COMMAND:-}" # mommy https://github.com/fwdekker/mommy
+    # PROMPT_COMMAND="LC_ALL=C LANG=C mommy \$?; ${PROMPT_COMMAND:-}" # Shell-mommy https://github.com/sleepymincy/mommy
   fi
 }
 configure_prompt
