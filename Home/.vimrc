@@ -10,7 +10,7 @@ set t_Co=256
 set termguicolors       " enable true colors support
 set nowrap              "Don't wrap lines
 set linebreak           "Wrap lines at convenient points
-
+set ttyfast
 set number
 set relativenumber
 
