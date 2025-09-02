@@ -43,9 +43,13 @@ trim_trailing_whitespace = false
 indent_style = tab
 indent_size=4
 
-[*.go,*.rs,*.zig]
+[*.{nim,rs,go,zig}]
 indent_style = tab
 indent_size = 4
 
 [*.py]
 indent_size = 4
+
+[*.patch]
+# allow trailing whitespace in patches
+trim_trailing_whitespace = false
