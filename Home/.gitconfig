@@ -119,6 +119,7 @@
 	aheadBehind = true
 	showUntrackedFiles = no
 	short = true
+	submoduleSummary = true
 [submodule]
 	fetchJobs = 0
 [repack]
