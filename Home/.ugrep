@@ -1,10 +1,11 @@
-no-hidden
-ignore-files=.gitignore
-ignore-files=.ignore
+hidden
+ignore-files="${HOME}/.gitignore"
+ignore-files="${HOME}/.ignore"
 ignore-binary
-smart-case
 ascii
+smart-case
 no-messages
-pretty=auto
 index
 fixed-strings
+no-confirm
+#mmap
