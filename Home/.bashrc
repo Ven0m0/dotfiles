@@ -139,7 +139,7 @@ fi
 export CLICOLOR=1 SYSTEMD_COLORS=1
 #============ Fuzzy finders ============
 fuzzy_finders(){
-  local FIND_CMD PREVIEW_CMD
+  local FIND_CMD PREVIEW_CMD SHELL=bash
   if command -v fd &>/dev/null; then FIND_CMD='fd -tf -gH -c always -E ".git"'
   elif command -v fdfind &>/dev/null; then FIND_CMD='fdfind -tf -gH -c always -E ".git"'
   elif command -v rg &>/dev/null; then FIND_CMD='rg --files --hidden --glob "!.git"'
@@ -149,14 +149,16 @@ fuzzy_finders(){
   if command -v bat &>/dev/null; then FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command bat -n --color=auto --line-range=:250 -- {}'"
   else FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command cat -sn -- {}'"
   fi
-  PREVIEW_CMD=$(command -v bat &>/dev/null && echo "command bat --color=auto --line-range=:250 -sn -- {}" || echo "command cat -sn -- {}")
-  FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview '$PREVIEW_CMD'"
-  
-  
+  if command -v bat &>/dev/null; then 
+    FZF_CTRL_T_OPTS="-1 -0 --inline-info --walker-skip=".git,node_modules,target,go" --preview 'bat -n --color=always --line-range=:250 {}' --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+  else
+    FZF_CTRL_T_OPTS="-1 -0 --inline-info --walker-skip=".git,node_modules,target,go" --preview 'cat -sn {}' --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+  fi
+
   declare -x FZF_DEFAULT_COMMAND="$FIND_CMD" FZF_CTRL_T_COMMAND="$FIND_CMD" FZF_CTRL_T_OPTS \
-    FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window=wrap --smart-case --marker="*" --info=inline --layout=reverse-list --tiebreak=index --height=70%' \
-    FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --no-sort --exact --preview echo\ {} --preview-window=down:3:hidden:wrap --bind "?:toggle-preview"' \
-    FZF_ALT_C_OPTS='-1 -0 --tiebreak=index --walker-skip ".git,node_modules,target" --preview "tree -C {} 2>/dev/null | head -200"' \
+    FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window=wrap --smart-case --marker="*" --walker-skip=".git,node_modules,target,go,.cache" --inline-info --layout=reverse-list --tiebreak=index --height=70%' \
+    FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --inline-info --no-sort --exact --preview echo\ {} --preview-window=down:3:hidden:wrap --bind "?:toggle-preview"' \
+    FZF_ALT_C_OPTS='-1 -0 --tiebreak=index --inline-info --walker-skip=".git,node_modules,target,go" --preview "tree -C {} 2>/dev/null | head -200"' \
     FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=index' \
     FZF_COMPLETION_PATH_OPTS='--info=inline --tiebreak=index --walker "file,dir,follow,hidden"' \
     FZF_COMPLETION_DIR_OPTS='--info=inline --tiebreak=index --walker "dir,follow"' \
@@ -252,14 +254,18 @@ gpush(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "${1:-Upda
 symbreak(){ LC_ALL=C command find -L "${1:-.}" -type l; }
 command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C LANG=C command hyperfine -w 25 -m 50 -i -S bash -- "$@"; }
 touchf(){ command mkdir -p -- "$(dirname -- "$1")" && command touch -- "$1"; }
+
+# Cheat.sh 
+export CHTSH_CURL_OPTIONS="-sfLZ4 --compressed -m 5 --connect-timeout 3"
 cht(){
   # join all arguments with '/', so “topic sub topic” → “topic/sub/topic”
   local query="${*// /\/}"
   # try to fetch the requested cheat‑sheet; on HTTP errors (e.g. 404), fall back to :help
-  if ! curl -sf4 "cht.sh/$query"; then
-    curl -sf4 "cht.sh/:help"
+  if ! LC_ALL=C curl -sfZ4 --compressed -m 5 --connect-timeout 3 "cht.sh/${query}"; then
+    LC_ALL=C curl -sfZ4 --compressed -m 5 --connect-timeout 3 "cht.sh/:help"
   fi
 }
+
 extract(){
     local c e i
     (($#)) || return
