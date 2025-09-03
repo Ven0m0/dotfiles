@@ -141,14 +141,11 @@ export CLICOLOR=1 SYSTEMD_COLORS=1
 #============ Fuzzy finders ============
 fuzzy_finders(){
   local FIND_CMD PREVIEW_CMD SHELL=bash
-  if command -v fd &>/dev/null; then FIND_CMD='fd -tf -gH -c always -E ".git"'
-  elif command -v fdfind &>/dev/null; then FIND_CMD='fdfind -tf -gH -c always -E ".git"'
-  elif command -v rg &>/dev/null; then FIND_CMD='rg --files --hidden --glob "!.git"'
+  if command -v fd &>/dev/null; then FIND_CMD='fd -tf -gH -c always -strip-cwd-prefix -E ".git" -E "go/"'
+  elif command -v fdfind &>/dev/null; then FIND_CMD='fdfind -tf -gH -c always -strip-cwd-prefix -E ".git" -E "go/"'
+  elif command -v rg &>/dev/null; then FIND_CMD='rg -S. --no-require-git --no-messages --no-ignore-messages --files --glob "!.git"'
   elif command -v ug &>/dev/null; then FIND_CMD='ug -rlsjU. --index ""'
   else FIND_CMD='find -O3 . -path "*/.git" -prune -o -type f -print'
-  fi
-  if command -v bat &>/dev/null; then FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command bat -n --color=auto --line-range=:250 -- {}'"
-  else FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command cat -sn -- {}'"
   fi
   if command -v bat &>/dev/null; then 
     FZF_CTRL_T_OPTS="-1 -0 --inline-info --walker-skip=".git,node_modules,target,go" --preview 'bat -n --color=always --line-range=:250 {}' --bind 'ctrl-/:change-preview-window(down|hidden|)'"
@@ -158,33 +155,23 @@ fuzzy_finders(){
 
   declare -x FZF_DEFAULT_COMMAND="$FIND_CMD" FZF_CTRL_T_COMMAND="$FIND_CMD" FZF_CTRL_T_OPTS \
     FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window=wrap --smart-case --marker="*" --walker-skip=".git,node_modules,target,go,.cache" --inline-info --layout=reverse-list --tiebreak=index --height=70%' \
-    FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --inline-info --no-sort --exact --preview echo\ {} --preview-window=down:3:hidden:wrap --bind "?:toggle-preview"' \
+    FZF_CTRL_R_OPTS="-1 -0 --tiebreak=index --inline-info --no-sort --exact --preview 'echo {}' --preview-window="down:3:hidden:wrap" --bind '?:toggle-preview'" \
     FZF_ALT_C_OPTS='-1 -0 --tiebreak=index --inline-info --walker-skip=".git,node_modules,target,go" --preview "tree -C {} 2>/dev/null | head -200"' \
     FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=index' \
     FZF_COMPLETION_PATH_OPTS='--info=inline --tiebreak=index --walker "file,dir,follow,hidden"' \
-    FZF_COMPLETION_DIR_OPTS='--info=inline --tiebreak=index --walker "dir,follow"' \
-
-
-  declare -x FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --no-sort --exact --preview "echo {}" --preview-window="down:3:hidden:wrap" --bind "?:toggle-preview"'
-FZF_CTRL_T_OPTS='-1 -0 --tiebreak=index --preview "$(command -v bat &>/dev/null && echo 'command bat --color=auto --line-range=:250 -sn -- {}' || echo 'command cat -sn -- {}')"'
-
-
-
-  declare -x \
-    FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command ${PAGER:-cat} $([[ $PAGER = bat ]] && echo "-n --color=auto --line-range=:250") -- {}'" \
+    FZF_COMPLETION_DIR_OPTS='--info=inline --tiebreak=index --walker "dir,follow"'
 
   command mkdir -p -- "${HOME}/.config/bash/completions" &>/dev/null
   if has fzf; then
-    [[ -r /usr/share/fzf/key-bindings.bash ]] && . -- "/usr/share/fzf/key-bindings.bash"
-    [[ ! -r ${HOME}/.config/bash/completions/fzf_completion.bash ]] && LC_ALL=C fzf --bash 2>/dev/null >| "${HOME}/.config/bash/completions/fzf_completion.bash"
-    . -- "${HOME}/.config/bash/completions/fzf_completion.bash"
+    [[ -r /usr/share/fzf/key-bindings.bash ]] && . "/usr/share/fzf/key-bindings.bash"
+    [[ ! -r ${HOME}/.config/bash/completions/fzf_completion.bash ]] && SHELL=bash fzf --bash >| "${HOME}/.config/bash/completions/fzf_completion.bash"
+    . "${HOME}/.config/bash/completions/fzf_completion.bash" || eval "$(SHELL=bash fzf --bash)"
   fi
   if has sk; then
-    declare -x SKIM_DEFAULT_COMMAND="$FIND_CMD"
-    declare -x SKIM_DEFAULT_OPTIONS="${FZF_DEFAULT_OPTS:-}"
-    [[ -r "/usr/share/skim/key-bindings.bash" ]] && . -- "/usr/share/skim/key-bindings.bash"
-    [[ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" ]] && LC_ALL=C sk --shell bash 2>/dev/null >| "${HOME}/.config/bash/completions/sk_completion.bash"
-    . -- "${HOME}/.config/bash/completions/sk_completion.bash"
+    declare -x SKIM_DEFAULT_COMMAND="$FIND_CMD" "${FZF_DEFAULT_OPTS:-}"
+    [[ -r "/usr/share/skim/key-bindings.bash" ]] && . "/usr/share/skim/key-bindings.bash"
+    [[ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" ]] && SHELL=bash sk --shell bash >| "${HOME}/.config/bash/completions/sk_completion.bash"
+    . "${HOME}/.config/bash/completions/sk_completion.bash"
   fi
 }
 fuzzy_finders
