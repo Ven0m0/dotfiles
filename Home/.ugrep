@@ -1,6 +1,8 @@
 hidden
-ignore-files="${HOME}/.gitignore"
-ignore-files="${HOME}/.ignore"
+
+# ignore files specified in .ignore and .gitignore in recursive searches
+ignore-files=.ignore
+ignore-files=.gitignore
 ignore-binary
 ascii
 smart-case
@@ -8,4 +10,3 @@ no-messages
 index
 fixed-strings
 no-confirm
-#mmap
