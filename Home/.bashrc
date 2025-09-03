@@ -140,7 +140,7 @@ fi
 export CLICOLOR=1 SYSTEMD_COLORS=1
 #============ Fuzzy finders ============
 fuzzy_finders(){
-  local FIND_CMD PREVIEW_CMD SHELL=bash
+  local FIND_CMD SHELL=bash
   if command -v fd &>/dev/null; then FIND_CMD='fd -tf -gH -c always -strip-cwd-prefix -E ".git" -E "go/"'
   elif command -v fdfind &>/dev/null; then FIND_CMD='fdfind -tf -gH -c always -strip-cwd-prefix -E ".git" -E "go/"'
   elif command -v rg &>/dev/null; then FIND_CMD='rg -S. --no-require-git --no-messages --no-ignore-messages --files --glob "!.git"'
@@ -171,7 +171,7 @@ fuzzy_finders(){
     declare -x SKIM_DEFAULT_COMMAND="$FIND_CMD" "${FZF_DEFAULT_OPTS:-}"
     [[ -r "/usr/share/skim/key-bindings.bash" ]] && . "/usr/share/skim/key-bindings.bash"
     [[ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" ]] && SHELL=bash sk --shell bash >| "${HOME}/.config/bash/completions/sk_completion.bash"
-    . "${HOME}/.config/bash/completions/sk_completion.bash" || . <(sk --shell bash)
+    . "${HOME}/.config/bash/completions/sk_completion.bash" || . <(SHELL=bash sk --shell bash)
   fi
 }
 fuzzy_finders
