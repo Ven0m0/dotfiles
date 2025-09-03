@@ -116,7 +116,10 @@ cargo_run() {
 }
 alias cargo="cargo_run"
 
-export PYTHONOPTIMIZE=2 PYTHONIOENCODING=utf-8 PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1
+export PYTHONOPTIMIZE=2 PYTHONIOENCODING=utf-8 PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1 \
+  UV_NO_VERIFY_HASHES=1 UV_SYSTEM_PYTHON=1 UV_BREAK_SYSTEM_PACKAGES=0 UV_TORCH_BACKEND=auto UV_FORK_STRATEGY=fewest \
+  UV_RESOLUTION=highest UV_PRERELEASE= allow UV_COMPILE_BYTECODE=1 UV_LINK_MODE=hardlink UV_NATIVE_TLS=1
+
 export FD_IGNORE_FILE="${HOME}/.ignore"
 export ZSTD_NBTHREADS=0 ELECTRON_OZONE_PLATFORM_HINT=auto _JAVA_AWT_WM_NONREPARENTING=1 GTK_USE_PORTAL=1
 export FLATPAK_FANCY_OUTPUT=1 FLATPAK_TTY_PROGRESS=0 FLATPAK_FORCE_TEXT_AUTH=1
@@ -315,42 +318,34 @@ else
   alias lt='ls --color=auto --group-directories-first -oghAt'
 fi
 alias which='command -v'
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-alias mv='mv -iv'
-alias cp='cp -iv'
-alias ln='ln -iv'
-alias rm='rm -Iv --preserve-root'
-alias rmd='rm -rf --preserve-root'
-alias chmod='chmod --preserve-root' 
-alias chown='chown --preserve-root' 
-alias chgrp='chgrp --preserve-root'
-alias histl="history | grep -i"
-alias findl="find . | grep -i"
+alias grep='grep --color=auto' fgrep='fgrep --color=auto' egrep='egrep --color=auto'
+alias cp='cp -iv' mv='mv -iv' ln='ln -ivsn'
+alias rm='rm -Iv --preserve-root' rmd='rm -rIv --preserve-root' rmdir'rmdir -v'
+alias chmod='chmod --preserve-root' chown='chown --preserve-root' chgrp='chgrp --preserve-root'
+alias histl='history | grep -i'
+alias find='find -O3' findl='find -O3 . | grep -i'
 alias psl="ps aux | grep -i"
 alias topcpu="ps -eo pcpu,pid,user,args | sort -k 1 -r | head -10"
 alias diskl='lsblk -A -o NAME,SIZE,TYPE,MOUNTPOINT'
+has btm && alias top=btm btop=btm
 
 # DIRECTORY NAVIGATION
 if has zoxide; then
-  alias ..='z -- ..'
-  alias ...='z -- ../..'
-  alias ....='z -- ../../..'
-  alias .....='z -- ../../../..'
-  alias ......='z -- ../../../../..'
-  alias ~="z -- $HOME"
-  alias cd-="cd -- -"
+  alias ..='z ..'
+  alias ...='z ../..'
+  alias ....='z ../../..'
+  alias .....='z ../../../..'
+  alias ......='z ../../../../..'
+  alias cd-="cd -"
   alias cd='z'
 else
-  alias ..='cd -- ..'
-  alias ...='cd -- ../..'
-  alias ....='cd -- ../../..'
-  alias .....='cd -- ../../../..'
-  alias ......='cd -- ../../../../..'
-  alias ~="cd -- $HOME"
-  alias cd-="cd -- -"
-  unalias cd 2>/dev/null
+  alias ..='cd ..'
+  alias ...='cd ../..' .2='cd ../..'
+  alias ....='cd ../../..'
+  alias .....='cd ../../../..'
+  alias ......='cd ../../../../..'
+  alias cd-="cd -"
+  unalias cd
 fi
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
