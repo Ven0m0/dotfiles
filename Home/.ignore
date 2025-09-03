@@ -1,43 +1,69 @@
 # ~/.ignore
+# ---------------------
+# Source control
+# ---------------------
+.git/
+
+# ---------------------
+# Temp / backup / rejects
+# ---------------------
+*~
+*.TAG
+*.bak
+*.file
+*.gho
+*.lck
+*.lock
 *.log
 *.old
-*.tmp
-tmp/
-log/
-logs/
-*.bak
-*.gho
 *.ori
 *.orig
 *.rej
-*.TAG
-*swp
-token
+*.swp
+*.tmp
 nohup.out
-.git/
-*~
-*.lock
-.~lock.*
-.directory
+token
+tmp/
+log/
+logs/
 .Trash*
-.fuse_hidden*
-*~
-.nfs*
-*.rs.bk
+
+# ---------------------
+# Build dirs
+# ---------------------
+build/
+go/
+node_modules/
+target/
+__pycache__/
+.pytest_cache/
+.local/share/flatpak/
+.directory
+
+# ---------------------
+# Compiled files
+# ---------------------
 *.com
 *.dll
 *.exe
 *.o
-*.so
-__pycache__/
-.pytest_cache/
-*.pyc
 *.pyo
-node_modules/
-target/
-build/
-go/
+*.pyc
+*.so
+
+# ---------------------
+# Source artifacts
+# ---------------------
+*.html
+*.rs.bk
+*.ts
+
+# ---------------------
+# System / misc
+# ---------------------
+.fuse_hidden*
+.nfs*
+$RECYCLE.BIN/
+Desktop.ini
 Thumbs.db
 ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
