@@ -5,12 +5,11 @@
 
 # Dotfiles
 .*hist
+*history
 .*history
 .thumbnails/
-.wget-hsts
-.lesshst
-.bash_history
-fish_history
+*wget-hsts
+*lesshst
 fishd.*
 .cache
 
@@ -34,12 +33,12 @@ Videos/
 
 # Backups
 *.bak
+*.bak*
 *.gho
 *.ori
 *.orig
 *.rej
 *.TAG
-*.bak*
 
 # Rust
 **/*.rs.bk
@@ -49,9 +48,9 @@ Videos/
 
 # Logs and temps
 *.log
+*.log.*
 log/
 logs/
-*.log.*
 *.old
 *.tmp
 tmp/
