@@ -8,11 +8,11 @@
 # ---------------------
 # Dotfiles / shell history
 # ---------------------
-.*history       # matches .history, .bash_history, etc.
-*history        # matches fish_history, wget-hsts, lesshst
+.*history
+*history
 *lesshst
 fishd.*
-.*hist          # if you really want .hist specifically
+.*hist
 .thumbnails/
 .cache
 
@@ -47,17 +47,17 @@ Videos/
 *.orig
 *.rej
 *.TAG
-*.rs.bk
-*.mutants.out*/
 
 # ---------------------
 # Rust / Cargo
 # ---------------------
 .cargo/
 !.cargo/config.toml
+*.rs.bk
+*.mutants.out*/
 
 # ---------------------
-# Logs / temporary files
+# Logs / tmp
 # ---------------------
 *.log
 *.log.*
@@ -71,6 +71,7 @@ tmp/
 token
 nohup.out
 .~lock.*#
+*.lock
 .nv/ComputeCache/
 
 # ---------------------
