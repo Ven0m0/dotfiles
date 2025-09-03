@@ -18,36 +18,29 @@ _prependpath(){ [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+
 #============ Sourcing ============
 _ifsource "/etc/bashrc"
 _for_each_source=(
-  "$HOME/.bash_aliases"
-  "$HOME/.bash_functions"
-  "$HOME/.fns"
-  "$HOME/.funcs"
+  "${HOME}/.bash_aliases"
+  "${HOME}/.bash_functions"
+  "${HOME}/.bash_fuzz"
+  "${HOME}/.fns"
+  "${HOME}/.funcs"
 )
 for _src in "${_for_each_source[@]}"; do
   _ifsource "$_src"
-done
+done; unset _src
 # completions (quiet)
 _ifsource "/usr/share/bash-completion/bash_completion" || _ifsource "/etc/bash_completion"
 
 # https://github.com/akinomyoga/ble.sh
-if [[ -f $HOME/.local/share/blesh/ble.sh ]]; then
-  . -- "$HOME/.local/share/blesh/ble.sh" --attach=none 2>/dev/null
-  bleopt complete_auto_complete=1 2>/dev/null
-  bleopt complete_auto_delay=1 2>/dev/null
-  bleopt complete_menu_complete=1 2>/dev/null
-  bleopt complete_menu_filter=1 2>/dev/null
-  bleopt complete_ambiguous=1 2>/dev/null
-  bleopt complete_contract_function_names=1 2>/dev/null
-  bleopt complete_skip_matched=on 2>/dev/null
-elif [[ -f /usr/share/blesh/ble.sh ]]; then
+if [[ -r $HOME/.local/share/blesh/ble.sh ]]; then
+  . -- "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null
+  bleopt complete_auto_complete=1; bleopt complete_auto_delay=1; bleopt complete_menu_complete=1
+  bleopt complete_menu_filter=1; bleopt complete_ambiguous=1; bleopt complete_skip_matched=on
+  bleopt complete_contract_function_names=1; bleopt prompt_command_changes_layout=1
+elif [[ -r /usr/share/blesh/ble.sh ]]; then
   . -- "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null
-  bleopt complete_auto_complete=1 2>/dev/null
-  bleopt complete_auto_delay=1 2>/dev/null
-  bleopt complete_menu_complete=1 2>/dev/null
-  bleopt complete_menu_filter=1 2>/dev/null
-  bleopt complete_ambiguous=1 2>/dev/null
-  bleopt complete_contract_function_names=1 2>/dev/null
-  bleopt complete_skip_matched=on 2>/dev/null
+  bleopt complete_auto_complete=1; bleopt complete_auto_delay=1; bleopt complete_menu_complete=1
+  bleopt complete_menu_filter=1; bleopt complete_ambiguous=1; bleopt complete_skip_matched=on
+  bleopt complete_contract_function_names=1; bleopt prompt_command_changes_layout=1
 fi
 # https://wiki.archlinux.org/title/Bash#Command_not_found
 _ifsource "/usr/share/doc/pkgfile/command-not-found.bash"
