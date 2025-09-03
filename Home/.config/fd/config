@@ -1,6 +1,5 @@
--d 6
--c auto
--F
+--max-depth 10
+--fixed-strings
 --ignore
 --no-require-git
 --ignore-file "$HOME/.gitignore"
@@ -11,3 +10,4 @@
 --type file
 --type symlink
 --type directory
+--glob
