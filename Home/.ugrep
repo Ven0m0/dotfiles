@@ -1,12 +1,10 @@
-hidden
-
 # ignore files specified in .ignore and .gitignore in recursive searches
 ignore-files=.ignore
 ignore-files=.gitignore
 ignore-binary
+hidden
 ascii
 smart-case
 no-messages
 index
-fixed-strings
 no-confirm
