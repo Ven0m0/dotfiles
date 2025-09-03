@@ -145,7 +145,7 @@ fuzzy_finders(){
   elif command -v fdfind &>/dev/null; then FIND_CMD='fdfind -tf -gH -c always -strip-cwd-prefix -E ".git" -E "go/"'
   elif command -v rg &>/dev/null; then FIND_CMD='rg -S. --no-require-git --no-messages --no-ignore-messages --files --glob "!.git"'
   elif command -v ug &>/dev/null; then FIND_CMD='ug -rlsjU. --index ""'
-  else FIND_CMD='find -O3 . -path "*/.git" -prune -o -type f -print'
+  else FIND_CMD='find -O3 . \( -path "./.git" -o -path "./go" \) -prune -o -type f -print'
   fi
   if command -v bat &>/dev/null; then 
     FZF_CTRL_T_OPTS="-1 -0 --inline-info --walker-skip=".git,node_modules,target,go" --preview 'bat -n --color=always --line-range=:250 {}' --bind 'ctrl-/:change-preview-window(down|hidden|)'"
