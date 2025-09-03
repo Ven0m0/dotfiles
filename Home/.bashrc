@@ -3,12 +3,13 @@
 [[ $- != *i* ]] && return
 export LC_ALL=C
 #============ Helpers ============
+
 # Check for command
 has(){ [[ -x $(command -v -- "$1") ]]; }
-# Source file if it exists
-ifsource(){ [[ -r "$1" ]] && . "$1" 2>/dev/null; } 
-# Only prepend if not already in PATH
-prependpath(){ [[ -d $1 ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"; } 
+# Safely source file if it exists ( ~ -> $HOME )
+ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}" 2>/dev/null; }
+# Safely prepend only if not already in PATH ( ~ -> $HOME )
+prependpath(){ [[ -d "${1/#\~\//${HOME}/}" ]] && [[ ":$PATH:" != *":${1/#\~\//${HOME}/}:"* ]] && PATH="${1/#\~\//${HOME}/}${PATH:+:$PATH}"; }
 #============ Sourcing ============
 # wiki.archlinux.org/title/Bash#Command_not_found
 _dot=(/etc/bashrc
