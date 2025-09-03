@@ -4,13 +4,7 @@
 LC_ALL=C
 #============ Helpers ============
 # Check for command
-has(){ command -v -- "$1" &>/dev/null || return; }
-# Basename of command
-hasname(){ local x=$(type -P -- "$1") && printf '%s\n' "${x##*/}"; }
-# 'echo' as printf
-#xprintf(){ printf '%s\n' "$*"; }
-# 'echo -e' as printf for color
-#xeprintf(){ printf '%b\n' "$*"; }
+has(){ [[ -x $(command -v -- "$1") ]]; }
 # Source file if it exists
 _ifsource(){ [[ -r "$1" ]] && . -- "$1" 2>/dev/null; } 
 # Only prepend if not already in PATH
@@ -29,7 +23,6 @@ for _src in "${_for_each_source[@]}"; do
 done; unset _src
 # completions (quiet)
 _ifsource "/usr/share/bash-completion/bash_completion" || _ifsource "/etc/bash_completion"
-
 # https://github.com/akinomyoga/ble.sh
 if [[ -r $HOME/.local/share/blesh/ble.sh ]]; then
   . -- "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null
@@ -49,6 +42,7 @@ if [[ -d $HOME/.dotbare ]]; then
   [[ -f $HOME/.dotbare/dotbare ]] && alias dotbare="$HOME/.dotbare/dotbare"
   _ifsource "$HOME/.dotbare/dotbare.plugin.bash"
 fi
+_ifsource "${HOME}/.bash.d/cht.sh"
 #============ Stealth ============
 stealth=${stealth:-0} # stealth=1
 #============ History / Prompt basics ============
@@ -73,9 +67,10 @@ stty -ixon -ixoff -ixany &>/dev/null
 set +H  &>/dev/null # disable history expansion that breaks some scripts
 # set -o vi
 #============ Env ============
+_prependpath "${HOME}/.root/usr/bin"
 _prependpath "${HOME}/.local/bin"
-_prependpath "${HOME}/bin"
 _prependpath "${HOME}/.bin"
+_prependpath "${HOME}/bin"
 
 # Editor selection: prefer micro, fallback to nano
 _editor_cmd="$(command -v micro 2>/dev/null || :)"; _editor_cmd="${_editor_cmd##*/}"; EDITOR="${_editor_cmd:-nano}"
@@ -98,26 +93,20 @@ export MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_
 export _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 MIMALLOC_SHOW_STATS=0 MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_PURGE_DELAY=25 MIMALLOC_ARENA_EAGER_COMMIT=2
 
 # Delta / bat integration
-if has delta; then
-  export GIT_PAGER=delta
-  if has batdiff || has batdiff.sh; then
-    export BATDIFF_USE_DELTA=true
-  fi
-fi
+has delta && GIT_PAGER=delta && type -P batdiff batdiff.sh &>/dev/null && export BATDIFF_USE_DELTA=true
+
 if has bat; then
   export PAGER=bat BAT_THEME=ansi BATPIPE=color BAT_STYLE=auto
   alias cat='\bat -pp'
-  alias bat='\bat --color auto'
-  has batman && eval "$(LC_ALL=C batman --export-env 2>/dev/null)" 2>/dev/null || true
-  has batgrep && alias batgrep='batgrep --rga -S --color 2>/dev/null' || true
-elif has less; then
-  export PAGER=less
+  has batman && eval "$(LC_ALL=C batman --export-env)" &>/dev/null
+  has batgrep && alias batgrep='batgrep -S --color --rga'
 fi
 if has less; then
   LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
   LESSHISTFILE="-" LESS='-FrXnsi --mouse --use-color --no-edit-warn --no-vbell --no-histdups'
   export LESSHISTFILE LESS ESS_TERMCAP_md LESS_TERMCAP_me LESS_TERMCAP_us LESS_TERMCAP_ue LESS_TERMCAP_so LESS_TERMCAP_se
   has lesspipe && eval "$(SHELL=/bin/sh lesspipe 2>/dev/null)" 2>/dev/null || true
+  [[ -z $PAGER ]] && PAGER=less
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
 # XDG + misc
