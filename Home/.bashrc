@@ -58,7 +58,7 @@ HISTFILESIZE="$HISTSIZE"
 HISTCONTROL="erasedups:ignoreboth"
 HISTIGNORE="&:[bf]g:clear:cls:exit:history:bash:fish:?:??"
 export HISTTIMEFORMAT="%F %T " IGNOREEOF=100
-HISTFILE="$HOME/.bash_history"
+HISTFILE="${HOME}/.bash_history"
 PROMPT_DIRTRIM=2
 PROMPT_COMMAND="history -a"
 #============ Core ============
@@ -73,9 +73,9 @@ stty -ixon -ixoff -ixany &>/dev/null
 set +H  &>/dev/null # disable history expansion that breaks some scripts
 # set -o vi
 #============ Env ============
-_prependpath "$HOME/.local/bin"
-_prependpath "$HOME/bin"
-_prependpath "$HOME/.bin"
+_prependpath "${HOME}/.local/bin"
+_prependpath "${HOME}/bin"
+_prependpath "${HOME}/.bin"
 
 # Editor selection: prefer micro, fallback to nano
 _editor_cmd="$(command -v micro 2>/dev/null || :)"; _editor_cmd="${_editor_cmd##*/}"; EDITOR="${_editor_cmd:-nano}"
