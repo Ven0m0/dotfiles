@@ -56,7 +56,7 @@ stealth=${stealth:-0} # stealth=1
 HISTSIZE=1000
 HISTFILESIZE="$HISTSIZE"
 HISTCONTROL="erasedups:ignoreboth"
-HISTIGNORE="&:ls:[bf]g:help:clear:exit:shutdown:reboot:history:fish:?:??"
+HISTIGNORE="&:[bf]g:clear:cls:exit:history:bash:fish:?:??"
 export HISTTIMEFORMAT="%F %T " IGNOREEOF=100
 HISTFILE="$HOME/.bash_history"
 PROMPT_DIRTRIM=2
