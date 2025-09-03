@@ -2,7 +2,7 @@
 
 [[ $- != *i* ]] && return
 LC_ALL=C
-#──────────── Helpers ────────────
+#============ Helpers ============
 # Check for command
 has(){ command -v -- "$1" &>/dev/null || return; }
 # Basename of command
@@ -15,7 +15,7 @@ hasname(){ local x=$(type -P -- "$1") && printf '%s\n' "${x##*/}"; }
 _ifsource(){ [[ -r "$1" ]] && . -- "$1" 2>/dev/null; } 
 # Only prepend if not already in PATH
 _prependpath(){ [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"; } 
-#──────────── Sourcing ────────────
+#============ Sourcing ============
 _ifsource "/etc/bashrc"
 _for_each_source=(
   "$HOME/.bash_aliases"
@@ -56,9 +56,9 @@ if [[ -d $HOME/.dotbare ]]; then
   [[ -f $HOME/.dotbare/dotbare ]] && alias dotbare="$HOME/.dotbare/dotbare"
   _ifsource "$HOME/.dotbare/dotbare.plugin.bash"
 fi
-#──────────── Stealth ────────────
+#============ Stealth ============
 stealth=${stealth:-0} # stealth=1
-#──────────── History / Prompt basics ────────────
+#============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
 HISTSIZE=1000
 HISTFILESIZE="$HISTSIZE"
@@ -68,7 +68,7 @@ export HISTTIMEFORMAT="%F %T " IGNOREEOF=100
 HISTFILE="$HOME/.bash_history"
 PROMPT_DIRTRIM=2
 PROMPT_COMMAND="history -a"
-#──────────── Core ────────────
+#============ Core ============
 CDPATH=".:$HOME:/"
 ulimit -c 0 &>/dev/null # disable core dumps
 shopt -s histappend cmdhist checkwinsize dirspell cdable_vars \
@@ -79,7 +79,7 @@ export FIGNORE="argo.lock"
 stty -ixon -ixoff -ixany &>/dev/null
 set +H  &>/dev/null # disable history expansion that breaks some scripts
 # set -o vi
-#──────────── Env ────────────
+#============ Env ============
 _prependpath "$HOME/.local/bin"
 _prependpath "$HOME/bin"
 _prependpath "$HOME/.bin"
@@ -172,7 +172,7 @@ export CLICOLOR=1 SYSTEMD_COLORS=1 LS_COLORS='no=00:fi=00:di=00;34:ln=01;36:pi=4
 #if has dircolors; then
   #eval "$(dircolors -b 2>/dev/null)" &>/dev/null
 #fi
-#──────────── Fuzzy finders ────────────
+#============ Fuzzy finders ============
 fuzzy_finders(){
   local FIND_CMD
   if has fd; then
@@ -217,14 +217,14 @@ fman(){
 }
 export MANPAGER="sh -c 'col -bx | bat -l man -p --paging always'"
 
-#──────────── Completions ────────────
+#============ Completions ============
 complete -cf sudo 2>/dev/null
 command -v pay-respects &>/dev/null && eval "$(LC_ALL=C pay-respects bash 2>/dev/null)" 2>/dev/null || :
 # Ghostty
 [[ $TERM == xterm-ghostty && -e "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash" ]] && . "$GHOSTTY_RESOURCES_DIR/shell-integration/bash/ghostty.bash" 2>/dev/null || :
 # Wikiman
 [[ command -v wikiman &>/dev/null && -f /usr/share/wikiman/widgets/widget.bash ]] && . "/usr/share/wikiman/widgets/widget.bash" 2>/dev/null
-#──────────── Functions ────────────
+#============ Functions ============
 # Having to set a new script as executable always annoys me.
 runch(){
   shopt -u nullglob nocaseglob; local s; s="$1"
@@ -328,7 +328,7 @@ extract(){
     done
     return "$e"
 }
-#──────────── Aliases ────────────
+#============ Aliases ============
 # Enable aliases to be sudo’ed
 alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
 alias mkdir='mkdir -p'
@@ -420,7 +420,7 @@ alias speedt='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/mast
 # LC_ALL=C git clone --bare git@github.com:Ven0m0/dotfiles.git $HOME/.dotfiles
 alias dotfiles='LC_ALL=C git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-#──────────── Bindings (readline) ────────────
+#============ Bindings (readline) ============
 bind 'set completion-query-items 150'
 bind 'set page-completions off'
 bind 'set show-all-if-ambiguous on'
@@ -448,7 +448,7 @@ bind '"\es": "\C-asudo \C-e"'
 run-help(){ help "$READLINE_LINE" 2>/dev/null || man "$READLINE_LINE"; }
 bind -m vi-insert -x '"\eh": run-help'
 bind -m emacs -x     '"\eh": run-help'
-#──────────── Prompt 2 ────────────
+#============ Prompt 2 ============
 PROMPT_COMMAND="history -a"
 configure_prompt(){
   local LC_ALL=C LANG=C
@@ -476,7 +476,7 @@ configure_prompt(){
   fi
 }
 configure_prompt
-#──────────── End ────────────
+#============ End ============
 dedupe_path(){
   local IFS=: dir s; declare -A seen
   for dir in $PATH; do
@@ -486,7 +486,7 @@ dedupe_path(){
   command -v systemctl &>/dev/null && LC_ALL=C command systemctl --user import-environment PATH &>/dev/null
 }
 dedupe_path
-#──────────── Fetch ────────────
+#============ Fetch ============
 if [[ $SHLVL -le 2 ]]; then
   if [ "${stealth:-0}" -eq 1 ]; then
     if has fastfetch; then
@@ -507,12 +507,12 @@ if [[ $SHLVL -le 2 ]]; then
   fi
 fi
 # fetch='LC_ALL=C command hostnamectl 2>/dev/null'
-#──────────── Jumping ────────────
+#============ Jumping ============
 if has zoxide; then
   export _ZO_DOCTOR='0' _ZO_ECHO='0' _ZO_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}" _ZO_EXCLUDE_DIRS="$HOME:*.git"
   eval "$(LC_ALL=C zoxide init bash 2>/dev/null)" 2>/dev/null
 fi
-#──────────── Ble.sh final ────────────
+#============ Ble.sh final ============
 [[ ! ${BLE_VERSION-} ]] || ble-attach
 unset LC_ALL
 
