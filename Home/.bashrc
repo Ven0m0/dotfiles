@@ -46,7 +46,7 @@ shopt -s histappend cmdhist checkwinsize dirspell cdable_vars cdspell \
 # Disable Ctrl-s, Ctrl-q
 stty -ixon -ixoff -ixany
 set +H # disable history expansion that breaks some scripts
-# set -o vi
+# set -o vi; export VIMINIT='set encoding=utf-8'
 #============ Env ============
 prependpath "${HOME}/.root/usr/bin"
 prependpath "${HOME}/.local/bin"
@@ -59,7 +59,7 @@ export EDITOR VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDI
 unset _editor_cmd 2>/dev/null
 # https://wiki.archlinux.org/title/Locale
 export LANG=C.UTF-8 LANGUAGE="en_US:en:C" \
-       LC_COLLATE=C.UTF-8 LC_CTYPE=C.UTF-8 \
+       LC_COLLATE=C LC_CTYPE=C.UTF-8 \
        LC_MEASUREMENT=C TZ='Europe/Berlin'
 
 SHELL="${BASH:-/bin/bash}"
@@ -75,16 +75,16 @@ has delta && GIT_PAGER=delta && type -P batdiff batdiff.sh &>/dev/null && export
 
 if has bat; then
   export PAGER=bat BAT_THEME=ansi BATPIPE=color BAT_STYLE=auto
-  alias cat='\bat -pp'
+  alias cat='bat -pp'
   has batman && eval "$(batman --export-env 2>/dev/null)"
   has batgrep && alias batgrep='batgrep -S --color --rga'
 else
-  alias cat='\cat -sn'
+  alias cat='cat -sn'
 fi
 if has less; then
   LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
-  LESSHISTFILE="-" LESS='-FrXnsi --mouse --use-color --no-edit-warn --no-vbell --no-histdups'
-  export LESSHISTFILE LESS ESS_TERMCAP_md LESS_TERMCAP_me LESS_TERMCAP_us LESS_TERMCAP_ue LESS_TERMCAP_so LESS_TERMCAP_se
+  LESSHISTFILE="-" LESS='-FrXnsi --mouse --use-color --no-edit-warn --no-vbell --no-histdups' LESSCHARSET=utf-8
+  export LESSHISTFILE LESS LESS_TERMCAP_md LESS_TERMCAP_me LESS_TERMCAP_us LESS_TERMCAP_ue LESS_TERMCAP_so LESS_TERMCAP_se LESSCHARSET
   has lesspipe && eval "$(SHELL=/bin/sh lesspipe 2>/dev/null)" 2>/dev/null || true
   export PAGER="${PAGER:-less}"
 fi
@@ -115,7 +115,7 @@ cargo_run() {
 }
 alias cargo="cargo_run"
 
-export PYTHONOPTIMIZE=2 PYTHONIOENCODING='UTF-8' PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1
+export PYTHONOPTIMIZE=2 PYTHONIOENCODING=utf-8 PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export FD_IGNORE_FILE="${HOME}/.ignore"
 export ZSTD_NBTHREADS=0 ELECTRON_OZONE_PLATFORM_HINT=auto _JAVA_AWT_WM_NONREPARENTING=1 GTK_USE_PORTAL=1
 export FLATPAK_FANCY_OUTPUT=1 FLATPAK_TTY_PROGRESS=0 FLATPAK_FORCE_TEXT_AUTH=1
@@ -139,28 +139,37 @@ fi
 export CLICOLOR=1 SYSTEMD_COLORS=1
 #============ Fuzzy finders ============
 fuzzy_finders(){
-  local FIND_CMD
-  if has fd; then
-    FIND_CMD='fd -tf -gH -c always -E '.git'
-  elif has fdfind; then
-    FIND_CMD='fdfind -tf -gH -c always -E '.git'
-  elif has rg; then
-    FIND_CMD='rg --files --hidden --glob "!.git"'
-  else
-    FIND_CMD='find -O3 . -type f ! -path "*/.git/*"'
+  local FIND_CMD PREVIEW_CMD
+  if command -v fd &>/dev/null; then FIND_CMD='fd -tf -gH -c always -E ".git"'
+  elif command -v fdfind &>/dev/null; then FIND_CMD='fdfind -tf -gH -c always -E ".git"'
+  elif command -v rg &>/dev/null; then FIND_CMD='rg --files --hidden --glob "!.git"'
+  elif command -v ug &>/dev/null; then FIND_CMD='ug -rlsjU. --index ""'
+  else FIND_CMD='find -O3 . -path "*/.git" -prune -o -type f -print'
   fi
-  declare -x FZF_DEFAULT_COMMAND="$FIND_CMD" FZF_CTRL_T_COMMAND="$FIND_CMD"
-  declare -x FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window="wrap" --smart-case --marker="*" --info=inline --layout=reverse-list --tiebreak=index --height=70%'
-  if [[ $PAGER = bat]]; then
-    declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command bat -n --color=auto --line-range=:250 -- {}'"
-  else
-    declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command cat -s -- {}'"
+  if command -v bat &>/dev/null; then FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command bat -n --color=auto --line-range=:250 -- {}'"
+  else FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command cat -sn -- {}'"
   fi
-  declare -x FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --no-sort --exact --preview 'echo {}' --preview-window="down:3:hidden:wrap" --bind "?:toggle-preview"'
-  declare -x FZF_ALT_C_OPTS='-1 -0 --tiebreak=index --walker-skip .git,node_modules,target --preview "tree -C {} 2>/dev/null | head -200"'
-  declare -x FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=index'
-  declare -x FZF_COMPLETION_PATH_OPTS='--info=inline --tiebreak=index --walker file,dir,follow,hidden'
-  declare -x FZF_COMPLETION_DIR_OPTS='--info=inline --tiebreak=index --walker dir,follow'
+  PREVIEW_CMD=$(command -v bat &>/dev/null && echo "command bat --color=auto --line-range=:250 -sn -- {}" || echo "command cat -sn -- {}")
+  FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview '$PREVIEW_CMD'"
+  
+  
+  declare -x FZF_DEFAULT_COMMAND="$FIND_CMD" FZF_CTRL_T_COMMAND="$FIND_CMD" FZF_CTRL_T_OPTS \
+    FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window=wrap --smart-case --marker="*" --info=inline --layout=reverse-list --tiebreak=index --height=70%' \
+    FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --no-sort --exact --preview echo\ {} --preview-window=down:3:hidden:wrap --bind "?:toggle-preview"' \
+    FZF_ALT_C_OPTS='-1 -0 --tiebreak=index --walker-skip ".git,node_modules,target" --preview "tree -C {} 2>/dev/null | head -200"' \
+    FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=index' \
+    FZF_COMPLETION_PATH_OPTS='--info=inline --tiebreak=index --walker "file,dir,follow,hidden"' \
+    FZF_COMPLETION_DIR_OPTS='--info=inline --tiebreak=index --walker "dir,follow"' \
+
+
+  declare -x FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --no-sort --exact --preview "echo {}" --preview-window="down:3:hidden:wrap" --bind "?:toggle-preview"'
+FZF_CTRL_T_OPTS='-1 -0 --tiebreak=index --preview "$(command -v bat &>/dev/null && echo 'command bat --color=auto --line-range=:250 -sn -- {}' || echo 'command cat -sn -- {}')"'
+
+
+
+  declare -x \
+    FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command ${PAGER:-cat} $([[ $PAGER = bat ]] && echo "-n --color=auto --line-range=:250") -- {}'" \
+
   command mkdir -p -- "${HOME}/.config/bash/completions" &>/dev/null
   if has fzf; then
     [[ -r /usr/share/fzf/key-bindings.bash ]] && . -- "/usr/share/fzf/key-bindings.bash"
@@ -297,11 +306,9 @@ alias h='history'
 alias ptch='patch -p1 <'
 alias cleansh='curl -fsSL4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
 alias updatesh='curl -fsSL4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
-curlsh(){ 
-  local shellx="$(command -v bash 2>/dev/null || command -v dash 2>/dev/null)"
-  local shellx="${shellx##*/}"
-  LC_ALL=C LANG=C command curl -fsSL4 "$1" | $shellx
-}
+
+curlsh(){ LC_ALL=C LANG=C command curl -fsSL4 "$*" | bash; }
+
 if has eza; then
   alias ls='eza -F --color=auto --group-directories-first --icons=auto'
   alias la='eza -AF --color=auto --group-directories-first --icons=auto'
@@ -313,6 +320,7 @@ else
   alias ll='ls --color=auto --group-directories-first -oh'
   alias lt='ls --color=auto --group-directories-first -oghAt'
 fi
+alias which='command -v'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
