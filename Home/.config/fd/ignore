@@ -1,15 +1,70 @@
 # ~/.config/fd/ignore
+# ---------------------
+# Source control
+# ---------------------
+.git/
+
+# ---------------------
+# Temp / backup / rejects
+# ---------------------
+*~
+*.TAG
+*.bak
+*.file
+*.gho
+*.lck
+*.lock
 *.log
 *.old
+*.ori
+*.orig
+*.rej
+*.swp
+*.kate-swp
 *.tmp
-*.bak
+nohup.out
+token
+tmp/
+log/
+logs/
+.Trash*
+
+# ---------------------
+# Build dirs
+# ---------------------
+build/
+go/
 node_modules/
 target/
-build/
-.git/
-*~
+__pycache__/
+.pytest_cache/
+.local/share/flatpak/
 .directory
-.Trash-*
-.*.kate-swp
-.swp.*
+
+# ---------------------
+# Compiled files
+# ---------------------
+*.com
+*.dll
+*.exe
+*.o
+*.pyo
 *.pyc
+*.so
+
+# ---------------------
+# Source artifacts
+# ---------------------
+*.html
+*.rs.bk
+*.ts
+
+# ---------------------
+# System / misc
+# ---------------------
+.fuse_hidden*
+.nfs*
+$RECYCLE.BIN/
+Desktop.ini
+Thumbs.db
+ehthumbs.db
