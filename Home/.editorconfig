@@ -29,13 +29,16 @@ shell_variant = bash
 # Fish shell
 # ---------------------
 [*.fish,fish_*]
+indent_style = space
 indent_size = 4
+tab_width = 4
 
 # ---------------------
 # Markdown, Patches
 # ---------------------
 [*.md,*.patch]
 trim_trailing_whitespace = false
+insert_final_newline = true
 
 # ---------------------
 # Go, Rust, Zig, Makefiles
@@ -43,6 +46,7 @@ trim_trailing_whitespace = false
 [*.go,*.rs,*.zig,Makefile,*.mk]
 indent_style = tab
 indent_size = 4
+tab_width = 4
 
 # ---------------------
 # Python
@@ -50,3 +54,4 @@ indent_size = 4
 [*.py]
 indent_style = space
 indent_size = 4
+tab_width = 4
