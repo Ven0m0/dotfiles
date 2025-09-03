@@ -55,7 +55,7 @@ logs/
 *.old
 *.tmp
 tmp/
-.*.kate-swp
+*.kate-swp
 *swp.*
 token
 nohup.out
