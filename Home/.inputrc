@@ -30,7 +30,8 @@ set completion-ignore-case on
 set completion-query-items 200
 set completion-prefix-display-length 2
 set mark-symlinked-directories on
-set visible-stats on
+set mark-directories on
+set visible-stats off
 set page-completions off
 set colored-completion-prefix on
 set colored-stats on
