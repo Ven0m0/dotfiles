@@ -1,20 +1,26 @@
+# ---------------------
 # Dotter
+# ---------------------
 .dotter/local.toml
 .dotter/cache.toml
-.dotter/cache
+.dotter/cache/
 
-# Dotfiles
-.*hist
-.*history
-.thumbnails/
-.wget-hsts
-.lesshst
+# ---------------------
+# Dotfiles / shell history
+# ---------------------
+.*hist          # .hist files
+.*history       # .history, .bash_history
 .bash_history
 fish_history
 fishd.*
 .cache
+.thumbnails/
+.wget-hsts
+.lesshst
 
-# XDG user dirs
+# ---------------------
+# XDG user directories
+# ---------------------
 Desktop/
 Documents/
 Downloads/
@@ -24,34 +30,42 @@ Public/
 Templates/
 Videos/
 
+# ---------------------
 # Security
-.gnupg/*
+# ---------------------
+.gnupg/
 .gitconfig.local
-.ssh/*
+.ssh/
 !.ssh/config
-.android/*
+.android/
 .config/gh/hosts.yml
 
+# ---------------------
 # Backups
+# ---------------------
 *.bak
+*.bak*          # matches .bak1, .bak2, etc.
 *.gho
 *.ori
 *.orig
 *.rej
 *.TAG
-*.bak*
 
-# Rust
+# ---------------------
+# Rust / Cargo
+# ---------------------
 **/*.rs.bk
 **/mutants.out*/
-.cargo/*
+.cargo/
 !.cargo/config.toml
 
-# Logs and temps
+# ---------------------
+# Logs and temporary files
+# ---------------------
 *.log
+*.log.*
 log/
 logs/
-*.log.*
 *.old
 *.tmp
 tmp/
@@ -60,32 +74,37 @@ tmp/
 token
 nohup.out
 .~lock.*#
-token
 .nv/ComputeCache/
 
-# Linux
+# ---------------------
+# Linux system / editor files
+# ---------------------
 .directory
 .Trash-*
-.Trashes
+.Trashes/
 .fuse_hidden*
 *~
 .nfs*
 
-# Binary
+# ---------------------
+# Binary / compiled files
+# ---------------------
 *.com
 *.dll
 *.exe
 *.o
 *.so
-__pycache__
+__pycache__/
 .pytest_cache/
 *.pyc
 *.pyo
-node_modules
-target
-build
+node_modules/
+target/
+build/
 
-# Windows
+# ---------------------
+# Windows system files
+# ---------------------
 Thumbs.db
 ehthumbs.db
 Desktop.ini
