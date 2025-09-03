@@ -1,0 +1,338 @@
+# -*- mode: sh; mode: sh-bash -*-
+
+## This is a template for "~/.blerc".
+##
+## To use ble.sh in bash, please set up "~/.bashrc" as follows:
+##
+## ```bash
+## # bashrc
+##
+## # Please put the following line in the beginning of .bashrc
+## # Note: Please replace $HOME/.local/share/blesh with the path to your ble.sh
+## [[ $- == *i* ]] && source -- "$HOME/.local/share/blesh/ble.sh" --attach=none
+##
+## # Your bashrc contents should come between the two lines.
+##
+## # Please put the following line in the end of .bashrc
+## [[ ! ${BLE_VERSION-} ]] || ble-attach
+## ```
+##
+##-----------------------------------------------------------------------------
+## Basic settings
+
+bleopt input_encoding=UTF-8
+#bleopt input_encoding=C
+bleopt pager=bat
+#bleopt pager=less
+bleopt editor=micro
+
+##-----------------------------------------------------------------------------
+## Line editor settings
+
+bleopt history_lazyload=1
+
+## The following settings control the indentation. "indent_offset" sets the
+## indent width. "indent_tabs" controls if tabs can be used for indentation or
+## not. If "indent_tabs" is set to 0, tabs will never be used. Otherwise
+## indentation is made with tabs and spaces.
+bleopt indent_offset=2
+bleopt indent_tabs=0
+
+## The following option specifies the set of expansions performed by
+## magic-space with a colon-separated list of expansion types. "history",
+## "sabbrev", "alias", and "autocd" can be specified.
+
+bleopt edit_magic_expand=history:sabbrev:alias:autocd
+
+## This option configures the detailed behavior of the widget "magic-space"
+## with a colon-separated list.  If the field "inline-sabbrev-no-insert" is
+## specified, the insertion of "SP" is skipped when the inline sabbrev is
+## performed by "magic-space".
+
+bleopt edit_magic_opts=inline-sabbrev-no-insert
+
+## This option specifies the expansions performed on accept-line by a
+## colon-separated list.  The expansion is performed in a similar way as Bash's
+## history expansion.  When "sabbrev", "alias", "autocd", and "history" is
+## specified, the respective expansions are attempted on the command line.
+## When "verify" is specified, if sabbrev, alias, or autocd expansions changed
+## the command line, the execution of the command line is canceled so the user
+## can examine or continue to edit the expanded line.  The history expansion
+## can be controlled by "shopt -s histverify" in a similar manner.  When
+## "verify-syntax" is specified and any expansions change the command string, a
+## syntax check is performed.  The command execution is canceled when the
+## command string is not syntactically complete.  When "history-line" is
+## specified, the history expansion replaces the command line instead of just
+## printing the expansion result.  The default value of this option is empty.
+
+#bleopt edit_magic_accept=sabbrev
+
+bleopt prompt_command_changes_layout=1
+
+## "exec_restore_pipestatus" controls whether ble.sh restores PIPESTATUS of the
+## previous user command.  When this option is set to a non-empty value,
+## PIPESTATUS is restored.  This feature is turned off by default because it
+## adds extra execution costs.  Note that the values of PIPESTATUS of the
+## previous command are always available with the array BLE_PIPESTATUS
+## regardless of this setting.
+
+#bleopt exec_restore_pipestatus=1  # restores PIPESTATUS
+
+## The following setting controls the exit when jobs are remaining. When an
+## empty string is set, the shell will never exit with remaining jobs through
+## widgets. When an non-empty value is set, the shell will exit when exit is
+## attempted twice consecutively.
+
+bleopt allow_exit_with_jobs=1
+
+## The following setting controls the history sharing. If it has non-empty
+## value, the history sharing is enabled. With the history sharing, the command
+## history is shared with the other Bash ble.sh sessions with the history
+## sharing turned on.
+
+bleopt history_share=1
+
+## This option controls the target range in the command history for
+## "erasedups", which is performed when it is specified in "HISTCONTROL".  When
+## this option has an empty value, the target range is the entire history as in
+## the plain Bash.  When this option evaluates to a positive integer "count",
+## the target range is the last "n" entries in the command history.  When this
+## option evaluates to a non-positive integer "offset", "offset" specifies the
+## beginning of the target range relative to the history count at the session
+## start.  The end of the target range is always the end of the command
+## history.
+
+bleopt history_erasedups_limit=       # entire history
+#bleopt history_erasedups_limit=0      # only new items added in this session
+#bleopt history_erasedups_limit=-1000  # new items and 1000 prev-session items
+#bleopt history_erasedups_limit=1000   # last 1000 items
+
+##-----------------------------------------------------------------------------
+## Rendering options
+
+## "tab_width" specifies the width of TAB on the command line. When an empty
+## value is specified, the width in terminfo (tput it) is used.
+
+bleopt tab_width=2
+
+bleopt char_width_mode=auto
+bleopt char_width_version=auto
+
+##-----------------------------------------------------------------------------
+## User input settings
+
+bleopt default_keymap=auto
+bleopt decode_isolated_esc=auto
+
+## This variable sets the limit to the count of recursive calls of keyboard
+## macros.
+
+bleopt decode_macro_limit=1024
+
+## When a non-empty value is specified to this settings, the terminal's
+## Bracketed Paste Mode (DEC mode 2004) is enabled.  This setting is
+## synchronized with the readline variable "enable-bracketed-paste".
+
+bleopt term_bracketed_paste_mode=off
+
+##-----------------------------------------------------------------------------
+## Settings for completion
+
+bleopt complete_auto_complete=1
+bleopt complete_auto_history=1
+bleopt complete_menu_complete=1
+bleopt complete_menu_filter=1
+bleopt complete_ambiguous=1
+bleopt complete_skip_matched=on
+
+## The following setting controls the delay of auto-complete after the last
+## user input. The unit is millisecond.
+
+#bleopt complete_auto_delay=100
+
+## If "complete_contract_function_names" has non-empty values, the function
+## name candidates are grouped by prefixes of the directory-like form "*/".
+
+#bleopt complete_contract_function_names=1
+
+## By default, ble.sh does not allow rewriting the existing text if non-unique
+## candidates does not contain the existing text.  If this setting has
+## non-empty values, ble.sh rewrites the existing text.
+
+bleopt complete_allow_reduction=1
+
+## - The option "suppress-after-complete" controls whether auto-complete is
+##   enabled after TAB completions.  If "suppress-after-complete" is included,
+##   auto-complete is enabled after TAB completions.  Otherwise, auto-complete
+##   is disabled after TAB completions.
+
+bleopt complete_auto_complete_opts=suppress-after-complete
+
+## When there are user inputs while generating completion candidates, the
+## candidates generation will be canceled to process the user inputs. The
+## following setting controls the interval of checking user inputs while
+## generating completion candidates. Default 50
+
+bleopt complete_polling_cycle=100
+
+## The following setting controls the detailed behavior of menu-complete with a
+## colon-separated list of options.  When the option "insert-selection" is
+## specified, the currently selected menu item is temporarily inserted in the
+## command line.  When "hidden" is specified, "insert-selection" is enabled,
+## and additionally, the completion menu is hidden by default.  The default is
+## "insert-selection".
+
+#bleopt complete_menu_complete_opts=insert-selection
+
+## When a non-empty value is specified to this setting, the highlighting of the
+## menu items is enabled.  This setting is synchronized with the readline
+## variable "colored-stats".
+
+bleopt complete_menu_color=on
+
+## When a non-empty value is specified to this setting, the part of the menu
+## items matching with the already input text is highlighted.  This setting is
+## synchronized with the readline variable "colored-completion-prefix".
+
+bleopt complete_menu_color_match=on
+
+## This is a colon-separated list of options.  When the field
+## `no-empty-completion` is specified, the sabbrev completion candidates are
+## not generated when the word to complete is empty.
+
+bleopt complete_source_sabbrev_opts=no-empty-completion
+
+##-----------------------------------------------------------------------------
+## Color settings
+
+bleopt term_index_colors=auto
+#bleopt term_index_colors=256
+
+## The setting "filename_ls_colors" can be used to import the filename coloring
+## scheme by the environment variable LS_COLORS.
+
+bleopt filename_ls_colors="$LS_COLORS"
+
+## The following settings control the timeout and user-input cancellation of
+## the pathname expansions performed in the syntax highlighting.  When the word
+## contains a glob pattern that takes a long time to evaluate the pathname
+## expansion, the syntax highlighting based on the filename is canceled based
+## on the timeouts specified by these settings.  "highlight_timeout_sync" /
+## "highlight_timeout_async" specify the timeout durations in milliseconds to
+## be used for the foreground / background syntax highlighting, respectively.
+## When the timeout occurred in the foreground, the syntax highlighting will be
+## deferred to the background syntax highlighting.  When the timeout occurred
+## in the background, the syntax highlighting for the filename is canceled.
+## When the value is empty, the corresponding timeout is disabled.
+## "syntax_eval_polling_interval" specifies the maximal interval between the
+## user-input checking.
+
+bleopt highlight_timeout_sync=500
+bleopt highlight_timeout_async=5000
+bleopt syntax_eval_polling_interval=100
+
+## The following setting limits the number of expanded words to process in
+## highlighting a single grammatical word.  When this setting is set to an
+## empty string, the number of expanded words to process is unlimited.
+
+bleopt highlight_eval_word_limit=200
+
+##-----------------------------------------------------------------------------
+## Keybindings
+
+## The default mapping of <SP> in ble.sh is magic-space which performs history
+## and sabbrev expansion before inserting a space.  If you want to insert just
+## a space without expansions as Bash's default, use the following setting:
+
+#ble-bind -f 'SP' 'self-insert'
+
+
+## The default mapping of `/' (<slash>) in ble.sh is magic-slash which performs
+## sabbrev expansions of the name ` ~*'.  If you want to insert just a slash
+## without expansions as Bash's default, use the following setting:
+
+#ble-bind -f '/' 'self-insert'
+
+## If you want to search the already input string using <up> and <down> keys,
+## use the following setting:
+
+ble-bind -f up 'history-search-backward'
+ble-bind -f down 'history-search-forward'
+
+## If you want to kill/copy words including the spaces preceding them, you can
+## use the following keybindings:
+
+ble-bind -f C-w 'kill-region-or kill-uword'
+ble-bind -f M-w 'copy-region-or copy-uword'
+
+## If you want to accept the suggestion by auto-complete using TAB, please use
+## the following keybindings.  By default, <right> key can be used to accept
+## the suggestion, and <TAB> is assigned to the normal TAB completion which is
+## independent of auto-complete.
+
+ble-bind -m auto_complete -f C-i auto_complete/insert
+ble-bind -m auto_complete -f TAB auto_complete/insert
+
+##-----------------------------------------------------------------------------
+## Settings for Emacs mode
+
+function blerc/emacs-load-hook {
+  #----------------------------------------------------------------------------
+  # Settings for the mode indicator
+
+  ## The following option specifies the content of the mode indicator shown in
+  ## the info line as a prompt sequence.
+
+  #bleopt prompt_emacs_mode_indicator='\q{keymap:emacs/mode-indicator}'
+
+
+  ## The following option specifies the multiline mode name used in the prompt
+  ## sequence \q{keymap:emacs/mode-indicator} in the multiline editing mode.
+
+  # default
+  #bleopt keymap_emacs_mode_string_multiline=$'\e[1m-- MULTILINE --\e[m'
+  # do not show the mode name
+  #bleopt keymap_emacs_mode_string_multiline=
+
+  #----------------------------------------------------------------------------
+  # Keybindings
+
+  ## The default mapping of RET and C-m inserts newline with multiline commands
+  ## or incomplete commands.  With the following setting, RET and C-m always
+  ## causes the execution of the command even in the multiline mode or when the
+  ## command is not syntactically completed.
+
+  ble-bind -f 'C-m' accept-line
+  ble-bind -f 'RET' accept-line
+
+  ## With the following settings, M-backspace (whose actual key sequence
+  ## depends on your terminal) will kill the backward word as in the default
+  ## readline.
+
+  ble-bind -f 'M-C-?' kill-backward-cword
+  ble-bind -f 'M-DEL' kill-backward-cword
+  ble-bind -f 'M-C-h' kill-backward-cword
+  ble-bind -f 'M-BS'  kill-backward-cword
+  return 0
+}
+blehook/eval-after-load keymap_emacs blerc/emacs-load-hook
+
+##-----------------------------------------------------------------------------
+## Internal settings
+
+## When the option "debug_idle" contains a non-empty value, the background
+## tasks currently running are shown in the info panel.
+
+bleopt debug_idle=
+bleopt internal_stackdump_enabled=
+bleopt internal_exec_type=gexec
+
+## When a non-empty value is specified to this option, the standard output and
+## standard error from Bash is not output to the terminal.  When the value is
+## empty, ble.sh tries to realize the line editing allowing Bash to output its
+## own standard output and error.  This setting has a flickering problem and
+## only left for debugging purpose, so it is not tested.  Normally a non-empty
+## value should be specified so as to suppress the standard output and error
+## from Bash.
+
+bleopt internal_suppress_bash_output=1
