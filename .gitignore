@@ -72,6 +72,7 @@ token
 nohup.out
 .~lock.*
 *.lock
+*.lck
 .nv/ComputeCache/
 
 # ---------------------
