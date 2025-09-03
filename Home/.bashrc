@@ -1,12 +1,12 @@
 # ~/.bashrc
 
 [[ $- != *i* ]] && return
-LC_ALL=C
+export LC_ALL=C
 #============ Helpers ============
 # Check for command
 has(){ [[ -x $(command -v -- "$1") ]]; }
 # Source file if it exists
-_ifsource(){ [[ -r "$1" ]] && . -- "$1" 2>/dev/null; } 
+_ifsource(){ [[ -r "$1" ]] && . "$1" 2>/dev/null; } 
 # Only prepend if not already in PATH
 _prependpath(){ [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"; } 
 #============ Sourcing ============
@@ -23,28 +23,22 @@ for _src in "${_for_each_source[@]}"; do
 done; unset _src
 # completions (quiet)
 _ifsource "/usr/share/bash-completion/bash_completion" || _ifsource "/etc/bash_completion"
+
 # https://github.com/akinomyoga/ble.sh
-if [[ -r $HOME/.local/share/blesh/ble.sh ]]; then
-  . -- "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null
-  bleopt complete_auto_complete=1; bleopt complete_auto_delay=1; bleopt complete_menu_complete=1
-  bleopt complete_menu_filter=1; bleopt complete_ambiguous=1; bleopt complete_skip_matched=on
-  bleopt complete_contract_function_names=1; bleopt prompt_command_changes_layout=1
-elif [[ -r /usr/share/blesh/ble.sh ]]; then
-  . -- "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null
-  bleopt complete_auto_complete=1; bleopt complete_auto_delay=1; bleopt complete_menu_complete=1
-  bleopt complete_menu_filter=1; bleopt complete_ambiguous=1; bleopt complete_skip_matched=on
-  bleopt complete_contract_function_names=1; bleopt prompt_command_changes_layout=1
+if [ -r "/usr/share/blesh/ble.sh" ]; then
+  . "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null
+elif [ -r "${HOME}/.local/share/blesh/ble.sh" ]; then
+  . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null
 fi
+
 # https://wiki.archlinux.org/title/Bash#Command_not_found
 _ifsource "/usr/share/doc/pkgfile/command-not-found.bash"
 
-if [[ -d $HOME/.dotbare ]]; then
-  [[ -f $HOME/.dotbare/dotbare ]] && alias dotbare="$HOME/.dotbare/dotbare"
+if [[ -d ${HOME}/.dotbare ]]; then
+  [[ -f ${HOME}/.dotbare/dotbare ]] && alias dotbare="$HOME/.dotbare/dotbare"
   _ifsource "$HOME/.dotbare/dotbare.plugin.bash"
 fi
 _ifsource "${HOME}/.bash.d/cht.sh"
-#============ Stealth ============
-stealth=${stealth:-0} # stealth=1
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
 HISTSIZE=1000
@@ -98,15 +92,17 @@ has delta && GIT_PAGER=delta && type -P batdiff batdiff.sh &>/dev/null && export
 if has bat; then
   export PAGER=bat BAT_THEME=ansi BATPIPE=color BAT_STYLE=auto
   alias cat='\bat -pp'
-  has batman && eval "$(LC_ALL=C batman --export-env)" &>/dev/null
+  has batman && eval "$(batman --export-env 2>/dev/null)"
   has batgrep && alias batgrep='batgrep -S --color --rga'
+else
+  alias cat='\cat -sn'
 fi
 if has less; then
   LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
   LESSHISTFILE="-" LESS='-FrXnsi --mouse --use-color --no-edit-warn --no-vbell --no-histdups'
   export LESSHISTFILE LESS ESS_TERMCAP_md LESS_TERMCAP_me LESS_TERMCAP_us LESS_TERMCAP_ue LESS_TERMCAP_so LESS_TERMCAP_se
   has lesspipe && eval "$(SHELL=/bin/sh lesspipe 2>/dev/null)" 2>/dev/null || true
-  [[ -z $PAGER ]] && PAGER=less
+  export PAGER="${PAGER:-less}"
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
 # XDG + misc
@@ -161,38 +157,38 @@ export CLICOLOR=1 SYSTEMD_COLORS=1
 fuzzy_finders(){
   local FIND_CMD
   if has fd; then
-    FIND_CMD='LC_ALL=C fd -tf --hidden --exclude .git --exclude node_modules --exclude target'
+    FIND_CMD='LC_ALL=C fd -tf -H --exclude .git --exclude node_modules --exclude target'
   elif has rg; then
     FIND_CMD='LC_ALL=C rg --files --hidden --glob "!.git" --glob "!node_modules" --glob "!target"'
   else
     FIND_CMD='LC_ALL=C find . -type f ! -path "*/.git/*" ! -path "*/node_modules/*" ! -path "*/target/*"'
   fi
+-path "./.git" -prune -o -print
   declare -x FZF_DEFAULT_COMMAND="$FIND_CMD"
   declare -x FZF_CTRL_T_COMMAND="$FIND_CMD"
   declare -x FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window="wrap" --smart-case --marker="*" --info=inline --layout=reverse-list --tiebreak=index --height=70%'
-  declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'bat -n --color=auto --line-range=:250 -- {} 2>/dev/null || cat -- {} 2>/dev/null'"
+  if [[ $PAGER = bat]]; then
+    declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'bat -n --color=auto --line-range=:250 -- {}'"
+  else
+    declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'cat -- {}'"
+  fi
   declare -x FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --no-sort --exact --preview 'echo {}' --preview-window="down:3:hidden:wrap" --bind "?:toggle-preview"'
   declare -x FZF_ALT_C_OPTS='-1 -0 --tiebreak=index --walker-skip .git,node_modules,target --preview "tree -C {} 2>/dev/null | head -200"'
   declare -x FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=index'
   declare -x FZF_COMPLETION_PATH_OPTS='--info=inline --tiebreak=index --walker file,dir,follow,hidden'
   declare -x FZF_COMPLETION_DIR_OPTS='--info=inline --tiebreak=index --walker dir,follow'
-  command mkdir -p -- "$HOME/.config/bash/completions" 2>/dev/null
+  command mkdir -p -- "${HOME}/.config/bash/completions" &>/dev/null
   if has fzf; then
-    [[ -f /usr/share/fzf/key-bindings.bash ]] && . "/usr/share/fzf/key-bindings.bash" 2>/dev/null || :
-    if [[ -f $HOME/.config/bash/completions/fzf_completion.bash ]]; then
-      LC_ALL=C fzf --bash 2>/dev/null >| "$HOME/.config/bash/completions/fzf_completion.bash"
-    fi
-    . "$HOME/.config/bash/completions/fzf_completion.bash" 2>/dev/null || :
+    [ -r /usr/share/fzf/key-bindings.bash ] && . -- "/usr/share/fzf/key-bindings.bash"
+    [ ! -r ${HOME}/.config/bash/completions/fzf_completion.bash ] && LC_ALL=C fzf --bash 2>/dev/null >| "${HOME}/.config/bash/completions/fzf_completion.bash"
+    . -- "${HOME}/.config/bash/completions/fzf_completion.bash"
   fi
   if has sk; then
     declare -x SKIM_DEFAULT_COMMAND="$FIND_CMD"
     declare -x SKIM_DEFAULT_OPTIONS="${FZF_DEFAULT_OPTS:-}"
-    alias fzf='sk ' 2>/dev/null || true
-    [[ -f /usr/share/skim/key-bindings.bash ]] && . "/usr/share/skim/key-bindings.bash" 2>/dev/null || :
-    if [[ ! -f $HOME/.config/bash/completions/sk_completion.bash ]]; then
-      LC_ALL=C sk --shell bash 2>/dev/null >| "$HOME/.config/bash/completions/sk_completion.bash"
-    fi
-    . "$HOME/.config/bash/completions/sk_completion.bash" 2>/dev/null || :
+    [ -r "/usr/share/skim/key-bindings.bash" ] && . -- "/usr/share/skim/key-bindings.bash"
+    [ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" ] && LC_ALL=C sk --shell bash 2>/dev/null >| "${HOME}/.config/bash/completions/sk_completion.bash"
+    . -- "${HOME}/.config/bash/completions/sk_completion.bash"
   fi
 }
 fuzzy_finders
@@ -212,38 +208,26 @@ command -v pay-respects &>/dev/null && eval "$(LC_ALL=C pay-respects bash 2>/dev
 #============ Functions ============
 # Having to set a new script as executable always annoys me.
 runch(){
-  shopt -u nullglob nocaseglob; local s; s="$1"
-  if [[ -z $s ]]; then
-    printf 'runch: missing script argument\nUsage: runch <script>\n' >&2; return 2
-  fi
-  if [[ ! -f $s ]]; then
-    printf 'runch: file not found: %s\n' "$s" >&2; return 1
-  fi
-  if ! command chmod +x -- "$s" 2>/dev/null; then
-    printf 'runch: cannot make executable: %s\n' "$s" >&2; return 1    
-  fi
-  if [[ $s == */* ]]; then
-    "$s"
-  else
-    "./$s"
-  fi
+  shopt -u nullglob nocaseglob; local s="$1"
+  [[ -z $s ]] && { echo $'runch: missing script argument\nUsage: runch <script>' >&2; return 2; }
+  [[ ! -f $s ]] && { echo "runch: file not found: $s" >&2; return 1; }
+  command chmod +x -- "$s" &>/dev/null || { echo "runch: cannot make executable: $s" >&2; return; }
+  [[ $s == */* ]] && "$s" || "./$s"
 }
 sel(){
   local p="${1:-.}"
-  [[ -e "$p" ]] || { printf 'sel: not found: %s\n' "$p" >&2; return 1; }
-  if [[ -d "$p" ]]; then
+  [[ -e $p ]] || { echo "sel: not found: $p" >&2; return; }
+  if [[ -d $p ]]; then
     if has eza; then
       LC_ALL=C command eza -al --color=auto --group-directories-first --icons=auto --no-time --no-git --smart-group --no-user --no-permissions -- "$p"
     else
-      LC_ALL=C command ls -a --color=auto --group-directories-first -- "$p"
+      LC_ALL=C command ls -ahgG --color=auto --group-directories-first -- "$p"
     fi
   elif [[ -f "$p" ]]; then
     if has bat; then
-      local bn
-      bn=$(basename -- "$p")
-      LC_ALL=C LANG=C.UTF-8 command bat -sp --color auto --file-name="$bn" -- "$p"
+      LC_ALL=C command bat -spp --color auto -- "$p"
     else
-      LC_ALL=C LANG=C.UTF-8 command cat -s -- "$p"
+      LC_ALL=C command cat -sn -- "$p"
     fi
   else
     printf 'sel: not a file/dir: %s\n' "$p" >&2; return 1
@@ -356,11 +340,11 @@ alias rmd='rm -rf --preserve-root'
 alias chmod='chmod --preserve-root' 
 alias chown='chown --preserve-root' 
 alias chgrp='chgrp --preserve-root'
-alias histl="history | LC_ALL=C grep -i"
-alias findl="LC_ALL=C find . | LC_ALL=C grep -i"
-alias psl="ps aux | LC_ALL=C grep -i"
-alias topcpu="ps -eo pcpu,pid,user,args | LC_ALL=C sort -k 1 -r | head -10"
-alias diskl='LC_ALL=C lsblk -o NAME,SIZE,TYPE,MOUNTPOINT'
+alias histl="history | grep -i"
+alias findl="find . | grep -i"
+alias psl="ps aux | grep -i"
+alias topcpu="ps -eo pcpu,pid,user,args | sort -k 1 -r | head -10"
+alias diskl='lsblk -A -o NAME,SIZE,TYPE,MOUNTPOINT'
 
 # DIRECTORY NAVIGATION
 if has zoxide; then
@@ -433,19 +417,21 @@ bind '"\es": "\C-asudo \C-e"'
 run-help(){ help "$READLINE_LINE" 2>/dev/null || man "$READLINE_LINE"; }
 bind -m vi-insert -x '"\eh": run-help'
 bind -m emacs -x     '"\eh": run-help'
+#============ Stealth ============
+stealth=${stealth:-0}
 #============ Prompt 2 ============
 PROMPT_COMMAND="history -a"
 configure_prompt(){
-  local LC_ALL=C LANG=C
   if command -v starship &>/dev/null; then
-    eval "$(LC_ALL=C starship init bash 2>/dev/null)" &>/dev/null; return
+    #eval "$(LC_ALL=C starship init bash 2>/dev/null)"; return
+    . -- <(LC_ALL=C starship init bash 2>/dev/null); return
   fi
   local C_USER='\[\e[35m\]' C_HOST='\[\e[34m\]' YLW='\[\e[33m\]' \
-        C_PATH='\[\e[36m\]' C_RESET='\[\e[0m\]' C_ROOT='\[\e[31m\]'
-  local USERN HOSTL
-
-  [[ "$EUID" -eq 0 ]] && USERN="${C_ROOT}\u${C_RESET}"
-  [[ -n "$SSH_CONNECTION" ]] && HOSTL="${YLW}\h${C_RESET}"
+        C_PATH='\[\e[36m\]' C_RESET='\[\e[0m\]' C_ROOT='\[\e[31m\]' USERN HOSTL
+  USERN="${C_USER}\u${C_RESET}"
+  HOSTL="${C_HOST}\h${C_RESET}"
+  [[ $EUID -eq 0 ]] && USERN="${C_ROOT}\u${C_RESET}"
+  [[ -n $SSH_CONNECTION ]] && HOSTL="${YLW}\h${C_RESET}"
   PS1="[${C_USER}\u${C_RESET}@${HOSTL}|${C_PATH}\w${C_RESET}]>\s>\A|\$? \$ "
   PS2='> ' 
   # Git
@@ -472,23 +458,22 @@ dedupe_path(){
 }
 dedupe_path
 #============ Fetch ============
-if [[ $SHLVL -le 2 ]]; then
-  if [ "${stealth:-0}" -eq 1 ]; then
-    if has fastfetch; then
-      fetch='LC_ALL=C fastfetch --ds-force-drm --thread --detect-version false'
-      "$fetch"
-    fi
+if [[ $SHLVL -gt 3 ]]; then
+  if [[ "${stealth:-0}" -eq 1 ]]; then
+    has fastfetch && fetch='fastfetch --ds-force-drm --thread --detect-version false'
   else
     if has hyfetch; then
-      fetch='LC_ALL=C hyfetch -b fastfetch -m rgb -p transgender'
-      "$fetch"
+      fetch='hyfetch -b fastfetch -m rgb -p transgender'
     elif has fastfetch; then
-      fetch='LC_ALL=C fastfetch --ds-force-drm --thread'
-      "$fetch"
+      fetch='fastfetch --ds-force-drm --thread --detect-version false'
+    elif has vnfetch; then
+      fetch='vnfetch'
+    elif has vnfetch.sh; then
+      fetch='vnfetch.sh'
     else
-      fetch='LC_ALL=C curl -sf4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Scripts/shell-tools/vnfetch.sh | bash'
-      "$fetch"
+      fetch='curl -sf https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Scripts/shell-tools/vnfetch.sh | bash'
     fi
+    LC_ALL=C eval "$fetch"
   fi
 fi
 # fetch='LC_ALL=C command hostnamectl 2>/dev/null'
@@ -500,4 +485,3 @@ fi
 #============ Ble.sh final ============
 [[ ! ${BLE_VERSION-} ]] || ble-attach
 unset LC_ALL
-
