@@ -3,23 +3,21 @@
 # ---------------------
 .dotter/local.toml
 .dotter/cache.toml
-.dotter/cache/
+.dotter/cache
 
 # ---------------------
 # Dotfiles / shell history
 # ---------------------
-.*hist          # .hist files
-.*history       # .history, .bash_history
-.bash_history
-fish_history
+.*history
+*history
+*lesshst
 fishd.*
-.cache
+.*hist
 .thumbnails/
-.wget-hsts
-.lesshst
+.cache
 
 # ---------------------
-# XDG user directories
+# XDG user dirs
 # ---------------------
 Desktop/
 Documents/
@@ -44,7 +42,6 @@ Videos/
 # Backups
 # ---------------------
 *.bak
-*.bak*          # matches .bak1, .bak2, etc.
 *.gho
 *.ori
 *.orig
@@ -54,13 +51,13 @@ Videos/
 # ---------------------
 # Rust / Cargo
 # ---------------------
-**/*.rs.bk
-**/mutants.out*/
 .cargo/
 !.cargo/config.toml
+*.rs.bk
+*.mutants.out*/
 
 # ---------------------
-# Logs and temporary files
+# Logs / tmp
 # ---------------------
 *.log
 *.log.*
@@ -74,6 +71,7 @@ tmp/
 token
 nohup.out
 .~lock.*#
+*.lock
 .nv/ComputeCache/
 
 # ---------------------
@@ -81,7 +79,7 @@ nohup.out
 # ---------------------
 .directory
 .Trash-*
-.Trashes/
+.Trashes
 .fuse_hidden*
 *~
 .nfs*
@@ -101,6 +99,8 @@ __pycache__/
 node_modules/
 target/
 build/
+go/
+.git/
 
 # ---------------------
 # Windows system files
