@@ -20,6 +20,7 @@
 *.orig
 *.rej
 *.swp
+*.kate-swp
 *.tmp
 nohup.out
 token
