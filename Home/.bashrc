@@ -171,7 +171,7 @@ fuzzy_finders(){
     declare -x SKIM_DEFAULT_COMMAND="$FIND_CMD" "${FZF_DEFAULT_OPTS:-}"
     [[ -r "/usr/share/skim/key-bindings.bash" ]] && . "/usr/share/skim/key-bindings.bash"
     [[ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" ]] && SHELL=bash sk --shell bash >| "${HOME}/.config/bash/completions/sk_completion.bash"
-    . "${HOME}/.config/bash/completions/sk_completion.bash"
+    . "${HOME}/.config/bash/completions/sk_completion.bash" || . <(sk --shell bash)
   fi
 }
 fuzzy_finders
