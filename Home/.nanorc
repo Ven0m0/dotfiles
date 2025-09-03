@@ -17,7 +17,6 @@ set mouse
 set tabstospaces
 set tabsize 2
 set zap                # Let an unmodified Backspace or Delete erase the marked region
-set modernbindings
 set unix
 set saveonexit
 # bind ^S "{execute}| sed 's/\s\+$//' {enter}{savefile}" main  # For snipping trailing blanks when you save a file
