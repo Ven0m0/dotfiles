@@ -30,10 +30,8 @@ if [ -r "/usr/share/blesh/ble.sh" ]; then
 elif [ -r "${HOME}/.local/share/blesh/ble.sh" ]; then
   . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null
 fi
-
 # https://wiki.archlinux.org/title/Bash#Command_not_found
 _ifsource "/usr/share/doc/pkgfile/command-not-found.bash"
-
 if [[ -d ${HOME}/.dotbare ]]; then
   [[ -f ${HOME}/.dotbare/dotbare ]] && alias dotbare="$HOME/.dotbare/dotbare"
   _ifsource "$HOME/.dotbare/dotbare.plugin.bash"
@@ -71,7 +69,7 @@ export EDITOR VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDI
 unset _editor_cmd 2>/dev/null
 # https://wiki.archlinux.org/title/Locale
 export LANG=C.UTF-8 LANGUAGE="en_US:en:C" \
-       LC_COLLATE=C LC_CTYPE=C.UTF-8 \
+       LC_COLLATE=C.UTF-8 LC_CTYPE=C.UTF-8 \
        LC_MEASUREMENT=C TZ='Europe/Berlin'
 
 SHELL="${BASH:-/bin/bash}"
