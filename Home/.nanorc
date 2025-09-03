@@ -22,4 +22,4 @@ set saveonexit
 # bind ^S "{execute}| sed 's/\s\+$//' {enter}{savefile}" main  # For snipping trailing blanks when you save a file
 # ========== COMPLETIONS ==========
 include "/usr/share/nano/*.nanorc"
-include "$HOME/.nano/*.nanorc"
+#include "$HOME/.nano/*.nanorc"
