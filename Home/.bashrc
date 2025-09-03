@@ -51,14 +51,13 @@ PROMPT_DIRTRIM=2
 PROMPT_COMMAND="history -a"
 #============ Core ============
 CDPATH=".:${HOME}:/"
-ulimit -c 0 &>/dev/null # disable core dumps
-shopt -s histappend cmdhist checkwinsize dirspell cdable_vars \
-         cdspell autocd hostcomplete no_empty_cmd_completion \
-         globstar nullglob force_fignore &>/dev/null
+ulimit -c 0 # disable core dumps
 export FIGNORE="argo.lock"
+shopt -s histappend cmdhist checkwinsize dirspell cdable_vars cdspell \
+         autocd hostcomplete no_empty_cmd_completion globstar nullglob force_fignore
 # Disable Ctrl-s, Ctrl-q
-stty -ixon -ixoff -ixany &>/dev/null
-set +H  &>/dev/null # disable history expansion that breaks some scripts
+stty -ixon -ixoff -ixany
+set +H # disable history expansion that breaks some scripts
 # set -o vi
 #============ Env ============
 _prependpath "${HOME}/.root/usr/bin"
@@ -71,12 +70,9 @@ _editor_cmd="$(command -v micro 2>/dev/null || :)"; _editor_cmd="${_editor_cmd##
 export EDITOR VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$EDITOR" FCEDIT="$EDITOR" SUDO_EDITOR="$EDITOR"
 unset _editor_cmd 2>/dev/null
 # https://wiki.archlinux.org/title/Locale
-export LANG="${LANG:=C.UTF-8}" \
-       LANGUAGE="en_US:en:C" \
-       LC_MEASUREMENT=C \
-       LC_COLLATE=C \
-       LC_CTYPE=C \
-       TZ="Europe/Berlin"
+export LANG=C.UTF-8 LANGUAGE="en_US:en:C" \
+       LC_COLLATE=C LC_CTYPE=C.UTF-8 \
+       LC_MEASUREMENT=C TZ='Europe/Berlin'
 
 SHELL="${BASH:-/bin/bash}"
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
