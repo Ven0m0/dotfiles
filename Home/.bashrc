@@ -62,7 +62,7 @@ HISTFILE="$HOME/.bash_history"
 PROMPT_DIRTRIM=2
 PROMPT_COMMAND="history -a"
 #============ Core ============
-CDPATH=".:$HOME:/"
+CDPATH=".:${HOME}:/"
 ulimit -c 0 &>/dev/null # disable core dumps
 shopt -s histappend cmdhist checkwinsize dirspell cdable_vars \
          cdspell autocd hostcomplete no_empty_cmd_completion \
