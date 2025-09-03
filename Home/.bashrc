@@ -6,37 +6,27 @@ export LC_ALL=C
 # Check for command
 has(){ [[ -x $(command -v -- "$1") ]]; }
 # Source file if it exists
-_ifsource(){ [[ -r "$1" ]] && . "$1" 2>/dev/null; } 
+ifsource(){ [[ -r "$1" ]] && . "$1" 2>/dev/null; } 
 # Only prepend if not already in PATH
-_prependpath(){ [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"; } 
+prependpath(){ [[ -d $1 ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"; } 
 #============ Sourcing ============
-_ifsource "/etc/bashrc"
-_for_each_source=(
-  "${HOME}/.bash_aliases"
-  "${HOME}/.bash_functions"
-  "${HOME}/.bash_fuzz"
-  "${HOME}/.fns"
-  "${HOME}/.funcs"
+# wiki.archlinux.org/title/Bash#Command_not_found
+_dot=(/etc/bashrc
+  "$HOME"/{.bash_aliases,.bash_functions,.bash_fuzz,.fns,.funcs,.bash.d/cht.sh}
+  /usr/share/doc/pkgfile/command-not-found.bash
 )
-for _src in "${_for_each_source[@]}"; do
-  _ifsource "$_src"
-done; unset _src
-# completions (quiet)
-_ifsource "/usr/share/bash-completion/bash_completion" || _ifsource "/etc/bash_completion"
+for _p in "${_dot[@]}"; do ifsource "$_p"; done; unset _p _dot
 
-# https://github.com/akinomyoga/ble.sh
-if [ -r "/usr/share/blesh/ble.sh" ]; then
-  . "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null
-elif [ -r "${HOME}/.local/share/blesh/ble.sh" ]; then
-  . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null
-fi
-# https://wiki.archlinux.org/title/Bash#Command_not_found
-_ifsource "/usr/share/doc/pkgfile/command-not-found.bash"
-if [[ -d ${HOME}/.dotbare ]]; then
-  [[ -f ${HOME}/.dotbare/dotbare ]] && alias dotbare="$HOME/.dotbare/dotbare"
-  _ifsource "$HOME/.dotbare/dotbare.plugin.bash"
-fi
-_ifsource "${HOME}/.bash.d/cht.sh"
+# completions (quiet)
+ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_completion"
+
+# github.com/akinomyoga/ble.sh
+[[ -r /usr/share/blesh/ble.sh ]] && . "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null || { \
+[[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
+
+# github.com/kazhala/dotbare
+[[ -d ${HOME}/.dotbare ]] && { [[ -f ${HOME}/.dotbare/dotbare ]] && alias dotbare="${HOME}/.dotbare/dotbare"; ifsource "${HOME}/.dotbare/dotbare.plugin.bash"; }
+
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
 HISTSIZE=1000
@@ -58,10 +48,10 @@ stty -ixon -ixoff -ixany
 set +H # disable history expansion that breaks some scripts
 # set -o vi
 #============ Env ============
-_prependpath "${HOME}/.root/usr/bin"
-_prependpath "${HOME}/.local/bin"
-_prependpath "${HOME}/.bin"
-_prependpath "${HOME}/bin"
+prependpath "${HOME}/.root/usr/bin"
+prependpath "${HOME}/.local/bin"
+prependpath "${HOME}/.bin"
+prependpath "${HOME}/bin"
 
 # Editor selection: prefer micro, fallback to nano
 _editor_cmd="$(command -v micro 2>/dev/null || :)"; _editor_cmd="${_editor_cmd##*/}"; EDITOR="${_editor_cmd:-nano}"
@@ -111,10 +101,10 @@ export CURL_HOME="$HOME"
 export WGETRC="${XDG_CONFIG_HOME}/wget/wgetrc"
 export GPG_TTY="$(tty)"
 
-_ifsource "$HOME/.cargo/env"
+ifsource "$HOME/.cargo/env"
 if has cargo; then
   export CARGO_HOME="${HOME}/.cargo" RUSTUP_HOME="${HOME}/.rustup"
-  _prependpath "${CARGO_HOME}/bin"
+  prependpath "${CARGO_HOME}/bin"
 fi
 cargo_run() {
   local bins=(gg mommy clicker) cmd=(cargo) b
@@ -151,20 +141,20 @@ export CLICOLOR=1 SYSTEMD_COLORS=1
 fuzzy_finders(){
   local FIND_CMD
   if has fd; then
-    FIND_CMD='LC_ALL=C fd -tf -H --exclude .git --exclude node_modules --exclude target'
+    FIND_CMD='fd -tf -gH -c always -E '.git'
+  elif has fdfind; then
+    FIND_CMD='fdfind -tf -gH -c always -E '.git'
   elif has rg; then
-    FIND_CMD='LC_ALL=C rg --files --hidden --glob "!.git" --glob "!node_modules" --glob "!target"'
+    FIND_CMD='rg --files --hidden --glob "!.git"'
   else
-    FIND_CMD='LC_ALL=C find . -type f ! -path "*/.git/*" ! -path "*/node_modules/*" ! -path "*/target/*"'
+    FIND_CMD='find -O3 . -type f ! -path "*/.git/*"'
   fi
--path "./.git" -prune -o -print
-  declare -x FZF_DEFAULT_COMMAND="$FIND_CMD"
-  declare -x FZF_CTRL_T_COMMAND="$FIND_CMD"
+  declare -x FZF_DEFAULT_COMMAND="$FIND_CMD" FZF_CTRL_T_COMMAND="$FIND_CMD"
   declare -x FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window="wrap" --smart-case --marker="*" --info=inline --layout=reverse-list --tiebreak=index --height=70%'
   if [[ $PAGER = bat]]; then
-    declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'bat -n --color=auto --line-range=:250 -- {}'"
+    declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command bat -n --color=auto --line-range=:250 -- {}'"
   else
-    declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'cat -- {}'"
+    declare -x FZF_CTRL_T_OPTS="-1 -0 --tiebreak=index --preview 'command cat -s -- {}'"
   fi
   declare -x FZF_CTRL_R_OPTS='-1 -0 --tiebreak=index --no-sort --exact --preview 'echo {}' --preview-window="down:3:hidden:wrap" --bind "?:toggle-preview"'
   declare -x FZF_ALT_C_OPTS='-1 -0 --tiebreak=index --walker-skip .git,node_modules,target --preview "tree -C {} 2>/dev/null | head -200"'
@@ -173,15 +163,15 @@ fuzzy_finders(){
   declare -x FZF_COMPLETION_DIR_OPTS='--info=inline --tiebreak=index --walker dir,follow'
   command mkdir -p -- "${HOME}/.config/bash/completions" &>/dev/null
   if has fzf; then
-    [ -r /usr/share/fzf/key-bindings.bash ] && . -- "/usr/share/fzf/key-bindings.bash"
-    [ ! -r ${HOME}/.config/bash/completions/fzf_completion.bash ] && LC_ALL=C fzf --bash 2>/dev/null >| "${HOME}/.config/bash/completions/fzf_completion.bash"
+    [[ -r /usr/share/fzf/key-bindings.bash ]] && . -- "/usr/share/fzf/key-bindings.bash"
+    [[ ! -r ${HOME}/.config/bash/completions/fzf_completion.bash ]] && LC_ALL=C fzf --bash 2>/dev/null >| "${HOME}/.config/bash/completions/fzf_completion.bash"
     . -- "${HOME}/.config/bash/completions/fzf_completion.bash"
   fi
   if has sk; then
     declare -x SKIM_DEFAULT_COMMAND="$FIND_CMD"
     declare -x SKIM_DEFAULT_OPTIONS="${FZF_DEFAULT_OPTS:-}"
-    [ -r "/usr/share/skim/key-bindings.bash" ] && . -- "/usr/share/skim/key-bindings.bash"
-    [ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" ] && LC_ALL=C sk --shell bash 2>/dev/null >| "${HOME}/.config/bash/completions/sk_completion.bash"
+    [[ -r "/usr/share/skim/key-bindings.bash" ]] && . -- "/usr/share/skim/key-bindings.bash"
+    [[ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" ]] && LC_ALL=C sk --shell bash 2>/dev/null >| "${HOME}/.config/bash/completions/sk_completion.bash"
     . -- "${HOME}/.config/bash/completions/sk_completion.bash"
   fi
 }
