@@ -1,13 +1,15 @@
 --max-depth 10
+--glob
+--hidden
 --fixed-strings
---ignore
 --no-require-git
+--ignore
+--ignore-vcs
 --ignore-file "$HOME/.gitignore"
 --ignore-file "$HOME/.ignore"
 --ignore-file "$HOME/.config/fd/ignore"
---exclude=node_modules
---exclude='*.pyc'
+--exclude='.git'
 --type file
 --type symlink
 --type directory
---glob
+--one-file-system
