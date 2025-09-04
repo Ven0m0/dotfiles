@@ -183,14 +183,11 @@ fuzzy_finders(){
 }
 fuzzy_finders
 
-fman(){ man -k . | fzf -q "$1" --prompt='man> '  --preview $'echo {} | tr -d \'()\' | awk \'{printf "%s ", $2} {print $1}\' | xargs -r man | col -bx | bat -l man -p --color always' | tr -d '()' | awk '{printf "%s ", $2} {print $1}' | xargs -r man; }
-export MANPAGER="sh -c 'col -bx | bat -l man -p --paging always'"
-
 #============ Completions ============
 complete -o default -o bashdefault -F _completion_loader sudo
 complete -o default -o bashdefault -F _completion_loader sudo-rs
 complete -o default -o bashdefault -F _completion_loader doas
-complete -o bashdefault -o default -F _completion_loader git
+complete -o default -o bashdefault -F _completion_loader git
 complete -o default -o bashdefault -F _completion_loader command
 complete -o default -o bashdefault -F _completion_loader type
 complete -o default -o bashdefault -F _completion_loader builtin
@@ -413,7 +410,7 @@ bind -m emacs -x     '"\eh": run-help'
 stealth=${stealth:-0}
 #============ Prompt 2 ============
 configure_prompt(){
-  command -v starship &>/dev/null && { eval -- "$(/usr/bin/starship init bash --print-full-init)"; return; }
+  command -v starship &>/dev/null && { eval "$(starship init bash)"; return; }
   
   local MGN='\[\e[35m\]' BLU='\[\e[34m\]' YLW='\[\e[33m\]' BLD='\[\e[1m\]' UND='\[\e[4m\]' \
         CYN='\[\e[36m\]' DEF='\[\e[0m\]' RED='\[\e[31m\]'  PNK='\[\e[38;5;205m\]' USERN HOSTL
@@ -441,7 +438,7 @@ dedupe_path(){
     [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"
   done
   [[ -n $s ]] && export PATH="$s"
-  command -v systemctl &>/dev/null && LC_ALL=C command systemctl --user import-environment PATH &>/dev/null
+  command -v systemctl &>/dev/null && LC_ALL=C command systemctl --user import-environment PATH 2>/dev/null
 }
 dedupe_path
 #============ Fetch ============
