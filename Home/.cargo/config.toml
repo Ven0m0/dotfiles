@@ -26,32 +26,34 @@ doctest = false # let `cargo check` skip dev‑dependencies
 
 [alias]
 b = "build"
-insta = "+nightly -Zunstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata build"
+i = "install"
+insta = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata install -f --all-features --bins --ignore-rust-version -q"
+builda = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata build --bins --lib --all-features -r -q"
 
 [build]
-jobs = 16
+jobs = 8
 rustc = "rustc"
 rustc-wrapper = "sccache"
 incremental = false
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
-CARGO_INCREMENTAL = { value = "0", force = true }
-CARGO_BUILD_INCREMENTAL = { value = "0", force = true }
+#CARGO_INCREMENTAL = { value = "0", force = true }
+#CARGO_BUILD_INCREMENTAL = { value = "0", force = true }
 GITOXIDE_CORE_MULTIPACKINDEX = { value = "true", force = true }
 GITOXIDE_HTTP_SSLVERSIONMAX = { value = "tls1.3", force = true }
 GITOXIDE_HTTP_SSLVERSIONMIN = { value = "tls1.2", force = true }
 RUSTC_BOOTSTRAP = { value = "1", force = true }
 CARGO_CACHE_RUSTC_INFO = { value = "1", force = true }
-RUST_BACKTRACE = "0"
-RUST_LIB_BACKTRACE = "0"
+#RUST_BACKTRACE = "0"
+#RUST_LIB_BACKTRACE = "0"
 RUST_PANIC_STRATEGY = "abort"
 RUSTC_ICE = "0"
 CARGO_LOG = "off"
 RUSTDOC_LOG = "off"
 RUSTC_LOG = "off"
 # RUSTC_WRAPPER = { value = "sccache", force = true }
-# RUSTUP_TOOLCHAIN= { value = "nightly", force = true }
+RUSTUP_TOOLCHAIN= { value = "nightly", force = true }
 
 [cache]
 auto-clean-frequency = "7 days"
@@ -86,9 +88,6 @@ overflow-checks = false
 incremental = false
 rustflags = [ "-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread", "-Z", "tune-cpu=machine", "-Z", "precise-enum-drop-elaboration=yes" ]
 #debuginfo= 0
-
-[profile.release.package."*"]
-inherits = "release"
 
 [profile.release.build-override]
 opt-level = 0
