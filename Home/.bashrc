@@ -188,7 +188,14 @@ export MANPAGER="sh -c 'col -bx | bat -l man -p --paging always'"
 
 #============ Completions ============
 complete -o default -o bashdefault -F _completion_loader sudo
-complete -cfav sudo; complete -cfav sudo-rs; complete -cfav doas
+complete -o default -o bashdefault -F _completion_loader sudo-rs
+complete -o default -o bashdefault -F _completion_loader doas
+complete -o bashdefault -o default -F _completion_loader git
+complete -o default -o bashdefault -F _completion_loader command
+complete -o default -o bashdefault -F _completion_loader type
+complete -o default -o bashdefault -F _completion_loader builtin
+complete -o default -o bashdefault -F _completion_loader exec
+
 command -v pay-respects &>/dev/null && eval "$(pay-respects bash)"
 
 # Ghostty
@@ -262,11 +269,10 @@ cht(){
 }
 
 extract(){
-    local c e i
-    (($#)) || return
-    for i; do
-        c=''
-        e=1
+  local c e i
+  (($#)) || return
+  for i; do
+  c='' e=1
         if [[ ! -r $i ]]; then
             echo "$0: file is unreadable: \`$i'" >&2
             continue
