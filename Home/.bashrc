@@ -187,7 +187,7 @@ fman(){ man -k . | fzf -q "$1" --prompt='man> '  --preview $'echo {} | tr -d \'(
 export MANPAGER="sh -c 'col -bx | bat -l man -p --paging always'"
 
 #============ Completions ============
-complete -cf sudo
+complete -cfav sudo; complete -cfav sudo-rs; complete -cfav doas
 command -v pay-respects &>/dev/null && eval "$(pay-respects bash)"
 
 # Ghostty
