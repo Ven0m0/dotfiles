@@ -1,17 +1,10 @@
-#
 # ~/.bash_profile
 #
+prependpath(){ [[ -d "${1/#\~\//${HOME}/}" ]] && [[ ":$PATH:" != *":${1/#\~\//${HOME}/}:"* ]] && PATH="${1/#\~\//${HOME}/}${PATH:+:$PATH}"; }
 
-[[ -f $HOME/.bashrc ]] && . "$HOME/.bashrc
-[[ -f ~/.profile ]] && . "$HOME/.profile"
-[[ -f $HOME/.cargo/env ]] && . "$HOME/.cargo/env"
-
-_prependpath() {
-    # Only prepend if not already in PATH
-    [[ -d $1 ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"
-}
-_prependpath "$HOME/.local/bin"
-_prependpath "$HOME/bin"
-_prependpath "$HOME/.bin"
-_prependpath "$HOME/bin/uutils"
+prependpath "${HOME}/.bashrc"
+prependpath "${HOME}/.profile"
+prependpath "${HOME}/.cargo/env"
+prependpath "$HOME/.local/bin"
+prependpath "$HOME/bin"
 export PATH
