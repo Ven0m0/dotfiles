@@ -17,7 +17,7 @@ tab_width = 2
 # ---------------------
 # Shell scripts
 # ---------------------
-[*.sh,*.bash*,.profile,bash*]
+[*.sh,*.bash*,.profile,bash*,.bash_*]
 keep_padding = true
 space_redirects = false
 switch_case_indent = true
