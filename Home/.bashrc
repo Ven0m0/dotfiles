@@ -183,18 +183,17 @@ fuzzy_finders(){
 }
 fuzzy_finders
 
-fman(){
-  man -k . | fzf -q "$1" --prompt='man> '  --preview $'echo {} | tr -d \'()\' | awk \'{printf "%s ", $2} {print $1}\' | xargs -r man | col -bx | bat -l man -p --color always' | tr -d '()' | awk '{printf "%s ", $2} {print $1}' | xargs -r man
-}
+fman(){ man -k . | fzf -q "$1" --prompt='man> '  --preview $'echo {} | tr -d \'()\' | awk \'{printf "%s ", $2} {print $1}\' | xargs -r man | col -bx | bat -l man -p --color always' | tr -d '()' | awk '{printf "%s ", $2} {print $1}' | xargs -r man; }
 export MANPAGER="sh -c 'col -bx | bat -l man -p --paging always'"
 
 #============ Completions ============
-complete -cf sudo 2>/dev/null
-command -v pay-respects &>/dev/null && eval "$(LC_ALL=C pay-respects bash 2>/dev/null)" 2>/dev/null || :
+complete -cf sudo
+command -v pay-respects &>/dev/null && eval "$(pay-respects bash)"
+
 # Ghostty
-[[ $TERM == xterm-ghostty && -e "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash" ]] && . "$GHOSTTY_RESOURCES_DIR/shell-integration/bash/ghostty.bash" 2>/dev/null || :
+[[ $TERM == xterm-ghostty ]] && . "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
 # Wikiman
-[[ command -v wikiman &>/dev/null && -f /usr/share/wikiman/widgets/widget.bash ]] && . "/usr/share/wikiman/widgets/widget.bash" 2>/dev/null
+command -v wikiman &>/dev/null && . "/usr/share/wikiman/widgets/widget.bash"
 #============ Functions ============
 # Having to set a new script as executable always annoys me.
 runch(){
