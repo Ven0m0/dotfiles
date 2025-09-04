@@ -3,7 +3,6 @@
 [[ $- != *i* ]] && return
 export LC_ALL=C
 #============ Helpers ============
-
 # Check for command
 has(){ [[ -x $(command -v -- "$1") ]]; }
 # Safely source file if it exists ( ~ -> $HOME )
@@ -12,36 +11,34 @@ ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}" 2>/dev/nul
 prependpath(){ [[ -d "${1/#\~\//${HOME}/}" ]] && [[ ":$PATH:" != *":${1/#\~\//${HOME}/}:"* ]] && PATH="${1/#\~\//${HOME}/}${PATH:+:$PATH}"; }
 #============ Sourcing ============
 # wiki.archlinux.org/title/Bash#Command_not_found
-_dot=(/etc/bashrc
+dot=(/etc/bashrc
   "$HOME"/{.bash_aliases,.bash_functions,.bash_fuzz,.fns,.funcs,.bash.d/cht.sh}
   /usr/share/doc/pkgfile/command-not-found.bash
 )
-for _p in "${_dot[@]}"; do ifsource "$_p"; done; unset _p _dot
+for p in "${dot[@]}"; do ifsource "$p"; done; unset p dot
 
 # completions (quiet)
 ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_completion"
 
 # github.com/akinomyoga/ble.sh
 [[ -r /usr/share/blesh/ble.sh ]] && . "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null || { \
-[[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
+  [[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
 
 # github.com/kazhala/dotbare
 [[ -d ${HOME}/.dotbare ]] && { [[ -f ${HOME}/.dotbare/dotbare ]] && alias dotbare="${HOME}/.dotbare/dotbare"; ifsource "${HOME}/.dotbare/dotbare.plugin.bash"; }
 
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
-HISTSIZE=1000
-HISTFILESIZE="$HISTSIZE"
+HISTSIZE=1000 HISTFILESIZE="$HISTSIZE"
 HISTCONTROL="erasedups:ignoreboth"
-HISTIGNORE="&:[bf]g:clear:cls:exit:history:bash:fish:?:??"
+HISTIGNORE="&:[bf]g:clear:cls:exit:history:bash:fish:?:??:!!:**"
 export HISTTIMEFORMAT="%F %T " IGNOREEOF=100
 HISTFILE="${HOME}/.bash_history"
-PROMPT_DIRTRIM=2
-PROMPT_COMMAND="history -a"
+PROMPT_DIRTRIM=2 PROMPT_COMMAND="history -a"
 #============ Core ============
 CDPATH=".:${HOME}:/"
 ulimit -c 0 # disable core dumps
-export FIGNORE="argo.lock"
+export FIGNORE="argo.lock" IFS="${IFS:-$' \t\n'}"
 shopt -s histappend cmdhist checkwinsize dirspell cdable_vars cdspell \
          autocd hostcomplete no_empty_cmd_completion globstar nullglob force_fignore
 # Disable Ctrl-s, Ctrl-q
@@ -102,16 +99,13 @@ export CURL_HOME="$HOME"
 export WGETRC="${XDG_CONFIG_HOME}/wget/wgetrc"
 export GPG_TTY="$(tty)"
 
-ifsource "$HOME/.cargo/env"
-if has cargo; then
+has cargo && {
   export CARGO_HOME="${HOME}/.cargo" RUSTUP_HOME="${HOME}/.rustup"
-  prependpath "${CARGO_HOME}/bin"
-fi
-cargo_run() {
+  ifsource "$HOME/.cargo/env"; prependpath "${CARGO_HOME}/bin"
+}
+cargo_run(){
   local bins=(gg mommy clicker) cmd=(cargo) b
-  for b in "${bins[@]}"; do
-    command -v "cargo-$b" &>/dev/null && cmd+=("$b")
-  done
+  for b in "${bins[@]}"; do command -v "cargo-$b" &>/dev/null && cmd+=("$b"); done
   "${cmd[@]}" "$@"
 }
 alias cargo="cargo_run"
@@ -123,6 +117,7 @@ export PYTHONOPTIMIZE=2 PYTHONIOENCODING=utf-8 PYTHON_JIT=1 PYENV_VIRTUALENV_DIS
 export FD_IGNORE_FILE="${HOME}/.ignore"
 export ZSTD_NBTHREADS=0 ELECTRON_OZONE_PLATFORM_HINT=auto _JAVA_AWT_WM_NONREPARENTING=1 GTK_USE_PORTAL=1
 export FLATPAK_FANCY_OUTPUT=1 FLATPAK_TTY_PROGRESS=0 FLATPAK_FORCE_TEXT_AUTH=1
+
 # Wayland
 if has qt6ct; then
   export QT_QPA_PLATFORMTHEME='qt6ct'
@@ -133,6 +128,15 @@ if [[ ${XDG_SESSION_TYPE:-} == "wayland" ]]; then
   export GDK_BACKEND=wayland QT_QPA_PLATFORM=wayland SDL_VIDEODRIVER=wayland CLUTTER_BACKEND=wayland \
     MOZ_ENABLE_WAYLAND=1 MOZ_ENABLE_XINPUT2=1 MOZ_DBUS_REMOTE=1 QT_WAYLAND_DISABLE_WINDOWDECORATION=1 QT_AUTO_SCREEN_SCALE_FACTOR=1
 fi
+
+export NVD_BACKEND=direct MOZ_DISABLE_RDD_SANDBOX=1 \
+  LIBVA_DRIVER_NAME=nvidia VDPAU_DRIVER=nvidia __GLX_VENDOR_LIBRARY_NAME=nvidia \
+  __GL_THREADED_OPTIMIZATIONS=1 __GL_SORT_FBCONFIGS=1 \
+  #__GL_SHARPEN_ENABLE=1 __GL_SHARPEN_IGNORE_FILM_GRAIN=1 \
+  __GL_VRR_ALLOWED=1 __GL_GSYNC_ALLOWED=1 __GL_SYNC_TO_VBLANK=0 \
+  __GL_ALLOW_FXAA_USAGE=1 #__GL_ConformantBlitFramebufferScissor=1 \
+  __GL_ALLOW_UNOFFICIAL_PROTOCOL=1 __GL_IGNORE_GLSL_EXT_REQS=1 \
+  __GL_SHADER_DISK_CACHE=1 __GL_SHADER_DISK_CACHE_PATH="${HOME}/.cache/nvidia/GLCache"
 
 if has dircolors; then
   eval "$(dircolors -b)" &>/dev/null
@@ -304,7 +308,8 @@ alias ptch='patch -p1 <'
 alias cleansh='curl -fsSL4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
 alias updatesh='curl -fsSL4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
 
-curlsh(){ LC_ALL=C LANG=C command curl -fsSL4 "$*" | bash; }
+curlsh(){ LC_ALL=C command curl -fsSL4 "$*" | bash; }
+
 
 if has eza; then
   alias ls='eza -F --color=auto --group-directories-first --icons=auto'
@@ -401,7 +406,6 @@ bind -m emacs -x     '"\eh": run-help'
 #============ Stealth ============
 stealth=${stealth:-0}
 #============ Prompt 2 ============
-PROMPT_COMMAND="history -a"
 configure_prompt(){
   command -v starship &>/dev/null && { eval -- "$(/usr/bin/starship init bash --print-full-init)"; return; }
   
