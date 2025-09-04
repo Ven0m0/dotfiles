@@ -14,6 +14,7 @@ set breaklonglines     # Automatically hard-wrap overlong lines
 set quickblank
 set minibar
 set mouse
+set cutfromcursor
 set tabstospaces
 set tabsize 2
 set zap                # Let an unmodified Backspace or Delete erase the marked region
@@ -22,4 +23,5 @@ set saveonexit
 # bind ^S "{execute}| sed 's/\s\+$//' {enter}{savefile}" main  # For snipping trailing blanks when you save a file
 # ========== COMPLETIONS ==========
 include "/usr/share/nano/*.nanorc"
-#include "$HOME/.nano/*.nanorc"
+include "/usr/share/nano/extra/*.nanorc"
+include "/usr/share/nano-syntax-highlighting/*.nanorc"
