@@ -13,10 +13,10 @@ set linebreak           "Wrap lines at convenient points
 set ttyfast
 set number
 set relativenumber
-
+set mouse=a
 set smartcase           " Enable smart-case search
 set ignorecase          " Always case-insensitive
-
+set spell
 set incsearch           " Searches for strings incrementally
 set hlsearch
 
@@ -60,9 +60,6 @@ autocmd BufWritePre *.for :%s/\s\+$//e
 " Auto indent pasted text
 nnoremap p p=`]<C-o>
 nnoremap P P=`]<C-o>
-
-filetype plugin on
-filetype indent on
 
 " ================ Folds ============================
 
