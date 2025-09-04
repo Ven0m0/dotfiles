@@ -3,7 +3,9 @@ unstable-options = true
 mtime-on-use = true
 avoid-dev-deps = true
 git = { shallow_index = true, shallow_deps = true }
-gitoxide = { checkout = true, fetch = true, internal_use_git2 = true }
+# Gitoxide checkout isnt released yet
+#gitoxide = { checkout = true, fetch = true, internal_use_git2 = true }
+gitoxide = { fetch = true, internal_use_git2 = true }
 checksum-freshness = true
 cargo-lints = true
 feature-unification = true
@@ -12,7 +14,8 @@ no-embed-metadata = true
 # build-std = ["core", "alloc"]
 gc = true
 panic-abort-tests = true
-#profile-rustflags = true
+# Allows for rustflags in this config
+profile-rustflags = true
 dylib-lto = true
 parallel-tests = true # run tests in parallel
 doctest = false # let `cargo check` skip dev‑dependencies
@@ -21,8 +24,13 @@ doctest = false # let `cargo check` skip dev‑dependencies
 # https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#target-applies-to-host
 # target-applies-to-host = false
 
+[alias]
+b = "build"
+insta = "+nightly -Zunstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata build"
+
 [build]
 jobs = 16
+rustc = "rustc"
 rustc-wrapper = "sccache"
 incremental = false
 
@@ -34,8 +42,6 @@ GITOXIDE_CORE_MULTIPACKINDEX = { value = "true", force = true }
 GITOXIDE_HTTP_SSLVERSIONMAX = { value = "tls1.3", force = true }
 GITOXIDE_HTTP_SSLVERSIONMIN = { value = "tls1.2", force = true }
 RUSTC_BOOTSTRAP = { value = "1", force = true }
-# RUSTC_WRAPPER = { value = "sccache", force = true }
-# RUSTUP_TOOLCHAIN= { value = "nightly", force = true }
 CARGO_CACHE_RUSTC_INFO = { value = "1", force = true }
 RUST_BACKTRACE = "0"
 RUST_LIB_BACKTRACE = "0"
@@ -44,6 +50,8 @@ RUSTC_ICE = "0"
 CARGO_LOG = "off"
 RUSTDOC_LOG = "off"
 RUSTC_LOG = "off"
+# RUSTC_WRAPPER = { value = "sccache", force = true }
+# RUSTUP_TOOLCHAIN= { value = "nightly", force = true }
 
 [cache]
 auto-clean-frequency = "7 days"
@@ -71,22 +79,23 @@ opt-level = 3
 codegen-units = 1
 lto = "fat"
 panic = "abort"
-strip = "symbols" # debuginfo
+strip = "symbols"
 debug = false
 debug-assertions = false
 overflow-checks = false
 incremental = false
-debuginfo= 0
-
-[profile.release.build-override]
-opt-level = 0
-codegen-units = 16 # 256 when not incremental
-incremental = true
-debug = false
-lto = false
+rustflags = [ "-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread", "-Z", "tune-cpu=machine", "-Z", "precise-enum-drop-elaboration=yes" ]
+#debuginfo= 0
 
 [profile.release.package."*"]
 inherits = "release"
+
+[profile.release.build-override]
+opt-level = 0
+codegen-units = 256 # 256 when not incremental
+incremental = true
+debug = false
+lto = false
 
 [profile.dev]
 opt-level = 0
@@ -102,9 +111,8 @@ lto = false
 [term]
 quiet = false
 verbose = false
-#unicode = false # ASCII is faster
-hyperlinks = true
 unicode = true
+hyperlinks = true
 color = 'auto'
 progress.when = 'auto'
 progress.term-integration = true
