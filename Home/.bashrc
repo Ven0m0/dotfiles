@@ -403,23 +403,19 @@ stealth=${stealth:-0}
 #============ Prompt 2 ============
 PROMPT_COMMAND="history -a"
 configure_prompt(){
-  if command -v starship &>/dev/null; then
-    #eval "$(LC_ALL=C starship init bash 2>/dev/null)"; return
-    . -- <(LC_ALL=C starship init bash 2>/dev/null); return
-  fi
-  local C_USER='\[\e[35m\]' C_HOST='\[\e[34m\]' YLW='\[\e[33m\]' \
-        C_PATH='\[\e[36m\]' C_RESET='\[\e[0m\]' C_ROOT='\[\e[31m\]' USERN HOSTL
-  USERN="${C_USER}\u${C_RESET}"
-  HOSTL="${C_HOST}\h${C_RESET}"
-  [[ $EUID -eq 0 ]] && USERN="${C_ROOT}\u${C_RESET}"
-  [[ -n $SSH_CONNECTION ]] && HOSTL="${YLW}\h${C_RESET}"
-  PS1="[${C_USER}\u${C_RESET}@${HOSTL}|${C_PATH}\w${C_RESET}]>\s>\A|\$? \$ "
-  PS2='> ' 
+  command -v starship &>/dev/null && { eval -- "$(/usr/bin/starship init bash --print-full-init)"; return; }
+  
+  local MGN='\[\e[35m\]' BLU='\[\e[34m\]' YLW='\[\e[33m\]' BLD='\[\e[1m\]' UND='\[\e[4m\]' \
+        CYN='\[\e[36m\]' DEF='\[\e[0m\]' RED='\[\e[31m\]'  PNK='\[\e[38;5;205m\]' USERN HOSTL
+  USERN="${MGN}\u${DEF}"; [[ $EUID -eq 0 ]] && USERN="${RED}\u${DEF}"
+  HOSTL="${BLU}\h${DEF}"; [[ -n $SSH_CONNECTION ]] && HOSTL="${YLW}\h${DEF}"
+  
+  PS1="[${USERN}@${HOSTL}${UND}|${DEF}${CYN}\w${DEF}]>${PNK}\A${DEF}|\$? ${BLD}\$${DEF} "
+  PS2='> '
   # Git
-  export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
-  unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWUNTRACKEDFILES
-  if command -v __git_ps1 &>/dev/null && [[ ${GIT_PROMPT:-0} -ge 1 ]] && [[ ${PROMPT_COMMAND:-} != *git_ps1* ]]; then
-    PROMPT_COMMAND="LC_ALL=C LANG=C __git_ps1 2>/dev/null; ${PROMPT_COMMAND:-}"
+  export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1; unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWUNTRACKEDFILES
+  if command -v __git_ps1 &>/dev/null && [[ ${PROMPT_COMMAND:-} != *git_ps1* ]]; then
+    PROMPT_COMMAND="LC_ALL=C __git_ps1 2>/dev/null; ${PROMPT_COMMAND:-}"
   fi
   # Only add if not in stealth mode and not already present in PROMPT_COMMAND
   if command -v mommy &>/dev/null && [[ "${stealth:-0}" -ne 1 ]] && [[ ${PROMPT_COMMAND:-} != *mommy* ]]; then
@@ -460,8 +456,8 @@ fi
 # fetch='LC_ALL=C command hostnamectl 2>/dev/null'
 #============ Jumping ============
 if has zoxide; then
-  export _ZO_DOCTOR='0' _ZO_ECHO='0' _ZO_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}" _ZO_EXCLUDE_DIRS="$HOME:*.git"
-  eval "$(LC_ALL=C zoxide init bash 2>/dev/null)" 2>/dev/null
+  export _ZO_DOCTOR='0' _ZO_ECHO='0' _ZO_DATA_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}" _ZO_EXCLUDE_DIRS="${HOME}:*.git"
+  eval "$(zoxide init bash)"
 fi
 #============ Ble.sh final ============
 [[ ! ${BLE_VERSION-} ]] || ble-attach
