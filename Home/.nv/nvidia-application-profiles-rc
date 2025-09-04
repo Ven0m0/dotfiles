@@ -1,0 +1,53 @@
+{
+    "rules": [
+        {
+            "pattern": {
+                "feature": "true",
+                "matches": ""
+            },
+            "profile": "Main"
+        },
+        {
+            "pattern": {
+                "feature": "true",
+                "matches": ""
+            },
+            "profile": "Main"
+        }
+    ],
+    "profiles": [
+        {
+            "name": "Main",
+            "settings": [
+                {
+                    "key": "GLAllowUnofficialProtocol",
+                    "value": true
+                },
+                {
+                    "key": "GLShaderDiskCache",
+                    "value": true
+                },
+                {
+                    "key": "GLThreadedOptimizations",
+                    "value": true
+                },
+                {
+                    "key": "GLSortFbconfigs",
+                    "value": true
+                },
+                {
+                    "key": "GLYield",
+                    "value": "USLEEP"
+                },
+                {
+                    "key": "GLIgnoreGLSLExtReqs",
+                    "value": true
+                },
+                {
+                    "key": "GLSyncToVblank",
+                    "value": false
+                }
+            ]
+        }
+    ]
+}
