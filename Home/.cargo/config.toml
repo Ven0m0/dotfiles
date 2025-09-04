@@ -1,5 +1,6 @@
 [unstable]
 unstable-options = true
+mtime-on-use = true
 avoid-dev-deps = true
 git = { shallow_index = true, shallow_deps = true }
 gitoxide = { checkout = true, fetch = true, internal_use_git2 = true }
@@ -8,9 +9,10 @@ cargo-lints = true
 feature-unification = true
 trim-paths = true
 no-embed-metadata = true
+# build-std = ["core", "alloc"]
 gc = true
 panic-abort-tests = true
-profile-rustflags = true
+#profile-rustflags = true
 dylib-lto = true
 parallel-tests = true # run tests in parallel
 doctest = false # let `cargo check` skip dev‑dependencies
