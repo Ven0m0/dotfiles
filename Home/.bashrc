@@ -116,11 +116,10 @@ export PYTHONOPTIMIZE=2 PYTHONIOENCODING=utf-8 PYTHON_JIT=1 PYENV_VIRTUALENV_DIS
   UV_RESOLUTION=highest UV_PRERELEASE=allow UV_COMPILE_BYTECODE=1 UV_LINK_MODE=hardlink UV_NATIVE_TLS=1
 
 # GOGC=100 #(needs testing)
-has go && {
-  GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -pgo auto"
-  export CGO_ENABLED=0 GOGC=200 GOMAXPROCS="$jobs" GOFLAGS
-  alias goclear='go clean -cache -modcache'
-}
+if has go; then
+  export CGO_ENABLED=0 GOGC=200 GOMAXPROCS="$jobs" GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -pgo auto"
+  go telemetry off; go clean -cache -modcache
+fi
 
 export ZSTD_NBTHREADS=0 ELECTRON_OZONE_PLATFORM_HINT=auto _JAVA_AWT_WM_NONREPARENTING=1
 export FLATPAK_FANCY_OUTPUT=1 FLATPAK_TTY_PROGRESS=0 FLATPAK_FORCE_TEXT_AUTH=1
