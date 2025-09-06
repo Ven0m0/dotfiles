@@ -299,7 +299,6 @@ alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
 alias mkdir='mkdir -p'
 alias ed='$EDITOR' mi='$EDITOR' smi='sudo $EDITOR'
 alias redo='sudo $(fc -ln -1)'
-alias fuck=''
 
 alias pacman='LC_ALL=C LANG=C.UTF-8 sudo pacman --noconfirm --needed --color=auto'
 alias paru='LC_ALL=C LANG=C.UTF-8 paru --skipreview --noconfirm --needed'
@@ -377,7 +376,7 @@ alias speedt='curl -sf https://raw.githubusercontent.com/sivel/speedtest-cli/mas
 
 # Dotfiles
 # LC_ALL=C git clone --bare git@github.com:Ven0m0/dotfiles.git $HOME/.dotfiles
-alias dotfiles='LC_ALL=C git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 #============ Bindings (readline) ============
 bind 'set completion-query-items 150'
@@ -444,7 +443,7 @@ dedupe_path(){
 }
 dedupe_path
 #============ Fetch ============
-if [[ $SHLVL -gt 3 ]]; then
+if [[ $SHLVL -ge 3; ! $BASH_SUBSHELL -ge 1 ]]; then
   if [[ "${stealth:-0}" -eq 1 ]]; then
     has fastfetch && fetch='fastfetch --ds-force-drm --thread --detect-version false'
   else
