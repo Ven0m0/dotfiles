@@ -39,6 +39,7 @@ set colored-stats on
 set meta-flag on
 set echo-control-characters off
 set bell-style none
+# set bell-style visible
 # set enable-keypad on
 
 # Adds punctuation as word delimiters
