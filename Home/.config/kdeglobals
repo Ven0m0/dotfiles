@@ -1,11 +1,14 @@
 [General]
 ColorScheme=BreezeDark
+#TerminalApplication=alacritty
+#TerminalService=Alacritty.desktop
 
 [Icons]
 Theme=breeze-dark
 
 [KDE]
 AnimationDurationFactor=0
+widgetStyle=Breeze
 
 [KFileDialog Settings]
 Allow Expansion=true
