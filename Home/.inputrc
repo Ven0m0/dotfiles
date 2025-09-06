@@ -98,3 +98,9 @@ $if mode=vi
   set keymap vi-insert
   "\C-e": edit-and-execute-command
 $endif
+
+$if Ftp
+  "\C-xg": "get \M-?"
+  "\C-xt": "put \M-?"
+  "\M-.": yank-last-arg
+$endif
