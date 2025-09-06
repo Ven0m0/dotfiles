@@ -12,6 +12,10 @@ set convert-meta off
 
 # Fix stupid "\e[200~" whenever I paste in bash
 set enable-bracketed-paste off
+set echo-control-characters off
+
+# Adds punctuation as word delimiters
+set bind-tty-special-chars off
 
 ### Fish like tab completions in Bash
 # Use TAB to cycle forward through completions
@@ -23,27 +27,20 @@ set enable-bracketed-paste off
 set menu-complete-display-prefix on
 set show-all-if-ambiguous on
 set show-all-if-unmodified on
-set match-hidden-files off
 set skip-completed-text on
-set completion-map-case on
-set completion-ignore-case on
-set completion-query-items 200
+#set completion-map-case on
+#set completion-ignore-case on
+#set completion-query-items 200
 set completion-prefix-display-length 2
 set mark-symlinked-directories on
 set mark-directories on
-set visible-stats off
 set page-completions off
 set colored-completion-prefix on
 set colored-stats on
+set bell-style visible
+set prefer-visible-bell on
 # Other
-set meta-flag on
-set echo-control-characters off
-set bell-style none
-# set bell-style visible
-# set enable-keypad on
-
-# Adds punctuation as word delimiters
-set bind-tty-special-chars off
+#set show-mode-in-prompt on
 
 # allow the use of the Home/End keys
 # https://wiki.archlinux.org/index.php/Home_and_End_keys_not_working
