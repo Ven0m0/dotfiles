@@ -57,3 +57,24 @@ done
 ```
 /usr/share/libalpm/scripts/
 ```
+
+**Misc**
+```bash
+# Delete logs
+find -O3 . -type f -name "*.log" -delete
+
+# Delete empty files
+find -O3 . -type f -empty -delete
+
+# Delete broken symlinks
+find -O3 . -xtype l -delete
+
+# Apply patches
+usepatch(){ 
+  for patch in ../*.patch; do
+    [[ -e "$patch" ]] || continue
+    echo "Applying patch ${patch##*/}..."
+    patch -Np1 < "$patch"
+  done
+}
+```
