@@ -1,12 +1,10 @@
 **Quick web server serving current dir**
-
 ```bash
 # https://catonmat.net/top-ten-one-liners-from-commandlinefu-explained
 alias pyserver='python3 -m SimpleHTTPServer 8000'
 ```
 
 **Find files**
-
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
