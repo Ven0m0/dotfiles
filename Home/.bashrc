@@ -118,7 +118,7 @@ export PYTHONOPTIMIZE=2 PYTHONIOENCODING=utf-8 PYTHON_JIT=1 PYENV_VIRTUALENV_DIS
 # GOGC=100 #(needs testing)
 if has go; then
   export CGO_ENABLED=0 GOGC=200 GOMAXPROCS="$jobs" GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -pgo auto"
-  go telemetry off; go clean -cache -modcache
+  go telemetry off; go clean -cache -modcache; unset GODEBUG
 fi
 
 export ZSTD_NBTHREADS=0 ELECTRON_OZONE_PLATFORM_HINT=auto _JAVA_AWT_WM_NONREPARENTING=1
