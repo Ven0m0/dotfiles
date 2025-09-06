@@ -8,11 +8,9 @@ alias pyserver='python3 -m SimpleHTTPServer 8000'
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-
 # Usage:
 #   find_files "/search/dir" png jpg jpeg results_array
 #   Then results_array will contain the matching files as a Bash array.
-
 find_files(){
   local search_dir="$1"; shift
   local exts=()
@@ -22,7 +20,6 @@ find_files(){
     shift
   done
   local -n result_array=$1
-
   if command -v fd >/dev/null 2>&1; then
     local fd_args=()
     for ext in "${exts[@]}"; do fd_args+=( -e "$ext" ); done
@@ -54,8 +51,9 @@ done
 ```
 
 **Pacman modules**
-```
+```markdown
 /usr/share/libalpm/scripts/
+/etc/pacman.d/hooks
 ```
 
 **Misc**
