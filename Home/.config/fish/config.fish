@@ -72,8 +72,6 @@ set -gx PATH $basher $PATH
 status --is-interactive >/dev/null 2>&1; and _evalcache basher init - fish 2>/dev/null
 
 set -e LC_ALL
-# Fix weird fish binding, restore ctrl+v
-bind --erase \cv 2>/dev/null
 
 # Prompt
 if type -qf starship
