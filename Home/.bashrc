@@ -75,7 +75,6 @@ if has bat; then
   export PAGER=bat BAT_THEME=ansi BATPIPE=color BAT_STYLE=auto
   alias cat='bat -pp'
   has batman && eval "$(batman --export-env 2>/dev/null)"
-  has batgrep && alias batgrep='batgrep -S --color --rga'
 else
   alias cat='cat -sn'
 fi
@@ -299,7 +298,9 @@ extract(){
 alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
 alias mkdir='mkdir -p'
 alias ed='$EDITOR' mi='$EDITOR' smi='sudo $EDITOR'
-alias please='sudo !!'
+#alias please='sudo !!'
+alias redo='sudo $(history -p !!)'
+
 alias pacman='LC_ALL=C LANG=C.UTF-8 sudo pacman --noconfirm --needed --color=auto'
 alias paru='LC_ALL=C LANG=C.UTF-8 paru --skipreview --noconfirm --needed'
 alias ssh='LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh'
@@ -308,11 +309,10 @@ alias cls='clear' c='clear'
 alias q='exit'
 alias h='history'
 alias ptch='patch -p1 <'
-alias cleansh='curl -fsSL4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
-alias updatesh='curl -fsSL4 https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
+alias cleansh='curl -sfSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
+alias updatesh='curl -sfSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
 
-curlsh(){ LC_ALL=C command curl -fsSL4 "$*" | bash; }
-
+curlsh(){ LC_ALL=C command curl -sfSL "$*" | bash; }
 
 if has eza; then
   alias ls='eza -F --color=auto --group-directories-first --icons=auto'
@@ -325,8 +325,8 @@ else
   alias ll='ls --color=auto --group-directories-first -oh'
   alias lt='ls --color=auto --group-directories-first -oghAt'
 fi
-alias which='command -v'
-alias grep='grep --color=auto' fgrep='fgrep --color=auto' egrep='egrep --color=auto'
+alias which='command -v '
+alias grep='grep --color=auto' fgrep='fgrep --color=auto' egrep='grep --color=auto-E'
 alias cp='cp -iv' mv='mv -iv' ln='ln -ivsn'
 alias rm='rm -Iv --preserve-root' rmd='rm -rIv --preserve-root' rmdir'rmdir -v'
 alias chmod='chmod --preserve-root' chown='chown --preserve-root' chgrp='chgrp --preserve-root'
@@ -357,7 +357,6 @@ else
 fi
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
-alias y='yazi'
 
 # Common use
 alias grep='grep --color=auto'
@@ -366,13 +365,13 @@ alias egrep='egrep --color=auto'
 alias big="expac -H M '%m\t%n' | LC_ALL=C sort -h | nl"                      # Sort installed packages according to size in MB
 alias gitpkg='sudo pacman -Q | LC_ALL=C grep -i "\-git" | LC_ALL=C wc -l'    # List amount of -git packages
 
-alias cleanup='LC_ALL=C sudo pacman -Rns (pacman -Qtdq)'
+alias cleanup='sudo pacman -Rns (pacman -Qtdq)'
 alias dmesg="sudo /bin/dmesg -L=always"
 
 # https://snarky.ca/why-you-should-use-python-m-pip/
 alias pip='python -m pip' py3='python3' py='python'
 
-alias speedt='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 -'
+alias speedt='curl -sf https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 -'
 
 # Dotfiles
 # LC_ALL=C git clone --bare git@github.com:Ven0m0/dotfiles.git $HOME/.dotfiles
@@ -410,7 +409,7 @@ bind -m emacs -x     '"\eh": run-help'
 stealth=${stealth:-0}
 #============ Prompt 2 ============
 configure_prompt(){
-  command -v starship &>/dev/null && { eval "$(starship init bash)"; return; }
+  command -v starship &>/dev/null && { eval "$(LC_ALL=C starship init bash)"; return; }
   
   local MGN='\[\e[35m\]' BLU='\[\e[34m\]' YLW='\[\e[33m\]' BLD='\[\e[1m\]' UND='\[\e[4m\]' \
         CYN='\[\e[36m\]' DEF='\[\e[0m\]' RED='\[\e[31m\]'  PNK='\[\e[38;5;205m\]' USERN HOSTL
@@ -426,8 +425,8 @@ configure_prompt(){
   fi
   # Only add if not in stealth mode and not already present in PROMPT_COMMAND
   if command -v mommy &>/dev/null && [[ "${stealth:-0}" -ne 1 ]] && [[ ${PROMPT_COMMAND:-} != *mommy* ]]; then
-    PROMPT_COMMAND="LC_ALL=C LANG=C mommy -1 -s \$?; ${PROMPT_COMMAND:-}" # mommy https://github.com/fwdekker/mommy
-    # PROMPT_COMMAND="LC_ALL=C LANG=C mommy \$?; ${PROMPT_COMMAND:-}" # Shell-mommy https://github.com/sleepymincy/mommy
+    PROMPT_COMMAND="LC_ALL=C mommy -1 -s \$?; ${PROMPT_COMMAND:-}" # mommy https://github.com/fwdekker/mommy
+    # PROMPT_COMMAND="LC_ALL=C mommy \$?; ${PROMPT_COMMAND:-}" # Shell-mommy https://github.com/sleepymincy/mommy
   fi
 }
 configure_prompt
@@ -438,7 +437,7 @@ dedupe_path(){
     [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"
   done
   [[ -n $s ]] && export PATH="$s"
-  command -v systemctl &>/dev/null && LC_ALL=C command systemctl --user import-environment PATH 2>/dev/null
+  command -v systemctl &>/dev/null && LC_ALL=C command systemctl --user import-environment PATH &>/dev/null
 }
 dedupe_path
 #============ Fetch ============
@@ -460,12 +459,10 @@ if [[ $SHLVL -gt 3 ]]; then
     LC_ALL=C eval "$fetch"
   fi
 fi
-# fetch='LC_ALL=C command hostnamectl 2>/dev/null'
 #============ Jumping ============
-if has zoxide; then
-  export _ZO_DOCTOR='0' _ZO_ECHO='0' _ZO_DATA_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}" _ZO_EXCLUDE_DIRS="${HOME}:*.git"
-  eval "$(zoxide init bash)"
-fi
+command -v zoxide &>/dev/null && { \
+  export _ZO_DOCTOR=0 _ZO_ECHO=0 _ZO_EXCLUDE_DIRS="${HOME}:.cache:go" _ZO_FZF_OPTS="--algo=v1 --cycle +m --no-unicode --no-mouse -0 -1 --inline-info"; \
+  eval "$(zoxide init bash)"; }
 #============ Ble.sh final ============
 [[ ! ${BLE_VERSION-} ]] || ble-attach
 unset LC_ALL
