@@ -235,9 +235,8 @@ cargo_run(){
   (( ${#cmd[@]} > 1 )) || { echo "No cargo binaries available: ${bins[*]}" >&2; return 1; }
   "${cmd[@]}" "$@"
 }
-sudo-command-line(){
-  printf 'toggle sudo at the beginning of the current or the previous command by hitting ESC twice\n'
-  [[ ${#READLINE_LINE} -eq 0 ]] && READLINE_LINE=$(fc -l -n -1 | xargs)
+sudo-cl(){
+  [[ ${#READLINE_LINE} -eq 0 ]] && READLINE_LINE=$(fc -ln -1 | xargs)
   if [[ $READLINE_LINE == sudo\ * ]]; then
     READLINE_LINE="${READLINE_LINE#sudo }"
   else
@@ -245,7 +244,7 @@ sudo-command-line(){
   fi
   READLINE_POINT="${#READLINE_LINE}"
 }
-bind -x '"\e\e": sudo-command-line'
+bind -x '"\e\e": sudo-cl'
 
 gcom(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "$1"; }
 gpush(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "${1:-Update}" && LC_ALL=C command git push; }
@@ -298,10 +297,8 @@ extract(){
 alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
 alias mkdir='mkdir -p'
 alias ed='$EDITOR' mi='$EDITOR' smi='sudo $EDITOR'
-#alias please='sudo !!'
-alias redo='sudo $(history -p !!)'
-
-passwdl(){ eval "$(E3LFbgu='CAT /ETC/PASSWD' && printf %s "${E3LFbgu~~}")"; }
+alias redo='sudo $(fc -ln -1)'
+alias fuck=''
 
 alias pacman='LC_ALL=C LANG=C.UTF-8 sudo pacman --noconfirm --needed --color=auto'
 alias paru='LC_ALL=C LANG=C.UTF-8 paru --skipreview --noconfirm --needed'
@@ -315,6 +312,8 @@ alias cleansh='curl -sfSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs
 alias updatesh='curl -sfSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
 
 curlsh(){ LC_ALL=C command curl -sfSL "$*" | bash; }
+
+passwdl(){ eval "$(E3LFbgu='CAT /ETC/PASSWD' && printf %s "${E3LFbgu~~}")"; }
 
 if has eza; then
   alias ls='eza -F --color=auto --group-directories-first --icons=auto'
@@ -403,6 +402,7 @@ bind '"\e[1;5C": forward-word'
 bind 'set enable-bracketed-paste off'
 # prefixes the line with sudo , if Alt+s is pressed
 bind '"\es": "\C-asudo \C-e"'
+#bind '"\es":"\C-asudo "'
 # https://wiki.archlinux.org/title/Bash
 run-help(){ help "$READLINE_LINE" 2>/dev/null || man "$READLINE_LINE"; }
 bind -m vi-insert -x '"\eh": run-help'
