@@ -60,6 +60,7 @@ export LANG=C.UTF-8 LANGUAGE="en_US:en:C" \
        LC_COLLATE=C LC_CTYPE=C.UTF-8 \
        LC_MEASUREMENT=C TZ='Europe/Berlin'
 
+jobs="$(nproc)"
 SHELL="${BASH:-/bin/bash}"
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 
@@ -114,10 +115,10 @@ export PYTHONOPTIMIZE=2 PYTHONIOENCODING=utf-8 PYTHON_JIT=1 PYENV_VIRTUALENV_DIS
   UV_RESOLUTION=highest UV_PRERELEASE=allow UV_COMPILE_BYTECODE=1 UV_LINK_MODE=hardlink UV_NATIVE_TLS=1
 
 # GOGC=100 #(needs testing)
-has go && { \
-  GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -pgo auto" \
-  expot GOFLAGS GOGC=200 CGO_ENABLED=0 GOMAXPROCS="$(nproc)" \
-  alias goclear='go clean -cache -modcache'; 
+has go && {
+  GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -pgo auto"
+  export CGO_ENABLED=0 GOGC=200 GOMAXPROCS="$jobs" GOFLAGS
+  alias goclear='go clean -cache -modcache'
 }
 
 export ZSTD_NBTHREADS=0 ELECTRON_OZONE_PLATFORM_HINT=auto _JAVA_AWT_WM_NONREPARENTING=1
