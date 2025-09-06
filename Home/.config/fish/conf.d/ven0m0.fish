@@ -42,11 +42,15 @@ if status --is-interactive >/dev/null 2>&1
     abbr -a c clear
 
     abbr -a py 'python3'
-    
-    # bind Esc Esc to toggle_sudo
-    #source ~/.config/fish/functions/presudo.fish
-    #bind \e\e toggle_sudo
-    
+
+    # Fix weird fish binding, restore ctrl+v
+    #bind --erase \cv
+
+    # Bind sudo to ESC ESC
+    #.~/.config/fish/functions/toggle_sudo.fish
+    bind \e\e toggle_sudo
+
+
     function mkdircd
         command mkdir -p -- $argv; and command cd $argv[-1]
     end
