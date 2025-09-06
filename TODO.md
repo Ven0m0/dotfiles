@@ -54,3 +54,8 @@ for f in "${jpeg_files[@]}"; do
   echo "  $f"
 done
 ```
+
+**Pacman modules**
+```
+/usr/share/libalpm/scripts/
+```
