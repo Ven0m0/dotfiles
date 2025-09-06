@@ -245,6 +245,7 @@ sudo-cl(){
   READLINE_POINT="${#READLINE_LINE}"
 }
 bind -x '"\e\e": sudo-cl'
+#bind '"\es": "\C-asudo \C-e"'
 
 gcom(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "$1"; }
 gpush(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "${1:-Update}" && LC_ALL=C command git push; }
