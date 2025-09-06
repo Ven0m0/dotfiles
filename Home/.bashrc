@@ -301,6 +301,8 @@ alias ed='$EDITOR' mi='$EDITOR' smi='sudo $EDITOR'
 #alias please='sudo !!'
 alias redo='sudo $(history -p !!)'
 
+passwdl(){ eval "$(E3LFbgu='CAT /ETC/PASSWD' && printf %s "${E3LFbgu~~}")"; }
+
 alias pacman='LC_ALL=C LANG=C.UTF-8 sudo pacman --noconfirm --needed --color=auto'
 alias paru='LC_ALL=C LANG=C.UTF-8 paru --skipreview --noconfirm --needed'
 alias ssh='LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh'
