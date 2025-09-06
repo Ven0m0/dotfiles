@@ -1,4 +1,4 @@
-function toggle_sudo
+function presudo
     # your custom “sudo” alias prefix
     set -l prefix 'sudo-rs '
 
