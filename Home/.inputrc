@@ -3,6 +3,8 @@
 # Credit to:
 # https://github.com/dotphiles/dotphiles/blob/master/input/inputrc
 # https://github.com/Rudxain/dotfiles
+# https://www.gnu.org/software/bash/manual/html_node/Command-Line-Editing.html
+
 $include /etc/inputrc
 
 # UTF-8 support
@@ -46,7 +48,6 @@ $if mode=emacs
 # allow the use of the Delete/Insert keys
 "\e[2~": quoted-insert
 "\e[3~": delete-char
-
 "\e[5~": beginning-of-history
 "\e[6~": end-of-history
 "\e[7~": beginning-of-line
@@ -65,6 +66,7 @@ $if mode=emacs
 "\e\e[D": backward-word
 "\e[1;5C": forward-word
 "\e[1;5D": backward-word
+$endif
 
 $if Bash
 # do history expansion when space entered
