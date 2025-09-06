@@ -43,17 +43,22 @@
 # resize-overlay-duration = 4s 200ms
 
 window-theme = "dark"
+window-new-tab-position = "current"
 #window-decoration = false
 cursor-click-to-move = true
 mouse-scroll-multiplier = 2
 scrollback-limit = 1000
 #window-vsync = false
 clipboard-read = allow
+clipboard-write = allow
+clipboard-paste-protection = true
 clipboard-trim-trailing-spaces = true
+copy-on-select = "clipboard"
 quit-after-last-window-closed = true
 shell-integration = detect
-shell-integration-features = cursor,sudo,notitle
+shell-integration-features = "sudo,no-cursor,no-title"
 custom-shader-animation = false
+app-notifications = "no-clipboard-copy"
 gtk-opengl-debug = false
 keybind = alt+k=new_tab
 keybind = alt+z=reload_config
