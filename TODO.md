@@ -1,4 +1,4 @@
-**Quick web server serving current dir***
+**Quick web server serving current dir**
 
 ```bash
 # https://catonmat.net/top-ten-one-liners-from-commandlinefu-explained
