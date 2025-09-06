@@ -73,7 +73,7 @@ has delta && GIT_PAGER=delta && type -P batdiff batdiff.sh &>/dev/null && export
 
 if has bat; then
   export PAGER=bat BAT_THEME=ansi BATPIPE=color BAT_STYLE=auto
-  alias cat='bat -pp'
+  alias cat='\bat -pp'
   has batman && eval "$(batman --export-env 2>/dev/null)"
 else
   alias cat='cat -sn'
@@ -111,7 +111,7 @@ alias cargo="cargo_run"
 
 export PYTHONOPTIMIZE=2 PYTHONIOENCODING=utf-8 PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1 \
   UV_NO_VERIFY_HASHES=1 UV_SYSTEM_PYTHON=1 UV_BREAK_SYSTEM_PACKAGES=0 UV_TORCH_BACKEND=auto UV_FORK_STRATEGY=fewest \
-  UV_RESOLUTION=highest UV_PRERELEASE= allow UV_COMPILE_BYTECODE=1 UV_LINK_MODE=hardlink UV_NATIVE_TLS=1
+  UV_RESOLUTION=highest UV_PRERELEASE=allow UV_COMPILE_BYTECODE=1 UV_LINK_MODE=hardlink UV_NATIVE_TLS=1
 
 export ZSTD_NBTHREADS=0 ELECTRON_OZONE_PLATFORM_HINT=auto _JAVA_AWT_WM_NONREPARENTING=1
 export FLATPAK_FANCY_OUTPUT=1 FLATPAK_TTY_PROGRESS=0 FLATPAK_FORCE_TEXT_AUTH=1
