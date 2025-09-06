@@ -23,7 +23,9 @@ ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_com
 # github.com/akinomyoga/ble.sh
 [[ -r /usr/share/blesh/ble.sh ]] && . "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null || { \
   [[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
-
+vs
+[[ -r /usr/share/blesh/ble.sh ]] && . "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null || { 
+  [[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
 # github.com/kazhala/dotbare
 [[ -d ${HOME}/.dotbare ]] && { [[ -f ${HOME}/.dotbare/dotbare ]] && alias dotbare="${HOME}/.dotbare/dotbare"; ifsource "${HOME}/.dotbare/dotbare.plugin.bash"; }
 
@@ -56,21 +58,20 @@ _editor_cmd="$(command -v micro 2>/dev/null || :)"; _editor_cmd="${_editor_cmd##
 export EDITOR VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$EDITOR" FCEDIT="$EDITOR" SUDO_EDITOR="$EDITOR"
 unset _editor_cmd 2>/dev/null
 # https://wiki.archlinux.org/title/Locale
-export LANG=C.UTF-8 LANGUAGE="en_US:en:C" \
-       LC_COLLATE=C LC_CTYPE=C.UTF-8 \
-       LC_MEASUREMENT=C TZ='Europe/Berlin'
+export LANG=C.UTF-8 LANGUAGE="en_US:en:C"
+export LC_COLLATE=C LC_CTYPE=C.UTF-8
+export LC_MEASUREMENT=C TZ='Europe/Berlin'
 
-jobs="$(nproc)"
-SHELL="${BASH:-/bin/bash}"
+jobs="$(nproc)" SHELL="${BASH:-/bin/bash}"
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 
 # Mimalloc & Jemalloc
 # https://github.com/microsoft/mimalloc/blob/main/docs/environment.html
-export MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
-export _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 MIMALLOC_SHOW_STATS=0 MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_PURGE_DELAY=25 MIMALLOC_ARENA_EAGER_COMMIT=2
+MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
+export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 MIMALLOC_SHOW_STATS=0 MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_PURGE_DELAY=25 MIMALLOC_ARENA_EAGER_COMMIT=2
 
 # Delta / bat integration
-has delta && GIT_PAGER=delta && type -P batdiff batdiff.sh &>/dev/null && export BATDIFF_USE_DELTA=true
+has delta && { export GIT_PAGER=delta; command -v batdiff &>/dev/null && export BATDIFF_USE_DELTA=true; }
 
 if has bat; then
   export PAGER=bat BAT_THEME=ansi BATPIPE=color BAT_STYLE=auto
@@ -88,10 +89,10 @@ if has less; then
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
 # XDG + misc
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}" \
-       XDG_DATA_HOME="${XDG_DATA_HOME:=${HOME}/.local/share}" \
-       XDG_STATE_HOME="${XDG_STATE_HOME:=${HOME}/.local/state}" \
-       XDG_CACHE_HOME="${XDG_CACHE_HOME:=${HOME}/.cache}"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:=${HOME}/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:=${HOME}/.local/state}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:=${HOME}/.cache}"
 
 # https://www.reddit.com/r/programming/comments/109rjuj/how_setting_the_tz_environment_variable_avoids
 export INPUTRC="$HOME/.inputrc"
