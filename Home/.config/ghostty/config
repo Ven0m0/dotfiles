@@ -60,5 +60,7 @@ shell-integration-features = "sudo,no-cursor,no-title"
 custom-shader-animation = false
 app-notifications = "no-clipboard-copy"
 gtk-opengl-debug = false
+#gtk-gsk-renderer = ""
+#gtk-gsk-renderer=default
 keybind = alt+k=new_tab
 keybind = alt+z=reload_config
