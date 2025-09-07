@@ -32,9 +32,10 @@
 [pack]
 	threads = 0
 	allowPackReuse = true
-	useBitmapBoundaryTraversal = true
 	useSparse = true
 	indexVersion = 2
+	useBitmapBoundaryTraversal = true
+	useBitmaps = true
 	preferBitmapTips = true
 	writeBitmapHashCache = true
 	writeBitmapLookupTable = true
@@ -60,11 +61,12 @@
     options = "--line-numbers"
 [gc]
 	auto = 256
-	autoPackLimit = 25
+	autoPackLimit = 50
 	autoDetach = true
 	packRefs = true
 	reflogExpireUnreachable = 0
 	reflogExpire = 0
+	aggressive = false
 	aggressiveDepth = 250
 	aggressiveWindow = 250
 	repackFilter = blob:none
@@ -150,8 +152,6 @@
 	keepBackup = false
 [difftool]
 	prompt = false
-[cola]
- startupmode = folder
 [diff-so-fancy]
 	markEmptyLines = false
 	stripLeadingSymbols = true
@@ -162,7 +162,8 @@
 	hideIfPwdIgnored = true
 [remote "origin"]
 	prune = true
-# gh cli auth
+[credential]
+    helper = store
 [init]
 	defaultBranch = main
 [credential "https://github.com"]
