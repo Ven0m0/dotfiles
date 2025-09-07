@@ -13,7 +13,7 @@
 	sparseCheckout = true
 	sparseCheckoutCone = true
 	fsyncMethod = batch
-	repositoryformatversion = 2
+	repositoryformatversion = 1
 	fileMode = true
 	deltaBaseCacheLimit = 1g
 [interactive]
