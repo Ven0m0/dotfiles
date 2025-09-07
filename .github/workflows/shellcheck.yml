@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Run ShellCheck via Reviewdog
-        uses: reviewdog/action-shellcheck@v1.30.0
+        uses: reviewdog/action-shellcheck@v1.32.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
