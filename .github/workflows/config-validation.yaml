@@ -2,7 +2,7 @@ name: Validate Config Files Action
 on:
   #pull_request:
   workflow_dispatch:
-  schedule: [{cron: "0 0 * * 0"}]
+  #schedule: [{cron: "0 0 * * 0"}]
 jobs:
   name: validate-config-files
   runs-on: ubuntu-latest
