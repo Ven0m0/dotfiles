@@ -13,6 +13,7 @@
 	sparseCheckout = true
 	sparseCheckoutCone = true
 	fsyncMethod = batch
+	repositoryformatversion = 2
 [interactive]
 	diffFilter = delta --color-only --features=interactive
 [color]
