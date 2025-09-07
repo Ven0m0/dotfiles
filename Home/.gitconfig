@@ -7,8 +7,8 @@
 	autocrlf = input
 	preloadIndex = true
 	eol = native
-	#compression = -1
-	compression = 9
+	compression = -1
+	#compression = 9
 	multiPackIndex = true
 	sparseCheckout = true
 	sparseCheckoutCone = true
@@ -36,6 +36,8 @@
 	preferBitmapTips = true
 	writeBitmapHashCache = true
 	writeBitmapLookupTable = true
+	window = 50
+	depth = 50
 [diff]
 	algorithm = histogram
 	suppressBlankEmpty = true
