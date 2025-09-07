@@ -14,6 +14,8 @@
 	sparseCheckoutCone = true
 	fsyncMethod = batch
 	repositoryformatversion = 2
+	fileMode = true
+	deltaBaseCacheLimit = 1g
 [interactive]
 	diffFilter = delta --color-only --features=interactive
 [color]
@@ -38,6 +40,7 @@
 	writeBitmapLookupTable = true
 	window = 50
 	depth = 50
+	deltaCacheSize = 512m
 [diff]
 	algorithm = histogram
 	suppressBlankEmpty = true
