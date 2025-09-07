@@ -1,4 +1,5 @@
 * text=auto eol=lf
+*.sh text eol=lf
 *.png binary
 
 # Use built-in patterns to generate smarter diff text.
