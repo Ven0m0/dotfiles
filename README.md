@@ -1,4 +1,4 @@
-# Dotfiles
+## Dotfiles
 
 My highly opinionated dotfiles
 
