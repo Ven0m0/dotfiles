@@ -9,7 +9,7 @@
 
 - [Auto shell check](.github/workflows/shellcheck.yml)
 
-- [Auto updated submodules](.github/workflows/update-git-submopdules.yml)
+- [Auto updated submodules](.github/workflows/update-git-submodules.yml)
 
 </details>
 
