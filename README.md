@@ -2,6 +2,16 @@
 
 My highly opinionated dotfiles
 
+**Features**
+
+- [Auto optimized media](.github/workflows/image-optimizer.yml)
+
+- [Auto validated config files](.github/workflows/config-validate.yml)
+
+- [Auto shell check](.github/workflows/shellcheck.yml)
+
+- [Auto updated submodules](.github/workflows/update-git-submopdules.yml)
+
 <details>
 <summary><b>Arch scripts</b></summary>
 
