@@ -21,61 +21,14 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash
 ```
-</details>
-<details>
-<summary><b>Rank mirrors & keyrings</b></summary>
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
 ```
-
 </details>
 <details>
-<summary><b>Automated install</b></summary>
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Scripts/Install.sh | bash
-```
-
-</details>
-
-<details>
-<summary><b>Automated configuration</b></summary>
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Scripts/AutoSetup.sh | bash
-```
-
-</details>
-<details>
-<summary><b>Bleachbit extra cleaner install</b></summary>
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Scripts/bleachbit.sh | bash
-```
-
-</details>
-<details>
-<summary><b>Miscellaneous scripts</b></summary>
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rust/Strip-rust.sh | bash
-
-curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Debloat.sh | bash
-```
-
-</details>
-<details>
-<summary><b>Install sytax hilighting for the nano editor</b></summary>
+<summary><b>Nano sytax hilighting</b></summary>
 
 https://github.com/scopatz/nanorc
-
-```bash
-curl https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh
-```
-
-Lite version (no overwriting existing ones)
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l
 ```
@@ -91,9 +44,7 @@ curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | 
 * [Basher](https://www.basher.it/package)
 * [bpkg](https://bpkg.sh)
 
-
 * [x-cmd](https://www.x-cmd.com)
-
   <details>
   <summary><b>Install x-cmd</b></summary>
 
@@ -110,13 +61,13 @@ curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | 
 
 ## Supported Linux Distributions
 
-* [CachyOS](https://cachyos.org)
-* [EndeavourOS](https://endeavouros.com)
-* [Nobara](https://nobaraproject.org)
-* [SteamOS](https://store.steampowered.com/steamos/buildyourown) ([Download](https://store.steampowered.com/steamos/download/?ver=steamdeck&snr=))
-* [Bazzite](https://bazzite.gg)
-* [Gentoo](https://www.gentoo.org)
-* [Linux Mint](https://linuxmint.com/)
+[CachyOS](https://cachyos.org) specifically, but really any arch based distro is compatible
+
+
+For debian see:
+
+[My debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
+
 * [DietPi](https://dietpi.com/)
 * [Raspberry Pi OS](https://www.raspberrypi.com/software)
 
