@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 #~/.bash_functions
 
+dotupdate(){
+  if [[ -d ${HOME}/.dotfiles ]]; then
+    LC_ALL=C git -C "${HOME}/.dotfiles" pull --rebase --autostash
+    printf '%s\n' "Updated dotfiles"
+  else
+    printf '%s\n' "Failed to update dotfiles"
+}
+
 # Arch specific
 pacsize(){
   PAGER="${PAGER:-less}"
