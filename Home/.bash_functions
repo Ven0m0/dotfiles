@@ -9,6 +9,15 @@ dotupdate(){
     printf '%s\n' "Failed to update dotfiles"
 }
 
+Setup-ssh(){
+  [[ ! -f "${HOME}/.ssh/id_ed25519" ]] && ssh-keygen -t ed25519 -C "${email:-ven0m0.wastaken@gmail.com}"
+  eval "$(ssh-agent -s)"
+  ssh-add "${HOME}/.ssh/id_ed25519"
+  command -v gh &>/dev/null  && gh ssh-key add "${HOME}/.ssh/id_ed25519.pub" --type signing
+  ssh-copy-id -i "${HOME}/.ssh/id_ed25519.pub" dietpi@192.168.178.81 && ssh-copy-id -i "${HOME}/.ssh/id_ed25519.pub" root@192.168.178.81
+  ssh-copy-id -i "${HOME}/.ssh/id_ed25519.pub" dietpi@192.168.178.86 && ssh-copy-id -i "${HOME}/.ssh/id_ed25519.pub" root@192.168.178.86
+}
+
 # Arch specific
 pacsize(){
   PAGER="${PAGER:-less}"
