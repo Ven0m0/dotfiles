@@ -2,7 +2,8 @@
 
 My highly opinionated dotfiles
 
-**Features**
+<details>
+<summary><b>Features over other dotfiles</b></summary>
 
 - [Auto optimized media](.github/workflows/image-optimizer.yml)
 
@@ -12,6 +13,7 @@ My highly opinionated dotfiles
 
 - [Auto updated submodules](.github/workflows/update-git-submopdules.yml)
 
+</details>
 <details>
 <summary><b>Arch scripts</b></summary>
 
