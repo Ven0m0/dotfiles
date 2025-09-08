@@ -63,14 +63,7 @@ curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | 
 
 [CachyOS](https://cachyos.org) specifically, but really any arch based distro is compatible
 
-
-For debian see:
-
-[My debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
+For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 
 * [DietPi](https://dietpi.com/)
 * [Raspberry Pi OS](https://www.raspberrypi.com/software)
-
-## Useful websites
-
-- [Wormhole file sharing](https://wormhole.app)
