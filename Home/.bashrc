@@ -100,16 +100,19 @@ export CURL_HOME="$HOME"
 export WGETRC="${XDG_CONFIG_HOME}/wget/wgetrc"
 export GPG_TTY="$(tty)"
 
-has cargo && { \
-  export CARGO_HOME="${HOME}/.cargo" RUSTUP_HOME="${HOME}/.rustup"; \
-  ifsource "$HOME/.cargo/env"; prependpath "${CARGO_HOME}/bin"; 
-}
-cargo_run(){
-  local bins=(gg mommy clicker) cmd=(cargo) b
-  for b in "${bins[@]}"; do command -v "cargo-$b" &>/dev/null && cmd+=("$b"); done
-  "${cmd[@]}" "$@"
-}
-alias cargo="cargo_run"
+if has cargo; then
+  export CARGO_HOME="${HOME}/.cargo" RUSTUP_HOME="${HOME}/.rustup"
+  ifsource "$HOME/.cargo/env"
+  prependpath "${CARGO_HOME}/bin"
+  cargo_run(){
+    local found=0 cmd=(cargo) b bins=(gg mommy clicker)
+    for b in "${bins[@]}"; do command -v "cargo-${b}" &>/dev/null && { cmd+=("$b"); found=1; }; done
+    (( found )) && "${cmd[@]}" "$@" || cargo "$@"
+  }
+  alias cargo="cargo_run"
+else
+  unalias cargo
+fi
 
 export PYTHONOPTIMIZE=2 PYTHONIOENCODING=utf-8 PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1 \
   UV_NO_VERIFY_HASHES=1 UV_SYSTEM_PYTHON=1 UV_BREAK_SYSTEM_PACKAGES=0 UV_TORCH_BACKEND=auto UV_FORK_STRATEGY=fewest \
@@ -446,7 +449,7 @@ dedupe_path(){
     [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"
   done
   [[ -n $s ]] && export PATH="$s"
-  command -v systemctl &>/dev/null && LC_ALL=C command systemctl --user import-environment PATH &>/dev/null
+  command -v systemctl &>/dev/null && command systemctl --user import-environment PATH &>/dev/null
 }
 dedupe_path
 #============ Fetch ============
