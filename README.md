@@ -1,6 +1,4 @@
-## Dotfiles
-
-My highly opinionated dotfiles
+### `Dotfiles` 
 
 <details>
 <summary><b>Features over other dotfiles</b></summary>
@@ -14,6 +12,7 @@ My highly opinionated dotfiles
 - [Auto updated submodules](.github/workflows/update-git-submopdules.yml)
 
 </details>
+
 <details>
 <summary><b>Arch scripts</b></summary>
 
@@ -27,6 +26,7 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
 ```
 </details>
+
 <details>
 <summary><b>Nano sytax hilighting</b></summary>
 
@@ -35,6 +35,7 @@ https://github.com/scopatz/nanorc
 curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l
 ```
 </details>
+
 <details>
 <summary><b>Packages:</b></summary>
 
@@ -60,7 +61,8 @@ curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | 
   </details>
 </details>
 
-## Supported Linux Distributions
+<details>
+<summary><b>Supported Linux Distributions</b></summary>
 
 [CachyOS](https://cachyos.org) specifically, but really any arch based distro is compatible
 
@@ -68,3 +70,5 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 
 * [DietPi](https://dietpi.com/)
 * [Raspberry Pi OS](https://www.raspberrypi.com/software)
+
+</details>
