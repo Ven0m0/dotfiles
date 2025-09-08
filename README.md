@@ -43,7 +43,6 @@ curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | 
 * [Lure.sh](https://lure.sh)
 * [Basher](https://www.basher.it/package)
 * [bpkg](https://bpkg.sh)
-
 * [x-cmd](https://www.x-cmd.com)
   <details>
   <summary><b>Install x-cmd</b></summary>
