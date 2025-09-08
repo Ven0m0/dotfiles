@@ -373,8 +373,8 @@ alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias big="expac -H M '%m\t%n' | LC_ALL=C sort -h | nl"                      # Sort installed packages according to size in MB
-alias gitpkg='sudo pacman -Q | LC_ALL=C grep -i "\-git" | LC_ALL=C wc -l'    # List amount of -git packages
+alias big="expac -H M '%m\t%n' | LC_ALL=C sort -hr | nl | head -n 50"   # Sort installed packages according to size in MB
+alias gitpkg='LC_ALL=C pacman -Qq | LC_ALL=C \grep -ci "\-git"'         # List amount of -git packages
 
 alias cleanup='sudo pacman -Rns (pacman -Qtdq)'
 alias dmesg="sudo /bin/dmesg -L=always"
