@@ -1,7 +1,7 @@
 ### `Dotfiles` 
 
 <details>
-<summary><b>Features over other dotfiles</b></summary>
+<summary><b>Features</b></summary>
 
 - [Auto optimized media](.github/workflows/image-optimizer.yml)
 
@@ -12,7 +12,12 @@
 - [Auto updated submodules](.github/workflows/update-git-submodules.yml)
 
 </details>
+<details>
+<summary><b>Dotfile managers</b></summary>
+  
+- https://github.com/Shemnei/punktf
 
+</details>
 <details>
 <summary><b>Arch scripts</b></summary>
 
