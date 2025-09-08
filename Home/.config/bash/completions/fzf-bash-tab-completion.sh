@@ -2,7 +2,7 @@
 _FZF_COMPLETION_SEP=$'\x01'
 
 # shell parsing stuff
-_fzf_bash_completion_awk="$( builtin command -v gawk &>/dev/null && echo gawk || echo awk )"
+_fzf_bash_completion_awk="$( builtin command -v mawk &>/dev/null && echo mawk || echo awk )"
 _fzf_bash_completion_sed="$( builtin command -v gsed &>/dev/null && echo gsed || echo sed )"
 _fzf_bash_completion_grep="$( builtin command -v ggrep &>/dev/null && echo ggrep || echo builtin command grep )"
 
@@ -25,7 +25,7 @@ _fzf_bash_completion_shell_split() {
 
 _fzf_bash_completion_unbuffered_awk() {
     # need to get awk to be unbuffered either by using -W interactive or system("")
-    "$_fzf_bash_completion_awk" -W interactive "${@:3}" "$1 { $2; print \$0; system(\"\") }" 2>/dev/null
+    "$_fzf_bash_completion_awk" -O -W interactive "${@:3}" "$1 { $2; print \$0; system(\"\") }" 2>/dev/null
 }
 
 _fzf_bash_completion_flatten_subshells() {
