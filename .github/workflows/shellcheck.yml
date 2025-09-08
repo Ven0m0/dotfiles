@@ -1,7 +1,19 @@
 name: Reviewdog
 #on: [push, pull_request, workflow_dispatch]
-on: [workflow_dispatch]
-
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**/*.sh'
+      - '**/*.bash'
+      - '.bashrc'
+      - '.profile'
+  pull_request:
+    paths:
+      - '**/*.sh'
+      - '**/*.bash'
+      - '.bashrc'
+      - '.profile'
 permissions:
   contents: read
   pull-requests: write
@@ -11,7 +23,6 @@ jobs:
   shellcheck:
     name: runner / shellcheck
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -23,11 +34,8 @@ jobs:
           path: "."
           pattern: |
             "*.sh"
+            "*.bash"
             ".bashrc"
-            ".bash_profile"
-            ".bash_login"
             ".profile"
-            ".bash_aliases"
-            ".zshrc"
           exclude: ".git/*"
           check_all_files_with_shebangs: "true"
