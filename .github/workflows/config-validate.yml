@@ -1,6 +1,8 @@
 # https://github.com/kehoecj/validate-configs-action
 name: Config validator
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+  schedule: [{cron: "0 0 * * 0"}]
 
 jobs:
   validate-config-files:
