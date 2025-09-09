@@ -22,6 +22,7 @@
 - https://github.com/ellipsis/ellipsis
 - https://github.com/SuperCuber/dotter
 - https://github.com/alichtman/shallow-backup
+- https://github.com/rossmacarthur/sheldon
 
 </details>
 <details>
