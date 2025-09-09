@@ -16,6 +16,8 @@
 <summary><b>Dotfile managers</b></summary>
   
 - https://github.com/Shemnei/punktf
+- https://github.com/woterr/dotpush
+- https://github.com/joel-porquet/dotlink
 
 </details>
 <details>
