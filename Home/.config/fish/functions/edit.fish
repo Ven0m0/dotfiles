@@ -1,3 +1,5 @@
 function edit -w "$EDITOR" -d "alias edit $EDITOR"
-  $EDITOR $argv
+  if type -q "$EDITOR"
+    $EDITOR $argv
+  end
 end
