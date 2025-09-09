@@ -18,6 +18,7 @@
 - https://github.com/Shemnei/punktf
 - https://github.com/woterr/dotpush
 - https://github.com/joel-porquet/dotlink
+- https://github.com/dotphiles/dotsync
 
 </details>
 <details>
