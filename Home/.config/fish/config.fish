@@ -1,10 +1,11 @@
 source /usr/share/cachyos-fish-config/cachyos-config.fish
 
 # ─── Fish setup ─────────────────────────────────────────────────────────
-set -Ux fish_prompt_pwd_dir_length 2
-set -gx __fish_git_prompt_show_informative_status 0
-set -Ux __fish_git_prompt_showupstream none
-set -Ux fish_term24bit 1
+set -U fish_prompt_pwd_dir_length 2
+set -g __fish_git_prompt_show_informative_status 0
+set -U __fish_git_prompt_showupstream none
+set -U fish_term24bit 1
+set -U fish_autosuggestion_enabled 1
 function fish_title
     echo $argv[1] (prompt_pwd)
 end
