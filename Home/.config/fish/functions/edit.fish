@@ -1,5 +1,4 @@
-function edit -w "$EDITOR" -d "alias edit $EDITOR"
-  if type -q "$EDITOR"
+function edit -d "alias edit $EDITOR"
+    set -q EDITOR; or set EDITOR nano
     $EDITOR $argv
-  end
 end
