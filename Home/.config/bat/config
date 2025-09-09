@@ -6,7 +6,16 @@
 --strip-ansi auto
 --style auto
 --paging auto
+--pager="less -RFKiqs --use-color --no-histdups --no-edit-warn"
 --wrap auto
 --decorations auto
 --tabs 2
 -m ".ignore:Git Ignore"
+# --redraw-on-quit
+# Uncomment the following line if you are using less version >= 551 and want to
+# enable mouse scrolling support in `bat` when running inside tmux. This might
+# disable text selection, unless you press shift.
+#--pager="less --RAW-CONTROL-CHARS --quit-if-one-screen --mouse"
+
+--map-syntax ".ignore:Git Ignore"
+--map-syntax='*.conf:INI'
