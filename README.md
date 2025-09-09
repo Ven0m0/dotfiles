@@ -24,6 +24,7 @@
 - https://github.com/alichtman/shallow-backup
 - https://github.com/rossmacarthur/sheldon
 - https://github.com/bevry/dorothy
+- https://github.com/yadm-dev/yadm
 
 </details>
 <details>
