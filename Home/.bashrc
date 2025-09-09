@@ -44,6 +44,7 @@ export FIGNORE="argo.lock" IFS="${IFS:-$' \t\n'}"
 shopt -s histappend cmdhist checkwinsize dirspell cdable_vars cdspell \
          autocd hostcomplete no_empty_cmd_completion globstar nullglob force_fignore
 # Disable Ctrl-s, Ctrl-q
+bind -r '\C-s'
 stty -ixon -ixoff -ixany
 set +H # disable history expansion that breaks some scripts
 # set -o vi; export VIMINIT='set encoding=utf-8'
