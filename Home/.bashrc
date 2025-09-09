@@ -74,17 +74,17 @@ export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_
 has delta && { export GIT_PAGER=delta; command -v batdiff &>/dev/null && export BATDIFF_USE_DELTA=true; }
 
 if has bat; then
-  export PAGER=bat BAT_THEME=ansi BATPIPE=color BAT_STYLE=auto
+  export PAGER=bat BAT_THEME="Sublime Snazzy" BAT_STYLE=auto LESSQUIET=1
   alias cat='\bat -pp'
-  has batman && eval "$(batman --export-env 2>/dev/null)"
+  has batman && eval "$(batman --export-env)"
+  has batpipe && eval "$(batpipe)"
 else
   alias cat='cat -sn'
 fi
 if has less; then
   LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
-  LESSHISTFILE="-" LESS='-FrXnsi --mouse --use-color --no-edit-warn --no-vbell --no-histdups' LESSCHARSET=utf-8
+  LESSHISTFILE="-" LESS='-RFrXnsi --mouse --use-color --no-edit-warn --no-vbell --no-histdups' LESSCHARSET=utf-8
   export LESSHISTFILE LESS LESS_TERMCAP_md LESS_TERMCAP_me LESS_TERMCAP_us LESS_TERMCAP_ue LESS_TERMCAP_so LESS_TERMCAP_se LESSCHARSET
-  has lesspipe && eval "$(SHELL=/bin/sh lesspipe 2>/dev/null)" 2>/dev/null || true
   export PAGER="${PAGER:-less}"
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
