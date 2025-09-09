@@ -11,3 +11,7 @@ jobs:
       - uses: kehoecj/validate-configs-action@v4.0.1
         with:
             group-by: "pass-fail"
+            depth: 8
+            #exclude-dirs: ","
+            #exclude-file-types: "json,xml"
+            
