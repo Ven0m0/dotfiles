@@ -79,6 +79,7 @@ if has bat; then
   alias cat='\bat -pp'
   has batman && eval "$(batman --export-env)"
   has batpipe && eval "$(batpipe)"
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'" MANROFFOPT="-c"
 else
   alias cat='cat -sn'
 fi
