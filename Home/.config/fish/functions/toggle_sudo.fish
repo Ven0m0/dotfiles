@@ -1,26 +1,19 @@
-function toggle_sudo
-    set -l prefix 'sudo-rs '
+function toggle_sudo --description 'Toggles sudo-rs (fallback sudo) on the command line'
     set -l buf (commandline)
     set -l pos (commandline -C)
     if test -z "$buf"
-        set buf $history[1]
-        set pos (string length -- "$buf")
+        set buf $history[1]; set pos (string length -- "$buf")
     end
-    set -l ws (string match -r '^\s*' -- $buf)
-    set -l ws_len (string length -- "$ws")
-    set -l prefix_len (string length -- "$prefix")
-    set -l rest (string replace -r '^\s*' '' -- $buf)
-    if string match -r "^$prefix" -- "$rest"
-        set rest (string replace -r "^$prefix" '' -- $rest)
-        if test $pos -gt $ws_len
-            set pos (math "$pos - $prefix_len")
-            if test $pos -lt $ws_len; set pos $ws_len; end
-        end
+    set -l ws (string match -r '^\s*' -- "$buf")
+    set -l rest (string replace -r '^\s*' '' -- "$buf")
+    set -l prefix (if type -q sudo-rs; echo 'sudo-rs '; else; echo 'sudo '; end)
+    set -l plen (string length -- "$prefix")
+    if string match -q -r "^$prefix" -- "$rest"
+        set rest (string replace -r "^$prefix" '' -- "$rest")
+        set pos (math "$pos - $plen"); or set pos (string length -- "$ws")
     else
         set rest "$prefix$rest"
-        if test $pos -ge $ws_len
-            set pos (math "$pos + $prefix_len")
-        end
+        set pos (math "$pos + $plen")
     end
     commandline -r -- "$ws$rest"
     commandline -C -- $pos
