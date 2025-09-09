@@ -23,17 +23,17 @@ ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_com
 # github.com/akinomyoga/ble.sh
 [[ -r /usr/share/blesh/ble.sh ]] && . "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null || { \
   [[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
-vs
-[[ -r /usr/share/blesh/ble.sh ]] && . "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null || { 
-  [[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
+
 # github.com/kazhala/dotbare
 [[ -d ${HOME}/.dotbare ]] && { [[ -f ${HOME}/.dotbare/dotbare ]] && alias dotbare="${HOME}/.dotbare/dotbare"; ifsource "${HOME}/.dotbare/dotbare.plugin.bash"; }
+
+ifsource "${HOME}/.nativa.sh" && { export NAVITA_COMMAND=z NAVITA_DATA_DIR="${HOME}/.local/state/navita" NAVITA_CONFIG_DIR="${HOME}/.config/navita"; }
 
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
 HISTSIZE=1000 HISTFILESIZE="$HISTSIZE"
 HISTCONTROL="erasedups:ignoreboth"
-HISTIGNORE="&:[bf]g:clear:cls:exit:history:bash:fish:?:??:!!:**"
+HISTIGNORE="&:[bf]g:clear:cls:exit:history:bash:fish:?:??"
 export HISTTIMEFORMAT="%F %T " IGNOREEOF=100
 HISTFILE="${HOME}/.bash_history"
 PROMPT_DIRTRIM=2 PROMPT_COMMAND="history -a"
@@ -96,8 +96,7 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:=${HOME}/.cache}"
 
 # https://www.reddit.com/r/programming/comments/109rjuj/how_setting_the_tz_environment_variable_avoids
 export INPUTRC="$HOME/.inputrc"
-export CURL_HOME="$HOME"
-export WGETRC="${XDG_CONFIG_HOME}/wget/wgetrc"
+export CURL_HOME="$HOME" WGETRC="${HOME}/.config/wget/wgetrc"
 export GPG_TTY="$(tty)"
 
 if has cargo; then
@@ -411,7 +410,7 @@ bind '"\e[1;5D": backward-word'
 bind '"\e[1;5C": forward-word'
 bind 'set enable-bracketed-paste off'
 # prefixes the line with sudo , if Alt+s is pressed
-bind '"\es": "\C-asudo \C-e"'
+#bind '"\ee": "\C-asudo \C-e"'
 #bind '"\es":"\C-asudo "'
 # https://wiki.archlinux.org/title/Bash
 run-help(){ help "$READLINE_LINE" 2>/dev/null || man "$READLINE_LINE"; }
@@ -431,8 +430,10 @@ configure_prompt(){
   PS1="[${USERN}@${HOSTL}${UND}|${DEF}${CYN}\w${DEF}]>${PNK}\A${DEF}|\$? ${BLD}\$${DEF} "
   PS2='> '
   # Git
-  export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1; unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWUNTRACKEDFILES
+  
   if command -v __git_ps1 &>/dev/null && [[ ${PROMPT_COMMAND:-} != *git_ps1* ]]; then
+    export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
+    unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWUNTRACKEDFILES
     PROMPT_COMMAND="LC_ALL=C __git_ps1 2>/dev/null; ${PROMPT_COMMAND:-}"
   fi
   # Only add if not in stealth mode and not already present in PROMPT_COMMAND
