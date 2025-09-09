@@ -1,7 +1,16 @@
 source /usr/share/cachyos-fish-config/cachyos-config.fish
 
+# ─── Fish setup ─────────────────────────────────────────────────────────
+set -Ux fish_prompt_pwd_dir_length 2
+set -gx __fish_git_prompt_show_informative_status 0
+set -Ux __fish_git_prompt_showupstream none
+set -Ux fish_term24bit 1
+function fish_title
+    echo $argv[1] (prompt_pwd)
+end
+
 # ─── Keybinds ─────────────────────────────────────────────────────────
-fish_hybrid_key_bindings
+#fish_hybrid_key_bindings
 functions -q toggle_sudo
 	bind \cs 'toggle_sudo'
 end
@@ -26,12 +35,6 @@ set -Ux FZF_LEGACY_KEYBINDINGS 0
 #set -Ux FZF_COMPLETE 3
 _evalcache fzf --fish 2>/dev/null
 # ────────────────────────────────────────────────────────────
-set -Ux fish_prompt_pwd_dir_length 2
-set -gx __fish_git_prompt_show_informative_status 0
-set -Ux __fish_git_prompt_showupstream none
-set -Ux fish_term24bit 1
-functions -e fish_title
-
 # choose fetch command depending on stealth and available tools
 # set -l stealth 1
 if test "$stealth" = "1"
