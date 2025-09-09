@@ -83,6 +83,11 @@ end
 if type -qf starship
 	_evalcache starship init fish 2>/dev/null
 end
+if test -d ~/.basher
+    set basher ~/.basher/bin
+end
+set -gx PATH $basher $PATH
+_evalcache basher init - fish
 # ─── Ghostty integration ─────────────────────────────────────────────────────────
 if test "$TERM" = "xterm-ghostty" -a -e "$GHOSTTY_RESOURCES_DIR"/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish
     source "$GHOSTTY_RESOURCES_DIR"/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish
