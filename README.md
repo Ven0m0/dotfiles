@@ -19,6 +19,9 @@
 - https://github.com/woterr/dotpush
 - https://github.com/joel-porquet/dotlink
 - https://github.com/dotphiles/dotsync
+- https://github.com/ellipsis/ellipsis
+- https://github.com/SuperCuber/dotter
+- https://github.com/alichtman/shallow-backup
 
 </details>
 <details>
