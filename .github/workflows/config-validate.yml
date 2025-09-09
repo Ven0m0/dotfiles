@@ -12,6 +12,6 @@ jobs:
         with:
             group-by: "pass-fail"
             depth: 8
+            search-path: "./Home"
             #exclude-dirs: ","
             #exclude-file-types: "json,xml"
-            
