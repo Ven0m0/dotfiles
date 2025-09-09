@@ -1,14 +1,4 @@
 function suedit -d 'Edit a file as root using $EDITOR'
-    if test -z "$EDITOR"
-        echo "❌ \$EDITOR is not set. Please set your editor first." >&2
-        return 1
-    end
-
-    if type -q sudo-rs    
-        sudo-rs $EDITOR $argv
-    else if type -q doas
-        doas $EDITOR $argv
-    else
-        sudo $EDITOR $argv
-    end
+    set -q EDITOR; or set EDITOR nano
+    type -q sudo-rs; and sudo-rs $EDITOR $argv; or type -q doas; and doas $EDITOR $argv; or sudo $EDITOR $argv
 end
