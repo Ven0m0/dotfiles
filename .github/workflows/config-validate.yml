@@ -11,7 +11,7 @@ jobs:
       - uses: kehoecj/validate-configs-action@v4.0.1
         with:
             group-by: "pass-fail"
-            depth: 6
-            search-path: "Home"
+            #depth: 6
+            #search-path: "Home"
             #exclude-dirs: ","
             #exclude-file-types: "json,xml"
