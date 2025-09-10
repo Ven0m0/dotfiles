@@ -1,4 +1,5 @@
 # ~/.bashrc
+# https://www.gnu.org/software/bash/manual/bash.html
 
 [[ $- != *i* ]] && return
 export LC_ALL=C
