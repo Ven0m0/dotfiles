@@ -86,3 +86,13 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 * [Raspberry Pi OS](https://www.raspberrypi.com/software)
 
 </details>
+
+
+Search engines:
+
+- [DuckduckGo](https://duckduckgo.com)
+
+[Find searchx instancehere](https://searx.space)
+
+-[Faster, but a bit less secure](https://searx.stream)
+-[Slower but more trustworthy/secure](searx.dresden.network)
