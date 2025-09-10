@@ -92,7 +92,8 @@ Search engines:
 
 - [DuckduckGo](https://duckduckgo.com)
 
-[Find searchx instancehere](https://searx.space)
+Find searchx instance [here](https://searx.space)
 
 -[Faster, but a bit less secure](https://searx.stream)
+
 -[Slower but more trustworthy/secure](searx.dresden.network)
