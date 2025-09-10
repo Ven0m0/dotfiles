@@ -99,7 +99,7 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 
 - [DuckduckGo](https://duckduckgo.com)
 
-- [Searchxng](https://searx.dresden.network/)  [Instances:](https://searx.space)
+- [Searchxng](https://searx.dresden.network/) &nbsp; [Instances:](https://searx.space)
 
 
 
