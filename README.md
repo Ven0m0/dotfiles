@@ -89,15 +89,17 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 
 * [Libredirect](https://libredirect.github.io)
 
+* [alternative-front-ends](https://github.com/mendel5/alternative-front-ends)
+
 * [Redlib rust reddit](https://github.com/redlib-org/redlib)
+
+
 
 ### `Search engines`
 
 - [DuckduckGo](https://duckduckgo.com)
 
-Find **searchxng** instance [here](https://searx.space)
+- [Searchxng](https://searx.dresden.network/)  [Instances:](https://searx.space)
 
--[Faster, but a bit less secure](https://searx.stream)
 
--[Slower but more trustworthy/secure](searx.dresden.network)
 
