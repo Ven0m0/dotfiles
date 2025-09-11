@@ -91,7 +91,9 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 
 * [alternative-front-ends](https://github.com/mendel5/alternative-front-ends)
 
-* [Redlib rust reddit](https://github.com/redlib-org/redlib)
+* [Redlib instance list](https://github.com/redlib-org/redlib-instances/blob/main/instances.md)
+
+* [Redlib reddit](https://lr.ptr.moe)
 
 
 
