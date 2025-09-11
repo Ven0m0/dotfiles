@@ -94,7 +94,7 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 - [Redlib instance list](https://github.com/redlib-org/redlib-instances/blob/main/instances.md)
 - [Redlib reddit](https://lr.ptr.moe)
 
-
+- [Imgur](https://rimgo.lunar.icu)
 
 ### `Search engines`
 
