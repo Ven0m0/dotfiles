@@ -82,18 +82,18 @@ curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | 
 
 For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 
-* [DietPi](https://dietpi.com/)
-* [Raspberry Pi OS](https://www.raspberrypi.com/software)
+- [DietPi](https://dietpi.com/)
+- [Raspberry Pi OS](https://www.raspberrypi.com/software)
 
 </details>
 
-* [Libredirect](https://libredirect.github.io)
+- [Libredirect](https://libredirect.github.io)
 
-* [alternative-front-ends](https://github.com/mendel5/alternative-front-ends)
+- [alternative-front-ends](https://github.com/mendel5/alternative-front-ends)
 
-* [Redlib instance list](https://github.com/redlib-org/redlib-instances/blob/main/instances.md)
+- [Redlib instance list](https://github.com/redlib-org/redlib-instances/blob/main/instances.md)
 
-* [Redlib reddit](https://lr.ptr.moe)
+- [Redlib reddit](https://lr.ptr.moe)
 
 
 
@@ -103,5 +103,5 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 
 - [Searchxng](https://searx.dresden.network/) &nbsp; [Instances:](https://searx.space)
 
-
+- [Brave search](https://search.brave.com)
 
