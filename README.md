@@ -89,6 +89,8 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 
 - [Libredirect](https://libredirect.github.io)
 - [alternative-front-ends](https://github.com/mendel5/alternative-front-ends)
+- [Privacy-tools](https://www.privacytools.io)
+
 - [Redlib instance list](https://github.com/redlib-org/redlib-instances/blob/main/instances.md)
 - [Redlib reddit](https://lr.ptr.moe)
 
