@@ -86,12 +86,11 @@ $if mode=vi
   set show-mode-in-prompt on
   C-L: clear-screen
   C-A: beginning-of-line
+  set vi-ins-mode-string \1\e[6 q\2
+  set vi-cmd-mode-string \1\e[2 q\2
   $if term=linux
 	  set vi-ins-mode-string \1\e[?0c\2
 	  set vi-cmd-mode-string \1\e[?8c\2
-  $else
-	  set vi-ins-mode-string \1\e[6 q\2
-	  set vi-cmd-mode-string \1\e[2 q\2
   $endif
   set keymap vi-command
   "\C-e": edit-and-execute-command
