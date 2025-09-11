@@ -53,14 +53,14 @@ curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | 
 <details>
 <summary><b>Packages:</b></summary>
 
-* [Arch PKG](https://archlinux.org/packages)
-* [AUR PKG](https://aur.archlinux.org)
-* [Crates.io](https://crates.io)
-* [FlatHub](https://flathub.org)
-* [Lure.sh](https://lure.sh)
-* [Basher](https://www.basher.it/package)
-* [bpkg](https://bpkg.sh)
-* [x-cmd](https://www.x-cmd.com)
+- [Arch PKG](https://archlinux.org/packages)
+- [AUR PKG](https://aur.archlinux.org)
+- [Crates.io](https://crates.io)
+- [FlatHub](https://flathub.org)
+- [Lure.sh](https://lure.sh)
+- [Basher](https://www.basher.it/package)
+- [bpkg](https://bpkg.sh)
+- [x-cmd](https://www.x-cmd.com)
   <details>
   <summary><b>Install x-cmd</b></summary>
 
@@ -88,11 +88,8 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 </details>
 
 - [Libredirect](https://libredirect.github.io)
-
 - [alternative-front-ends](https://github.com/mendel5/alternative-front-ends)
-
 - [Redlib instance list](https://github.com/redlib-org/redlib-instances/blob/main/instances.md)
-
 - [Redlib reddit](https://lr.ptr.moe)
 
 
