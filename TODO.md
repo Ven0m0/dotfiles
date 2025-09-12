@@ -1,6 +1,5 @@
 ```mk
 https://github.com/gavinlyonsrepo/backupmenu
-https://github.com/app-fast/app-fast
 
 
 git submodule sync --recursive
