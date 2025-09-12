@@ -23,8 +23,12 @@ rules:
   document-end: disable
   document-start:
     level: warning
+    present: true
   empty-lines:
     level: warning
+    max: 2
+    max-start: 0
+    max-end: 0
   empty-values: disable
   float-values: disable
   hyphens: enable
@@ -33,9 +37,12 @@ rules:
   key-ordering: disable
   line-length:
     level: warning
+    max: 80
+    allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
   new-line-at-end-of-file: enable
-  new-lines: enable
+  new-lines:
+    type: unix
   octal-values: disable
   quoted-strings: disable
   trailing-spaces: enable
