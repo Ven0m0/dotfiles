@@ -2,6 +2,8 @@
 # Git
 # ---------------------
 .git/
+.git
+.github-personal-access-token
 .gitconfig.local
 
 # ---------------------
@@ -81,6 +83,12 @@ nohup.out
 *.lck
 .cache
 .nv/ComputeCache/
+npm-debug.log*
+/package-lock.json
+pids
+*.pid
+*.seed
+*.pid.lock
 
 # ---------------------
 # Linux system / editor files
@@ -108,6 +116,11 @@ node_modules/
 target/
 build/
 go/
+jspm_packages/
+dependencies/composer/vendor
+.npm
+.eslintcache
+*.tgz
 
 # ---------------------
 # Windows system files
@@ -116,3 +129,12 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# ---------------------
+# Super-linter ouputs
+# ---------------------
+super-linter.report
+super-linter-output/
+custom-super-linter-output-directory-name/
+super-linter-github-actions-step-summary-output*
+github-step-summary.md
