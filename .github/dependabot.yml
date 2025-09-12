@@ -4,6 +4,11 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    commit-message:
+      prefix: chore
+      include: scope
+    pull-request-branch-name:
+      separator: -
 
   - package-ecosystem: npm
     directory: /
