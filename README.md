@@ -42,12 +42,13 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 </details>
 
 <details>
-<summary><b>Nano sytax hilighting</b></summary>
+<summary><b>Useful Stuff</b></summary>
 
-https://github.com/scopatz/nanorc
-```bash
-curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l
-```
+- https://dotfiles.github.io/
+- https://terminal.sexy/
+- https://wiki.archlinux.org/title/Git
+- 
+
 </details>
 
 <details>
