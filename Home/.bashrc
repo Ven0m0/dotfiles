@@ -195,6 +195,7 @@ fuzzy_finders(){
 fuzzy_finders
 
 #============ Completions ============
+# complete -cf sudo
 complete -o default -o bashdefault -F _completion_loader sudo
 complete -o default -o bashdefault -F _completion_loader sudo-rs
 complete -o default -o bashdefault -F _completion_loader doas
@@ -203,6 +204,10 @@ complete -o default -o bashdefault -F _completion_loader command
 complete -o default -o bashdefault -F _completion_loader type
 complete -o default -o bashdefault -F _completion_loader builtin
 complete -o default -o bashdefault -F _completion_loader exec
+
+run-help() { help "$READLINE_LINE" 2>/dev/null || man "$READLINE_LINE"; }
+bind -m vi-insert -x '"\eh": run-help'
+bind -m emacs -x     '"\eh": run-help'
 
 command -v pay-respects &>/dev/null && eval "$(pay-respects bash)"
 command -v gh &>/dev/null && eval "$(gh completion -s bash)"
