@@ -65,3 +65,8 @@ ghpatch(){
     echo "Patch failed"; return 1
   fi
 }
+
+# Todo: online manpages
+man-on(){
+  curl -sSfL 'https://man.archlinux.org/man/clang.raw' | man -l -
+}
