@@ -54,5 +54,14 @@ pacsk(){
     sudo pacman -S ${sel// / } --noconfirm --needed; } || printf '%s\n' "No packages selected."
 }
 
-
-
+ghpatch(){
+  local url="${1:?usage: ghpatch <commit-url>}" patch
+  patch="$(mktemp)" || return 1
+  trap 'rm -f "$patch"' EXIT
+  curl -sSfL "${url}.patch" -o "$patch" || return 1
+  if git apply "$patch"; then
+    git add -A && git commit -m "Apply patch from ${url}"
+  else
+    echo "Patch failed"; return 1
+  fi
+}
