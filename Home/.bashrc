@@ -205,6 +205,7 @@ complete -o default -o bashdefault -F _completion_loader builtin
 complete -o default -o bashdefault -F _completion_loader exec
 
 command -v pay-respects &>/dev/null && eval "$(pay-respects bash)"
+command -v gh &>/dev/null && eval "$(gh completion -s bash)"
 
 # Ghostty
 [[ $TERM == xterm-ghostty ]] && . "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
