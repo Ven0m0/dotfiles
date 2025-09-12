@@ -71,6 +71,8 @@ $endif
 $if Bash
 # do history expansion when space entered
 Space: magic-space
+# wraps the line in su -c '' and runs it, if Alt+s is pressed:
+"\es": "\C-a su -c '\C-e'\C-m"
 # Toggle sudo at the beginning (Alt+Shift‑S)
 # "\eS": "\C-asudo \C-e"
 # Insert quotes around current/previous word: Ctrl+X -> q
@@ -79,6 +81,8 @@ Space: magic-space
 "\C-xr": redraw-current-line
 # turn $VAR into its value
 "\M-\C-v": "\C-a\C-k$\C-y\M-\C-e\C-a\C-y="
+# send a command in the background with Ctrl+Alt+b, discarding all of its output
+"\e\C-b": "\C-e > /dev/null 2>&1 &\C-m"
 $endif
 
 # set editing-mode vi
