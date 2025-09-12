@@ -1,5 +1,22 @@
 # ~/.zshrc
 
+autoload -Uz compinit
+compinit
+zstyle ':completion:*' menu select
+zstyle ':completion::complete:*' gain-privileges 1
+
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
+[[ -n "${key[Up]}"   ]] && bindkey -- "${key[Up]}"   up-line-or-beginning-search
+[[ -n "${key[Down]}" ]] && bindkey -- "${key[Down]}" down-line-or-beginning-search
+
+key[Control-Left]="${terminfo[kLFT5]}"
+key[Control-Right]="${terminfo[kRIT5]}"
+
+[[ -n "${key[Control-Left]}"  ]] && bindkey -- "${key[Control-Left]}"  backward-word
+[[ -n "${key[Control-Right]}" ]] && bindkey -- "${key[Control-Right]}" forward-word
 
 HISTFILE=${HOME}/.zsh_history
 HISTSIZE=10000 SAVEHIST="$HISTSIZE"
@@ -17,3 +34,7 @@ alias mkdir='mkdir -p'
 mcd () { mkdir -p "$1" && cd "$1"; }
 
 stty -ixon
+
+autoload -Uz promptinit
+promptinit
+
