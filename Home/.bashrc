@@ -310,7 +310,8 @@ extract(){
 # Enable aliases to be sudo’ed
 alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
 alias mkdir='mkdir -p'
-alias ed='$EDITOR' mi='$EDITOR' smi='sudo $EDITOR'
+alias e='$EDITOR' se='sudo $EDITOR'
+alias nano='nano -/' mi=micro
 alias redo='sudo $(fc -ln -1)'
 
 alias pacman='LC_ALL=C LANG=C.UTF-8 sudo pacman --noconfirm --needed --color=auto'
