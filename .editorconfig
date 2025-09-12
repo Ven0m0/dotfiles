@@ -45,10 +45,13 @@ tab_width = 4
 trim_trailing_whitespace = false
 insert_final_newline = true
 
+[*.md]
+indent_size = unset
+
 # ---------------------
 # Go, Rust, Zig, Makefiles
 # ---------------------
-[*.go,*.rs,*.zig,Makefile,*.mk]
+[{Makefile,go.mod,go.sum,*.go,*.rs,*.zig,.gitmodules,*.mk}]
 indent_style = tab
 indent_size = 4
 tab_width = 4
