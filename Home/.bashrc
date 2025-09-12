@@ -64,7 +64,7 @@ export LANG=C.UTF-8 LANGUAGE="en_US:en:C"
 export LC_COLLATE=C LC_CTYPE=C.UTF-8
 export LC_MEASUREMENT=C TZ='Europe/Berlin'
 
-jobs="$(nproc)" SHELL="${BASH:-/bin/bash}"
+jobs="$(nproc)" SHELL="${BASH:-$(command -v bash 2>/dev/null)}"
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 
 # Mimalloc & Jemalloc
