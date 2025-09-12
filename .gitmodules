@@ -1,3 +1,3 @@
 [submodule "Home/.bin/fzf-scripts"]
-	path = Home/.bin/fzf-scripts
-	url = https://github.com/DanielFGray/fzf-scripts.git
+  path = Home/.bin/fzf-scripts
+  url = https://github.com/DanielFGray/fzf-scripts.git
