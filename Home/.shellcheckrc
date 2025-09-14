@@ -5,10 +5,10 @@ shell=bash
 external-sources=true
 
 # Turn on warnings for unquoted variables with safe values
-enable=quote-safe-variables
+#enable=quote-safe-variables
 
 # Turn on warnings for unassigned uppercase variables
-enable=check-unassigned-uppercase
+#enable=check-unassigned-uppercase
 
 # All optional checks
 enable=all
