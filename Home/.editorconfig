@@ -13,15 +13,20 @@ insert_final_newline = true
 indent_style = space
 indent_size = 2
 tab_width = 2
+# Give operators breathing room, but not brackets
+spaces_around_operators = true
+spaces_around_brackets = false
+quote_type = auto
+spelling_language = en
 
 # ---------------------
 # Shell scripts
 # ---------------------
-[*.sh,*.bash*,.profile,bash*]
+[*.sh,*.bash*,.profile,bash*,.bash_*]
 keep_padding = true
 space_redirects = false
-switch_case_indent = true
-function_next_line = true
+switch_case_indent = false
+function_next_line = false
 binary_next_line = true
 shell_variant = bash
 
@@ -40,10 +45,13 @@ tab_width = 4
 trim_trailing_whitespace = false
 insert_final_newline = true
 
+[*.md]
+indent_size = unset
+
 # ---------------------
 # Go, Rust, Zig, Makefiles
 # ---------------------
-[*.go,*.rs,*.zig,Makefile,*.mk]
+[Makefile,*.mk,go.mod,go.sum,*.go,*.rs,*.zig,.gitmodules]
 indent_style = tab
 indent_size = 4
 tab_width = 4
