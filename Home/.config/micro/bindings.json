@@ -1,8 +1,9 @@
 {
     "Alt-/": "lua:comment.comment",
     "Alt-d": "command:definition",
-    "Alt-f": "command:format",
+    "Alt-f": "lua:fzf.fzf",
     "Alt-k": "command:hover",
+    "Alt-p": "lua:filemanager.toggle_tree",
     "Alt-r": "command:references",
     "Alt-s": "Save,Quit",
     "CtrlSpace": "command:lspcompletion",
