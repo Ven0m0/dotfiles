@@ -4,9 +4,9 @@
     "Alt-f": "command:format",
     "Alt-k": "command:hover",
     "Alt-r": "command:references",
+    "Alt-s": "Save,Quit",
     "CtrlSpace": "command:lspcompletion",
     "CtrlUnderscore": "lua:comment.comment",
     "F1": "command:cheat",
     "F4": "command:jumptag"
-    "Alt-s": "Save,Quit"
 }
