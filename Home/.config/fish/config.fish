@@ -1,6 +1,12 @@
 source /usr/share/cachyos-fish-config/cachyos-config.fish
-
 set -e LC_ALL
+
+# Only for interactive shells
+if status -i >/dev/null 2>&1
+
+set -x MANPAGER "sh -c 'col -bx | bat -l man -p'"
+
+set -U __done_notification_urgency_level low
 
 # ─── Path Deduplication ─────────────────────────────────────────────────────────
 set PATH (printf "%s" "$PATH" | awk -O -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')
