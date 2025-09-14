@@ -32,7 +32,6 @@ jobs:
             *.bash
             .bashrc
             bash_*
-          #exclude: ".git/*"
           exclude: |
             */.git/*
             ./.cache/*
