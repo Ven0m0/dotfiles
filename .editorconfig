@@ -51,7 +51,7 @@ indent_size = unset
 # ---------------------
 # Go, Rust, Zig, Makefiles
 # ---------------------
-[{Makefile,go.mod,go.sum,*.go,*.rs,*.zig,.gitmodules,*.mk}]
+[Makefile,*.mk,go.mod,go.sum,*.go,*.rs,*.zig,.gitmodules]
 indent_style = tab
 indent_size = 4
 tab_width = 4
