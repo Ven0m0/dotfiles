@@ -1,0 +1,36 @@
+[ContentDisplay]
+DirectorySizeMode=ContentSize
+ElidingMode=Right
+UsePermissionsFormat=NumericFormat
+
+[ContextMenu]
+ShowOpenInNewWindow=true
+ShowOpenTerminal=true
+
+[DetailsMode]
+HighlightEntireRow=false
+LeftPadding=0
+RightPadding=0
+
+[General]
+BrowseThroughArchives=true
+ConfirmClosingMultipleTabs=false
+DynamicView=true
+EditableUrl=true
+HideXTrashFile=true
+RememberOpenedTabs=false
+Version=202
+ViewPropsTimestamp=2025,9,14,17,42,48.774
+
+[InformationPanel]
+dateFormat=ShortFormat
+
+[KFileDialog Settings]
+Places Icons Auto-resize=false
+Places Icons Static Size=22
+
+[MainWindow]
+MenuBar=Disabled
+
+[PreviewSettings]
+Plugins=ffmpegthumbnailer,appimagethumbnail,audiothumbnail,avif,cursorthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,jxl,kraorathumbnail,windowsimagethumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,librsvg,svgthumbnail,ffmpegthumbs,gdk-pixbuf-thumbnailer,gsf-office
