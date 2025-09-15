@@ -8,6 +8,8 @@ Theme=breeze-dark
 
 [KDE]
 AnimationDurationFactor=0
+DoubleClickInterval=300
+LookAndFeelPackage=org.kde.breezedark.desktop
 widgetStyle=Breeze
 
 [KFileDialog Settings]
@@ -33,6 +35,7 @@ View Style=DetailTree
 [PreviewSettings]
 EnableRemoteFolderThumbnail=false
 MaximumRemoteSize=0
+MaximumSize=26214400
 
 [QtQuickRendererSettings]
 RenderLoop=threaded
