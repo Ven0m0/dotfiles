@@ -70,3 +70,14 @@ ghpatch(){
 man-on(){
   curl -sSfL 'https://man.archlinux.org/man/clang.raw' | man -l -
 }
+# curl -sSfL 'https://man.archlinux.org/man/${1}.raw' | man -l -
+
+ssh(){
+  local bin=ssh; command -v dbclient >/dev/null 2>&1 && bin=dbclient
+  case $TERM in
+    screen-256color) TERM=screen command "$bin" "$@" ;;
+    xterm-256color|xterm-termite|xterm-256color-italic|tmux-256color) TERM=xterm command "$bin" "$@" ;;
+    kitty) command kitty +kitten ssh "$@" ;;
+    *) command "$bin" "$@" ;;
+  esac
+}
