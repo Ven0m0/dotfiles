@@ -4,6 +4,7 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 LC_ALL=C
 LANG=C.UTF-8
+TIME_STYLE='+%d-%m %H:%M'
 HOME="/home/${SUDO_USER:-$USER}"
 builtin cd -- "$(command dirname -- "${BASH_SOURCE[0]:-$0}")" || exit 1
 #–– Colors
