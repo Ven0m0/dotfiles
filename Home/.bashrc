@@ -6,6 +6,7 @@ export LC_ALL=C
 #============ Helpers ============
 # Check for command
 has(){ [[ -x $(command -v -- "$1") ]]; }
+hconv(){ printf '%s\n' "${1/#\~\//${HOME}/}"; }
 # Safely source file if it exists ( ~ -> $HOME )
 ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}" 2>/dev/null; }
 # Safely prepend only if not already in PATH ( ~ -> $HOME )
@@ -26,7 +27,7 @@ ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_com
   [[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
 
 # github.com/kazhala/dotbare
-[[ -d ${HOME}/.dotbare ]] && { [[ -f ${HOME}/.dotbare/dotbare ]] && alias dotbare="${HOME}/.dotbare/dotbare"; ifsource "${HOME}/.dotbare/dotbare.plugin.bash"; }
+[[ -d ~/.dotbare ]] && { [[ -f ~/.dotbare/dotbare ]] && alias dotbare="${HOME}/.dotbare/dotbare"; ifsource "${HOME}/.dotbare/dotbare.plugin.bash"; }
 
 ifsource "${HOME}/.nativa.sh" && { export NAVITA_COMMAND=z NAVITA_DATA_DIR="${HOME}/.local/state/navita" NAVITA_CONFIG_DIR="${HOME}/.config/navita"; }
 
@@ -56,14 +57,11 @@ prependpath "${HOME}/.bin"
 prependpath "${HOME}/bin"
 
 # Editor selection: prefer micro, fallback to nano
-_editor_cmd="$(command -v micro 2>/dev/null || :)"; _editor_cmd="${_editor_cmd##*/}"; EDITOR="${_editor_cmd:-nano}"
-export EDITOR VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$EDITOR" FCEDIT="$EDITOR" SUDO_EDITOR="$EDITOR"
-unset _editor_cmd 2>/dev/null
+command -v micro &>/dev/null && EDITOR=micro; export ${EDITOR:=nano}
+export VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$EDITOR" FCEDIT="$EDITOR" SUDO_EDITOR="$EDITOR"l
 # https://wiki.archlinux.org/title/Locale
-export LANG=C.UTF-8 LANGUAGE="en_US:en:C"
-export LC_COLLATE=C LC_CTYPE=C.UTF-8
-export LC_MEASUREMENT=C TZ='Europe/Berlin'
-
+export LANG=C.UTF-8 LC_COLLATE=C LC_CTYPE=C.UTF-8
+export LC_MEASUREMENT=C TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
 jobs="$(nproc)" SHELL="${BASH:-$(command -v bash 2>/dev/null)}"
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 
