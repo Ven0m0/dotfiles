@@ -6,7 +6,7 @@ export LC_ALL=C
 #============ Helpers ============
 # Check for command
 has(){ [[ -x $(command -v -- "$1") ]]; }
-hconv(){ printf '%s\n' "${1/#\~\//${HOME}/}"; }
+#hconv(){ printf '%s\n' "${1/#\~\//${HOME}/}"; }
 # Safely source file if it exists ( ~ -> $HOME )
 ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}" 2>/dev/null; }
 # Safely prepend only if not already in PATH ( ~ -> $HOME )
@@ -486,4 +486,5 @@ command -v zoxide &>/dev/null && { \
   eval "$(zoxide init bash)"; }
 #============ Ble.sh final ============
 [[ ! ${BLE_VERSION-} ]] || ble-attach
-unset LC_ALL
+#============ END ============
+unset LC_ALL; unset -f ifsource prependpath
