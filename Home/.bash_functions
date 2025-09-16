@@ -72,12 +72,5 @@ man-on(){
 }
 # curl -sSfL 'https://man.archlinux.org/man/${1}.raw' | man -l -
 
-ssh(){
-  local bin=ssh; command -v dbclient >/dev/null 2>&1 && bin=dbclient
-  case $TERM in
-    screen-256color) TERM=screen command "$bin" "$@" ;;
-    xterm-256color|xterm-termite|xterm-256color-italic|tmux-256color) TERM=xterm command "$bin" "$@" ;;
-    kitty) command kitty +kitten ssh "$@" ;;
-    *) command "$bin" "$@" ;;
-  esac
-}
+
+ssh(){ [[ $TERM == kitty ]] && LC_ALL=C LANG=C.UTF-8 command kitty +kitten ssh "$@" || LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh "$@"; }
