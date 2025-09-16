@@ -11,10 +11,10 @@ $include /etc/inputrc
 set input-meta on
 set output-meta on
 set convert-meta off
-set enable-keypad on
 
-# Fix stupid "\e[200~" whenever I paste in bash
-set enable-bracketed-paste off
+# Misc
+set enable-keypad on
+set enable-bracketed-paste on
 set echo-control-characters off
 
 # Adds punctuation as word delimiters
@@ -101,8 +101,6 @@ $if mode=vi
   $endif
   set keymap vi-command
   "\C-e": edit-and-execute-command
-  j: history-search-forward
-  k: history-search-backward
   set keymap vi-insert
   "\C-e": edit-and-execute-command
 $endif
