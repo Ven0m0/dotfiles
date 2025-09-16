@@ -16,6 +16,9 @@
 	repositoryformatversion = 1
 	fileMode = true
 	deltaBaseCacheLimit = 1g
+	preferSymlinkRefs = true
+	symlinks = true
+	splitIndex = true
 [interactive]
 	diffFilter = delta --color-only --features=interactive
 [color]
@@ -26,9 +29,12 @@
 [push]
 	default = simple
 	autoSetupRemote = true
+	recurseSubmodules = on-demand
 [pull]
 	ff = only
 	rebase = true
+[clone]
+    filterSubmodules = true
 [pack]
 	threads = 0
 	allowPackReuse = true
@@ -42,23 +48,30 @@
 	window = 50
 	depth = 50
 	deltaCacheSize = 512m
-[diff]
-	algorithm = histogram
-	suppressBlankEmpty = true
-	renames = copies
-	colorMoved = plain
-	tool = meld
-	nmemonicPrefix = true
-	external = difft
-	compactionHeuristic = true
-[merge]
-	conflictStyle = zdiff3
-	tool = meld
-[rerere]
-	enabled = true
-	autoupdate = true
-[icdiff]
-    options = "--line-numbers"
+
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+	parallel = 0
+	fsckobjects = true
+[receive]
+	autogc = true
+	advertiseAtomic = true
+[submodule]
+	fetchJobs = 0
+	recurse = true
+[rebase]
+	autoSquash = true
+	autoStash = true
+	updateRefs = true
+	backend = merge
+	missingCommitsCheck = true
+	abbreviateCommands = true
+[fsck]
+	duplicateEntries = true
+	gitmodulesSymlink = true
+	gitmodulesUpdate = true
 [gc]
 	auto = 256
 	autoPackLimit = 50
@@ -73,51 +86,74 @@
 	pruneExpire = now
 	rerereresolved = 0
 	rerereunresolved = 0
+[repack]
+	cruftThreads = 0
 [checkout]
 	workers = 0
+[grep]
+	threads = 0
 [index]
 	skipHash = true
 	sparse = true
 	threads = 0
 	version = 4
-[fetch]
+[remote "origin"]
 	prune = true
-	pruneTags = true
-	all = true
-	parallel = 0
-	fsckobjects = true
-[help]
-	autoCorrect = prompt
-[rebase]
-	autoSquash = true
-	autoStash = true
-	updateRefs = true
-	backend = merge
-[gui]
-	fastCopyBlame = true
-	pruneDuringFetch = true
-	encoding = utf-8
-[grep]
-	threads = 0
-[receive]
-	autogc = true
-	advertiseAtomic = true
+[rerere]
+	enabled = true
+	autoupdate = true
 [http]
 	sslBackend = openssl
 	maxRequests = 10
 	version = HTTP/2
 	sslVersion = tlsv1.3
 	postBuffer = 104857600
-[fsck]
-	duplicateEntries = true
+[gui]
+	fastCopyBlame = true
+	pruneDuringFetch = true
+	encoding = utf-8
+[help]
+	autoCorrect = prompt
 [apply]
 	whitespace = "fix"
+[pager]
+	log = delta
+	reflog = delta
+	show = delta
+	diff = delta
+	difftool = true
 [delta]
 	hyperlinks = true
 	features = decorations
 	line-numbers = true
 	decorations = true
 	navigate = true
+[diff]
+	algorithm = histogram
+	suppressBlankEmpty = true
+	renames = copies
+	colorMoved = plain
+	tool = meld
+	nmemonicPrefix = true
+	external = difft
+	compactionHeuristic = true
+[difftool]
+	prompt = false
+[diff-so-fancy]
+	markEmptyLines = false
+	stripLeadingSymbols = true
+[icdiff]
+    options = "--line-numbers"
+[merge]
+	conflictStyle = zdiff3
+	tool = meld
+[mergetool]
+	prompt = false
+	keepBackup = false
+[mergetool "meld"]
+	useAutoMerge = true
+
+
 [protocol]
 	version = 2
 [feature]
@@ -128,40 +164,24 @@
 	showUntrackedFiles = no
 	short = true
 	submoduleSummary = true
-[submodule]
-	fetchJobs = 0
-[repack]
-	cruftThreads = 0
+
 [maintenance]
 	strategy = incremental
 # File to store secrets
 [include]
 	path = ~/.gitconfig.local
-[pager]
-	log = delta
-	reflog = delta
-	show = delta
-	diff = delta
-	difftool = true
+
 [advice]
 	statusUoption = false
-[mergetool "meld"]
-	useAutoMerge = true
-[mergetool]
-	prompt = false
-	keepBackup = false
-[difftool]
-	prompt = false
-[diff-so-fancy]
-	markEmptyLines = false
-	stripLeadingSymbols = true
+
+
+
 [bash]
 	showInformativeStatus = false
 	showUntrackedFiles = false
 	showDirtyState = false
 	hideIfPwdIgnored = true
-[remote "origin"]
-	prune = true
+
 [credential]
     helper = store
 [init]
