@@ -1,8 +1,6 @@
 # ~/.bashrc
 # https://www.gnu.org/software/bash/manual/bash.html
-
 [[ $- != *i* ]] && return
-export LC_ALL=C
 #============ Helpers ============
 # Check for command
 has(){ [[ -x $(command -v -- "$1" 2>/dev/null) ]]; }
@@ -279,7 +277,6 @@ cht(){
     LC_ALL=C curl -sfZ4 --compressed -m 5 --connect-timeout 3 "cht.sh/:help"
   fi
 }
-
 extract(){
   local c e i
   (($#)) || return
@@ -487,4 +484,4 @@ command -v zoxide &>/dev/null && { \
 #============ Ble.sh final ============
 [[ ! ${BLE_VERSION-} ]] || ble-attach
 #============ END ============
-unset LC_ALL; unset -f ifsource prependpath
+unset -f ifsource prependpath
