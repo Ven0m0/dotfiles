@@ -60,6 +60,7 @@ export VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$E
 # https://wiki.archlinux.org/title/Locale
 export LANG=C.UTF-8 LC_COLLATE=C LC_CTYPE=C.UTF-8
 export LC_MEASUREMENT=C TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
+unset LC_ALL POSIXLY_CORRECT
 jobs="$(nproc)" SHELL="${BASH:-$(command -v bash 2>/dev/null)}"
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 
@@ -375,13 +376,18 @@ alias vdir='vdir --color=auto'
 
 # Common use
 alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
+alias fgrep='\grep --color=auto -F'
+alias egrep='\grep --color=auto -E'
 alias big="expac -H M '%m\t%n' | LC_ALL=C sort -hr | nl | head -n 50"   # Sort installed packages according to size in MB
 alias gitpkg='LC_ALL=C pacman -Qq | LC_ALL=C \grep -ci "\-git"'         # List amount of -git packages
 
 alias cleanup='sudo pacman -Rns (pacman -Qtdq)'
 alias dmesg="sudo /bin/dmesg -L=always"
+alias reboot='sudo systemctl reboot'
+alias poweroff='sudo systemctl poweroff'
+alias netctl='sudo netctl'
+alias scat='sudo cat'
+alias openports='ss --all --numeric --processes --ipv4 --ipv6'
 
 # https://snarky.ca/why-you-should-use-python-m-pip/
 alias pip='python -m pip' py3='python3' py='python'
@@ -418,7 +424,7 @@ bind 'set enable-bracketed-paste off'
 #bind '"\ee": "\C-asudo \C-e"'
 #bind '"\es":"\C-asudo "'
 # https://wiki.archlinux.org/title/Bash
-run-help(){ help "$READLINE_LINE" 2>/dev/null || man "$READLINE_LINE"; }
+run-help(){ help "$READLINE_LINE" 2>/dev/null || command man "$READLINE_LINE"; }
 bind -m vi-insert -x '"\eh": run-help'
 bind -m emacs -x     '"\eh": run-help'
 #============ Stealth ============
