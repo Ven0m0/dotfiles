@@ -71,6 +71,33 @@ man-on(){
   curl -sSfL 'https://man.archlinux.org/man/clang.raw' | man -l -
 }
 # curl -sSfL 'https://man.archlinux.org/man/${1}.raw' | man -l -
+# Display online manpages using curl
+# Usage: manol [section] <page>
+manol() {
+  if [[ $# -eq 0 ]]; then
+    echo "Usage: manol [section] <page>" >&2
+    echo "Example: manol 3 printf" >&2
+    return 1
+  fi
+  local page section url
+  local base_url="https://man.archlinux.org/man"
+  local pager="${PAGER:-less}" # Use your default PAGER, or fall back to less
+  # Handle arguments like the real `man` command
+  if [[ $# -eq 1 ]]; then
+    page="$1"
+    url="${base_url}/${page}"
+  else
+    section="$1"
+    page="$2"
+    url="${base_url}/${page}.${section}"
+  fi
+  # Fetch the page and display it
+  curl \
+    --silent \
+    --location \
+    --user-agent "curl-manpage-viewer/1.0" \
+    --compressed \
+    "$url" | "$pager" -R
+}
 
 
-ssh(){ [[ $TERM == kitty ]] && LC_ALL=C LANG=C.UTF-8 command kitty +kitten ssh "$@" || LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh "$@"; }
