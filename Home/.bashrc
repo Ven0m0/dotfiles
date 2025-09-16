@@ -432,15 +432,13 @@ stealth=${stealth:-0}
 #============ Prompt 2 ============
 configure_prompt(){
   command -v starship &>/dev/null && { eval "$(LC_ALL=C starship init bash)"; return; }
-  
-  local MGN='\[\e[35m\]' BLU='\[\e[34m\]' YLW='\[\e[33m\]' BLD='\[\e[1m\]' UND='\[\e[4m\]' \
+  local MGN='\[\e[35m\]' BLU='\[\e[34m\]' YLW='\[\e[33m\]' BLD='\[\e[1m\]' UND='\[\e[4m\]' GRN='\[\e[32m\]' \
         CYN='\[\e[36m\]' DEF='\[\e[0m\]' RED='\[\e[31m\]'  PNK='\[\e[38;5;205m\]' USERN HOSTL
   USERN="${MGN}\u${DEF}"; [[ $EUID -eq 0 ]] && USERN="${RED}\u${DEF}"
   HOSTL="${BLU}\h${DEF}"; [[ -n $SSH_CONNECTION ]] && HOSTL="${YLW}\h${DEF}"
-  
-  PS1="[${USERN}@${HOSTL}${UND}|${DEF}${CYN}\w${DEF}]>${PNK}\A${DEF}|\$? ${BLD}\$${DEF} "
+  exstat(){ [[ $? == 0 ]] && echo -e '${GRN}:)${DEF}' || echo -e '${RED}D:${DEF}'; }
+  PS1="[${USERN}@${HOSTL}${UND}|${DEF}${CYN}\w${DEF}]>${PNK}\A${DEF}|\exstat ${BLD}\$${DEF} "
   PS2='> '
-  # Git
   
   if command -v __git_ps1 &>/dev/null && [[ ${PROMPT_COMMAND:-} != *git_ps1* ]]; then
     export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
