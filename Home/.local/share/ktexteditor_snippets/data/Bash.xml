@@ -1,0 +1,98 @@
+<snippets authors="Ven0m0" filetypes="Zsh;Bash" license="LGPL v3+" name="Bash" namespace="bash">
+ <script>function fileName() { return document.fileName(); }
+function fileUrl() { return document.url(); }
+function encoding() { return document.encoding(); }
+function selection() { return view.selectedText(); }
+function year() { return new Date().getFullYear(); }
+function upper(x) { return x.toUpperCase(); }
+function lower(x) { return x.toLowerCase(); }
+</script>
+ <item>
+  <match>Echo</match>
+  <fillin type="template">echo $""</fillin>
+ </item>
+ <item>
+  <match>Printf</match>
+  <fillin type="template">printf '%s\n' ""</fillin>
+ </item>
+ <item>
+  <match>EOF</match>
+  <fillin type="template">cat &lt;&lt; EOF
+
+
+EOF
+</fillin>
+ </item>
+ <item>
+  <match>Header</match>
+  <fillin type="template">#!/usr/bin/env bash
+
+</fillin>
+ </item>
+ <item>
+  <match>Command</match>
+  <fillin type="template">command -v </fillin>
+ </item>
+ <item>
+  <match>Silence</match>
+  <fillin type="template">&amp;>/dev/null </fillin>
+ </item>
+ <item>
+  <match>Stderr</match>
+  <fillin type="template">2>/dev/null </fillin>
+ </item>
+ <item>
+  <match>Template</match>
+  <fillin type="template">#!/usr/bin/env bash
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
+export HOME="/home/${SUDO_USER:-$USER}"
+export LC_COLLATE=C LC_CTYPE=C LC_ALL=C LANG=C.UTF-8
+SHELL="${BASH:-$(command -v bash)}
+JOBS="$(command nproc --all 2>/dev/null || echo 4)"
+builtin cd -- "$(command dirname -- "${BASH_SOURCE[0]:-$0}")" || exit 1
+#============ Color &amp; Effects ============
+BLK=$'\e[30m' WHT=$'\e[37m' BWHT=$'\e[97m'
+RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
+BLU=$'\e[34m' CYN=$'\e[36m' LBLU=$'\e[38;5;117m'
+MGN=$'\e[35m' PNK=$'\e[38;5;218m'
+DEF=$'\e[0m' BLD=$'\e[1m'
+#============ Helpers ============
+has(){ [[ -x $(command -v -- "$1" 2>/dev/null) ]]; }
+xprint(){ printf '%s\n' "$*"; } # Print-echo
+xexprint(){ printf '%b\n' "$*"; } # Print-echo for color
+#=================================
+sudo -v</fillin>
+ </item>
+ <item>
+  <match>Clear-cache</match>
+  <fillin type="template">sync; echo 3 | sudo tee /proc/sys/vm/drop_caches &amp;>/dev/null
+</fillin>
+ </item>
+ <item>
+  <match>Git-clone</match>
+  <fillin type="template">git clone --depth 1</fillin>
+ </item>
+ <item>
+  <match>Curl</match>
+  <fillin type="template">curl -sSfL --tlsv1.2</fillin>
+ </item>
+ <item>
+  <match>Silence-posix</match>
+  <fillin type="template">>/dev/null 2>&amp;1 </fillin>
+ </item>
+ <item>
+  <match>Root</match>
+  <fillin type="template">[[ $EUID -ne 0 ]] &amp;&amp; { echo "This script requires root privileges"; exit 1 }
+</fillin>
+ </item>
+ <item>
+  <match>Pacman</match>
+  <fillin type="template">sudo pacman -Sq --needed --noconfirm </fillin>
+ </item>
+ <item>
+  <match>Ask</match>
+  <fillin type="template">read -rp "Proceed? [Y/n] " confirm
+[[ ! "${confirm:-Y}" =~ ^[Yy]$ ]] &amp;&amp; { echo "Aborted by user."; exit 0 }
+</fillin>
+ </item>
+</snippets>

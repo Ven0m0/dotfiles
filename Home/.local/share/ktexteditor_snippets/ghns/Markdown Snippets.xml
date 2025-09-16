@@ -1,0 +1,85 @@
+<snippets authors="darkeye" filetypes="Markdown" license="BSD" namespace="Markdown" name="Markdown Snippets">
+ <script>function fileName() { return document.fileName(); }
+function fileUrl() { return document.url(); }
+function encoding() { return document.encoding(); }
+function selection() { return view.selectedText(); }
+function year() { return new Date().getFullYear(); }
+function upper(x) { return x.toUpperCase(); }
+function lower(x) { return x.toLowerCase(); }
+function how_much_bullet_points(count) { var 		str = ''; 
+	for(var i=0; i &lt; count;i++) { 
+		str += "*\n";
+	}; 
+	return str;
+}
+function replace_chars(strToReplace, replacementChar) {
+	return strToReplace.replace(/./g,replacementChar);
+}
+</script>
+ <item>
+  <match>Bold</match>
+  <fillin>*${bold_text}*${cursor}</fillin>
+ </item>
+ <item>
+  <match>ExtraBold</match>
+  <fillin>**${extra_bold}**${cursor}</fillin>
+ </item>
+ <item>
+  <match>Link</match>
+  <fillin>[${title}](${link})${cursor}</fillin>
+ </item>
+ <item>
+  <match>Strikethrough</match>
+  <fillin>--${striketrhough}--${cursor}</fillin>
+ </item>
+ <item>
+  <match>Image</match>
+  <fillin>![${title}](${link} "${alt}")${cursor}</fillin>
+ </item>
+ <item>
+  <match>HorizontalRulez</match>
+  <fillin>----
+${cursor}</fillin>
+ </item>
+ <item>
+  <match>Quote</match>
+  <fillin>> </fillin>
+ </item>
+ <item>
+  <match>Italic</match>
+  <fillin>_${italic}_${cursor}</fillin>
+ </item>
+ <item>
+  <match>NumberedPoint</match>
+  <fillin>1. ${numbered_point}
+${cursor}</fillin>
+ </item>
+ <item>
+  <match>Heading</match>
+  <fillin>${header_text}
+${replace_chars(header_text,"=")}
+${cursor}</fillin>
+ </item>
+ <item>
+  <match>SubHeading</match>
+  <fillin>${header_text}
+${replace_chars(header_text,"-")}
+${cursor}</fillin>
+ </item>
+ <item>
+  <match>CodeInline</match>
+  <fillin>`${code_inline}`${cursor}</fillin>
+ </item>
+ <item>
+  <match>CodeBlock</match>
+  <fillin>````
+${code_block}
+````
+${cursor}</fillin>
+ </item>
+ <item>
+  <match>BulletPoint</match>
+  <fillin>* ${bullet_point}
+${cursor}</fillin>
+ </item>
+</snippets>

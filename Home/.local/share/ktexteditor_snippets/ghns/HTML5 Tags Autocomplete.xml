@@ -1,0 +1,457 @@
+<snippets name="HTML5 Tags Autocomplete" namespace="" authors="Bings" filetypes="HTML" license="LGPL v2+">
+ <script>function fileName() { return document.fileName(); }
+function fileUrl() { return document.url(); }
+function encoding() { return document.encoding(); }
+function selection() { return view.selectedText(); }
+function year() { return new Date().getFullYear(); }
+function upper(x) { return x.toUpperCase(); }
+function lower(x) { return x.toLowerCase(); }
+</script>
+ <item>
+  <match>&lt;div></match>
+  <fillin>&lt;div>${cursor}&lt;/div></fillin>
+ </item>
+ <item>
+  <match>&lt;h1></match>
+  <fillin>&lt;h1>${cursor}&lt;/h1></fillin>
+ </item>
+ <item>
+  <match>&lt;h2></match>
+  <fillin>&lt;h2>${cursor}&lt;/h2></fillin>
+ </item>
+ <item>
+  <match>&lt;li></match>
+  <fillin>&lt;li>${cursor}&lt;/li></fillin>
+ </item>
+ <item>
+  <match>&lt;link></match>
+  <fillin>&lt;link rel="${cursor}" href="">
+${cursor}</fillin>
+ </item>
+ <item>
+  <match>&lt;title></match>
+  <fillin>&lt;title>${field_name=''}&lt;/title>
+${cursor}</fillin>
+ </item>
+ <item>
+  <match>&lt;ul></match>
+  <fillin>&lt;ul>${cursor}&lt;/ul></fillin>
+ </item>
+ <item>
+  <match>&lt;!--></match>
+  <fillin>&lt;!--${cursor}--></fillin>
+ </item>
+ <item>
+  <match>&lt;!DOCTYPE></match>
+  <fillin>&lt;!DOCTYPE html></fillin>
+ </item>
+ <item>
+  <match>&lt;a></match>
+  <fillin>&lt;a href="${cursor}">&lt;/a></fillin>
+ </item>
+ <item>
+  <match>&lt;abbr></match>
+  <fillin>&lt;abbr title="${cursor}">&lt;/abbr></fillin>
+ </item>
+ <item>
+  <match>&lt;address></match>
+  <fillin>&lt;address>${cursor}&lt;/address></fillin>
+ </item>
+ <item>
+  <match>&lt;area></match>
+  <fillin>&lt;area shape="${cursor}" coords="" alt="" href=""></fillin>
+ </item>
+ <item>
+  <match>&lt;article></match>
+  <fillin>&lt;article>${cursor}&lt;/article></fillin>
+ </item>
+ <item>
+  <match>&lt;aside></match>
+  <fillin>&lt;aside>${cursor}&lt;/aside></fillin>
+ </item>
+ <item>
+  <match>&lt;audio></match>
+  <fillin>&lt;audio>${cursor}&lt;/audio></fillin>
+ </item>
+ <item>
+  <match>&lt;b></match>
+  <fillin>&lt;b>${cursor}&lt;/b></fillin>
+ </item>
+ <item>
+  <match>&lt;base></match>
+  <fillin>&lt;base href="${cursor}" target=""></fillin>
+ </item>
+ <item>
+  <match>&lt;bdi></match>
+  <fillin>&lt;bdi>${cursor}&lt;/bdi></fillin>
+ </item>
+ <item>
+  <match>&lt;bdo></match>
+  <fillin>&lt;bdo dir="${cursor}">&lt;/bdo></fillin>
+ </item>
+ <item>
+  <match>&lt;blockquote></match>
+  <fillin>&lt;blockquote cite "${cursor}">&lt;/blockquote></fillin>
+ </item>
+ <item>
+  <match>&lt;body></match>
+  <fillin>&lt;body>${cursor}&lt;/body></fillin>
+ </item>
+ <item>
+  <match>&lt;br></match>
+  <fillin>&lt;br>${cursor}</fillin>
+ </item>
+ <item>
+  <match>&lt;button></match>
+  <fillin>&lt;button type="${cursor}">&lt;/button></fillin>
+ </item>
+ <item>
+  <match>&lt;canvas></match>
+  <fillin>&lt;canvas id="${cursor}">&lt;/canvas></fillin>
+ </item>
+ <item>
+  <match>&lt;caption></match>
+  <fillin>&lt;caption>${cursor}&lt;/caption></fillin>
+ </item>
+ <item>
+  <match>&lt;cite></match>
+  <fillin>&lt;cite>${cursor}&lt;/cite></fillin>
+ </item>
+ <item>
+  <match>&lt;code></match>
+  <fillin>&lt;code>${cursor}&lt;/code></fillin>
+ </item>
+ <item>
+  <match>&lt;col></match>
+  <fillin>&lt;col span="${cursor}"></fillin>
+ </item>
+ <item>
+  <match>&lt;colgroup></match>
+  <fillin>&lt;colgroup>${cursor}&lt;/colgroup></fillin>
+ </item>
+ <item>
+  <match>&lt;data></match>
+  <fillin>&lt;data value="${cursor}">&lt;/data></fillin>
+ </item>
+ <item>
+  <match>&lt;datalist></match>
+  <fillin>&lt;datalist id="${cursor}">&lt;/datalist></fillin>
+ </item>
+ <item>
+  <match>&lt;dd></match>
+  <fillin>&lt;dd>${cursor}&lt;/dd></fillin>
+ </item>
+ <item>
+  <match>&lt;del></match>
+  <fillin>&lt;del>${cursor}&lt;/del></fillin>
+ </item>
+ <item>
+  <match>&lt;details></match>
+  <fillin>&lt;details>${cursor}&lt;/details></fillin>
+ </item>
+ <item>
+  <match>&lt;dfn></match>
+  <fillin>&lt;dfn>${cursor}&lt;/dfn></fillin>
+ </item>
+ <item>
+  <match>&lt;dialog></match>
+  <fillin>&lt;dialog open>${cursor}&lt;/dialog></fillin>
+ </item>
+ <item>
+  <match>&lt;dl></match>
+  <fillin>&lt;dl>${cursor}&lt;/dl></fillin>
+ </item>
+ <item>
+  <match>&lt;dt></match>
+  <fillin>&lt;dt>${cursor}&lt;/dt></fillin>
+ </item>
+ <item>
+  <match>&lt;em></match>
+  <fillin>&lt;em>${cursor}&lt;/em></fillin>
+ </item>
+ <item>
+  <match>&lt;embed></match>
+  <fillin>&lt;embed src="${cursor}" type="" height="" width=""></fillin>
+ </item>
+ <item>
+  <match>&lt;fieldset></match>
+  <fillin>&lt;fieldset>${cursor}&lt;/fieldset></fillin>
+ </item>
+ <item>
+  <match>&lt;figcaption></match>
+  <fillin>&lt;figcaption>${cursor}&lt;/figcaption></fillin>
+ </item>
+ <item>
+  <match>&lt;figure></match>
+  <fillin>&lt;figure>${cursor}&lt;/figure></fillin>
+ </item>
+ <item>
+  <match>&lt;footer></match>
+  <fillin>&lt;footer>${cursor}&lt;/footer></fillin>
+ </item>
+ <item>
+  <match>&lt;form></match>
+  <fillin>&lt;form>${cursor}&lt;/form></fillin>
+ </item>
+ <item>
+  <match>&lt;h3></match>
+  <fillin>&lt;h3>${cursor}&lt;/h3></fillin>
+ </item>
+ <item>
+  <match>&lt;h4></match>
+  <fillin>&lt;h4>${cursor}&lt;/h4></fillin>
+ </item>
+ <item>
+  <match>&lt;h5></match>
+  <fillin>&lt;h5>${cursor}&lt;/h5></fillin>
+ </item>
+ <item>
+  <match>&lt;h6></match>
+  <fillin>&lt;h6>${cursor}&lt;/h6></fillin>
+ </item>
+ <item>
+  <match>&lt;head></match>
+  <fillin>&lt;head>${cursor}&lt;/head></fillin>
+ </item>
+ <item>
+  <match>&lt;header></match>
+  <fillin>&lt;header>${cursor}&lt;/header></fillin>
+ </item>
+ <item>
+  <match>&lt;hr></match>
+  <fillin>&lt;hr>
+${cursor}</fillin>
+ </item>
+ <item>
+  <match>&lt;html></match>
+  <fillin>&lt;html>${cursor}&lt;/html></fillin>
+ </item>
+ <item>
+  <match>&lt;i></match>
+  <fillin>&lt;i>${cursor}&lt;/i></fillin>
+ </item>
+ <item>
+  <match>&lt;iframe></match>
+  <fillin>&lt;iframe src="${cursor}" height="" width="">&lt;/iframe></fillin>
+ </item>
+ <item>
+  <match>&lt;img></match>
+  <fillin>&lt;img src="${cursor}" alt="" height="" width=""></fillin>
+ </item>
+ <item>
+  <match>&lt;input></match>
+  <fillin>&lt;input type="${cursor}" name=""></fillin>
+ </item>
+ <item>
+  <match>&lt;ins></match>
+  <fillin>&lt;ins>${cursor}&lt;/ins></fillin>
+ </item>
+ <item>
+  <match>&lt;kbd></match>
+  <fillin>&lt;kbd>${cursor}&lt;/kbd></fillin>
+ </item>
+ <item>
+  <match>&lt;label></match>
+  <fillin>&lt;label for="${cursor}">&lt;/label></fillin>
+ </item>
+ <item>
+  <match>&lt;legend></match>
+  <fillin>&lt;legend>${cursor}&lt;/legend></fillin>
+ </item>
+ <item>
+  <match>&lt;main></match>
+  <fillin>&lt;main>${cursor}&lt;/main></fillin>
+ </item>
+ <item>
+  <match>&lt;map></match>
+  <fillin>&lt;map name="${cursor}">&lt;/map></fillin>
+ </item>
+ <item>
+  <match>&lt;mark></match>
+  <fillin>&lt;mark>${cursor}&lt;/mark></fillin>
+ </item>
+ <item>
+  <match>&lt;meta></match>
+  <fillin>&lt;meta>${cursor}&lt;/meta></fillin>
+ </item>
+ <item>
+  <match>&lt;meter></match>
+  <fillin>&lt;meter value="${cursor}">&lt;/meter></fillin>
+ </item>
+ <item>
+  <match>&lt;nav></match>
+  <fillin>&lt;nav>${cursor}&lt;/nav></fillin>
+ </item>
+ <item>
+  <match>&lt;noscript></match>
+  <fillin>&lt;noscript>${cursor}&lt;/noscript></fillin>
+ </item>
+ <item>
+  <match>&lt;object></match>
+  <fillin>&lt;object width="${cursor}" height="" data=""></fillin>
+ </item>
+ <item>
+  <match>&lt;ol></match>
+  <fillin>&lt;ol>${cursor}&lt;/ol></fillin>
+ </item>
+ <item>
+  <match>&lt;optgroup></match>
+  <fillin>&lt;optgroup label="${cursor}">&lt;/optgroup></fillin>
+ </item>
+ <item>
+  <match>&lt;option></match>
+  <fillin>&lt;option value="${cursor}">&lt;/option></fillin>
+ </item>
+ <item>
+  <match>&lt;output></match>
+  <fillin>&lt;output name="${cursor}" for="">&lt;/output></fillin>
+ </item>
+ <item>
+  <match>&lt;p></match>
+  <fillin>&lt;p>${cursor}&lt;/p></fillin>
+ </item>
+ <item>
+  <match>&lt;param></match>
+  <fillin>&lt;param name="${cursor}" value=""></fillin>
+ </item>
+ <item>
+  <match>&lt;picture></match>
+  <fillin>&lt;picture>${cursor}&lt;/picture></fillin>
+ </item>
+ <item>
+  <match>&lt;pre></match>
+  <fillin>&lt;pre>${cursor}&lt;/pre></fillin>
+ </item>
+ <item>
+  <match>&lt;progress></match>
+  <fillin>&lt;progress value="${cursor}" max="">&lt;/progress></fillin>
+ </item>
+ <item>
+  <match>&lt;q></match>
+  <fillin>&lt;q>${cursor}&lt;/q></fillin>
+ </item>
+ <item>
+  <match>&lt;rp></match>
+  <fillin>&lt;rp>${cursor}&lt;/rp></fillin>
+ </item>
+ <item>
+  <match>&lt;ruby></match>
+  <fillin>&lt;ruby>${cursor}&lt;/ruby></fillin>
+ </item>
+ <item>
+  <match>&lt;rt></match>
+  <fillin>&lt;rt>${cursor}&lt;/rt></fillin>
+ </item>
+ <item>
+  <match>&lt;s></match>
+  <fillin>&lt;s>${cursor}&lt;/s></fillin>
+ </item>
+ <item>
+  <match>&lt;samp></match>
+  <fillin>&lt;samp>${cursor}&lt;/samp></fillin>
+ </item>
+ <item>
+  <match>&lt;script></match>
+  <fillin>&lt;script>${cursor}&lt;/script></fillin>
+ </item>
+ <item>
+  <match>&lt;section></match>
+  <fillin>&lt;section>${cursor}&lt;/section></fillin>
+ </item>
+ <item>
+  <match>&lt;select></match>
+  <fillin>&lt;select>${cursor}&lt;/select></fillin>
+ </item>
+ <item>
+  <match>&lt;small></match>
+  <fillin>&lt;small>${cursor}&lt;/small></fillin>
+ </item>
+ <item>
+  <match>&lt;source></match>
+  <fillin>&lt;source src="${cursor}" type=""></fillin>
+ </item>
+ <item>
+  <match>&lt;span></match>
+  <fillin>&lt;span>${cursor}&lt;/span></fillin>
+ </item>
+ <item>
+  <match>&lt;strong></match>
+  <fillin>&lt;strong>${cursor}&lt;/strong></fillin>
+ </item>
+ <item>
+  <match>&lt;style></match>
+  <fillin>&lt;style>${cursor}&lt;/style></fillin>
+ </item>
+ <item>
+  <match>&lt;sub></match>
+  <fillin>&lt;sub>${cursor}&lt;/sub></fillin>
+ </item>
+ <item>
+  <match>&lt;summary></match>
+  <fillin>&lt;summary>${cursor}&lt;/summary></fillin>
+ </item>
+ <item>
+  <match>&lt;sup></match>
+  <fillin>&lt;sup>${cursor}&lt;/sup></fillin>
+ </item>
+ <item>
+  <match>&lt;table></match>
+  <fillin>&lt;table>${cursor}&lt;/table></fillin>
+ </item>
+ <item>
+  <match>&lt;tbody></match>
+  <fillin>&lt;tbody>${cursor}&lt;/tbody></fillin>
+ </item>
+ <item>
+  <match>&lt;td></match>
+  <fillin>&lt;td>${cursor}&lt;/td></fillin>
+ </item>
+ <item>
+  <match>&lt;template></match>
+  <fillin>&lt;template>${cursor}&lt;/template></fillin>
+ </item>
+ <item>
+  <match>&lt;textarea></match>
+  <fillin>&lt;textarea rows="${cursor}" cols="">&lt;/textarea></fillin>
+ </item>
+ <item>
+  <match>&lt;tfoot></match>
+  <fillin>&lt;tfoot>${cursor}&lt;/tfoot></fillin>
+ </item>
+ <item>
+  <match>&lt;th></match>
+  <fillin>&lt;th>${cursor}&lt;/th></fillin>
+ </item>
+ <item>
+  <match>&lt;thead></match>
+  <fillin>&lt;thead>${cursor}&lt;/thead></fillin>
+ </item>
+ <item>
+  <match>&lt;time></match>
+  <fillin>&lt;time>${cursor}&lt;/time></fillin>
+ </item>
+ <item>
+  <match>&lt;tr></match>
+  <fillin>&lt;tr>${cursor}&lt;/tr></fillin>
+ </item>
+ <item>
+  <match>&lt;track></match>
+  <fillin>&lt;track src="${cursor}"></fillin>
+ </item>
+ <item>
+  <match>&lt;u></match>
+  <fillin>&lt;u>${cursor}&lt;/u></fillin>
+ </item>
+ <item>
+  <match>&lt;var></match>
+  <fillin>&lt;var>${cursor}&lt;/var></fillin>
+ </item>
+ <item>
+  <match>&lt;wbr></match>
+  <fillin>&lt;wbr>${cursor}&lt;/wbr></fillin>
+ </item>
+ <item>
+  <match>&lt;video></match>
+  <fillin> &lt;video width="${cursor}" height="" controls>&lt;/video> </fillin>
+ </item>
+</snippets>
