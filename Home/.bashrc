@@ -190,7 +190,6 @@ fuzzy_finders(){
   fi
 }
 fuzzy_finders
-
 #============ Completions ============
 # complete -cf sudo
 complete -o default -o bashdefault -F _completion_loader sudo
@@ -262,8 +261,13 @@ sudo-cl(){
 bind -x '"\e\e": sudo-cl'
 #bind '"\es": "\C-asudo \C-e"'
 
-gcom(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "$1"; }
-gpush(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "${1:-Update}" && LC_ALL=C command git push; }
+gclone(){ LC_ALL=C command git clone --progress --filter=blob:none --depth 1 --single-branch --no-tags "$@"; }
+
+#--sparse
+#  cd "${1}"
+
+gcom(){ LC_ALL=C command git add -A --renormalize -f && LC_ALL=C command git commit -m "$1"; }
+gpush(){ LC_ALL=C command git add -A && LC_ALL=C command git commit -m "${1:-Update}" && LC_ALL=C command git push -f --prune --thin --recurse-submodules=on-demand; }
 symbreak(){ LC_ALL=C command find -L "${1:-.}" -type l; }
 command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C LANG=C command hyperfine -w 25 -m 50 -i -S bash -- "$@"; }
 touchf(){ command mkdir -p -- "$(dirname -- "$1")" && command touch -- "$1"; }
