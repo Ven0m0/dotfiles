@@ -11,6 +11,7 @@ $include /etc/inputrc
 set input-meta on
 set output-meta on
 set convert-meta off
+set enable-keypad on
 
 # Fix stupid "\e[200~" whenever I paste in bash
 set enable-bracketed-paste off
@@ -18,12 +19,6 @@ set echo-control-characters off
 
 # Adds punctuation as word delimiters
 set bind-tty-special-chars off
-
-### Fish like tab completions in Bash
-# Use TAB to cycle forward through completions
-"\t": menu-complete
-# Use Shift-TAB to cycle backward through completions
-"\e[Z": menu-complete-backward
 
 # Tab completions:
 set menu-complete-display-prefix on
@@ -40,6 +35,7 @@ set page-completions off
 set colored-completion-prefix on
 set colored-stats on
 set bell-style none
+set prefer-visible-bell
 
 $if mode=emacs
 # https://wiki.archlinux.org/index.php/Home_and_End_keys_not_working
@@ -83,6 +79,11 @@ Space: magic-space
 "\M-\C-v": "\C-a\C-k$\C-y\M-\C-e\C-a\C-y="
 # send a command in the background with Ctrl+Alt+b, discarding all of its output
 "\e\C-b": "\C-e > /dev/null 2>&1 &\C-m"
+### Fish like tab completions in Bash
+# Use TAB to cycle forward through completions
+"\t": menu-complete
+# Use Shift-TAB to cycle backward through completions
+"\e[Z": menu-complete-backward
 $endif
 
 # set editing-mode vi
