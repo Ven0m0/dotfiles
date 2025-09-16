@@ -314,10 +314,10 @@ alias e='$EDITOR' se='sudo $EDITOR'
 alias nano='nano -/' mi=micro
 alias redo='sudo $(fc -ln -1)'
 
-alias pacman='sudo pacman --noconfirm --needed --color=auto'
+alias pacman='sudo pacman --noconfirm --needed'
 alias paru='paru --skipreview --noconfirm --needed'
-alias ssh='LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh'
-# ssh(){ TERM=xterm-256color command ssh "$@"; }
+ssh(){ [[ $TERM == kitty ]] && LC_ALL=C LANG=C.UTF-8 command kitty +kitten ssh "$@" || LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh "$@"; }
+
 alias cls='clear' c='clear'
 alias q='exit'
 alias h='history'
@@ -335,10 +335,10 @@ if has eza; then
   alias ll='eza -AlF --color=auto --group-directories-first --icons=auto --no-time --no-git --smart-group --no-user --no-permissions'
   alias lt='eza -ATF -L 3 --color=auto --group-directories-first --icons=auto --no-time --no-git --smart-group --no-user --no-permissions'
 else
-  alias ls='ls --color=auto --group-directories-first -C'
-  alias la='ls --color=auto --group-directories-first -A'
-  alias ll='ls --color=auto --group-directories-first -oh'
-  alias lt='ls --color=auto --group-directories-first -oghAt'
+  alias ls='ls --color=auto --group-directories-first -BhLC'
+  alias la='ls --color=auto --group-directories-first -ABhLgGoC'
+  alias ll='ls --color=auto --group-directories-first -ABhLgGo'
+  alias lt='ls --color=auto --group-directories-first -ABhLgGo'
 fi
 alias which='command -v '
 alias grep='grep --color=auto' fgrep='fgrep --color=auto' egrep='grep --color=auto-E'
