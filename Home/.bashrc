@@ -314,8 +314,8 @@ alias e='$EDITOR' se='sudo $EDITOR'
 alias nano='nano -/' mi=micro
 alias redo='sudo $(fc -ln -1)'
 
-alias pacman='LC_ALL=C LANG=C.UTF-8 sudo pacman --noconfirm --needed --color=auto'
-alias paru='LC_ALL=C LANG=C.UTF-8 paru --skipreview --noconfirm --needed'
+alias pacman='sudo pacman --noconfirm --needed --color=auto'
+alias paru='paru --skipreview --noconfirm --needed'
 alias ssh='LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh'
 # ssh(){ TERM=xterm-256color command ssh "$@"; }
 alias cls='clear' c='clear'
