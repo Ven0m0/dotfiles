@@ -100,4 +100,14 @@ manol() {
     "$url" | "$pager" -R
 }
 
+man(){ 
+  LESS_TERMCAP_md=$'\e[01;31m'; LESS_TERMCAP_me=$'\e[0m'; LESS_TERMCAP_us=$'\e[01;32m'; LESS_TERMCAP_ue=$'\e[0m'; LESS_TERMCAP_so=$'\e[45;93m'; LESS_TERMCAP_se=$'\e[0m'
+  LESS='-RFQs --use-color --no-histdups --mouse --wheel-lines 2 --no-vbell'
+  PAGER=bat BAT_STYLE=full BATPIPE=color LANG=C.UTF-8
+  if command -v batman &>/dev/null; then
+    MANPAGER='env BATMAN_IS_BEING_MANPAGER=yes bash /usr/bin/batman' MANROFFOPT='-c' command batman "$@"
+  else
+    MANPAGER="sh -c 'col -bx | bat -lman -p'" MANROFFOPT="-c" command man "$@"
+}
+
 
