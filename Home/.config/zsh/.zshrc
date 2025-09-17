@@ -1,5 +1,10 @@
 # ~/.zshrc
 
+ENABLE_CORRECTION="true"
+COMPLETION_WAITING_DOTS="true"
+[[ -z "${plugins[*]}" ]] && plugins=(git fzf extract aliases archlinux)
+source $ZSH/oh-my-zsh.sh
+
 autoload -Uz compinit
 compinit
 zstyle ':completion:*' menu select
@@ -20,6 +25,8 @@ key[Control-Right]="${terminfo[kRIT5]}"
 
 HISTFILE=${HOME}/.zsh_history
 HISTSIZE=10000 SAVEHIST="$HISTSIZE"
+export HISTIGNORE="&:[bf]g:c:clear:history:exit:q:pwd:* --help"
+export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
