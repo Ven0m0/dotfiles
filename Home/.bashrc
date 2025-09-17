@@ -70,24 +70,36 @@ MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:p
 export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 MIMALLOC_SHOW_STATS=0 MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_PURGE_DELAY=25 MIMALLOC_ARENA_EAGER_COMMIT=2
 
 # Delta / bat integration
-has delta && { export GIT_PAGER=delta; command -v batdiff &>/dev/null && export BATDIFF_USE_DELTA=true; }
-
-if has bat; then
-  export PAGER=bat BAT_THEME="Sublime Snazzy" BAT_STYLE=auto LESSQUIET=1
+has delta && export GIT_PAGER=delta
+BAT_THEME="Sublime Snazzy"
+if has bat; then 
+  export PAGER=bat BAT_THEME="Monokai Extended" BAT_STYLE=auto LESSQUIET=1 BATDIFF_USE_DELTA=true BATPIPE=color
   alias cat='\bat -pp'
-  has batman && eval "$(batman --export-env)"
-  has batpipe && eval "$(batpipe)"
-  export MANPAGER="sh -c 'col -bx | bat -l man -p'" MANROFFOPT="-c"
+  if has batman; then
+    eval "$(batman --export-env)"
+  else
+    export MANPAGER="sh -c 'col -bx | bat -lman -p'" MANROFFOPT="-c"
+  fi
+  has prettybat && alias bat='prettybat'
+  has batpipe && eval "$(SHELL=bash batpipe)"
 else
   alias cat='cat -sn'
 fi
 if has less; then
-  LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
-  LESSHISTFILE="-" LESS='-RFrXnsi --mouse --use-color --no-edit-warn --no-vbell --no-histdups' LESSCHARSET=utf-8
-  export LESSHISTFILE LESS LESS_TERMCAP_md LESS_TERMCAP_me LESS_TERMCAP_us LESS_TERMCAP_ue LESS_TERMCAP_so LESS_TERMCAP_se LESSCHARSET
-  export PAGER="${PAGER:-less}"
+  export LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
+  export LESSHISTFILE="-" LESS='-RFrXnsi --mouse --use-color --no-edit-warn --no-vbell --no-histdups' LESSCHARSET=utf-8 PAGER="${PAGER:-less}"
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
+
+if has vivid; then
+  export LS_COLORS="$(vivid generate molokai)"
+elif has dircolors; then
+  eval "$(dircolors -b)" &>/dev/null
+else
+  . <(curl -sfL https://raw.githubusercontent.com/trapd00r/LS_COLORS/refs/heads/master/lscolors.sh)
+fi
+export CLICOLOR=1 SYSTEMD_COLORS=1
+
 # XDG + misc
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:=${HOME}/.local/share}"
@@ -145,14 +157,6 @@ export NVD_BACKEND=direct MOZ_DISABLE_RDD_SANDBOX=1 \
   __GL_ALLOW_FXAA_USAGE=1 #__GL_ConformantBlitFramebufferScissor=1 \
   __GL_ALLOW_UNOFFICIAL_PROTOCOL=1 __GL_IGNORE_GLSL_EXT_REQS=1 \
   __GL_SHADER_DISK_CACHE=1 __GL_SHADER_DISK_CACHE_PATH="${HOME}/.cache/nvidia/GLCache"
-
-if has dircolors; then
-  eval "$(dircolors -b)" &>/dev/null
-else
-  export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.7z=01;31:*.ace=01;31:*.alz=01;31:*.apk=01;31:*.arc=01;31:*.arj=01;31:*.bz=01;31:*.bz2=01;31:*.cab=01;31:*.cpio=01;31:*.crate=01;31:*.deb=01;31:*.drpm=01;31:*.dwm=01;31:*.dz=01;31:*.ear=01;31:*.egg=01;31:*.esd=01;31:*.gz=01;31:*.jar=01;31:*.lha=01;31:*.lrz=01;31:*.lz=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.lzo=01;31:*.pyz=01;31:*.rar=01;31:*.rpm=01;31:*.rz=01;31:*.sar=01;31:*.swm=01;31:*.t7z=01;31:*.tar=01;31:*.taz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tgz=01;31:*.tlz=01;31:*.txz=01;31:*.tz=01;31:*.tzo=01;31:*.tzst=01;31:*.udeb=01;31:*.war=01;31:*.whl=01;31:*.wim=01;31:*.xz=01;31:*.z=01;31:*.zip=01;31:*.zoo=01;31:*.zst=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.jxl=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:'
-fi
-### LS_COLORS='no=00:fi=00:di=00;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.tga=01;35:*.tiff=01;35:*.png=01;35:*.mpeg=01;35:*.avi=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:*.xml=00;31:'
-export CLICOLOR=1 SYSTEMD_COLORS=1
 #============ Fuzzy finders ============
 fuzzy_finders(){
   local FIND_CMD SHELL=bash
