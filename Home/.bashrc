@@ -87,7 +87,7 @@ else
 fi
 if has less; then
   export LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
-  export LESSHISTFILE="-" LESS='-RFrXnsi --mouse --use-color --no-edit-warn --no-vbell --no-histdups' LESSCHARSET=utf-8 PAGER="${PAGER:-less}"
+  export LESSHISTFILE="-" LESS='-RFsn --mouse --use-color --no-histdups' LESSCHARSET=utf-8 PAGER="${PAGER:-less}"
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
 
