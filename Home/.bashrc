@@ -71,10 +71,15 @@ export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_
 
 # Delta / bat integration
 has delta && export GIT_PAGER=delta
-BAT_THEME="Sublime Snazzy"
-if has bat; then 
-  export PAGER=bat BAT_THEME="Monokai Extended" BAT_STYLE=auto LESSQUIET=1 BATDIFF_USE_DELTA=true BATPIPE=color
+if has bat; then
+  export PAGER=bat BAT_PAGER='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
+  export LESSCHARSET='utf-8' LESSHISTFILE=-
+  export LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
+  BAT_THEME="Monokai Extended" BAT_STYLE=auto LESSQUIET=1 BATDIFF_USE_DELTA=true BATPIPE=color
+  #BAT_THEME="Sublime Snazzy"
   alias cat='\bat -pp'
+  unalias bat
+  has prettybat && alias bat='prettybat'
   if has batman; then
     eval "$(batman --export-env)"
   else
@@ -84,10 +89,8 @@ if has bat; then
   has batpipe && eval "$(SHELL=bash batpipe)"
 else
   alias cat='cat -sn'
-fi
-if has less; then
   export LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
-  export LESSHISTFILE="-" LESS='-RFsn --mouse --use-color --no-histdups' LESSCHARSET=utf-8 PAGER="${PAGER:-less}"
+  export LESSHISTFILE=- LESSCHARSET=utf-8 PAGER="${PAGER:-less}" LESS='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
 
