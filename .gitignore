@@ -42,7 +42,6 @@ Videos/
 .gnupg/
 .gitconfig.local
 .ssh/
-!.ssh/config
 .android/
 .config/gh/hosts.yml
 
@@ -57,12 +56,10 @@ Videos/
 *.TAG
 
 # ---------------------
-# Rust / Cargo
+# Keep
 # ---------------------
-.cargo/
 !.cargo/config.toml
-*.rs.bk
-*.mutants.out*/
+!.ssh/config
 
 # ---------------------
 # Logs / tmp
@@ -113,11 +110,14 @@ __pycache__/
 *.py[cod]
 *$py.class
 node_modules/
-target/
-build/
 go/
 jspm_packages/
 dependencies/composer/vendor
+target/
+build/
+.cargo/
+**/*.rs.bk
+*.mutants.out*/
 .npm
 .eslintcache
 *.tgz
