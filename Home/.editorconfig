@@ -28,7 +28,7 @@ binary_next_line = true
 # ---------------------
 # Shell scripts
 # ---------------------
-[*.sh,*.bash*,bash*,.bash_*,PKGBUILD]
+[*.sh,*.bash*,bash_*,PKGBUILD]
 keep_padding = false
 space_redirects = false
 switch_case_indent = false
@@ -36,7 +36,7 @@ function_next_line = false
 binary_next_line = true
 shell_variant = bash
 
-[*.bash*,bash*,.bash_*,PKGBUILD]
+[*.bash*,bash_*,PKGBUILD]
 shell_variant = bash
 
 [.profile,*.dash]
@@ -58,13 +58,13 @@ indent_size = 4
 trim_trailing_whitespace = false
 insert_final_newline = true
 
-[*.md,*.mmd,*.markdown,*.md.html]
+[*.{md,mmd,markdown,md.html}]
 indent_size = unset
 
 # ---------------------
 # Go, Rust, Zig, Makefiles
 # ---------------------
-[Makefile,*.mk,go.mod,go.sum,*.go,*.rs,*.zig,.gitmodules]
+[Makefile,go.mod,go.sum,.gitmodules,*.{mk,go,rs,zig}]
 indent_style = tab
 indent_size = 4
 tab_width = 4
@@ -72,7 +72,7 @@ tab_width = 4
 # ---------------------
 # Python
 # ---------------------
-[*.py,*.pyw;*.pyi]
+[*.{py,pyw,pyi}]
 indent_style = space
 indent_size = 4
 tab_width = 4
