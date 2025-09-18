@@ -1,4 +1,12 @@
 # ---------------------
+# Git
+# ---------------------
+.git/
+.git
+.github-personal-access-token
+.gitconfig.local
+
+# ---------------------
 # Dotter
 # ---------------------
 .dotter/local.toml
@@ -11,10 +19,10 @@
 .*history
 *history
 *lesshst
+*-hst
 fishd.*
 .*hist
 .thumbnails/
-.cache
 
 # ---------------------
 # XDG user dirs
@@ -34,7 +42,6 @@ Videos/
 .gnupg/
 .gitconfig.local
 .ssh/
-!.ssh/config
 .android/
 .config/gh/hosts.yml
 
@@ -49,12 +56,10 @@ Videos/
 *.TAG
 
 # ---------------------
-# Rust / Cargo
+# Keep
 # ---------------------
-.cargo/
 !.cargo/config.toml
-*.rs.bk
-*.mutants.out*/
+!.ssh/config
 
 # ---------------------
 # Logs / tmp
@@ -70,10 +75,17 @@ tmp/
 *swp.*
 token
 nohup.out
-.~lock.*#
+.~lock.*
 *.lock
 *.lck
+.cache
 .nv/ComputeCache/
+npm-debug.log*
+/package-lock.json
+pids
+*.pid
+*.seed
+*.pid.lock
 
 # ---------------------
 # Linux system / editor files
@@ -95,13 +107,21 @@ nohup.out
 *.so
 __pycache__/
 .pytest_cache/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 node_modules/
+go/
+jspm_packages/
+dependencies/composer/vendor
 target/
 build/
-go/
-.git/
+.cargo/
+**/*.rs.bk
+*.mutants.out*/
+.npm
+.eslintcache
+*.tgz
+dist
 
 # ---------------------
 # Windows system files
@@ -110,3 +130,22 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# ---------------------
+# Super-linter ouputs
+# ---------------------
+super-linter.report
+super-linter-output/
+custom-super-linter-output-directory-name/
+super-linter-github-actions-step-summary-output*
+github-step-summary.md
+
+# GitHub Actions leftovers
+github_conf
+
+# ---------------------
+# Other
+# ---------------------
+.vscode/*
+!.vscode/extensions.json
+.idea
