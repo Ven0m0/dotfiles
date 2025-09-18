@@ -121,6 +121,7 @@ build/
 .npm
 .eslintcache
 *.tgz
+dist
 
 # ---------------------
 # Windows system files
@@ -141,3 +142,10 @@ github-step-summary.md
 
 # GitHub Actions leftovers
 github_conf
+
+# ---------------------
+# Other
+# ---------------------
+.vscode/*
+!.vscode/extensions.json
+.idea
