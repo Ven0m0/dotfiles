@@ -54,8 +54,4 @@ jobs:
           branch-suffix: timestamp
           commit-message: Compressed Images
           body: ${{ steps.compress-images.outputs.markdown_report }}
-        with:
-          title: Compressed Images
-          branch-suffix: timestamp
-          commit-message: Compressed Images
-          body: ${{ steps.compress-images.outputs.markdown_report }}
+      
