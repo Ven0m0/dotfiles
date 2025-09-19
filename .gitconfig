@@ -110,6 +110,4 @@
 [apply]
 	whitespace = "fix"
 [fsck]
-	duplicateEntries = true
-	gitmodulesSymlink = true
 	gitmodulesUpdate = true
