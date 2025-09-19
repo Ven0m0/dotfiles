@@ -7,7 +7,7 @@
 	autocrlf = input
 	preloadIndex = true
 	eol = native
-	compression = -1
+	compression = 1
 	multiPackIndex = true
 	sparseCheckout = true
 	sparseCheckoutCone = true
@@ -52,18 +52,16 @@
 [fetch]
 	prune = true
 	pruneTags = true
-	all = true
 	parallel = 0
 	fsckobjects = true
 	recurseSubmodules = true
 	negotiationAlgorithm = skipping
 [receive]
 	autogc = true
-	advertiseAtomic = true
 	shallowUpdate = true
 [submodule]
 	fetchJobs = 0
-	recurse = true
+	# recurse = true
 [rebase]
 	autoSquash = true
 	autoStash = true
@@ -75,24 +73,18 @@
 	duplicateEntries = true
 	gitmodulesSymlink = true
 	gitmodulesUpdate = true
-	gitmodulesUrl = true
-	gitmodulesPath = true
-	gitmodulesParse = true
-	gitmodulesName = true
-	emptyName = true
-	emptyPackedRefsFile = true
 [gc]
 	auto = 256
 	autoPackLimit = 50
 	autoDetach = true
 	packRefs = true
 	reflogExpireUnreachable = 0
-	reflogExpire = 0
+	reflogExpire = 7.days.ago
 	aggressive = false
 	aggressiveDepth = 250
 	aggressiveWindow = 250
 	repackFilter = blob:none
-	pruneExpire = now
+	pruneExpire = 7.days.ago
 	rerereresolved = 0
 	rerereunresolved = 0
 [repack]
@@ -107,8 +99,6 @@
 	sparse = true
 	threads = 0
 	version = 4
-[remote "origin"]
-	prune = true
 [rerere]
 	enabled = true
 	autoupdate = true
@@ -164,8 +154,6 @@
 	hideResolved = true
 [mergetool "meld"]
 	useAutoMerge = true
-#[commit]
-	#cleanup 
 [protocol]
 	version = 2
 [feature]
@@ -180,6 +168,14 @@
 	submoduleSummary = true
 [maintenance]
 	strategy = incremental
+	maintenance.prefetch.enabled = true
+	maintenance.gc.enabled = true
+	maintenance.loose-objects.enabled = true
+	maintenance.incremental-repack.enabled = true
+	maintenance.pack-refs.enabled = true
+	maintenance.reflog-expire.enabled = true
+	maintenance.rerere-gc.enabled = true
+	maintenance.worktree-prune.enabled = true
 # File to store secrets
 [include]
 	path = ~/.gitconfig.local
