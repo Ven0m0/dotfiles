@@ -12,12 +12,12 @@ prependpath(){ [[ -d "${1/#\~\//${HOME}/}" ]] && [[ ":$PATH:" != *":${1/#\~\//${
 #============ Sourcing ============
 # wiki.archlinux.org/title/Bash#Command_not_found
 dot=(/etc/bashrc
-  "$HOME"/{.bash_aliases,.bash_functions,.bash_fuzz,.fns,.funcs,.bash.d/cht.sh}
+  "$HOME"/.{bash_aliases,bash_functions,bash_completions,bash_fuzz,fns,funcs,bash.d/cht.sh,config/bash/cht.sh}
   /usr/share/doc/pkgfile/command-not-found.bash
 )
 for p in "${dot[@]}"; do ifsource "$p"; done; unset p dot
 
-# completions (quiet)
+# completions
 ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_completion"
 
 # github.com/akinomyoga/ble.sh
@@ -25,9 +25,7 @@ ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_com
   [[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
 
 # github.com/kazhala/dotbare
-[[ -d ~/.dotbare ]] && { [[ -f ~/.dotbare/dotbare ]] && alias dotbare="${HOME}/.dotbare/dotbare"; ifsource "${HOME}/.dotbare/dotbare.plugin.bash"; }
-
-ifsource "${HOME}/.nativa.sh" && { export NAVITA_COMMAND=z NAVITA_DATA_DIR="${HOME}/.local/state/navita" NAVITA_CONFIG_DIR="${HOME}/.config/navita"; }
+ifsource "${HOME}/.dotbare/dotbare.plugin.bash" &&  alias dotbare="${HOME}/.dotbare/dotbare"
 
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
@@ -36,7 +34,8 @@ HISTCONTROL="erasedups:ignoreboth"
 HISTIGNORE="&:[bf]g:clear:cls:exit:history:bash:fish:?:??"
 export HISTTIMEFORMAT="%F %T " IGNOREEOF=100
 HISTFILE="${HOME}/.bash_history"
-PROMPT_DIRTRIM=2 PROMPT_COMMAND="history -a"
+PROMPT_DIRTRIM=2 
+PROMPT_COMMAND="history -a"
 #============ Core ============
 CDPATH=".:${HOME}:/"
 ulimit -c 0 # disable core dumps
@@ -72,20 +71,18 @@ export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_
 # Delta / bat integration
 has delta && export GIT_PAGER=delta
 if has bat; then
-  export PAGER=bat BAT_PAGER='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
+  export PAGER='bat -p -s --squeeze-limit 0' BAT_PAGER='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
   export LESSCHARSET='utf-8' LESSHISTFILE=-
   export LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
-  BAT_THEME="Monokai Extended" BAT_STYLE=auto LESSQUIET=1 BATDIFF_USE_DELTA=true BATPIPE=color
-  #BAT_THEME="Sublime Snazzy"
-  alias cat='\bat -pp'
-  unalias bat
+  BAT_STYLE=auto LESSQUIET=1 BATDIFF_USE_DELTA=true BATPIPE=color
+  alias cat='\bat -pp -s --squeeze-limit 0'
+  unalias bat;
   has prettybat && alias bat='prettybat'
   if has batman; then
     eval "$(batman --export-env)"
   else
-    export MANPAGER="sh -c 'col -bx | bat -lman -p'" MANROFFOPT="-c"
+    export MANPAGER="sh -c 'col -bx | bat -lman -p -s --squeeze-limit 0'" MANROFFOPT="-c"
   fi
-  has prettybat && alias bat='prettybat'
   has batpipe && eval "$(SHELL=bash batpipe)"
 else
   alias cat='cat -sn'
@@ -111,7 +108,7 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:=${HOME}/.cache}"
 
 # https://www.reddit.com/r/programming/comments/109rjuj/how_setting_the_tz_environment_variable_avoids
 export INPUTRC="$HOME/.inputrc"
-export CURL_HOME="$HOME" WGETRC="${HOME}/.config/wget/wgetrc"
+export CURL_HOME="$HOME" WGETRC="${HOME}/.wgetrc"
 export GPG_TTY="$(tty)"
 
 if has cargo; then
@@ -127,20 +124,16 @@ if has cargo; then
 else
   unalias cargo
 fi
-
 export PYTHONOPTIMIZE=2 PYTHONIOENCODING=utf-8 PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1 \
   UV_NO_VERIFY_HASHES=1 UV_SYSTEM_PYTHON=1 UV_BREAK_SYSTEM_PACKAGES=0 UV_TORCH_BACKEND=auto UV_FORK_STRATEGY=fewest \
   UV_RESOLUTION=highest UV_PRERELEASE=allow UV_COMPILE_BYTECODE=1 UV_LINK_MODE=hardlink UV_NATIVE_TLS=1
-
 # GOGC=100 #(needs testing)
 if has go; then
   export CGO_ENABLED=0 GOGC=200 GOMAXPROCS="$jobs" GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -pgo auto"
   go telemetry off; go clean -cache -modcache; unset GODEBUG
 fi
-
 export ZSTD_NBTHREADS=0 ELECTRON_OZONE_PLATFORM_HINT=auto _JAVA_AWT_WM_NONREPARENTING=1
 export FLATPAK_FANCY_OUTPUT=1 FLATPAK_TTY_PROGRESS=0 FLATPAK_FORCE_TEXT_AUTH=1
-
 # Wayland
 if has qt6ct; then
   export QT_QPA_PLATFORMTHEME=qt6ct
@@ -151,7 +144,6 @@ if [[ ${XDG_SESSION_TYPE:-} == "wayland" ]]; then
   export GDK_BACKEND=wayland QT_QPA_PLATFORM=wayland SDL_VIDEODRIVER=wayland CLUTTER_BACKEND=wayland GTK_USE_PORTAL=1 \
     MOZ_ENABLE_WAYLAND=1 MOZ_ENABLE_XINPUT2=1 MOZ_DBUS_REMOTE=1 QT_WAYLAND_DISABLE_WINDOWDECORATION=1 QT_AUTO_SCREEN_SCALE_FACTOR=0
 fi
-
 export NVD_BACKEND=direct MOZ_DISABLE_RDD_SANDBOX=1 \
   LIBVA_DRIVER_NAME=nvidia VDPAU_DRIVER=nvidia __GLX_VENDOR_LIBRARY_NAME=nvidia \
   __GL_THREADED_OPTIMIZATIONS=1 __GL_SORT_FBCONFIGS=1 \
@@ -174,7 +166,6 @@ fuzzy_finders(){
   else
     FZF_CTRL_T_OPTS="-1 -0 --inline-info --walker-skip=".git,node_modules,target,go" --preview 'cat -sn {}' --bind 'ctrl-/:change-preview-window(down|hidden|)'"
   fi
-
   declare -x FZF_DEFAULT_COMMAND="$FIND_CMD" FZF_CTRL_T_COMMAND="$FIND_CMD" FZF_CTRL_T_OPTS \
     FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window=wrap --smart-case --marker="*" --walker-skip=".git,node_modules,target,go,.cache" --inline-info --layout=reverse-list --tiebreak=index --height=70%' \
     FZF_CTRL_R_OPTS="-1 -0 --tiebreak=index --inline-info --no-sort --exact --preview 'echo {}' --preview-window="down:3:hidden:wrap" --bind '?:toggle-preview'" \
@@ -182,18 +173,17 @@ fuzzy_finders(){
     FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=index' \
     FZF_COMPLETION_PATH_OPTS='--info=inline --tiebreak=index --walker "file,dir,follow,hidden"' \
     FZF_COMPLETION_DIR_OPTS='--info=inline --tiebreak=index --walker "dir,follow"'
-
   command mkdir -p -- "${HOME}/.config/bash/completions" &>/dev/null
   if has fzf; then
-    [[ -r /usr/share/fzf/key-bindings.bash ]] && . "/usr/share/fzf/key-bindings.bash"
-    [[ ! -r ${HOME}/.config/bash/completions/fzf_completion.bash ]] && SHELL=bash fzf --bash >| "${HOME}/.config/bash/completions/fzf_completion.bash"
-    . "${HOME}/.config/bash/completions/fzf_completion.bash" || eval "$(SHELL=bash fzf --bash)"
+    ifsource "/usr/share/fzf/key-bindings.bash"
+    ifsource "/usr/share/fzf/completion.bash" || eval "$(SHELL=bash fzf --bash)"
+    ifsource "/usr/share/fzf-tab-completion/bash/fzf-bash-completion.sh" && bind -x '"\t": fzf_bash_completion'
   fi
   if has sk; then
     declare -x SKIM_DEFAULT_COMMAND="$FIND_CMD" "${FZF_DEFAULT_OPTS:-}"
-    [[ -r "/usr/share/skim/key-bindings.bash" ]] && . "/usr/share/skim/key-bindings.bash"
-    [[ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" ]] && SHELL=bash sk --shell bash >| "${HOME}/.config/bash/completions/sk_completion.bash"
-    . "${HOME}/.config/bash/completions/sk_completion.bash" || . <(SHELL=bash sk --shell bash)
+    ifsource "/usr/share/skim/key-bindings.bash"
+    [[ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" " && SHELL=bash sk --shell bash >| "${HOME}/.config/bash/completions/sk_completion.bash"
+    ifsource "${HOME}/.config/bash/completions/sk_completion.bash" || . <(SHELL=bash sk --shell bash)
   fi
 }
 fuzzy_finders
@@ -216,9 +206,9 @@ command -v pay-respects &>/dev/null && eval "$(pay-respects bash)"
 command -v gh &>/dev/null && eval "$(gh completion -s bash)"
 
 # Ghostty
-[[ $TERM == xterm-ghostty ]] && . "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
+[[ $TERM == xterm-ghostty ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
 # Wikiman
-command -v wikiman &>/dev/null && . "/usr/share/wikiman/widgets/widget.bash"
+command -v wikiman &>/dev/null && ifsource "/usr/share/wikiman/widgets/widget.bash"
 #============ Functions ============
 # Having to set a new script as executable always annoys me.
 runch(){
@@ -269,26 +259,12 @@ bind -x '"\e\e": sudo-cl'
 #bind '"\es": "\C-asudo \C-e"'
 
 gclone(){ LC_ALL=C command git clone --progress --filter=blob:none --depth 1 --single-branch --no-tags "$@"; }
-
-#--sparse
-#  cd "${1}"
-
 gcom(){ LC_ALL=C command git add -A --renormalize -f && LC_ALL=C command git commit -m "$1"; }
 gpush(){ LC_ALL=C command git add -A && LC_ALL=C command git commit -m "${1:-Update}" && LC_ALL=C command git push -f --prune --thin --recurse-submodules=on-demand; }
 symbreak(){ LC_ALL=C command find -L "${1:-.}" -type l; }
 command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C LANG=C command hyperfine -w 25 -m 50 -i -S bash -- "$@"; }
 touchf(){ command mkdir -p -- "$(dirname -- "$1")" && command touch -- "$1"; }
 
-# Cheat.sh 
-export CHTSH_CURL_OPTIONS="-sfLZ4 --compressed -m 5 --connect-timeout 3"
-cht(){
-  # join all arguments with '/', so “topic sub topic” → “topic/sub/topic”
-  local query="${*// /\/}"
-  # try to fetch the requested cheat‑sheet; on HTTP errors (e.g. 404), fall back to :help
-  if ! LC_ALL=C curl -sfZ4 --compressed -m 5 --connect-timeout 3 "cht.sh/${query}"; then
-    LC_ALL=C curl -sfZ4 --compressed -m 5 --connect-timeout 3 "cht.sh/:help"
-  fi
-}
 extract(){
   local c e i
   (($#)) || return
@@ -334,10 +310,20 @@ alias cls='clear' c='clear'
 alias q='exit'
 alias h='history'
 alias ptch='patch -p1 <'
-alias cleansh='curl -sfSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
-alias updatesh='curl -sfSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
 
+# Cheat.sh 
+export CHTSH_CURL_OPTIONS="-sfLZ4 --compressed -m 5 --connect-timeout 3"
+cht(){
+  # join all arguments with '/', so “topic sub topic” → “topic/sub/topic”
+  local query="${*// /\/}"
+  if ! LC_ALL=C curl -sfZ4 --compressed -m 5 --connect-timeout 3 "cht.sh/${query}"; then
+    LC_ALL=C curl -sfZ4 --compressed -m 5 --connect-timeout 3 "cht.sh/:help"
+  fi
+}
 curlsh(){ LC_ALL=C command curl -sfSL "$*" | bash; }
+alias cleansh='curlsh https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh'
+alias updatesh='curlsh https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh'
+
 
 passwdl(){ eval "$(E3LFbgu='CAT /ETC/PASSWD' && printf %s "${E3LFbgu~~}")"; }
 
@@ -407,10 +393,10 @@ alias speedt='curl -sf https://raw.githubusercontent.com/sivel/speedtest-cli/mas
 
 # Dotfiles
 # LC_ALL=C git clone --bare git@github.com:Ven0m0/dotfiles.git $HOME/.dotfiles
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+# alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 #============ Bindings (readline) ============
-bind 'set completion-query-items 150'
+bind 'set completion-query-items 250'
 bind 'set page-completions off'
 bind 'set show-all-if-ambiguous on'
 bind 'set show-all-if-unmodified on'
@@ -430,7 +416,6 @@ bind '"\C-a": beginning-of-line'
 bind '"\C-e": end-of-line'
 bind '"\e[1;5D": backward-word'
 bind '"\e[1;5C": forward-word'
-bind 'set enable-bracketed-paste off'
 # prefixes the line with sudo , if Alt+s is pressed
 #bind '"\ee": "\C-asudo \C-e"'
 #bind '"\es":"\C-asudo "'
@@ -450,7 +435,6 @@ configure_prompt(){
   exstat(){ [[ $? == 0 ]] && echo -e '${GRN}:)${DEF}' || echo -e '${RED}D:${DEF}'; }
   PS1="[${USERN}@${HOSTL}${UND}|${DEF}${CYN}\w${DEF}]>${PNK}\A${DEF}|\exstat ${BLD}\$${DEF} "
   PS2='> '
-  
   if command -v __git_ps1 &>/dev/null && [[ ${PROMPT_COMMAND:-} != *git_ps1* ]]; then
     export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
     unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWUNTRACKEDFILES
@@ -493,9 +477,11 @@ if [[ $SHLVL -ge 3; ! $BASH_SUBSHELL -ge 1 ]]; then
   fi
 fi
 #============ Jumping ============
-command -v zoxide &>/dev/null && { \
-  export _ZO_DOCTOR=0 _ZO_ECHO=0 _ZO_EXCLUDE_DIRS="${HOME}:.cache:go" _ZO_FZF_OPTS="--algo=v1 --cycle +m --no-unicode --no-mouse -0 -1 --inline-info"; \
-  eval "$(zoxide init bash)"; }
+if command -v zoxide &>/dev/null; then
+  export _ZO_DOCTOR=0 _ZO_ECHO=0 _ZO_EXCLUDE_DIRS="${HOME}:.cache:go" _ZO_FZF_OPTS="--algo=v1 --cycle +m --no-unicode --no-mouse -0 -1 --inline-info"
+  [[ ! -r "${HOME}/.config/bash/zoxide.bash" ]] && zoxide init bash >| "${HOME}/.config/bash/zoxide.sh"
+  ifsource "${HOME}/.config/bash/zoxide.sh" && eval "$(zoxide init bash)"
+fi
 #============ Ble.sh final ============
 [[ ! ${BLE_VERSION-} ]] || ble-attach
 #============ END ============
