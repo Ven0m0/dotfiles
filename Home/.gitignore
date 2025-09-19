@@ -23,6 +23,14 @@
 fishd.*
 .*hist
 .thumbnails/
+.antidote/
+.zcompcache/
+.zsh_sessions/
+.zcompdump*
+.zsh_history
+*.local.zsh
+*.zwc
+*.zwc.old
 
 # ---------------------
 # XDG user dirs
