@@ -33,3 +33,8 @@ if [ -f "$HOME/.config/wget/wgetrc" ]; then
 elif [ -f "$HOME/wgetrc" ]; then
   export WGETRC="${WGETRC:=${XDG_CONFIG_HOME:-$HOME}/wgetrc}"
 fi
+
+# FZF tab completions
+if [ -f "/usr/lib/librl_custom_complete.so' ]; then
+  export LD_PRELOAD=/path/to/librl_custom_function.so
+fi
