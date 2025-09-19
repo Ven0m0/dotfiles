@@ -48,13 +48,14 @@
 	window = 50
 	depth = 50
 	deltaCacheSize = 512m
-
+	# compression
 [fetch]
 	prune = true
 	pruneTags = true
 	all = true
 	parallel = 0
 	fsckobjects = true
+	recurseSubmodules = true
 [receive]
 	autogc = true
 	advertiseAtomic = true
@@ -72,6 +73,12 @@
 	duplicateEntries = true
 	gitmodulesSymlink = true
 	gitmodulesUpdate = true
+	gitmodulesUrl = true
+	gitmodulesPath = true
+	gitmodulesParse = true
+	gitmodulesName = true
+	emptyName = true
+	emptyPackedRefsFile = true
 [gc]
 	auto = 256
 	autoPackLimit = 50
@@ -108,6 +115,7 @@
 	version = HTTP/2
 	sslVersion = tlsv1.3
 	postBuffer = 104857600
+	followRedirects = true
 [gui]
 	fastCopyBlame = true
 	pruneDuringFetch = true
@@ -150,10 +158,11 @@
 [mergetool]
 	prompt = false
 	keepBackup = false
+	hideResolved = true
 [mergetool "meld"]
 	useAutoMerge = true
-
-
+#[commit]
+	#cleanup 
 [protocol]
 	version = 2
 [feature]
@@ -164,24 +173,18 @@
 	showUntrackedFiles = no
 	short = true
 	submoduleSummary = true
-
 [maintenance]
 	strategy = incremental
 # File to store secrets
 [include]
 	path = ~/.gitconfig.local
-
 [advice]
 	statusUoption = false
-
-
-
 [bash]
 	showInformativeStatus = false
 	showUntrackedFiles = false
 	showDirtyState = false
 	hideIfPwdIgnored = true
-
 [credential]
     helper = store
 [init]
