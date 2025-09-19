@@ -23,5 +23,5 @@ fi
 
 # FZF tab completions
 if [ -f "/usr/lib/librl_custom_complete.so" ]; then
-  export LD_PRELOAD="/path/to/librl_custom_function.so"
+  export LD_PRELOAD="/usr/lib/librl_custom_complete.so"
 fi
