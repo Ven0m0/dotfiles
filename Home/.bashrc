@@ -27,6 +27,13 @@ ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_com
 # github.com/kazhala/dotbare
 ifsource "${HOME}/.dotbare/dotbare.plugin.bash" &&  alias dotbare="${HOME}/.dotbare/dotbare"
 
+# Fzf-tabs for readline
+if [[ -f "/usr/lib/librl_custom_complete.so" ]]; then
+  export INPUTRC="${HOME}/.inputrcf"
+else
+  export INPUTRC="${HOME}/.inputrc"
+fi
+
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
 HISTSIZE=1000 HISTFILESIZE="$HISTSIZE"
@@ -107,9 +114,7 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:=${HOME}/.local/state}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:=${HOME}/.cache}"
 
 # https://www.reddit.com/r/programming/comments/109rjuj/how_setting_the_tz_environment_variable_avoids
-export INPUTRC="$HOME/.inputrc"
-export CURL_HOME="$HOME" WGETRC="${HOME}/.wgetrc"
-export GPG_TTY="$(tty)"
+export CURL_HOME="$HOME" WGETRC="${HOME}/.wgetrc" GPG_TTY="$(tty)"
 
 if has cargo; then
   export CARGO_HOME="${HOME}/.cargo" RUSTUP_HOME="${HOME}/.rustup"
