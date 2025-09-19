@@ -1,0 +1,2 @@
+with open('/usr/share/fzf-tab-completion/python/fzf_python_completion.py') as file:
+exec(file.read())
