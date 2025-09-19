@@ -100,14 +100,18 @@ manol() {
     "$url" | "$pager" -R
 }
 
-man(){ 
+fman(){ 
   LESS_TERMCAP_md=$'\e[01;31m'; LESS_TERMCAP_me=$'\e[0m'; LESS_TERMCAP_us=$'\e[01;32m'; LESS_TERMCAP_ue=$'\e[0m'; LESS_TERMCAP_so=$'\e[45;93m'; LESS_TERMCAP_se=$'\e[0m'
-  LESS='-RFQs --use-color --no-histdups --mouse --wheel-lines 2 --no-vbell'
-  PAGER=bat BAT_STYLE=full BATPIPE=color LANG=C.UTF-8
+  LESS='-RFQs --use-color --no-histdups --mouse --wheel-lines 2'
+  PAGER='bat'; BAT_PAGER="less $LESS"; BATPIPE='color'; LANG='C.UTF-8'; MANROFFOPT='-c'
+  BAT_THEME='Monokai Extended'; BAT_STYLE=full
   if command -v batman &>/dev/null; then
     MANPAGER='env BATMAN_IS_BEING_MANPAGER=yes bash /usr/bin/batman' MANROFFOPT='-c' command batman "$@"
+  elif command -v bat &>/dev/null; then
+    MANPAGER="sh -c 'col -bx | bat -lman -p'" MANROFFOPT='-c' command man "$@"
   else
-    MANPAGER="sh -c 'col -bx | bat -lman -p'" MANROFFOPT="-c" command man "$@"
+  PAGER=less command man "$@" | sed -e 's/\x1B\[[0-9;]*m//g; s/.\x08//g' | less "$LESS"
+  fi
 }
 
 
