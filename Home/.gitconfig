@@ -8,7 +8,6 @@
 	preloadIndex = true
 	eol = native
 	compression = -1
-	#compression = 9
 	multiPackIndex = true
 	sparseCheckout = true
 	sparseCheckoutCone = true
@@ -30,6 +29,7 @@
 	default = simple
 	autoSetupRemote = true
 	recurseSubmodules = on-demand
+	useBitmaps = true
 [pull]
 	ff = only
 	rebase = true
@@ -48,7 +48,7 @@
 	window = 50
 	depth = 50
 	deltaCacheSize = 512m
-	# compression
+	compression = -1
 [fetch]
 	prune = true
 	pruneTags = true
@@ -56,9 +56,11 @@
 	parallel = 0
 	fsckobjects = true
 	recurseSubmodules = true
+	negotiationAlgorithm = skipping
 [receive]
 	autogc = true
 	advertiseAtomic = true
+	shallowUpdate = true
 [submodule]
 	fetchJobs = 0
 	recurse = true
@@ -95,6 +97,7 @@
 	rerereunresolved = 0
 [repack]
 	cruftThreads = 0
+	writeBitmaps = true
 [checkout]
 	workers = 0
 [grep]
@@ -168,6 +171,8 @@
 [feature]
 	manyFiles = true
 	experimental = true
+[worktree]
+	useRelativePaths = true
 [status]
 	aheadBehind = true
 	showUntrackedFiles = no
