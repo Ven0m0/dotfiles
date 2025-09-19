@@ -7,6 +7,10 @@
 
 $include /etc/inputrc
 
+# fzf-tab-completion
+$include function rl_custom_complete /usr/lib/librl_custom_complete.so
+C-i rl_custom_complete
+
 # UTF-8 support
 set input-meta on
 set output-meta on
