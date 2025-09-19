@@ -57,7 +57,5 @@ jobs:
             ./Linux-Settings
           check_all_files_with_shebangs: "true"
           shellcheck_flags: "-x -s bash"
-            ./.cache/*
-            ./Linux-Settings
-          check_all_files_with_shebangs: "true"
-          shellcheck_flags: "-x -s bash"
+
+  
