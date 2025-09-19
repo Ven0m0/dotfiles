@@ -1,5 +1,4 @@
 name: Reviewdog
-#on: [push, pull_request, workflow_dispatch]
 on:
   workflow_dispatch:
   schedule: [{cron: "0 0 * * 0"}]
@@ -19,8 +18,28 @@ jobs:
     name: runner / shellcheck
     runs-on: ubuntu-latest
     steps:
+      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v5
+
+      # Determine ShellCheck version
+      - name: Get ShellCheck version
+        id: shellcheck-version
+        run: |
+          version=$(reviewdog/action-shellcheck@v1.32.0 --version 2>&1 | head -n1 | awk '{print $2}')
+          echo "shellcheck_version=$version" >> $GITHUB_OUTPUT
+
+      # Cache ShellCheck binary based on version
+      - name: Cache ShellCheck
+        id: cache-shellcheck
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/shellcheck
+          key: ${{ runner.os }}-shellcheck-${{ steps.shellcheck-version.outputs.shellcheck_version }}
+          restore-keys: |
+            ${{ runner.os }}-shellcheck-
+
+      # Run ShellCheck via Reviewdog
       - name: Run ShellCheck via Reviewdog
         uses: reviewdog/action-shellcheck@v1.32.0
         with:
@@ -34,6 +53,10 @@ jobs:
             bash_*
           exclude: |
             */.git/*
+            ./.cache/*
+            ./Linux-Settings
+          check_all_files_with_shebangs: "true"
+          shellcheck_flags: "-x -s bash"
             ./.cache/*
             ./Linux-Settings
           check_all_files_with_shebangs: "true"
