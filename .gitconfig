@@ -1,0 +1,115 @@
+[core]
+	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+	autocrlf = input
+	preloadIndex = true
+	eol = native
+	compression = 1
+	multiPackIndex = true
+	preferSymlinkRefs = true
+	symlinks = true
+	splitIndex = true
+[push]
+	default = simple
+	autoSetupRemote = true
+	recurseSubmodules = on-demand
+	useBitmaps = true
+[pull]
+	ff = only
+	rebase = true
+[clone]
+    filterSubmodules = true
+[pack]
+	threads = 0
+	allowPackReuse = true
+	useSparse = true
+	indexVersion = 2
+	useBitmapBoundaryTraversal = true
+	useBitmaps = true
+	preferBitmapTips = true
+	writeBitmapHashCache = true
+	writeBitmapLookupTable = true
+	window = 250
+	depth = 250
+	deltaCacheSize = 512m
+	compression = 9
+[fetch]
+	prune = true
+	pruneTags = true
+	parallel = 0
+	fsckobjects = true
+	recurseSubmodules = true
+	negotiationAlgorithm = skipping
+[receive]
+	autogc = true
+	shallowUpdate = true
+[gc]
+	auto = 256
+	autoPackLimit = 50
+	autoDetach = true
+	packRefs = true
+	reflogExpireUnreachable = 0
+	reflogExpire = 7.days.ago
+	aggressive = true
+	aggressiveDepth = 250
+	aggressiveWindow = 250
+	repackFilter = blob:none
+	pruneExpire = 7.days.ago
+	rerereresolved = 0
+	rerereunresolved = 0
+[repack]
+	cruftThreads = 0
+	writeBitmaps = true
+[checkout]
+	workers = 0
+[rebase]
+	autoSquash = true
+	autoStash = true
+	updateRefs = true
+	backend = merge
+	missingCommitsCheck = true
+	abbreviateCommands = true
+[index]
+	skipHash = true
+	sparse = true
+	threads = 0
+	version = 4
+[http]
+	maxRequests = 10
+	version = HTTP/3
+	sslVersion = tlsv1.3
+[maintenance]
+	strategy = incremental
+	maintenance.prefetch.enabled = true
+	maintenance.gc.enabled = true
+	maintenance.loose-objects.enabled = true
+	maintenance.incremental-repack.enabled = true
+	maintenance.pack-refs.enabled = true
+	maintenance.reflog-expire.enabled = true
+	maintenance.rerere-gc.enabled = true
+	maintenance.worktree-prune.enabled = true
+[protocol]
+	version = 2
+[feature]
+	manyFiles = true
+	experimental = true
+[worktree]
+	useRelativePaths = true
+[rerere]
+	enabled = true
+	autoupdate = true
+[merge]
+	conflictStyle = zdiff3
+[diff]
+	algorithm = histogram
+	suppressBlankEmpty = true
+	renames = copies
+	colorMoved = plain
+	nmemonicPrefix = true
+	external = difft
+	compactionHeuristic = true
+[apply]
+	whitespace = "fix"
+[fsck]
+	duplicateEntries = true
+	gitmodulesSymlink = true
+	gitmodulesUpdate = true
