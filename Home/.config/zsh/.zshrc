@@ -45,3 +45,5 @@ stty -ixon
 autoload -Uz promptinit
 promptinit
 
+source /usr/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh
+bindkey '^I' fzf_completion
