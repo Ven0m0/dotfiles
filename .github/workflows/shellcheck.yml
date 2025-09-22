@@ -1,8 +1,7 @@
 name: Reviewdog
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * 0"
+  schedule: [{cron: "0 0 * * 0"}]
   push:
     paths:
       - '**/*.{sh,bash,bashrc,profile}'
