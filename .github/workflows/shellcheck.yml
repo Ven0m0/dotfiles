@@ -2,7 +2,7 @@ name: Reviewdog
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 0" # Runs every Sunday at midnight UTC
+    - cron: "0 0 * * 0"
   push:
     paths:
       - '**/*.{sh,bash,bashrc,profile}'
@@ -28,7 +28,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
-          path: "." # Check all files from the root
+          path: "."
           pattern: |
             *.sh
             *.bash
@@ -38,5 +38,5 @@ jobs:
             */.git/*
             ./.cache/*
             ./Linux-Settings/*
-          check_all_files_with_shebangs: true # Correct boolean value
+          check_all_files_with_shebangs: true
           shellcheck_flags: "-x -s bash"
