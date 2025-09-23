@@ -1,3 +1,4 @@
+# https://github.com/ethanjli/dotfiles/blob/master/dot_config/bash/integrations/20-bat.basic.sh
 if command -v bat &>/dev/null; then
   export MANROFFOPT="-c"
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
