@@ -1,5 +1,6 @@
-# EditorConfig http://EditorConfig.org
+# EditorConfig: https://editorconfig.org
 root = true
+
 # ---------------------
 # Baseline
 # ---------------------
@@ -12,7 +13,6 @@ indent_style = space
 indent_size = 2
 tab_width = 2
 max_line_length = 80
-# Give operators breathing room, but not brackets
 spaces_around_operators = true
 spaces_around_brackets = false
 quote_type = auto
@@ -28,40 +28,34 @@ binary_next_line = true
 # ---------------------
 # Shell scripts
 # ---------------------
-[*.sh,*.bash*,bash_*,PKGBUILD]
-keep_padding = false
-space_redirects = false
-switch_case_indent = false
-function_next_line = false
-binary_next_line = true
+[**.{sh,bash*},bash_*,PKGBUILD]
 shell_variant = bash
 
-[.profile,*.dash]
+[.profile,**.dash]
 shell_variant = posix
 
-[*.fish,fish_*,fishd.*]
-indent_style = space
+[**.{fish,fish_*,fishd.*}]
 indent_size = 4
 tab_width = 4
 
-[*.{bat,cmd}]
+[**.{bat,cmd}]
 indent_style = tab
 indent_size = 4
 
 # ---------------------
-# Markdown, Patches
+# Markdown, Patches, RST
 # ---------------------
-[*.{md,patch}]
+[**.{md,patch,rst}]
 trim_trailing_whitespace = false
 insert_final_newline = true
 
-[*.md]
+[**.md]
 max_line_length = 140
 
 # ---------------------
 # Go, Rust, Zig, Makefiles
 # ---------------------
-[Makefile,go.mod,go.sum,.gitmodules,*.{mk,go,rs,zig}]
+[Makefile,go.mod,go.sum,.gitmodules,**.{mk,go,rs,zig}]
 indent_style = tab
 indent_size = 4
 tab_width = 4
@@ -69,19 +63,25 @@ tab_width = 4
 # ---------------------
 # Python
 # ---------------------
-[*.{py,pyw,pyi}]
+[**.{py,pyw,pyi}]
 indent_size = 4
 tab_width = 4
 max_line_length = 120
 
 # ---------------------
-# Javascript
+# JavaScript / TypeScript
 # ---------------------
-[*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}]
+[**.{js,mjs,cjs,jsx,ts,mts,cts,tsx}]
 quote_type = single
 
-[*.xml]
+# ---------------------
+# XML
+# ---------------------
+[**.xml]
 indent_size = 4
 
-[{*.yml, *.yaml}]
+# ---------------------
+# YAML
+# ---------------------
+[**.{yml,yaml}]
 max_line_length = 120
