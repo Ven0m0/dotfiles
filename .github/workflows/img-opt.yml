@@ -1,0 +1,78 @@
+# https://github.com/marketplace/actions/image-optimizer-action
+name: Optimize Images
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**/*.{jpg,jpeg,png,webp,avif,gif,svg}'
+  pull_request:
+    paths:
+      - '**/*.{jpg,jpeg,png,webp,avif,gif,svg}'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+permissions: write-all
+
+jobs:
+  optimize-images:
+    name: Optimize Images (stellasoftio)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 1
+      - name: Compress and Convert Images
+        id: compress
+        uses: stellasoftio/image-optimizer-action@v1.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          export-webp: true
+          export-avif: true
+          compress-png: true
+          compress-svg: true
+          compress-jpg: true
+          compress-webp: true
+          compress-avif: true
+          # Disable all built-in replacements in favor of our more precise manual script.
+          replace-original-after-export-webp: false
+      # This custom script manually deletes original files if a superior format exists.
+      - name: Remove Originals After Conversion
+        if: steps.compress.outputs.changes_detected == 'true'
+        run: |
+          set -e
+          # 1. Handle AVIF replacement for static images (PNG, JPG)
+          LC_ALL=C find -O3 . -type f -name '*.avif' -print0 | while IFS= read -r -d '' avif_file; do
+            base_path="${avif_file%.avif}"
+            declare -a originals=(
+              "${base_path}.png"
+              "${base_path}.jpg"
+              "${base_path}.jpeg"
+            )
+            for original in "${originals[@]}"; do
+              if [[ -f "$original" ]]; then
+                echo "Replacing static image with AVIF: $original"
+                rm "$original"
+              fi
+            done
+          done
+          # 2. Handle WebP replacement for animated GIFs
+          LC_ALL=C find -O3 . -type f -name '*.webp' -print0 | while IFS= read -r -d '' webp_file; do
+            base_path="${webp_file%.webp}"
+            original_gif="${base_path}.gif"
+            if [[ -f "$original_gif" ]]; then
+              echo "Replacing animated GIF with WebP: $original_gif"
+              rm "$original_gif"
+            fi
+          done
+      # Commits the optimized images back to the PR branch if changes were made.
+      - name: Commit Changesc
+        if: steps.compress-images.outputs.markdown_report != ''
+        uses: stefanzweifel/git-auto-commit-action@v5.0.1
+        with:
+          commit_message: 'chore(images): Convert static to AVIF, animated to WebP'
+          # Commits directly to the pull request's branch.
+          branch: ${{ github.head_ref }}
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: '41898282+github-actions[bot]@users.noreply.github.com'
