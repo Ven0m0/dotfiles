@@ -1,5 +1,5 @@
 # https://github.com/marketplace/actions/image-optimizer-action
-name: Optimize Images
+name: Optimize Images-old
 on:
   workflow_dispatch:
   #schedule: [{cron: "0 0 * * 0"}]
