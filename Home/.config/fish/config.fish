@@ -4,9 +4,30 @@ set -e LC_ALL
 # Only for interactive shells
 if status -i >/dev/null 2>&1
 
-set -x MANPAGER "sh -c 'col -bx | bat -l man -p'"
+	set -g fish_greeting
 
-set -U __done_notification_urgency_level low
+	#set -x MANPAGER "sh -c 'col -bx | bat -l man -p'"
+
+	set -U __done_notification_urgency_level low
+
+	#set -gx COLORTERM truecolor
+
+	#fish_add_path $HOME/.local/bin
+	#fish_add_path $HOME/.cargo/bin
+
+	#set -x GPG_TTY (tty)
+	#fzf --fish | source
+	#starship init fish | source
+	#zoxide init --cmd cd fish | source
+
+
+	#set -gx ZSTD_CLEVEL 19
+	set -gx ZSTD_NBTHREADS $(nproc --ignore=1)"
+	# set -gx ZSTD_NBTHREADS (math (nproc)/2)
+	#set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
+	#set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
+
+end
 
 # ─── Path Deduplication ─────────────────────────────────────────────────────────
 set PATH (printf "%s" "$PATH" | awk -O -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')
