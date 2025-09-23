@@ -36,35 +36,35 @@ function_next_line = false
 binary_next_line = true
 shell_variant = bash
 
-[*.bash*,bash_*,PKGBUILD]
+[**.bash*,bash_*,PKGBUILD]
 shell_variant = bash
 
-[.profile,*.dash]
+[.profile,**.dash]
 shell_variant = posix
 
-[*.fish,fish_*,fishd.*]
+[**.fish,fish_*,fishd.*]
 indent_style = space
 indent_size = 4
 tab_width = 4
 
-[*.{bat,cmd}]
+[**.{bat,cmd}]
 indent_style = tab
 indent_size = 4
 
 # ---------------------
 # Markdown, Patches
 # ---------------------
-[*.md,*.patch]
+[**.{md,patch,rst}]
 trim_trailing_whitespace = false
 insert_final_newline = true
 
-[*.{md,mmd,markdown,md.html}]
+[**.{md,mmd,markdown,md.html}]
 indent_size = unset
 
 # ---------------------
 # Go, Rust, Zig, Makefiles
 # ---------------------
-[Makefile,go.mod,go.sum,.gitmodules,*.{mk,go,rs,zig}]
+[Makefile,go.mod,go.sum,.gitmodules,**.{mk,go,rs,zig}]
 indent_style = tab
 indent_size = 4
 tab_width = 4
@@ -72,7 +72,7 @@ tab_width = 4
 # ---------------------
 # Python
 # ---------------------
-[*.{py,pyw,pyi}]
+[**.{py,pyw,pyi}]
 indent_style = space
 indent_size = 4
 tab_width = 4
@@ -80,5 +80,5 @@ tab_width = 4
 # ---------------------
 # Javascript
 # ---------------------
-[*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}]
+[**.{js,mjs,cjs,jsx,ts,mts,cts,tsx}]
 quote_type = single
