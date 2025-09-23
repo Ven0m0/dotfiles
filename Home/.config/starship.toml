@@ -1,19 +1,11 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-format = """
-$username\
-$directory\
-${custom.git_repo}\
-$hostname\
-$localip\
-$sudo\
-$shell\
-$character"""
-
+format = "[$username$directory]${custom.git_repo}$hostname$localip$sudo$shell$character"
 #right_format = ""
 right_format = "${custom.mommy}"
 
 scan_timeout = 50
+command_timeout = 250
 add_newline = false
 follow_symlinks = false
 
@@ -25,7 +17,9 @@ error_symbol = '[x](bold red) '
 [directory]
 style = "purple"
 truncate_to_repo = true
-fish_style_pwd_dir_length = 1
+fish_style_pwd_dir_length = 2
+truncation_length = 2
+truncation_symbol = "…/"
 format = '[$path]($style)[$read_only]($read_only_style)'
 
 [username]
@@ -43,7 +37,7 @@ ssh_only = true
 disabled = false
 
 [sudo]
-disabled = true
+disabled = false
 style = 'bold red'
 
 [time]
@@ -77,6 +71,7 @@ format = '[$indicator]($style) '
 style = "cyan"
 bash_indicator = ' bsh'
 fish_indicator = ' fsh'
+zsh_indicator = ' zsh'
 ion_indicator = ' ion'
 unknown_indicator = ''
 
