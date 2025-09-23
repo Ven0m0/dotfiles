@@ -1,198 +1,197 @@
 [core]
-	excludesfile = ~/.gitignore
-	attributesfile = ~/.gitattributes
-	pager = delta
-	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
-	editor = micro
-	autocrlf = input
-	preloadIndex = true
-	eol = native
-	compression = 1
-	multiPackIndex = true
-	sparseCheckout = true
-	sparseCheckoutCone = true
-	fsyncMethod = batch
-	repositoryformatversion = 1
-	fileMode = true
-	deltaBaseCacheLimit = 1g
-	preferSymlinkRefs = true
-	symlinks = true
-	splitIndex = true
+  excludesfile = ~/.gitignore
+  attributesfile = ~/.gitattributes
+  pager = delta
+  whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+  editor = micro
+  autocrlf = input
+  preloadIndex = true
+  eol = native
+  compression = 1
+  multiPackIndex = true
+  sparseCheckout = true
+  fsyncMethod = batch
+  repositoryformatversion = 1
+  fileMode = true
+  deltaBaseCacheLimit = 1g
+  preferSymlinkRefs = true
+  symlinks = true
+  splitIndex = true
 [interactive]
-	diffFilter = delta --color-only --features=interactive
+  diffFilter = delta --color-only --features=interactive
 [color]
-	branch = "auto"
-	diff = "auto"
-	status = "auto"
-	ui = auto
+  branch = auto
+  diff = auto
+  status = auto
+  ui = auto
 [push]
-	default = simple
-	autoSetupRemote = true
-	recurseSubmodules = on-demand
-	useBitmaps = true
+  default = simple
+  autoSetupRemote = true
+  recurseSubmodules = on-demand
+  useBitmaps = true
 [pull]
-	ff = only
-	rebase = true
+  ff = only
+  rebase = true
 [clone]
-    filterSubmodules = true
+  filterSubmodules = true
 [pack]
-	threads = 0
-	allowPackReuse = true
-	useSparse = true
-	indexVersion = 2
-	useBitmapBoundaryTraversal = true
-	useBitmaps = true
-	preferBitmapTips = true
-	writeBitmapHashCache = true
-	writeBitmapLookupTable = true
-	window = 50
-	depth = 50
-	deltaCacheSize = 512m
-	compression = -1
+  threads = 0
+  allowPackReuse = true
+  useSparse = true
+  indexVersion = 2
+  useBitmapBoundaryTraversal = true
+  useBitmaps = true
+  preferBitmapTips = true
+  writeBitmapHashCache = true
+  writeBitmapLookupTable = true
+  window = 50
+  depth = 50
+  deltaCacheSize = 512m
+  compression = 9
 [fetch]
-	prune = true
-	pruneTags = true
-	parallel = 0
-	fsckobjects = true
-	recurseSubmodules = true
-	negotiationAlgorithm = skipping
+  prune = true
+  pruneTags = true
+  parallel = 0
+  fsckobjects = true
+  recurseSubmodules = true
+  negotiationAlgorithm = skipping
 [receive]
-	autogc = true
-	shallowUpdate = true
+  autogc = true
+  shallowUpdate = true
 [submodule]
-	fetchJobs = 0
-	# recurse = true
+  fetchJobs = 0
 [rebase]
-	autoSquash = true
-	autoStash = true
-	updateRefs = true
-	backend = merge
-	missingCommitsCheck = true
-	abbreviateCommands = true
+  autoSquash = true
+  autoStash = true
+  updateRefs = true
+  backend = merge
+  missingCommitsCheck = true
+  abbreviateCommands = true
 [fsck]
-	duplicateEntries = true
-	gitmodulesSymlink = true
-	gitmodulesUpdate = true
+  duplicateEntries = true
+  gitmodulesSymlink = true
+  gitmodulesUpdate = true
 [gc]
-	auto = 256
-	autoPackLimit = 50
-	autoDetach = true
-	packRefs = true
-	reflogExpireUnreachable = 0
-	reflogExpire = 7.days.ago
-	aggressive = false
-	aggressiveDepth = 250
-	aggressiveWindow = 250
-	repackFilter = blob:none
-	pruneExpire = 7.days.ago
-	rerereresolved = 0
-	rerereunresolved = 0
+  auto = 256
+  autoPackLimit = 50
+  autoDetach = true
+  packRefs = true
+  reflogExpireUnreachable = 0
+  reflogExpire = 7.days.ago
+  aggressive = false
+  aggressiveDepth = 250
+  aggressiveWindow = 250
+  repackFilter = blob:none
+  pruneExpire = 7.days.ago
 [repack]
-	cruftThreads = 0
-	writeBitmaps = true
+  cruftThreads = 0
+  writeBitmaps = true
+  useDeltaBaseOffset = true
 [checkout]
-	workers = 0
+  workers = 0
 [grep]
-	threads = 0
+  threads = 0
 [index]
-	skipHash = true
-	sparse = true
-	threads = 0
-	version = 4
+  skipHash = true
+  sparse = true
+  threads = 0
+  version = 4
 [rerere]
-	enabled = true
-	autoupdate = true
+  enabled = true
+  autoupdate = true
 [http]
-	sslBackend = openssl
-	maxRequests = 10
-	version = HTTP/2
-	sslVersion = tlsv1.3
-	postBuffer = 104857600
-	followRedirects = true
+  sslBackend = openssl
+  maxRequests = 10
+  version = HTTP/2
+  sslVersion = tlsv1.3
+  postBuffer = 104857600
+  followRedirects = true
 [gui]
-	fastCopyBlame = true
-	pruneDuringFetch = true
-	encoding = utf-8
+  fastCopyBlame = true
+  pruneDuringFetch = true
+  encoding = utf-8
 [help]
-	autoCorrect = prompt
+  autoCorrect = prompt
 [apply]
-	whitespace = "fix"
+  whitespace = fix
 [pager]
-	log = delta
-	reflog = delta
-	show = delta
-	diff = delta
-	difftool = true
+  log = delta
+  reflog = delta
+  show = delta
+  diff = delta
+  difftool = true
 [delta]
-	hyperlinks = true
-	features = decorations
-	line-numbers = true
-	decorations = true
-	navigate = true
+  hyperlinks = true
+  features = decorations
+  line-numbers = true
+  decorations = true
+  navigate = true
 [diff]
-	algorithm = histogram
-	suppressBlankEmpty = true
-	renames = copies
-	colorMoved = plain
-	tool = meld
-	nmemonicPrefix = true
-	external = difft
-	compactionHeuristic = true
+  algorithm = histogram
+  suppressBlankEmpty = true
+  renames = copies
+  colorMoved = plain
+  tool = meld
+  mnemonicprefix = true
+  external = difft
+  compactionHeuristic = true
 [difftool]
-	prompt = false
+  prompt = false
 [diff-so-fancy]
-	markEmptyLines = false
-	stripLeadingSymbols = true
+  markEmptyLines = false
+  stripLeadingSymbols = true
 [icdiff]
-    options = "--line-numbers"
+  options = --line-numbers
 [merge]
-	conflictStyle = zdiff3
-	tool = meld
+  conflictStyle = zdiff3
+  tool = meld
 [mergetool]
-	prompt = false
-	keepBackup = false
-	hideResolved = true
+  prompt = false
+  keepBackup = false
+  hideResolved = true
 [mergetool "meld"]
-	useAutoMerge = true
+  useAutoMerge = true
 [protocol]
-	version = 2
+  version = 2
 [feature]
-	manyFiles = true
-	experimental = true
+  manyFiles = true
+  experimental = true
 [worktree]
-	useRelativePaths = true
+  useRelativePaths = true
 [status]
-	aheadBehind = true
-	showUntrackedFiles = no
-	short = true
-	submoduleSummary = true
+  aheadBehind = true
+  showUntrackedFiles = no
+  short = true
+  submoduleSummary = true
 [maintenance]
-	strategy = incremental
-	maintenance.prefetch.enabled = true
-	maintenance.gc.enabled = true
-	maintenance.loose-objects.enabled = true
-	maintenance.incremental-repack.enabled = true
-	maintenance.pack-refs.enabled = true
-	maintenance.reflog-expire.enabled = true
-	maintenance.rerere-gc.enabled = true
-	maintenance.worktree-prune.enabled = true
-# File to store secrets
+  strategy = incremental
+[maintenance "prefetch"]
+  enabled = true
+[maintenance "gc"]
+  enabled = true
+[maintenance "loose-objects"]
+  enabled = true
+[maintenance "incremental-repack"]
+  enabled = true
+[maintenance "pack-refs"]
+  enabled = true
+[maintenance "reflog-expire"]
+  enabled = true
+[maintenance "rerere-gc"]
+  enabled = true
+[maintenance "worktree-prune"]
+  enabled = true
 [include]
-	path = ~/.gitconfig.local
+  path = ~/.gitconfig.local
 [advice]
-	statusUoption = false
-[bash]
-	showInformativeStatus = false
-	showUntrackedFiles = false
-	showDirtyState = false
-	hideIfPwdIgnored = true
+  statusUoption = false
 [credential]
-    helper = store
+  helper = store
 [init]
-	defaultBranch = main
+  defaultBranch = main
 [credential "https://github.com"]
-	helper = !/usr/bin/gh auth git-credential
+  helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
-	helper = !/usr/bin/gh auth git-credential
+  helper = !/usr/bin/gh auth git-credential
 [alias]
-	sub = submodule update --init --recursive
+  sub = submodule update --init --recursive

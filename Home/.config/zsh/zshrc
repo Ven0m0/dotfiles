@@ -27,7 +27,6 @@ HISTFILE=${HOME}/.zsh_history
 HISTSIZE=10000 SAVEHIST="$HISTSIZE"
 export HISTIGNORE="&:[bf]g:c:clear:history:exit:q:pwd:* --help"
 export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
-
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
 setopt PROMPT_SUBST
@@ -38,12 +37,18 @@ export VISUAL=micro
 
 alias mkdir='mkdir -p'
 
-mcd () { mkdir -p "$1" && cd "$1"; }
+alias -g -- -h='-h 2>&1 | bat --language=help --style=plain -s --squeeze-limit 0'
+alias -g -- --help='--help 2>&1 | bat --language=help --style=plain -s --squeeze-limit 0'
+
+
+mcd () { mkdir -p -- "$1" && cd "$1"; }
 
 stty -ixon
+
+source /usr/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh
+bindkey '^I' fzf_completion
 
 autoload -Uz promptinit
 promptinit
 
-source /usr/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh
-bindkey '^I' fzf_completion
+
