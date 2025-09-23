@@ -40,7 +40,7 @@ fi
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
 HISTSIZE=1000 HISTFILESIZE="$HISTSIZE"
-HISTCONTROL="erasedups:ignoreboth"
+HISTCONTROL="erasedups:ignoreboth:autoshare"
 HISTIGNORE="&:[bf]g:clear:cls:exit:history:bash:fish:?:??"
 export HISTTIMEFORMAT="%F %T " IGNOREEOF=100
 HISTFILE="${HOME}/.bash_history"
@@ -80,6 +80,17 @@ has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
 export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 MIMALLOC_SHOW_STATS=0 MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_PURGE_DELAY=25 MIMALLOC_ARENA_EAGER_COMMIT=2
 
+: "${LESS_TERMCAP_mb:=$'\e[1;32m'}"
+: "${LESS_TERMCAP_md:=$'\e[1;32m'}"
+: "${LESS_TERMCAP_me:=$'\e[0m'}"
+: "${LESS_TERMCAP_se:=$'\e[0m'}"
+: "${LESS_TERMCAP_so:=$'\e[01;33m'}"
+: "${LESS_TERMCAP_ue:=$'\e[0m'}"
+: "${LESS_TERMCAP_us:=$'\e[1;4;31m'}"
+#: "${LESS:=}"
+export "${!LESS_TERMCAP@}"
+#export LESS="-R ${LESS}"
+
 # Delta / bat integration
 has delta && export GIT_PAGER=delta
 if has bat; then
@@ -110,7 +121,8 @@ elif has dircolors; then
 else
   . <(curl -sfL https://raw.githubusercontent.com/trapd00r/LS_COLORS/refs/heads/master/lscolors.sh)
 fi
-export CLICOLOR=1 SYSTEMD_COLORS=1
+: "${CLICOLOR:=$(tput colors)}"
+export CLICOLOR SYSTEMD_COLORS=1
 
 # XDG + misc
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}"
