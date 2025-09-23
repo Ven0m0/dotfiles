@@ -1,9 +1,6 @@
 # EditorConfig: https://editorconfig.org
 root = true
 
-# ---------------------
-# Baseline
-# ---------------------
 [*]
 end_of_line = lf
 charset = utf-8
@@ -25,9 +22,7 @@ switch_case_indent = false
 function_next_line = false
 binary_next_line = true
 
-# ---------------------
-# Shell scripts
-# ---------------------
+# Shell
 [**.{sh,bash*},bash_*,PKGBUILD]
 shell_variant = bash
 
@@ -36,52 +31,32 @@ shell_variant = posix
 
 [**.{fish,fish_*,fishd.*}]
 indent_size = 4
-tab_width = 4
 
 [**.{bat,cmd}]
 indent_style = tab
 indent_size = 4
 
-# ---------------------
-# Markdown, Patches, RST
-# ---------------------
+# Text
 [**.{md,patch,rst}]
 trim_trailing_whitespace = false
-insert_final_newline = true
 
 [**.md]
 max_line_length = 140
 
-# ---------------------
-# Go, Rust, Zig, Makefiles
-# ---------------------
-[Makefile,go.mod,go.sum,.gitmodules,**.{mk,go,rs,zig}]
-indent_style = tab
-indent_size = 4
-tab_width = 4
-
-# ---------------------
-# Python
-# ---------------------
-[**.{py,pyw,pyi}]
-indent_size = 4
-tab_width = 4
+[**.{yml,yaml}]
 max_line_length = 120
 
-# ---------------------
-# JavaScript / TypeScript
-# ---------------------
-[**.{js,mjs,cjs,jsx,ts,mts,cts,tsx}]
-quote_type = single
-
-# ---------------------
-# XML
-# ---------------------
 [**.xml]
 indent_size = 4
 
-# ---------------------
-# YAML
-# ---------------------
-[**.{yml,yaml}]
+# Code
+[Makefile,go.mod,go.sum,.gitmodules,**.{mk,go,rs,zig}]
+indent_style = tab
+indent_size = 4
+
+[**.{py,pyw,pyi}]
+indent_size = 4
 max_line_length = 120
+
+[**.{js,mjs,cjs,jsx,ts,mts,cts,tsx}]
+quote_type = single
