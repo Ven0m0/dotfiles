@@ -334,3 +334,26 @@ if command -v gh &>/dev/null; then
   eval "$(gh completion --shell=bash)"
 fi
 
+
+alias _='sudo'
+alias edit='${EDITOR:-${ALTERNATE_EDITOR:-nano}}'
+alias pager='${PAGER:-less}'
+alias q='exit'
+alias h='history'
+alias rd='rmdir'
+alias md='mkdir -p'
+alias rmd='rm -rf'
+
+function catt(){
+  for i in "$@"; do
+    if [[ -d "$i" ]]; then
+	  ls "$i"
+	else
+	  cat "$i"
+	fi
+done
+}
+alias g='git'
+
+
+
