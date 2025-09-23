@@ -256,3 +256,81 @@ git_maintain_max() {
   echo "Git maintenance"
   git maintenance run --task=prefetch --task=gc --task=loose-objects --task=incremental-repack --task=pack-refs --task=reflog-expire --task=rerere-gc --task=worktree-prune
 }
+
+explain() {
+	about 'explain any bash command via mankier.com manpage API'
+	param '1: Name of the command to explain'
+	example '$ explain                # interactive mode. Type commands to explain in REPL'
+	example '$ explain '"'"'cmd -o | ...'"'"' # one quoted command to explain it.'
+	group 'explain'
+
+	if [ "$#" -eq 0 ]; then
+		while read -r -p "Command: " cmd; do
+			curl -Gs "https://www.mankier.com/api/explain/?cols=$(tput cols)" --data-urlencode "q=$cmd"
+		done
+		echo "Bye!"
+	elif [ "$#" -eq 1 ]; then
+		curl -Gs "https://www.mankier.com/api/explain/?cols=$(tput cols)" --data-urlencode "q=$1"
+	else
+		echo "Usage"
+		echo "explain                  interactive mode."
+		echo "explain 'cmd -o | ...'   one quoted command to explain it."
+	fi
+}
+
+fe() {
+	about "Open the selected file in the default editor"
+	group "fzf"
+	param "1: Search term"
+	example "fe foo"
+
+	local IFS=$'\n' line
+	local files=()
+	while IFS='' read -r line; do files+=("$line"); done < <(fzf-tmux --query="$1" --multi --select-1 --exit-0)
+	[[ -n "${files[0]}" ]] && ${EDITOR:-vim} "${files[@]}"
+}
+
+fcd() {
+	about "cd to the selected directory"
+	group "fzf"
+	param "1: Directory to browse, or . if omitted"
+	example "fcd aliases"
+
+	local dir
+	dir=$(find "${1:-.}" -path '*/\.*' -prune \
+		-o -type d -print 2> /dev/null | fzf +m) \
+		&& cd "$dir" || return 1
+}
+
+
+function sudo-command-line() {
+	[[ ${#READLINE_LINE} -eq 0 ]] && READLINE_LINE=$(fc -l -n -1 | xargs)
+	if [[ $READLINE_LINE == sudo\ * ]]; then
+		READLINE_LINE="${READLINE_LINE#sudo }"
+	else
+		READLINE_LINE="sudo $READLINE_LINE"
+	fi
+	READLINE_POINT=${#READLINE_LINE}
+}
+[ "${BASH_VERSINFO[0]}" -ge 4 ] && bind -x '"\e\e": sudo-command-line'
+
+if _command_exists thefuck; then
+	# shellcheck disable=SC2046
+	eval $(thefuck --alias)
+fi
+
+# Dedupe an array (without embedded newlines).
+function _bash-it-array-dedup() {
+	printf '%s\n' "$@" | sort -u
+}
+# https://github.com/Bash-it/bash-it/blob/master/completion/available/aliases.completion.bash
+if command -v rustc &>/dev/null; then
+  source "$(rustc --print sysroot)"/etc/bash_completion.d/cargo
+fi
+if command -v rustup &>/dev/null; then
+  eval "$(rustup completions bash rustup)"
+fi
+if command -v gh &>/dev/null; then
+  eval "$(gh completion --shell=bash)"
+fi
+
