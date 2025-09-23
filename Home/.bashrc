@@ -24,6 +24,9 @@ ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_com
 [[ -r /usr/share/blesh/ble.sh ]] && . "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null || { \
   [[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
 
+# ble-import -d integration/fzf-key-bindings
+# ble-import -d integration/fzf-completion
+
 # github.com/kazhala/dotbare
 ifsource "${HOME}/.dotbare/dotbare.plugin.bash" &&  alias dotbare="${HOME}/.dotbare/dotbare"
 
@@ -47,9 +50,11 @@ PROMPT_COMMAND="history -a"
 CDPATH=".:${HOME}:/"
 ulimit -c 0 # disable core dumps
 export FIGNORE="argo.lock" IFS="${IFS:-$' \t\n'}"
-shopt -s histappend cmdhist checkwinsize dirspell cdable_vars cdspell execfail varredir_close \
-         autocd hostcomplete no_empty_cmd_completion globstar nullglob force_fignore
+shopt -s histappend cmdhist checkwinsize dirspell cdable_vars cdspell \
+         autocd cdable_vars hostcomplete no_empty_cmd_completion globstar nullglob
+# shopt -s force_fignore execfail varredir_close
 # Disable Ctrl-s, Ctrl-q
+set -o noclobber
 bind -r '\C-s'
 stty -ixon -ixoff -ixany
 set +H # disable history expansion that breaks some scripts
