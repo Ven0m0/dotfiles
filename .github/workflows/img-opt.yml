@@ -11,18 +11,18 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
-permissions: write-all
-
+permissions:
+  contents: write
 jobs:
   optimize-images:
     name: Optimize Images (stellasoftio)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v5.0.0
         with:
           ref: ${{ github.head_ref }}
-          fetch-depth: 1
+
       - name: Compress and Convert Images
         id: compress
         uses: stellasoftio/image-optimizer-action@v1.2.0
@@ -35,9 +35,8 @@ jobs:
           compress-jpg: true
           compress-webp: true
           compress-avif: true
-          # Disable all built-in replacements in favor of our more precise manual script.
-          replace-original-after-export-webp: false
-      # This custom script manually deletes original files if a superior format exists.
+          replace-original-after-export-webp: false # Handled manually below
+
       - name: Remove Originals After Conversion
         if: steps.compress.outputs.changes_detected == 'true'
         run: |
@@ -51,28 +50,21 @@ jobs:
               "${base_path}.jpeg"
             )
             for original in "${originals[@]}"; do
-              if [[ -f "$original" ]]; then
-                echo "Replacing static image with AVIF: $original"
-                rm "$original"
-              fi
+              [[ -f "$original" ]] && echo "Replacing static image with AVIF: $original"; rm "$original"
             done
           done
           # 2. Handle WebP replacement for animated GIFs
           LC_ALL=C find -O3 . -type f -name '*.webp' -print0 | while IFS= read -r -d '' webp_file; do
             base_path="${webp_file%.webp}"
             original_gif="${base_path}.gif"
-            if [[ -f "$original_gif" ]]; then
-              echo "Replacing animated GIF with WebP: $original_gif"
-              rm "$original_gif"
-            fi
+            [[ -f "$original_gif" ]] && echo "Replacing animated GIF with WebP: $original_gif"; rm "$original_gif"
           done
-      # Commits the optimized images back to the PR branch if changes were made.
-      - name: Commit Changesc
-        if: steps.compress-images.outputs.markdown_report != ''
-        uses: stefanzweifel/git-auto-commit-action@v5.0.1
+
+      - name: Commit Changes
+        if: steps.compress.outputs.changes_detected == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore(images): Convert static to AVIF, animated to WebP'
-          # Commits directly to the pull request's branch.
           branch: ${{ github.head_ref }}
           commit_user_name: 'github-actions[bot]'
           commit_user_email: '41898282+github-actions[bot]@users.noreply.github.com'
