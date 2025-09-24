@@ -75,6 +75,8 @@ unset LC_ALL POSIXLY_CORRECT
 jobs="$(nproc)" SHELL="${BASH:-$(command -v bash 2>/dev/null)}"
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 
+has ibus && export GTK_IM_MODULE=ibus XMODIFIERS=@im=ibus QT_IM_MODULE=ibus
+
 # Mimalloc & Jemalloc
 # https://github.com/microsoft/mimalloc/blob/main/docs/environment.html
 MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
