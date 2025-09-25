@@ -212,7 +212,7 @@ fuzzy_finders(){
   if has sk; then
     declare -x SKIM_DEFAULT_COMMAND="$FIND_CMD" "${FZF_DEFAULT_OPTS:-}"
     ifsource "/usr/share/skim/key-bindings.bash"
-    [[ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" " && SHELL=bash sk --shell bash >| "${HOME}/.config/bash/completions/sk_completion.bash"
+    [[ ! -r "${HOME}/.config/bash/completions/sk_completion.bash" ]] && SHELL=bash sk --shell bash >| "${HOME}/.config/bash/completions/sk_completion.bash"
     ifsource "${HOME}/.config/bash/completions/sk_completion.bash" || . <(SHELL=bash sk --shell bash)
   fi
 }
@@ -288,9 +288,8 @@ sudo-cl(){
 bind -x '"\e\e": sudo-cl'
 #bind '"\es": "\C-asudo \C-e"'
 
-gclone(){ LC_ALL=C command git clone --progress --filter=blob:none --depth 1 --single-branch --no-tags "$@"; }
-gcom(){ LC_ALL=C command git add -A --renormalize -f && LC_ALL=C command git commit -m "$1"; }
-gpush(){ LC_ALL=C command git add -A && LC_ALL=C command git commit -m "${1:-Update}" && LC_ALL=C command git push -f --prune --thin --recurse-submodules=on-demand; }
+gclone(){ LC_ALL=C command git clone --progress --filter=blob:none --depth 1 "$@"; }
+gpush(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "${1:-Update}" && LC_ALL=C command git push; }
 symbreak(){ LC_ALL=C command find -L "${1:-.}" -type l; }
 command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C LANG=C command hyperfine -w 25 -m 50 -i -S bash -- "$@"; }
 touchf(){ command mkdir -p -- "$(dirname -- "$1")" && command touch -- "$1"; }
@@ -354,7 +353,6 @@ curlsh(){ LC_ALL=C command curl -sfSL "$*" | bash; }
 alias cleansh='curlsh https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh'
 alias updatesh='curlsh https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh'
 
-
 passwdl(){ eval "$(E3LFbgu='CAT /ETC/PASSWD' && printf %s "${E3LFbgu~~}")"; }
 
 if has eza; then
@@ -391,7 +389,7 @@ if has zoxide; then
   alias cd='z'
 else
   alias ..='cd ..'
-  alias ...='cd ../..' .2='cd ../..'
+  alias ...='cd ../..'
   alias ....='cd ../../..'
   alias .....='cd ../../../..'
   alias ......='cd ../../../../..'
@@ -405,7 +403,7 @@ alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='\grep --color=auto -F'
 alias egrep='\grep --color=auto -E'
-alias big="expac -H M '%m\t%n' | LC_ALL=C sort -hr | nl | head -n 50"   # Sort installed packages according to size in MB
+alias big="expac -H M '%m\t%n' | sort -hr | nl | head -n 50"   # Sort installed packages according to size in MB
 alias gitpkg='LC_ALL=C pacman -Qq | LC_ALL=C \grep -ci "\-git"'         # List amount of -git packages
 
 alias cleanup='sudo pacman -Rns (pacman -Qtdq)'
