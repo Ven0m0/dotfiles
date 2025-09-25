@@ -63,11 +63,9 @@ manol() {
     echo "Example: manol 3 printf" >&2
     return 1
   fi
-
   local page section url
   local base_url="https://man.archlinux.org/man"
   local pager="${PAGER:-less}"
-
   if [[ $# -eq 1 ]]; then
     page="$1"
     url="${base_url}/${page}"
@@ -76,7 +74,6 @@ manol() {
     page="$2"
     url="${base_url}/${page}.${section}"
   fi
-
   curl --silent --location --user-agent "curl-manpage-viewer/1.0" --compressed "$url" | "$pager" -R
 }
 
@@ -114,10 +111,10 @@ pacsize() {
 }
 
 # Fuzzy package installer/uninstaller
-pac_fuzzy() {
+pac_fuzzy(){
   local fuzzy_cmd key lines packages
   local fzf_preview='
-    command pacman -Si $(awk "{print \$1}" <<< {}) 2>/dev/null |
+    command pacman -Si {1} 2>/dev/null || paru -Si {1} |
     command bat -p --language=ini --color=always |
     sed -r "s/(Installed Size|Name|Version|Depends On|Optional Deps|Maintainer|Repository|Licenses|URL)/\x1b[96;1m\1\x1b[0m/g"
   '
@@ -130,29 +127,30 @@ pac_fuzzy() {
     return 1
   fi
   readarray -t lines < <(
-    comm -23 <(pacman -Slq | sort) <(pacman -Qq | sort) |
-      cat - <(pacman -Qq | awk '{printf "%-30s \033[32m[installed]\033[0m\n", $1}') |
-      "$fuzzy_cmd" --ansi -m --style=full --cycle --border --height=~100% --inline-info -0 --layout=reverse-list \
-        --preview "$fzf_preview" --preview-window=right:60%:wrap --expect=ctrl-u \
-        --header 'ENTER: install, CTRL-U: uninstall'
+    cat <(comm -23 <(pacman -Slq | sort) <(pacman -Qq | sort)) \
+        <(pacman -Qq | awk '{print $1 " \033[32m[installed]\033[0m"}') \
+        <(paru -Ssqa | sort | comm -23 - <(pacman -Slq | sort) | awk '{print $1 " \033[33m[AUR]\033[0m"}') |
+      "$fuzzy_cmd" --ansi -m --style=full --cycle --border --height=~100% \
+        --inline-info -0 --layout=reverse-list \
+        --preview "$fzf_preview" --preview-window=right:60%:wrap \
+        --expect=ctrl-u --header 'ENTER: install, CTRL-U: uninstall'
   )
+
   key="${lines[0]}"
   unset "lines[0]"
   if [[ ${#lines[@]} -eq 0 ]]; then
     printf '%s\n' "No packages selected."
     return
   fi
-  packages=("${lines[@]}")
-  packages=("${packages[@]%% *}") # Remove everything after the first space
+  packages=("${lines[@]%% *}") # Remove everything after the first space
   if [[ "$key" == "ctrl-u" ]]; then
     printf '%b\n' "\e[31mUninstalling packages:\e[0m ${packages[*]}"
     sudo pacman -Rns --noconfirm "${packages[@]}"
   else
     printf '%b\n' "\e[32mInstalling packages:\e[0m ${packages[*]}"
-    sudo pacman -S --noconfirm --needed "${packages[@]}"
+    paru -S --noconfirm --needed "${packages[@]}"
   fi
 }
-
 # -----------------------------------------------------------------------------
 # Git Related Functions
 # -----------------------------------------------------------------------------
@@ -234,12 +232,6 @@ alias md='mkdir -p'
 alias rmd='rm -rf'
 alias bhelp='bathelp'
 alias g='git'
-
-
-
-
-
-
 
 gh() {
 	[[ $( command git rev-parse --is-inside-work-tree ) ]] || return
