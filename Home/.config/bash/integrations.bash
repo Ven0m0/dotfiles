@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
+SHELL=/usr/bin/bash 
 
 # Install and load plugins
 _bash_plugins() {
