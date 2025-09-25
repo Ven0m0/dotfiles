@@ -42,12 +42,6 @@ Setup-ssh() {
 
 # Explain any bash command via mankier.com manpage API
 explain() {
-  about 'explain any bash command via mankier.com manpage API'
-  param '1: Name of the command to explain'
-  example '$ explain'
-  example '$ explain '"'"'cmd -o | ...'"'"' # one quoted command to explain it.'
-  group 'explain'
-
   if [ "$#" -eq 0 ]; then
     while read -r -p "Command: " cmd; do
       curl -Gs "https://www.mankier.com/api/explain/?cols=$(tput cols)" --data-urlencode "q=$cmd"
@@ -119,30 +113,43 @@ pacsize() {
   fi
 }
 
-# Fuzzy package installer
+# Fuzzy package installer/uninstaller
 pac_fuzzy() {
-  local sel fuzzy_cmd
+  local fuzzy_cmd key lines packages
+  local fzf_preview='
+    command pacman -Si $(awk "{print \$1}" <<< {}) 2>/dev/null |
+    command bat -p --language=ini --color=always |
+    sed -r "s/(Installed Size|Name|Version|Depends On|Optional Deps|Maintainer|Repository|Licenses|URL)/\x1b[96;1m\1\x1b[0m/g"
+  '
   if command -v fzf &>/dev/null; then
-    fuzzy_cmd="fzf --ansi -m --style=full --cycle --border --height=~100% --inline-info -0 --layout=reverse-list"
+    fuzzy_cmd="fzf"
   elif command -v sk &>/dev/null; then
-    fuzzy_cmd="sk --ansi -m --cycle --border --inline-info --height=~100% -0 --layout=reverse-list"
+    fuzzy_cmd="sk"
   else
     printf "fzf or sk is required for this function.\n" >&2
     return 1
   fi
-  sel=$(comm -23 <(command pacman -Slq | sort) <(command pacman -Qq | sort) |
-    cat - <(command pacman -Qq | awk '{printf "%-30s \033[32m[installed]\033[0m\n", $1}') |
-    eval "$fuzzy_cmd" \
-      --preview '
-        command pacman -Si $(awk "{print \$1}" <<< {}) 2>/dev/null | \
-        command bat -p --language=ini --color=always | \
-        sed -r "s/(Installed Size|Name|Version|Depends On|Optional Deps|Maintainer|Repository|Licenses|URL)/\x1b[96;1m\1\x1b[0m/g"
-      ' --preview-window=right:60%:wrap | awk '{print $1}' | paste -sd " " -)
-  if [[ -n "$sel" ]]; then
-    printf '%b\n' "\e[32mInstalling packages:\e[0m $sel"
-    sudo pacman -S "${sel// / }" --noconfirm --needed
-  else
+  readarray -t lines < <(
+    comm -23 <(pacman -Slq | sort) <(pacman -Qq | sort) |
+      cat - <(pacman -Qq | awk '{printf "%-30s \033[32m[installed]\033[0m\n", $1}') |
+      "$fuzzy_cmd" --ansi -m --style=full --cycle --border --height=~100% --inline-info -0 --layout=reverse-list \
+        --preview "$fzf_preview" --preview-window=right:60%:wrap --expect=ctrl-u \
+        --header 'ENTER: install, CTRL-U: uninstall'
+  )
+  key="${lines[0]}"
+  unset "lines[0]"
+  if [[ ${#lines[@]} -eq 0 ]]; then
     printf '%s\n' "No packages selected."
+    return
+  fi
+  packages=("${lines[@]}")
+  packages=("${packages[@]%% *}") # Remove everything after the first space
+  if [[ "$key" == "ctrl-u" ]]; then
+    printf '%b\n' "\e[31mUninstalling packages:\e[0m ${packages[*]}"
+    sudo pacman -Rns --noconfirm "${packages[@]}"
+  else
+    printf '%b\n' "\e[32mInstalling packages:\e[0m ${packages[*]}"
+    sudo pacman -S --noconfirm --needed "${packages[@]}"
   fi
 }
 
@@ -227,3 +234,27 @@ alias md='mkdir -p'
 alias rmd='rm -rf'
 alias bhelp='bathelp'
 alias g='git'
+
+
+
+
+
+
+
+gh() {
+	[[ $( command git rev-parse --is-inside-work-tree ) ]] || return
+	command git log --date=relative --format="%C(auto)%h%d %C(white)%s %C(cyan)%an %C(black)%C(bold)%cd%C(auto)" --graph --color=always | 
+	command fzf --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
+		--header 'Press CTRL-S to toggle sort' \
+		--preview='grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always | delta -n' \
+		--bind 'enter:execute(grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always | delta -n | less -R)'
+		# --preview='grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always' | grep -o "[a-f0-9]\{7,\}"
+		# --preview="git show {1} --color=always" | grep -o "[a-f0-9]\{7,\}"
+}
+
+
+
+
+
+
+
