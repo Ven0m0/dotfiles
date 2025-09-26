@@ -1,0 +1,1 @@
+ferium complete bash
