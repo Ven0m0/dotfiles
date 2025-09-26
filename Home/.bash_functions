@@ -246,7 +246,17 @@ gh() {
 
 
 
+# Search for and install packages with an fzf preview
+paruf() {
+  if [[ -z "$1" ]]; then
+    echo "Usage: paruf <package-query>"
+    return 1
+  fi
 
+  paru -Ssq "$1" |
+    fzf --multi --ansi --cycle --preview 'paru -Si {} | bat -p --color=always' |
+    xargs -r paru -S --needed
+}
 
 
 
