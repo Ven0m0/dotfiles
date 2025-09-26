@@ -258,5 +258,55 @@ paruf() {
     xargs -r paru -S --needed
 }
 
+# An fzf wrapper for paru to search and install repo and AUR packages.
+fuzzy_paru() {
+  # Use an awk script to generate a single, tagged list in one pass.
+  # This avoids redundant commands and sub-processes.
+  local fzf_input
+  fzf_input=$(
+    awk '
+      # Read the list of all installed packages (repo & AUR) into an array `i`
+      FNR == NR { i[$0] = 1; next }
+      # For the main package list, check if the package exists in the array `i`
+      {
+        # If it exists, print with the "[installed]" tag
+        if ($0 in i) {
+          printf "%s\t\033[32m[installed]\033[0m\n", $0
+        } else {
+        # Otherwise, print just the package name
+          print $0
+        }
+      }
+    ' <(paru -Qq) <(paru -Ssq '^') # Pass installed list, then all available repo/AUR packages
+  )
+
+  # Use mapfile to read fzf's output into a proper bash array.
+  local -a selections
+  mapfile -t selections < <(
+    # Pass the generated list to fzf via a here-string
+    <<<"$fzf_input" fzf \
+      --ansi \
+      --multi \
+      --cycle \
+      --layout=reverse-list \
+      --preview '
+        # `paru -Si` can show info for both repo and AUR packages.
+        # Uses fzf'\''s fast built-in {1} field index placeholder.
+        paru -Si {1} 2>/dev/null | bat -p --language=ini --color=always
+      '
+  )
+
+  # Check if the array of selections is not empty.
+  if (( ${#selections[@]} > 0 )); then
+    # Strip the "[installed]" tag from the selections.
+    local -a packages_to_install=("${selections[@]%% *}")
+
+    printf '\e[32mInstalling packages:\e[0m %s\n' "${packages_to_install[*]}"
+    # `paru` handles sudo elevation automatically.
+    paru -S --needed "${packages_to_install[@]}"
+  else
+    printf 'No packages selected.\n'
+  fi
+}
 
 
