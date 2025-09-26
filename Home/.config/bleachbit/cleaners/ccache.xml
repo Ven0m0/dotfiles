@@ -23,12 +23,12 @@
 
 -->
 <cleaner id="ccache" os="linux">
-  <!-- FIXME: Does it work under Windows? -->
-  <label>ccache</label>
-  <description>Cache result of files compiled by C/C++ compilers</description>
-  <option id="ccache">
-    <label>Cache</label>
-    <description>Delete the cache</description>
-    <action search="walk.all" command="delete" path="~/.ccache/"/>
-  </option>
+	<!-- FIXME: Does it work under Windows? -->
+	<label>ccache</label>
+	<description>Cache result of files compiled by C/C++ compilers</description>
+	<option id="ccache">
+		<label>Cache</label>
+		<description>Delete the cache</description>
+		<action search="walk.all" command="delete" path="~/.ccache/"/>
+	</option>
 </cleaner>
