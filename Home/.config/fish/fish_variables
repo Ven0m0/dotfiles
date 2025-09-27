@@ -2,7 +2,6 @@
 # VERSION: 3.0
 SETUVAR --export FZF_COMPLETE:1
 SETUVAR --export FZF_LEGACY_KEYBINDINGS:0
-SETUVAR async_prompt_functions:fish_prompt\x1efish_right_prompt
 SETUVAR sponge_allow_previously_successful:true
 SETUVAR sponge_delay:2
 SETUVAR sponge_filters:sponge_filter_failed\x1esponge_filter_matched
@@ -11,3 +10,12 @@ SETUVAR sponge_regex_patterns:\x1d
 SETUVAR sponge_successful_exit_codes:0
 SETUVAR --export fifc_editor:micro
 SETUVAR pisces_only_insert_at_eol:1
+SETUVAR fish_autosuggestion_enabled:1
+SETUVAR async_prompt_enable:1
+SETUVAR async_prompt_functions:fish_prompt\x1efish_right_prompt
+SETUVAR fish_prompt_pwd_dir_length:2
+SETUVAR fish_term24bit:1
+SETUVAR pure_enable_git:false
+SETUVAR pure_enable_single_line_prompt:true
+SETUVAR __fish_git_prompt_show_informative_status:0
+SETUVAR __fish_git_prompt_showupstream:none
