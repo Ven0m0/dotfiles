@@ -27,3 +27,4 @@ load_completion _gh gh eval "$(gh completion -s bash)"
 load_completion _rustup rustup eval "$(rustup completions bash rustup)"
 load_completion _cargo  cargo  eval "$(rustup completions bash cargo)"
 
+curl -sf https://github.com/endeavouros-team/PKGBUILDS/blob/master/reflector-bash-completion/reflector-bash-completion -o "${HOME}/.config/bash/completions/reflector.bash"
