@@ -16,10 +16,6 @@ fi
 if [ -d "$HOME/.local/bin" ]; then
     PATH="$HOME/.local/bin:$PATH"
 fi
-# Add cargo binaries to path if it exits
-if [ -e "$HOME/.cargo/env" ]; then
-	. "$HOME/.cargo/env"
-fi
 
 # FZF tab completions
 if [ -f "/usr/lib/librl_custom_complete.so" ]; then
