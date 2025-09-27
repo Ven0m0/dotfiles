@@ -1,0 +1,134 @@
+{
+  // --------------------------------------------------------------------
+  // Appearance & UI
+  // --------------------------------------------------------------------
+  "workbench.iconTheme": "catppuccin-mocha",
+  "catppuccin.extraBordersEnabled": true,
+  "editor.fontFamily": "JetBrains Mono",
+  "editor.fontLigatures": true,
+  "editor.minimap.autohide": true,
+  "breadcrumbs.enabled": false,
+  "editor.stickyScroll.enabled": false,
+  "workbench.editor.highlightModifiedTabs": true,
+  "window.density.editorTabHeight": "compact",
+  "diffEditor.hideUnchangedRegions.enabled": true,
+  "diffEditor.experimental.showEmptyDecorations": false,
+  // --------------------------------------------------------------------
+  // Editor Behavior
+  // --------------------------------------------------------------------
+  "editor.tabSize": 2,
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.tabCompletion": "on",
+  "editor.mouseWheelZoom": true,
+  "editor.foldingImportsByDefault": true,
+  "editor.unusualLineTerminators": "auto",
+  "editor.unicodeHighlight.nonBasicASCII": false,
+  "editor.acceptSuggestionOnEnter": "smart",
+  "editor.suggest.localityBonus": true,
+  "editor.suggest.selectionMode": "whenTriggerCharacter",
+  "editor.inlineSuggest.syntaxHighlightingEnabled": true,
+  // --------------------------------------------------------------------
+  // File Handling & Formatting
+  // --------------------------------------------------------------------
+  "files.eol": "\n",
+  "files.autoSave": "onWindowChange",
+  "files.autoSaveWhenNoErrors": true,
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.autoGuessEncoding": true,
+  "explorer.incrementalNaming": "smart",
+  "editor.defaultFormatter": "franneck94.workspace-formatter",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "remove-empty-lines.runOnSave": true,
+  "remove-tabs-on-save.ignoreFileExtensions": [
+    "*.go"
+  ],
+  // --------------------------------------------------------------------
+  // Performance & Telemetry
+  // --------------------------------------------------------------------
+  "telemetry.telemetryLevel": "off",
+  "geminicodeassist.enableTelemetry": false,
+  "editor.accessibilitySupport": "off",
+  "workbench.reduceMotion": "on",
+  "editor.smoothScrolling": false, // Recommended: false for speed
+  "workbench.list.smoothScrolling": false, // Recommended: false for speed
+  "editor.experimentalWhitespaceRendering": "font",
+  "extensions.experimental.deferredStartupFinishedActivation": true,
+  "terminal.integrated.gpuAcceleration": "on",
+  // --------------------------------------------------------------------
+  // Git Integration
+  // --------------------------------------------------------------------
+  "git.enableSmartCommit": true,
+  "git.fetchOnPull": true,
+  "git.pruneOnFetch": true,
+  "git.pullBeforeCheckout": true,
+  "git.rebaseWhenSync": true,
+  "git.ignoreLegacyWarning": true,
+  "git.ignoreWindowsGit27Warning": true,
+  // "git.postCommitCommand": "push", // DANGEROUS: Removed for safety
+  // --------------------------------------------------------------------
+  // Security
+  // --------------------------------------------------------------------
+  "security.workspace.trust.untrustedFiles": "prompt", // Recommended: "prompt"
+  "security.promptForRemoteFileProtocolHandling": false,
+  "security.promptForLocalFileProtocolHandling": false,
+  // --------------------------------------------------------------------
+  // Integrated Terminal
+  // --------------------------------------------------------------------
+  "terminal.integrated.hideOnStartup": "whenEmpty",
+  "terminal.integrated.ignoreBracketedPasteMode": true,
+  "terminal.integrated.experimental.windowsUseConptyDll": true,
+  "terminal.integrated.enableImages": true,
+  "terminal.integrated.enableFileLinks": "notRemote",
+  "terminal.integrated.useWslProfiles": false,
+  "terminal.integrated.suggest.enabled": true,
+  // --------------------------------------------------------------------
+  // Language & Extension Specific
+  // --------------------------------------------------------------------
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+  },
+  "bashIde.shfmt.binaryNextLine": true,
+  "bashIde.shfmt.simplifyCode": true,
+  "bashIde.shfmt.languageDialect": "bash",
+  "bashIde.shfmt.extraArgs": [
+    "-i",
+    "2"
+  ],
+  "bashIde.enableSourceErrorDiagnostics": true,
+  "shellcheck.run": "onSave",
+  "javascript.format.semicolons": "remove",
+  "MinifyAll.terserMinifyOptions": {
+    "mangle": true,
+    "compress": {
+      "drop_console": [
+        "log"
+      ],
+      "dead_code": true,
+      "passes": 2
+    },
+    "format": {
+      "wrap_func_args": true
+    },
+    "keep_fnames": false,
+    "keep_classnames": false,
+    "ie8": true
+  },
+  "MinifyAll.disableHexadecimalShortener": false,
+  "MinifyAll.disableJavascriptReact": false,
+  "markdown.updateLinksOnFileMove.enabled": "always",
+  "markdown.validate.enabled": true,
+  "chatgpt.lang": "en",
+  "chatgpt.temperature": 0.5,
+  "chatgpt.autoAddCurrentFile": true,
+  "chatgpt.promptBasedTools.enabled": true,
+  // --------------------------------------------------------------------
+  // General Workbench
+  // --------------------------------------------------------------------
+  "workbench.commandPalette.preserveInput": true,
+  "workbench.externalBrowser": "firefox",
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.defaultBinaryEditor": "default",
+  "window.confirmBeforeClose": "keyboardOnly"
+}
