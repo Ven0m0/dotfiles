@@ -41,7 +41,9 @@ ifsource /usr/share/bash-preexec/bash-preexec.sh
 
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
-HISTSIZE=1000 HISTFILESIZE="$HISTSIZE"
+# https://github.com/glabka/configs/blob/master/home/.bashrc
+HISTSIZE=1000
+HISTFILESIZE=2000
 HISTCONTROL="erasedups:ignoreboth:autoshare"
 HISTIGNORE="&:[bf]g:clear:cls:exit:history:bash:fish:?:??"
 export HISTTIMEFORMAT="%F %T " IGNOREEOF=100
