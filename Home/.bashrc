@@ -37,6 +37,8 @@ else
   export INPUTRC="${HOME}/.inputrc"
 fi
 
+ifsource /usr/share/bash-preexec/bash-preexec.sh
+
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
 HISTSIZE=1000 HISTFILESIZE="$HISTSIZE"
