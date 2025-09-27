@@ -18,3 +18,6 @@ _bash_plugins() {
   "$reset_nullglob"
 }
 _bash_plugins
+
+cd "$HOME"
+curl -sf -O https://raw.githubusercontent.com/trapd00r/LS_COLORS/refs/heads/master/lscolors.sh
