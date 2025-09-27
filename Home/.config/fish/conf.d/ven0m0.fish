@@ -102,6 +102,12 @@ if status -i >/dev/null 2>&1
   abbr -a c clear
   abbr -a py python3
 
+  # https://www.reddit.com/r/fishshell/comments/1g3nh1u/any_way_to_create_functions_with_dynamic_names/
+  function qcd
+      echo cd (string repeat -n (string length $argv) ../)
+  end
+  abbr -a qcd --position command --regex 'q+' --function qcd
+
   alias cat='\bat -pp'
   alias ptch='patch -p1 <'
   alias updatesh='curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
