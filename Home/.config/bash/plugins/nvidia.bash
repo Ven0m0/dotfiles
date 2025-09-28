@@ -41,10 +41,6 @@ __GL_SHADER_DISK_CACHE=1
 __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1
 mesa_glthread=true
 
-# Java
-export JAVA_OPTIONS="-Xmx2G -Dfile.encoding=UTF-8 -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions"
-# export JAVA_HOME=""
-
 # Homebrew
 export HOMEBREW_NO_ANALYTICS=true
 
