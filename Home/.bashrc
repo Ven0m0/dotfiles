@@ -510,7 +510,9 @@ if [[ $SHLVL -ge 3; ! $BASH_SUBSHELL -ge 1 ]]; then
 fi
 #============ Jumping ============
 if command -v zoxide &>/dev/null; then
-  export _ZO_DOCTOR=0 _ZO_ECHO=0 _ZO_EXCLUDE_DIRS="${HOME}:.cache:go" _ZO_FZF_OPTS="--algo=v1 --cycle +m --no-unicode --no-mouse -0 -1 --inline-info"
+  export _ZO_DOCTOR=0 _ZO_ECHO=0 _ZO_EXCLUDE_DIRS="${HOME}:.cache:go" 
+  export _ZO_FZF_OPTS="--cycle -0 -1 --inline-info --no-multi --no-sort \
+    --preview 'eza --no-quotes --color=always --color-scale-mode=fixed --group-directories-first --oneline {2..}'"
   [[ ! -r "${HOME}/.config/bash/zoxide.bash" ]] && zoxide init bash >| "${HOME}/.config/bash/zoxide.sh"
   ifsource "${HOME}/.config/bash/zoxide.sh" && eval "$(zoxide init bash)"
 fi
