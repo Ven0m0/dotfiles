@@ -7,6 +7,7 @@ fi
 DISABLE_MAGIC_FUNCTIONS="true"
 ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 [[ -z "${plugins[*]}" ]] && plugins=(fzf aliases archlinux)
 source $ZSH/oh-my-zsh.sh
@@ -17,8 +18,20 @@ HISTSIZE=10000 SAVEHIST="$HISTSIZE"
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
 setopt PROMPT_SUBST
+setopt auto_remove_slash
+setopt INC_APPEND_HISTORY EXTENDED_HISTORY HIST_IGNORE_DUPS HIST_FIND_NO_DUPS appendhistory
+HIST_EXPIRE_DUPS_FIRST
+HIST_REDUCE_BLANKS HIST_SAVE_NO_DUPS AUTO_PUSHD auto_cd
 export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+ulimit -n 10240
+export CLICOLOR=1
+stty -ixon
 
+zstyle ':completion:*' insert-unambiguous true
+zstyle ':completion:*' menu select
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
 alias make="make -j`nproc`"
 alias ninja="ninja -j`nproc`"
@@ -45,15 +58,21 @@ export VISUAL=micro
 alias -g -- -h='-h 2>&1 | bat --language=help --style=plain -s --squeeze-limit 0'
 alias -g -- --help='--help 2>&1 | bat --language=help --style=plain -s --squeeze-limit 0'
 
+h() { curl cheat.sh/${@:-cheat}; }
+mcd() { mkdir -p -- "$1" && cd "$1"; }
+function mkcd() {
+	mkdir -p -- "$1" &&
+		cd -P -- "$1" || return
+}
 
-mcd () { mkdir -p -- "$1" && cd "$1"; }
 
-stty -ixon
 
 source /usr/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh
 bindkey '^I' fzf_completion
 
 autoload -Uz promptinit
 promptinit
+
+eval "$(zoxide init zsh)"
 
 
