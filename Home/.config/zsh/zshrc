@@ -75,7 +75,5 @@ promptinit
 
 
 command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
-command -v zellij >/dev/null 2>&1 && eval (zellij setup --generate-auto-start fish | string collect)
-command -v intelli-shell >/dev/null 2>&1 && intelli-shell init fish | source
-
-
+command -v zellij >/dev/null 2>&1 && eval "$(zellij setup --generate-auto-start zsh)"
+command -v intelli-shell >/dev/null 2>&1 && eval "$(intelli-shell init zsh)"
