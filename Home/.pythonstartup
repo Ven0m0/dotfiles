@@ -1,2 +1,12 @@
+import readline
+import sys
+
+# tab completion
+readline.parse_and_bind('tab: complete')
+
+# prompt
+sys.ps1 = "> "
+sys.ps2 = "| "
+
 with open('/usr/share/fzf-tab-completion/python/fzf_python_completion.py') as file:
 exec(file.read())
