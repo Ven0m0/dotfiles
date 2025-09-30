@@ -72,7 +72,7 @@ prependpath "${HOME}/bin"
 # Editor selection: prefer micro, fallback to nano
 command -v micro &>/dev/null && EDITOR=micro; export ${EDITOR:=nano}
 export MICRO_TRUECOLOR=1
-export VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$EDITOR" FCEDIT="$EDITOR" SUDO_EDITOR="$EDITOR"l
+export VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$EDITOR" FCEDIT="$EDITOR" SUDO_EDITOR="$EDITOR"
 # https://wiki.archlinux.org/title/Locale
 export LANG=C.UTF-8 LC_COLLATE=C LC_CTYPE=C.UTF-8
 export LC_MEASUREMENT=C TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
