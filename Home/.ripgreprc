@@ -13,21 +13,11 @@
 --ignore-file="$HOME/.gitignore"
 --ignore-file="$HOME/.ignore"
 
-# Disable regular expression matching and treat the pattern as a literal string
---fixed-strings
-
 --color=auto
 --smart-case
 --threads 0
-#--threads $(nproc 2>/dev/null)
-#--mmap
-#--max-depth 4
---one-file-system
 --trim
---block-buffered
---no-line-number
+#--no-line-number
 --no-heading
 --no-ignore-messages
---engine=default
-#--engine=auto
---no-unicode
+
