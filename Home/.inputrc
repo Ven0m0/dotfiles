@@ -25,9 +25,9 @@ set menu-complete-display-prefix on
 set show-all-if-ambiguous on
 set show-all-if-unmodified on
 set skip-completed-text on
-#set completion-map-case on
-#set completion-ignore-case on
-#set completion-query-items 200
+set completion-map-case on
+set completion-ignore-case on
+set completion-query-items 200
 set completion-prefix-display-length 2
 set mark-symlinked-directories on
 set mark-directories on
