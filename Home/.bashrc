@@ -522,6 +522,12 @@ if command -v zoxide &>/dev/null; then
   [[ ! -r "${HOME}/.config/bash/zoxide.bash" ]] && zoxide init bash >| "${HOME}/.config/bash/zoxide.sh"
   ifsource "${HOME}/.config/bash/zoxide.sh" && eval "$(zoxide init bash)"
 fi
+if has intelli-shell; then
+  eval "$(intelli-shell init bash)"
+fi
+if has zellij; then
+  eval "$(zellij setup --generate-auto-start bash)"
+fi
 #============ Ble.sh final ============
 [[ ! ${BLE_VERSION-} ]] || ble-attach
 #============ END ============
