@@ -509,7 +509,12 @@ if [[ $SHLVL -ge 3; ! $BASH_SUBSHELL -ge 1 ]]; then
     LC_ALL=C eval "$fetch"
   fi
 fi
-#============ Jumping ============
+#============ Sourcing 2 ============
+# Sdkman
+export SDKMAN_DIR="$HOME/.sdkman"
+ifsource "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# Zoxide
 if command -v zoxide &>/dev/null; then
   export _ZO_DOCTOR=0 _ZO_ECHO=0 _ZO_EXCLUDE_DIRS="${HOME}:.cache:go" 
   export _ZO_FZF_OPTS="--cycle -0 -1 --inline-info --no-multi --no-sort \
