@@ -42,25 +42,40 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
-window-theme = "dark"
-window-new-tab-position = "current"
-#window-decoration = false
-cursor-click-to-move = true
-mouse-scroll-multiplier = 2
-scrollback-limit = 1000
-#window-vsync = false
+font-family = JetBrainsMono NFM Regular
+font-feature = ss01
+font-feature = ss02
+font-feature = ss03
+font-feature = ss04
+font-feature = ss05
+font-feature = ss06
+font-feature = ss07
+font-feature = ss08
+font-feature = ss09
+font-feature = calt
+font-feature = liga
+
+cursor-style = bar
+window-theme = dark
+window-subtitle = false
+mouse-scroll-multiplier = 4
+scrollback-limit = 10000
 clipboard-read = allow
 clipboard-write = allow
 clipboard-paste-protection = true
 clipboard-trim-trailing-spaces = true
 copy-on-select = "clipboard"
-quit-after-last-window-closed = true
 shell-integration = detect
-shell-integration-features = "sudo,no-cursor,no-title"
+shell-integration-features = no-cursor,no-sudo,title,ssh-env,no-ssh-terminfo
 custom-shader-animation = false
-app-notifications = "no-clipboard-copy"
+app-notifications = config-reload,no-clipboard-copy
 gtk-opengl-debug = false
+gtk-single-instance = true
 #gtk-gsk-renderer = ""
 #gtk-gsk-renderer=default
+quick-terminal-animation-duration = 0
+quit-after-last-window-closed = true
+quit-after-last-window-closed-delay = 5m
+grapheme-width-method = unicode
 keybind = alt+k=new_tab
 keybind = alt+z=reload_config
