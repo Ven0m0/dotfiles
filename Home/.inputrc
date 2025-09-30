@@ -14,7 +14,7 @@ set convert-meta off
 
 # Misc
 set enable-keypad on
-set enable-bracketed-paste ooff
+set enable-bracketed-paste off
 set echo-control-characters off
 
 # Adds punctuation as word delimiters
