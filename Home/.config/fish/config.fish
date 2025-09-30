@@ -1,4 +1,4 @@
-source /usr/share/cachyos-fish-config/cachyos-config.fish
+	source /usr/share/cachyos-fish-config/cachyos-config.fish
 set -e LC_ALL
 
 # Only for interactive shells
@@ -26,6 +26,9 @@ if status -i >/dev/null 2>&1
 	# set -gx ZSTD_NBTHREADS (math (nproc)/2)
 	#set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
 	#set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
+
+	eval (zellij setup --generate-auto-start fish | string collect)
+	intelli-shell init fish | source
 
 end
 
