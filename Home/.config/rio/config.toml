@@ -32,6 +32,10 @@ ime-cursor-positioning = true
 disable-ctlseqs-alt = false
 
 [fonts]
+family = "JetBrains Mono"
+size = 12.0
+#family = "Monaspace Neon Var"
+features = ["calt=1", "liga=1"]
 hinting = true
 disable-warnings-not-found = true
 
