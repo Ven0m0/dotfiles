@@ -309,4 +309,19 @@ fuzzy_paru() {
   fi
 }
 
+execinpath() {
+  local q="$1"
+  local cmds
+  cmds=$(compgen -c | sort -u | grep -v '^_' |
+    xargs -r -n1 -P"$(nproc)" bash -c '
+      for c; do type -P -- "$c" >/dev/null && printf "%s\n" "$c"; done
+    ' _ | sort -u)
 
+  if [[ -n $q ]]; then
+    grep -x "$q" <<<"$cmds" || {
+      printf '%s\n' "$cmds" | fzf
+    }
+  else
+    printf '%s\n' "$cmds" | fzf
+  fi
+}
