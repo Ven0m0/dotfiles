@@ -33,6 +33,7 @@ fi
 if command -v wime &>/dev/null; then
   WINE_NO_WM_DECORATION=1
   WINE_PREFER_SDL_INPUT=1
+  export WINEPREFIX="$XDG_DATA_HOME"/wine
 fi
 
 # NVIDIA
