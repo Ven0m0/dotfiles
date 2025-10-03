@@ -17,6 +17,8 @@
 
 *.png binary diff=exif
 *.jpg binary diff=exif
+*.webp binary diff=exif
+*.avif binary diff=exif
 
 *.lock               diff=nodiff
 package-lock.json    diff=nodiff
