@@ -6,14 +6,15 @@
   "catppuccin.extraBordersEnabled": true,
   "diffEditor.experimental.showEmptyDecorations": false,
   "diffEditor.hideUnchangedRegions.enabled": true,
-  "editor.fontFamily": "'Monaspace Neon', monospace",
-  "editor.fontLigatures": "'calt', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'liga'",
+  "editor.fontFamily": "'JetBrains Mono', monospace",
+  "editor.fontLigatures": true,
+  //"editor.fontLigatures": "'calt', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'liga'",
   "editor.fontSize": 12,
   "editor.inlineSuggest.fontFamily": "'Monaspace Krypton', monospace",
-  "editor.minimap.autohide": true,
+  "editor.minimap.autohide": "mouseover",
   "editor.stickyScroll.enabled": false,
   "window.density.editorTabHeight": "compact",
-  "workbench.colorTheme": "Best Themes - Github Dark",
+  "workbench.colorTheme": "Best Themes - Monokai Awesome",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.iconTheme": "catppuccin-mocha",
 
@@ -36,7 +37,7 @@
   // File Handling & Formatting
   // --------------------------------------------------------------------
   // Merged setting: Using workspace-formatter as the general default.
-  "editor.defaultFormatter": "franneck94.workspace-formatter",
+  "editor.defaultFormatter": "ban.spellright",
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "explorer.incrementalNaming": "smart",
@@ -82,8 +83,7 @@
   // --------------------------------------------------------------------
   "security.promptForLocalFileProtocolHandling": false,
   "security.promptForRemoteFileProtocolHandling": false,
-  // Merged setting: Using "prompt" for better security over "open".
-  "security.workspace.trust.untrustedFiles": "prompt",
+  "security.workspace.trust.untrustedFiles": "open",
 
   // --------------------------------------------------------------------
   // Integrated Terminal
@@ -95,6 +95,10 @@
   "terminal.integrated.ignoreBracketedPasteMode": true,
   "terminal.integrated.suggest.enabled": true,
   "terminal.integrated.useWslProfiles": false,
+  "terminal.integrated.defaultLocation": "editor",
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.fontLigatures.enabled": true,
 
   // --------------------------------------------------------------------
   // General Workbench
@@ -104,7 +108,6 @@
   "window.newWindowProfile": "Default",
   "workbench.commandPalette.preserveInput": true,
   "workbench.editor.defaultBinaryEditor": "default",
-  "workbench.editor.enablePreview": false,
   "workbench.externalBrowser": "firefox",
 
   // --------------------------------------------------------------------
@@ -114,7 +117,6 @@
     "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
   },
   "MinifyAll.disableHexadecimalShortener": false,
-  "MinifyAll.disableJavascript": true,
   "MinifyAll.disableJavascriptReact": false,
   "MinifyAll.terserMinifyOptions": {
     "mangle": true,
@@ -929,5 +931,19 @@
       "name": "yamllint",
       "url": "https://github.com/adrienverge/yamllint"
     }
+  },
+  "extensions.verifySignature": false,
+  "git.allowNoVerifyCommit": true,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "workbench.editor.enablePreview": false,
+  "chat.fontFamily": "JetBrains Mono",
+  "[dockercompose]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.autoIndent": "advanced",
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
   }
 }
