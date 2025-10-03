@@ -4,8 +4,7 @@
 *.sh text eol=lf
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf
-
-*.png binary
+*.ps1 text eol=crlf
 
 # Use built-in patterns to generate smarter diff text.
 # http://urbanautomaton.com/blog/2011/07/28/git-grep-and-language-specific-diffs/
@@ -14,3 +13,10 @@
 *.pl  diff=perl
 *.py  diff=python
 *.rb  diff=ruby
+*.json diff=json
+
+*.png binary diff=exif
+*.jpg binary diff=exif
+
+*.lock               diff=nodiff
+package-lock.json    diff=nodiff
