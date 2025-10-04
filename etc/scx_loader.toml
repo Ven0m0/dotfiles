@@ -1,0 +1,22 @@
+default_sched = "scx_rusty"
+
+[scheds.scx_rusty]
+auto_mode = []
+gaming_mode = ["--perf", "1024", "-k", "-i", "1.0", "-I", "0.05"]
+lowlatency_mode = []
+powersave_mode = []
+server_mode = []
+
+[scheds.scx_lavd]
+auto_mode = [--autopilot]
+gaming_mode = ["--performance"]
+lowlatency_mode = ["--performance"]
+powersave_mode = ["--powersave"]
+server_mode = []
+
+[scheds.scx_bpfland]
+auto_mode = []
+gaming_mode = ["-m", "performance"]
+lowlatency_mode = ["-s", "5000", "-S", "500", "-l", "5000", "-m", "performance"]
+powersave_mode = ["-m", "powersave"]
+server_mode = ["-p"]
