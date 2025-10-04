@@ -2,20 +2,16 @@
 # a command-line option that you want to pass to `bat` by default. You can
 # run `bat --help` to get a list of all possible configuration options.
 --squeeze-blank
---squeeze-limit 0
+--squeeze-limit 1
 --strip-ansi auto
-# --style auto
---style changes,grid,header,header-filesize,numbers,snip
---theme 
---theme ansi
+--style auto
+#--theme ansi
 --paging auto
 --pager="less -RFKQiqs --use-color --no-histdups --no-edit-warn"
 --wrap auto
 --decorations auto
 --color auto
 --tabs 2
-
-# --redraw-on-quit
 
 --map-syntax ".ignore:Git Ignore"
 --map-syntax='*.conf:INI'
