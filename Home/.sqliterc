@@ -1,5 +1,7 @@
 .headers on
 .mode column
+.changes on
+.tables
 
 # Exp
 .bail off
