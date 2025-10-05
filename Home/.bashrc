@@ -383,6 +383,8 @@ alias topcpu="ps -eo pcpu,pid,user,args | sort -k 1 -r | head -10"
 alias diskl='lsblk -A -o NAME,SIZE,TYPE,MOUNTPOINT'
 has btm && alias top=btm btop=btm
 
+alias plasma-reset="DISPLAY=:0 kwin --replace ; sleep 2 ; plasmashell --replace &"
+
 # DIRECTORY NAVIGATION
 if has zoxide; then
   alias ..='z ..'
