@@ -17,8 +17,8 @@ panic-abort-tests = true
 # Allows for rustflags in this config
 profile-rustflags = true
 dylib-lto = true
-parallel-tests = true # run tests in parallel
-doctest = false # let `cargo check` skip dev‑dependencies
+#parallel-tests = true # run tests in parallel
+#doctest = false # let `cargo check` skip dev‑dependencies
 #resolver = "3" # new dependency resolver
 # resolver = "2" default
 # https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#target-applies-to-host
@@ -53,7 +53,6 @@ CARGO_LOG = "off"
 RUSTDOC_LOG = "off"
 RUSTC_LOG = "off"
 # RUSTC_WRAPPER = { value = "sccache", force = true }
-RUSTUP_TOOLCHAIN= { value = "nightly", force = true }
 
 [cache]
 auto-clean-frequency = "7 days"
@@ -61,8 +60,6 @@ auto-clean-frequency = "7 days"
 [http]
 debug = false
 ssl-version = "tlsv1.3"
-ssl-version.max = "tlsv1.3"
-ssl-version.min = "tlsv1.2"
 check-revoke = false
 multiplexing = true
 
@@ -86,15 +83,15 @@ debug = false
 debug-assertions = false
 overflow-checks = false
 incremental = false
-rustflags = [ "-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread", "-Z", "tune-cpu=machine", "-Z", "precise-enum-drop-elaboration=yes" ]
+rustflags = ["-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread"]
 #debuginfo= 0
+# "-Z", "tune-cpu=machine", "-Z", "precise-enum-drop-elaboration=yes"
 
 [profile.release.build-override]
 opt-level = 0
-codegen-units = 256 # 256 when not incremental
+codegen-units = 256
 incremental = true
 debug = false
-lto = false
 
 [profile.dev]
 opt-level = 0
@@ -106,6 +103,10 @@ lto = false
 #[target.x86_64-unknown-linux-gnu]
 #linker = "clang"
 #rustflags = ["-C", "target-cpu=native"]
+
+[target.x86_64-unknown-linux-gnu]
+linker = "clang"
+rustflags = ["-C", "link-arg=-fuse-ld=mold","-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread"]
 
 [term]
 quiet = false
