@@ -341,8 +341,16 @@ alias e='$EDITOR' se='sudo $EDITOR'
 alias nano='nano -/' mi=micro
 alias redo='sudo $(fc -ln -1)'
 
+alias e="\$EDITOR"
+alias se='\sudo $EDITOR'
+alias r='\bat -p'
+
+alias bash='SHELL=bash bash'
+alias zsh='SHELL=zsh zsh'
+alias fish='SHELL=fish fish'
+
 alias pacman='sudo pacman --noconfirm --needed'
-alias paru='paru --skipreview --noconfirm --needed'
+alias paru='paru --skipreview --noconfirm --needed --sudo "$SUDO"'
 ssh(){ [[ $TERM == kitty ]] && LC_ALL=C LANG=C.UTF-8 command kitty +kitten ssh "$@" || LC_ALL=C LANG=C.UTF-8 TERM=xterm-256color command ssh "$@"; }
 
 alias cls='clear' c='clear'
