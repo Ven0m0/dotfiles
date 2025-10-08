@@ -69,6 +69,11 @@ prependpath "${HOME}/.local/bin"
 prependpath "${HOME}/.bin"
 prependpath "${HOME}/bin"
 
+# General
+SUDO=doas
+BROWSER=floorp
+TERMINAL=ghostty
+
 # Editor selection: prefer micro, fallback to nano
 command -v micro &>/dev/null && EDITOR=micro; export ${EDITOR:=nano}
 export MICRO_TRUECOLOR=1
