@@ -22,7 +22,7 @@
     "statusline": true,
     "sucmd": "sudo-rs",
     "syntax": true,
-    "clipboard": "terminal",
+    "clipboard": "external",
     "tabstospaces": true,
     "tabmovement": true,
     "tabsize": 2
