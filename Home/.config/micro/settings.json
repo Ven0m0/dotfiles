@@ -3,7 +3,7 @@
     "autoindent": true,
     "autosu": true,
     "backup": true,
-    "detectlimit": 75,
+    "detectlimit": 100,
     "encoding": "utf-8",
     "eofnewline": true,
     "fastdirty": true,
