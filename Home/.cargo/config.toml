@@ -100,13 +100,9 @@ incremental = true
 debug = false
 lto = false
 
-#[target.x86_64-unknown-linux-gnu]
-#linker = "clang"
-#rustflags = ["-C", "target-cpu=native"]
-
 [target.x86_64-unknown-linux-gnu]
 linker = "clang"
-rustflags = ["-C", "link-arg=-fuse-ld=mold","-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread"]
+rustflags = ["-C", "link-arg=-fuse-ld=mold", "-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread"]
 
 [term]
 quiet = false
