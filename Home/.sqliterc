@@ -2,15 +2,17 @@
 .mode column
 .changes on
 .tables
+.stats on
+.timer ON
 .nullvalue NULL
 .bail off
 .echo off
-.timer ON
 PRAGMA journal_mode = WAL;
 PRAGMA synchronous=NORMAL;
 PRAGMA temp_store = MEMORY;
 PRAGMA locking_mode = EXCLUSIVE;
 PRAGMA foreign_keys = ON;
+PRAGMA defer_foreign_keys=ON;
 .alias q ".quit"
 .shell date
 
