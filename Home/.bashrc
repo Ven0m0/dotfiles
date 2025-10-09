@@ -54,9 +54,8 @@ PROMPT_COMMAND="history -a"
 CDPATH=".:${HOME}:/"
 ulimit -c 0 # disable core dumps
 export FIGNORE="argo.lock" IFS="${IFS:-$' \t\n'}"
-shopt -s histappend cmdhist checkwinsize dirspell cdable_vars cdspell \
+shopt -s histappend cmdhist checkwinsize dirspell cdable_vars cdspell extglob \
          autocd cdable_vars hostcomplete no_empty_cmd_completion globstar nullglob
-# shopt -s force_fignore execfail varredir_close
 # Disable Ctrl-s, Ctrl-q
 set -o noclobber
 bind -r '\C-s'
