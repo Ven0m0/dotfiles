@@ -2,7 +2,15 @@
 .mode column
 .changes on
 .tables
-
-# Exp
+.nullvalue NULL
 .bail off
 .echo off
+.timer ON
+PRAGMA journal_mode = WAL;
+PRAGMA synchronous=NORMAL;
+PRAGMA temp_store = MEMORY;
+PRAGMA locking_mode = EXCLUSIVE;
+PRAGMA foreign_keys = ON;
+.alias q ".quit"
+.shell date
+
