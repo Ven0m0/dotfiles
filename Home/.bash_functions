@@ -325,3 +325,14 @@ execinpath() {
     printf '%s\n' "$cmds" | fzf
   fi
 }
+adb-connect(){
+  local IP PORT
+  if ! adb devices >/dev/null 2>&1; then
+    exit 1
+  fi
+  IP="${1:-$(adb shell ip route | awk '{print $9}')}"
+  PORT="${2:-5555}"
+  adb tcpip "$PORT" >/dev/null 2>&1
+  adb connect "${IP}:${PORT}"
+}
+
