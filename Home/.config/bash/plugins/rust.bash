@@ -5,8 +5,9 @@ if command -v cargo &>/dev/null; then
   export CARGO_HTTP_SSL_VERSION=tlsv1.3 CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 fi
 
-export FIGNORE=argo.lock
+export FIGNORE="argo.lock"
 export RUST_LOG=off
+export BINSTALL_DISABLE_TELEMETRY=true
 
 if [ -e "$HOME/.cargo/bin" ]; then
   PATH="${HOME}/.cargo/bin:${PATH}"
