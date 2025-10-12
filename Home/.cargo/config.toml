@@ -3,72 +3,81 @@ unstable-options = true
 mtime-on-use = true
 avoid-dev-deps = true
 git = { shallow_index = true, shallow_deps = true }
-# Gitoxide checkout isnt released yet
-#gitoxide = { checkout = true, fetch = true, internal_use_git2 = true }
 gitoxide = { fetch = true, internal_use_git2 = true }
 checksum-freshness = true
 cargo-lints = true
 feature-unification = true
 trim-paths = true
 no-embed-metadata = true
-# build-std = ["core", "alloc"]
+#build-std = ["core", "alloc"]
 gc = true
 panic-abort-tests = true
-# Allows for rustflags in this config
-profile-rustflags = true
-dylib-lto = true
-#parallel-tests = true # run tests in parallel
-#doctest = false # let `cargo check` skip dev‑dependencies
-#resolver = "3" # new dependency resolver
-# resolver = "2" default
-# https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#target-applies-to-host
-# target-applies-to-host = false
+#parallel-compiler = true
+script = true
+#doctest = false
 
 [alias]
 b = "build"
 i = "install"
-insta = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata install -f --all-features --bins --ignore-rust-version -q"
-builda = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata build --bins --lib --all-features -r -q"
+rr = "run --release"
+insta = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata install -f --bins --ignore-rust-version -q"
+builda = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata build --bins --lib -r -q"
+installgit = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata install -f --bins -q --git"
 
 [build]
-jobs = 8
-rustc = "rustc"
 rustc-wrapper = "sccache"
 incremental = false
+target = ["x86_64-unknown-linux-gnu"]
+jobs = 16
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
-#CARGO_INCREMENTAL = { value = "0", force = true }
-#CARGO_BUILD_INCREMENTAL = { value = "0", force = true }
 GITOXIDE_CORE_MULTIPACKINDEX = { value = "true", force = true }
 GITOXIDE_HTTP_SSLVERSIONMAX = { value = "tls1.3", force = true }
 GITOXIDE_HTTP_SSLVERSIONMIN = { value = "tls1.2", force = true }
 RUSTC_BOOTSTRAP = { value = "1", force = true }
 CARGO_CACHE_RUSTC_INFO = { value = "1", force = true }
-#RUST_BACKTRACE = "0"
-#RUST_LIB_BACKTRACE = "0"
 RUST_PANIC_STRATEGY = "abort"
 RUSTC_ICE = "0"
 CARGO_LOG = "off"
 RUSTDOC_LOG = "off"
 RUSTC_LOG = "off"
-# RUSTC_WRAPPER = { value = "sccache", force = true }
+MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
+_RJEM_MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
+MIMALLOC_ALLOW_LARGE_OS_PAGES = "1"
+ZSTD_NBTHREADS = "0"
 
 [cache]
 auto-clean-frequency = "7 days"
 
+[cache.global-clean]
+# Anything older than this duration will be deleted in the source cache.
+max-src-age = "1 month"
+# Anything older than this duration will be deleted in the compressed crate cache.
+max-crate-age = "3 months"
+# Any index older than this duration will be deleted from the index cache.
+max-index-age = "3 months"
+# Any git checkout older than this duration will be deleted from the checkout cache.
+max-git-co-age = "1 month"
+# Any git clone older than this duration will be deleted from the git cache.
+max-git-db-age = "3 months"
+
 [http]
 debug = false
-ssl-version = "tlsv1.3"
+ssl-version.max = "tlsv1.3"
+ssl-version.min = "tlsv1.2"
+timeout = 20
 check-revoke = false
 multiplexing = true
 
 [net]
-git-fetch-with-cli = true
-retry = 2
+git-fetch-with-cli = false
+retry = 3
+offline = false
 
 [registries.crates-io]
 protocol = "sparse"
+check-revoke = false
 
 [resolver]
 incompatible-rust-versions = "allow"
@@ -83,32 +92,47 @@ debug = false
 debug-assertions = false
 overflow-checks = false
 incremental = false
-rustflags = ["-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread"]
-#debuginfo= 0
-# "-Z", "tune-cpu=machine", "-Z", "precise-enum-drop-elaboration=yes"
+rpath = false
 
-[profile.release.build-override]
-opt-level = 0
-codegen-units = 256
-incremental = true
-debug = false
+[target.x86_64-unknown-linux-gnu]
+linker = "clang"
+rustflags = [
+  "-C", "target-cpu=native",
+  "-C", "llvm-args=-enable-dfa-jump-thread",
+  "-Z", "tune-cpu=native",
+  "-Z", "precise-enum-drop-elaboration=yes",
+  "-C", "link-arg=-fuse-ld=mold",
+  "-C", "link-arg=--threads",
+  "-C", "linker-plugin-lto",
+  "-Z", "threads=8"
+]
 
 [profile.dev]
 opt-level = 0
 codegen-units = 256
 incremental = true
 debug = false
-lto = false
 
-[target.x86_64-unknown-linux-gnu]
+[profile.debugging]
+inherits = "dev"
+debug = true
+split-debuginfo = "unpacked"
+
+[profile.release.build-override]
+opt-level = 1
+codegen-units = 256
+incremental = false
+debug = false
+
+[target.'cfg(target_os = "linux")']
 linker = "clang"
-rustflags = ["-C", "link-arg=-fuse-ld=mold", "-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread"]
+rustflags = ["-C", "link-arg=-fuse-ld=mold"]
 
 [term]
 quiet = false
 verbose = false
 unicode = true
 hyperlinks = true
-color = 'auto'
-progress.when = 'auto'
+color = "auto"
+progress.when = "auto"
 progress.term-integration = true
