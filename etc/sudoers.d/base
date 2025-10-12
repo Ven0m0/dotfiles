@@ -1,0 +1,1 @@
+Defaults !intercept, !log_subcmds, !pam_silent, fast_glob
