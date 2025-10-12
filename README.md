@@ -25,6 +25,7 @@
 - https://github.com/rossmacarthur/sheldon
 - https://github.com/bevry/dorothy
 - https://github.com/yadm-dev/yadm
+- https://codeberg.org/IamPyu/huismanager
 
 </details>
 <details>
