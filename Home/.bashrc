@@ -98,19 +98,19 @@ export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_
 : "${LESS_TERMCAP_so:=$'\e[01;33m'}"
 : "${LESS_TERMCAP_ue:=$'\e[0m'}"
 : "${LESS_TERMCAP_us:=$'\e[1;4;31m'}"
-#: "${LESS:=}"
 export "${!LESS_TERMCAP@}"
-#export LESS="-R ${LESS}"
+# export LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
+export LESSHISTFILE=- LESSCHARSET=utf-8 LESS='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
 
 # Delta / bat integration
 has delta && export GIT_PAGER=delta
 if has bat; then
-  export PAGER='bat -p -s --squeeze-limit 0' BAT_PAGER='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
+  export PAGER='bat -ps --squeeze-limit 0' BAT_PAGER='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
   export LESSCHARSET='utf-8' LESSHISTFILE=-
-  export LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
-  BAT_STYLE=auto LESSQUIET=1 BATDIFF_USE_DELTA=true BATPIPE=color
+  
+  export BAT_STYLE=auto LESSQUIET=1 BATDIFF_USE_DELTA=true BATPIPE=color
   alias cat='\bat -pp -s --squeeze-limit 0'
-  unalias bat;
+  unalias bat
   has prettybat && alias bat='prettybat'
   if has batman; then
     eval "$(batman --export-env)"
@@ -120,8 +120,7 @@ if has bat; then
   has batpipe && eval "$(SHELL=bash batpipe)"
 else
   alias cat='cat -sn'
-  export LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
-  export LESSHISTFILE=- LESSCHARSET=utf-8 PAGER="${PAGER:-less}" LESS='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
+  export PAGER="${PAGER:-less}"
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
 
@@ -129,8 +128,6 @@ if has vivid; then
   export LS_COLORS="$(vivid generate molokai)"
 elif has dircolors; then
   eval "$(dircolors -b)" &>/dev/null
-else
-  . <(curl -sfL https://raw.githubusercontent.com/trapd00r/LS_COLORS/refs/heads/master/lscolors.sh)
 fi
 : "${CLICOLOR:=$(tput colors)}"
 export CLICOLOR SYSTEMD_COLORS=1
@@ -141,8 +138,9 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:=${HOME}/.local/share}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:=${HOME}/.local/state}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:=${HOME}/.cache}"
 
-# https://www.reddit.com/r/programming/comments/109rjuj/how_setting_the_tz_environment_variable_avoids
-export CURL_HOME="$HOME" WGETRC="${HOME}/.wgetrc" GPG_TTY="$(tty)"
+: CURL_HOME="$HOME"
+: WGETRC="${HOME}/.wgetrc"
+export GPG_TTY="$(tty)"
 
 if has cargo; then
   export CARGO_HOME="${HOME}/.cargo" RUSTUP_HOME="${HOME}/.rustup"
