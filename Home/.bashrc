@@ -487,7 +487,7 @@ configure_prompt(){
     # PROMPT_COMMAND="LC_ALL=C mommy \$?; ${PROMPT_COMMAND:-}" # Shell-mommy https://github.com/sleepymincy/mommy
   fi
 }
-configure_prompt
+configure_prompt 2>/dev/null &
 #============ End ============
 dedupe_path(){
   local IFS=: dir s; declare -A seen
@@ -511,16 +511,13 @@ if [[ $SHLVL -ge 3; ! $BASH_SUBSHELL -ge 1 ]]; then
       fetch='vnfetch'
     elif has vnfetch.sh; then
       fetch='vnfetch.sh'
-    else
-      fetch='curl -sf https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Scripts/shell-tools/vnfetch.sh | bash'
     fi
-    LC_ALL=C eval "$fetch"
+    [[ -n $fetch ]] && eval "$fetch" 2>/dev/null &
   fi
 fi
 #============ Sourcing 2 ============
 # Sdkman
-export SDKMAN_DIR="$HOME/.sdkman"
-ifsource "$HOME/.sdkman/bin/sdkman-init.sh"
+ifsource "$HOME/.sdkman/bin/sdkman-init.sh" && export SDKMAN_DIR="$HOME/.sdkman"
 
 # Zoxide
 if command -v zoxide &>/dev/null; then
@@ -528,13 +525,14 @@ if command -v zoxide &>/dev/null; then
   export _ZO_FZF_OPTS="--cycle -0 -1 --inline-info --no-multi --no-sort \
     --preview 'eza --no-quotes --color=always --color-scale-mode=fixed --group-directories-first --oneline {2..}'"
   [[ ! -r "${HOME}/.config/bash/zoxide.bash" ]] && zoxide init bash >| "${HOME}/.config/bash/zoxide.sh"
-  ifsource "${HOME}/.config/bash/zoxide.sh" && eval "$(zoxide init bash)"
+  ifsource "${HOME}/.config/bash/zoxide.sh" || eval "$(zoxide init bash)"
 fi
 if has intelli-shell; then
   eval "$(intelli-shell init bash)"
 fi
 if has zellij; then
   eval "$(zellij setup --generate-auto-start bash)"
+  ifsource ~/.config/bash/completions/zellij.bash
 fi
 #============ Ble.sh final ============
 [[ ! ${BLE_VERSION-} ]] || ble-attach
