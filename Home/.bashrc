@@ -464,10 +464,6 @@ bind '"\e[1;5C": forward-word'
 # prefixes the line with sudo , if Alt+s is pressed
 #bind '"\ee": "\C-asudo \C-e"'
 #bind '"\es":"\C-asudo "'
-# https://wiki.archlinux.org/title/Bash
-run-help(){ help "$READLINE_LINE" 2>/dev/null || command man "$READLINE_LINE"; }
-bind -m vi-insert -x '"\eh": run-help'
-bind -m emacs -x     '"\eh": run-help'
 #============ Stealth ============
 stealth=${stealth:-0}
 #============ Prompt 2 ============
