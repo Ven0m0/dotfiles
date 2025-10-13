@@ -31,7 +31,7 @@ set completion-query-items 200
 set completion-prefix-display-length 2
 set mark-symlinked-directories on
 set mark-directories on
-set page-completions off
+set page-completions on
 set colored-completion-prefix on
 set colored-stats on
 set bell-style none
