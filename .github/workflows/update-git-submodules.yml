@@ -37,7 +37,7 @@ jobs:
       - name: Create Pull Request
         # This step only runs if the previous step detected changes.
         if: steps.update.outputs.changes_detected == 'true'
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           # Required for the action to create a PR
           commit_user_name: "github-actions[bot]"
