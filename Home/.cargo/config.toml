@@ -2,19 +2,16 @@
 unstable-options = true
 mtime-on-use = true
 avoid-dev-deps = true
-git = { shallow_index = true, shallow_deps = true }
-gitoxide = { fetch = true, internal_use_git2 = true }
+git = true
+gitoxide = true
 checksum-freshness = true
 cargo-lints = true
-feature-unification = true
 trim-paths = true
 no-embed-metadata = true
-#build-std = ["core", "alloc"]
+build-std = ["core", "alloc", "std"]
 gc = true
 panic-abort-tests = true
-#parallel-compiler = true
 script = true
-#doctest = false
 
 [alias]
 b = "build"
@@ -28,13 +25,11 @@ installgit = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z
 rustc-wrapper = "sccache"
 incremental = false
 target = ["x86_64-unknown-linux-gnu"]
-jobs = 16
+# Let sccache manage concurrency across all rustc invocations.
+jobs = 0
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
-GITOXIDE_CORE_MULTIPACKINDEX = { value = "true", force = true }
-GITOXIDE_HTTP_SSLVERSIONMAX = { value = "tls1.3", force = true }
-GITOXIDE_HTTP_SSLVERSIONMIN = { value = "tls1.2", force = true }
 RUSTC_BOOTSTRAP = { value = "1", force = true }
 CARGO_CACHE_RUSTC_INFO = { value = "1", force = true }
 RUST_PANIC_STRATEGY = "abort"
@@ -42,8 +37,11 @@ RUSTC_ICE = "0"
 CARGO_LOG = "off"
 RUSTDOC_LOG = "off"
 RUSTC_LOG = "off"
-MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
-_RJEM_MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
+#MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
+#_RJEM_MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
+# tuning for high-throughput, multi-threaded applications. experimental
+MALLOC_CONF = { value = "tcache:true,metadata_thp:auto,background_thread:true,narenas:2x", force = true }
+_RJEM_MALLOC_CONF = { value = "tcache:true,metadata_thp:auto,background_thread:true,narenas:2x", force = true }
 MIMALLOC_ALLOW_LARGE_OS_PAGES = "1"
 ZSTD_NBTHREADS = "0"
 
@@ -66,7 +64,7 @@ max-git-db-age = "3 months"
 debug = false
 ssl-version.max = "tlsv1.3"
 ssl-version.min = "tlsv1.2"
-timeout = 20
+timeout = 30
 check-revoke = false
 multiplexing = true
 
@@ -77,7 +75,6 @@ offline = false
 
 [registries.crates-io]
 protocol = "sparse"
-check-revoke = false
 
 [resolver]
 incompatible-rust-versions = "allow"
@@ -119,10 +116,8 @@ debug = true
 split-debuginfo = "unpacked"
 
 [profile.release.build-override]
-opt-level = 1
-codegen-units = 256
-incremental = false
-debug = false
+inherits = "release"
+codegen-units = 16
 
 [target.'cfg(target_os = "linux")']
 linker = "clang"
