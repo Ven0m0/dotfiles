@@ -22,3 +22,4 @@
 
 *.lock               diff=nodiff
 package-lock.json    diff=nodiff
+*.jar binary
