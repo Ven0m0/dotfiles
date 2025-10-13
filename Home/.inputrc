@@ -14,7 +14,7 @@ set convert-meta off
 
 # Misc
 set enable-keypad on
-set enable-bracketed-paste off
+set enable-bracketed-paste on
 set echo-control-characters off
 
 # Adds punctuation as word delimiters
@@ -68,7 +68,7 @@ set comment-begin #
 "\e[1;5D": backward-word
 
 # Tab for printing completion; Shift+Tab for cycling through completions
-Tab: complete
+"\t": menu-complete
 "\e[Z": menu-complete
 
 $if Bash
@@ -90,10 +90,11 @@ $if Bash
 	"\e\C-b": "\C-e > /dev/null 2>&1 &\C-m"
 	### Fish like tab completions in Bash
 	# Use TAB to cycle forward through completions
-	"\t": menu-complete
+	# "\t": menu-complete
 	# Use Shift-TAB to cycle backward through completions
-	"\e[Z": menu-complete-backward
+	# "\e[Z": menu-complete-backward
+$else
+	# fzf-tab-completion
+	$include function rl_custom_complete /usr/lib/librl_custom_complete.so
+	"\C-i": rl_custom_complete
 $endif
-
-
-
