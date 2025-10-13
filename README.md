@@ -1,4 +1,4 @@
-### `Dotfiles` 
+# `Dotfiles` 
 
 <details>
 <summary><b>Features</b></summary>
