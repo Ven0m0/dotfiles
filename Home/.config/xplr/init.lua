@@ -1,12 +1,6 @@
 ---@diagnostic disable
 version = '1.0.1'
-local home = os.getenv("HOME")
-package.path = home
-.. "/.config/xplr/plugins/?/init.lua;"
-.. home
-.. "/.config/xplr/plugins/?.lua;"
-.. package.path
-
+package.path = os.getenv("HOME") .. "/.config/xplr/plugins/?.lua"
 require("ui").setup()
 require("keys").setup()
 require("plug").setup()
