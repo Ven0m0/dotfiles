@@ -336,3 +336,12 @@ adb-connect(){
   adb connect "${IP}:${PORT}"
 }
 
+shlint(){
+  shellcheck -a -x -s bash --source-path=SCRIPTDIR -f diff "$1" | patch -p1
+  shellharden --replace "$1"
+  shfmt -w -ln bask -bn -i 2 -s "$1"
+}
+# for f in *.sh; do shlint "$f"; done
+
+search(){ curl -s "https://aur.archlinux.org/rpc/?v=5&type=search&arg=$1" | jq '.results[] | {Name,Description,Version,URL,NumVotes,Popularity,Maintainer}' || echo "Cannot query database"; }
+
