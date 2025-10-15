@@ -4,6 +4,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+[[ $- != *i* ]] && return
+
 DISABLE_MAGIC_FUNCTIONS="true"
 ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
@@ -270,6 +272,161 @@ zstyle ':completion::complete:*' cache-path "$__zsh_cache_dir/zcompcache"
   zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
   zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
   zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
+
+# Add descriptive hints to completion options
+zstyle ':completion:*' auto-description 'specify: %d'
+
+# Groups the different type of matches under their description
+zstyle ':completion:*' group-name ''
+
+# Enables completion for command options (offers suggestions for options relevant to the command being typed)
+zstyle '  :completion:*' complete-options true
+
+# Allow hidden files/directories to be shown/included in completions
+_comp_options+=(globdots)
+
+# Retains the prefix typed by the user in the completion suggestions
+zstyle ':completion:*' keep-prefix true
+
+# Better SSH/Rsync/SCP Autocomplete
+zstyle ':completion:*:(ssh|scp|ftp|sftp):*' hosts $hosts
+
+# Makes completion more forgiving and flexible (case-insensitive etc.)
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
+
+# Sorts files in completion suggestions based on their modification times
+zstyle ':completion:*' file-sort modification
+
+# Set the minimum input length for the incremental search to trigger
+zstyle ':autocomplete:history-incremental-search-backward:*' min-input 3
+
+# Override for history search only
+zstyle ':autocomplete:history-incremental-search-backward:*' list-lines 10
+
+# Carape completion
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+source <(carapace _carapace)
+
+export CLICOLOR=1
+setopt AUTOCD              # change directory just by typing its name
+setopt PROMPT_SUBST        # enable command substitution in prompt
+setopt MENU_COMPLETE       # Automatically highlight first element of completion menu
+setopt LIST_PACKED	   # The completion menu takes less space.
+setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
+setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
+# Reduce latency when pressing <Esc>
+export KEYTIMEOUT=1
+HISTDUP=erase
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt AUTO_CD autopushd
+# Enable ** and *** as shortcuts for **/* and ***/*, respectively.
+# https://zsh.sourceforge.io/Doc/Release/Expansion.html#Recursive-Globbing
+setopt GLOB_STAR_SHORT
+# Use modern file-locking mechanisms, for better safety & performance.
+setopt HIST_FCNTL_LOCK
+# Auto-sync history between concurrent sessions.
+setopt SHARE_HISTORY
+# Enable additional glob operators. (Globbing = pattern matching)
+# https://zsh.sourceforge.io/Doc/Release/Expansion.html#Filename-Generation
+setopt EXTENDED_GLOB
+# Don't let > silently overwrite files. To overwrite, use >! instead.
+setopt NO_CLOBBER
+# Treat comments pasted into the command line as comments, not code.
+setopt INTERACTIVE_COMMENTS
+# Don't treat non-executable files in your $path as commands. This makes sure
+# they don't show up as command completions. Settinig this option can impact
+# performance on older systems, but should not be a problem on modern ones.
+setopt HASH_EXECUTABLES_ONLY
+# Sort numbers numerically, not lexicographically.
+setopt NUMERIC_GLOB_SORT
+# Enable the use of Ctrl-Q and Ctrl-S for keyboard shortcuts.
+unsetopt FLOW_CONTROL
+unalias run-help 2> /dev/null   # Remove the simple default.
+autoload -RUz run-help          # Load a more advanced version.
+# -R resolves the function immediately, so we can access the source dir.
+
+# Load $functions_source, an associative array (a.k.a. dictionary, hash table
+# or map) that maps each function to its source file.
+zmodload -F zsh/parameter p:functions_source
+
+# Lazy-load all the run-help-* helper functions from the same dir.
+autoload -Uz $functions_source[run-help]-*~*.zwc  # Exclude .zwc files.
+
+# -U ensures each entry in these is unique (that is, discards duplicates).
+export -U PATH path FPATH fpath MANPATH manpath
+export -UT INFOPATH infopath  # -T creates a "tied" pair; see below.
+
+# These aliases enable you to paste example code into the terminal without the
+# shell complaining about the pasted prompt symbol.
+alias %= \$=
+
+# Associate file name .extensions with programs to open them.
+# This lets you open a file just by typing its name and pressing enter.
+# Note that the dot is implicit; `gz` below stands for files ending in .gz
+alias -s {css,gradle,html,js,json,md,patch,properties,txt,xml,yml}=$PAGER
+alias -s gz='gzip -l'
+alias -s {log,out}='tail -F'
+
+# Use `< file` to quickly view the contents of any text file.
+READNULLCMD=$PAGER  # Set the program to use for this.
+
+# Auto-remove the right side of each prompt when you press enter. This way,
+# we'll have less clutter on screen. This also makes it easier to copy code from
+# our terminal.
+setopt TRANSIENT_RPROMPT
+
+# If we're not on an SSH connection, then remove the outer margin of the right
+# side of the prompt.
+[[ -v SSH_CONNECTION ]] || ZLE_RPROMPT_INDENT=0
+source $ZSH/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
+ZSH_COMPDUMP="${ZSH}/.zcompdump"
+compinit -C -d "$ZSH_COMPDUMP"
+typeset -gU cdpath fpath path
+cdd() {
+  local dir
+  dir=$(fd -t d | fzf --prompt="Directory: " --height=50% --border)
+  [[ -n $dir ]] && cd "$dir"
+}
+
+emf() {
+  local file
+  file=$(fzf --prompt="Edit: " --height=50% --border)
+  [[ -n $file ]] && $EDITOR "$file"
+}
+
+# Sudo prefix
+function _sudo-widget {
+  [[ $BUFFER != sudo\ * ]] && BUFFER="sudo $BUFFER"
+  zle end-of-line
+}
+zle -N _sudo-widget
+bindkey '\e\e' _sudo-widget  # Alt+Alt
+
+# Create directory and change to it
+take() {
+  mkdir -p "$1" && cd "$1"
+}
+# Extract archives intelligently
+extract() {
+  case $1 in
+    *.tar.gz|*.tgz) tar -xzf "$1";;
+    *.tar.bz2|*.tbz2) tar -xjf "$1";;
+    *.zip) unzip "$1";;
+    *.rar) unrar x "$1";;
+    *) echo "Unknown archive format";;
+  esac
+}
+# Find and kill processes by name
+pskill() {
+  ps aux | grep "$1" | grep -v grep | awk '{print $2}' | xargs kill
+}
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+
 
 source /usr/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh
 bindkey '^I' fzf_completion
