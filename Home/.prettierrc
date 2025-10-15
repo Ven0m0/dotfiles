@@ -1,6 +1,9 @@
-tabWidth: 2
-useTabs: false
-semi: false
 {
-  "plugins": ["prettier-plugin-sh"]
+  tabWidth: 2
+  "useTabs": false,
+  "semi": false,
+  "singleQuote": true,
+  "plugins": [
+  "prettier-plugin-sh"
+  ],
 }
