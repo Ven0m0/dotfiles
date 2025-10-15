@@ -1,6 +1,5 @@
 #!/usr/bin/env zsh
 # ~/.zshrc - Optimized Zsh configuration with Zinit plugin manager
-
 # =========================================================
 # EARLY INITIALIZATION - POWERLEVEL10K INSTANT PROMPT
 # =========================================================
@@ -11,12 +10,9 @@ fi
 # =========================================================
 # CORE CONFIGURATION
 # =========================================================
-# Strict early configuration
-set -euo pipefail
-setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS
 
-# Export LC settings early for consistency
-export LC_ALL=C LANG=C LANGUAGE=C
+setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS
+export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 
 # Skip if not interactive
 [[ $- != *i* ]] && return
@@ -37,12 +33,10 @@ fi
 # ENVIRONMENT VARIABLES
 # =========================================================
 export SHELL=zsh
-export EDITOR=micro
-export VISUAL=micro
+export EDITOR=micro VISUAL=micro
 export PAGER='bat'
 export TERM="xterm-256color" 
-export CLICOLOR=1
-export MICRO_TRUECOLOR=1
+export CLICOLOR=1 MICRO_TRUECOLOR=1
 export HISTCONTROL=ignoreboth
 export HISTIGNORE="&:[bf]g:c:clear:history:exit:q:pwd:* --help"
 export KEYTIMEOUT=1
