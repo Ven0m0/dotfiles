@@ -12,6 +12,14 @@ else
   export TERMUX=0 ANDROID=0
 fi
 
+# follow XDG base dir specification
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+
 # Enable zsh compiler for faster startup
 if [[ -f $HOME/.zshrc.zwc ]]; then
   # Use compiled .zshrc if newer than the source
