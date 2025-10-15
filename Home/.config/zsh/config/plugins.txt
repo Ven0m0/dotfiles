@@ -1,0 +1,61 @@
+eza_params=('--git' '--icons' '--classify' '--group-directories-first' '--time-style=long-iso' '--group' '--color-scale')
+alias ls='eza ${eza_params}'
+alias l='eza --git-ignore ${eza_params}'
+alias ll='eza --all --header --long ${eza_params}'
+alias llm='eza --all --header --long --sort=modified ${eza_params}'
+alias la='eza -lbhHigUmuSa'
+alias lx='eza -lbhHigUmuSa@'
+alias lt='eza --tree'
+alias tree='eza --tree'
+
+mkcd() {
+  mkdir $argv && cd $argv && eza
+}
+https://github.com/adi-li/zsh-cwebpb
+https://github.com/marlonrichert/zsh-autocomplete
+https://github.com/zsh-users/zsh-autosuggestions
+https://github.com/Freed-Wu/zsh-colorize-functions
+https://github.com/romkatv/zsh-defer
+https://github.com/QuarticCat/zsh-smartcache
+https://github.com/qoomon/zsh-lazyload
+https://github.com/matthiasha/zsh-uv-env
+https://github.com/lincheney/fzf-tab-completion
+https://github.com/PhoenixSmaug/zsh-lgbtq-themes
+https://github.com/zdharma-continuum/zsh-sweep
+https://github.com/knu/zsh-manydots-magic
+https://github.com/umlx5h/zsh-manpage-completion-generator
+https://github.com/dim-an/cod
+https://github.com/adaszko/complgen
+https://github.com/zsh-users/fizsh
+https://github.com/AlexanderThaller/histdb-rs
+https://github.com/dvorka/hstr
+https://github.com/supercrabtree/k
+https://github.com/zsh-users/zsh-history-substring-search
+https://github.com/zsh-users/zsh-syntax-highlighting
+ZSH_AUTOSUGGEST_STRATEGY=(history completion
+ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c50,)"
+https://github.com/zsh-users/zsh-completions
+zinit light zsh-users/zsh-completions
+
+zinit light-mode for \
+    zdharma-continuum/zinit-annex-as-monitor \
+    zdharma-continuum/zinit-annex-bin-gem-node \
+    zdharma-continuum/zinit-annex-patch-dl \
+    zdharma-continuum/zinit-annex-rust
+
+plugins=(
+  zoxide man fzf eza colored-man-pages uv
+)
+zstyle ':omz:plugins:ssh-agent' agent-forwarding yes
+zstyle ':omz:plugins:ssh-agent' lazy yes
+zstyle ':omz:plugins:ssh-agent' quiet yes
+
+[[ ! -a $ZSH_CACHE_DIR/thefuck ]] && thefuck --alias > $ZSH_CACHE_DIR/thefuck
+source $ZSH_CACHE_DIR/thefuck
+eval $( ~/.cargo/bin/theshit alias shit)
+
+
+eval "$(/home/ven0m0/.local/bin/mise activate zsh)"
+
+
+
