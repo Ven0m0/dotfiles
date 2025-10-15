@@ -6,6 +6,13 @@ import markdown from "@eslint/markdown";
 import css from "@eslint/css";
 import { defineConfig } from "eslint/config";
 
+const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
+
+module.exports = [
+  // Any other config imports go at the top
+  eslintPluginPrettierRecommended,
+];
+
 export default defineConfig([
   { files: ["**/*.{js,mjs,cjs,ts,mts,cts}"], plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: globals.browser } },
   { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
