@@ -3,10 +3,10 @@
 [[ $- != *i* ]] && return
 #============ Helpers ============
 # Check for command
-has(){ [[ -x $(command -v -- "$1" >/dev/null) ]]; }
+has(){ [[ -x $(command -v -- "$1" >/dev/null) ]]; return $?; }
 #hconv(){ printf '%s\n' "${1/#\~\//${HOME}/}"; }
 # Safely source file if it exists ( ~ -> $HOME )
-ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}" 2>/dev/null; }
+ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}" 2>/dev/null; return $?; }
 # Safely prepend only if not already in PATH ( ~ -> $HOME )
 prependpath(){ [[ -d "${1/#\~\//${HOME}/}" ]] && [[ ":$PATH:" != *":${1/#\~\//${HOME}/}:"* ]] && PATH="${1/#\~\//${HOME}/}${PATH:+:$PATH}"; }
 #============ Sourcing ============
