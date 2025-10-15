@@ -49,6 +49,9 @@ if [[ -z "$LESS" ]]; then
   export LESS='-g -i -M -R -S -w -z-4'
 fi
 
+# fish -c 'fish_update_completions'
+# https://github.com/umlx5h/zsh-manpage-completion-generator
+# https://github.com/crazy-complete/crazy-complete
 
 # Reduce key delay
 export KEYTIMEOUT=${KEYTIMEOUT:-1}
