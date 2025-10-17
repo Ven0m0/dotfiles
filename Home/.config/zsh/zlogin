@@ -12,6 +12,17 @@
   fi
 } &!
 
+# ──────────── Start SSH Agent if not running ────────────
+if [[ -z "$SSH_AUTH_SOCK" ]] && command -v ssh-agent &>/dev/null; then
+  eval "$(ssh-agent -s -a "${XDG_RUNTIME_DIR}/ssh-agent.socket" 2>/dev/null)" >/dev/null
+fi
+
+# ──────────── Cleanup old history backups ────────────
+if [[ -d "${HISTFILE:h}" ]]; then
+  # Remove history backups older than 30 days
+  find "${HISTFILE:h}" -name "history.*.bak" -type f -mtime +30 -delete 2>/dev/null
+fi
+
 # Execute code only if STDERR is bound to a TTY.
 if [[ -o INTERACTIVE && -t 2 ]]; then
   # Print a random, hopefully interesting, adage.
