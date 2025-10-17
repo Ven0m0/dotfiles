@@ -164,6 +164,8 @@ if has uv; then
     UV_RESOLUTION=highest UV_PRERELEASE="if-necessary-or-explicit" UV_COMPILE_BYTECODE=1 UV_LINK_MODE=hardlink
 fi
 
+export NODE_OPTIONS="--max-old-space-size=4096"
+
 # GOGC=100 #(needs testing)
 if has go; then
   export CGO_ENABLED=0 GOGC=200 GOMAXPROCS="$jobs" GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -pgo auto"
