@@ -59,6 +59,59 @@ export FZF_BASE=${PREFIX}/share/fzf
 # =========================================================
 # ZSH OPTIONS
 # =========================================================
+
+# History
+setopt APPEND_HISTORY           # Append to history file
+setopt EXTENDED_HISTORY         # Save timestamp and duration
+setopt HIST_EXPIRE_DUPS_FIRST   # Expire duplicates first
+setopt HIST_FIND_NO_DUPS        # Don't show duplicates in search
+setopt HIST_IGNORE_ALL_DUPS     # Remove older duplicate entries
+setopt HIST_IGNORE_DUPS         # Don't record duplicates
+setopt HIST_IGNORE_SPACE        # Don't record commands starting with space
+setopt HIST_REDUCE_BLANKS       # Remove superfluous blanks
+setopt HIST_SAVE_NO_DUPS        # Don't save duplicates
+setopt HIST_VERIFY              # Don't execute immediately upon history expansion
+setopt INC_APPEND_HISTORY       # Write to history file immediately
+setopt SHARE_HISTORY            # Share history between sessions
+
+# Directory navigation
+setopt AUTO_CD                  # cd by typing directory name
+setopt AUTO_PUSHD               # Push directories onto stack
+setopt PUSHD_IGNORE_DUPS        # Don't push duplicates
+setopt PUSHD_MINUS              # Exchange meaning of + and -
+setopt PUSHD_SILENT             # Don't print directory stack
+setopt PUSHD_TO_HOME            # Push to home if no arguments
+
+# Completion
+setopt ALWAYS_TO_END            # Move cursor to end after completion
+setopt AUTO_LIST                # List choices on ambiguous completion
+setopt AUTO_MENU                # Show completion menu on tab
+setopt AUTO_PARAM_SLASH         # Add slash after completing directories
+setopt COMPLETE_IN_WORD         # Complete from both ends of word
+setopt LIST_PACKED              # Compact completion lists
+setopt NO_BEEP                  # Don't beep on errors
+setopt NO_LIST_BEEP             # Don't beep on ambiguous completion
+
+# Globbing
+setopt EXTENDED_GLOB            # Extended globbing
+setopt GLOB_DOTS                # Include dotfiles in globbing
+setopt NUMERIC_GLOB_SORT        # Sort filenames numerically
+setopt NO_CASE_GLOB             # Case insensitive globbing
+
+# Job control
+setopt AUTO_CONTINUE            # Automatically continue stopped jobs
+setopt AUTO_RESUME              # Resume jobs on name match
+setopt LONG_LIST_JOBS           # List jobs in long format
+setopt NOTIFY                   # Report job status immediately
+
+# I/O
+setopt CORRECT                  # Command correction
+setopt INTERACTIVE_COMMENTS     # Allow comments in interactive shell
+setopt NO_CLOBBER               # Don't overwrite files with >
+setopt RC_QUOTES                # Allow '' to represent '
+
+# -------------------------------
+
 # Directory navigation
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME
 setopt PUSHD_MINUS CD_SILENT
@@ -76,6 +129,30 @@ setopt HIST_VERIFY HIST_EXPIRE_DUPS_FIRST HIST_FCNTL_LOCK
 setopt INTERACTIVE_COMMENTS RC_QUOTES NO_BEEP NO_FLOW_CONTROL
 setopt NO_CLOBBER AUTO_RESUME COMBINING_CHARS NO_MAIL_WARNING
 setopt CORRECT CORRECT_ALL LONG_LIST_JOBS TRANSIENT_RPROMPT
+
+# ============ Key Bindings ============
+
+# Use emacs-style key bindings (can change to 'bindkey -v' for vi mode)
+bindkey -e
+
+# History search
+bindkey '^[[A' history-substring-search-up    # Up arrow
+bindkey '^[[B' history-substring-search-down  # Down arrow
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
+
+# Better word navigation
+bindkey '^[[1;5C' forward-word      # Ctrl+Right
+bindkey '^[[1;5D' backward-word     # Ctrl+Left
+bindkey '^[[H' beginning-of-line    # Home
+bindkey '^[[F' end-of-line          # End
+bindkey '^[[3~' delete-char         # Delete
+
+# Alt+Backspace to delete word
+bindkey '^H' backward-kill-word
+
+# Ctrl+U to delete to beginning of line
+bindkey '^U' backward-kill-line
 
 # =========================================================
 # PATH CONFIGURATION
@@ -97,11 +174,6 @@ path=(
   /usr/local/{,s}bin(N)
   $path
 )
-
-# Android-specific paths
-if (( ANDROID )); then
-  path+=("$HOME/.cargo/bin" "$HOME/go/bin")
-fi
 
 # =========================================================
 # HISTORY CONFIGURATION
@@ -152,53 +224,42 @@ zinit wait lucid for \
 # Load zoxide if available
 zinit wait'0' lucid as'program' from'gh-r' for ajeetdsouza/zoxide
 
+autoload -Uz colors && colors
+
 # =========================================================
 # COMPLETION SYSTEM CONFIGURATION
 # =========================================================
-# Fast compinit with caching
-() {
-  local zdump_loc="${XDG_CACHE_HOME:-$HOME/.cache}/.zcompdump"
-  local skip=0
-  
-  # Only rebuild zcompdump once per day
-  if [[ -f "$zdump_loc" ]]; then
-    local now=$(date +%s)
-    local mtime=$(stat -c %Y "$zdump_loc" 2>/dev/null || stat -f %m "$zdump_loc" 2>/dev/null)
-    [[ -n "$mtime" ]] && (( now - mtime < 86400 )) && skip=1
-  fi
-  
-  # Run compinit appropriately
-  if (( skip )); then
-    compinit -C -d "$zdump_loc"
-  else
-    compinit -d "$zdump_loc"
-    # Background compilation
-    { zcompile "$zdump_loc" } &!
-  fi
-}
+autoload -Uz compinit
 
-# Completion styling
+# Load completion only once a day for performance
+if [[ -n "${ZSH_COMPDUMP}"(#qN.mh+24) ]]; then
+  compinit -d "${ZSH_COMPDUMP}"
+else
+  compinit -C -d "${ZSH_COMPDUMP}"
+fi
+
+# Completion styles
 zstyle ':completion:*' menu select
-zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
-zstyle ':completion:*' insert-unambiguous true
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-zstyle ':completion:*' completer _complete _match _approximate
-zstyle ':completion:*:approximate:*' max-errors 1 numeric
-zstyle ':completion:*:match:*' original only
-
-# Group matches and provide descriptions
-zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' special-dirs true
+zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "${ZSH_CACHE_DIR}/zcompcache"
 zstyle ':completion:*:matches' group 'yes'
 zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*:options' auto-description '%d'
-zstyle ':completion:*:corrections' format ' %F{red}-- %d (errors: %e) --%f'
-zstyle ':completion:*:descriptions' format ' %F{purple}-- %d --%f'
-zstyle ':completion:*:messages' format ' %F{green} -- %d --%f'
-zstyle ':completion:*:warnings' format ' %F{yellow}-- no matches found --%f'
-zstyle ':completion:*' format ' %F{blue}-- %d --%f'
+zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
+zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
 zstyle ':completion:*' group-name ''
-zstyle ':completion:*' verbose yes
+zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
+
+# Process completion
+zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 
 # Process completion
 zstyle ':completion:*:processes' command 'ps -au$USER'
@@ -233,6 +294,35 @@ if (( $+commands[fzf] )); then
     bindkey '^I' fzf_completion
   fi
 fi
+
+# ============ Prompt Configuration ============
+# Enable parameter expansion in prompts
+setopt PROMPT_SUBST
+
+# Git prompt function
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*' stagedstr '%F{green}●%f'
+zstyle ':vcs_info:*' unstagedstr '%F{yellow}●%f'
+zstyle ':vcs_info:git:*' formats ' %F{blue}(%f%F{red}%b%f%c%u%F{blue})%f'
+zstyle ':vcs_info:git:*' actionformats ' %F{blue}(%f%F{red}%b%f|%F{cyan}%a%f%c%u%F{blue})%f'
+
+precmd() { vcs_info; }
+
+# Build prompt
+PROMPT='%F{cyan}╭=%f'                           # Top corner
+PROMPT+='%F{green}%n%f'                         # Username
+PROMPT+='%F{white}@%f'                          # @
+PROMPT+='%F{blue}%m%f'                          # Hostname
+PROMPT+=' %F{yellow}%~%f'                       # Working directory
+PROMPT+='${vcs_info_msg_0_}'                    # Git info
+PROMPT+=$'\n'                                   # Newline
+PROMPT+='%F{cyan}╰=%f'                          # Bottom corner
+PROMPT+='%(?.%F{green}.%F{red})❯%f '           # Prompt symbol (green if success, red if error)
+
+# Right prompt with time
+RPROMPT='%F{242}%*%f'                           # Time
 
 # =========================================================
 # UTILITY FUNCTIONS
@@ -293,6 +383,15 @@ dot-expansion() {
 }
 zle -N dot-expansion
 
+# List largest directories
+dsort() {
+  du -shx -- * | sort -rh | head -n "${1:-20}"
+}
+# Quick backup
+bak() {
+  cp -r "$1" "${1}.bak.$(date +%Y%m%d-%H%M%S)"
+}
+
 # Prepend sudo
 prepend-sudo() {
   if [[ "$BUFFER" != su(do|)\ * ]]; then
@@ -310,10 +409,50 @@ pskill() {
 # =========================================================
 # ALIASES
 # =========================================================
+
+# Preferred tools
+if command -v eza &>/dev/null; then
+  alias ls='eza --group-directories-first --color=auto --icons=auto --no-git --smart-group'
+  alias ll='eza -l --group-directories-first --icons --smart-group'
+  alias la='eza -lA --group-directories-first --icons --smart-group'
+  alias lt='eza -AT --level=2 --icons'
+else
+  alias ls='ls --color=auto --group-directories-first'
+  alias ll='ls -ABhLgGo --color=auto --group-directories-first'
+  alias la='ls -ABhLgGoC --color=auto --group-directories-first'
+fi
+
+if command -v bat &>/dev/null; then
+  alias cat='bat -p'
+fi
+
+if command -v rg &>/dev/null; then
+  alias grep='rg'
+else
+  alias grep='grep --color=auto'
+fi
+
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+  alias cd='z'
+fi
+
+# Safety aliases
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias ln='ln -i'
+
+# Quick navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+
 # General aliases
 alias ls='eza --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
 alias l='ls --git-ignore'
-alias ll='eza --all --header --long --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
+alias ll='eza --all --header --long --git --icons --classify --group-directories-first --group --color-scale'
 alias llm='ll --sort=modified'
 alias la='eza -lbhHigUmuSa'
 alias lx='eza -lbhHigUmuSa@'
@@ -321,17 +460,7 @@ alias lt='eza --tree'
 alias tree='eza --tree'
 alias grep='grep --color=auto'
 
-# Platform-specific aliases
-if (( TERMUX )); then
-  alias open='termux-open'
-  alias pbcopy='termux-clipboard-set'
-  alias pbpaste='termux-clipboard-get'
-elif (( $+commands[xdg-open] )); then
-  alias open='xdg-open'
-elif (( $+commands[wl-copy] && $+commands[wl-paste] )); then
-  alias pbcopy='wl-copy'
-  alias pbpaste='wl-paste'
-fi
+alias pip='python -m pip'
 
 # Python aliases
 alias pip=pip3
@@ -354,8 +483,8 @@ alias which='command -v'
 alias dirs='dirs -v'
 
 # Global aliases for pipelines
-alias -g -- -h='-h 2>&1 | bat --language=help --style=plain -s --squeeze-limit 0'
-alias -g -- --help='--help 2>&1 | bat --language=help --style=plain -s --squeeze-limit 0'
+alias -g -- -h='-h 2>&1 | bat -plhelp'
+alias -g -- --help='--help 2>&1 | bat -plhelp'
 alias -g L="| ${PAGER:-less}"
 alias -g G="| rg -i"
 alias -g NE="2>/dev/null"
@@ -387,6 +516,23 @@ bindkey '^R' history-incremental-pattern-search-backward
 # =========================================================
 # Initialize Powerlevel10k theme
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+
+# Load history substring search if available
+if [[ -f /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh ]]; then
+  source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+fi
+
+# Load syntax highlighting if available (should be loaded last)
+if [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+  source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+# Load autosuggestions if available
+if [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+  ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+  ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+fi
 
 # Load zoxide if available
 (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
@@ -437,9 +583,7 @@ if (( TERMUX )); then
   alias copy='termux-clipboard-set'
   alias share='termux-share'
   alias notify='termux-notification'
-  
-  # Load Shizuku environment if available
-  [ -f ~/.shizuku_env ] && source ~/.shizuku_env
+
 fi
 
 # Display system information on login
