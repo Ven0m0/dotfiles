@@ -10,24 +10,11 @@ fi
 # =========================================================
 # CORE CONFIGURATION
 # =========================================================
-
-setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS
-export LANG=C.UTF-8 LANGUAGE=C.UTF-8
-
 # Skip if not interactive
 [[ $- != *i* ]] && return
 
-# =========================================================
-# PLATFORM DETECTION
-# =========================================================
-# TERMUX and ANDROID variables should be set in .zshenv
-if (( TERMUX )); then
-  ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-  PREFIX="/data/data/com.termux/files/usr"
-else
-  ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-  PREFIX="/usr"
-fi
+setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS
+export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 
 # =========================================================
 # ENVIRONMENT VARIABLES
@@ -567,25 +554,6 @@ fi
 # =========================================================
 # SYSTEM SPECIFIC CONFIGURATION 
 # =========================================================
-# Termux-specific settings
-if (( TERMUX )); then
-  # Load Termux API integration
-  if has termux-clipboard-set; then
-    copy_to_clipboard() { termux-clipboard-set < "$1"; }
-  else
-    copy_to_clipboard() { echo "Clipboard not available"; }
-  fi
-  
-  # Add Termux-specific tools
-  alias reload='termux-reload-settings'
-  alias battery='termux-battery-status'
-  alias clipboard='termux-clipboard-get'
-  alias copy='termux-clipboard-set'
-  alias share='termux-share'
-  alias notify='termux-notification'
-
-fi
-
 # Display system information on login
 if [[ -o INTERACTIVE && -t 2 ]]; then
   if (( $+commands[fastfetch] )); then
