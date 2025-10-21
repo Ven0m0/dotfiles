@@ -3,7 +3,6 @@ smol = false
 logLevel = "error"
 
 [install]
-registry = "https://registry.npmjs.org"
 auto = "auto"
 production = true
 dev = false
