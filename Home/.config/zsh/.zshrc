@@ -1,153 +1,63 @@
 #!/usr/bin/env zsh
-# ~/.zshrc - Optimized Zsh configuration with Zinit plugin manager
-# =========================================================
-# EARLY INITIALIZATION - POWERLEVEL10K INSTANT PROMPT
-# =========================================================
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
 
-# =========================================================
-# CORE CONFIGURATION
-# =========================================================
-# Skip if not interactive
+# Skip if non-interactive
 [[ $- != *i* ]] && return
 
-setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS
-export LANG=C.UTF-8 LANGUAGE=C.UTF-8
+has(){ command -v -- "$1" >/dev/null 2>&1; return $?; }
+ifsource(){ [ -r "$1" ] && source "$1"; }
+
+ifsource "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 
 # =========================================================
-# ENVIRONMENT VARIABLES
+# CORE / ENV
 # =========================================================
+setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS
+
 export SHELL=zsh
 export EDITOR=micro VISUAL=micro
-export PAGER='bat'
-export TERM="xterm-256color" 
+export PAGER=bat
+export TERM=xterm-256color
 export CLICOLOR=1 MICRO_TRUECOLOR=1
-export HISTCONTROL=ignoreboth
-export HISTIGNORE="&:[bf]g:c:clear:history:exit:q:pwd:* --help"
 export KEYTIMEOUT=1
-export TZ='Europe/Berlin'
+export TZ=Europe/Berlin
 export TIME_STYLE='+%d-%m %H:%M'
+export LC_ALL=C.UTF-8 LANG=C.UTF-8 LANGUAGE=C.UTF-8
 
-# Less/Man colors
+# Less/Man
 export LESS='-g -i -M -R -S -w -z-4'
 export LESSHISTFILE=- LESSCHARSET=utf-8
-export MANPAGER="sh -c 'col -bx | bat -lman -ps --squeeze-limit 0'" 
+export MANPAGER="sh -c 'col -bx | bat -lman -ps --squeeze-limit 0'"
 export MANROFFOPT="-c"
 
-# FZF configuration
+# FZF
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --info=inline"
 export FZF_DEFAULT_COMMAND='fd -tf -gH -c always -strip-cwd-prefix -E ".git"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fd -td -gH -c always"
-export FZF_BASE=${PREFIX}/share/fzf
+export FZF_ALT_C_COMMAND='fd -td -gH -c always'
 
 # =========================================================
 # ZSH OPTIONS
 # =========================================================
-
-# History
-setopt APPEND_HISTORY           # Append to history file
-setopt EXTENDED_HISTORY         # Save timestamp and duration
-setopt HIST_EXPIRE_DUPS_FIRST   # Expire duplicates first
-setopt HIST_FIND_NO_DUPS        # Don't show duplicates in search
-setopt HIST_IGNORE_ALL_DUPS     # Remove older duplicate entries
-setopt HIST_IGNORE_DUPS         # Don't record duplicates
-setopt HIST_IGNORE_SPACE        # Don't record commands starting with space
-setopt HIST_REDUCE_BLANKS       # Remove superfluous blanks
-setopt HIST_SAVE_NO_DUPS        # Don't save duplicates
-setopt HIST_VERIFY              # Don't execute immediately upon history expansion
-setopt INC_APPEND_HISTORY       # Write to history file immediately
-setopt SHARE_HISTORY            # Share history between sessions
-
 # Directory navigation
-setopt AUTO_CD                  # cd by typing directory name
-setopt AUTO_PUSHD               # Push directories onto stack
-setopt PUSHD_IGNORE_DUPS        # Don't push duplicates
-setopt PUSHD_MINUS              # Exchange meaning of + and -
-setopt PUSHD_SILENT             # Don't print directory stack
-setopt PUSHD_TO_HOME            # Push to home if no arguments
-
-# Completion
-setopt ALWAYS_TO_END            # Move cursor to end after completion
-setopt AUTO_LIST                # List choices on ambiguous completion
-setopt AUTO_MENU                # Show completion menu on tab
-setopt AUTO_PARAM_SLASH         # Add slash after completing directories
-setopt COMPLETE_IN_WORD         # Complete from both ends of word
-setopt LIST_PACKED              # Compact completion lists
-setopt NO_BEEP                  # Don't beep on errors
-setopt NO_LIST_BEEP             # Don't beep on ambiguous completion
-
-# Globbing
-setopt EXTENDED_GLOB            # Extended globbing
-setopt GLOB_DOTS                # Include dotfiles in globbing
-setopt NUMERIC_GLOB_SORT        # Sort filenames numerically
-setopt NO_CASE_GLOB             # Case insensitive globbing
-
-# Job control
-setopt AUTO_CONTINUE            # Automatically continue stopped jobs
-setopt AUTO_RESUME              # Resume jobs on name match
-setopt LONG_LIST_JOBS           # List jobs in long format
-setopt NOTIFY                   # Report job status immediately
-
-# I/O
-setopt CORRECT                  # Command correction
-setopt INTERACTIVE_COMMENTS     # Allow comments in interactive shell
-setopt NO_CLOBBER               # Don't overwrite files with >
-setopt RC_QUOTES                # Allow '' to represent '
-
-# -------------------------------
-
-# Directory navigation
-setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME
-setopt PUSHD_MINUS CD_SILENT
-
-# Globbing and completion
-setopt EXTENDED_GLOB GLOB_DOTS NULL_GLOB GLOB_STAR_SHORT
-setopt NUMERIC_GLOB_SORT HASH_EXECUTABLES_ONLY
-
+setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME PUSHD_MINUS CD_SILENT
+# Globbing/completion behavior
+setopt EXTENDED_GLOB GLOB_DOTS NULL_GLOB GLOB_STAR_SHORT NUMERIC_GLOB_SORT HASH_EXECUTABLES_ONLY
 # History
 setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS INC_APPEND_HISTORY EXTENDED_HISTORY
 setopt HIST_REDUCE_BLANKS HIST_SAVE_NO_DUPS SHARE_HISTORY HIST_IGNORE_SPACE
 setopt HIST_VERIFY HIST_EXPIRE_DUPS_FIRST HIST_FCNTL_LOCK
-
-# Input/Output behavior
+# I/O & UI
 setopt INTERACTIVE_COMMENTS RC_QUOTES NO_BEEP NO_FLOW_CONTROL
 setopt NO_CLOBBER AUTO_RESUME COMBINING_CHARS NO_MAIL_WARNING
 setopt CORRECT CORRECT_ALL LONG_LIST_JOBS TRANSIENT_RPROMPT
-
-# ============ Key Bindings ============
-
-# Use emacs-style key bindings (can change to 'bindkey -v' for vi mode)
-bindkey -e
-
-# History search
-bindkey '^[[A' history-substring-search-up    # Up arrow
-bindkey '^[[B' history-substring-search-down  # Down arrow
-bindkey '^P' history-substring-search-up
-bindkey '^N' history-substring-search-down
-
-# Better word navigation
-bindkey '^[[1;5C' forward-word      # Ctrl+Right
-bindkey '^[[1;5D' backward-word     # Ctrl+Left
-bindkey '^[[H' beginning-of-line    # Home
-bindkey '^[[F' end-of-line          # End
-bindkey '^[[3~' delete-char         # Delete
-
-# Alt+Backspace to delete word
-bindkey '^H' backward-kill-word
-
-# Ctrl+U to delete to beginning of line
-bindkey '^U' backward-kill-line
+setopt NOTIFY
+stty stop undef >/dev/null 
 
 # =========================================================
-# PATH CONFIGURATION
+# PATHS
 # =========================================================
-# Ensure path arrays do not contain duplicates
 typeset -gU cdpath fpath mailpath path
 
-# Set the list of directories that Zsh searches for programs
 if [[ ! -v prepath ]]; then
   typeset -ga prepath
   prepath=(
@@ -155,41 +65,45 @@ if [[ ! -v prepath ]]; then
     $HOME/.local/{,s}bin(N)
   )
 fi
+
 path=(
   $prepath
   /opt/{homebrew,local}/{,s}bin(N)
   /usr/local/{,s}bin(N)
+  "$HOME/.{cargo,local}/bin"(N)
   $path
 )
 
 # =========================================================
-# HISTORY CONFIGURATION
+# HISTORY
 # =========================================================
-HISTFILE="${HOME}/.zsh_history"
+HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000
 SAVEHIST=10000
 HISTTIMEFORMAT="%F %T "
 
 # =========================================================
-# ZINIT PLUGIN MANAGER SETUP
+# ZINIT (Plugin manager)
 # =========================================================
-# Install Zinit if it's not already installed
+: ${ZINIT_HOME:=${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git}
 if [[ ! -d "$ZINIT_HOME" ]]; then
-  mkdir -p "$(dirname $ZINIT_HOME)"
-  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+  mkdir -p -- "${ZINIT_HOME:h}" && \
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" &>/dev/null || :
 fi
-
-# Load Zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
-# Load annexes
+# Plugin prefs before load
+typeset -g ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
+# Annexes
 zinit light-mode for \
   zdharma-continuum/zinit-annex-as-monitor \
   zdharma-continuum/zinit-annex-bin-gem-node \
   zdharma-continuum/zinit-annex-patch-dl \
   zdharma-continuum/zinit-annex-rust
 
-# Fast loading essential plugins
+# Core plugins + compinit bootstrap
 zinit wait lucid light-mode for \
   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
     zdharma-continuum/fast-syntax-highlighting \
@@ -198,55 +112,77 @@ zinit wait lucid light-mode for \
   blockf atpull'zinit creinstall -q .' \
     zsh-users/zsh-completions
 
-# Load powerlevel10k theme
+# Theme (p10k)
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
 
-# Additional plugins
+# Extra plugins
 zinit wait lucid for \
   zsh-users/zsh-history-substring-search \
   hlissner/zsh-autopair \
   MichaelAquilina/zsh-you-should-use
 
-# Load zoxide if available
+# zoxide as program (fast jump)
 zinit wait'0' lucid as'program' from'gh-r' for ajeetdsouza/zoxide
+
+# https://github.com/adi-li/zsh-cwebpb
+zinit load "adi-li/zsh-cwebpb"
+# https://github.com/qoomon/zsh-lazyload
+zinit load "qoomon/zsh-lazyload"
+# https://github.com/romkatv/zsh-defer
+zinit load "romkatv/zsh-defer"
+# https://github.com/QuarticCat/zsh-smartcache
+zinit load "QuarticCat/zsh-smartcache"
+
+# https://github.com/zdharma-continuum/zsh-sweep
+zinit sbin'bin/zsweep' for @psprint/zsh-sweep
+
+zinit wait lucid for dim-an/cod
+
 
 autoload -Uz colors && colors
 
 # =========================================================
-# COMPLETION SYSTEM CONFIGURATION
+# COMPLETION (fast + styled)
 # =========================================================
 autoload -Uz compinit
+() {
+  local zdump="${XDG_CACHE_HOME:-$HOME/.cache}/.zcompdump"
+  local now mtime skip=0
+  if [[ -f $zdump ]]; then
+    now=$(date +%s)
+    mtime=$(stat -c %Y "$zdump" 2>/dev/null || stat -f %m "$zdump" 2>/dev/null)
+    [[ -n $mtime && $((now - mtime)) -lt 86400 ]] && skip=1
+  fi
+  if (( skip )); then
+    compinit -C -d "$zdump"
+  else
+    compinit -d "$zdump"
+    { zcompile "$zdump" } &!
+  fi
+}
 
-# Load completion only once a day for performance
-if [[ -n "${ZSH_COMPDUMP}"(#qN.mh+24) ]]; then
-  compinit -d "${ZSH_COMPDUMP}"
-else
-  compinit -C -d "${ZSH_COMPDUMP}"
-fi
-
-# Completion styles
+# Styles
 zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' special-dirs true
-zstyle ':completion:*' squeeze-slashes true
-zstyle ':completion:*' verbose yes
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "${ZSH_CACHE_DIR}/zcompcache"
-zstyle ':completion:*:matches' group 'yes'
-zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+zstyle ':completion:*' insert-unambiguous true
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*' squeeze-slashes false
+zstyle ':completion:*' special-dirs true
+zstyle ':completion:*:matches' group yes
+zstyle ':completion:*:options' description yes
 zstyle ':completion:*:options' auto-description '%d'
-zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
-zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
-zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
-zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*:corrections' format ' %F{red}-- %d (errors: %e) --%f'
+zstyle ':completion:*:descriptions' format ' %F{purple}-- %d --%f'
+zstyle ':completion:*:messages' format ' %F{green} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{yellow}-- no matches found --%f'
+zstyle ':completion:*' format ' %F{blue}-- %d --%f'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
-
-# Process completion
-zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 
 # Process completion
 zstyle ':completion:*:processes' command 'ps -au$USER'
@@ -262,10 +198,7 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' l
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
-# Ignore completion functions for commands you don't have
-zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
-
-# Colorize completions using LS_COLORS
+# LS_COLORS for completions
 if (( $+commands[vivid] )); then
   export LS_COLORS="$(vivid generate molokai)"
 elif (( $+commands[dircolors] )); then
@@ -274,202 +207,149 @@ fi
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
-# FZF tab completion if available
-if (( $+commands[fzf] )); then
-  if [[ -f ${PREFIX}/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh ]]; then
-    source ${PREFIX}/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh
-    bindkey '^I' fzf_completion
-  fi
+# FZF tab completion (if installed to PREFIX)
+if (( $+commands[fzf] )) && [[ -n ${PREFIX:-} && -f ${PREFIX}/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh ]]; then
+  source "${PREFIX}/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh"
+  bindkey '^I' fzf_completion
 fi
 
-# ============ Prompt Configuration ============
-# Enable parameter expansion in prompts
-setopt PROMPT_SUBST
-
-# Git prompt function
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:*' stagedstr '%F{green}●%f'
-zstyle ':vcs_info:*' unstagedstr '%F{yellow}●%f'
-zstyle ':vcs_info:git:*' formats ' %F{blue}(%f%F{red}%b%f%c%u%F{blue})%f'
-zstyle ':vcs_info:git:*' actionformats ' %F{blue}(%f%F{red}%b%f|%F{cyan}%a%f%c%u%F{blue})%f'
-
-precmd() { vcs_info; }
-
-# Build prompt
-PROMPT='%F{cyan}╭=%f'                           # Top corner
-PROMPT+='%F{green}%n%f'                         # Username
-PROMPT+='%F{white}@%f'                          # @
-PROMPT+='%F{blue}%m%f'                          # Hostname
-PROMPT+=' %F{yellow}%~%f'                       # Working directory
-PROMPT+='${vcs_info_msg_0_}'                    # Git info
-PROMPT+=$'\n'                                   # Newline
-PROMPT+='%F{cyan}╰=%f'                          # Bottom corner
-PROMPT+='%(?.%F{green}.%F{red})❯%f '           # Prompt symbol (green if success, red if error)
-
-# Right prompt with time
-RPROMPT='%F{242}%*%f'                           # Time
+# =========================================================
+# PROMPT / THEME
+# =========================================================
+# p10k config (do not also set PROMPT/RPROMPT to avoid conflicts)
+[[ -f $HOME/.p10k.zsh ]] && source "$HOME/.p10k.zsh"
 
 # =========================================================
-# UTILITY FUNCTIONS
+# FUNCTIONS
 # =========================================================
-# Check if command exists
-has() { command -v -- "$1" >/dev/null 2>&1; }
+has(){ command -v -- "$1" &>/dev/null; }
+ifsource(){ [[ -r $1 ]] && source "$1"; }
 
-# Create directory and cd into it
-mkcd() {
-  mkdir -p -- "$1" && cd -- "$1" || return
+mkcd(){ mkdir -p -- "$1" && cd -- "$1" || return; }
+touchf(){ mkdir -p -- "${1:h}"; command touch -- "$1"; }
+
+extract(){
+  local f=$1
+  [[ -f $f ]] || { print -r -- "File does not exist: $f" >&2; return 1; }
+  case "$f" in
+    *.tar.bz2|*.tbz2) tar -xjf "$f" ;;
+    *.tar.gz|*.tgz)   tar -xzf "$f" ;;
+    *.tar.xz|*.txz)   tar -xJf "$f" ;;
+    *.tar)            tar -xf "$f" ;;
+    *.bz2)            bunzip2 "$f" ;;
+    *.gz)             gunzip "$f" ;;
+    *.zip)            unzip -q "$f" ;;
+    *.rar)            unrar x "$f" ;;
+    *.Z)              uncompress "$f" ;;
+    *.7z)             7z x "$f" ;;
+    *)                print -r -- "Unsupported archive: $f" >&2; return 2 ;;
+  esac
 }
 
-# Extract various archive formats
-extract() {
-  if [[ -f "$1" ]]; then
-    case "$1" in
-      *.tar.bz2|*.tbz2) tar -xjf "$1" ;;
-      *.tar.gz|*.tgz) tar -xzf "$1" ;;
-      *.tar.xz|*.txz) tar -xJf "$1" ;;
-      *.tar) tar -xf "$1" ;;
-      *.bz2) bunzip2 "$1" ;;
-      *.gz) gunzip "$1" ;;
-      *.zip) unzip "$1" ;;
-      *.rar) unrar x "$1" ;;
-      *.Z) uncompress "$1" ;;
-      *.7z) 7z x "$1" ;;
-      *) echo "Unknown archive format: $1" ;;
-    esac
-  else
-    echo "File does not exist: $1"
-  fi
-}
-
-# Find and cd with fzf
-fcd() {
+fcd(){
   local dir
-  dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -print 2>/dev/null | fzf --preview 'eza --tree --color=always {}' ) &&
-  cd "$dir" || return
-}
-
-# Search and edit file with fzf
-fe() {
-  local files
-  files=($(fzf --query="$1" --multi --select-1 --exit-0))
-  [[ -n "$files" ]] && ${EDITOR:-micro} "${files[@]}"
-}
-
-# Help function using cheat.sh
-h() { curl cheat.sh/${@:-cheat}; }
-
-# Dot expansion for quick navigation upwards
-dot-expansion() {
-  if [[ $LBUFFER = *.. ]]; then
-    LBUFFER+='/..'
+  if has fd; then
+    dir=$(fd -t d . "${1:-.}" 2>/dev/null | fzf --preview 'eza --tree --color=always {}' --height=40%)
   else
-    LBUFFER+='.'
+    dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -print 2>/dev/null | fzf --preview 'eza --tree --color=always {}' --height=40%)
   fi
+  [[ -n $dir ]] && cd -- "$dir"
+}
+
+fe(){
+  local files
+  files=("${(@f)$(fzf --multi --select-1 --exit-0 --query="${1:-}")}")
+  [[ -n ${files[1]:-} ]] && "${EDITOR:-micro}" "${(@)files}"
+}
+
+h(){ curl "cheat.sh/${@:-cheat}"; }
+
+dot-expansion(){
+  if [[ $LBUFFER = *.. ]]; then LBUFFER+='/..'; else LBUFFER+='.'; fi
 }
 zle -N dot-expansion
 
-# List largest directories
-dsort() {
-  du -shx -- * | sort -rh | head -n "${1:-20}"
-}
-# Quick backup
-bak() {
-  cp -r "$1" "${1}.bak.$(date +%Y%m%d-%H%M%S)"
-}
-
-# Prepend sudo
-prepend-sudo() {
-  if [[ "$BUFFER" != su(do|)\ * ]]; then
-    BUFFER="sudo $BUFFER"
-    (( CURSOR += 5 ))
-  fi
+prepend-sudo(){
+  if [[ $BUFFER != su(do|)\ * ]]; then BUFFER="sudo $BUFFER"; (( CURSOR += 5 )); fi
 }
 zle -N prepend-sudo
 
-# Find and kill processes by name
-pskill() {
-  ps aux | grep "$1" | grep -v grep | awk '{print $2}' | xargs kill
-}
+pskill(){ ps aux | grep -F -- "$1" | grep -v grep | awk '{print $2}' | xargs kill; }
+
+dsort(){ du -shx -- * 2>/dev/null | sort -rh | head -n "${1:-20}"; }
+bak(){ cp -r -- "$1" "${1}.bak.$(date +%Y%m%d-%H%M%S)"; }
 
 # =========================================================
 # ALIASES
 # =========================================================
-
-# Preferred tools
-if command -v eza &>/dev/null; then
-  alias ls='eza --group-directories-first --color=auto --icons=auto --no-git --smart-group'
-  alias ll='eza -l --group-directories-first --icons --smart-group'
-  alias la='eza -lA --group-directories-first --icons --smart-group'
-  alias lt='eza -AT --level=2 --icons'
+# Prefer rust tools; provide sane fallbacks
+if has eza; then
+  alias ls='eza --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
+  alias l='ls --git-ignore'
+  alias ll='eza --all --header --long --git --icons --classify --group-directories-first --group --color-scale'
+  alias llm='ll --sort=modified'
+  alias la='eza -lbhHigUmuSa'
+  alias lx='eza -lbhHigUmuSa@'
+  alias lt='eza --tree'
+  alias tree='eza --tree'
 else
   alias ls='ls --color=auto --group-directories-first'
-  alias ll='ls -ABhLgGo --color=auto --group-directories-first'
-  alias la='ls -ABhLgGoC --color=auto --group-directories-first'
+  alias l='ls -CF'
+  alias ll='ls -alF --color=auto --group-directories-first'
+  alias la='ls -A --color=auto'
+  alias tree='tree -C' 2>/dev/null || :
 fi
 
-if command -v bat &>/dev/null; then
-  alias cat='bat -p'
-fi
+has bat && alias cat='bat -p'
+if has rg; then alias grep='rg'; else alias grep='grep --color=auto'; fi
 
-if command -v rg &>/dev/null; then
-  alias grep='rg'
-else
-  alias grep='grep --color=auto'
-fi
+# Wayland helpers (Arch/Wayland, Debian/Wayland)
+alias open='xdg-open'
+alias copy='wl-copy'
+alias paste='wl-paste'
 
-if command -v zoxide &>/dev/null; then
+# zoxide
+if has zoxide; then
   eval "$(zoxide init zsh)"
   alias cd='z'
 fi
 
-# Safety aliases
+# Safety
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 alias ln='ln -i'
 
-# Quick navigation
+# Quick nav
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
-# General aliases
-alias ls='eza --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
-alias l='ls --git-ignore'
-alias ll='eza --all --header --long --git --icons --classify --group-directories-first --group --color-scale'
-alias llm='ll --sort=modified'
-alias la='eza -lbhHigUmuSa'
-alias lx='eza -lbhHigUmuSa@'
-alias lt='eza --tree'
-alias tree='eza --tree'
-alias grep='grep --color=auto'
-
-alias pip='python -m pip'
-
-# Python aliases
-alias pip=pip3
+# Python
 alias python=python3
+alias pip='python3 -m pip'
 
-# Build aliases
+# Build
 alias make="make -j$(nproc)"
 alias ninja="ninja -j$(nproc)"
 alias mkdir='mkdir -p'
 
-# Suffix aliases
+# Suffix
 alias -s {css,gradle,html,js,json,md,patch,properties,txt,xml,yml}=$PAGER
 alias -s gz='gzip -l'
 alias -s {log,out}='tail -F'
 
-# Misc aliases
+# Misc
 alias e="$EDITOR"
 alias r='bat -p'
 alias which='command -v'
 alias dirs='dirs -v'
+alias sudo='sudo '
+alias sudo-rs='sudo-rs '
+alias doas='doas '
 
-# Global aliases for pipelines
+# Globals
 alias -g -- -h='-h 2>&1 | bat -plhelp'
 alias -g -- --help='--help 2>&1 | bat -plhelp'
 alias -g L="| ${PAGER:-less}"
@@ -480,98 +360,58 @@ alias -g NUL=">/dev/null 2>&1"
 # =========================================================
 # KEYBINDINGS
 # =========================================================
-bindkey -e  # Emacs mode
-
-# Better history search with up/down arrows
+bindkey -e
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
-
-# Navigation
 bindkey '^[[H' beginning-of-line
 bindkey '^[[F' end-of-line
 bindkey '^[[3~' delete-char
 bindkey '^[[1;5C' forward-word
 bindkey '^[[1;5D' backward-word
-bindkey '^[[Z' reverse-menu-complete    # Shift-Tab to go backward in menu
-
-# Custom bindings
-bindkey '\e\e' prepend-sudo  # Alt+Alt to prepend sudo
+bindkey '^[[Z' reverse-menu-complete
+bindkey '\e\e' prepend-sudo
 bindkey '^R' history-incremental-pattern-search-backward
 
 # =========================================================
 # TOOL INTEGRATIONS
 # =========================================================
-# Initialize Powerlevel10k theme
-[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
-
-# Load history substring search if available
-if [[ -f /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh ]]; then
-  source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-fi
-
-# Load syntax highlighting if available (should be loaded last)
-if [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-  source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi
-
-# Load autosuggestions if available
-if [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
-  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-  ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-  ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-fi
-
-# Load zoxide if available
-(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
-
-# Load zellij if available 
+# zellij (auto-start)
 (( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"
 
-# Load Intelli-shell if available
+# Intelli-shell
 (( $+commands[intelli-shell] )) && eval "$(intelli-shell init zsh)"
 
-# Load thefuck if available
+# thefuck (cached alias script)
 if (( $+commands[thefuck] )); then
-  local thefuck_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"
-  mkdir -p "${thefuck_cache:h}"
-  [[ ! -f "$thefuck_cache" ]] && thefuck --alias > "$thefuck_cache"
-  source "$thefuck_cache"
+  local tf_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"
+  mkdir -p -- "${tf_cache:h}"
+  [[ ! -f $tf_cache ]] && thefuck --alias > "$tf_cache"
+  source "$tf_cache"
 fi
 
-# Load theshit if available
+# theshit
 (( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"
 
-# Load mise if available
+# mise
 [[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"
 
-# Optional: Carapace completions
+# carapace
 if (( $+commands[carapace] )); then
   export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
   zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
   source <(carapace _carapace)
 fi
 
-# =========================================================
-# SYSTEM SPECIFIC CONFIGURATION 
-# =========================================================
-# Display system information on login
-if [[ -o INTERACTIVE && -t 2 ]]; then
-  if (( $+commands[fastfetch] )); then
-    fastfetch
-  fi
+# Login info (fastfetch)
+if [[ -o INTERACTIVE && -t 2 && $+commands[fastfetch] -ne 0 ]]; then
+  fastfetch
 fi >&2
 
 # =========================================================
 # FINAL OPTIMIZATIONS
 # =========================================================
-# Recompile zsh files for faster startup if needed
 autoload -Uz zrecompile
-for file in ~/.zshrc ~/.zshenv ~/.p10k.zsh; do
-  if [[ -f "$file" && ( ! -f "${file}.zwc" || "$file" -nt "${file}.zwc" ) ]]; then
-    zrecompile -pq "$file" &>/dev/null
-  fi
+for f in ~/.zshrc ~/.zshenv ~/.p10k.zsh; do
+  [[ -f $f && ( ! -f ${f}.zwc || $f -nt ${f}.zwc ) ]] && zrecompile -pq "$f" &>/dev/null
 done
-unset file
-
-# Clean and optimize environment
-typeset -gU cdpath fpath mailpath path
+unset f
