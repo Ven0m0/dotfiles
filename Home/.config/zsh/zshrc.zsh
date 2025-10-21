@@ -17,7 +17,9 @@ export LC_ALL=C.UTF-8 LANG=C.UTF-8 LANGUAGE=C.UTF-8
 
 # Check if command exists
 has(){ command -v -- "$1" >/dev/null 2>&1; return $?; }
-ifsource(){ [ -r "$1" ] && source "$1"; return $?; }
+ifsource() { [[ -r $1 ]] && source "$1"; return $?; }
+smart_eval() { (( $+commands[$1] )) && smartcache eval "$@"; }
+smart_comp() { (( $+commands[$1] )) && smartcache comp "$@"; }
 
 # =========================================================
 # ENVIRONMENT VARIABLES
