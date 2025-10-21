@@ -27,7 +27,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           export-webp: true
-          export-avif: true
+          export-avif: false
           compress-png: true
           compress-svg: true
           compress-jpg: true
