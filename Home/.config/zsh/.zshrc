@@ -35,6 +35,11 @@ export FZF_DEFAULT_COMMAND='fd -tf -gH -c always -strip-cwd-prefix -E ".git"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd -td -gH -c always'
 
+export GPG_TTY=$TTY
+export RUSTUP_DIST_SERVER='https://mirrors.ustc.edu.cn/rust-static'         # affect `rustup update`
+export RUSTUP_UPDATE_ROOT='https://mirrors.ustc.edu.cn/rust-static/rustup'  # affect `rustup self-update`
+
+
 # =========================================================
 # ZSH OPTIONS
 # =========================================================
@@ -45,12 +50,13 @@ setopt EXTENDED_GLOB GLOB_DOTS NULL_GLOB GLOB_STAR_SHORT NUMERIC_GLOB_SORT HASH_
 # History
 setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS INC_APPEND_HISTORY EXTENDED_HISTORY
 setopt HIST_REDUCE_BLANKS HIST_SAVE_NO_DUPS SHARE_HISTORY HIST_IGNORE_SPACE
-setopt HIST_VERIFY HIST_EXPIRE_DUPS_FIRST HIST_FCNTL_LOCK
+setopt HIST_EXPIRE_DUPS_FIRST HIST_FCNTL_LOCK
 # I/O & UI
 setopt INTERACTIVE_COMMENTS RC_QUOTES NO_BEEP NO_FLOW_CONTROL
 setopt NO_CLOBBER AUTO_RESUME COMBINING_CHARS NO_MAIL_WARNING
 setopt CORRECT CORRECT_ALL LONG_LIST_JOBS TRANSIENT_RPROMPT
 setopt NOTIFY
+setopt magic_equal_subst     # perform filename expansion on `any=expr` args
 stty stop undef >/dev/null 
 
 # =========================================================
@@ -111,6 +117,9 @@ zinit wait lucid light-mode for \
     zsh-users/zsh-autosuggestions \
   blockf atpull'zinit creinstall -q .' \
     zsh-users/zsh-completions
+
+unset 'FAST_HIGHLIGHT[chroma-man]'  # buggy: stuck history browsing
+unset 'FAST_HIGHLIGHT[chroma-ssh]'  # buggy: incorrect
 
 # Theme (p10k)
 zinit ice depth=1
@@ -371,6 +380,76 @@ bindkey '^[[1;5D' backward-word
 bindkey '^[[Z' reverse-menu-complete
 bindkey '\e\e' prepend-sudo
 bindkey '^R' history-incremental-pattern-search-backward
+bindkey '\C-Z' undo
+bindkey '\C-Y' redo
+
+# Ref: https://github.com/marlonrichert/zsh-edit
+qc-word-widgets() {
+    local wordpat='[[:WORD:]]##|[[:space:]]##|[^[:WORD:][:space:]]##'
+    local words=(${(Z:n:)BUFFER}) lwords=(${(Z:n:)LBUFFER})
+    case $WIDGET {
+        (*sub-l)   local move=-${(N)LBUFFER%%$~wordpat} ;;
+        (*sub-r)   local move=+${(N)RBUFFER##$~wordpat} ;;
+        (*shell-l) local move=-${(N)LBUFFER%$lwords[-1]*} ;;
+        (*shell-r) local move=+${(N)RBUFFER#*${${words[$#lwords]#$lwords[-1]}:-$words[$#lwords+1]}} ;;
+    }
+    case $WIDGET {
+        (*kill*) (( MARK = CURSOR + move )); zle -f kill; zle .kill-region ;;
+        (*)      (( CURSOR += move )) ;;
+    }
+}
+for w in qc{,-kill}-{sub,shell}-{l,r}; zle -N $w qc-word-widgets
+bindkey '\E[1;5D' qc-sub-l         # [Ctrl+Left]
+bindkey '\E[1;5C' qc-sub-r         # [Ctrl+Right]
+bindkey '\E[1;3D' qc-shell-l       # [Alt+Left]
+bindkey '\E[1;3C' qc-shell-r       # [Alt+Right]
+bindkey '\C-H'    qc-kill-sub-l    # [Ctrl+Backspace] (Konsole)
+bindkey '\C-W'    qc-kill-sub-l    # [Ctrl+Backspace] (VSCode)
+bindkey '\E[3;5~' qc-kill-sub-r    # [Ctrl+Delete]
+bindkey '\E^?'    qc-kill-shell-l  # [Alt+Backspace]
+bindkey '\E[3;3~' qc-kill-shell-r  # [Alt+Delete]
+WORDCHARS='*?[]~&;!#$%^(){}<>'
+
+# Trim trailing spaces from pasted text
+# Ref: https://unix.stackexchange.com/questions/693118
+qc-trim-paste() {
+    zle .$WIDGET && LBUFFER=${LBUFFER%%[[:space:]]#}
+}
+zle -N bracketed-paste qc-trim-paste
+
+# Change `...` to `../..`
+# Ref: https://grml.org/zsh/zsh-lovers.html#_completion
+qc-rationalize-dot() {
+    if [[ $LBUFFER == *.. ]] {
+        LBUFFER+='/..'
+    } else {
+        LBUFFER+='.'
+    }
+}
+zle -N qc-rationalize-dot
+bindkey '.'   qc-rationalize-dot
+bindkey '\E.' self-insert-unmeta  # [Alt+.] insert dot
+
+# [Ctrl+L] Clear screen but keep scrollback
+# Ref: https://superuser.com/questions/1389834
+qc-clear-screen() {
+    local prompt_height=$(print -n ${(%%)PS1} | wc -l)
+    local lines=$((LINES - prompt_height))
+    printf "$terminfo[cud1]%.0s" {1..$lines}  # cursor down
+    printf "$terminfo[cuu1]%.0s" {1..$lines}  # cursor up
+    zle .reset-prompt
+}
+zle -N qc-clear-screen
+bindkey '\C-L' qc-clear-screen
+
+
+autoload -Uz add-zsh-hook
+
+# [PRECMD] Reset cursor shape as some programs (nvim, yazi) will change it
+_qc-reset-cursor() {
+    print -n '\E[5 q'  # line cursor
+}
+add-zsh-hook precmd _qc-reset-cursor
 
 # =========================================================
 # TOOL INTEGRATIONS
