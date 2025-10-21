@@ -230,31 +230,32 @@ mkcd() {
 }
 
 # Extract various archive formats
-extract() {
-  if [[ -f "$1" ]]; then
-    case "$1" in
-      *.tar.bz2|*.tbz2) tar -xjf "$1" ;;
-      *.tar.gz|*.tgz) tar -xzf "$1" ;;
-      *.tar.xz|*.txz) tar -xJf "$1" ;;
-      *.tar) tar -xf "$1" ;;
-      *.bz2) bunzip2 "$1" ;;
-      *.gz) gunzip "$1" ;;
-      *.zip) unzip "$1" ;;
-      *.rar) unrar x "$1" ;;
-      *.Z) uncompress "$1" ;;
-      *.7z) 7z x "$1" ;;
-      *) echo "Unknown archive format: $1" ;;
-    esac
-  else
-    echo "File does not exist: $1"
-  fi
+
+extract(){
+  [[ -f $1 ]] || { printf 'File not found: %s\n' "$1" >&2; return 1; }
+  case "${1##*.}" in
+    tar|tgz) tar -xf "$1" ;;
+    tar.gz) tar -xzf "$1" ;;
+    tar.bz2|tbz2) tar -xjf "$1" ;;
+    tar.xz|txz) tar -xJf "$1" ;;
+    zip) unzip -q "$1" ;;
+    rar) unrar x "$1" ;;
+    gz) gunzip "$1" ;;
+    bz2) bunzip2 "$1" ;;
+    7z) 7z x "$1" ;;
+    *) printf 'Unsupported archive: %s\n' "$1" >&2; return 2 ;;
+  esac
 }
 
 # Find and cd with fzf
 fcd() {
   local dir
-  dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -print 2>/dev/null | fzf --preview 'eza --tree --color=always {}' ) &&
-  cd "$dir" || return
+  if has fd; then
+    dir=$(fd -t d . "${1:-.}" 2>/dev/null | fzf --preview 'eza --tree --color=always {}' --height=40%)
+  else
+    dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -print 2>/dev/null | fzf --preview 'eza --tree --color=always {}' --height=40%)
+  fi
+  [[ -n $dir ]] && cd -- "$dir" || return
 }
 
 # Search and edit file with fzf
@@ -268,13 +269,7 @@ fe() {
 h() { curl cheat.sh/${@:-cheat}; }
 
 # Dot expansion for quick navigation upwards
-dot-expansion() {
-  if [[ $LBUFFER = *.. ]]; then
-    LBUFFER+='/..'
-  else
-    LBUFFER+='.'
-  fi
-}
+dot-expansion(){ if [[ $LBUFFER = *.. ]]; then LBUFFER+='/..'; else LBUFFER+='.'; fi; }
 zle -N dot-expansion
 
 # Prepend sudo
@@ -296,26 +291,17 @@ pskill() {
 # =========================================================
 # General aliases
 alias ls='eza --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
-alias l='ls --git-ignore'
 alias ll='eza --all --header --long --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
 alias llm='ll --sort=modified'
 alias la='eza -lbhHigUmuSa'
 alias lx='eza -lbhHigUmuSa@'
-alias lt='eza --tree'
-alias tree='eza --tree'
+alias tree='eza -T'
 alias grep='grep --color=auto'
 
 # Platform-specific aliases
-if (( TERMUX )); then
-  alias open='termux-open'
-  alias pbcopy='termux-clipboard-set'
-  alias pbpaste='termux-clipboard-get'
-elif (( $+commands[xdg-open] )); then
-  alias open='xdg-open'
-elif (( $+commands[wl-copy] && $+commands[wl-paste] )); then
-  alias pbcopy='wl-copy'
-  alias pbpaste='wl-paste'
-fi
+alias open='xdg-open'
+alias copy='wl-copy'
+alias paste='wl-paste'
 
 # Python aliases
 alias pip=pip3
@@ -338,8 +324,8 @@ alias which='command -v'
 alias dirs='dirs -v'
 
 # Global aliases for pipelines
-alias -g -- -h='-h 2>&1 | bat --language=help --style=plain -s --squeeze-limit 0'
-alias -g -- --help='--help 2>&1 | bat --language=help --style=plain -s --squeeze-limit 0'
+alias -g -- -h='-h 2>&1 | bat -plhelp'
+alias -g -- --help='--help 2>&1 | bat -plhelp'
 alias -g L="| ${PAGER:-less}"
 alias -g G="| rg -i"
 alias -g NE="2>/dev/null"
@@ -403,47 +389,10 @@ if (( $+commands[carapace] )); then
 fi
 
 # =========================================================
-# SYSTEM SPECIFIC CONFIGURATION 
-# =========================================================
-# Termux-specific settings
-if (( TERMUX )); then
-  # Load Termux API integration
-  if has termux-clipboard-set; then
-    copy_to_clipboard() { termux-clipboard-set < "$1"; }
-  else
-    copy_to_clipboard() { echo "Clipboard not available"; }
-  fi
-  
-  # Add Termux-specific tools
-  alias reload='termux-reload-settings'
-  alias battery='termux-battery-status'
-  alias clipboard='termux-clipboard-get'
-  alias copy='termux-clipboard-set'
-  alias share='termux-share'
-  alias notify='termux-notification'
-  
-  # Load Shizuku environment if available
-  [ -f ~/.shizuku_env ] && source ~/.shizuku_env
-fi
-
-# Display system information on login
-if [[ -o INTERACTIVE && -t 2 ]]; then
-  if (( $+commands[fastfetch] )); then
-    fastfetch
-  fi
-fi >&2
-
-# =========================================================
-# FINAL OPTIMIZATIONS
+# End
 # =========================================================
 # Recompile zsh files for faster startup if needed
 autoload -Uz zrecompile
-for file in ~/.zshrc ~/.zshenv ~/.p10k.zsh; do
-  if [[ -f "$file" && ( ! -f "${file}.zwc" || "$file" -nt "${file}.zwc" ) ]]; then
-    zrecompile -pq "$file" &>/dev/null
-  fi
-done
-unset file
-
-# Clean and optimize environment
-typeset -gU cdpath fpath mailpath path
+for f in ~/.zshrc ~/.zshenv ~/.p10k.zsh; do
+  [[ -f $f && ( ! -f ${f}.zwc || $f -nt ${f}.zwc ) ]] && zrecompile -pq "$f" &>/dev/null 
+done; unset f
