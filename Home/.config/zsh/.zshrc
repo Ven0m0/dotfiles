@@ -3,8 +3,8 @@
 # Skip if non-interactive
 [[ $- != *i* ]] && return
 
-has(){ command -v -- "$1" >/dev/null 2>&1; return $?; }
-ifsource(){ [ -r "$1" ] && source "$1"; }
+has(){ command -v -- "$1" &>/dev/null; }
+ifsource(){ [[ -r $1 ]] && source "$1"; }
 
 ifsource "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 
@@ -35,10 +35,10 @@ export FZF_DEFAULT_COMMAND='fd -tf -gH -c always -strip-cwd-prefix -E ".git"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd -td -gH -c always'
 
+# Crypto / Rust mirrors
 export GPG_TTY=$TTY
-export RUSTUP_DIST_SERVER='https://mirrors.ustc.edu.cn/rust-static'         # affect `rustup update`
-export RUSTUP_UPDATE_ROOT='https://mirrors.ustc.edu.cn/rust-static/rustup'  # affect `rustup self-update`
-
+export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
 
 # =========================================================
 # ZSH OPTIONS
@@ -47,7 +47,7 @@ export RUSTUP_UPDATE_ROOT='https://mirrors.ustc.edu.cn/rust-static/rustup'  # af
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME PUSHD_MINUS CD_SILENT
 # Globbing/completion behavior
 setopt EXTENDED_GLOB GLOB_DOTS NULL_GLOB GLOB_STAR_SHORT NUMERIC_GLOB_SORT HASH_EXECUTABLES_ONLY
-# History
+# History (no dupes, instant append, safe lock)
 setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS INC_APPEND_HISTORY EXTENDED_HISTORY
 setopt HIST_REDUCE_BLANKS HIST_SAVE_NO_DUPS SHARE_HISTORY HIST_IGNORE_SPACE
 setopt HIST_EXPIRE_DUPS_FIRST HIST_FCNTL_LOCK
@@ -56,8 +56,8 @@ setopt INTERACTIVE_COMMENTS RC_QUOTES NO_BEEP NO_FLOW_CONTROL
 setopt NO_CLOBBER AUTO_RESUME COMBINING_CHARS NO_MAIL_WARNING
 setopt CORRECT CORRECT_ALL LONG_LIST_JOBS TRANSIENT_RPROMPT
 setopt NOTIFY
-setopt magic_equal_subst     # perform filename expansion on `any=expr` args
-stty stop undef >/dev/null 
+setopt magic_equal_subst
+stty stop undef &>/dev/null || :
 
 # =========================================================
 # PATHS
@@ -89,11 +89,11 @@ SAVEHIST=10000
 HISTTIMEFORMAT="%F %T "
 
 # =========================================================
-# ZINIT (Plugin manager)
+# ZINIT (Plugin manager) — turbo + compile + defer + lazyload + smartcache
 # =========================================================
 : ${ZINIT_HOME:=${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git}
-if [[ ! -d "$ZINIT_HOME" ]]; then
-  mkdir -p -- "${ZINIT_HOME:h}" && \
+if [[ ! -d $ZINIT_HOME ]]; then
+  mkdir -p -- "${ZINIT_HOME:h}"
   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" &>/dev/null || :
 fi
 source "${ZINIT_HOME}/zinit.zsh"
@@ -109,53 +109,59 @@ zinit light-mode for \
   zdharma-continuum/zinit-annex-patch-dl \
   zdharma-continuum/zinit-annex-rust
 
-# Core plugins + compinit bootstrap
+# Core: compinit bootstrap + syntax + completions + autosuggest (turbo)
 zinit wait lucid light-mode for \
   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
     zdharma-continuum/fast-syntax-highlighting \
-  atload"!_zsh_autosuggest_start" \
+  atload"!_zsh_autosuggest_start" depth"1" compile'{"*.zsh","*.plugin.zsh"}' \
     zsh-users/zsh-autosuggestions \
-  blockf atpull'zinit creinstall -q .' \
+  blockf atpull'zinit creinstall -q .' depth"1" compile'{"*.zsh","*.plugin.zsh"}' \
     zsh-users/zsh-completions
 
-unset 'FAST_HIGHLIGHT[chroma-man]'  # buggy: stuck history browsing
-unset 'FAST_HIGHLIGHT[chroma-ssh]'  # buggy: incorrect
+# Fix buggy highlighters
+unset 'FAST_HIGHLIGHT[chroma-man]'
+unset 'FAST_HIGHLIGHT[chroma-ssh]'
 
 # Theme (p10k)
-zinit ice depth=1
+zinit ice depth"1"
 zinit light romkatv/powerlevel10k
 
+# Defer infra utilities early so their functions are available
+zinit wait'0' lucid depth"1" for \
+  qoomon/zsh-lazyload \
+  romkatv/zsh-defer \
+  QuarticCat/zsh-smartcache
+
+# History substring search
+zinit wait'0' lucid depth"1" for zsh-users/zsh-history-substring-search
+
 # Extra plugins
-zinit wait lucid for \
-  zsh-users/zsh-history-substring-search \
+zinit wait lucid depth"1" for \
   hlissner/zsh-autopair \
-  MichaelAquilina/zsh-you-should-use
+  MichaelAquilina/zsh-you-should-use \
+  dim-an/cod
 
-# zoxide as program (fast jump)
+# Tools
 zinit wait'0' lucid as'program' from'gh-r' for ajeetdsouza/zoxide
-
-# https://github.com/adi-li/zsh-cwebpb
-zinit load "adi-li/zsh-cwebpb"
-# https://github.com/qoomon/zsh-lazyload
-zinit load "qoomon/zsh-lazyload"
-# https://github.com/romkatv/zsh-defer
-zinit load "romkatv/zsh-defer"
-# https://github.com/QuarticCat/zsh-smartcache
-zinit load "QuarticCat/zsh-smartcache"
-
-# https://github.com/zdharma-continuum/zsh-sweep
 zinit sbin'bin/zsweep' for @psprint/zsh-sweep
+zinit light adi-li/zsh-cwebpb
 
-zinit wait lucid for dim-an/cod
+# fzf-tab-completion (bound to Ctrl-T to avoid conflicts with zsh-autocomplete)
+zinit ice wait'1' lucid depth"1" pick"zsh/fzf-zsh-completion.sh" atload'bindkey "^T" fzf_completion'
+zinit light lincheney/fzf-tab-completion
 
+# zsh-autocomplete (heavy; load after compinit; configure minimally)
+zinit ice wait'2' lucid depth"1"
+zinit light marlonrichert/zsh-autocomplete
 
+# Colors
 autoload -Uz colors && colors
 
 # =========================================================
 # COMPLETION (fast + styled)
 # =========================================================
 autoload -Uz compinit
-() {
+(){
   local zdump="${XDG_CACHE_HOME:-$HOME/.cache}/.zcompdump"
   local now mtime skip=0
   if [[ -f $zdump ]]; then
@@ -193,6 +199,10 @@ zstyle ':completion:*' format ' %F{blue}-- %d --%f'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
 
+# zsh-autocomplete minimal tuning (keep Tab free for it; fzf-tab on Ctrl-T)
+zstyle ':autocomplete:*' min-input 1
+zstyle ':autocomplete:*' insert-unambiguous yes
+
 # Process completion
 zstyle ':completion:*:processes' command 'ps -au$USER'
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
@@ -207,33 +217,27 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' l
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
-# LS_COLORS for completions
-if (( $+commands[vivid] )); then
-  export LS_COLORS="$(vivid generate molokai)"
-elif (( $+commands[dircolors] )); then
+# LS_COLORS for completions (cache if smartcache exists)
+if has vivid; then
+  if (( $+functions[smartcache] )); then
+    LS_COLORS="$(smartcache 1d vivid generate molokai)" 2>/dev/null || LS_COLORS="$(vivid generate molokai)"
+  else
+    LS_COLORS="$(vivid generate molokai)"
+  fi
+elif has dircolors; then
   eval "$(dircolors -b)" &>/dev/null
 fi
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
-# FZF tab completion (if installed to PREFIX)
-if (( $+commands[fzf] )) && [[ -n ${PREFIX:-} && -f ${PREFIX}/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh ]]; then
-  source "${PREFIX}/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh"
-  bindkey '^I' fzf_completion
-fi
-
 # =========================================================
 # PROMPT / THEME
 # =========================================================
-# p10k config (do not also set PROMPT/RPROMPT to avoid conflicts)
 [[ -f $HOME/.p10k.zsh ]] && source "$HOME/.p10k.zsh"
 
 # =========================================================
 # FUNCTIONS
 # =========================================================
-has(){ command -v -- "$1" &>/dev/null; }
-ifsource(){ [[ -r $1 ]] && source "$1"; }
-
 mkcd(){ mkdir -p -- "$1" && cd -- "$1" || return; }
 touchf(){ mkdir -p -- "${1:h}"; command touch -- "$1"; }
 
@@ -327,7 +331,7 @@ fi
 has bat && alias cat='bat -p'
 if has rg; then alias grep='rg'; else alias grep='grep --color=auto'; fi
 
-# Wayland helpers (Arch/Wayland, Debian/Wayland)
+# Wayland helpers
 alias open='xdg-open'
 alias copy='wl-copy'
 alias paste='wl-paste'
@@ -395,106 +399,98 @@ bindkey '^[[1;5D' backward-word
 bindkey '^[[Z' reverse-menu-complete
 bindkey '\e\e' prepend-sudo
 bindkey '^R' history-incremental-pattern-search-backward
-bindkey '\C-Z' undo
-bindkey '\C-Y' redo
+bindkey '^Z' undo
+bindkey '^Y' redo
 
-# Ref: https://github.com/marlonrichert/zsh-edit
-qc-word-widgets() {
-    local wordpat='[[:WORD:]]##|[[:space:]]##|[^[:WORD:][:space:]]##'
-    local words=(${(Z:n:)BUFFER}) lwords=(${(Z:n:)LBUFFER})
-    case $WIDGET {
-        (*sub-l)   local move=-${(N)LBUFFER%%$~wordpat} ;;
-        (*sub-r)   local move=+${(N)RBUFFER##$~wordpat} ;;
-        (*shell-l) local move=-${(N)LBUFFER%$lwords[-1]*} ;;
-        (*shell-r) local move=+${(N)RBUFFER#*${${words[$#lwords]#$lwords[-1]}:-$words[$#lwords+1]}} ;;
-    }
-    case $WIDGET {
-        (*kill*) (( MARK = CURSOR + move )); zle -f kill; zle .kill-region ;;
-        (*)      (( CURSOR += move )) ;;
-    }
+# Quick cursor/word widgets (marlonrichert-style)
+qc-word-widgets(){
+  local wordpat='[[:WORD:]]##|[[:space:]]##|[^[:WORD:][:space:]]##'
+  local words=(${(Z:n:)BUFFER}) lwords=(${(Z:n:)LBUFFER})
+  case $WIDGET {
+    (*sub-l)   local move=-${(N)LBUFFER%%$~wordpat} ;;
+    (*sub-r)   local move=+${(N)RBUFFER##$~wordpat} ;;
+    (*shell-l) local move=-${(N)LBUFFER%$lwords[-1]*} ;;
+    (*shell-r) local move=+${(N)RBUFFER#*${${words[$#lwords]#$lwords[-1]}:-$words[$#lwords+1]}} ;;
+  }
+  case $WIDGET {
+    (*kill*) (( MARK = CURSOR + move )); zle -f kill; zle .kill-region ;;
+    (*)      (( CURSOR += move )) ;;
+  }
 }
 for w in qc{,-kill}-{sub,shell}-{l,r}; zle -N $w qc-word-widgets
-bindkey '\E[1;5D' qc-sub-l         # [Ctrl+Left]
-bindkey '\E[1;5C' qc-sub-r         # [Ctrl+Right]
-bindkey '\E[1;3D' qc-shell-l       # [Alt+Left]
-bindkey '\E[1;3C' qc-shell-r       # [Alt+Right]
-bindkey '\C-H'    qc-kill-sub-l    # [Ctrl+Backspace] (Konsole)
-bindkey '\C-W'    qc-kill-sub-l    # [Ctrl+Backspace] (VSCode)
-bindkey '\E[3;5~' qc-kill-sub-r    # [Ctrl+Delete]
-bindkey '\E^?'    qc-kill-shell-l  # [Alt+Backspace]
-bindkey '\E[3;3~' qc-kill-shell-r  # [Alt+Delete]
+bindkey '\E[1;5D' qc-sub-l
+bindkey '\E[1;5C' qc-sub-r
+bindkey '\E[1;3D' qc-shell-l
+bindkey '\E[1;3C' qc-shell-r
+bindkey '^H'      qc-kill-sub-l
+bindkey '^W'      qc-kill-sub-l
+bindkey '\E[3;5~' qc-kill-sub-r
+bindkey '\E^?'    qc-kill-shell-l
+bindkey '\E[3;3~' qc-kill-shell-r
 WORDCHARS='*?[]~&;!#$%^(){}<>'
 
 # Trim trailing spaces from pasted text
-# Ref: https://unix.stackexchange.com/questions/693118
-qc-trim-paste() {
-    zle .$WIDGET && LBUFFER=${LBUFFER%%[[:space:]]#}
-}
+qc-trim-paste(){ zle .$WIDGET && LBUFFER=${LBUFFER%%[[:space:]]#}; }
 zle -N bracketed-paste qc-trim-paste
 
-# Change `...` to `../..`
-# Ref: https://grml.org/zsh/zsh-lovers.html#_completion
-qc-rationalize-dot() {
-    if [[ $LBUFFER == *.. ]] {
-        LBUFFER+='/..'
-    } else {
-        LBUFFER+='.'
-    }
+# Rationalize dot
+qc-rationalize-dot(){
+  if [[ $LBUFFER == *.. ]]; then LBUFFER+='/..'; else LBUFFER+='.'; fi
 }
 zle -N qc-rationalize-dot
-bindkey '.'   qc-rationalize-dot
-bindkey '\E.' self-insert-unmeta  # [Alt+.] insert dot
+bindkey '.' qc-rationalize-dot
+bindkey '\E.' self-insert-unmeta
 
-# [Ctrl+L] Clear screen but keep scrollback
-# Ref: https://superuser.com/questions/1389834
-qc-clear-screen() {
-    local prompt_height=$(print -n ${(%%)PS1} | wc -l)
-    local lines=$((LINES - prompt_height))
-    printf "$terminfo[cud1]%.0s" {1..$lines}  # cursor down
-    printf "$terminfo[cuu1]%.0s" {1..$lines}  # cursor up
-    zle .reset-prompt
+# Clear screen keep scrollback
+qc-clear-screen(){
+  local prompt_height=$(print -n ${(%%)PS1} | wc -l)
+  local lines=$((LINES - prompt_height))
+  printf "$terminfo[cud1]%.0s" {1..$lines}
+  printf "$terminfo[cuu1]%.0s" {1..$lines}
+  zle .reset-prompt
 }
 zle -N qc-clear-screen
-bindkey '\C-L' qc-clear-screen
-
+bindkey '^L' qc-clear-screen
 
 autoload -Uz add-zsh-hook
-
-# [PRECMD] Reset cursor shape as some programs (nvim, yazi) will change it
-_qc-reset-cursor() {
-    print -n '\E[5 q'  # line cursor
-}
+_qc-reset-cursor(){ print -n '\E[5 q'; }
 add-zsh-hook precmd _qc-reset-cursor
 
 # =========================================================
-# TOOL INTEGRATIONS
+# TOOL INTEGRATIONS (defer-heavy via zsh-defer; lazy-load completions)
 # =========================================================
-# zellij (auto-start)
-(( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"
-
-# Intelli-shell
-(( $+commands[intelli-shell] )) && eval "$(intelli-shell init zsh)"
-
-# thefuck (cached alias script)
-if (( $+commands[thefuck] )); then
-  local tf_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"
-  mkdir -p -- "${tf_cache:h}"
-  [[ ! -f $tf_cache ]] && thefuck --alias > "$tf_cache"
-  source "$tf_cache"
+# Lazy-load popular CLI completions (only if zsh-lazyload available)
+if (( $+functions[lazyload] )); then
+  has kubectl && lazyload kubectl 'source <(kubectl completion zsh)'
+  has helm && lazyload helm 'source <(helm completion zsh)'
+  has gh && lazyload gh 'eval "$(gh completion -s zsh)"'
 fi
 
-# theshit
+# Defer heavy inits if zsh-defer exists
+if (( $+functions[zsh-defer] )); then
+  zsh-defer -c '(( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"'
+  zsh-defer -c '(( $+commands[intelli-shell] )) && eval "$(intelli-shell init zsh)"'
+  zsh-defer -c 'if (( $+commands[thefuck] )); then local tf_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"; mkdir -p -- "${tf_cache:h}"; [[ ! -f $tf_cache ]] && thefuck --alias > "$tf_cache"; source "$tf_cache"; fi'
+  zsh-defer -c '[[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"'
+  zsh-defer -c 'if (( $+commands[carapace] )); then export CARAPACE_BRIDGES="zsh,fish,bash,inshellisense"; zstyle ":completion:*" format $"\e[2;37mCompleting %d\e[m"; source <(carapace _carapace); fi'
+else
+  (( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"
+  (( $+commands[intelli-shell] )) && eval "$(intelli-shell init zsh)"
+  if (( $+commands[thefuck] )); then
+    local tf_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"
+    mkdir -p -- "${tf_cache:h}"
+    [[ ! -f $tf_cache ]] && thefuck --alias > "$tf_cache"
+    source "$tf_cache"
+  fi
+  (( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"
+  [[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"
+  if (( $+commands[carapace] )); then
+    export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+    zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+    source <(carapace _carapace)
+  fi
+fi
 (( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"
-
-# mise
-[[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"
-
-# carapace
-if (( $+commands[carapace] )); then
-  export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-  zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
-  source <(carapace _carapace)
-fi
 
 # Login info (fastfetch)
 if [[ -o INTERACTIVE && -t 2 && $+commands[fastfetch] -ne 0 ]]; then
