@@ -1,6 +1,4 @@
 hide-mouse-cursor-when-typing = false
-# working-dir = "$HOME"
-#env-vars = []
 use-fork = true
 confirm-before-quit = true
 
@@ -15,7 +13,7 @@ args = []
 opacity = 1.0
 blur = false
 decorations = "enabled"
-mode = "Windowed"
+mode = "Maximized"
 
 [renderer]
 performance = "High"
@@ -33,27 +31,39 @@ disable-ctlseqs-alt = false
 
 [fonts]
 family = "JetBrains Mono"
-size = 12.0
-#family = "Monaspace Neon Var"
-features = ["calt=1", "liga=1"]
+size = 12
+features = ["zero","calt","liga"]
 hinting = true
 disable-warnings-not-found = true
+symbol-map = [
+  # powerline & powerline-extras
+  {start = "e0b0", end ="e0b3", font-family="JetBrainsMono Nerd Font Mono"},
+  {start = "e0b4", end ="e0c8", font-family="JetBrainsMono Nerd Font Mono"},
+  {start = "e0cc", end ="e0d4", font-family="JetBrainsMono Nerd Font Mono"},
+  {start = "e0ca", end ="e0ca", font-family="JetBrainsMono Nerd Font Mono"},
+  # font-awesome
+  {start = "f000", end ="f2e0", font-family="JetBrainsMono Nerd Font Mono"},
+  {start = "f200", end ="e2a9", font-family="JetBrainsMono Nerd Font Mono"},
+  # seti-ui
+  {start = "e5fa", end ="e6b1", font-family="JetBrainsMono Nerd Font Mono"},
+  # codicons
+  {start = "ea60", end ="ebeb", font-family="JetBrainsMono Nerd Font Mono"},
+]
 
 [scroll]
 multiplier = 3.0
 divider = 1.0
-
-# [shell]
-# program = "/bin/fish"
-# args = ["--login"]
 
 [navigation]
 mode = "bookmark"
 clickable = true
 hide-if-single = true
 use-split = true
-# use-current-path = false
 
 [developer]
 log-level = "OFF"
 enable-log-file = false
+
+# [shell]
+# program = "/bin/fish"
+# args = ["--login"]
