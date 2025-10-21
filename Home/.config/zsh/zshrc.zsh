@@ -15,6 +15,9 @@ setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS
 # Export LC settings early for consistency
 export LC_ALL=C.UTF-8 LANG=C.UTF-8 LANGUAGE=C.UTF-8
 
+# Check if command exists
+has() { command -v -- "$1" >/dev/null 2>&1; }
+
 # =========================================================
 # ENVIRONMENT VARIABLES
 # =========================================================
@@ -221,16 +224,17 @@ fi
 # =========================================================
 # UTILITY FUNCTIONS
 # =========================================================
-# Check if command exists
-has() { command -v -- "$1" >/dev/null 2>&1; }
-
 # Create directory and cd into it
 mkcd() {
   mkdir -p -- "$1" && cd -- "$1" || return
 }
 
-# Extract various archive formats
+# touch + parents
+touchf() { mkdir -p "$(dirname -- "$1")"; command touch -- "$1"; }
 
+
+
+# Extract various archive formats
 extract(){
   [[ -f $1 ]] || { printf 'File not found: %s\n' "$1" >&2; return 1; }
   case "${1##*.}" in
@@ -258,12 +262,19 @@ fcd() {
   [[ -n $dir ]] && cd -- "$dir" || return
 }
 
-# Search and edit file with fzf
+# fe: fzf file editor
 fe() {
   local files
   files=($(fzf --query="$1" --multi --select-1 --exit-0))
   [[ -n "$files" ]] && ${EDITOR:-micro} "${files[@]}"
 }
+vs
+fe(){
+  local files
+  files=("${(@f)$(fzf --multi --select-1 --exit-0 <<<"${*:-}")}")
+  [[ -n $files ]] && ${EDITOR:-micro} "${(@)files}"
+}
+
 
 # Help function using cheat.sh
 h() { curl cheat.sh/${@:-cheat}; }
