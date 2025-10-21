@@ -255,20 +255,35 @@ extract(){
   esac
 }
 
-fcd(){
-  local dir
-  if has fd; then
-    dir=$(fd -t d . "${1:-.}" 2>/dev/null | fzf --preview 'eza --tree --color=always {}' --height=40%)
+# fcd: fuzzy-pick a directory and cd into it
+# Usage: fcd [root_dir] [query...]
+fcd() {
+  local root="." q sel preview
+  [[ $# -gt 0 && -d $1 ]] && { root="$1"; shift; }
+  q="${*:-}"
+  preview=$(( $+commands[eza] )) && preview='eza -T -L2 --color=always {}' || preview='ls -la --color=always {}'
+  if (( $+commands[fd] )); then
+    sel="$(fd -HI -t d . "$root" 2>/dev/null | fzf --ansi --height ${FZF_HEIGHT:-60%} --layout=reverse --border --select-1 --exit-0 --preview "$preview" ${q:+--query "$q"})"
   else
-    dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -print 2>/dev/null | fzf --preview 'eza --tree --color=always {}' --height=40%)
+    sel="$(find "$root" -type d -not -path '*/.git/*' -print 2>/dev/null | fzf --ansi --height ${FZF_HEIGHT:-60%} --layout=reverse --border --select-1 --exit-0 --preview "$preview" ${q:+--query "$q"})"
   fi
-  [[ -n $dir ]] && cd -- "$dir"
+  [[ -n $sel ]] && cd -- "$sel"
 }
 
-fe(){
-  local files
-  files=("${(@f)$(fzf --multi --select-1 --exit-0 --query="${1:-}")}")
-  [[ -n ${files[1]:-} ]] && "${EDITOR:-micro}" "${(@)files}"
+# fe: fuzzy-pick files and open in $EDITOR
+fe() {
+  local -a files; local q="${*:-}" preview
+  if (( $+commands[bat] )); then
+    preview='bat -n --style=plain --color=always --line-range=:500 {}'
+  else
+    preview='head -n 500 {}'
+  fi
+  if (( $+commands[fzf] )); then
+    files=("${(@f)$(fzf --multi --select-1 --exit-0 ${q:+--query="$q"} --preview "$preview")}")
+  else
+    print -r -- "fzf not found" >&2; return 127
+  fi
+  [[ ${#files} -gt 0 ]] && "${EDITOR:-micro}" "${files[@]}"
 }
 
 h(){ curl "cheat.sh/${@:-cheat}"; }
