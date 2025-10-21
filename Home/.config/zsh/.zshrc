@@ -26,6 +26,8 @@ export KEYTIMEOUT=1
 export TZ=Europe/Berlin
 export TIME_STYLE='+%d-%m %H:%M'
 export LC_ALL=C.UTF-8 LANG=C.UTF-8 LANGUAGE=C.UTF-8
+WORDCHARS='*?_-[]~&;!#$%^(){}<>|'
+cdpath=("$HOME" .. $HOME/*(N-/) $HOME/.config)
 
 # Less/Man
 export LESS='-g -i -M -R -S -w -z-4'
@@ -388,7 +390,7 @@ alias e="$EDITOR"
 alias r='bat -p'
 alias which='command -v'
 alias dirs='dirs -v'
-alias sudo='sudo '
+alias sudo='sudo -H '
 alias sudo-rs='sudo-rs '
 alias doas='doas '
 
