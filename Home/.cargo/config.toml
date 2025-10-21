@@ -44,6 +44,8 @@ MALLOC_CONF = { value = "tcache:true,metadata_thp:auto,background_thread:true,na
 _RJEM_MALLOC_CONF = { value = "tcache:true,metadata_thp:auto,background_thread:true,narenas:2x", force = true }
 MIMALLOC_ALLOW_LARGE_OS_PAGES = "1"
 ZSTD_NBTHREADS = "0"
+RUST_LIB_BACKTRACE = "0"
+#RUST_BACKTRACE = "1"
 
 [cache]
 auto-clean-frequency = "7 days"
@@ -69,7 +71,7 @@ check-revoke = false
 multiplexing = true
 
 [net]
-git-fetch-with-cli = false
+git-fetch-with-cli = true
 retry = 3
 offline = false
 
@@ -108,12 +110,15 @@ rustflags = [
 opt-level = 0
 codegen-units = 256
 incremental = true
+debug = "line-tables-only"
+split-debuginfo = "unpacked"
+
+[profile.dev.package."*"]
 debug = false
 
-[profile.debugging]
+[profile.debug]
 inherits = "dev"
-debug = true
-split-debuginfo = "unpacked"
+debug = "full"
 
 [profile.release.build-override]
 inherits = "release"
