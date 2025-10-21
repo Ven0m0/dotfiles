@@ -28,19 +28,8 @@ export SAVEHIST=50000
 # Create history directory if it doesn't exist
 [[ ! -d "${HISTFILE:h}" ]] && mkdir -p "${HISTFILE:h}"
 
-# Enable zsh compiler for faster startup
-if [[ -f $HOME/.zshrc.zwc ]]; then
-  # Use compiled .zshrc if newer than the source
-  if [[ $HOME/.zshrc -nt $HOME/.zshrc.zwc ]]; then
-    zcompile $HOME/.zshrc
-  fi
-else
-  # Create compiled version if it doesn't exist
-  zcompile $HOME/.zshrc
-fi
-
 # ──────────── Path Configuration ────────────
-# Preload common paths
+typeset -U fpath path
 path=(
    $HOME/{.local/,.}bin(N)
   "$HOME/.cargo/bin"
@@ -54,5 +43,4 @@ path=(
   $path
 )
 export PATH
-typeset -U path
 
