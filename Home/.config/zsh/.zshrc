@@ -7,6 +7,7 @@ has(){ command -v -- "$1" &>/dev/null; }
 ifsource(){ [[ -r $1 ]] && source "$1"; }
 
 ifsource "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+export PS4='+%N:%i> '
 
 # =========================================================
 # CORE / ENV
