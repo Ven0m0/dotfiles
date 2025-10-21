@@ -1,6 +1,9 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-format = "[$username$directory]${custom.git_repo}$hostname$localip$sudo$shell$character"
+format = """[$username$directory]${custom.git_repo}$hostname$localip$sudo$shell$time
+$character
+"""
+
 #right_format = ""
 right_format = "${custom.mommy}"
 
@@ -41,9 +44,11 @@ disabled = false
 style = 'bold red'
 
 [time]
-disabled = true
+disabled = false
 use_12hr = false
-time_format = '%T'
+time_format = "%H:%M"
+utc_time_offset = "local"
+time_range = "-"
 
 [git_branch]
 disabled = true
@@ -53,8 +58,13 @@ truncation_symbol = ''
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
 disabled = true
-use_git_executable = false
+use_git_executable = true
 ignore_submodules = true
+ahead = '⇡${count}'
+diverged = '⇕⇡${ahead_count}'
+behind = '⇣${count}'
+modified = '!${count}'
+untracked = '?${count}'
 
 [package]
 format = 'via $version(208 bold) '
