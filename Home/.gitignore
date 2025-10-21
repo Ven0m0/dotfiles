@@ -130,6 +130,9 @@ build/
 .eslintcache
 *.tgz
 dist
+result
+result-*
+*.rdb
 
 # ---------------------
 # Windows system files
