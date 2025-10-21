@@ -461,8 +461,6 @@ add-zsh-hook precmd _qc-reset-cursor
 # =========================================================
 # Lazy-load popular CLI completions (only if zsh-lazyload available)
 if (( $+functions[lazyload] )); then
-  has kubectl && lazyload kubectl 'source <(kubectl completion zsh)'
-  has helm && lazyload helm 'source <(helm completion zsh)'
   has gh && lazyload gh 'eval "$(gh completion -s zsh)"'
 fi
 
