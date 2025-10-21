@@ -63,13 +63,17 @@ if status -i >/dev/null 2>&1
   end
 
   # ─── Tool Initialization ─────────────
+  function starship_transient_prompt_func
+    starship module character
+  end
+
   for tool in batman batpipe pay-respects starship
     if type -q $tool
       switch $tool
-        case batman; _evalcache batman --export-env 2>/dev/null
-        case batpipe; _evalcache batpipe 2>/dev/null
-        case pay-respects; _evalcache pay-respects fish --alias 2>/dev/null
-        case starship; _evalcache starship init fish 2>/dev/null
+        case batman; _evalcache batman --export-env >/dev/null
+        case batpipe; _evalcache batpipe >/dev/null
+        case pay-respects; _evalcache pay-respects fish --alias >/dev/null
+        case starship; _evalcache starship init fish && enable_transience
       end
     end
   end
