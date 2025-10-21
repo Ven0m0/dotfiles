@@ -1,0 +1,5 @@
+[settings.npm]
+bun = true
+
+[tools]
+"npm:@github/copilot" = "latest"
