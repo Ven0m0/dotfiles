@@ -2,12 +2,12 @@
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
   pager = delta
-  whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+  whitespace = "fix,-indent-with-non-tab,trailing-space,cr-at-eol,space-before-tab"
   editor = micro
   autocrlf = input
   preloadIndex = true
   eol = native
-  compression = 1
+  compression = -1
   multiPackIndex = true
   sparseCheckout = true
   fsyncMethod = batch
@@ -29,6 +29,7 @@
   autoSetupRemote = true
   recurseSubmodules = on-demand
   useBitmaps = true
+  followTags = true
 [pull]
   ff = only
   rebase = true
@@ -49,6 +50,7 @@
   deltaCacheSize = 512m
   compression = 9
 [fetch]
+  all = true
   prune = true
   pruneTags = true
   parallel = 0
@@ -91,6 +93,8 @@
   workers = 0
 [grep]
   threads = 0
+	extendRegexp = true
+	lineNumber = true
 [index]
   skipHash = true
   sparse = true
@@ -111,7 +115,7 @@
   pruneDuringFetch = true
   encoding = utf-8
 [help]
-  autoCorrect = prompt
+  autoCorrect = 1
 [apply]
   whitespace = fix
 [pager]
@@ -129,7 +133,7 @@
 [diff]
   algorithm = histogram
   suppressBlankEmpty = true
-  renames = copies
+  renames = true
   colorMoved = plain
   tool = meld
   mnemonicprefix = true
@@ -185,13 +189,18 @@
   path = ~/.gitconfig.local
 [advice]
   statusUoption = false
-[credential]
-  helper = store
 [init]
   defaultBranch = main
-[credential "https://github.com"]
-  helper = !/usr/bin/gh auth git-credential
-[credential "https://gist.github.com"]
-  helper = !/usr/bin/gh auth git-credential
 [alias]
   sub = submodule update --init --recursive
+[credential]
+  helper = store
+[credential "https://github.com"]
+  helper = "gh auth git-credential"
+[credential "https://gist.github.com"]
+  helper = "gh auth git-credential"
+[filter "lfs"]
+  clean = "git-lfs clean -- %f"
+	process = "git-lfs filter-process"
+[tag]
+	sort = "version:refname"
