@@ -11,11 +11,14 @@ ifsource "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 # =========================================================
 # CORE / ENV
 # =========================================================
-setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS
+setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS no_global_rcs
+skip_global_compinit=1
 
 export SHELL=zsh
 export EDITOR=micro VISUAL=micro
-export PAGER=bat
+export PAGER=bat GIT_PAGER=delta
+export BAT_STYLE=auto BATDIFF_USE_DELTA=true BATPIPE=color
+export LESSCHARSET='utf-8' LESSHISTFILE=- LESSQUIET=1
 export TERM=xterm-256color
 export CLICOLOR=1 MICRO_TRUECOLOR=1
 export KEYTIMEOUT=1
@@ -62,23 +65,34 @@ stty stop undef &>/dev/null || :
 # =========================================================
 # PATHS
 # =========================================================
-typeset -gU cdpath fpath mailpath path
-
+typeset -gU cdpath fpath mailpath path prepath
 if [[ ! -v prepath ]]; then
   typeset -ga prepath
   prepath=(
-    $HOME/{,s}bin(N)
-    $HOME/.local/{,s}bin(N)
+    $HOME/{.local/,.}bin(N)
+    $HOME/.cargo/bin
   )
 fi
-
 path=(
   $prepath
-  /opt/{homebrew,local}/{,s}bin(N)
   /usr/local/{,s}bin(N)
   "$HOME/.{cargo,local}/bin"(N)
+  /usr/local/{s}bin
+  /usr/{s}bin
+  /{s}bin
   $path
 )
+export PATH
+
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$UID}"
+
+export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
+export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/.zcompdump"
 
 # =========================================================
 # HISTORY
@@ -126,7 +140,7 @@ unset 'FAST_HIGHLIGHT[chroma-ssh]'
 zinit ice depth"1"
 zinit light romkatv/powerlevel10k
 
-# Defer infra utilities early so their functions are available
+# Infra utils early (for lazyload/smartcache/defer)
 zinit wait'0' lucid depth"1" for \
   qoomon/zsh-lazyload \
   romkatv/zsh-defer \
@@ -146,15 +160,14 @@ zinit wait'0' lucid as'program' from'gh-r' for ajeetdsouza/zoxide
 zinit sbin'bin/zsweep' for @psprint/zsh-sweep
 zinit light adi-li/zsh-cwebpb
 
-# fzf-tab-completion (bound to Ctrl-T to avoid conflicts with zsh-autocomplete)
+# fzf-tab-completion (bind Ctrl-T to avoid Tab conflicts with zsh-autocomplete)
 zinit ice wait'1' lucid depth"1" pick"zsh/fzf-zsh-completion.sh" atload'bindkey "^T" fzf_completion'
 zinit light lincheney/fzf-tab-completion
 
-# zsh-autocomplete (heavy; load after compinit; configure minimally)
+# zsh-autocomplete
 zinit ice wait'2' lucid depth"1"
 zinit light marlonrichert/zsh-autocomplete
 
-# Colors
 autoload -Uz colors && colors
 
 # =========================================================
@@ -199,7 +212,7 @@ zstyle ':completion:*' format ' %F{blue}-- %d --%f'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
 
-# zsh-autocomplete minimal tuning (keep Tab free for it; fzf-tab on Ctrl-T)
+# zsh-autocomplete tuning (keep Tab for it; fzf-tab on Ctrl-T)
 zstyle ':autocomplete:*' min-input 1
 zstyle ':autocomplete:*' insert-unambiguous yes
 
@@ -217,10 +230,10 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' l
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
-# LS_COLORS for completions (cache if smartcache exists)
+# LS_COLORS for completions
 if has vivid; then
   if (( $+functions[smartcache] )); then
-    LS_COLORS="$(smartcache 1d vivid generate molokai)" 2>/dev/null || LS_COLORS="$(vivid generate molokai)"
+    LS_COLORS="$(smartcache 7d vivid generate molokai)" 2>/dev/null || LS_COLORS="$(vivid generate molokai)"
   else
     LS_COLORS="$(vivid generate molokai)"
   fi
@@ -229,6 +242,17 @@ elif has dircolors; then
 fi
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+# ============ Start SSH Agent if not running ============
+if [[ -z "$SSH_AUTH_SOCK" ]] && command -v ssh-agent &>/dev/null; then
+  eval "$(ssh-agent -s -a "${XDG_RUNTIME_DIR}/ssh-agent.socket" 2>/dev/null)" >/dev/null
+fi
+
+# ============ Cleanup old history backups ============
+if [[ -d "${HISTFILE:h}" ]]; then
+  # Remove history backups older than 30 days
+  find "${HISTFILE:h}" -name "history.*.bak" -type f -mtime +30 -delete 2>/dev/null
+fi
 
 # =========================================================
 # PROMPT / THEME
@@ -261,12 +285,12 @@ extract(){
 
 # fcd: fuzzy-pick a directory and cd into it
 # Usage: fcd [root_dir] [query...]
-fcd() {
+fcd(){
   local root="." q sel preview
   [[ $# -gt 0 && -d $1 ]] && { root="$1"; shift; }
   q="${*:-}"
-  preview=$(( $+commands[eza] )) && preview='eza -T -L2 --color=always {}' || preview='ls -la --color=always {}'
-  if (( $+commands[fd] )); then
+  if has eza; then preview='eza -T -L2 --color=always {}'; else preview='ls -la --color=always {}'; fi
+  if has fd; then
     sel="$(fd -HI -t d . "$root" 2>/dev/null | fzf --ansi --height ${FZF_HEIGHT:-60%} --layout=reverse --border --select-1 --exit-0 --preview "$preview" ${q:+--query "$q"})"
   else
     sel="$(find "$root" -type d -not -path '*/.git/*' -print 2>/dev/null | fzf --ansi --height ${FZF_HEIGHT:-60%} --layout=reverse --border --select-1 --exit-0 --preview "$preview" ${q:+--query "$q"})"
@@ -275,14 +299,10 @@ fcd() {
 }
 
 # fe: fuzzy-pick files and open in $EDITOR
-fe() {
+fe(){
   local -a files; local q="${*:-}" preview
-  if (( $+commands[bat] )); then
-    preview='bat -n --style=plain --color=always --line-range=:500 {}'
-  else
-    preview='head -n 500 {}'
-  fi
-  if (( $+commands[fzf] )); then
+  if has bat; then preview='bat -n --style=plain --color=always --line-range=:500 {}'; else preview='head -n 500 {}'; fi
+  if has fzf; then
     files=("${(@f)$(fzf --multi --select-1 --exit-0 ${q:+--query="$q"} --preview "$preview")}")
   else
     print -r -- "fzf not found" >&2; return 127
@@ -335,12 +355,6 @@ if has rg; then alias grep='rg'; else alias grep='grep --color=auto'; fi
 alias open='xdg-open'
 alias copy='wl-copy'
 alias paste='wl-paste'
-
-# zoxide
-if has zoxide; then
-  eval "$(zoxide init zsh)"
-  alias cd='z'
-fi
 
 # Safety
 alias rm='rm -i'
@@ -402,7 +416,7 @@ bindkey '^R' history-incremental-pattern-search-backward
 bindkey '^Z' undo
 bindkey '^Y' redo
 
-# Quick cursor/word widgets (marlonrichert-style)
+# Quick cursor/word widgets
 qc-word-widgets(){
   local wordpat='[[:WORD:]]##|[[:space:]]##|[^[:WORD:][:space:]]##'
   local words=(${(Z:n:)BUFFER}) lwords=(${(Z:n:)LBUFFER})
@@ -457,38 +471,59 @@ _qc-reset-cursor(){ print -n '\E[5 q'; }
 add-zsh-hook precmd _qc-reset-cursor
 
 # =========================================================
-# TOOL INTEGRATIONS (defer-heavy via zsh-defer; lazy-load completions)
+# SMARTCACHE + LAZYLOAD integration
 # =========================================================
-# Lazy-load popular CLI completions (only if zsh-lazyload available)
+# Lazy-load completions and heavy env on first use, cache generators with TTL
 if (( $+functions[lazyload] )); then
-  has gh && lazyload gh 'eval "$(gh completion -s zsh)"'
+  # Core tools
+  lazyload gh 'source =(smartcache 7d gh completion -s zsh)'
+  lazyload docker 'source =(smartcache 7d docker completion zsh)'
+  lazyload carapace 'export CARAPACE_BRIDGES="zsh,fish,bash,inshellisense"; source =(smartcache 7d carapace _carapace)'
+  # Language/version managers
+  lazyload mise 'eval "$($HOME/.local/bin/mise activate zsh)"'
+  lazyload pyenv 'eval "$(smartcache 7d pyenv init -)"'
+  # TUI/session
+  lazyload zellij 'eval "$(zellij setup --generate-auto-start zsh)"'
+  # Navigation
+  lazyload z 'eval "$(zoxide init zsh)"; alias cd=z'
+  # Helpers
+  lazyload fuck 'local f="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"; mkdir -p -- "${f:h}"; [[ -f $f ]] || smartcache 30d thefuck --alias >"$f"; source "$f"'
+  lazyload shit '(( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"'
 fi
 
-# Defer heavy inits if zsh-defer exists
+# Optional warm cache in background after prompt (defer)
 if (( $+functions[zsh-defer] )); then
-  zsh-defer -c '(( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"'
-  zsh-defer -c '(( $+commands[intelli-shell] )) && eval "$(intelli-shell init zsh)"'
-  zsh-defer -c 'if (( $+commands[thefuck] )); then local tf_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"; mkdir -p -- "${tf_cache:h}"; [[ ! -f $tf_cache ]] && thefuck --alias > "$tf_cache"; source "$tf_cache"; fi'
-  zsh-defer -c '[[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"'
-  zsh-defer -c 'if (( $+commands[carapace] )); then export CARAPACE_BRIDGES="zsh,fish,bash,inshellisense"; zstyle ":completion:*" format $"\e[2;37mCompleting %d\e[m"; source <(carapace _carapace); fi'
-else
-  (( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"
-  (( $+commands[intelli-shell] )) && eval "$(intelli-shell init zsh)"
-  if (( $+commands[thefuck] )); then
-    local tf_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"
-    mkdir -p -- "${tf_cache:h}"
-    [[ ! -f $tf_cache ]] && thefuck --alias > "$tf_cache"
-    source "$tf_cache"
-  fi
-  (( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"
-  [[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"
-  if (( $+commands[carapace] )); then
-    export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-    zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
-    source <(carapace _carapace)
+  zsh-defer -c '(( $+functions[smartcache] )) || return 0; smartcache 7d vivid generate molokai &>/dev/null || :'
+  zsh-defer -c '(( $+functions[smartcache] )) || return 0; has gh && smartcache 7d gh completion -s zsh &>/dev/null || :'
+  zsh-defer -c '(( $+functions[smartcache] )) || return 0; has carapace && smartcache 7d carapace _carapace &>/dev/null || :'
+fi
+
+# If lazyload not present, fall back to immediate inits (still defer if possible)
+if (( ! $+functions[lazyload] )); then
+  if (( $+functions[zsh-defer] )); then
+    zsh-defer -c '(( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"'
+    zsh-defer -c 'eval "$(zoxide init zsh)"; alias cd=z'
+    zsh-defer -c '[[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"'
+    zsh-defer -c 'if (( $+commands[carapace] )); then export CARAPACE_BRIDGES="zsh,fish,bash,inshellisense"; source =(smartcache 7d carapace _carapace); fi'
+    zsh-defer -c 'if (( $+commands[thefuck] )); then f="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"; mkdir -p -- "${f:h}"; [[ -f $f ]] || smartcache 30d thefuck --alias >"$f"; source "$f"; fi'
+    zsh-defer -c '(( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"'
+  else
+    (( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"
+    eval "$(zoxide init zsh)"; alias cd=z
+    [[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"
+    if (( $+commands[carapace] )); then
+      export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+      source <(carapace _carapace)
+    fi
+    if (( $+commands[thefuck] )); then
+      f="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"
+      mkdir -p -- "${f:h}"
+      [[ -f $f ]] || thefuck --alias >"$f"
+      source "$f"
+    fi
+    (( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"
   fi
 fi
-(( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"
 
 # Login info (fastfetch)
 if [[ -o INTERACTIVE && -t 2 && $+commands[fastfetch] -ne 0 ]]; then
@@ -501,5 +536,4 @@ fi >&2
 autoload -Uz zrecompile
 for f in ~/.zshrc ~/.zshenv ~/.p10k.zsh; do
   [[ -f $f && ( ! -f ${f}.zwc || $f -nt ${f}.zwc ) ]] && zrecompile -pq "$f" &>/dev/null
-done
-unset f
+done; unset f
