@@ -1,4 +1,4 @@
-font-family = JetBrains Mono
+font-family = JetBrainsMono Nerd Font
 font-size = 12
 font-feature = ss01,ss02,ss03,ss04,ss05,ss06,ss07,ss08,ss09,ss10,ss19,ss20,calt,lig,liga,dlig,clig,zero
 # https://github.com/ryanoasis/nerd-fonts/wiki/Glyph-Sets-and-Code-Points
@@ -16,6 +16,7 @@ window-theme = dark
 window-subtitle = false
 window-decoration = true
 window-padding-balance = true
+background-opacity = 0.8
 
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 4
@@ -49,3 +50,5 @@ grapheme-width-method = unicode
 keybind = alt+k=new_tab
 keybind = alt+z=reload_config
 keybind = shift+enter=text:\x1b\r
+keybind = global:all:ctrl+c=copy_to_clipboard
+keybind = global:all:ctrl+v=paste_from_clipboard
