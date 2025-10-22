@@ -5,7 +5,11 @@ color = true
 python_venv_auto_create = true
 gix = true
 jobs = 16
-idiomatic_version_file_enable_tools = ["python"]
+go_skip_checksum = true
+exec_auto_install = true
+lockfile = true
+not_found_auto_install = true
+task_run_auto_install = true
 
 [settings.npm]
 bun = true
@@ -15,6 +19,9 @@ uv_venv_auto = true
 
 [settings.pipx]
 uvx = true
+
+[settings.cargo]
+binstall = true
 
 [tools]
 bun = "latest"
@@ -26,3 +33,8 @@ minify = "latest"
 node = "latest"
 pipenv = "latest"
 pnpm = "latest"
+"vfox-npm:eslint" = "8.0.0"
+"vfox-npm:prettier" = "latest"
+
+[env]
+NODE_ENV = 'production'
