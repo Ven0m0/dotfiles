@@ -1,203 +1,108 @@
-# Copilot Instructions: Bash Single-File Baseline
+# Copilot Instructions: Linux-OS
+## Repo map
+- `Cachyos/` Arch-focused setup: `Scripts/` for AIO installers run via curl, `Rust/` for toolchains, `Firefox/` patch sets, top-level `.sh` wrappers for maintenance.
+- `RaspberryPi/` imaging and upkeep; `raspi-f2fs.sh` orchestrates loop/partition flows, `Scripts/` hosts Pi automation tasks.
+- `Linux-Settings/` holds reference configs (compiler, kernel, shell) consumed by scripts; treat as data sources.
+- Root docs (`Shell-book.md`, `Tweaks.txt`, `todo.md`) capture house style and pending work—reuse helpers from there before inventing new ones.
 
-Purpose
-- Generate compact, production-grade, single-file Bash tools.
-- Optimize for Arch (Wayland) and Debian (Raspberry Pi). Secondary: Termux.
-- Favor in-memory ops, minimal external processes, Rust tools when available.
-
-Single-File First
-- No external library sourcing by default. Keep helpers inline.
-- Short usage output, fast startup (<100ms).
-- Add completions/docs/tests only when the script stabilizes.
-
-Style and Defaults
-- Shebang: `#!/usr/bin/env bash` (Termux when explicitly targeting it: `#!/data/data/com.termux/files/usr/bin/env bash`)
-- Strict early:
-  ```bash
-  set -euo pipefail
-  IFS=$'\n\t'
-  shopt -s nullglob globstar
-  export LC_ALL=C LANG=C LANGUAGE=C
-  ```
-- 2-space indent. Short CLI args via `getopts`.
-- Prefer:
-  - Arrays and associative arrays
-  - Here-strings: `cmd <<<"$var"`
-  - `while IFS= read -r` for input
-  - `[[ ... ]]` for tests
-  - nameref for in/out params: `fn(){ local -n out=$1; ...; out=value; }`
-  - `ret=$(fn ...)` to capture outputs
-  - Parameter expansion and `mapfile -t` over external tools
-- Regex: use `grep -E`/`expr` for matching. Avoid `[[ str =~ re ]]` portability footguns.
-- Silence non-critical failures: `cmd >/dev/null 2>&1 || true`
-
-Dependencies
-- Prefer Rust tools when present: `fd`, `rg`, `bat`, `sd`, `zoxide`.
-- Fallbacks must work: `find`, `grep -R`, `sed`, `awk`, `less`.
-- Provide install hints on error for Arch (`pacman`), Debian (`apt`), Termux (`pkg`).
-- Gate GNU-only flags behind checks.
-
-Performance
-- Avoid UUoC and pointless `awk`/`sed` when parameter expansion suffices.
-- Prefer builtins, globbing, arithmetic.
-- Use `fd`/`rg` if available; fallback to `find`/`grep -R`.
-- Parallelize safe workloads: `xargs -0 -n1 -P"$(nproc 2>/dev/null || echo 1)"`.
-- Avoid subshells where state is needed; use process substitution.
-
-Filesystem and Safety
-- Quote variables; never parse `ls`; avoid untrusted `eval`.
-- Temp files: `mktemp -p "${TMPDIR:-/tmp}"`.
-- Atomic writes: write temp then `mv`.
-- Backups: `file.bak.$(date +%Y%m%d-%H%M%S)` before destructive ops.
-
-Concurrency and Signals
-- Trap `INT`/`TERM`. Clean up and exit with meaningful codes.
-- `-j` controls concurrency. Default to `nproc` or 1.
-
-Configuration
-- Prefer flags and env overrides (`FOO=1 script -o out`).
-- Optional `--print-config` (JSON when `jq` present) for debugging.
-
-Privilege Escalation (optional)
-- Resolve once: `sudo-rs` → `sudo` → `doas`. Validate and cache.
-- Respect `$EUID`; refresh sudo timestamp when used.
-
-Cross-Platform Targets
-- Detect with `/etc/os-release` when needed; gate features per platform.
-- Termux support is opt-in; avoid hardcoded paths unless explicitly targeting it.
-
-Testing and CI
-- Lint: `shellcheck`; Format: `shfmt -i 2 -ci -sr`.
-- Tests: `bats-core` for critical paths.
-- Keep CI fast (<2 minutes), matrix at least `ubuntu-latest`; add Arch via container when necessary.
-
-Acceptance Criteria
-- Follows style, safety, and performance rules above.
-- Short help/usage, examples for key ops.
-- Graceful dependency handling with distro hints.
-- Fast by default; parallelizable when safe.
-- Deterministic and offline-capable when possible.
-
-Minimal Single-File Boilerplate (no logging)
+## Bash script template
+Start scripts with this canonical structure (adapt from `Shell-book.md` or existing scripts):
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-IFS=$'\n\t'; shopt -s nullglob globstar
-export LC_ALL=C LANG=C LANGUAGE=C
+IFS=$'\n\t'
+shopt -s nullglob globstar  # optional but common
+export LC_ALL=C LANG=C
 
-SELF="${BASH_SOURCE[0]}"; SCRIPT_DIR="${SELF%/*}"
-readonly SELF SCRIPT_DIR
-cd -P -- "$SCRIPT_DIR" >/dev/null 2>&1 || true
-PATH="$SCRIPT_DIR:$PATH"
+# Color & Effects (trans flag palette: LBLU→PNK→BWHT→PNK→LBLU)
+BLK=$'\e[30m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
+BLU=$'\e[34m' MGN=$'\e[35m' CYN=$'\e[36m' WHT=$'\e[37m'
+LBLU=$'\e[38;5;117m' PNK=$'\e[38;5;218m' BWHT=$'\e[97m'
+DEF=$'\e[0m' BLD=$'\e[1m'
 
-# ---- deps ----
-has(){ command -v -- "$1" >/dev/null 2>&1; }
-_hint_arch(){ printf 'pacman -S --needed %s\n' "$*"; }
-_hint_deb(){ printf 'sudo apt-get install -y %s\n' "$*"; }
-_hint_termux(){ printf 'pkg install %s\n' "$*"; }
-require_deps(){ local miss=(); for d in "$@"; do has "$d" || miss+=("$d"); done
-  ((${#miss[@]}==0)) && return 0
-  printf 'missing deps: %s\n' "${miss[*]}" >&2
-  printf 'Arch:   %s' "$(_hint_arch "${miss[*]}")" >&2
-  printf 'Debian: %s' "$(_hint_deb "${miss[*]}")" >&2
-  printf 'Termux: %s' "$(_hint_termux "${miss[*]}")" >&2
-  exit 127
-}
+# Core helpers (standardize across repo)
+has() { command -v "$1" &>/dev/null; }
+xecho() { printf '%b\n' "$*"; }
+log() { xecho "$*"; }
+err() { xecho "$*" >&2; }
+die() { err "${RED}Error:${DEF} $*"; exit 1; }
 
-# ---- helpers ----
-die(){ printf '%s\n' "$*" >&2; exit 1; }
-sleepy(){ read -rt "${1:-1}" -- <> <(:) >/dev/null 2>&1 || :; }  # fast sleep
-fcat(){ printf '%s\n' "$(<"$1")"; }  # faster than cat for small files
-bname(){ local t=${1%${1##*[!/}]}; t=${t##*/}; [[ $2 && $t == *"$2" ]] && t=${t%$2}; printf '%s\n' "${t:-/}"; }
-dname(){ local p=${1:-.}; [[ $p != *[!/]* ]] && { printf '/\n'; return; }; p=${p%${p##*[!/]}}; [[ $p != */* ]] && { printf '.\n'; return; }; p=${p%/*}; p=${p%${p##*[!/]}}; printf '%s\n' "${p:-/}"; }
-
-# Prefer expr/grep over [[ =~ ]] for portability
-match(){ # match "string" "regex" -> prints first group via grep -E
-  printf '%s\n' "$1" | grep -E -o "$2" >/dev/null 2>&1 || return 1
-}
-
-# ---- args ----
-QUIET=0 VERBOSE=0 DRYRUN=0 ASSUME_YES=0
-JOBS="${JOBS:-0}" OUT=""
-
-usage(){
-  cat <<EOF
-Usage: $(basename "$SELF") [-h] [-q] [-v] [-n] [-y] [-j n] [-o path]
-  -h  Help
-  -q  Quiet (redirect stdout to /dev/null)
-  -v  Verbose (set DEBUG=1 for extra prints)
-  -n  Dry-run
-  -y  Assume yes
-  -j  Jobs (default: nproc or 1)
-  -o  Output path
-EOF
-}
-
-parse_args(){
-  local opt
-  while getopts ":hqvnyj:o:" opt; do
-    case "$opt" in
-      h) usage; exit 0;;
-      q) QUIET=1;;
-      v) VERBOSE=1; DEBUG=1;;
-      n) DRYRUN=1;;
-      y) ASSUME_YES=1;;
-      j) JOBS="$OPTARG";;
-      o) OUT="$OPTARG";;
-      \?|:) usage; exit 64;;
-    esac
+# Privilege escalation (sudo-rs → sudo → doas, store in var)
+get_priv_cmd() {
+  local cmd
+  for cmd in sudo-rs sudo doas; do
+    has "$cmd" && { printf '%s' "$cmd"; return 0; }
   done
-  shift $((OPTIND-1))
-  if [[ -z "$JOBS" || "$JOBS" == 0 ]]; then
-    JOBS="$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 1)"
-  fi
+  [[ $EUID -eq 0 ]] || die "No privilege tool found and not running as root."
 }
+PRIV_CMD=$(get_priv_cmd)
+[[ -n $PRIV_CMD && $EUID -ne 0 ]] && "$PRIV_CMD" -v
 
-confirm(){
-  local msg=${1:-Proceed?} ans
-  (( ASSUME_YES == 1 )) && return 0
-  printf '%s [y/N]: ' "$msg" >&2
-  IFS= read -r ans || true
-  [[ "$ans" == [Yy]* ]]
+run_priv() {
+  [[ $EUID -eq 0 || -z $PRIV_CMD ]] && "$@" || "$PRIV_CMD" -- "$@"
 }
-
-# ---- safety ----
-cleanup(){ :; }
-trap 'rc=$?; trap - EXIT; cleanup; exit "$rc"' EXIT
-trap 'trap - INT; exit 130' INT
-trap 'trap - TERM; exit 143' TERM
-
-# ---- main ----
-main(){
-  parse_args "$@"
-  (( QUIET == 1 )) && exec 1>/dev/null
-  require_deps bash
-
-  # Example: enumerate files via fd/find, parallel-safe scan
-  local -a files=()
-  if has fd; then mapfile -t files < <(fd -t f .)
-  else mapfile -t files < <(find . -type f -print)
-  fi
-
-  printf '%s\0' "${files[@]}" | xargs -0 -n1 -P"$JOBS" bash -c '
-    f=$1
-    if command -v rg >/dev/null 2>&1; then rg -n "TODO" "$f" >/dev/null 2>&1 || true
-    else grep -Rns "TODO" "$f" >/dev/null 2>&1 || true
-    fi
-  ' _
-}
-
-main "$@"
 ```
 
-Notes aligned with your Shell-book
-- Keep strict mode, `IFS`, and locale set early for deterministic behavior.
-- Inline helpers like `has`, `sleepy`, `fcat`, `bname`, `dname` are allowed when they tighten hot paths.
-- Privilege tool resolution (`sudo-rs` → `sudo` → `doas`) is optional; add only when the script needs escalation.
-- Prefer `grep -E`/`expr` for regex; avoid `[[ =~ ]]` if portability matters.
-- Use arrays, here-strings, and `while IFS= read -r` throughout.
+## Code patterns
+**Privilege & package managers:**
+- Detect privilege with `get_priv_cmd()` searching `sudo-rs`→`sudo`→`doas`; store result and use via `run_priv()`.
+- Detect pkg manager: `paru`→`yay`→`pacman` (Arch); fall back to `apt`/`dpkg` (Debian). Store in `pkgmgr` array variable.
+- Check existing packages before installing: `pacman -Q pkg`, `flatpak list`, `cargo install --list`.
 
-When to extend
-- Add `--print-config` (JSON via `jq` fallback to plain text) only for config-heavy tools.
-- Add completions and `bats` tests once the interface is stable.
-- Gate non-portable speedups and experimental features behind `--experimental` or `EXPERIMENTAL=1`.
+**Error handling & logging:**
+- Define `log()`, `err()`, `die()` functions with colored output (`${RED}Error:${DEF} msg`).
+- Add `warn()`, `info()`, `debug()` for verbosity levels as needed (see `archmaint.sh`, `raspi-f2fs.sh`).
+
+**Cleanup & traps:**
+- Always use `trap cleanup EXIT INT TERM` with comprehensive cleanup function.
+- Cleanup must handle: unmounting (`mountpoint -q && umount`), loop device cleanup (`losetup -d`), lock release (`flock` fd close), temp dir removal.
+- Use `|| :` to ignore cleanup errors; log but don't fail.
+
+**Dependency checking:**
+- Upfront `check_deps()` function iterating through arrays: `for cmd in "${deps[@]}"; do command -v "$cmd" || warn "Missing: $cmd"; done`.
+- Provide distro-specific install hints: `(Arch: pacman -S f2fs-tools)` or `(Debian: sudo apt-get install -y f2fs-tools)`.
+
+**Configuration & dry-run:**
+- Use associative arrays for config: `declare -A cfg=([dry_run]=0 [debug]=0 [ssh]=0)`.
+- Wrap destructive commands in `run()` function that checks `((cfg[dry_run]))` and logs instead.
+- Gate verbose output with `((cfg[debug])) && log "DEBUG: msg" || :`.
+
+**Data collection & processing:**
+- Use `mapfile -t arr < <(command)` to avoid subshells; never parse `ls` output.
+- Filter package lists: `mapfile -t arr < <(grep -v '^\s*#' file.txt | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$')`.
+- Check array before iterating: `((${#arr[@]}))` or `[[ ${#arr[@]} -gt 0 ]]`.
+
+**Interactive mode:**
+- Support arg-less invocation with fzf selection when `src_path`/`tgt_path` missing.
+- Fallback to `find` if `fd` unavailable: `command -v fd &>/dev/null && fd -e img ... | fzf || find ... | fzf`.
+
+**Device & file operations:**
+- Use flock for exclusive access: `exec {LOCK_FD}>"/run/lock/script.${path//[^[:alnum:]]/_}"; flock -n "$LOCK_FD" || die "Lock failed"`.
+- Derive partition paths with bash pattern matching: `[[ $dev == *@(nvme|mmcblk|loop)* ]] && p="${dev}p1" || p="${dev}1"`.
+- Wait for devices with retry loop: `for ((i=0; i<60; i++)); do [[ -b $dev ]] && break; sleep 0.5; done`.
+
+**Build environment (Arch):**
+- Export tuned flags (see `Cachyos/Scripts/Install.sh`, `Updates.sh`):
+  ```bash
+  export CFLAGS="-march=native -mtune=native -O3 -pipe"
+  export CXXFLAGS="$CFLAGS"
+  export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Cstrip=symbols -Clto=fat"
+  export MAKEFLAGS="-j$(nproc)" NINJAFLAGS="-j$(nproc)"
+  export AR=llvm-ar CC=clang CXX=clang++ NM=llvm-nm RANLIB=llvm-ranlib
+  command -v ld.lld &>/dev/null && export RUSTFLAGS="${RUSTFLAGS} -Clink-arg=-fuse-ld=lld"
+  ```
+- AUR helper flags: `--needed --noconfirm --removemake --cleanafter --sudoloop --skipreview --batchinstall`.
+
+**Network operations:**
+- Use hardened curl: `curl -fsSL --proto '=https' --tlsv1.3` for downloads.
+- Background long tasks: `curl ... &` and wait/monitor separately.
+
+**ASCII art & banners:**
+- Use trans flag gradient palette: `LBLU`→`PNK`→`BWHT`→`PNK`→`LBLU` for banners.
+- Colorize line-by-line: `mapfile -t lines <<<"$banner"` then iterate with segment color calculation (see `print_banner()` in `archmaint.sh`, `Updates.sh`).
+
+## Tooling workflow
+- Format: `shfmt -i 2 -ci -sr file.sh`; lint: `shellcheck file.sh` (disabled codes in `.shellcheckrc`); harden: run `Harden Script` task.
+- Prefer modern tools with fallbacks: `fd`/`find`, `rg`/`grep`, `bat`/`cat`, `sd`/`sed`, `zoxide`/`cd`.
+- Use `mktemp -d -p "${TMPDIR:-/tmp}"` for temp dirs; always cleanup in trap.
+- Update `README.md` curl snippets when modifying script entrypoints (maintain `curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/main/...` patterns).
