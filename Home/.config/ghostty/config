@@ -16,7 +16,8 @@ window-theme = dark
 window-subtitle = false
 window-decoration = true
 window-padding-balance = true
-background-opacity = 0.8
+#background-opacity = 0.8
+theme = TokyoNight Night
 
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 4
@@ -35,19 +36,14 @@ shell-integration-features = cursor,no-sudo,title,ssh-env,no-ssh-terminfo
 custom-shader-animation = false
 app-notifications = config-reload,no-clipboard-copy
 
-gtk-single-instance = true
+gtk-single-instance = detect
 gtk-opengl-debug = false
-
-async-backend = io_uring
+async-backend = auto
 quick-terminal-animation-duration = 0
-
-# quit-after-last-window-closed = true
-# quit-after-last-window-closed-delay = 5
-
+quit-after-last-window-closed = true
+quit-after-last-window-closed-delay = 5
 grapheme-width-method = unicode
 
 keybind = alt+k=new_tab
 keybind = alt+z=reload_config
 keybind = shift+enter=text:\x1b\r
-keybind = global:all:ctrl+c=copy_to_clipboard
-keybind = global:all:ctrl+v=paste_from_clipboard
