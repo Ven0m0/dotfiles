@@ -5,6 +5,7 @@ color = true
 python_venv_auto_create = true
 gix = true
 jobs = 16
+idiomatic_version_file_enable_tools = ["python"]
 
 [settings.npm]
 bun = true
@@ -16,7 +17,12 @@ uv_venv_auto = true
 uvx = true
 
 [tools]
+bun = "latest"
 claude = "latest"
+claude-code = "latest"
+go = "latest"
 graalvm = "latest"
+minify = "latest"
 node = "latest"
+pipenv = "latest"
 pnpm = "latest"
