@@ -1,5 +1,22 @@
+[settings]
+experimental = true
+auto_install = true
+color = true
+python_venv_auto_create = true
+gix = true
+jobs = 16
+
 [settings.npm]
 bun = true
 
+[settings.python]
+uv_venv_auto = true
+
+[settings.pipx]
+uvx = true
+
 [tools]
-"npm:@github/copilot" = "latest"
+claude = "latest"
+graalvm = "latest"
+node = "latest"
+pnpm = "latest"
