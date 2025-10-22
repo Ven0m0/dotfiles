@@ -33,8 +33,6 @@ minify = "latest"
 node = "latest"
 pipenv = "latest"
 pnpm = "latest"
-"vfox-npm:eslint" = "8.0.0"
-"vfox-npm:prettier" = "latest"
 
 [env]
 NODE_ENV = 'production'
