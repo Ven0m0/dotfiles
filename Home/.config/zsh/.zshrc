@@ -27,7 +27,6 @@ export TZ=Europe/Berlin
 export TIME_STYLE='+%d-%m %H:%M'
 export LC_ALL=C.UTF-8 LANG=C.UTF-8 LANGUAGE=C.UTF-8
 WORDCHARS='*?_-[]~&;!#$%^(){}<>|'
-cdpath=("$HOME" .. $HOME/*(N-/) $HOME/.config)
 
 # Less/Man
 export LESS='-g -i -M -R -S -w -z-4'
@@ -61,8 +60,16 @@ setopt HIST_EXPIRE_DUPS_FIRST HIST_FCNTL_LOCK
 setopt INTERACTIVE_COMMENTS RC_QUOTES NO_BEEP NO_FLOW_CONTROL
 setopt NO_CLOBBER AUTO_RESUME COMBINING_CHARS NO_MAIL_WARNING
 setopt CORRECT CORRECT_ALL LONG_LIST_JOBS TRANSIENT_RPROMPT
-setopt NOTIFY
-setopt magic_equal_subst
+setopt NOTIFY no_beep
+setopt magic_equal_subst auto_resume
+# Completions
+unsetopt menu_complete
+setopt list_packed auto_list auto_menu auto_param_keys complete_in_word nonomatch
+# Other
+setopt short_loops           # Use simplified syntax for FOR, REPEAT, SELECT, IF, FUNCTION, etc.
+setopt long_list_jobs        # Make internal command jobs output jobs -L by default
+setopt rm_star_wait          # confirm before rm * is executed
+
 stty stop undef &>/dev/null || :
 
 # =========================================================
@@ -86,6 +93,7 @@ path=(
   $path
 )
 export PATH
+cdpath=("$HOME" .. $HOME/*(N-/) $HOME/.config)
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
@@ -164,14 +172,25 @@ zinit sbin'bin/zsweep' for @psprint/zsh-sweep
 zinit light adi-li/zsh-cwebpb
 
 # fzf-tab-completion (bind Ctrl-T to avoid Tab conflicts with zsh-autocomplete)
+zinit wait '1' lucid for junegunn/fzf
 zinit ice wait'1' lucid depth"1" pick"zsh/fzf-zsh-completion.sh" atload'bindkey "^T" fzf_completion'
-zinit light lincheney/fzf-tab-completion
+zinit wait '1' lucid for lincheney/fzf-tab-completion \
+  atweiden/fzf-extras \
+  leophys/zsh-plugin-fzf-finder \
+  amaya382/zsh-fzf-widgets \
+  urbainvaes/fzf-marks \
+  leophys/zsh-plugin-fzf-finder
+
+zinit wait '1' lucid for eza-community/eza sharkdp/bat
 
 # zsh-autocomplete
 zinit ice wait'2' lucid depth"1"
 zinit light marlonrichert/zsh-autocomplete
 
 autoload -Uz colors && colors
+
+zinit ice lucid wait"0" atload"source $ZHOMEDIR/rc/pluginconfig/zsh-async_atload.zsh && set_async"
+zinit light mafredri/zsh-async
 
 # =========================================================
 # COMPLETION (fast + styled)
@@ -194,7 +213,7 @@ autoload -Uz compinit
 }
 
 # Styles
-zstyle ':completion:*' menu select
+zstyle ':completion:*:default' menu select=1
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
 zstyle ':completion:*' insert-unambiguous true
@@ -214,6 +233,7 @@ zstyle ':completion:*:warnings' format ' %F{yellow}-- no matches found --%f'
 zstyle ':completion:*' format ' %F{blue}-- %d --%f'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
+zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin
 
 # zsh-autocomplete tuning (keep Tab for it; fzf-tab on Ctrl-T)
 zstyle ':autocomplete:*' min-input 1
@@ -245,6 +265,11 @@ elif has dircolors; then
 fi
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+# make completion is slow
+zstyle ':completion:*:make:*:targets' call-command true
+zstyle ':completion:*:make::' tag-order targets:
+zstyle ':completion:*:*:*make:*:targets' command awk \''/^[a-zA-Z0-9][^\/\t=]+:/ {print $1}'\' \$file
 
 # ============ Start SSH Agent if not running ============
 if [[ -z "$SSH_AUTH_SOCK" ]] && command -v ssh-agent &>/dev/null; then
@@ -394,6 +419,13 @@ alias sudo='sudo -H '
 alias sudo-rs='sudo-rs '
 alias doas='doas '
 
+# mise
+alias mise-install='mise install && mise run install-all'
+alias mise-update='mise upgrade && mise run install-all'
+
+# web-server
+alias web-server='python -m SimpleHTTPServer 8000'
+
 # Globals
 alias -g -- -h='-h 2>&1 | bat -plhelp'
 alias -g -- --help='--help 2>&1 | bat -plhelp'
@@ -406,6 +438,14 @@ alias -g NUL=">/dev/null 2>&1"
 # KEYBINDINGS
 # =========================================================
 bindkey -e
+autoload -U history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey "^P" history-beginning-search-backward
+bindkey "^N" history-beginning-search-forward
+bindkey '^R' history-incremental-pattern-search-backward
+bindkey '^S' history-incremental-pattern-search-forward
+
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey '^[[H' beginning-of-line
@@ -418,6 +458,11 @@ bindkey '\e\e' prepend-sudo
 bindkey '^R' history-incremental-pattern-search-backward
 bindkey '^Z' undo
 bindkey '^Y' redo
+
+# shift-tab to reverse completion
+zmodload zsh/complist
+bindkey '^[[Z' reverse-menu-complete
+bindkey -M menuselect '^[[Z' reverse-menu-complete
 
 # Quick cursor/word widgets
 qc-word-widgets(){
