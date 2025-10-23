@@ -156,6 +156,7 @@ zinit wait'0' lucid depth"1" for \
   qoomon/zsh-lazyload \
   romkatv/zsh-defer \
   QuarticCat/zsh-smartcache
+zinit light NICHOLAS85/z-a-eval
 
 # History substring search
 zinit wait'0' lucid depth"1" for zsh-users/zsh-history-substring-search
