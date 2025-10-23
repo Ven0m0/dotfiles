@@ -156,7 +156,14 @@ zinit wait'0' lucid depth"1" for \
   qoomon/zsh-lazyload \
   romkatv/zsh-defer \
   QuarticCat/zsh-smartcache
-zinit light NICHOLAS85/z-a-eval
+
+# zinit light NICHOLAS85/z-a-eval
+zinit atinit'Z_A_USECOMP=1' light-mode for NICHOLAS85/z-a-eval
+
+zinit ice as"command" from"gh-r" mv"zoxide* -> zoxide" \
+      eval"./zoxide init zsh"
+zinit light ajeetdsouza/zoxide
+
 
 # History substring search
 zinit wait'0' lucid depth"1" for zsh-users/zsh-history-substring-search
