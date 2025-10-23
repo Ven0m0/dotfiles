@@ -1,5 +1,3 @@
-# ~/.bashrc
-# https://www.gnu.org/software/bash/manual/bash.html
 [[ $- != *i* ]] && return
 #============ Helpers ============
 # Check for command
@@ -8,14 +6,17 @@ has(){ [[ -x $(command -v -- "$1" >/dev/null) ]]; return $?; }
 # Safely source file if it exists ( ~ -> $HOME )
 ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}" 2>/dev/null; return $?; }
 # Safely prepend only if not already in PATH ( ~ -> $HOME )
-prependpath(){ [[ -d "${1/#\~\//${HOME}/}" ]] && [[ ":$PATH:" != *":${1/#\~\//${HOME}/}:"* ]] && PATH="${1/#\~\//${HOME}/}${PATH:+:$PATH}"; }
+prependpath(){ [[ -d $1 ]] && [[ :$PATH: != *":$1:"* ]] && PATH="$1${PATH:+:$PATH}"; export PATH; }
+bname(){ local t=${1%${1##*[!/]}}; t=${t##*/}; [[ $2 && $t == *"$2" ]] && t=${t%$2}; printf '%s\n' "${t:-/}"; }
+dname(){ local p=${1:-.}; [[ $p != *[!/]* ]] && { printf '/\n'; return; }; p=${p%${p##*[!/]}}; [[ $p != */* ]] && { printf '.\n'; return; }; p=${p%/*}; p=${p%${p##*[!/]}}; printf '%s\n' "${p:-/}"; }
+match(){ printf '%s\n' "$1" | grep -E -o "$2" &>/dev/null || return 1; }
 #============ Sourcing ============
 # wiki.archlinux.org/title/Bash#Command_not_found
 dot=(/etc/bashrc
-  "$HOME"/.{bash_aliases,bash_functions,bash_completions,bash_fuzz,fns,funcs,bash.d/cht.sh,config/bash/cht.sh}
+  "$HOME"/.{bash_aliases,bash_functions,bash_completions,bash.d/cht.sh,config/bash/cht.sh}
   /usr/share/doc/pkgfile/command-not-found.bash
 )
-for p in "${dot[@]}"; do ifsource "$p"; done; unset p dot
+for p in "${dot[@]}"; do [[ -r "$p" ]] && . "$p"; done
 
 # completions
 ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_completion"
@@ -74,9 +75,8 @@ BROWSER=floorp
 TERMINAL=ghostty
 
 # Editor selection: prefer micro, fallback to nano
-command -v micro &>/dev/null && EDITOR=micro; export ${EDITOR:=nano}
-export MICRO_TRUECOLOR=1
-export VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$EDITOR" FCEDIT="$EDITOR" SUDO_EDITOR="$EDITOR"
+if has micro; then EDITOR=micro; else EDITOR=nano; fi
+export MICRO_TRUECOLOR=1 VISUAL="$EDITOR" VIEWER="$EDITOR" GIT_EDITOR="$EDITOR" SYSTEMD_EDITOR="$EDITOR" FCEDIT="$EDITOR" SUDO_EDITOR="$EDITOR"
 # https://wiki.archlinux.org/title/Locale
 export LANG=C.UTF-8 LC_COLLATE=C LC_CTYPE=C.UTF-8
 export LC_MEASUREMENT=C TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
@@ -91,15 +91,9 @@ has ibus && export GTK_IM_MODULE=ibus XMODIFIERS=@im=ibus QT_IM_MODULE=ibus
 MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
 export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 MIMALLOC_SHOW_STATS=0 MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_PURGE_DELAY=25 MIMALLOC_ARENA_EAGER_COMMIT=2
 
-: "${LESS_TERMCAP_mb:=$'\e[1;32m'}"
-: "${LESS_TERMCAP_md:=$'\e[1;32m'}"
-: "${LESS_TERMCAP_me:=$'\e[0m'}"
-: "${LESS_TERMCAP_se:=$'\e[0m'}"
-: "${LESS_TERMCAP_so:=$'\e[01;33m'}"
-: "${LESS_TERMCAP_ue:=$'\e[0m'}"
-: "${LESS_TERMCAP_us:=$'\e[1;4;31m'}"
+: "${LESS:=}"
+: "${LESS_TERMCAP_mb:=$'\e[1;32m'}" "${LESS_TERMCAP_md:=$'\e[1;32m'}" "${LESS_TERMCAP_me:=$'\e[0m'}" "${LESS_TERMCAP_se:=$'\e[0m'}" "${LESS_TERMCAP_so:=$'\e[01;33m'}" "${LESS_TERMCAP_ue:=$'\e[0m'}" "${LESS_TERMCAP_us:=$'\e[1;4;31m'}"
 export "${!LESS_TERMCAP@}"
-# export LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m'
 export LESSHISTFILE=- LESSCHARSET=utf-8 LESS='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
 
 # Delta / bat integration
@@ -124,11 +118,7 @@ else
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
 
-if has vivid; then
-  export LS_COLORS="$(vivid generate molokai)"
-elif has dircolors; then
-  eval "$(dircolors -b)" &>/dev/null
-fi
+if has vivid; then export LS_COLORS="$(vivid generate molokai)"; elif has dircolors; then eval "$(dircolors -b)" &>/dev/null; fi
 : "${CLICOLOR:=$(tput colors)}"
 export CLICOLOR SYSTEMD_COLORS=1
 
@@ -155,8 +145,7 @@ if has cargo; then
 else
   unalias cargo
 fi
-export PYTHONOPTIMIZE=2 PYTHONUTF8=1 PYTHONNODEBUGRANGES=1 PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1 \
-  PYTHONSTARTUP="$HOME/.pythonstartup" PYTHON_COLORS=1
+export PYTHONOPTIMIZE=2 PYTHONUTF8=1 PYTHONNODEBUGRANGES=1 PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1 PYTHONSTARTUP="{$HOME}/.pythonstartup" PYTHON_COLORS=1
 unset PYTHONDONTWRITEBYTECODE
 
 if has uv; then
@@ -398,25 +387,12 @@ has btm && alias top=btm btop=btm
 alias plasma-reset="DISPLAY=:0 kwin --replace ; sleep 2 ; plasmashell --replace &"
 
 # DIRECTORY NAVIGATION
-if has zoxide; then
-  alias ..='z ..'
-  alias ...='z ../..'
-  alias ....='z ../../..'
-  alias .....='z ../../../..'
-  alias ......='z ../../../../..'
-  alias cd-="cd -"
-  alias cd='z'
-else
-  alias ..='cd ..'
-  alias ...='cd ../..'
-  alias ....='cd ../../..'
-  alias .....='cd ../../../..'
-  alias ......='cd ../../../../..'
-  alias cd-="cd -"
-  unalias cd
-fi
+alias ..='cd ..' ...='cd ../..' ....='cd ../../..' .....='cd ../../../..' ......='cd ../../../../..' bd='cd "$OLDPWD"' cd-="cd -" home='cd ~'
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
+alias 000='chmod -R 000' 644='chmod -R 644' 666='chmod -R 666' 755='chmod -R 755' 777='chmod -R 777'
+alias h="history | grep " p="ps aux | grep " f="find . | grep "
+alias mktar='tar -cvf' mkbz2='tar -cvjf' mkgz='tar -cvzf' untar='tar -xvf' unbz2='tar -xvjf' ungz='tar -xvzf'
 
 # Common use
 alias grep='grep --color=auto'
@@ -441,6 +417,68 @@ alias speedt='curl -sf https://raw.githubusercontent.com/sivel/speedtest-cli/mas
 # Dotfiles
 # LC_ALL=C git clone --bare git@github.com:Ven0m0/dotfiles.git $HOME/.dotfiles
 # alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+# --- Tool Wrappers ---
+
+# Git -> Gix wrapper (gitoxide)
+git(){
+  local subcmd="${1:-}"
+  if has gix; then
+    case "$subcmd" in
+      clone|fetch|pull|init|status|diff|log|rev-parse|rev-list|commit-graph|verify-pack|index-from-pack|pack-explode|remote|config|exclude|free|mailmap|odb|commitgraph|pack) gix "$@";;
+      *) command git "$@";;
+    esac
+  else
+    command git "$@"
+  fi
+}
+
+# Curl -> Aria2 wrapper
+curl(){
+  local -a args=() out_file=""
+  if has aria2c; then
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        -o|--output) out_file="$2"; shift 2;;
+        -L|--location|-s|--silent|-S|--show-error|-f|--fail|--compressed) shift;;
+        http*|ftp*) args+=("$1"); shift;;
+        *) args+=("$1"); shift;;
+      esac
+    done
+    if [[ ${#args[@]} -gt 0 ]]; then
+      local -a aria_flags=(-x16 -s16 -k1M -j16 --file-allocation=none --summary-interval=0)
+      if [[ -n $out_file ]]; then
+        aria2c "${aria_flags[@]}" -d "$(dirname "$out_file")" -o "$(basename "$out_file")" "${args[@]}"
+      else
+        aria2c "${aria_flags[@]}" "${args[@]}"
+      fi
+    else
+      command curl "$@"
+    fi
+  else
+    command curl "$@"
+  fi
+}
+
+# Pip -> UV wrapper
+pip(){
+  if has uv; then
+    case "${1:-}" in
+      install|uninstall|list|show|freeze|check) uv pip "$@";;
+      *) command pip "$@";;
+    esac
+  else
+    command pip "$@"
+  fi
+}
+
+# ADB connect
+adb-connect(){
+  if ! adb devices &>/dev/null; then exit 1; fi
+  local IP="${1:-$(adb shell ip route | awk '{print $9}')}" PORT="${2:-5555}"
+  adb tcpip "$PORT" &>/dev/null || :
+  adb connect "${IP}:${PORT}"
+}
 
 #============ Bindings (readline) ============
 bind 'set completion-query-items 250'
@@ -471,20 +509,14 @@ stealth=${stealth:-0}
 #============ Prompt 2 ============
 configure_prompt(){
   command -v starship &>/dev/null && { eval "$(LC_ALL=C starship init bash)"; return; }
-  local MGN='\[\e[35m\]' BLU='\[\e[34m\]' YLW='\[\e[33m\]' BLD='\[\e[1m\]' UND='\[\e[4m\]' GRN='\[\e[32m\]' \
-        CYN='\[\e[36m\]' DEF='\[\e[0m\]' RED='\[\e[31m\]'  PNK='\[\e[38;5;205m\]' USERN HOSTL
+  local MGN='\[\e[35m\]' BLU='\[\e[34m\]' YLW='\[\e[33m\]' BLD='\[\e[1m\]' UND='\[\e[4m\]' GRN='\[\e[32m\]' CYN='\[\e[36m\]' DEF='\[\e[0m\]' RED='\[\e[31m\]' PNK='\[\e[38;5;205m\]' USERN HOSTL
   USERN="${MGN}\u${DEF}"; [[ $EUID -eq 0 ]] && USERN="${RED}\u${DEF}"
   HOSTL="${BLU}\h${DEF}"; [[ -n $SSH_CONNECTION ]] && HOSTL="${YLW}\h${DEF}"
-  exstat(){ [[ $? == 0 ]] && echo -e '${GRN}:)${DEF}' || echo -e '${RED}D:${DEF}'; }
-  PS1="[${USERN}@${HOSTL}${UND}|${DEF}${CYN}\w${DEF}]>${PNK}\A${DEF}|\exstat ${BLD}\$${DEF} "
+  exstat(){ [[ $? == 0 ]] && printf '%s:)${DEF}' || printf '%sD:${DEF}'; }
+  PS1="[${USERN}@${HOSTL}${UND}|${DEF}${CYN}\w${DEF}]>${PNK}\A${DEF}|\$(exstat) ${BLD}\$${DEF} "
   PS2='> '
-  if command -v __git_ps1 &>/dev/null && [[ ${PROMPT_COMMAND:-} != *git_ps1* ]]; then
-    export GIT_PS1_OMITSPARSESTATE=1 GIT_PS1_HIDE_IF_PWD_IGNORED=1
-    unset GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWUNTRACKEDFILES
-    PROMPT_COMMAND="LC_ALL=C __git_ps1 2>/dev/null; ${PROMPT_COMMAND:-}"
-  fi
   # Only add if not in stealth mode and not already present in PROMPT_COMMAND
-  if command -v mommy &>/dev/null && [[ "${stealth:-0}" -ne 1 ]] && [[ ${PROMPT_COMMAND:-} != *mommy* ]]; then
+  if command -v mommy &>/dev/null && (( stealth == 1 )) && [[ ${PROMPT_COMMAND:-} != *mommy* ]]; then
     PROMPT_COMMAND="LC_ALL=C mommy -1 -s \$?; ${PROMPT_COMMAND:-}" # mommy https://github.com/fwdekker/mommy
     # PROMPT_COMMAND="LC_ALL=C mommy \$?; ${PROMPT_COMMAND:-}" # Shell-mommy https://github.com/sleepymincy/mommy
   fi
@@ -493,11 +525,8 @@ configure_prompt 2>/dev/null &
 #============ End ============
 dedupe_path(){
   local IFS=: dir s; declare -A seen
-  for dir in $PATH; do
-    [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"
-  done
+  for dir in $PATH; do [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"; done
   [[ -n $s ]] && export PATH="$s"
-  command -v systemctl &>/dev/null && command systemctl --user import-environment PATH &>/dev/null
 }
 dedupe_path
 #============ Fetch ============
@@ -523,11 +552,9 @@ ifsource "$HOME/.sdkman/bin/sdkman-init.sh" && export SDKMAN_DIR="$HOME/.sdkman"
 
 # Zoxide
 if command -v zoxide &>/dev/null; then
-  export _ZO_DOCTOR=0 _ZO_ECHO=0 _ZO_EXCLUDE_DIRS="${HOME}:.cache:go" 
-  export _ZO_FZF_OPTS="--cycle -0 -1 --inline-info --no-multi --no-sort \
-    --preview 'eza --no-quotes --color=always --color-scale-mode=fixed --group-directories-first --oneline {2..}'"
-  [[ ! -r "${HOME}/.config/bash/zoxide.bash" ]] && zoxide init bash >| "${HOME}/.config/bash/zoxide.sh"
-  ifsource "${HOME}/.config/bash/zoxide.sh" || eval "$(zoxide init bash)"
+  export _ZO_DOCTOR=0 _ZO_ECHO=0 _ZO_EXCLUDE_DIRS="${HOME}:.cache:go"
+  export _ZO_FZF_OPTS="--cycle -0 -1 --inline-info --no-multi --no-sort --preview 'eza --no-quotes --color=always --color-scale-mode=fixed --group-directories-first --oneline {2..}'"
+  ifsource "$HOME/.config/bash/zoxide.bash" && eval "$(zoxide init bash)"
 fi
 if has intelli-shell; then
   eval "$(intelli-shell init bash)"
