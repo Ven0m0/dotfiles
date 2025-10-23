@@ -163,8 +163,17 @@ zinit wait'0' lucid depth"1" for zsh-users/zsh-history-substring-search
 # Extra plugins
 zinit wait lucid depth"1" for \
   hlissner/zsh-autopair \
-  MichaelAquilina/zsh-you-should-use \
-  dim-an/cod
+  MichaelAquilina/zsh-you-should-use
+
+# ZINIT - SNIPPETS - to get OhMyZSH plugins https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::archlinux
+zinit snippet OMZP::debian
+zinit snippet OMZP::docker-compose
+zinit snippet OMZP::docker
+zinit snippet OMZP::ssh-agent
+zinit snippet OMZP::command-not-found
 
 # Tools
 zinit wait'0' lucid as'program' from'gh-r' for ajeetdsouza/zoxide
