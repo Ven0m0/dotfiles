@@ -40,3 +40,4 @@ python = { version = "latest", virtualenv='.venv' }
 
 [env]
 NODE_ENV = 'production'
+_.python.venv = { path = ".venv" }
