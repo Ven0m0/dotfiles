@@ -2,26 +2,25 @@
   // --------------------------------------------------------------------
   // Appearance & UI
   // --------------------------------------------------------------------
-  "breadcrumbs.enabled": false,
-  "catppuccin.extraBordersEnabled": true,
-  "diffEditor.experimental.showEmptyDecorations": false,
-  "diffEditor.hideUnchangedRegions.enabled": true,
+  "workbench.colorTheme": "Catppuccin Mocha",
+  "workbench.iconTheme": "Monokai Pro Icons",
   "editor.fontFamily": "'JetBrains Mono', 'monospace', monospace",
-  "editor.fontLigatures": true,
   "editor.fontSize": 12,
+  "editor.fontLigatures": true,
   "editor.inlineSuggest.fontFamily": "'Monaspace Neon Var', 'monospace', monospace",
   "editor.minimap.autohide": "mouseover",
   "editor.stickyScroll.enabled": false,
+  "breadcrumbs.enabled": false,
   "window.density.editorTabHeight": "compact",
-  "workbench.colorTheme": "Catppuccin Mocha",
-  "workbench.iconTheme": "Monokai Pro Icons",
   "workbench.editor.highlightModifiedTabs": true,
-  "catppuccin.accentColor": "pink", 
-  "VirtualRepos.UseRepoOwnerAvatar": true, 
+  "catppuccin.accentColor": "pink",
+  "catppuccin.extraBordersEnabled": true,
+  "VirtualRepos.UseRepoOwnerAvatar": true,
 
   // --------------------------------------------------------------------
   // Editor Behavior
   // --------------------------------------------------------------------
+  "editor.tabSize": 2,
   "editor.acceptSuggestionOnEnter": "smart",
   "editor.foldingImportsByDefault": true,
   "editor.inlineSuggest.syntaxHighlightingEnabled": true,
@@ -29,23 +28,25 @@
   "editor.suggest.localityBonus": true,
   "editor.suggest.selectionMode": "whenTriggerCharacter",
   "editor.tabCompletion": "on",
-  "editor.tabSize": 2, // Consistent with user preference
   "editor.unicodeHighlight.nonBasicASCII": false,
   "editor.unusualLineTerminators": "auto",
   "editor.wordWrap": "wordWrapColumn",
+  "diffEditor.experimental.showEmptyDecorations": false,
+  "diffEditor.hideUnchangedRegions.enabled": true,
+  "diffEditor.codeLens": true,
 
   // --------------------------------------------------------------------
   // File Handling & Formatting
   // --------------------------------------------------------------------
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnPaste": true,
-  "editor.formatOnSave": true,
-  "explorer.incrementalNaming": "smart",
-  "files.autoGuessEncoding": true,
   "files.autoSave": "onWindowChange",
   "files.eol": "\n",
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
+  "files.autoGuessEncoding": true,
+  "explorer.incrementalNaming": "smart",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
   "remove-empty-lines.runOnSave": true,
   "remove-tabs-on-save.ignoreFileExtensions": [
     "*.go"
@@ -62,19 +63,19 @@
       "runIn": "terminal"
     }
   ],
-  "shellformat.useEditorConfig": true, 
 
   // --------------------------------------------------------------------
   // Performance & Telemetry
   // --------------------------------------------------------------------
+  "telemetry.telemetryLevel": "off",
+  "telemetry.editStats.enabled": false,
+  "telemetry.feedback.enabled": false,
+  "geminicodeassist.enableTelemetry": false,
+  "fynix.telemetry.disable": true,
   "editor.accessibilitySupport": "auto",
   "editor.experimentalWhitespaceRendering": "font",
   "editor.smoothScrolling": false,
   "extensions.experimental.deferredStartupFinishedActivation": true,
-  "geminicodeassist.enableTelemetry": false,
-  "telemetry.editStats.enabled": false,
-  "telemetry.feedback.enabled": false, 
-  "telemetry.telemetryLevel": "off",  (preferred)
   "terminal.integrated.gpuAcceleration": "on",
   "workbench.list.smoothScrolling": true,
   "workbench.reduceMotion": "on",
@@ -96,14 +97,17 @@
   // --------------------------------------------------------------------
   "security.promptForLocalFileProtocolHandling": true,
   "security.promptForRemoteFileProtocolHandling": true,
-  "security.workspace.trust.banner": "never", 
-  "security.workspace.trust.startupPrompt": "never", /settings2.json
-  "security.workspace.trust.untrustedFiles": "open", /settings2.json (preferred over "prompt")
+  "security.workspace.trust.banner": "never",
+  "security.workspace.trust.startupPrompt": "never",
+  "security.workspace.trust.untrustedFiles": "open",
   "extensions.verifySignature": true,
+  "extensions.autoUpdate": "onlyEnabledExtensions",
 
   // --------------------------------------------------------------------
   // Integrated Terminal
   // --------------------------------------------------------------------
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultLocation": "editor",
   "terminal.integrated.enableFileLinks": "notRemote",
   "terminal.integrated.enableImages": true,
   "terminal.integrated.experimental.windowsUseConptyDll": true,
@@ -111,9 +115,7 @@
   "terminal.integrated.ignoreBracketedPasteMode": true,
   "terminal.integrated.suggest.enabled": true,
   "terminal.integrated.useWslProfiles": false,
-  "terminal.integrated.defaultLocation": "editor",
   "terminal.integrated.enableMultiLinePasteWarning": "never",
-  "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.fontLigatures.enabled": true,
 
   // --------------------------------------------------------------------
@@ -127,10 +129,9 @@
   "workbench.externalBrowser": "firefox",
   "workbench.editor.enablePreview": false,
   "workbench.editor.empty.hint": "hidden",
-  "diffEditor.codeLens": true,
 
   // --------------------------------------------------------------------
-  // Language & Extensions
+  // Language-Specific Settings
   // --------------------------------------------------------------------
   "[shellscript]": {
     "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
@@ -138,64 +139,28 @@
   "[github-actions-workflow]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  "MinifyAll.disableHexadecimalShortener": false,
-  "MinifyAll.disableJavascriptReact": false,
-  "MinifyAll.terserMinifyOptions": {
-    "mangle": true,
-    "compress": {
-      "drop_console": [
-        "log"
-      ],
-      "dead_code": true,
-      "passes": 2
-    },
-    "format": {
-      "wrap_func_args": true
-    },
-    "keep_fnames": false,
-    "keep_classnames": false,
-    "ie8": true
-  },
-  "bashBeautify.tabSize": 2, /Base (consistent with 2-space preference)
-  "bashIde.enableSourceErrorDiagnostics": true,
-  "bashIde.shfmt.binaryNextLine": true, 
-  "bashIde.shfmt.extraArgs": [
-    "-i 2"
-  ],
-  "bashIde.shfmt.simplifyCode": true, 
-  "bashIde.shfmt.languageDialect": "bash", 
-  "chatgpt.autoAddCurrentFile": true, 
-  "chatgpt.lang": "en",
-  "chatgpt.promptBasedTools.enabled": true, 
-  "chatgpt.temperature": 0.5,
-  "css.lint.duplicateProperties": "warning",
-  "eslint.format.enable": true,
-  "eslint.problems.shortenToSingleLine": true,
-  "eslint.quiet": true,
-  "evenBetterToml.formatter.alignComments": true,
-  "evenBetterToml.formatter.arrayAutoExpand": true,
-  "evenBetterToml.formatter.compactEntries": true,
   "javascript.format.semicolons": "remove",
-  "linter.cache": true,
-  "markdown-checkboxes.label": true,
-  "markdown-preview-github-styles.colorTheme": "dark",
-  "markdown.extension.tableFormatter.normalizeIndentation": true,
-  "markdown.updateLinksOnFileMove.enabled": "always",
-  "markdown.validate.enabled": true,
-  "markdownlint.run": "onSave",
-  "npm.packageManager": "bun", 
-  "npm.runSilent": true, 
-  "prettier.bracketSameLine": true,
-  "shellcheck.run": "onSave",
-  "textPowerTools.caseSensitiveFiltering": true,
-  "trunk.addToolsToPath": true, 
   "typescript.disableAutomaticTypeAcquisition": true,
-  "cSpell.enabled": false,
-  "fynix.telemetry.disable": true,
+  "css.lint.duplicateProperties": "warning",
 
   // --------------------------------------------------------------------
-  // Claude specific settings (from settings.json)
+  // Extension Config: AI (Gemini, Copilot, Claude, ChatGPT)
   // --------------------------------------------------------------------
+  "geminicodeassist.geminiApiKey": "${env:GEMINI_API_KEY}",
+  "geminicodeassist.inlineSuggestions.nextEditPredictions": true,
+  "geminicodeassist.languages": [
+    "*",
+    "shellscript"
+  ],
+  "geminicodeassist.rules": "Use bash-native idioms. 2-space indent. Short CLI args. Prefer arrays and here-strings. Use while read -r for input. Use nameref and ret=$(fn). Favor in-memory ops. Use expr/grep for =~. Use [[ ... ]] for tests. Silence with >/dev/null 2>&1 || true. Prefer Rust tools (fd, bat). Target Arch/Wayland and Debian (Pi). Allow experimental apps. Provide precise, optimized answers.",
+  "geminicodeassist.updateChannel": "Default",
+  "geminicodeassist.project": "vocal-triumph-ltj12",
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "github.copilot.chat.codesearch.enabled": true,
+  "github.copilot.chat.agent.thinkingTool": true,
+  "github.copilot.chat.completionsFetcher": "node-fetch",
+  "github.copilot.chat.executePrompt.enabled": true,
+  "github.copilot.chat.edits.temporalContext.enabled": true,
   "claude-code.environmentVariables": [
     {
       "name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
@@ -217,76 +182,65 @@
   "claude-config.autoSync": true,
   "claude-config.autoUseContext7": true,
   "claude-config.cloudSync.autoSync": true,
-  "extensions.autoUpdate": "onlyEnabledExtensions", // Preferred over 'false' from settings.json
-
-  // --------------------------------------------------------------------
-  // Gemini / Copilot / ChatGPT integrations
-  // --------------------------------------------------------------------
-  "geminicodeassist.geminiApiKey": "${env:GEMINI_API_KEY}",
-  "geminicodeassist.inlineSuggestions.nextEditPredictions": true,
-  "geminicodeassist.languages": [
-    "*",
-    "shellscript"
-  ],
-  "geminicodeassist.rules": "Use bash-native idioms. 2-space indent. Short CLI args. Prefer arrays and here-strings. Use while read -r for input. Use nameref and ret=$(fn). Favor in-memory ops. Use expr/grep for =~. Use [[ ... ]] for tests. Silence with >/dev/null 2>&1 || true. Prefer Rust tools (fd, bat). Target Arch/Wayland and Debian (Pi). Allow experimental apps. Provide precise, optimized answers.", // Matches user preference
-  "geminicodeassist.updateChannel": "Default",
-  "geminicodeassist.project": "vocal-triumph-ltj12",
-  "github.copilot.nextEditSuggestions.enabled": true,
-  "github.copilot.chat.codesearch.enabled": true, 
-  "github.copilot.chat.agent.thinkingTool": true, 
-  "github.copilot.chat.completionsFetcher": "node-fetch", 
-  "github.copilot.chat.executePrompt.enabled": true, 
-  "github.copilot.chat.edits.temporalContext.enabled": true, 
+  "chatgpt.autoAddCurrentFile": true,
+  "chatgpt.lang": "en",
+  "chatgpt.promptBasedTools.enabled": true,
+  "chatgpt.temperature": 0.5,
   "chatgpt.gpt3.apiKey": "${env:OPENAI_API_KEY}",
-  "chatgpt.gpt3.claudeCodePath": "/usr/bin/claude", 
-  "chatgpt.gpt3.searchGrounding.enabled": true, /Base
-  "chatgpt.gpt3.model": "gpt-5", 
+  "chatgpt.gpt3.claudeCodePath": "/usr/bin/claude",
+  "chatgpt.gpt3.searchGrounding.enabled": true,
+  "chatgpt.gpt3.model": "gpt-5",
   "chatgpt.gpt3.provider": "OpenAI",
   "chatgpt.gpt3.responsesAPI.enabled": true,
 
   // --------------------------------------------------------------------
-  // Tasks
+  // Extension Config: Linters, Formatters, Tools
   // --------------------------------------------------------------------
-  "commands": [
-    {
-      "command": "shellharden.transform",
-      "title": "Shellharden: Transform (apply fixes)",
-      "category": "Shellharden"
-    },
-    {
-      "command": "shellharden.suggest",
-      "title": "Shellharden: Suggest (show suggestions)",
-      "category": "Shellharden"
-    },
-    {
-      "command": "shellharden.check",
-      "title": "Shellharden: Check (syntax check)",
-      "category": "Shellharden"
-    },
-    {
-      "command": "shellharden.replace",
-      "title": "Shellharden: Replace (transform with backup)",
-      "category": "Shellharden"
-    }
+  "shellformat.useEditorConfig": true,
+  "bashBeautify.tabSize": 2,
+  "bashIde.enableSourceErrorDiagnostics": true,
+  "bashIde.shfmt.binaryNextLine": true,
+  "bashIde.shfmt.extraArgs": [
+    "-i 2"
   ],
-  "tasks": {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Harden Script",
-        "type": "shell",
-        "command": "shellharden",
-        "args": [
-          "--transform",
-          "${file}"
-        ],
-        "presentation": {
-          "reveal": "never",
-          "panel": "shared",
-          "clear": true
-        },
-        "problemMatcher": []
-      }
-    ]
-  }
+  "bashIde.shfmt.simplifyCode": true,
+  "bashIde.shfmt.languageDialect": "bash",
+  "shellcheck.run": "onSave",
+  "eslint.format.enable": true,
+  "eslint.problems.shortenToSingleLine": true,
+  "eslint.quiet": true,
+  "prettier.bracketSameLine": true,
+  "npm.packageManager": "bun",
+  "npm.runSilent": true,
+  "markdown-checkboxes.label": true,
+  "markdown-preview-github-styles.colorTheme": "dark",
+  "markdown.extension.tableFormatter.normalizeIndentation": true,
+  "markdown.updateLinksOnFileMove.enabled": "always",
+  "markdown.validate.enabled": true,
+  "markdownlint.run": "onSave",
+  "evenBetterToml.formatter.alignComments": true,
+  "evenBetterToml.formatter.arrayAutoExpand": true,
+  "evenBetterToml.formatter.compactEntries": true,
+  "MinifyAll.disableHexadecimalShortener": false,
+  "MinifyAll.disableJavascriptReact": false,
+  "MinifyAll.terserMinifyOptions": {
+    "mangle": true,
+    "compress": {
+      "drop_console": [
+        "log"
+      ],
+      "dead_code": true,
+      "passes": 2
+    },
+    "format": {
+      "wrap_func_args": true
+    },
+    "keep_fnames": false,
+    "keep_classnames": false,
+    "ie8": true
+  },
+  "linter.cache": true,
+  "textPowerTools.caseSensitiveFiltering": true,
+  "trunk.addToolsToPath": true,
+  "cSpell.enabled": false
 }
