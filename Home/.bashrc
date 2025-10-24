@@ -40,6 +40,8 @@ fi
 
 ifsource /usr/share/bash-preexec/bash-preexec.sh
 
+eval "$(mise activate bash)"
+
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
 # https://github.com/glabka/configs/blob/master/home/.bashrc
