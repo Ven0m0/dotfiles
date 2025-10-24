@@ -4,7 +4,6 @@ auto_install = true
 color = true
 python_venv_auto_create = true
 gix = true
-jobs = 16
 go_skip_checksum = true
 exec_auto_install = true
 lockfile = true
@@ -37,6 +36,7 @@ pipenv = "latest"
 pnpm = "latest"
 python = { version = "latest", virtualenv='.venv' }
 "ubi:cli/cli" = { version = "latest", exe = "gh" }
+"rust" = { version = "latest", components = "rust-src,llvm-tools" }
 
 [env]
 NODE_ENV = 'production'
