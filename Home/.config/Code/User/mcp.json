@@ -1,0 +1,12 @@
+{
+	"servers": {
+		"read-website-fast": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@just-every/mcp-read-website-fast"
+			]
+		}
+	},
+	"inputs": []
+}
