@@ -36,7 +36,7 @@ pipenv = "latest"
 pnpm = "latest"
 python = { version = "latest", virtualenv='.venv' }
 "ubi:cli/cli" = { version = "latest", exe = "gh" }
-"rust" = { version = "latest", components = "rust-src,llvm-tools" }
+"rust" = { version = "latest", profile = "minimal", components = "rust-src,llvm-tools" }
 
 [env]
 NODE_ENV = 'production'
