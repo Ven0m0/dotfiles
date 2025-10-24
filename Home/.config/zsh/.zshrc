@@ -31,8 +31,6 @@ WORDCHARS='*?_-[]~&;!#$%^(){}<>|'
 # Less/Man
 export LESS='-g -i -M -R -S -w -z-4'
 export LESSHISTFILE=- LESSCHARSET=utf-8
-export MANPAGER="sh -c 'col -bx | bat -lman -ps --squeeze-limit 0'"
-export MANROFFOPT="-c"
 
 # FZF
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --info=inline"
@@ -42,8 +40,12 @@ export FZF_ALT_C_COMMAND='fd -td -gH -c always'
 
 # Crypto / Rust mirrors
 export GPG_TTY=$TTY
-export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
-export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+
+if command -v mise >/dev/null 2>&1; then eval "$(mise activate zsh)"; fi
+alias mx="mise x --"
+if command -v fzf >/dev/null 2>&1; then eval "$(fzf --zsh)"; fi
+if command -v zoxide >/dev/null 2>&1; then eval "$(zoxide init zsh)"; fi
+if command -v mise >/dev/null 2>&1; then eval "$(mise activate zsh)"; fi
 
 # =========================================================
 # ZSH OPTIONS
@@ -264,6 +266,8 @@ zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin /usr/s
 # zsh-autocomplete tuning (keep Tab for it; fzf-tab on Ctrl-T)
 zstyle ':autocomplete:*' min-input 1
 zstyle ':autocomplete:*' insert-unambiguous yes
+zstyle ':fzf-tab:complete:pacman:*' fzf-preview 'pacman -Si $word'
+zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word
 
 # Process completion
 zstyle ':completion:*:processes' command 'ps -au$USER'
@@ -300,12 +304,6 @@ zstyle ':completion:*:*:*make:*:targets' command awk \''/^[a-zA-Z0-9][^\/\t=]+:/
 # ============ Start SSH Agent if not running ============
 if [[ -z "$SSH_AUTH_SOCK" ]] && command -v ssh-agent &>/dev/null; then
   eval "$(ssh-agent -s -a "${XDG_RUNTIME_DIR}/ssh-agent.socket" 2>/dev/null)" >/dev/null
-fi
-
-# ============ Cleanup old history backups ============
-if [[ -d "${HISTFILE:h}" ]]; then
-  # Remove history backups older than 30 days
-  find "${HISTFILE:h}" -name "history.*.bak" -type f -mtime +30 -delete 2>/dev/null
 fi
 
 # =========================================================
