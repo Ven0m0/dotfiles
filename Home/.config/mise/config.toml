@@ -36,6 +36,7 @@ node = "latest"
 pipenv = "latest"
 pnpm = "latest"
 python = { version = "latest", virtualenv='.venv' }
+"ubi:cli/cli" = { version = "latest", exe = "gh" }
 
 [env]
 NODE_ENV = 'production'
