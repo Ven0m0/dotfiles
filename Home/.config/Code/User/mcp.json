@@ -1,12 +1,22 @@
 {
-	"servers": {
-		"read-website-fast": {
-			"command": "npx",
-			"args": [
-				"-y",
-				"@just-every/mcp-read-website-fast"
-			]
-		}
-	},
-	"inputs": []
+  "servers": {
+    "read-website-fast": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@just-every/mcp-read-website-fast"
+      ]
+    },
+    "Github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "disabled": false,
+      "autoApprove": []
+    },
+    "Sequential": {
+      "url": "https://remote.mcpservers.org/sequentialthinking/mcp",
+      "disabled": false,
+      "autoApprove": []
+    }
+  },
+  "inputs": []
 }
