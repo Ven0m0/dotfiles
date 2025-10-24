@@ -9,7 +9,6 @@
   eol = native
   compression = -1
   multiPackIndex = true
-  sparseCheckout = true
   fsyncMethod = batch
   repositoryformatversion = 1
   fileMode = true
@@ -38,7 +37,6 @@
 [pack]
   threads = 0
   allowPackReuse = true
-  useSparse = true
   indexVersion = 2
   useBitmapBoundaryTraversal = true
   useBitmaps = true
@@ -93,8 +91,8 @@
   workers = 0
 [grep]
   threads = 0
-	extendRegexp = true
-	lineNumber = true
+  extendRegexp = true
+  lineNumber = true
 [index]
   skipHash = true
   sparse = true
@@ -163,8 +161,7 @@
 [worktree]
   useRelativePaths = true
 [status]
-  aheadBehind = true
-  showUntrackedFiles = no
+  aheadBehind = true 
   short = true
   submoduleSummary = true
 [maintenance]
