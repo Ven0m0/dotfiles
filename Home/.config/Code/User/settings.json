@@ -6,16 +6,18 @@
   "catppuccin.extraBordersEnabled": true,
   "diffEditor.experimental.showEmptyDecorations": false,
   "diffEditor.hideUnchangedRegions.enabled": true,
-  "editor.fontFamily": "'JetBrains Mono', monospace",
+  "editor.fontFamily": "'JetBrains Mono', 'monospace', monospace",
   "editor.fontLigatures": true,
   "editor.fontSize": 12,
-  "editor.inlineSuggest.fontFamily": "'Monaspace Krypton', monospace",
+  "editor.inlineSuggest.fontFamily": "'Monaspace Neon Var', 'monospace', monospace",
   "editor.minimap.autohide": "mouseover",
   "editor.stickyScroll.enabled": false,
   "window.density.editorTabHeight": "compact",
   "workbench.colorTheme": "Catppuccin Mocha",
   "workbench.iconTheme": "Monokai Pro Icons",
   "workbench.editor.highlightModifiedTabs": true,
+  "catppuccin.accentColor": "pink", 
+  "VirtualRepos.UseRepoOwnerAvatar": true, 
 
   // --------------------------------------------------------------------
   // Editor Behavior
@@ -27,7 +29,7 @@
   "editor.suggest.localityBonus": true,
   "editor.suggest.selectionMode": "whenTriggerCharacter",
   "editor.tabCompletion": "on",
-  "editor.tabSize": 2,
+  "editor.tabSize": 2, // Consistent with user preference
   "editor.unicodeHighlight.nonBasicASCII": false,
   "editor.unusualLineTerminators": "auto",
   "editor.wordWrap": "wordWrapColumn",
@@ -45,11 +47,22 @@
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "remove-empty-lines.runOnSave": true,
-  "remove-tabs-on-save.ignoreFileExtensions": ["*.go"],
-  "runOnSave.commands": [
-    { "match": "\\.sh$", "command": "shellharden --transform \"${file}\"", "runIn": "terminal" },
-    { "match": "\\.bash$", "command": "shellharden --transform \"${file}\"", "runIn": "terminal" }
+  "remove-tabs-on-save.ignoreFileExtensions": [
+    "*.go"
   ],
+  "runOnSave.commands": [
+    {
+      "match": "\\.sh$",
+      "command": "shellharden --transform \"${file}\"",
+      "runIn": "terminal"
+    },
+    {
+      "match": "\\.bash$",
+      "command": "shellharden --transform \"${file}\"",
+      "runIn": "terminal"
+    }
+  ],
+  "shellformat.useEditorConfig": true, 
 
   // --------------------------------------------------------------------
   // Performance & Telemetry
@@ -60,10 +73,10 @@
   "extensions.experimental.deferredStartupFinishedActivation": true,
   "geminicodeassist.enableTelemetry": false,
   "telemetry.editStats.enabled": false,
-  "telemetry.feedback.enabled": false,
-  "telemetry.telemetryLevel": "off",
+  "telemetry.feedback.enabled": false, 
+  "telemetry.telemetryLevel": "off",  (preferred)
   "terminal.integrated.gpuAcceleration": "on",
-  "workbench.list.smoothScrolling": false,
+  "workbench.list.smoothScrolling": true,
   "workbench.reduceMotion": "on",
 
   // --------------------------------------------------------------------
@@ -83,7 +96,9 @@
   // --------------------------------------------------------------------
   "security.promptForLocalFileProtocolHandling": true,
   "security.promptForRemoteFileProtocolHandling": true,
-  "security.workspace.trust.untrustedFiles": "prompt",
+  "security.workspace.trust.banner": "never", 
+  "security.workspace.trust.startupPrompt": "never", /settings2.json
+  "security.workspace.trust.untrustedFiles": "open", /settings2.json (preferred over "prompt")
   "extensions.verifySignature": true,
 
   // --------------------------------------------------------------------
@@ -117,27 +132,41 @@
   // --------------------------------------------------------------------
   // Language & Extensions
   // --------------------------------------------------------------------
-  "[shellscript]": { "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode" },
-  "[dockercompose]": { "editor.defaultFormatter": "redhat.vscode-yaml", "editor.tabSize": 2 },
-  "[github-actions-workflow]": { "editor.defaultFormatter": "redhat.vscode-yaml" },
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
   "MinifyAll.disableHexadecimalShortener": false,
   "MinifyAll.disableJavascriptReact": false,
   "MinifyAll.terserMinifyOptions": {
     "mangle": true,
-    "compress": { "drop_console": ["log"], "dead_code": true, "passes": 2 },
-    "format": { "wrap_func_args": true },
+    "compress": {
+      "drop_console": [
+        "log"
+      ],
+      "dead_code": true,
+      "passes": 2
+    },
+    "format": {
+      "wrap_func_args": true
+    },
     "keep_fnames": false,
     "keep_classnames": false,
     "ie8": true
   },
-  "bashBeautify.tabSize": 2,
+  "bashBeautify.tabSize": 2, /Base (consistent with 2-space preference)
   "bashIde.enableSourceErrorDiagnostics": true,
-  "bashIde.shfmt.binaryNextLine": true,
-  "bashIde.shfmt.extraArgs": ["-i", "2"],
-  "bashIde.shfmt.simplifyCode": true,
-  "chatgpt.autoAddCurrentFile": true,
+  "bashIde.shfmt.binaryNextLine": true, 
+  "bashIde.shfmt.extraArgs": [
+    "-i 2"
+  ],
+  "bashIde.shfmt.simplifyCode": true, 
+  "bashIde.shfmt.languageDialect": "bash", 
+  "chatgpt.autoAddCurrentFile": true, 
   "chatgpt.lang": "en",
-  "chatgpt.promptBasedTools.enabled": true,
+  "chatgpt.promptBasedTools.enabled": true, 
   "chatgpt.temperature": 0.5,
   "css.lint.duplicateProperties": "warning",
   "eslint.format.enable": true,
@@ -154,40 +183,91 @@
   "markdown.updateLinksOnFileMove.enabled": "always",
   "markdown.validate.enabled": true,
   "markdownlint.run": "onSave",
-  "npm.packageManager": "bun",
-  "npm.runSilent": true,
+  "npm.packageManager": "bun", 
+  "npm.runSilent": true, 
   "prettier.bracketSameLine": true,
   "shellcheck.run": "onSave",
   "textPowerTools.caseSensitiveFiltering": true,
-  "trunk.addToolsToPath": true,
+  "trunk.addToolsToPath": true, 
   "typescript.disableAutomaticTypeAcquisition": true,
   "cSpell.enabled": false,
   "fynix.telemetry.disable": true,
 
   // --------------------------------------------------------------------
+  // Claude specific settings (from settings.json)
+  // --------------------------------------------------------------------
+  "claude-code.environmentVariables": [
+    {
+      "name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
+      "value": "claude-sonnet-4.5"
+    },
+    {
+      "name": "ANTHROPIC_API_BASE_URL",
+      "value": "http://localhost:4000"
+    },
+    {
+      "name": "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+      "value": "1"
+    },
+    {
+      "name": "DISABLE_NON_ESSENTIAL_MODEL_CALLS",
+      "value": "1"
+    }
+  ],
+  "claude-config.autoSync": true,
+  "claude-config.autoUseContext7": true,
+  "claude-config.cloudSync.autoSync": true,
+  "extensions.autoUpdate": "onlyEnabledExtensions", // Preferred over 'false' from settings.json
+
+  // --------------------------------------------------------------------
   // Gemini / Copilot / ChatGPT integrations
   // --------------------------------------------------------------------
-  "geminiAssistant.model": "gemini-2.5-pro-exp-03-25",
+  "geminicodeassist.geminiApiKey": "${env:GEMINI_API_KEY}",
   "geminicodeassist.inlineSuggestions.nextEditPredictions": true,
-  "geminicodeassist.languages": ["*", "shellscript"],
-  "geminicodeassist.rules": "Use bash-native idioms. 2-space indent. Short CLI args. Prefer arrays and here-strings. Use while read -r for input. Use nameref and ret=$(fn). Favor in-memory ops. Use expr/grep for =~. Use [[ ... ]] for tests. Silence with >/dev/null 2>&1 || true. Prefer Rust tools (fd, bat). Target Arch/Wayland and Debian (Pi). Allow experimental apps. Provide precise, optimized answers.",
+  "geminicodeassist.languages": [
+    "*",
+    "shellscript"
+  ],
+  "geminicodeassist.rules": "Use bash-native idioms. 2-space indent. Short CLI args. Prefer arrays and here-strings. Use while read -r for input. Use nameref and ret=$(fn). Favor in-memory ops. Use expr/grep for =~. Use [[ ... ]] for tests. Silence with >/dev/null 2>&1 || true. Prefer Rust tools (fd, bat). Target Arch/Wayland and Debian (Pi). Allow experimental apps. Provide precise, optimized answers.", // Matches user preference
   "geminicodeassist.updateChannel": "Default",
   "geminicodeassist.project": "vocal-triumph-ltj12",
   "github.copilot.nextEditSuggestions.enabled": true,
-  "github.copilot.chat.codesearch.enabled": true,
-  "github.copilot.chat.agent.thinkingTool": true,
+  "github.copilot.chat.codesearch.enabled": true, 
+  "github.copilot.chat.agent.thinkingTool": true, 
+  "github.copilot.chat.completionsFetcher": "node-fetch", 
+  "github.copilot.chat.executePrompt.enabled": true, 
+  "github.copilot.chat.edits.temporalContext.enabled": true, 
+  "chatgpt.gpt3.apiKey": "${env:OPENAI_API_KEY}",
+  "chatgpt.gpt3.claudeCodePath": "/usr/bin/claude", 
+  "chatgpt.gpt3.searchGrounding.enabled": true, /Base
+  "chatgpt.gpt3.model": "gpt-5", 
   "chatgpt.gpt3.provider": "OpenAI",
   "chatgpt.gpt3.responsesAPI.enabled": true,
-  "chatgpt.gpt3.searchGrounding.enabled": true,
 
   // --------------------------------------------------------------------
   // Tasks
   // --------------------------------------------------------------------
   "commands": [
-    { "command": "shellharden.transform", "title": "Shellharden: Transform (apply fixes)", "category": "Shellharden" },
-    { "command": "shellharden.suggest", "title": "Shellharden: Suggest (show suggestions)", "category": "Shellharden" },
-    { "command": "shellharden.check", "title": "Shellharden: Check (syntax check)", "category": "Shellharden" },
-    { "command": "shellharden.replace", "title": "Shellharden: Replace (transform with backup)", "category": "Shellharden" }
+    {
+      "command": "shellharden.transform",
+      "title": "Shellharden: Transform (apply fixes)",
+      "category": "Shellharden"
+    },
+    {
+      "command": "shellharden.suggest",
+      "title": "Shellharden: Suggest (show suggestions)",
+      "category": "Shellharden"
+    },
+    {
+      "command": "shellharden.check",
+      "title": "Shellharden: Check (syntax check)",
+      "category": "Shellharden"
+    },
+    {
+      "command": "shellharden.replace",
+      "title": "Shellharden: Replace (transform with backup)",
+      "category": "Shellharden"
+    }
   ],
   "tasks": {
     "version": "2.0.0",
@@ -196,11 +276,17 @@
         "label": "Harden Script",
         "type": "shell",
         "command": "shellharden",
-        "args": ["--transform", "${file}"],
-        "presentation": { "reveal": "never", "panel": "shared", "clear": true },
+        "args": [
+          "--transform",
+          "${file}"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared",
+          "clear": true
+        },
         "problemMatcher": []
       }
     ]
   }
 }
-
