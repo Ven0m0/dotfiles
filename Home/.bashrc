@@ -71,7 +71,7 @@ prependpath "${HOME}/bin"
 
 # General
 SUDO=doas
-BROWSER=floorp
+BROWSER=firefox
 TERMINAL=ghostty
 
 # Editor selection: prefer micro, fallback to nano
@@ -117,6 +117,9 @@ else
   export PAGER="${PAGER:-less}"
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
+
+# Konsole manpages
+export _NROFF_U=1
 
 if has vivid; then export LS_COLORS="$(vivid generate molokai)"; elif has dircolors; then eval "$(dircolors -b)" &>/dev/null; fi
 : "${CLICOLOR:=$(tput colors)}"
