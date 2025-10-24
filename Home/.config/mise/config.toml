@@ -29,15 +29,20 @@ bun = "latest"
 uv = 'latest'
 claude = "latest"
 claude-code = "latest"
+github-cli = "latest"
 go = "latest"
 graalvm = "latest"
 minify = "latest"
+ninja = "latest"
 node = "latest"
 pipenv = "latest"
+pipx = "latest"
 pnpm = "latest"
+ubi = "latest"
 python = { version = "latest", virtualenv='.venv' }
 "ubi:cli/cli" = { version = "latest", exe = "gh" }
 "rust" = { version = "latest", profile = "minimal", components = "rust-src,llvm-tools" }
+yamlfmt = "latest"
 
 [env]
 NODE_ENV = 'production'
