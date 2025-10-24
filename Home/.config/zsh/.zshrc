@@ -143,6 +143,15 @@ zinit wait lucid light-mode for \
   blockf atpull'zinit creinstall -q .' depth"1" compile'{"*.zsh","*.plugin.zsh"}' \
     zsh-users/zsh-completions
 
+zi wait lucid for \
+  atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+     z-shell/F-Sy-H \
+  blockf \
+     zsh-users/zsh-completions \
+  atload"!_zsh_autosuggest_start" \
+     zsh-users/zsh-autosuggestions
+ 
+
 # Fix buggy highlighters
 unset 'FAST_HIGHLIGHT[chroma-man]'
 unset 'FAST_HIGHLIGHT[chroma-ssh]'
