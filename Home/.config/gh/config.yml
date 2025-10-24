@@ -28,5 +28,5 @@ accessible_colors: disabled
 # Whether an accessible prompter should be used. Supported values: enabled, disabled
 accessible_prompter: disabled
 # Whether to use a animated spinner as a progress indicator. If disabled, a textual progress indicator is used instead. Supported values: enabled, disabled
-spinner: disabled
+spinner: enabled
 
