@@ -26,6 +26,7 @@ binstall = true
 
 [tools]
 bun = "latest"
+uv = 'latest'
 claude = "latest"
 claude-code = "latest"
 go = "latest"
