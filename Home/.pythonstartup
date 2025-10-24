@@ -1,12 +1,32 @@
-import readline
+import os
 import sys
+import atexit
+import readline
 
-# tab completion
-readline.parse_and_bind('tab: complete')
+HISTORY_FILE_PATH = os.path.expanduser('~/.python_history')
 
 # prompt
 sys.ps1 = "> "
 sys.ps2 = "| "
 
+# tab completion
+readline.parse_and_bind('tab: complete')
 with open('/usr/share/fzf-tab-completion/python/fzf_python_completion.py') as file:
 exec(file.read())
+
+def save_history(history_file_path=HISTORY_FILE_PATH):
+    import sys
+    if sys.version_info.major > 2:
+        import readline
+        readline.write_history_file(history_file_path)
+
+
+def load_history(history_file_path=HISTORY_FILE_PATH):
+    if sys.version_info.major > 2 and os.path.exists(HISTORY_FILE_PATH):
+        readline.read_history_file(HISTORY_FILE_PATH)
+
+
+load_history()
+
+atexit.register(save_history)
+del os, atexit, readline, sys, save_history, load_history, HISTORY_FILE_PATH
