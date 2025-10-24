@@ -1,5 +1,11 @@
-	source /usr/share/cachyos-fish-config/cachyos-config.fish
+source /usr/share/cachyos-fish-config/cachyos-config.fish
 set -e LC_ALL
+
+function init_tool
+	if type -q $argv[1]
+      eval "$argv[2]"
+  end
+end
 
 # Only for interactive shells
 if status -i >/dev/null 2>&1
@@ -15,11 +21,12 @@ if status -i >/dev/null 2>&1
 	#fish_add_path $HOME/.local/bin
 	#fish_add_path $HOME/.cargo/bin
 
-	#set -x GPG_TTY (tty)
-	#fzf --fish | source
-	#starship init fish | source
-	#zoxide init --cmd cd fish | source
-
+	set -x GPG_TTY (tty)
+	init_tool fzf "fzf --fish | source"
+	init_tool starship init fish | source
+	init_tool zoxide "zoxide init --cmd cd fish | source"
+	init_tool mise "mise activate fish | source"
+	init_tool navi "navi widget fish | source"
 
 	#set -gx ZSTD_CLEVEL 19
 	set -gx ZSTD_NBTHREADS $(nproc --ignore=1)"
