@@ -10,6 +10,8 @@ exec_auto_install = true
 lockfile = true
 not_found_auto_install = true
 task_run_auto_install = true
+yes = true
+windows_shim_mode = "hardlink"
 
 [settings.npm]
 bun = true
@@ -33,6 +35,7 @@ minify = "latest"
 node = "latest"
 pipenv = "latest"
 pnpm = "latest"
+python = { version = "latest", virtualenv='.venv' }
 
 [env]
 NODE_ENV = 'production'
