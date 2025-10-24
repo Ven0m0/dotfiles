@@ -104,6 +104,16 @@ rustflags = [
   "-C", "linker-plugin-lto",
   "-Z", "threads=8"
 ]
+[target.aarch64-linux-android]
+linker = "clang"
+rustflags = [
+  "-C", "target-cpu=native",
+  "-C", "llvm-args=-enable-dfa-jump-thread",
+  "-Z", "tune-cpu=native",
+  "-Z", "precise-enum-drop-elaboration=yes",
+  "-C", "link-args=-fuse-ld=mold --threads",
+  "-C", "linker-plugin-lto",
+]
 
 [profile.dev]
 opt-level = 0
