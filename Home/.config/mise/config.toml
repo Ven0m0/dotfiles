@@ -45,3 +45,4 @@ BUN_OPTIONS = "--linker=hoisted --only-missing --concurrent-scripts=8 --backend=
 CARGO_HTTP_MULTIPLEXING = "true"
 UV_LINK_MODE = "hardlink"
 COPILOT_ALLOW_ALL = "true"
+CGO_ENABLED = "0"
