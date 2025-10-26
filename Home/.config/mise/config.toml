@@ -43,4 +43,5 @@ _.python.venv = { path = ".venv" }
 DO_NOT_TRACK = "1"
 BUN_OPTIONS = "--linker=hoisted --only-missing --concurrent-scripts=8 --backend=hardlink --silent --no-deprecation --dns-result-order=ipv4first --prefer-offline"
 CARGO_HTTP_MULTIPLEXING = "true"
+UV_LINK_MODE = "hardlink"
 COPILOT_ALLOW_ALL = "true"
