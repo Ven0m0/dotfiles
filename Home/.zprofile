@@ -1,1 +1,1 @@
-eval "$(mise activate zsh --shims)"
+command -v mise && eval "$(mise activate zsh --shims)"
