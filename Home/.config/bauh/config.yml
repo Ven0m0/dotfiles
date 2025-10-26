@@ -22,13 +22,13 @@ gems:
 - arch
 - flatpak
 - appimage
-locale: null
+locale: en
 memory_cache:
   data_expiration: 3600
   icon_expiration: 300
 store_root_password: true
 suggestions:
-  by_type: 15
+  by_type: 30
   enabled: true
 system:
   notifications: false
