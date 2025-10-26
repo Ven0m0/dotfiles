@@ -1,5 +1,5 @@
 telemetry = false
-smol = true
+smol = false
 logLevel = "error"
 
 [install]
@@ -22,4 +22,3 @@ hot = false
 [test]
 coverageSkipTestFiles = true
 bail = true
-threads = "max"
