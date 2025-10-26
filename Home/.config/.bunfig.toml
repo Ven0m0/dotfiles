@@ -1,12 +1,25 @@
 telemetry = false
-smol = false
+smol = true
 logLevel = "error"
 
 [install]
-auto = "auto"
+auto = "fallback"
 production = true
+optional = false
+peer = false
 dev = false
 linkWorkspacePackages = true
+linker = "hoisted"
+preferOffline = true
+preferLatest = false
+cacheHardLinks = true
 
 [run]
 silent = true
+bun = true
+hot = false
+
+[test]
+coverageSkipTestFiles = true
+bail = true
+threads = "max"
