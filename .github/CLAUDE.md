@@ -15,8 +15,6 @@
 - Language: English (with technical terminology)
 - Style: Professional and concise
 - Emojis: Avoid excessive use
-- In Cursor, exclude `.windsurf/`
-- In Windsurf, exclude `.cursor/`
 
 ### Abbreviation Interpretations
 
