@@ -291,7 +291,10 @@ sudo-cl(){
 bind -x '"\e\e": sudo-cl'
 #bind '"\es": "\C-asudo \C-e"'
 
-gclone(){ LC_ALL=C command git clone --progress --filter=blob:none --depth 1 "$@"; }
+gclone(){ 
+  LC_ALL=C command git clone --filter=blob:none --depth 1 --no-tags\
+    -c protocol.version=2 -c http.sslVersion=tlsv1.3 -c http.version=HTTP/2 "$@"
+}
 gpush(){ LC_ALL=C command git add . && LC_ALL=C command git commit -m "${1:-Update}" && LC_ALL=C command git push; }
 symbreak(){ LC_ALL=C command find -L "${1:-.}" -type l; }
 command -v hyperfine &>/dev/null && hypertest(){ LC_ALL=C LANG=C command hyperfine -w 25 -m 50 -i -S bash -- "$@"; }
