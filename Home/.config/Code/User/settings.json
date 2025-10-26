@@ -161,24 +161,36 @@
   "github.copilot.chat.completionsFetcher": "node-fetch",
   "github.copilot.chat.executePrompt.enabled": true,
   "github.copilot.chat.edits.temporalContext.enabled": true,
-  "claudeCode.environmentVariables": [
-    {
-      "name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
-      "value": "claude-sonnet-4.5"
-    },
-    {
-      "name": "ANTHROPIC_API_BASE_URL",
-      "value": "http://localhost:4000"
-    },
-    {
-      "name": "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
-      "value": "1"
-    },
-    {
-      "name": "DISABLE_NON_ESSENTIAL_MODEL_CALLS",
-      "value": "1"
-    }
-  ],
+    "claudeCode.environmentVariables": [
+        {
+            "name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
+            "value": "claude-sonnet-4.5"
+        },
+        {
+            "name": "ANTHROPIC_API_BASE_URL",
+            "value": "http://localhost:4000"
+        },
+        {
+            "name": "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+            "value": "1"
+        },
+        {
+            "name": "DISABLE_NON_ESSENTIAL_MODEL_CALLS",
+            "value": "1"
+        },
+        {
+            "name": "DISABLE_ERROR_REPORTING",
+            "value": "1"
+        },
+        {
+            "name": "CLAUDE_CODE_ENABLE_TELEMETRY",
+            "value": "0"
+        },
+        {
+            "name": "DISABLE_TELEMETRY",
+            "value": "1"
+        },
+    ],
   "claude-config.autoSync": true,
   "claude-config.autoUseContext7": true,
   "claude-config.cloudSync.autoSync": true,
