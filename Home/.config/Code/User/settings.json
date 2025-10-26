@@ -161,7 +161,7 @@
   "github.copilot.chat.completionsFetcher": "node-fetch",
   "github.copilot.chat.executePrompt.enabled": true,
   "github.copilot.chat.edits.temporalContext.enabled": true,
-  "claude-code.environmentVariables": [
+  "claudeCode.environmentVariables": [
     {
       "name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
       "value": "claude-sonnet-4.5"
