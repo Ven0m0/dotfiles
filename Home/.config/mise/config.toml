@@ -46,3 +46,21 @@ CARGO_HTTP_MULTIPLEXING = "true"
 UV_LINK_MODE = "hardlink"
 COPILOT_ALLOW_ALL = "true"
 CGO_ENABLED = "0"
+
+[tasks.clean]
+depends = ['cleancache']
+run = "cargo cache -efg; cargo clean"
+
+[tasks.cleancache]
+run = "rm -rf .cache"
+hide = true
+
+[tasks.bunx]
+description = 'Bunx'
+run = "bunx --bun"
+alias = 'bx'
+
+[tasks.buni]
+description = 'Bun install'
+run = "bun i -p "
+alias = 'bi'
