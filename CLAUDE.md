@@ -30,7 +30,9 @@ Task → Type → Exec → Report
 ```
 
 ## Context
-**Pure Task Isolation**: Complex → independent. Main context clean. `/compact` when grows.
+- **Pure Task Isolation**: Complex → independent. Main context clean. `/compact` when grows.
+- Strip out all comments when reading code files for analysis
+- PARALLEL BY DEFAULT: Always use 7-parallel-Task method for efficiency
 
 ## Completion Reports
 ### Complete Password
