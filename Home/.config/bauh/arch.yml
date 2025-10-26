@@ -1,7 +1,7 @@
 aur: true
 aur_build_dir: null
 aur_build_only_chosen: true
-aur_idx_exp: 0
+aur_idx_exp: 3
 aur_rebuild_detector: true
 aur_rebuild_detector_no_bin: true
 aur_remove_build_dir: true
