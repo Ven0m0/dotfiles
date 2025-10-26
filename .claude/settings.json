@@ -1,8 +1,9 @@
 {
-  "model": "sonnet",
+  "model": "claude-sonnet-4.5",
   "statusLine": {
     "type": "command",
-    "command": "printf '[%s@%s %s]' \"$USER\" \"$(hostname -s)\" \"$(basename \"$PWD\")\"",
+    "command": "printf '[%s@%s %s]' \"$USER\" \"$(hostname -s)\" \"$(basename \"$PWD\")\""
+  },
   "env": {
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4.5",
     "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
@@ -11,7 +12,7 @@
     "DISABLE_ERROR_REPORTING": "1",
     "DISABLE_PROMPT_CACHING": "0",
     "DISABLE_TELEMETRY": "1",
-    "USE_BUILTIN_RIPGREP": "0",
+    "USE_BUILTIN_RIPGREP": "0"
   }
 }
 
