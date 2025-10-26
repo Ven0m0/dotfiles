@@ -15,7 +15,7 @@ export PS4='+%N:%i> '
 setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS no_global_rcs
 skip_global_compinit=1
 
-export SHELL=zsh
+SHELL=zsh
 export EDITOR=micro VISUAL=micro
 export PAGER=bat GIT_PAGER=delta
 export BAT_STYLE=auto BATDIFF_USE_DELTA=true BATPIPE=color
@@ -378,6 +378,9 @@ pskill(){ ps aux | grep -F -- "$1" | grep -v grep | awk '{print $2}' | xargs kil
 
 dsort(){ du -shx -- * 2>/dev/null | sort -rh | head -n "${1:-20}"; }
 bak(){ cp -r -- "$1" "${1}.bak.$(date +%Y%m%d-%H%M%S)"; }
+
+krst(){ kquitapp6 plasmashell && kstart6 plasmashell; }
+krstf(){ kquitapp6 plasmashell && kquitapp6 kwin_wayland && kstart6 kwin_wayland && kstart6 plasmashell; }
 
 # =========================================================
 # ALIASES
