@@ -10,40 +10,40 @@ lockfile = true
 not_found_auto_install = true
 task_run_auto_install = true
 yes = true
-windows_shim_mode = "hardlink"
+activate_aggressive = false
 
 [settings.npm]
 bun = true
 
 [settings.python]
+venv_auto_create = true
 uv_venv_auto = true
 
 [settings.pipx]
 uvx = true
 
 [settings.cargo]
-binstall = true
+binstall = false
 
 [tools]
-bun = "latest"
-uv = 'latest'
 claude = "latest"
 claude-code = "latest"
 github-cli = "latest"
+codex = "latest"
 go = "latest"
-graalvm = "latest"
 minify = "latest"
-ninja = "latest"
-node = "latest"
-pipenv = "latest"
 pipx = "latest"
-pnpm = "latest"
-ubi = "latest"
-python = { version = "latest", virtualenv='.venv' }
-"ubi:cli/cli" = { version = "latest", exe = "gh" }
-"rust" = { version = "latest", profile = "minimal", components = "rust-src,llvm-tools" }
+pipenv = "latest"
 yamlfmt = "latest"
+#python = "latest"
+#rust = { version = "nightly", profile = "minimal", components = "rust-src,llvm-tools", targets = "x86_64-unknown-linux-gnu,wasm32-unknown-unknown }
+#java = "temurin-25.0.1+8.0.LTS"
+#graalvm = "latest"
 
 [env]
 NODE_ENV = 'production'
 _.python.venv = { path = ".venv" }
+DO_NOT_TRACK = "1"
+BUN_OPTIONS = "--linker=hoisted --only-missing --concurrent-scripts=8 --backend=hardlink --silent --no-deprecation --dns-result-order=ipv4first --prefer-offline"
+CARGO_HTTP_MULTIPLEXING = "true"
+COPILOT_ALLOW_ALL = "true"
