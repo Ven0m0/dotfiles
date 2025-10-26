@@ -16,7 +16,7 @@ setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS no_global_rcs
 skip_global_compinit=1
 
 SHELL=zsh
-export EDITOR=micro VISUAL=micro
+export EDITOR=micro VISUAL=${VISUAL:-code}
 export PAGER=bat GIT_PAGER=delta
 export BAT_STYLE=auto BATDIFF_USE_DELTA=true BATPIPE=color
 export LESSCHARSET='utf-8' LESSHISTFILE=- LESSQUIET=1
@@ -77,7 +77,7 @@ stty stop undef &>/dev/null || :
 # =========================================================
 # PATHS
 # =========================================================
-typeset -gU cdpath fpath mailpath path prepath
+typeset -gaU cdpath fpath mailpath path prepath
 if [[ ! -v prepath ]]; then
   typeset -ga prepath
   prepath=(
@@ -102,6 +102,7 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$UID}"
+export XDG_PROJECTS_DIR="${XDG_PROJECTS_DIR:-$HOME/Projects}"
 
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
@@ -153,7 +154,6 @@ zi wait lucid for \
   atload"!_zsh_autosuggest_start" \
      zsh-users/zsh-autosuggestions
  
-
 # Fix buggy highlighters
 unset 'FAST_HIGHLIGHT[chroma-man]'
 unset 'FAST_HIGHLIGHT[chroma-ssh]'
@@ -174,7 +174,7 @@ zinit atinit'Z_A_USECOMP=1' light-mode for NICHOLAS85/z-a-eval
 zinit ice as"command" from"gh-r" mv"zoxide* -> zoxide" \
       eval"./zoxide init zsh"
 zinit light ajeetdsouza/zoxide
-
+source <(zoxide init zsh)
 
 # History substring search
 zinit wait'0' lucid depth"1" for zsh-users/zsh-history-substring-search
@@ -208,7 +208,7 @@ zinit wait '1' lucid for lincheney/fzf-tab-completion \
   amaya382/zsh-fzf-widgets \
   urbainvaes/fzf-marks \
   leophys/zsh-plugin-fzf-finder
-
+source <(fzf --zsh)
 zinit wait '1' lucid for eza-community/eza sharkdp/bat
 
 # zsh-autocomplete
@@ -219,6 +219,30 @@ autoload -Uz colors && colors
 
 zinit ice lucid wait"0" atload"source $ZHOMEDIR/rc/pluginconfig/zsh-async_atload.zsh && set_async"
 zinit light mafredri/zsh-async
+
+autoload -Uz bracketed-paste-url-magic
+zle -N bracketed-paste bracketed-paste-url-magic
+autoload -Uz url-quote-magic
+zle -N self-insert url-quote-magic
+
+# Load more specific 'run-help' function from $fpath.
+(( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
+alias help=run-help
+
+autoload -Uz colors && colors
+
+# LS_COLORS for completions
+if has vivid; then
+  if (( $+functions[smartcache] )); then
+    LS_COLORS="$(smartcache 7d vivid generate molokai)" 2>/dev/null || LS_COLORS="$(vivid generate molokai)"
+  else
+    LS_COLORS="$(vivid generate molokai)"
+  fi
+elif has dircolors; then
+  eval "$(dircolors -b)" &>/dev/null
+fi
+LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # =========================================================
 # COMPLETION (fast + styled)
@@ -282,19 +306,6 @@ zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hos
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
-
-# LS_COLORS for completions
-if has vivid; then
-  if (( $+functions[smartcache] )); then
-    LS_COLORS="$(smartcache 7d vivid generate molokai)" 2>/dev/null || LS_COLORS="$(vivid generate molokai)"
-  else
-    LS_COLORS="$(vivid generate molokai)"
-  fi
-elif has dircolors; then
-  eval "$(dircolors -b)" &>/dev/null
-fi
-LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # make completion is slow
 zstyle ':completion:*:make:*:targets' call-command true
@@ -381,6 +392,14 @@ bak(){ cp -r -- "$1" "${1}.bak.$(date +%Y%m%d-%H%M%S)"; }
 
 krst(){ kquitapp6 plasmashell && kstart6 plasmashell; }
 krstf(){ kquitapp6 plasmashell && kquitapp6 kwin_wayland && kstart6 kwin_wayland && kstart6 plasmashell; }
+
+pyclean(){
+  # Clean common python cache files.
+  find "${@:-.}" -type f -name "*.py[co]" -delete
+  find "${@:-.}" -type d -name "__pycache__" -delete
+  find "${@:-.}" -depth -type d -name ".mypy_cache" -exec rm -r "{}" +
+  find "${@:-.}" -depth -type d -name ".pytest_cache" -exec rm -r "{}" +
+}
 
 # =========================================================
 # ALIASES
