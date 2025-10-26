@@ -1,9 +1,9 @@
 default_profile = "default"
-cache_path = "${SOAR_ROOT}/cache"
-db_path = "${SOAR_ROOT}/db"
-bin_path = "${SOAR_ROOT}/bin"
-repositories_path = "${SOAR_ROOT}/repos"
-portable_dirs = "${SOAR_ROOT}/portable-dirs"
+cache_path = "/home/lucy/cache"
+db_path = "/home/lucy/db"
+bin_path = "/home/lucy/bin"
+repositories_path = "/home/lucy/repos"
+portable_dirs = "/home/lucy/portable-dirs"
 parallel = true
 parallel_limit = 8
 ghcr_concurrency = 12
@@ -18,8 +18,8 @@ install_patterns = [
 ]
 
 [profile.default]
-root_path = "${SOAR_ROOT}"
-packages_path = "${SOAR_ROOT}/packages"
+root_path = "/home/lucy"
+packages_path = "/home/lucy/packages"
 
 [[repositories]]
 name = "bincache"
