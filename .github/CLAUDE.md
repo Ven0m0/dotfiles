@@ -1,272 +1,155 @@
-# AI Agent Execution Guidelines
+# AI Agent Exec Guidelines
 
-**Most Important**: Judge and execute autonomously. Minimize confirmations.
+**Core**: Autonomous exec. Min confirms. Max token efficiency.
 
-## Core Principles
+## Principles
+- **Exec Immediately** — Edit existing w/o hesitation
+- **Confirm Only Large Δ** — Wide-scope impacts only
+- **Quality & Consistency** — Thorough auto checks
+- **Verify Facts** — Check sources, no speculation
+- **Prefer Existing** — Edit over create
+- **Rethink** — If ≥2 approaches exist, list pros/cons
+- **Avoid Waste** — Draft & confirm approach for complex work
 
-- **Immediate Execution** — Start editing existing files without hesitation
-- **Confirm Only for Large Changes** — Only when the scope of impact is wide
-- **Maintain Quality and Consistency** — Implement thorough automatic checks
-- **Verify Facts** — Verify information sources yourself and do not state speculation as fact
-- **Prioritize Existing Files** — Prioritize editing existing files over creating new ones
+## Settings
+Lang: EN (tech) | Style: Pro, concise, advanced | Emojis: Min | Func/Var: short
 
-## Basic Settings
+### Abbrev
+`y`=Yes `n`=No `c`=Cont `r`=Rev `u`=Undo
 
-- Language: English (with technical terminology)
-- Style: Professional and concise
-- Emojis: Avoid excessive use
+## Exec Rules
+### Immediate
+Code: fix/refactor/opt | Files: edit existing | Docs: update README/specs (create only when requested) | Deps: add/update/rm | Cfg: val/fmt
 
-### Abbreviation Interpretations
+### Confirm
+New files (explain why) | Del important | Arch/struct Δ | External (APIs/libs) | Sec (auth/authz) | DB schema/migrations | Prod settings/env
 
-- `y` = Yes
-- `n` = No
-- `c` = Continue
-- `r` = Review
-- `u` = Undo
-
-## Execution Rules
-
-### Immediate Execution (No Confirmation Needed)
-
-- **Code Operations**: Bug fixes, refactoring, performance improvements
-- **File Editing**: Modification/updating of existing files
-- **Documentation**: Updates to README, specifications (create new only when requested)
-- **Dependencies**: Package addition/updating/removal
-- **Tests**: Implementing unit/integration tests (follow TDD cycle)
-- **Settings**: Configuration value changes, format application
-
-### Confirmation Required
-
-- **New File Creation**: Explain necessity and confirm
-- **File Deletion**: Deletion of important files
-- **Structural Changes**: Large-scale changes to architecture, folder structure
-- **External Integration**: Introduction of new APIs, external libraries
-- **Security**: Implementing authentication/authorization features
-- **Database**: Schema changes, migrations
-- **Production Environment**: Deployment settings, environment variable changes
-
-## Execution Flow
-
-```text
-1. Task reception
-   ↓
-2. Determine immediate execution or confirmation request
-   ↓
-3. Execute (following existing patterns)
-   ↓
-4. Completion report
+## Flow
+```
+Task → Type → Exec → Report
 ```
 
-## Context Management
+## Context
+**Pure Task Isolation**: Complex → independent. Main context clean. `/compact` when grows.
 
-### Pure Task Isolation
+## Completion Reports
+### Complete Password
+ALL met: ✅ Tasks 100% ✅ TODO empty ✅ Zero err ✅ No continuable
 
-Break complex tasks into "pure tasks" where only the result matters, executing them independently to keep the main context clean.
-
-- **Pure task examples**: Bug fixes, test execution, code generation
-- **Context cleanup**: When context grows large during extensive work, using the `/compact` command is recommended
-
-## Rules for Work Completion Reports
-
-### Types of Completion Reports
-
-#### 1. Password for Complete Completion
-
-When work is completely finished and there are no more tasks to continue, report exactly the following:
-
-```text
+Exact:
+```
 May the Force be with you.
 ```
 
-**Usage Conditions (must meet all)**:
+❌ If: incomplete TODOs | next steps | unfinished phases | remaining work
 
-- ✅ All tasks are 100% complete
-- ✅ All TODO items are completed (TODO list managed by TodoWrite tool is empty)
-- ✅ Zero errors
-- ✅ No tasks that can continue unless new instructions are given
-
-**Prohibited Items**:
-
-- ❌ If there are incomplete tasks in the TODO list
-- ❌ If you describe plans to continue such as "next steps", "remaining tasks", or "current remaining main tasks:"
-- ❌ If there are incomplete phases in step-by-step work
-- ❌ If you specify a concrete list of remaining work in your answer
-
-#### 2. Report for Partial Completion
-
-When work is partially completed and there are continuing tasks, use the following template:
-
+### Partial
 ```markdown
-## Execution Complete
-
+## Exec Complete
 ### Changes
-
-- [Specific changes]
-
-### Next Steps
-
-- [Recommended next work]
+- [specifics]
+### Next
+- [recs]
 ```
 
-### Actions When Continuation is Needed
+## Dev
+### TDD
+1. **Red**: Failing test
+2. **Green**: Min code → pass
+3. **Refactor**: Improve after pass
 
-If conditions for the password are not met:
+### Change Types
+**Structural**: org/fmt (no behavior Δ)
+**Behavioral**: fn add/mod/del
+❌ Never mix same commit
 
-- Do not use the password
-- Clearly indicate progress and next actions
-- Clearly communicate if there are remaining tasks
+### Commit
+Only when: ✅ Tests pass ✅ Zero warns ✅ Single unit ✅ Clear msg
+Prefer: small, frequent, independent
 
-## Development Methods
+### Refactor
+1. Start w/ passing tests
+2. One Δ
+3. Test after each
+4. Revert on fail
+Patterns: Extract Method | Rename | Move Method | Extract Variable
 
-### TDD Cycle
+### Impl
+1. Simple, working first
+2. Elim dup immediately
+3. Clear intent, explicit deps
+4. Small, single-responsibility
+5. Edge cases after basic
 
-Follow the Test-Driven Development (TDD) cycle during development:
+## Quality
+### Design
+Single responsibility | Loose coupling via interfaces | Early returns | Avoid over-abstraction
 
-1. **Red (Failure)**
-   - Write the simplest failing test
-   - Test name clearly describes behavior
-   - Ensure failure message is understandable
+### Efficiency
+Elim dup work | Batch processing | Min context switches
 
-2. **Green (Success)**
-   - Implement minimal code to pass the test
-   - Do not consider optimization or beauty at this stage
-   - Focus solely on passing the test
+### Consistency
+Inherit style | Apply conventions | Enforce naming
 
-3. **Refactor (Improvement)**
-   - Refactor only after tests pass
-   - Eliminate duplication and clarify intent
-   - Run tests after each refactoring
+### Management
+Confirm behavior before/after | Edge cases | Update docs sync
 
-### Change Management
+### Prohibitions
+❌ Hardcode (use const/cfg/env) ❌ Repetitive (functionize) ❌ Common err (unify) ❌ Dup logic (abstract)
 
-Clearly separate changes into two types:
+### Errors
+Impossible: 3 alternatives | Partial: exec possible, clarify remaining
 
-- **Structural Changes**
-  - Code arrangement, organization, formatting
-  - Do not change behavior at all
-  - Examples: Method reordering, import organization, variable name changes
+## Examples
+Bug: `TypeError` → fix now | Refactor: dup → common fn | Schema: update → confirm "Δ table?"
 
-- **Behavioral Changes**
-  - Addition, modification, deletion of functions
-  - Changes that alter test results
-  - Examples: New feature addition, bug fixes, logic changes
+## Bash Patterns
+### Template
+```bash
+#!/usr/bin/env bash
+export LC_ALL=C LANG=C
+# Color & Effects
+BLK=$'\e[30m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
+BLU=$'\e[34m' MGN=$'\e[35m' CYN=$'\e[36m' WHT=$'\e[37m'
+LBLU=$'\e[38;5;117m' PNK=$'\e[38;5;218m' BWHT=$'\e[97m'
+DEF=$'\e[0m' BLD=$'\e[1m'
+has() { command -v "$1" &>/dev/null; }
+xecho() { printf '%b\n' "$*"; }
+```
 
-**Important**: Do not include structural and behavioral changes in the same commit
+### Patterns
+- Pkg mgr: `paru`→`yay`→`pacman` (Arch); `apt`/`dpkg` (Debian) → `pkgmgr` array
+- Check before install: `pacman -Q pkg`, `flatpak list`, `cargo install --list`
+- Bashism over POSIX, shortcuts, compact
+- Fast & simple, not verbose
+- `mapfile -t arr < <(cmd)` avoid subshells; never parse `ls`
+- Assoc arrays cfg: `declare -A cfg=([dry_run]=0 [debug]=0)`
+- Interactive: fzf when args missing
+- Fallback: `command -v fd &>/dev/null && fd ... | fzf || find ... | fzf`
+- AUR: `--needed --noconfirm --removemake --cleanafter --sudoloop --skipreview --batchinstall`
+- Net: `curl -fsL`
 
-### Commit Discipline
+### Tooling
+Fmt: `shfmt -i 2 -ci -sr file.sh && shellcheck -f diff file.sh | patch -Np1 && shellharden --replace file.sh`
+Lint: `shellcheck file.sh` (disabled `.shellcheckrc`)
+Prefer w/ fallbacks: `fd`/`find` | `rg`/`grep` | `bat`/`cat` | `sd`/`sed` | `zoxide`/`cd` | `bun`/`npm`
 
-Execute commits only when all the following conditions are met:
+## Token Efficiency
+### Symbols
+→ leads | ⇒ converts | ← rollback | ⇄ bidir | & and | | or | » then | ∴ therefore | ∵ because
 
-- ✅ All tests pass
-- ✅ Zero compiler/linter warnings
-- ✅ Represents a single logical unit of work
-- ✅ Commit message clearly explains the change
+### Status
+✅ done ❌ fail ⚠️ warn 🔄 active ⏳ pending 🚨 critical
 
-**Recommendations**:
+### Domains
+⚡ perf 🔍 analysis 🔧 cfg 🛡️ sec 📦 deploy 🎨 UI 🏗️ arch 🗄️ DB ⚙️ backend 🧪 test
 
-- Small, frequent commits
-- Each commit has independent meaning
-- Granularity that makes history easy to follow later
+### Abbrev
+cfg→config | impl→implementation | arch→architecture | req→requirements | deps→dependencies | val→validation | auth→authentication | qual→quality | sec→security | err→error | opt→optimization | Δ→change | fn→function | mod→modify | rm→remove | w/→with | mgr→manager | dup→duplicate
 
-### Refactoring Rules
+### Examples
+`Security vulnerability found at line 45` → `auth.js:45 → 🛡️ sec vuln`
+`Build completed. Tests running, deploy next.` → `build ✅ » test 🔄 » deploy ⏳`
 
-Strict rules for refactoring:
-
-1. **Prerequisites**
-   - Start only when all tests pass
-   - Do not mix behavior changes with refactoring
-
-2. **Execution Steps**
-   - Use established refactoring patterns
-   - Make only one change at a time
-   - Always run tests after each step
-   - Immediately revert if failed
-
-3. **Frequently Used Patterns**
-   - Extract Method
-   - Rename
-   - Move Method
-   - Extract Variable
-
-### Implementation Approach
-
-Priorities for efficient implementation:
-
-1. **First Step**
-   - Start with the simplest case
-   - Prioritize "working" above all else
-   - Value progress over perfection
-
-2. **Code Quality Principles**
-   - Immediately eliminate duplication when found
-   - Write code with clear intent
-   - Make dependencies explicit
-   - Keep methods small and single-responsible
-
-3. **Gradual Improvement**
-   - First create something that works
-   - Cover with tests
-   - Then optimize
-
-4. **Handling Edge Cases**
-   - Consider after basic cases work
-   - Add tests for each edge case
-   - Gradually improve robustness
-
-## Quality Assurance
-
-### Design Principles
-
-- Follow single responsibility principle
-- Loose coupling through interfaces
-- Improve readability with early returns
-- Avoid excessive abstraction
-
-### Efficiency Optimization
-
-- Automatically eliminate duplicate work
-- Actively utilize batch processing
-- Minimize context switches
-
-### Consistency Maintenance
-
-- Automatically inherit existing code style
-- Automatically apply project conventions
-- Automatically enforce naming convention consistency
-
-### Automatic Quality Management
-
-- Perform behavior confirmation before and after changes
-- Implement with edge cases in mind
-- Synchronously update documentation
-
-### Eliminate Redundancy
-
-- Always functionize repetitive processes
-- Unify common error handling
-- Actively utilize utility functions
-- Immediately abstract duplicate logic
-
-### Prohibit Hardcoding
-
-- Constantize magic numbers
-- Move URLs and paths to configuration files
-- Manage environment-dependent values with environment variables
-- Separate business logic and configuration values
-
-### Error Handling
-
-- When execution is impossible: Present 3 alternatives
-- When partial execution is possible: Execute possible parts first and clarify remaining issues
-
-## Execution Examples
-
-- **Bug Fix**: Discover `TypeError` → Immediately fix type error
-- **Refactoring**: Detect duplicate code → Create common function
-- **DB Change**: Schema update needed → Request confirmation "Shall I change the table structure?"
-
-## Continuous Improvement
-
-- New pattern detection → Immediately learn and apply
-- Feedback → Automatically reflect in next execution
-- Best practices → Update as needed
+## Improvement
+Detect patterns → learn → apply → update
