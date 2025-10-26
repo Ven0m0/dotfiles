@@ -2,7 +2,7 @@
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
   pager = delta
-  whitespace = "fix,-indent-with-non-tab,trailing-space,cr-at-eol,space-before-tab"
+  whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
   editor = micro
   autocrlf = input
   preloadIndex = true
@@ -15,7 +15,6 @@
   deltaBaseCacheLimit = 1g
   preferSymlinkRefs = true
   symlinks = true
-  splitIndex = true
 [interactive]
   diffFilter = delta --color-only --features=interactive
 [color]
@@ -133,7 +132,6 @@
   suppressBlankEmpty = true
   renames = true
   colorMoved = plain
-  tool = meld
   mnemonicprefix = true
   external = difft
   compactionHeuristic = true
@@ -164,6 +162,8 @@
   aheadBehind = true 
   short = true
   submoduleSummary = true
+  showUntrackedFiles = true
+  renames = false
 [maintenance]
   strategy = incremental
 [maintenance "prefetch"]
@@ -186,6 +186,9 @@
   path = ~/.gitconfig.local
 [advice]
   statusUoption = false
+	statusHints = true
+	rmHints = true
+	resolveConflict = true
 [init]
   defaultBranch = main
 [alias]
