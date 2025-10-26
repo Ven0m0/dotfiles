@@ -1,0 +1,67 @@
+default_profile = "default"
+cache_path = "${SOAR_ROOT}/cache"
+db_path = "${SOAR_ROOT}/db"
+bin_path = "${SOAR_ROOT}/bin"
+repositories_path = "${SOAR_ROOT}/repos"
+portable_dirs = "${SOAR_ROOT}/portable-dirs"
+parallel = true
+parallel_limit = 8
+ghcr_concurrency = 12
+search_limit = 50
+# Allows packages to be updated across different repositories, not yet implemented
+cross_repo_updates = false
+install_patterns = [
+    "!*.log",
+    "!SBUILD",
+    "!*.json",
+    "!*.version",
+]
+
+[profile.default]
+root_path = "${SOAR_ROOT}"
+packages_path = "${SOAR_ROOT}/packages"
+
+[[repositories]]
+name = "bincache"
+url = "https://meta.pkgforge.dev/bincache/x86_64-Linux.sdb.zstd"
+desktop_integration = false
+pubkey = "https://meta.pkgforge.dev/bincache/minisign.pub"
+enabled = true
+signature_verification = false
+sync_interval = "3h"
+
+[[repositories]]
+name = "pkgcache"
+url = "https://meta.pkgforge.dev/pkgcache/x86_64-Linux.sdb.zstd"
+desktop_integration = true
+pubkey = "https://meta.pkgforge.dev/pkgcache/minisign.pub"
+enabled = true
+signature_verification = false
+
+[[repositories]]
+name = "pkgforge-cargo"
+url = "https://meta.pkgforge.dev/external/pkgforge-cargo/x86_64-Linux.sdb.zstd"
+desktop_integration = false
+enabled = true
+signature_verification = false
+
+[[repositories]]
+name = "pkgforge-go"
+url = "https://meta.pkgforge.dev/external/pkgforge-go/x86_64-Linux.sdb.zstd"
+desktop_integration = false
+enabled = true
+signature_verification = false
+
+[[repositories]]
+name = "ivan-hc-am"
+url = "https://meta.pkgforge.dev/external/am/x86_64-Linux.sdb.zstd"
+desktop_integration = true
+enabled = true
+signature_verification = false
+
+[[repositories]]
+name = "appimage-github-io"
+url = "https://meta.pkgforge.dev/external/appimage.github.io/x86_64-Linux.sdb.zstd"
+desktop_integration = true
+enabled = true
+signature_verification = false
