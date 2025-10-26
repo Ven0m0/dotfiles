@@ -36,11 +36,7 @@ set colored-completion-prefix on
 set colored-stats on
 set visible-stats on
 set bell-style none
-set prefer-visible-bell
-# set print-completions-horizontally on
-set disable-completion off
 set keyseq-timeout 100
-set comment-begin #
 
 # https://wiki.archlinux.org/index.php/Home_and_End_keys_not_working
 "\e[1~": beginning-of-line
@@ -70,6 +66,10 @@ set comment-begin #
 # Tab for printing completion; Shift+Tab for cycling through completions
 "\t": menu-complete
 "\e[Z": menu-complete
+
+# allow the use of the Delete/Insert keys
+"\e[3~": delete-char
+"\e[2~": quoted-insert
 
 $if Bash
 	# do history expansion when space entered
