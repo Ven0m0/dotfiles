@@ -51,7 +51,7 @@ if command -v mise >/dev/null 2>&1; then eval "$(mise activate zsh)"; fi
 # ZSH OPTIONS
 # =========================================================
 # Directory navigation
-setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME PUSHD_MINUS CD_SILENT
+setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME PUSHD_MINUS CD_SILENT path_dirs 
 # Globbing/completion behavior
 setopt EXTENDED_GLOB GLOB_DOTS NULL_GLOB GLOB_STAR_SHORT NUMERIC_GLOB_SORT HASH_EXECUTABLES_ONLY
 # History (no dupes, instant append, safe lock)
@@ -61,8 +61,8 @@ setopt HIST_EXPIRE_DUPS_FIRST HIST_FCNTL_LOCK
 # I/O & UI
 setopt INTERACTIVE_COMMENTS RC_QUOTES NO_BEEP NO_FLOW_CONTROL
 setopt NO_CLOBBER AUTO_RESUME COMBINING_CHARS NO_MAIL_WARNING
-setopt CORRECT CORRECT_ALL LONG_LIST_JOBS TRANSIENT_RPROMPT
-setopt NOTIFY no_beep
+setopt LONG_LIST_JOBS TRANSIENT_RPROMPT prompt_subst
+setopt NOTIFY no_beep NO_hist_beep
 setopt magic_equal_subst auto_resume
 # Completions
 unsetopt menu_complete
