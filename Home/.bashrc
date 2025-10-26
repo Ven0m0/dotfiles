@@ -1,7 +1,7 @@
 [[ $- != *i* ]] && return
 #============ Helpers ============
 # Check for command
-has(){ [[ -x $(command -v -- "$1" >/dev/null) ]]; return $?; }
+has(){ command -v -- "$1" &>/dev/null; }
 #hconv(){ printf '%s\n' "${1/#\~\//${HOME}/}"; }
 # Safely source file if it exists ( ~ -> $HOME )
 ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}" 2>/dev/null; return $?; }
