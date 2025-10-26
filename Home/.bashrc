@@ -21,13 +21,6 @@ for p in "${dot[@]}"; do [[ -r "$p" ]] && . "$p"; done
 # completions
 ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_completion"
 
-# github.com/akinomyoga/ble.sh
-[[ -r /usr/share/blesh/ble.sh ]] && . "/usr/share/blesh/ble.sh" --attach=none 2>/dev/null || { \
-  [[ -r "${HOME}/.local/share/blesh/ble.sh" ]] && . "${HOME}/.local/share/blesh/ble.sh" --attach=none 2>/dev/null; }
-
-# ble-import -d integration/fzf-key-bindings
-# ble-import -d integration/fzf-completion
-
 # github.com/kazhala/dotbare
 ifsource "${HOME}/.dotbare/dotbare.plugin.bash" &&  alias dotbare="${HOME}/.dotbare/dotbare"
 
@@ -571,7 +564,5 @@ if has zellij; then
   eval "$(zellij setup --generate-auto-start bash)"
   ifsource ~/.config/bash/completions/zellij.bash
 fi
-#============ Ble.sh final ============
-[[ ! ${BLE_VERSION-} ]] || ble-attach
 #============ END ============
 unset -f ifsource prependpath
