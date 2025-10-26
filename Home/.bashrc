@@ -40,7 +40,7 @@ fi
 
 ifsource /usr/share/bash-preexec/bash-preexec.sh
 
-eval "$(mise activate bash)"
+has mise && eval "$(mise activate --shims bash)"
 
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
