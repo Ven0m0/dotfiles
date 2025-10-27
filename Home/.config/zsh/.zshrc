@@ -1,124 +1,74 @@
 #!/usr/bin/env zsh
-
-# Skip if non-interactive
 [[ $- != *i* ]] && return
-
 has(){ command -v -- "$1" &>/dev/null; }
 ifsource(){ [[ -r $1 ]] && source "$1"; }
-
 ifsource "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 export PS4='+%N:%i> '
 
-# =========================================================
-# CORE / ENV
-# =========================================================
+# =================== CORE / ENV ===================
 setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS no_global_rcs
 skip_global_compinit=1
-
 SHELL=zsh
 export EDITOR=micro VISUAL=${VISUAL:-code}
-export PAGER=bat GIT_PAGER=delta
-export BAT_STYLE=auto BATDIFF_USE_DELTA=true BATPIPE=color
+export PAGER=bat GIT_PAGER=delta BAT_STYLE=auto BATDIFF_USE_DELTA=true BATPIPE=color
 export LESSCHARSET='utf-8' LESSHISTFILE=- LESSQUIET=1
-export TERM=xterm-256color
-export CLICOLOR=1 MICRO_TRUECOLOR=1
-export KEYTIMEOUT=1
-export TZ=Europe/Berlin
-export TIME_STYLE='+%d-%m %H:%M'
+export TERM=xterm-256color CLICOLOR=1 MICRO_TRUECOLOR=1 KEYTIMEOUT=1
+export TZ=Europe/Berlin TIME_STYLE='+%d-%m %H:%M'
 export LC_ALL=C.UTF-8 LANG=C.UTF-8 LANGUAGE=C.UTF-8
 WORDCHARS='*?_-[]~&;!#$%^(){}<>|'
-
-# Less/Man
-export LESS='-g -i -M -R -S -w -z-4'
-export LESSHISTFILE=- LESSCHARSET=utf-8
-
-# FZF
+export LESS='-g -i -M -R -S -w -z-4' LESSHISTFILE=- LESSCHARSET=utf-8
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --info=inline"
 export FZF_DEFAULT_COMMAND='fd -tf -gH -c always -strip-cwd-prefix -E ".git"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd -td -gH -c always'
-
-# Crypto / Rust mirrors
 export GPG_TTY=$TTY
-
-if command -v mise >/dev/null 2>&1; then eval "$(mise activate zsh)"; fi
+if has mise; then eval "$(mise activate zsh)"; fi
 alias mx="mise x --"
-if command -v fzf >/dev/null 2>&1; then eval "$(fzf --zsh)"; fi
-if command -v zoxide >/dev/null 2>&1; then eval "$(zoxide init zsh)"; fi
-if command -v mise >/dev/null 2>&1; then eval "$(mise activate zsh)"; fi
+if has fzf; then eval "$(fzf --zsh)"; fi
+if has zoxide; then eval "$(zoxide init zsh)"; fi
+if has mise; then eval "$(mise activate zsh)"; fi
 
-# =========================================================
-# ZSH OPTIONS
-# =========================================================
-# Directory navigation
-setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME PUSHD_MINUS CD_SILENT path_dirs 
-# Globbing/completion behavior
+# =================== ZSH OPTIONS ===================
+setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME PUSHD_MINUS CD_SILENT path_dirs
 setopt EXTENDED_GLOB GLOB_DOTS NULL_GLOB GLOB_STAR_SHORT NUMERIC_GLOB_SORT HASH_EXECUTABLES_ONLY
-# History (no dupes, instant append, safe lock)
 setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS INC_APPEND_HISTORY EXTENDED_HISTORY
 setopt HIST_REDUCE_BLANKS HIST_SAVE_NO_DUPS SHARE_HISTORY HIST_IGNORE_SPACE
 setopt HIST_EXPIRE_DUPS_FIRST HIST_FCNTL_LOCK
-# I/O & UI
 setopt INTERACTIVE_COMMENTS RC_QUOTES NO_BEEP NO_FLOW_CONTROL
 setopt NO_CLOBBER AUTO_RESUME COMBINING_CHARS NO_MAIL_WARNING
 setopt LONG_LIST_JOBS TRANSIENT_RPROMPT prompt_subst
 setopt NOTIFY no_beep NO_hist_beep
 setopt magic_equal_subst auto_resume
-# Completions
 unsetopt menu_complete
 setopt list_packed auto_list auto_menu auto_param_keys complete_in_word nonomatch
-# Other
-setopt short_loops           # Use simplified syntax for FOR, REPEAT, SELECT, IF, FUNCTION, etc.
-setopt long_list_jobs        # Make internal command jobs output jobs -L by default
-setopt rm_star_wait          # confirm before rm * is executed
-
+setopt short_loops long_list_jobs rm_star_wait
 stty stop undef &>/dev/null || :
 
-# =========================================================
-# PATHS
-# =========================================================
+# =================== PATHS ===================
 typeset -gaU cdpath fpath mailpath path prepath
 if [[ ! -v prepath ]]; then
   typeset -ga prepath
-  prepath=(
-    $HOME/{.local/,.}bin(N)
-    $HOME/.cargo/bin
-  )
+  prepath=($HOME/{.local/,.}bin(N) $HOME/.cargo/bin)
 fi
-path=(
-  $prepath
-  /usr/local/{,s}bin(N)
-  "$HOME/.{cargo,local}/bin"(N)
-  /usr/local/{s}bin
-  /usr/{s}bin
-  /{s}bin
-  $path
-)
+path=($prepath /usr/local/{,s}bin(N) "$HOME/.{cargo,local}/bin"(N) /usr/local/{s}bin /usr/{s}bin /{s}bin $path)
 export PATH
 cdpath=("$HOME" .. $HOME/*(N-/) $HOME/.config)
-
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$UID}"
 export XDG_PROJECTS_DIR="${XDG_PROJECTS_DIR:-$HOME/Projects}"
-
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
-export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/.zcompdump"
 
-# =========================================================
-# HISTORY
-# =========================================================
+# =================== HISTORY ===================
 HISTFILE="$HOME/.zsh_history"
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=10000 SAVEHIST=10000
 HISTTIMEFORMAT="%F %T "
 
-# =========================================================
-# Antidote plugin manager
-# =========================================================
+# =================== Antidote plugin manager ===================
 antidote_dir=${XDG_DATA_HOME:-$HOME/.local/share}/antidote
 [[ -d $antidote_dir ]] || git clone --depth 1 https://github.com/mattmc3/antidote "$antidote_dir" &>/dev/null || :
 antidote_bin="$antidote_dir/bin/antidote"
@@ -126,154 +76,30 @@ bundle=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zsh_plugins.zsh
 list=${XDG_CONFIG_HOME:-$HOME/.config}/zsh/config/plugins.txt
 [[ -f $bundle && $list -ot $bundle ]] || "$antidote_bin" bundle <"$list" >"$bundle"
 source "$bundle"
-# =========================================================
-# ZINIT (Plugin manager) — turbo + compile + defer + lazyload + smartcache
-# =========================================================
-: ${ZINIT_HOME:=${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git}
-if [[ ! -d $ZINIT_HOME ]]; then
-  mkdir -p -- "${ZINIT_HOME:h}"
-  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" &>/dev/null || :
-fi
-source "${ZINIT_HOME}/zinit.zsh"
 
-# Plugin prefs before load
+# Post-load plugin tunables
 typeset -g ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+# OMZ ssh-agent plugin config
+zstyle ':omz:plugins:ssh-agent' agent-forwarding yes
+zstyle ':omz:plugins:ssh-agent' lazy yes
+zstyle ':omz:plugins:ssh-agent' quiet yes
+# fzf-tab keybinding (keep Tab for zsh-autocomplete if used)
+(( $+functions[fzf_completion] )) && bindkey '^T' fzf_completion
+# f-sy-h: disable buggy chromas
+unset 'FAST_HIGHLIGHT[chroma-man]' 2>/dev/null || :
+unset 'FAST_HIGHLIGHT[chroma-ssh]' 2>/dev/null || :
 
-# Annexes
-zinit light-mode for \
-  zdharma-continuum/zinit-annex-as-monitor \
-  zdharma-continuum/zinit-annex-bin-gem-node \
-  zdharma-continuum/zinit-annex-patch-dl \
-  zdharma-continuum/zinit-annex-rust
-
-# Core: compinit bootstrap + syntax + completions + autosuggest (turbo)
-zinit wait lucid light-mode for \
-  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-    zdharma-continuum/fast-syntax-highlighting \
-  atload"!_zsh_autosuggest_start" depth"1" compile'{"*.zsh","*.plugin.zsh"}' \
-    zsh-users/zsh-autosuggestions \
-  blockf atpull'zinit creinstall -q .' depth"1" compile'{"*.zsh","*.plugin.zsh"}' \
-    zsh-users/zsh-completions
-
-zi wait lucid for \
-  atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-     z-shell/F-Sy-H \
-  blockf \
-     zsh-users/zsh-completions \
-  atload"!_zsh_autosuggest_start" \
-     zsh-users/zsh-autosuggestions
- 
-# Fix buggy highlighters
-unset 'FAST_HIGHLIGHT[chroma-man]'
-unset 'FAST_HIGHLIGHT[chroma-ssh]'
-
-# Theme (p10k)
-zinit ice depth"1"
-zinit light romkatv/powerlevel10k
-
-# Infra utils early (for lazyload/smartcache/defer)
-zinit wait'0' lucid depth"1" for \
-  qoomon/zsh-lazyload \
-  romkatv/zsh-defer \
-  QuarticCat/zsh-smartcache
-
-# zinit light NICHOLAS85/z-a-eval
-zinit atinit'Z_A_USECOMP=1' light-mode for NICHOLAS85/z-a-eval
-
-zinit ice as"command" from"gh-r" mv"zoxide* -> zoxide" \
-      eval"./zoxide init zsh"
-zinit light ajeetdsouza/zoxide
-source <(zoxide init zsh)
-
-# History substring search
-zinit wait'0' lucid depth"1" for zsh-users/zsh-history-substring-search
-
-# Extra plugins
-zinit wait lucid depth"1" for \
-  hlissner/zsh-autopair \
-  MichaelAquilina/zsh-you-should-use
-
-# ZINIT - SNIPPETS - to get OhMyZSH plugins https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/
-zinit snippet OMZP::git
-zinit snippet OMZP::sudo
-zinit snippet OMZP::archlinux
-zinit snippet OMZP::debian
-zinit snippet OMZP::docker-compose
-zinit snippet OMZP::docker
-zinit snippet OMZP::ssh-agent
-zinit snippet OMZP::command-not-found
-
-# Tools
-zinit wait'0' lucid as'program' from'gh-r' for ajeetdsouza/zoxide
-zinit sbin'bin/zsweep' for @psprint/zsh-sweep
-zinit light adi-li/zsh-cwebpb
-
-# fzf-tab-completion (bind Ctrl-T to avoid Tab conflicts with zsh-autocomplete)
-zinit wait '1' lucid for junegunn/fzf
-zinit ice wait'1' lucid depth"1" pick"zsh/fzf-zsh-completion.sh" atload'bindkey "^T" fzf_completion'
-zinit wait '1' lucid for lincheney/fzf-tab-completion \
-  atweiden/fzf-extras \
-  leophys/zsh-plugin-fzf-finder \
-  amaya382/zsh-fzf-widgets \
-  urbainvaes/fzf-marks \
-  leophys/zsh-plugin-fzf-finder
-source <(fzf --zsh)
-zinit wait '1' lucid for eza-community/eza sharkdp/bat
-
-# zsh-autocomplete
-zinit ice wait'2' lucid depth"1"
-zinit light marlonrichert/zsh-autocomplete
-
-autoload -Uz colors && colors
-
-zinit ice lucid wait"0" atload"source $ZHOMEDIR/rc/pluginconfig/zsh-async_atload.zsh && set_async"
-zinit light mafredri/zsh-async
-
-autoload -Uz bracketed-paste-url-magic
-zle -N bracketed-paste bracketed-paste-url-magic
-autoload -Uz url-quote-magic
-zle -N self-insert url-quote-magic
-
-# Load more specific 'run-help' function from $fpath.
-(( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
-alias help=run-help
-
-autoload -Uz colors && colors
-
-# LS_COLORS for completions
-if has vivid; then
-  if (( $+functions[smartcache] )); then
-    LS_COLORS="$(smartcache 7d vivid generate molokai)" 2>/dev/null || LS_COLORS="$(vivid generate molokai)"
-  else
-    LS_COLORS="$(vivid generate molokai)"
-  fi
-elif has dircolors; then
-  eval "$(dircolors -b)" &>/dev/null
-fi
-LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-
-# =========================================================
-# COMPLETION (fast + styled)
-# =========================================================
+# =================== COMPLETION (fast + styled) ===================
 autoload -Uz compinit
 (){
-  local zdump="${XDG_CACHE_HOME:-$HOME/.cache}/.zcompdump"
-  local now mtime skip=0
+  local zdump="${XDG_CACHE_HOME:-$HOME/.cache}/.zcompdump" now mtime skip=0
   if [[ -f $zdump ]]; then
-    now=$(date +%s)
-    mtime=$(stat -c %Y "$zdump" 2>/dev/null || stat -f %m "$zdump" 2>/dev/null)
+    now=$(date +%s); mtime=$(stat -c %Y "$zdump" 2>/dev/null || stat -f %m "$zdump" 2>/dev/null)
     [[ -n $mtime && $((now - mtime)) -lt 86400 ]] && skip=1
   fi
-  if (( skip )); then
-    compinit -C -d "$zdump"
-  else
-    compinit -d "$zdump"
-    { zcompile "$zdump" } &!
-  fi
+  if (( skip )); then compinit -C -d "$zdump"; else compinit -d "$zdump"; { zcompile "$zdump" } &!; fi
 }
-
 # Styles
 zstyle ':completion:*:default' menu select=1
 zstyle ':completion:*' use-cache on
@@ -283,216 +109,66 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:
 zstyle ':completion:*' completer _complete _match _approximate
 zstyle ':completion:*:approximate:*' max-errors 1 numeric
 zstyle ':completion:*:match:*' original only
-zstyle ':completion:*' squeeze-slashes false
-zstyle ':completion:*' special-dirs true
+zstyle ':completion:*' squeeze-slashes false special-dirs true
 zstyle ':completion:*:matches' group yes
-zstyle ':completion:*:options' description yes
-zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:options' description yes auto-description '%d'
 zstyle ':completion:*:corrections' format ' %F{red}-- %d (errors: %e) --%f'
 zstyle ':completion:*:descriptions' format ' %F{purple}-- %d --%f'
 zstyle ':completion:*:messages' format ' %F{green} -- %d --%f'
 zstyle ':completion:*:warnings' format ' %F{yellow}-- no matches found --%f'
 zstyle ':completion:*' format ' %F{blue}-- %d --%f'
-zstyle ':completion:*' group-name ''
 zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
 zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin
-
-# zsh-autocomplete tuning (keep Tab for it; fzf-tab on Ctrl-T)
+# zsh-autocomplete tuning (optional)
 zstyle ':autocomplete:*' min-input 1
 zstyle ':autocomplete:*' insert-unambiguous yes
+# fzf-tab previews
 zstyle ':fzf-tab:complete:pacman:*' fzf-preview 'pacman -Si $word'
-zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word
+zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
+# Colors for completion lists
+if has vivid; then LS_COLORS="$(vivid generate molokai)"; elif has dircolors; then eval "$(dircolors -b)" &>/dev/null; fi
+LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
-# Process completion
-zstyle ':completion:*:processes' command 'ps -au$USER'
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-zstyle ':completion:*:*:kill:*' menu yes select
-zstyle ':completion:*:*:kill:*' force-list always
-
-# SSH/SCP/RSYNC completion
-zstyle ':completion:*:(ssh|scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
-zstyle ':completion:*:(scp|rsync):*' group-order users files all-files hosts-domain hosts-host hosts-ipaddr
-zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hosts-ipaddr
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
-
-# make completion is slow
-zstyle ':completion:*:make:*:targets' call-command true
-zstyle ':completion:*:make::' tag-order targets:
-zstyle ':completion:*:*:*make:*:targets' command awk \''/^[a-zA-Z0-9][^\/\t=]+:/ {print $1}'\' \$file
-
-# ============ Start SSH Agent if not running ============
-if [[ -z "$SSH_AUTH_SOCK" ]] && command -v ssh-agent &>/dev/null; then
+# =================== SSH AGENT ===================
+if [[ -z "$SSH_AUTH_SOCK" ]] && has ssh-agent; then
   eval "$(ssh-agent -s -a "${XDG_RUNTIME_DIR}/ssh-agent.socket" 2>/dev/null)" >/dev/null
 fi
 
-# =========================================================
-# PROMPT / THEME
-# =========================================================
+# =================== PROMPT ===================
 [[ -f $HOME/.p10k.zsh ]] && source "$HOME/.p10k.zsh"
 
-# =========================================================
-# FUNCTIONS
-# =========================================================
+# =================== FUNCTIONS ===================
 mkcd(){ mkdir -p -- "$1" && cd -- "$1" || return; }
 touchf(){ mkdir -p -- "${1:h}"; command touch -- "$1"; }
-
-extract(){
-  local f=$1
-  [[ -f $f ]] || { print -r -- "File does not exist: $f" >&2; return 1; }
+extract(){ local f=$1; [[ -f $f ]] || { print -r -- "File does not exist: $f" >&2; return 1; }
   case "$f" in
     *.tar.bz2|*.tbz2) tar -xjf "$f" ;;
-    *.tar.gz|*.tgz)   tar -xzf "$f" ;;
-    *.tar.xz|*.txz)   tar -xJf "$f" ;;
-    *.tar)            tar -xf "$f" ;;
-    *.bz2)            bunzip2 "$f" ;;
-    *.gz)             gunzip "$f" ;;
-    *.zip)            unzip -q "$f" ;;
-    *.rar)            unrar x "$f" ;;
-    *.Z)              uncompress "$f" ;;
-    *.7z)             7z x "$f" ;;
-    *)                print -r -- "Unsupported archive: $f" >&2; return 2 ;;
+    *.tar.gz|*.tgz) tar -xzf "$f" ;;
+    *.tar.xz|*.txz) tar -xJf "$f" ;;
+    *.tar) tar -xf "$f" ;;
+    *.bz2) bunzip2 "$f" ;;
+    *.gz)  gunzip "$f" ;;
+    *.zip) unzip -q "$f" ;;
+    *.rar) unrar x "$f" ;;
+    *.Z)   uncompress "$f" ;;
+    *.7z) 7z x "$f" ;;
+    *) print -r -- "Unsupported archive: $f" >&2; return 2 ;;
   esac
 }
-
-# fcd: fuzzy-pick a directory and cd into it
-# Usage: fcd [root_dir] [query...]
-fcd(){
-  local root="." q sel preview
-  [[ $# -gt 0 && -d $1 ]] && { root="$1"; shift; }
-  q="${*:-}"
+fcd(){ local root="." q sel preview; [[ $# -gt 0 && -d $1 ]] && { root="$1"; shift; }; q="${*:-}"
   if has eza; then preview='eza -T -L2 --color=always {}'; else preview='ls -la --color=always {}'; fi
-  if has fd; then
-    sel="$(fd -HI -t d . "$root" 2>/dev/null | fzf --ansi --height ${FZF_HEIGHT:-60%} --layout=reverse --border --select-1 --exit-0 --preview "$preview" ${q:+--query "$q"})"
-  else
-    sel="$(find "$root" -type d -not -path '*/.git/*' -print 2>/dev/null | fzf --ansi --height ${FZF_HEIGHT:-60%} --layout=reverse --border --select-1 --exit-0 --preview "$preview" ${q:+--query "$q"})"
-  fi
+  if has fd; then sel="$(fd -HI -t d . "$root" 2>/dev/null | fzf --ansi --height ${FZF_HEIGHT:-60%} --layout=reverse --border --select-1 --exit-0 --preview "$preview" ${q:+--query "$q"})"
+  else sel="$(find "$root" -type d -not -path '*/.git/*' -print 2>/dev/null | fzf --ansi --height ${FZF_HEIGHT:-60%} --layout=reverse --border --select-1 --exit-0 --preview "$preview" ${q:+--query "$q"})"; fi
   [[ -n $sel ]] && cd -- "$sel"
 }
-
-# fe: fuzzy-pick files and open in $EDITOR
-fe(){
-  local -a files; local q="${*:-}" preview
-  if has bat; then preview='bat -n --style=plain --color=always --line-range=:500 {}'; else preview='head -n 500 {}'; fi
-  if has fzf; then
-    files=("${(@f)$(fzf --multi --select-1 --exit-0 ${q:+--query="$q"} --preview "$preview")}")
-  else
-    print -r -- "fzf not found" >&2; return 127
-  fi
+fe(){ local -a files; local q="${*:-}" preview; if has bat; then preview='bat -n --style=plain --color=always --line-range=:500 {}'; else preview='head -n 500 {}'; fi
+  if has fzf; then files=("${(@f)$(fzf --multi --select-1 --exit-0 ${q:+--query="$q"} --preview "$preview")}"); else print -r -- "fzf not found" >&2; return 127; fi
   [[ ${#files} -gt 0 ]] && "${EDITOR:-micro}" "${files[@]}"
 }
-
 h(){ curl "cheat.sh/${@:-cheat}"; }
 
-dot-expansion(){
-  if [[ $LBUFFER = *.. ]]; then LBUFFER+='/..'; else LBUFFER+='.'; fi
-}
-zle -N dot-expansion
-
-prepend-sudo(){
-  if [[ $BUFFER != su(do|)\ * ]]; then BUFFER="sudo $BUFFER"; (( CURSOR += 5 )); fi
-}
-zle -N prepend-sudo
-
-pskill(){ ps aux | grep -F -- "$1" | grep -v grep | awk '{print $2}' | xargs kill; }
-
-dsort(){ du -shx -- * 2>/dev/null | sort -rh | head -n "${1:-20}"; }
-bak(){ cp -r -- "$1" "${1}.bak.$(date +%Y%m%d-%H%M%S)"; }
-
-krst(){ kquitapp6 plasmashell && kstart6 plasmashell; }
-krstf(){ kquitapp6 plasmashell && kquitapp6 kwin_wayland && kstart6 kwin_wayland && kstart6 plasmashell; }
-
-pyclean(){
-  # Clean common python cache files.
-  find "${@:-.}" -type f -name "*.py[co]" -delete
-  find "${@:-.}" -type d -name "__pycache__" -delete
-  find "${@:-.}" -depth -type d -name ".mypy_cache" -exec rm -r "{}" +
-  find "${@:-.}" -depth -type d -name ".pytest_cache" -exec rm -r "{}" +
-}
-
-# =========================================================
-# ALIASES
-# =========================================================
-# Prefer rust tools; provide sane fallbacks
-if has eza; then
-  alias ls='eza --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
-  alias l='ls --git-ignore'
-  alias ll='eza --all --header --long --git --icons --classify --group-directories-first --group --color-scale'
-  alias llm='ll --sort=modified'
-  alias la='eza -lbhHigUmuSa'
-  alias lx='eza -lbhHigUmuSa@'
-  alias lt='eza --tree'
-  alias tree='eza --tree'
-else
-  alias ls='ls --color=auto --group-directories-first'
-  alias l='ls -CF'
-  alias ll='ls -alF --color=auto --group-directories-first'
-  alias la='ls -A --color=auto'
-  alias tree='tree -C' 2>/dev/null || :
-fi
-
-has bat && alias cat='bat -p'
-if has rg; then alias grep='rg'; else alias grep='grep --color=auto'; fi
-
-# Wayland helpers
-alias open='xdg-open'
-alias copy='wl-copy'
-alias paste='wl-paste'
-
-# Safety
-alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
-alias ln='ln -i'
-
-# Quick nav
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias .....='cd ../../../..'
-
-# Python
-alias python=python3
-alias pip='python3 -m pip'
-
-# Build
-alias make="make -j$(nproc)"
-alias ninja="ninja -j$(nproc)"
-alias mkdir='mkdir -p'
-
-# Suffix
-alias -s {css,gradle,html,js,json,md,patch,properties,txt,xml,yml}=$PAGER
-alias -s gz='gzip -l'
-alias -s {log,out}='tail -F'
-
-# Misc
-alias e="$EDITOR"
-alias r='bat -p'
-alias which='command -v'
-alias dirs='dirs -v'
-alias sudo='sudo -H '
-alias sudo-rs='sudo-rs '
-alias doas='doas '
-
-# mise
-alias mise-install='mise install && mise run install-all'
-alias mise-update='mise upgrade && mise run install-all'
-
-# web-server
-alias web-server='python -m SimpleHTTPServer 8000'
-
-# Globals
-alias -g -- -h='-h 2>&1 | bat -plhelp'
-alias -g -- --help='--help 2>&1 | bat -plhelp'
-alias -g L="| ${PAGER:-less}"
-alias -g G="| rg -i"
-alias -g NE="2>/dev/null"
-alias -g NUL=">/dev/null 2>&1"
-
-# =========================================================
-# KEYBINDINGS
-# =========================================================
+# =================== KEYBINDINGS ===================
 bindkey -e
 autoload -U history-search-end
 zle -N history-beginning-search-backward-end history-search-end
@@ -501,7 +177,6 @@ bindkey "^P" history-beginning-search-backward
 bindkey "^N" history-beginning-search-forward
 bindkey '^R' history-incremental-pattern-search-backward
 bindkey '^S' history-incremental-pattern-search-forward
-
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey '^[[H' beginning-of-line
@@ -511,133 +186,63 @@ bindkey '^[[1;5C' forward-word
 bindkey '^[[1;5D' backward-word
 bindkey '^[[Z' reverse-menu-complete
 bindkey '\e\e' prepend-sudo
-bindkey '^R' history-incremental-pattern-search-backward
 bindkey '^Z' undo
 bindkey '^Y' redo
-
-# shift-tab to reverse completion
 zmodload zsh/complist
 bindkey '^[[Z' reverse-menu-complete
 bindkey -M menuselect '^[[Z' reverse-menu-complete
-
-# Quick cursor/word widgets
-qc-word-widgets(){
-  local wordpat='[[:WORD:]]##|[[:space:]]##|[^[:WORD:][:space:]]##'
-  local words=(${(Z:n:)BUFFER}) lwords=(${(Z:n:)LBUFFER})
-  case $WIDGET {
-    (*sub-l)   local move=-${(N)LBUFFER%%$~wordpat} ;;
-    (*sub-r)   local move=+${(N)RBUFFER##$~wordpat} ;;
-    (*shell-l) local move=-${(N)LBUFFER%$lwords[-1]*} ;;
-    (*shell-r) local move=+${(N)RBUFFER#*${${words[$#lwords]#$lwords[-1]}:-$words[$#lwords+1]}} ;;
-  }
-  case $WIDGET {
-    (*kill*) (( MARK = CURSOR + move )); zle -f kill; zle .kill-region ;;
-    (*)      (( CURSOR += move )) ;;
-  }
-}
-for w in qc{,-kill}-{sub,shell}-{l,r}; zle -N $w qc-word-widgets
-bindkey '\E[1;5D' qc-sub-l
-bindkey '\E[1;5C' qc-sub-r
-bindkey '\E[1;3D' qc-shell-l
-bindkey '\E[1;3C' qc-shell-r
-bindkey '^H'      qc-kill-sub-l
-bindkey '^W'      qc-kill-sub-l
-bindkey '\E[3;5~' qc-kill-sub-r
-bindkey '\E^?'    qc-kill-shell-l
-bindkey '\E[3;3~' qc-kill-shell-r
+dot-expansion(){ if [[ $LBUFFER = *.. ]]; then LBUFFER+='/..'; else LBUFFER+='.'; fi; }
+zle -N dot-expansion
+prepend-sudo(){ if [[ $BUFFER != su(do|)\ * ]]; then BUFFER="sudo $BUFFER"; (( CURSOR += 5 )); fi; }
+zle -N prepend-sudo
+qc-word-widgets(){ local wordpat='[[:WORD:]]##|[[:space:]]##|[^[:WORD:][:space:]]##' words=(${(Z:n:)BUFFER}) lwords=(${(Z:n:)LBUFFER}); case $WIDGET {
+  (*sub-l)   local move=-${(N)LBUFFER%%$~wordpat} ;;
+  (*sub-r)   local move=+${(N)RBUFFER##$~wordpat} ;;
+  (*shell-l) local move=-${(N)LBUFFER%$lwords[-1]*} ;;
+  (*shell-r) local move=+${(N)RBUFFER#*${${words[$#lwords]#$lwords[-1]}:-$words[$#lwords+1]}} ;;
+}; case $WIDGET {
+  (*kill*) (( MARK = CURSOR + move )); zle -f kill; zle .kill-region ;;
+  (*) (( CURSOR += move )) ;;
+}}; for w in qc{,-kill}-{sub,shell}-{l,r}; zle -N $w qc-word-widgets
+bindkey '\E[1;5D' qc-sub-l; bindkey '\E[1;5C' qc-sub-r; bindkey '\E[1;3D' qc-shell-l; bindkey '\E[1;3C' qc-shell-r
+bindkey '^H' qc-kill-sub-l; bindkey '^W' qc-kill-sub-l; bindkey '\E[3;5~' qc-kill-sub-r; bindkey '\E^?' qc-kill-shell-l; bindkey '\E[3;3~' qc-kill-shell-r
 WORDCHARS='*?[]~&;!#$%^(){}<>'
-
-# Trim trailing spaces from pasted text
 qc-trim-paste(){ zle .$WIDGET && LBUFFER=${LBUFFER%%[[:space:]]#}; }
 zle -N bracketed-paste qc-trim-paste
+qc-rationalize-dot(){ if [[ $LBUFFER == *.. ]]; then LBUFFER+='/..'; else LBUFFER+='.'; fi; }
+zle -N qc-rationalize-dot; bindkey '.' qc-rationalize-dot; bindkey '\E.' self-insert-unmeta
+qc-clear-screen(){ local prompt_height=$(print -n ${(%%)PS1} | wc -l) lines=$((LINES - prompt_height)); printf "$terminfo[cud1]%.0s" {1..$lines}; printf "$terminfo[cuu1]%.0s" {1..$lines}; zle .reset-prompt; }
+zle -N qc-clear-screen; bindkey '^L' qc-clear-screen
+autoload -Uz add-zsh-hook; _qc-reset-cursor(){ print -n '\E[5 q'; }; add-zsh-hook precmd _qc-reset-cursor
 
-# Rationalize dot
-qc-rationalize-dot(){
-  if [[ $LBUFFER == *.. ]]; then LBUFFER+='/..'; else LBUFFER+='.'; fi
-}
-zle -N qc-rationalize-dot
-bindkey '.' qc-rationalize-dot
-bindkey '\E.' self-insert-unmeta
-
-# Clear screen keep scrollback
-qc-clear-screen(){
-  local prompt_height=$(print -n ${(%%)PS1} | wc -l)
-  local lines=$((LINES - prompt_height))
-  printf "$terminfo[cud1]%.0s" {1..$lines}
-  printf "$terminfo[cuu1]%.0s" {1..$lines}
-  zle .reset-prompt
-}
-zle -N qc-clear-screen
-bindkey '^L' qc-clear-screen
-
-autoload -Uz add-zsh-hook
-_qc-reset-cursor(){ print -n '\E[5 q'; }
-add-zsh-hook precmd _qc-reset-cursor
-
-# =========================================================
-# SMARTCACHE + LAZYLOAD integration
-# =========================================================
-# Lazy-load completions and heavy env on first use, cache generators with TTL
+# =================== SMARTCACHE + LAZYLOAD ===================
 if (( $+functions[lazyload] )); then
-  # Core tools
   lazyload gh 'source =(smartcache 7d gh completion -s zsh)'
   lazyload docker 'source =(smartcache 7d docker completion zsh)'
   lazyload carapace 'export CARAPACE_BRIDGES="zsh,fish,bash,inshellisense"; source =(smartcache 7d carapace _carapace)'
-  # Language/version managers
   lazyload mise 'eval "$($HOME/.local/bin/mise activate zsh)"'
   lazyload pyenv 'eval "$(smartcache 7d pyenv init -)"'
-  # TUI/session
   lazyload zellij 'eval "$(zellij setup --generate-auto-start zsh)"'
-  # Navigation
   lazyload z 'eval "$(zoxide init zsh)"; alias cd=z'
-  # Helpers
   lazyload fuck 'local f="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"; mkdir -p -- "${f:h}"; [[ -f $f ]] || smartcache 30d thefuck --alias >"$f"; source "$f"'
   lazyload shit '(( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"'
 fi
-
-# Optional warm cache in background after prompt (defer)
 if (( $+functions[zsh-defer] )); then
   zsh-defer -c '(( $+functions[smartcache] )) || return 0; smartcache 7d vivid generate molokai &>/dev/null || :'
   zsh-defer -c '(( $+functions[smartcache] )) || return 0; has gh && smartcache 7d gh completion -s zsh &>/dev/null || :'
   zsh-defer -c '(( $+functions[smartcache] )) || return 0; has carapace && smartcache 7d carapace _carapace &>/dev/null || :'
+else
+  (( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"
+  eval "$(zoxide init zsh)"; alias cd=z
+  [[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"
+  if (( $+commands[carapace] )); then export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'; source <(carapace _carapace); fi
+  if (( $+commands[thefuck] )); then f="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"; mkdir -p -- "${f:h}"; [[ -f $f ]] || thefuck --alias >"$f"; source "$f"; fi
+  (( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"
 fi
 
-# If lazyload not present, fall back to immediate inits (still defer if possible)
-if (( ! $+functions[lazyload] )); then
-  if (( $+functions[zsh-defer] )); then
-    zsh-defer -c '(( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"'
-    zsh-defer -c 'eval "$(zoxide init zsh)"; alias cd=z'
-    zsh-defer -c '[[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"'
-    zsh-defer -c 'if (( $+commands[carapace] )); then export CARAPACE_BRIDGES="zsh,fish,bash,inshellisense"; source =(smartcache 7d carapace _carapace); fi'
-    zsh-defer -c 'if (( $+commands[thefuck] )); then f="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"; mkdir -p -- "${f:h}"; [[ -f $f ]] || smartcache 30d thefuck --alias >"$f"; source "$f"; fi'
-    zsh-defer -c '(( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"'
-  else
-    (( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"
-    eval "$(zoxide init zsh)"; alias cd=z
-    [[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"
-    if (( $+commands[carapace] )); then
-      export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-      source <(carapace _carapace)
-    fi
-    if (( $+commands[thefuck] )); then
-      f="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"
-      mkdir -p -- "${f:h}"
-      [[ -f $f ]] || thefuck --alias >"$f"
-      source "$f"
-    fi
-    (( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"
-  fi
-fi
+# =================== LOGIN INFO ===================
+if [[ -o INTERACTIVE && -t 2 && $+commands[fastfetch] -ne 0 ]]; then fastfetch; fi >&2
 
-# Login info (fastfetch)
-if [[ -o INTERACTIVE && -t 2 && $+commands[fastfetch] -ne 0 ]]; then
-  fastfetch
-fi >&2
-
-# =========================================================
-# FINAL OPTIMIZATIONS
-# =========================================================
+# =================== FINAL OPTIMIZATIONS ===================
 autoload -Uz zrecompile
-for f in ~/.zshrc ~/.zshenv ~/.p10k.zsh; do
-  [[ -f $f && ( ! -f ${f}.zwc || $f -nt ${f}.zwc ) ]] && zrecompile -pq "$f" &>/dev/null
-done; unset f
+for f in ~/.zshrc ~/.zshenv ~/.p10k.zsh; do [[ -f $f && ( ! -f ${f}.zwc || $f -nt ${f}.zwc ) ]] && zrecompile -pq "$f" &>/dev/null; done; unset f
