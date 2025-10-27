@@ -117,6 +117,16 @@ SAVEHIST=10000
 HISTTIMEFORMAT="%F %T "
 
 # =========================================================
+# Antidote plugin manager
+# =========================================================
+antidote_dir=${XDG_DATA_HOME:-$HOME/.local/share}/antidote
+[[ -d $antidote_dir ]] || git clone --depth 1 https://github.com/mattmc3/antidote "$antidote_dir" &>/dev/null || :
+antidote_bin="$antidote_dir/bin/antidote"
+bundle=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zsh_plugins.zsh
+list=${XDG_CONFIG_HOME:-$HOME/.config}/zsh/config/plugins.txt
+[[ -f $bundle && $list -ot $bundle ]] || "$antidote_bin" bundle <"$list" >"$bundle"
+source "$bundle"
+# =========================================================
 # ZINIT (Plugin manager) — turbo + compile + defer + lazyload + smartcache
 # =========================================================
 : ${ZINIT_HOME:=${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git}
