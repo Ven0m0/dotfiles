@@ -19,8 +19,10 @@ faf(){ eval "$({ alias; declare -F | grep -v '^_'; } | fzf | cut -d= -f1)"; }
 fzf-find-files(){
   local file=$(fzf --multi --reverse) #get file from fzf
   if [[ $file ]]; then
-    for prog in $(echo $file); #open all the selected files
-    do; $EDITOR $prog; done;
+    # Use read to properly handle files with spaces
+    while IFS= read -r prog; do
+      "$EDITOR" "$prog"
+    done <<< "$file"
   else
     echo "cancelled fzf"
   fi
@@ -29,18 +31,18 @@ fzf-cd(){
   local dir
   dir=$(find ${1:-.} -path '*/\.*' -prune \
                   -o -type d -print 2> /dev/null | fzf +m) &&
-  cd "$dir"
+  cd "$dir" || return
   ls
 }
 fzf-cd-incl-hidden(){
   local dir
-  dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir"
+  dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir" || return
   ls
 }
 fzf-cd-to-file(){
    local file
    local dir
-   file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir"
+   file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir" || return
    ls
 }
 fzf-cd-to-parent(){
@@ -52,17 +54,17 @@ fzf-cd-to-parent(){
       return
     fi
     if [[ "${1}" == '/' ]]; then
-      for _dir in "${dirs[@]}"; do echo $_dir; done
+      printf '%s\n' "${dirs[@]}"
     else
-      get_parent_dirs $(dirname "$1")
+      get_parent_dirs "$(dirname "$1")"
     fi
   }
-  local DIR=$(get_parent_dirs $(realpath "${1:-$PWD}") | fzf-tmux --tac)
-  command cd "$DIR"
+  local DIR=$(get_parent_dirs "$(realpath "${1:-$PWD}")" | fzf-tmux --tac)
+  command cd "$DIR" || return
   command ls
 }
-fzf-env(){ local out=$(env | fzf); echo $(echo $out | cut -d= -f2); }
-fzf-kill(){ local pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}'); [[ "x$pid" != "x" ]] && echo $pid | xargs kill -${1:-9}; }
+fzf-env(){ local out=$(env | fzf); echo "${out#*=}"; }
+fzf-kill(){ local pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}'); [[ -n $pid ]] && xargs kill -${1:-9} <<< "$pid"; }
 
 # fkill - kill processes - list only the ones you can kill. Modified the earlier script.
 fkill(){
@@ -72,17 +74,21 @@ fkill(){
   else
     pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
   fi
-  if [[ "x$pid" != "x" ]]; then
-    echo $pid | xargs kill -${1:-9}
+  if [[ -n $pid ]]; then
+    xargs kill -${1:-9} <<< "$pid"
   fi
 }
 
 
 fzf-git-status(){
-  LC_ALL=C git rev-parse --git-dir &>/dev/null || { echo "You are not in a git repository" && return }
+  LC_ALL=C git rev-parse --git-dir &>/dev/null || { echo "You are not in a git repository"; return; }
   local selected=$(LC_ALL=C git -c color.status=always status --short | fzf --height 50% "$@" --border -m --ansi --nth 2..,.. \
       --preview '(LC_ALL=C git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500' | cut -c4- | sed 's/.* -> //')
-  [[ -z $selected ]] && for prog in $(echo $selected); do; $EDITOR $prog; done
+  if [[ -n $selected ]]; then
+    while IFS= read -r prog; do
+      "$EDITOR" "$prog"
+    done <<< "$selected"
+  fi
 }
 
 

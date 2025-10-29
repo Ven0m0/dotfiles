@@ -17,10 +17,9 @@ deviceStart="b" #/dev/sdb
 
 # Search for new device(s)
 lsblk -no NAME,UUID,FSTYPE,LABEL,MOUNTPOINT | grep -e "sd[$deviceStart-z][0-9]" > /tmp/usbstick
-deviceCount=$(cat /tmp/usbstick | wc -l)
+deviceCount=$(wc -l < /tmp/usbstick)
 
-if [ $deviceCount -eq 0 ]
-then
+if [[ $deviceCount -eq 0 ]]; then
     echo "No new device detected"
     exit 0
 fi
@@ -29,44 +28,40 @@ echo "Mount/Umount tool"
 
 # Display new device(s) and read user input
 i=0
-while read -r name uuid fstype label
-    do i=$(($i+1));
+while read -r name uuid fstype label; do
+    ((i++))
     echo "    $i)    $uuid $fstype [$label]"
 done < /tmp/usbstick
 echo "    q)    quit"
 
 read -p "Choose the drive to be mount/umount : " input
 
-if [[ "$input" == "Q" || "$input" == "q" ]]
-then
+if [[ "$input" == "Q" || "$input" == "q" ]]; then
     echo "    ---> Exiting"
     exit 0
 fi
 
-if [[ $input -ge 1 && $input -le $deviceCount ]]
-then
+if [[ $input -ge 1 && $input -le $deviceCount ]]; then
     # Get the device selected by the user
     i=0
-    while read -r name uuid fstype label
-        do i=$(($i+1));
-        [ $i -eq $input ] && break
+    while read -r name uuid fstype label; do
+        ((i++))
+        [[ $i -eq $input ]] && break
     done < /tmp/usbstick
 
     # Check if the device is already mounted
-    mountpoint=$(echo $label | grep -o "/mnt/usbstick[1-$usbCount]")
+    mountpoint=$(grep -o "/mnt/usbstick[1-$usbCount]" <<< "$label")
 
-    if [ -z $mountpoint ]
-    then
+    if [[ -z $mountpoint ]]; then
         # Search for the next "mount" directory available
         i=0
-        while [ $i -le $usbCount ]
-            do i=$(($i+1));
-            mountpoint=$(cat /tmp/usbstick | grep -o "/mnt/usbstick$i")
-            [ -z $mountpoint ] && break
+        while [[ $i -le $usbCount ]]; do
+            ((i++))
+            mountpoint=$(grep -o "/mnt/usbstick$i" < /tmp/usbstick)
+            [[ -z $mountpoint ]] && break
         done
 
-        if [ $i -gt $usbCount ]
-        then
+        if [[ $i -gt $usbCount ]]; then
             echo "    ---> Set a higher number of USB port available"
             exit 1
         fi
