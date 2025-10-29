@@ -1,12 +1,13 @@
 {
-  "servers": {
-    "read-website-fast": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@just-every/mcp-read-website-fast"
-      ]
-    },
+	"servers": {
+		"read-website-fast": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@just-every/mcp-read-website-fast"
+			],
+			"type": "stdio"
+		},,
     "Github": {
       "url": "https://api.githubcopilot.com/mcp/",
       "disabled": false,
@@ -16,7 +17,22 @@
       "url": "https://remote.mcpservers.org/sequentialthinking/mcp",
       "disabled": false,
       "autoApprove": []
-    }
+    },
+		"oraios/serena": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": [
+				"--from",
+				"git+https://github.com/oraios/serena",
+				"serena",
+				"start-mcp-server",
+				"serena==latest",
+				"--context",
+				"ide-assistant"
+			],
+			"gallery": "https://api.mcp.github.com/2025-09-15/v0/servers/0658e342-7ae7-493a-b378-a324363ee322",
+			"version": "1.0.0"
+		}
   },
   "inputs": []
 }
