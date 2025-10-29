@@ -3,17 +3,17 @@ shopt -s nullglob globstar; set -u
 export LC_ALL=C LANG=C.UTF-8
 ##==================================================================================================
 ##	Requirements
-has() { command -v $1 &>/dev/null || { echo "Aborting: '$1' not found"; exit 1; }; }
+has() { command -v "$1" &>/dev/null || { echo "Aborting: '$1' not found"; exit 1; }; }
 has git
 ##==================================================================================================
 ##	Helper functions
 getGitDirs() {
-  find $1 -type d -name .git -not -path "*.local*" | sed 's/\/.git$//g'
+  find "$1" -type d -name .git -not -path "*.local*" -printf '%h\n'
 }
 
 housekeepGirDir() {
   local dir=$1
-  if [ -d "${dir}" -a -d "${dir}/.git" ]; then
+  if [[ -d "${dir}" && -d "${dir}/.git" ]]; then
     echo -e "\e[1mGit housekeeping: ${dir}\e[0m"
    ## Fetch from remote, twice in case something goes wrong
     git -C "$dir" fetch || git -C "$dir" fetch
@@ -35,6 +35,6 @@ housekeepGirDir() {
 ##==================================================================================================
 ##	Main script
 ##==================================================================================================
-for dir in $(getGitDirs $1) ; do
-  housekeepGirDir $dir
-done; wait
+while IFS= read -r dir; do
+  housekeepGirDir "$dir"
+done < <(getGitDirs "$1"); wait
