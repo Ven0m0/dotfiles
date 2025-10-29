@@ -21,6 +21,10 @@ insta = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z buil
 builda = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata build --bins --lib -r -q"
 installgit = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata install -f --bins -q --git"
 
+[rust]
+lto = "fat"
+jemalloc = true
+
 [build]
 rustc-wrapper = "sccache"
 incremental = false
