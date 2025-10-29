@@ -11,7 +11,7 @@ getGitDirs() {
   find "$1" -type d -name .git -not -path "*.local*" -printf '%h\n'
 }
 
-housekeepGirDir() {
+housekeepGitDir() {
   local dir=$1
   if [[ -d "${dir}" && -d "${dir}/.git" ]]; then
     echo -e "\e[1mGit housekeeping: ${dir}\e[0m"
@@ -36,5 +36,5 @@ housekeepGirDir() {
 ##	Main script
 ##==================================================================================================
 while IFS= read -r dir; do
-  housekeepGirDir "$dir"
+  housekeepGitDir "$dir"
 done < <(getGitDirs "$1"); wait
