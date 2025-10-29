@@ -55,6 +55,8 @@ install_packages(){
     zoxide starship fzf yadm tuckr-bin
   )
   if has paru; then
+    # Word splitting is intentional for PARU_OPTS
+    # shellcheck disable=SC2086
     paru -Syuq $PARU_OPTS "${pkgs[@]}"
   else
     die "paru not found after installation attempt."

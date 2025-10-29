@@ -24,7 +24,9 @@ exitw(){
 SanitizeFilePath(){
 	# This function will remove \ and space at the end of a filepath to make it parse well into other, quoted, functions/commands
 	# Usage $1, where $1 is a file path.
-	echo -n "$(echo "$(echo "$1" | sed 's%\\%%g')" |sed -e 's%[[:space:]]*$%%')"
+	local path="${1//\\/}"  # Remove backslashes
+	path="${path%%*([[:space:]])}"  # Remove trailing spaces
+	echo -n "$path"
 }
 
 readLine(){
@@ -37,8 +39,9 @@ processData(){
 	# This function will format any input line to be able to fit in a one liner. 
 	# Usage is $1, where $1 is the data.
 	
-	# Remove trailing spaces.
-	data="$(echo -e "${1}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+	# Remove leading and trailing spaces using bash parameter expansion
+	data="${1#"${1%%[![:space:]]*}"}"  # Remove leading whitespace
+	data="${data%"${data##*[![:space:]]}"}"  # Remove trailing whitespace
 	
 	ic=0
 		
@@ -46,11 +49,11 @@ processData(){
 	# Temporary fix, will only remove full line comments...
 		
 	# The following line will check if the line contains '#'
-	if [[ "$(echo "$data" | grep -q '#';echo $?)" == "0" ]];then
+	if [[ "$data" == *"#"* ]]; then
 	
 		# Remove any empty characters so comparison will be easier.
-		tmpString="$(echo "$data" | sed 's%\t%%g' | sed 's% %%g' | sed 's%\v%%g' | sed 's%\r%%g' | sed 's%\r%%g' | sed 's%\n%%g' )"
-		if [ "${tmpString:0:1}" == "#" ];then
+		tmpString="${data//[$'\t\v\r\n ']}"
+		if [[ "${tmpString:0:1}" == "#" ]]; then
 			# $data is a full line comment. We'll remove it fully.
 			data=""
 			ic=1
@@ -58,16 +61,16 @@ processData(){
 	fi
 	
 	# We should not run this if data is a full line comment, as it will corrupt the script.
-	if [ $ic -eq 0 ];then
+	if [[ $ic -eq 0 ]]; then
 		# Look for exceptions
-		if [ "${data: -3}" == ";do" ] || [ "${data: -5}" == ";then" ] || [ "${data: -4}" == "else" ] || [ "${data: -4}" == "elif" ] || [ "${data: -1}" == "{" ];then
+		if [[ "${data: -3}" == ";do" ]] || [[ "${data: -5}" == ";then" ]] || [[ "${data: -4}" == "else" ]] || [[ "${data: -4}" == "elif" ]] || [[ "${data: -1}" == "{" ]]; then
 			# Add a space
-			data="$(echo "$data" | sed "s%$% %")"	
-		elif [ "${data: -1}" == "}" ];then
-			data="$(echo "$data" | sed 's%}$% };%')"
+			data="$data "
+		elif [[ "${data: -1}" == "}" ]]; then
+			data="${data%\}} };"
 		else
-			# Add ';' to end of line. 
-			data="$(echo "$data" | sed "s%$%;%")"
+			# Add ';' to end of line.
+			data="$data;"
 		fi
 	fi
 		
@@ -79,12 +82,12 @@ processData(){
 # Handle input
 for i in "$@";do
 	case $i in
-		$self)
+		"$self")
     	shift
     	;;
     	-f=*|--file=*)
    		file="$(SanitizeFilePath "${i#*=}")"		
-   		if [ "$file" == "$self" ];then
+   		if [[ "$file" == "$self" ]]; then
    			echo "You are trying to execute this script on itself."
    			exitw 5
    		fi
@@ -99,7 +102,7 @@ for i in "$@";do
     	shift
    		;;
    		-o=*|--output=*)
-   		if [ "${i#*=}" == "STDOUT" ] || [ "${i#*=}" == "stdout" ];then
+   		if [[ "${i#*=}" == "STDOUT" || "${i#*=}" == "stdout" ]]; then
     		output="stdout"
     	else
     		output="file"
@@ -123,27 +126,28 @@ for i in "$@";do
 	esac
 done
 
-if [ ! -f "$file" ];then
+if [[ ! -f "$file" ]]; then
 	echo "The file you supplied, '$file', can not be found or is not a file."
 	exitw 3
 fi
-if [ -f "$outputFile" ];then
-	if [ "$force" != 1 ];then
-    	echo "A file already exists in output path, would you like to overwrite it? Press [y]es or [n]o"
-		read continue
-		if [ "$continue" != "y" ] && [ "$continue" != "Y" ];then
+if [[ -f "$outputFile" ]]; then
+	if [[ "$force" != 1 ]]; then
+		echo "A file already exists in output path, would you like to overwrite it? Press [y]es or [n]o"
+		read -r continue
+		if [[ "$continue" != "y" && "$continue" != "Y" ]]; then
 			exitw 2
 		else
 			echo "Continuing..."
 			unset continue
 		fi
 	fi
-	fi
-if [ "$force" != 1 ];then
-	if [ "$(head -1 "$file")" != '#!/bin/bash' ] && [ "$(head -1 "$file")" != '#!/bin/sh' ] && [ "$(head -1 "$file")" != '#!/usr/bin/env bash' ];then
+fi
+if [[ "$force" != 1 ]]; then
+	firstline=$(head -1 "$file")
+	if [[ "$firstline" != '#!/bin/bash' && "$firstline" != '#!/bin/sh' && "$firstline" != '#!/usr/bin/env bash' ]]; then
 		echo "The script targeted might not be a bash script, would you still like to continue? Press [y]es or [n]o"
-		read continue
-		if [ "$continue" != "y" ] && [ "$continue" != "Y" ];then
+		read -r continue
+		if [[ "$continue" != "y" && "$continue" != "Y" ]]; then
 			exitw 2
 		else
 			echo "Continuing..."
@@ -158,19 +162,19 @@ body=""
 line=2
 linesInFile=$(wc -l < "$file")
 
-while [ $(($line-1)) -le $linesInFile ];do
-	if [ "$debug" == "1" ];then
-		echo $line
+while [[ $((line-1)) -le $linesInFile ]]; do
+	if [[ "$debug" == "1" ]]; then
+		echo "$line"
 	fi
-	body+="$(processData "$(readLine $line)")"
-	line=$((line+1))
+	body+="$(processData "$(readLine "$line")")"
+	((line++))
 done
 
-fullfile="$(echo $FirstLine;echo $body)"
+fullfile="$FirstLine"$'\n'"$body"
 
-if [ "$output" == "stdout" ];then
+if [[ "$output" == "stdout" ]]; then
 	echo -n "$fullfile"
-elif [ "$output" == "file" ];then
+elif [[ "$output" == "file" ]]; then
 	echo -n "$fullfile" > "$outputFile"
 	chmod "$permission" "$outputFile"
 else
