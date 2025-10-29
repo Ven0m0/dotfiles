@@ -2,6 +2,10 @@ hide-mouse-cursor-when-typing = false
 use-fork = true
 confirm-before-quit = true
 
+[bell]
+visual = false
+audio = false
+
 [cursor]
 blinking = false
 
@@ -9,16 +13,17 @@ blinking = false
 program = "micro"
 args = []
 
+env-vars = ["COLORTERM=truecolor", "CLICOLOR=1"]
+
 [window]
-opacity = 1.0
+opacity = 0.8
 blur = false
 decorations = "enabled"
-mode = "Maximized"
+mode = "Windowed"
 
 [renderer]
 performance = "High"
-#backend = "Automatic"
-backend = "Vulkan"
+backend = "Automatic"
 disable-unfocused-render = false
 disable-occluded-render = true
 target-fps = 120
@@ -30,10 +35,11 @@ ime-cursor-positioning = true
 disable-ctlseqs-alt = false
 
 [fonts]
-family = "JetBrains Mono"
+family = "JetBrainsMono Nerd Font Mono"
 size = 12
 features = ["zero","calt","liga"]
 hinting = true
+use-drawable-chars = true
 disable-warnings-not-found = true
 symbol-map = [
   # powerline & powerline-extras
@@ -49,6 +55,21 @@ symbol-map = [
   # codicons
   {start = "ea60", end ="ebeb", font-family="JetBrainsMono Nerd Font Mono"},
 ]
+
+[fonts.regular]
+family = "JetBrainsMono Nerd Font Mono"
+style = "Normal"
+width = "Normal"
+weight = 400
+
+[fonts.regular]
+family = "JetBrainsMono Nerd Font Mono"
+style = "Normal"
+width = "Normal"
+weight = 800
+
+[fonts.emoji]
+family = "Noto Color Emoji"
 
 [scroll]
 multiplier = 3.0
