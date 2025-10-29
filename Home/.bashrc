@@ -181,6 +181,12 @@ export NVD_BACKEND=direct MOZ_DISABLE_RDD_SANDBOX=1 \
   __GL_ALLOW_FXAA_USAGE=1 #__GL_ConformantBlitFramebufferScissor=1 \
   __GL_ALLOW_UNOFFICIAL_PROTOCOL=1 __GL_IGNORE_GLSL_EXT_REQS=1 \
   __GL_SHADER_DISK_CACHE=1 __GL_SHADER_DISK_CACHE_PATH="${HOME}/.cache/nvidia/GLCache"
+
+### LLM
+# Claude
+export ANTHROPIC_MODEL="claude-sonnet-4.5"
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 DISABLE_NON_ESSENTIAL_MODEL_CALLS=1 DISABLE_ERROR_REPORTING=1 DO_NOT_TRACK=1
+
 #============ Fuzzy finders ============
 fuzzy_finders(){
   local FIND_CMD SHELL=bash
