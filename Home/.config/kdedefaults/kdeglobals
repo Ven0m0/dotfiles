@@ -21,12 +21,18 @@ Theme=breeze-dark
 widgetStyle=Breeze
 LookAndFeelPackage=org.kde.breezedark.desktop
 AnimationDurationFactor=0
+DoubleClickInterval=300
+DndBehavior=MoveIfSameDevice
+ScrollbarLeftClickNavigatesByPage=true
 
 [KFileDialog Settings]
 Allow Expansion=true
 Automatically select filename extension=true
 Show hidden files=true
 Sort directories first=true
+Sort by=Name
+View Style=DetailTree
+Show Inline Previews=true
 
 [PreviewSettings]
 EnableRemoteFolderThumbnail=false
