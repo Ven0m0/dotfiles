@@ -37,7 +37,7 @@ disable-ctlseqs-alt = false
 [fonts]
 family = "JetBrainsMono Nerd Font Mono"
 size = 12
-features = ["zero","calt","liga"]
+features = ["zero","calt","liga","ss01","ss02","ss19","ss20"]
 hinting = true
 use-drawable-chars = true
 disable-warnings-not-found = true
