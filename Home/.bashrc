@@ -48,7 +48,7 @@ CDPATH=".:${HOME}:/"
 ulimit -c 0 # disable core dumps
 export FIGNORE="argo.lock"
 shopt -s histappend cmdhist checkwinsize dirspell cdable_vars cdspell extglob \
-         autocd cdable_vars hostcomplete no_empty_cmd_completion globstar nullglob
+         autocd hostcomplete no_empty_cmd_completion globstar nullglob
 # Disable Ctrl-s, Ctrl-q
 set -o noclobber
 bind -r '\C-s'
@@ -222,22 +222,13 @@ fuzzy_finders(){
 fuzzy_finders
 #============ Completions ============
 ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_completion"
-complete -o default -o bashdefault -F _completion_loader sudo
-complete -o default -o bashdefault -F _completion_loader sudo-rs
-complete -o default -o bashdefault -F _completion_loader doas
-complete -o default -o bashdefault -F _completion_loader pkexec
-complete -o default -o bashdefault -F _completion_loader exec
-complete -o default -o bashdefault -F _completion_loader git
-complete -o default -o bashdefault -F _completion_loader command
-complete -o default -o bashdefault -F _completion_loader type
-complete -o default -o bashdefault -F _completion_loader builtin
+for c in sudo sudo-rs doas pkexec env git command type builtin systemctl journalctl curl wget pacman paru; do
+  complete -o default -o bashdefault -F _completion_loader "$c"
+done
 complete -A hostname ssh scp ping dig host nslookup
 complete -A user su login
 complete -A directory cd pushd rmdir
 complete -A file less cat head tail cp mv rm
-complete -F _completion_loader pacman paru yay
-complete -o default -o bashdefault -F _completion_loader sudo systemctl journalctl ip
-complete -F _completion_loader curl wget traceroute
 complete -A file tar unzip unrar 7z
 
 
@@ -539,16 +530,16 @@ configure_prompt(){
     # PROMPT_COMMAND="LC_ALL=C mommy \$?; ${PROMPT_COMMAND:-}" # Shell-mommy https://github.com/sleepymincy/mommy
   fi
 }
-configure_prompt 2>/dev/null &
+(configure_prompt &>/dev/null &)
 #============ End ============
 dedupe_path(){
   local IFS=: dir s; declare -A seen
   for dir in $PATH; do [[ -n $dir && -z ${seen[$dir]} ]] && seen[$dir]=1 && s="${s:+$s:}$dir"; done
   [[ -n $s ]] && export PATH="$s"
 }
-dedupe_path
+(dedupe_path &>/dev/null &)
 #============ Fetch ============
-if [[ $SHLVL -ge 3; ! $BASH_SUBSHELL -ge 1 ]]; then
+if [[ $SHLVL -ge 3 && ${BASH_SUBSHELL:-0} -lt 2 ]]; then
   if [[ "${stealth:-0}" -eq 1 ]]; then
     has fastfetch && fetch='fastfetch --ds-force-drm --thread --detect-version false'
   else
