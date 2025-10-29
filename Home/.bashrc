@@ -18,11 +18,8 @@ dot=(/etc/bashrc
 )
 for p in "${dot[@]}"; do [[ -r "$p" ]] && . "$p"; done
 
-# completions
-ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_completion"
-
 # github.com/kazhala/dotbare
-ifsource "${HOME}/.dotbare/dotbare.plugin.bash" &&  alias dotbare="${HOME}/.dotbare/dotbare"
+# ifsource "${HOME}/.dotbare/dotbare.plugin.bash" &&  alias dotbare="${HOME}/.dotbare/dotbare"
 
 # Fzf-tabs for readline
 if [[ -f "/usr/lib/librl_custom_complete.so" ]]; then
@@ -33,7 +30,7 @@ fi
 
 ifsource /usr/share/bash-preexec/bash-preexec.sh
 
-has mise && eval "$(mise activate --shims bash)"
+has mise && eval "$(mise activate -yq bash)"
 
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
@@ -82,9 +79,12 @@ has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 has ibus && export GTK_IM_MODULE=ibus XMODIFIERS=@im=ibus QT_IM_MODULE=ibus
 
 # Mimalloc & Jemalloc
+
+# https://github.com/jemalloc/jemalloc/blob/dev/TUNING.md
+MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,trust_madvise:true,abort_conf:true"
+export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF"
 # https://github.com/microsoft/mimalloc/blob/main/docs/environment.html
-MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
-export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 MIMALLOC_SHOW_STATS=0 MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_PURGE_DELAY=25 MIMALLOC_ARENA_EAGER_COMMIT=2
+export MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 MIMALLOC_SHOW_STATS=0 MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_ARENA_EAGER_COMMIT=1
 
 : "${LESS:=}"
 : "${LESS_TERMCAP_mb:=$'\e[1;32m'}" "${LESS_TERMCAP_md:=$'\e[1;32m'}" "${LESS_TERMCAP_me:=$'\e[0m'}" "${LESS_TERMCAP_se:=$'\e[0m'}" "${LESS_TERMCAP_so:=$'\e[01;33m'}" "${LESS_TERMCAP_ue:=$'\e[0m'}" "${LESS_TERMCAP_us:=$'\e[1;4;31m'}"
@@ -216,19 +216,29 @@ fuzzy_finders(){
 }
 fuzzy_finders
 #============ Completions ============
-# complete -cf sudo
+ifsource "/usr/share/bash-completion/bash_completion" || ifsource "/etc/bash_completion"
 complete -o default -o bashdefault -F _completion_loader sudo
 complete -o default -o bashdefault -F _completion_loader sudo-rs
 complete -o default -o bashdefault -F _completion_loader doas
+complete -o default -o bashdefault -F _completion_loader pkexec
+complete -o default -o bashdefault -F _completion_loader exec
 complete -o default -o bashdefault -F _completion_loader git
 complete -o default -o bashdefault -F _completion_loader command
 complete -o default -o bashdefault -F _completion_loader type
 complete -o default -o bashdefault -F _completion_loader builtin
-complete -o default -o bashdefault -F _completion_loader exec
+complete -A hostname ssh scp ping dig host nslookup
+complete -A user su login
+complete -A directory cd pushd rmdir
+complete -A file less cat head tail cp mv rm
+complete -F _completion_loader pacman paru yay
+complete -o default -o bashdefault -F _completion_loader sudo systemctl journalctl ip
+complete -F _completion_loader curl wget traceroute
+complete -A file tar unzip unrar 7z
+
 
 run-help() { help "$READLINE_LINE" 2>/dev/null || man "$READLINE_LINE"; }
 bind -m vi-insert -x '"\eh": run-help'
-bind -m emacs -x     '"\eh": run-help'
+bind -m emacs -x '"\eh": run-help'
 
 command -v pay-respects &>/dev/null && eval "$(pay-respects bash)"
 command -v gh &>/dev/null && eval "$(gh completion -s bash)"
