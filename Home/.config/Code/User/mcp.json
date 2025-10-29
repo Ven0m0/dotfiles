@@ -1,13 +1,13 @@
 {
 	"servers": {
 		"read-website-fast": {
-			"command": "npx",
+			"command": "bunx",
 			"args": [
 				"-y",
 				"@just-every/mcp-read-website-fast"
 			],
 			"type": "stdio"
-		},,
+		},
     "Github": {
       "url": "https://api.githubcopilot.com/mcp/",
       "disabled": false,
