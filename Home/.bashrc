@@ -573,4 +573,4 @@ if has zellij; then
   ifsource ~/.config/bash/completions/zellij.bash
 fi
 #============ END ============
-unset -f ifsource prependpath
+unset -f ifsource prependpath configure_prompt dedupe_path
