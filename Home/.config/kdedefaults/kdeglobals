@@ -1,0 +1,40 @@
+[General]
+ColorScheme=BreezeDark
+TerminalApplication=/usr/bin/ghostty --gtk-single-instance
+TerminalService=com.mitchellh.ghostty.desktop
+XftAntialias=true
+XftHintStyle=hintslight
+XftSubPixel=rgb
+fixed=JetBrains Mono,10
+font=Monaspace Neon Frozen,10
+menuFont=Noto Sans,10,SemiCondensed
+#menuFont=Inter,10
+smallestReadableFont=Noto Sans,8,SemiCondensed
+#smallestReadableFont=Inter Tight,8
+toolBarFont=Noto Sans,10,SemiCondensed
+#toolBarFont=Inter,10
+
+[Icons]
+Theme=breeze-dark
+
+[KDE]
+widgetStyle=Breeze
+LookAndFeelPackage=org.kde.breezedark.desktop
+AnimationDurationFactor=0
+
+[KFileDialog Settings]
+Allow Expansion=true
+Automatically select filename extension=true
+Show hidden files=true
+Sort directories first=true
+
+[PreviewSettings]
+EnableRemoteFolderThumbnail=false
+
+[QtQuickRendererSettings]
+ForceGlCoreProfile=true
+RenderLoop=threaded
+SceneGraphBackend=vulkan
+
+[Sounds]
+Enable=false

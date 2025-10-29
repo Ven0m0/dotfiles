@@ -1,0 +1,14 @@
+[org.kde.kdecoration2]
+NoPlugin=false
+library=org.kde.breeze
+theme=Breeze
+
+[Compositing]
+Backend=vk
+
+[Input]
+TabletMode=off
+
+[Xwayland]
+Scale=1
+XwaylandEisNoPrompt=true
