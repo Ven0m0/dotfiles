@@ -85,20 +85,18 @@ MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:p
 export MALLOC_CONF _RJEM_MALLOC_CONF="$MALLOC_CONF"
 # https://github.com/microsoft/mimalloc/blob/main/docs/environment.html
 export MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 MIMALLOC_SHOW_STATS=0 MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_ARENA_EAGER_COMMIT=1
-
-: "${LESS:=}"
 : "${LESS_TERMCAP_mb:=$'\e[1;32m'}" "${LESS_TERMCAP_md:=$'\e[1;32m'}" "${LESS_TERMCAP_me:=$'\e[0m'}" "${LESS_TERMCAP_se:=$'\e[0m'}" "${LESS_TERMCAP_so:=$'\e[01;33m'}" "${LESS_TERMCAP_ue:=$'\e[0m'}" "${LESS_TERMCAP_us:=$'\e[1;4;31m'}"
 export "${!LESS_TERMCAP@}"
-export LESSHISTFILE=- LESSCHARSET=utf-8 LESS='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
+# https://wiki.archlinux.org/title/Color_output_in_console
+export LESSHISTFILE=- LESSCHARSET=utf-8 LESS='less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups --no-edit-warn --mouse --wheel-lines=3'
 
 # Delta / bat integration
 has delta && export GIT_PAGER=delta
 if has bat; then
-  export PAGER='bat -ps --squeeze-limit 0' BAT_PAGER='less -RFQs --use-color --no-histdups --mouse --wheel-lines=2'
+  export PAGER='bat -ps --squeeze-limit 0' BAT_PAGER='less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups --no-edit-warn --mouse --wheel-lines=3'
   export LESSCHARSET='utf-8' LESSHISTFILE=-
-  
   export BAT_STYLE=auto LESSQUIET=1 BATDIFF_USE_DELTA=true BATPIPE=color
-  alias cat='\bat -pp -s --squeeze-limit 0'
+  alias cat='\bat -pps --squeeze-limit 0'
   unalias bat
   has prettybat && alias bat='prettybat'
   if has batman; then
@@ -116,7 +114,7 @@ export GIT_PAGER="${GIT_PAGER:-$PAGER}"
 # Konsole manpages
 export _NROFF_U=1
 
-if has vivid; then export LS_COLORS="$(vivid generate molokai)"; elif has dircolors; then eval "$(dircolors -b)" &>/dev/null; fi
+if has vivid; then export LS_COLORS="$(vivid generate molokai)"; elif has dircolors; then eval "$(dircolors -b)"; fi
 : "${CLICOLOR:=$(tput colors)}"
 export CLICOLOR SYSTEMD_COLORS=1
 
