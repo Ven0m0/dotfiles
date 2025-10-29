@@ -1,0 +1,17 @@
+#[settings]
+#dotfiles_dir = "~/.dotfiles" # adjust to your local clone path
+
+#[profiles.default]
+
+#[profiles.default.dotfiles]
+# Map directories to targets (symlinks). Adjust to match your repo.
+#alacritty = { src = "alacritty", tgt = "~/.config/alacritty" }
+#zsh = { src = "HOME/.config/zsh/zshrc.zsh", tgt = "~/.zshrc" }
+
+# Example variables for templating (used in files with {{var}})
+#[profiles.default.variables]
+#user = "Ven0m0"
+#host = "{{ hostname }}"
+
+# Example per-host override
+#[profiles."arch".dotfiles]
