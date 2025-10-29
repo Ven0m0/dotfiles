@@ -22,32 +22,51 @@ builda = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z bui
 installgit = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata install -f --bins -q --git"
 
 [rust]
-lto = "fat"
 jemalloc = true
+lto = 'fat'
+optimize = true
+strip = true
+validate-mir-opts = 3
+codegen-units = 1
+codegen-units-std = 1
+debuginfo-level-std = 0
+debug = false
+frame-pointers = false
+codegen-backends = ['llvm']
+
+[llvm]
+cflags = "-march=native"
+cxxflags = "-march=native"
+ccache = 'ccache'
+libzstd = true
+optimize = true
+polly = true
+clang = true
 
 [build]
 rustc-wrapper = "sccache"
 incremental = false
-target = ["x86_64-unknown-linux-gnu"]
+#target = ["x86_64-unknown-linux-gnu"]
+compiler-docs = false
+optimized-compiler-builtins = true
+ccache = true
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
 RUSTC_BOOTSTRAP = { value = "1", force = true }
+RUST_PANIC_STRATEGY = { value = "abort", force = true }
 CARGO_CACHE_RUSTC_INFO = { value = "1", force = true }
-RUST_PANIC_STRATEGY = "abort"
 RUSTC_ICE = "0"
 CARGO_LOG = "off"
 RUSTDOC_LOG = "off"
 RUSTC_LOG = "off"
-#MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
-#_RJEM_MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
-# tuning for high-throughput, multi-threaded applications. experimental
-MALLOC_CONF = { value = "tcache:true,metadata_thp:auto,background_thread:true,narenas:2x", force = true }
-_RJEM_MALLOC_CONF = { value = "tcache:true,metadata_thp:auto,background_thread:true,narenas:2x", force = true }
+MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
+_RJEM_MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
 MIMALLOC_ALLOW_LARGE_OS_PAGES = "1"
 ZSTD_NBTHREADS = "0"
 RUST_LIB_BACKTRACE = "0"
 #RUST_BACKTRACE = "1"
+CMAKE_BUILD_TYPE = "Release"
 
 [cache]
 auto-clean-frequency = "7 days"
@@ -97,47 +116,55 @@ rpath = false
 
 [target.x86_64-unknown-linux-gnu]
 linker = "clang"
+ar = 'llvm-ar'
+ranlib = 'llvm-ranlib'
 rustflags = [
-  "-C", "target-cpu=native",
-  "-C", "llvm-args=-enable-dfa-jump-thread",
-  "-Z", "tune-cpu=native",
-  "-Z", "precise-enum-drop-elaboration=yes",
-  "-C", "link-args=-fuse-ld=mold --threads",
-  "-C", "linker-plugin-lto",
+  "-C", "target-cpu=native","-Z", "tune-cpu=native",
+  "-C", "llvm-args=-enable-dfa-jump-thread","-Z", "precise-enum-drop-elaboration=yes",
+  "-C", "link-args=-fuse-ld=mold --threads","-C", "linker-plugin-lto",
   "-Z", "threads=8"
 ]
 [target.aarch64-linux-android]
 linker = "clang"
 rustflags = [
-  "-C", "target-cpu=native",
-  "-C", "llvm-args=-enable-dfa-jump-thread",
-  "-Z", "tune-cpu=native",
-  "-Z", "precise-enum-drop-elaboration=yes",
-  "-C", "link-args=-fuse-ld=mold --threads",
-  "-C", "linker-plugin-lto",
+  "-C", "target-cpu=native","-Z", "tune-cpu=native",
+  "-C", "llvm-args=-enable-dfa-jump-thread","-Z", "precise-enum-drop-elaboration=yes",
+  "-C", "link-args=-fuse-ld=mold --threads","-C", "linker-plugin-lto",
+  "-Z", "threads=8"
 ]
 
 [profile.dev]
 opt-level = 0
-codegen-units = 256
-incremental = true
+codegen-units = 16
 debug = "line-tables-only"
 split-debuginfo = "unpacked"
 
 [profile.dev.package."*"]
 debug = false
 
-[profile.debug]
-inherits = "dev"
-debug = "full"
-
 [profile.release.build-override]
 inherits = "release"
 codegen-units = 16
 
+[profile.debug]
+inherits = "dev"
+debug = "full"
+
 [target.'cfg(target_os = "linux")']
 linker = "clang"
-rustflags = ["-C", "link-arg=-fuse-ld=mold"]
+rustflags = [
+  "-C", "target-cpu=native","-Z", "tune-cpu=native",
+  "-C", "llvm-args=-enable-dfa-jump-thread","-Z", "precise-enum-drop-elaboration=yes",
+  "-C", "link-args=-fuse-ld=mold --threads","-C", "linker-plugin-lto",
+  "-Z", "threads=8"
+]
+[target.'cfg(all())']
+rustflags = [
+  "-C", "target-cpu=native","-Z", "tune-cpu=native",
+  "-C", "llvm-args=-enable-dfa-jump-thread","-Z", "precise-enum-drop-elaboration=yes",
+  "-C", "link-args=-fuse-ld=mold --threads","-C", "linker-plugin-lto",
+  "-Z", "threads=8"
+]
 
 [term]
 quiet = false
