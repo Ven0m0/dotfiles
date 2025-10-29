@@ -29,8 +29,6 @@ jemalloc = true
 rustc-wrapper = "sccache"
 incremental = false
 target = ["x86_64-unknown-linux-gnu"]
-# Let sccache manage concurrency across all rustc invocations.
-jobs = 0
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
