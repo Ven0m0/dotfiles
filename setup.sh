@@ -8,90 +8,89 @@ cd -P -- "$(cd -P -- "${BASH_SOURCE[0]%/*}" && echo "$PWD")" || exit 1
 # 1. Installs AUR helper (paru) & essential packages.
 # 2. Clones dotfiles repo with yadm.
 # 3. Runs yadm bootstrap for user-level setup.
-# 4. Uses stow to link system-wide configs (/etc, /usr).
+# 4. Uses tuckr to link system-wide configs (/etc, /usr).
 #--- Helpers ---#
 BLK=$'\e[30m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
 BLU=$'\e[34m' MGN=$'\e[35m' CYN=$'\e[36m' WHT=$'\e[37m'
 LBLU=$'\e[38;5;117m' PNK=$'\e[38;5;218m' BWHT=$'\e[97m'
 DEF=$'\e[0m' BLD=$'\e[1m'
 has(){ command -v "$1" &>/dev/null; }
-xecho(){ printf '%b\n' "${BLD}${BLU}==>${BWHT} $*${DEF}"; }
-warn(){ printf '%b\n' "${BLD}${YLW}==> WARNING:${BWHT} $*${DEF}"; }
-die(){ printf '%b\n' "${BLD}${RED}==> ERROR:${BWHT} $8${DEF}" >&2; exit 1; }
-
+xecho(){ printf '%b\n' "${BLD}${BLU}==>${BWHT} $1${DEF}"; }
+warn(){ printf '%b\n' "${BLD}${YLW}==> WARNING:${BWHT} $1${DEF}"; }
+die(){ printf '%b\n' "${BLD}${RED}==> ERROR:${BWHT} $1${DEF}" >&2; exit 1; }
 #--- Pre-flight Checks ---#
 [[ $EUID -eq 0 ]] && die "Run as a regular user, not root."
 ! has sudo && die "Sudo is required. Please install it first."
 ! ping -c 1 archlinux.org &>/dev/null && die "No internet connection."
-
 #--- Configuration ---#
 readonly DOTFILES_REPO="https://github.com/Ven0m0/dotfiles.git"
-readonly DOTFILES_DIR="${HOME}/.local/share/yadm/repo.git"
-readonly STOW_DIR="${HOME}/.local/share/yadm/repo.git"
-readonly PARU_OPTS="--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade --nocheck"
-
+readonly DOTFILES_DIR="${HOME}/.local/share/yadm/repo.git" # yadm's default git dir
+readonly TUCKR_DIR="${DOTFILES_DIR}" # Source for tuckr packages
+readonly PARU_OPTS="--needed --noconfirm --skipreview --sudoloop --batchinstall"
 #--- Main Logic ---#
 main(){
+  setup_aur
   install_packages
   setup_dotfiles
-  stow_system_configs
+  tuckr_system_configs
   final_steps
 }
-
 #--- Functions ---#
+setup_aur(){
+  if ! has paru; then
+    xecho "Installing AUR helper (paru)..."
+    sudo pacman -S --needed --noconfirm base-devel git
+    local tmpdir; tmpdir=$(mktemp -d)
+    git clone --depth=1 https://aur.archlinux.org/paru-bin.git "$tmpdir"
+    (cd "$tmpdir" && makepkg -si --noconfirm) || die "paru installation failed."
+    rm -rf "$tmpdir"
+  fi
+  xecho "AUR helper (paru) is ready."
+}
 install_packages(){
   xecho "Installing packages from official and AUR repositories..."
+  # From your yadm bootstrap + tuckr for system files
   local pkgs=(
     git gitoxide aria2 curl zsh fd sd ripgrep bat jq
-    zoxide starship fzf stow yadm
+    zoxide starship fzf yadm tuckr-bin
   )
   if has paru; then
     paru -Syuq $PARU_OPTS "${pkgs[@]}"
   else
-    sudo pacman -Syuq --noconfirm --needed "${pkgs[@]}"
+    die "paru not found after installation attempt."
   fi
 }
-
 setup_dotfiles(){
   has yadm || die "yadm command not found. Package installation failed."
   if [[ ! -d "$DOTFILES_DIR" ]]; then
     xecho "Cloning dotfiles with yadm..."
     yadm clone --bootstrap "$DOTFILES_REPO"
   else
-    xecho "Dotfiles repo already exists. Pulling latest changes..."
-    yadm pull
-    xecho "Re-running bootstrap..."
-    yadm bootstrap
+    xecho "Dotfiles repo exists. Pulling latest changes & re-running bootstrap..."
+    yadm pull && yadm bootstrap
   fi
 }
-stow_system_configs(){
-  xecho "Stowing system-wide configs for /etc and /usr..."
-  if ! has stow; then
-    die "stow command not found. Cannot link system configs."
-  fi
-  if [[ ! -d "$STOW_DIR" ]]; then
-    die "Dotfiles directory not found at $STOW_DIR."
-  fi
-  # Stow packages are the top-level dirs in the repo to be stowed
-  local stow_pkgs=(etc usr)
-  for pkg in "${stow_pkgs[@]}"; do
-    if [[ -d "${STOW_DIR}/${pkg}" ]]; then
-      xecho "Stowing '${pkg}' to target '/'..."
-      # -v: verbose, -R: restow, -t: target
-      sudo stow -vR -d "$STOW_DIR" -t / "$pkg"
+tuckr_system_configs(){
+  xecho "Linking system-wide configs for /etc and /usr with tuckr..."
+  has tuckr || die "tuckr command not found. Cannot link system configs."
+  [[ -d "$TUCKR_DIR" ]] || die "Dotfiles directory not found at $TUCKR_DIR."
+  # tuckr packages are the top-level dirs in the repo to be linked
+  local tuckr_pkgs=(etc usr)
+  for pkg in "${tuckr_pkgs[@]}"; do
+    if [[ -d "${TUCKR_DIR}/${pkg}" ]]; then
+      xecho "Linking '${pkg}' to target '/'..."
+      # -d: dotfiles_path (source), -t: target_path
+      # Run with sudo to write symlinks to /etc, /usr
+      sudo tuckr link -d "$TUCKR_DIR" -t / "$pkg"
     else
-      warn "Stow package '${pkg}' not found in repo, skipping."
+      warn "tuckr package '${pkg}' not found in repo, skipping."
     fi
   done
 }
-
 final_steps(){
   xecho "Setup complete. Some changes may require a reboot or new login session."
-  if [[ "$SHELL" != "/bin/zsh" ]]; then
-    warn "Your shell has been set to Zsh. Please log out and back in to use it."
-  fi
+  [[ "$SHELL" != "/bin/zsh" ]] && warn "Your shell is set to Zsh. Log out and back in to use it."
   xecho "Run 'yadm status' to check the state of your dotfiles."
 }
-
 #--- Execution ---#
 main "$@"
