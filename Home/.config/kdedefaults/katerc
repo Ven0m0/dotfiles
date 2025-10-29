@@ -1,10 +1,3 @@
-[ColoredBrackets]
-color1=#1275ef
-color2=#f83c1f
-color3=#9dba1e
-color4=#e219e2
-color5=#37d21c
-
 [General]
 Allow Tab Scrolling=true
 Auto Hide Tabs=false
@@ -88,10 +81,6 @@ Use Editor Config=true
 Word Wrap=false
 Word Wrap Column=80
 
-[KTextEditor Editor]
-Encoding Prober Type=1
-Fallback Encoding=ISO 8859-6
-
 [KTextEditor Renderer]
 Animate Bracket Matching=false
 Auto Color Theme Selection=true
@@ -99,8 +88,8 @@ Color Theme=Breeze Dark
 Line Height Multiplier=1
 Show Indentation Lines=false
 Show Whole Bracket Expression=false
-Text Font=Hack,10,-1,7,400,0,0,0,0,0,0,0,0,0,0,1
-Text Font Features=
+Text Font=JetBrainsMono Nerd Font Mono,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+Text Font Features=liga=1,calt=1
 Word Wrap Marker=false
 
 [KTextEditor View]
@@ -134,7 +123,6 @@ Line Numbers=true
 Max Clipboard History Entries=20
 Maximum Search History Size=100
 Mouse Paste At Cursor Position=false
-Multiple Cursor Modifier=134217728
 Persistent Selection=false
 Scroll Bar Marks=false
 Scroll Bar Mini Map All=true
@@ -142,7 +130,6 @@ Scroll Bar Mini Map Width=60
 Scroll Bar MiniMap=false
 Scroll Bar Preview=true
 Scroll Past End=true
-Search/Replace Flags=1036
 Shoe Line Ending Type in Statusbar=false
 Show Documentation With Completion=true
 Show File Encoding=false
@@ -154,7 +141,7 @@ Show Statusbar Highlighting Mode=true
 Show Statusbar Input Mode=true
 Show Statusbar Line Column=true
 Show Statusbar Tab Settings=true
-Show Word Count=false
+Show Word Count=true
 Smart Copy Cut=true
 Statusbar Line Column Compact Mode=true
 Text Drag And Drop=true
@@ -170,58 +157,11 @@ AutoSyncronizeMode=1
 KonsoleEscKeyBehaviour=true
 KonsoleEscKeyExceptions=vi,vim,nvim,git
 RemoveExtension=false
-RunPrefix=
 SetEditor=false
 
-[MainWindow]
-2 screens: Height=771
-2 screens: Width=1152
-2 screens: Window-Maximized=true
-
-[Notification Messages]
-kate_close_modonhd_3=false
-
-[Snippets]
-enabledRepositories=/home/ven0m0/.local/share//ktexteditor_snippets/ghns/HTML5 Tags Autocomplete.xml,/home/ven0m0/.local/share//ktexteditor_snippets/ghns/Markdown Snippets.xml,/home/ven0m0/.local/share//ktexteditor_snippets/ghns/162153-Bash Snippets Brazilian Portuguese-1.0.xml,/home/ven0m0/.local/share/ktexteditor_snippets/data/Bash.xml,/home/ven0m0/.local/share/ktexteditor_snippets/ghns/HTML5 Tags Autocomplete.xml,/home/ven0m0/.local/share/ktexteditor_snippets/ghns/Markdown Snippets.xml
-
-[Snippets][repository /home/ven0m0/.local/share/ktexteditor_snippets/data/Bash.xml]
-shortcut Ask=
-shortcut Clear-cache=
-shortcut Command=
-shortcut Curl=
-shortcut EOF=
-shortcut Echo=
-shortcut Git-clone=
-shortcut Header=
-shortcut Pacman=
-shortcut Printf=
-shortcut Root=
-shortcut Silence=
-shortcut Silence-posix=
-shortcut Start=
-shortcut Stderr=
-shortcut Sudo=
-shortcut Template=
-
-[filebrowser]
-toolbar actions=back,forward,sync_dir,configure
-
-[filetree]
-editShade=30,78,103
-listMode=false
-middleClickToClose=false
-shadingEnabled=true
-showCloseButton=false
-showFullPathOnRoots=false
-showToolbar=true
-sortRole=0
-viewShade=77,46,91
-
 [lspclient]
-AllowedServerCommandLines=
 AutoHover=true
 AutoImport=true
-BlockedServerCommandLines=
 CompletionDocumentation=true
 CompletionParens=true
 Diagnostics=true
@@ -248,7 +188,6 @@ autorepository=git
 gitStatusDoubleClick=1
 gitStatusSingleClick=0
 index=false
-indexDirectory=
 multiProjectCompletion=false
 multiProjectGoto=false
 restoreProjectsForSessions=false
