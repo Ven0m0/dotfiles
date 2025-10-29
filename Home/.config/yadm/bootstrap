@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+export LC_ALL=C LANG=C
+has(){ command -v "$1" &>/dev/null; }
+apt_i(){ sudo apt-get update -y && sudo apt-get install -y "$@"; }
+pac_i(){ if has paru; then paru --needed --noconfirm --skipreview -Sq "$@"; elif has yay; then yay --needed --noconfirm --skipreview -Sq "$@"; else sudo pacman --needed --noconfirm -Sq "$@"; fi; }
+
+# Base deps
+if has pacman; then pac_i git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf; fi
+if has apt-get; then apt_i git curl zsh fd-find ripgrep bat jq fzf && has zoxide || curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash -s -- -y; fi
+
+# Arch extras (CachyOS)
+has pacman && pac_i stow || :
+
+# Wayland-friendly defaults (edit to taste)
+mkdir -p ~/.config ~/bin
+: "${SHELL:=/bin/zsh}"
+chsh -s "$(command -v zsh)" "$USER" || :
+
+# Example: install starship preset
+has starship && [[ ! -f ~/.config/starship.toml ]] && starship preset nerd-font-symbols -o ~/.config/starship.toml || :
+
+# Example: zoxide init hook (zsh)
+if has zoxide && [[ -n "${ZDOTDIR:-}" || -d ~/.config/zsh ]]; then
+  grep -q 'zoxide init' "${ZDOTDIR:-$HOME}/.zshrc" 2>/dev/null || {
+    {
+      echo '# zoxide'
+      echo 'eval "$(zoxide init --cmd cd zsh)"'
+    } >> "${ZDOTDIR:-$HOME}/.zshrc"
+  }
+fi
+
+# Optional: host/os-specific setup via yadm alt files if needed
+# See: https://yadm.io/docs/alternate-files
+
+exit 0
