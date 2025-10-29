@@ -32,8 +32,6 @@ ifsource /usr/share/bash-preexec/bash-preexec.sh
 
 has mise && eval "$(mise activate -yq bash)"
 
-export BUN_INSTALL="$HOME/.bun"
-
 #============ History / Prompt basics ============
 # PS1='[\u@\h|\w] \$' # bash-prompt-generator.org
 # https://github.com/glabka/configs/blob/master/home/.bashrc
@@ -62,7 +60,8 @@ prependpath "${HOME}/.root/usr/bin"
 prependpath "${HOME}/.local/bin"
 prependpath "${HOME}/.bin"
 prependpath "${HOME}/bin"
-prependpath ${BUN_INSTALL:-$HOME/.bun}/bin"
+export BUN_INSTALL="$HOME/.bun"
+prependpath "${BUN_INSTALL:-$HOME/.bun}/bin"
 
 # General
 SUDO=doas
@@ -109,7 +108,6 @@ if has bat; then
   fi
   has batpipe && eval "$(SHELL=bash batpipe)"
 else
-  alias cat='cat -sn'
   export PAGER="${PAGER:-less}"
 fi
 export GIT_PAGER="${GIT_PAGER:-$PAGER}"
