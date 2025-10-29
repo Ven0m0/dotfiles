@@ -5,9 +5,8 @@
 --squeeze-limit 1
 --strip-ansi auto
 --style auto
-#--theme ansi
 --paging auto
---pager="less -RFKQiqs --use-color --no-histdups --no-edit-warn"
+--pager="less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups --no-edit-warn"
 --wrap auto
 --decorations auto
 --color auto
