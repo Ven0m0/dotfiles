@@ -1,42 +1,29 @@
-# Include any additional configuration file(s)
-# [include] sections are processed in the order you write them
 # Files in $CONFIG_DIR/topgrade.d/ are automatically included before this file
 [include]
 # paths = ["/etc/topgrade.toml"]
-
 [misc]
 # Run `sudo -v` to cache credentials at the start of the run
 pre_sudo = true
-
 # Sudo command to be used
-sudo_command = "sudo-rs"
-
+#sudo_command = "sudo"
 # Disable specific steps - same options as the command line flag
 disable = ["config_update", "micro", "uv", "pipx", "shell", "yazi"]
 # Ignore failures for these steps
 ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi"]
-
 # Don't ask for confirmations
 assume_yes = true
-
 # Do not ask to retry failed steps (default: false)
 no_retry = true
-
 # Cleanup temporary or old files (default: false)
 cleanup = true
-
 # The Bash-it branch to update (default: "stable")
 # bashit_branch = "stable"
-
 # Run specific steps - same options as the command line flag
 # only = ["system", "emacs"]
-
 # Skip sending a notification at the end of a run (default: false)
 skip_notify = true
-
 # Whether to self update
 no_self_update = true
-
 [pre_commands]
 # "Emacs Snapshot" = "rm -rf ~/.emacs.d/elpa.bak && cp -rl ~/.emacs.d/elpa ~/.emacs.d/elpa.bak"
 
@@ -80,67 +67,51 @@ enable_tlmgr = true
 nix_arguments = "--flake"
 # nix_env_arguments = "--prebuilt-only"
 # home_manager_arguments = ["--flake", "file"]
-
 [git]
 # How many repos to pull at max in parallel
 max_concurrency = 8
-
 # Don't pull the predefined git repos
 # pull_predefined = false
-
 # Arguments to pass Git when pulling Repositories
 arguments = "-r -p --autostash"
 
 [windows]
 accept_all_updates = true
-winget_install_silently = true
+winget_silent_install = true
 self_rename = true
-
 [npm]
 use_sudo = true
-
 [yarn]
 use_sudo = true
-
 [deno]
 # Upgrade deno executable to the given version.
 # version = "stable"
-
 [vim]
 # For `vim-plug`, execute `PlugUpdate!` instead of `PlugUpdate`
 # force_plug_update = true
-
 [firmware]
 # Offer to update firmware
 upgrade = true
-
 [vagrant]
 # power on vagrant boxes if needed
 # power_on = true
-
 # Always suspend vagrant boxes instead of powering off
 # always_suspend = true
-
 [flatpak]
 # Use sudo for updating the system-wide installation
 use_sudo = true
-
 [distrobox]
-use_sudo = true
+use_root = true
 # containers = ["archlinux-latest"]
-
 [containers]
 # Specify the containers to ignore while updating (Wildcard supported)
 # ignored_containers = ["ghcr.io/rancher-sandbox/rancher-desktop/rdx-proxy:latest", "docker.io*"]
 # Specify the runtime to use for containers (default: "docker", allowed values: "docker", "podman")
 # runtime = "podman"
-
 [lensfun]
 use_sudo = true
-
 [zigup]
 cleanup = true
-
 [vscode]
 # If this is set and is a non-empty string, it specifies the profile the
 # extensions should be updated for. (default: this won't be set by default)
