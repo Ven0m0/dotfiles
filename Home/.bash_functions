@@ -10,8 +10,7 @@
 mkcd() { mkdir -p -- "$1" && cd -- "$1" || exit; }
 
 # cd and list contents
-cdls() { cd -- "$1" && ls; }
-cdla() { cd -- "$1" && ls -A; }
+cdls() { cd -- "$1" && ls -A; }
 
 # Go up N directories
 up() {
