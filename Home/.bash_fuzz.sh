@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-
-
 fzf-man(){
 	MAN="/usr/bin/man"
 	if [ -n "$1" ]; then
@@ -107,42 +105,31 @@ drmm(){ docker ps -a | sed 1d | fzf -q "$1" --no-sort -m --tac | awk '{ print $1
 drmi(){ docker images | sed 1d | fzf -q "$1" --no-sort -m --tac | awk '{ print $3 }' | xargs -r docker rmi; }
 
 
-fuzzy_pacman(){ 
-  local sel SHELL=bash; sel=$(comm -23 <(pacman -Slq | sort) <(pacman -Qq | sort) |
-    cat - <(command pacman -Qq | awk '{printf "%-30s \033[32m[installed]\033[0m\n", $1}') |
-    fzf --ansi -m --style=full --cycle --border --height=~100% --info=inline -0 --layout=reverse-list --no-mouse \
-      --preview '
-        pacman -Si $(awk "{print \$1}" <<< {}) 2>/dev/null | bat -plini | \
-        sed -r "s/(Installed Size|Name|Version|Depends On|Optional Deps|Maintainer|Repository|Licenses|URL)/\x1b[96;1m\1\x1b[0m/g"
-      ' --preview-window=right:60%:wrap | awk '{print $1}' | paste -sd " " -)
-  [[ -n $sel ]] && { printf '%b\n' "\e[32mInstalling packages:\e[0m $sel"; \
-    sudo pacman --noconfirm --needed -S ${sel// / }; } || printf '%s\n' "No packages selected."
+fuzzy_pacman(){
+  local sel; sel=$(comm -23 <(pacman -Slq|sort) <(pacman -Qq|sort)|
+    cat - <(pacman -Qq|awk '{printf "%-30s \033[32m[installed]\033[0m\n",$1}')|
+    fzf --ansi -m --cycle --border --height=~100% --info=inline -0 --layout=reverse-list --no-mouse \
+      --preview 'pacman -Si $(awk "{print \$1}"<<<{})|bat -plini|sed -r "s/(Installed Size|Name|Version|Depends On|Optional Deps|Maintainer|Repository|Licenses|URL)/\x1b[96;1m\1\x1b[0m/g"' \
+      --preview-window=right:60%:wrap|awk '{print $1}'|paste -sd" "-)
+  [[ -n $sel ]] && {printf '\e[32mInstalling:\e[0m %s\n' "$sel";sudo pacman --noconfirm --needed -S $sel;}||echo "❌ None selected"
 }
-alias pacf='fuzzy_pacman'
+alias pacf=fuzzy_pacman
 
-fusky_pacman(){ 
-  local sel SHELL=bash; sel=$(comm -23 <(pacman -Slq | sort) <(pacman -Qq | sort) |
-    cat - <(pacman -Qq | awk '{printf "%-30s \033[32m[installed]\033[0m\n", $1}') |
+fusky_pacman(){
+  local sel; sel=$(comm -23 <(pacman -Slq|sort) <(pacman -Qq|sort)|
+    cat - <(pacman -Qq|awk '{printf "%-30s \033[32m[installed]\033[0m\n",$1}')|
     sk --ansi -m --cycle --border --info=inline --height=~100% -0 --layout=reverse-list --no-mouse \
-      --preview '
-        pacman -Si $(awk "{print \$1}" <<< {}) 2>/dev/null | bat -plini | \
-        sed -r "s/(Installed Size|Name|Version|Depends On|Optional Deps|Maintainer|Repository|Licenses|URL)/\x1b[96;1m\1\x1b[0m/g"
-      ' --preview-window=right:60%:wrap | awk '{print $1}' | paste -sd " " -)
-  [[ -n $sel ]] && { printf '%b\n' "\e[32mInstalling packages:\e[0m $sel"; \
-    sudo pacman --noconfirm --needed -S ${sel// / }; } || printf '%s\n' "No packages selected."
+      --preview 'pacman -Si $(awk "{print \$1}"<<<{})|bat -plini|sed -r "s/(Installed Size|Name|Version|Depends On|Optional Deps|Maintainer|Repository|Licenses|URL)/\x1b[96;1m\1\x1b[0m/g"' \
+      --preview-window=right:60%:wrap|awk '{print $1}'|paste -sd" "-)
+  [[ -n $sel ]] && {printf '\e[32mInstalling:\e[0m %s\n' "$sel";sudo pacman --noconfirm --needed -S $sel;}||echo "❌ None selected"
 }
-alias pacsk='fusky_pacman'
+alias pacsk=fusky_pacman
 
-# Display online manpages using curl
 manol(){
-  [[ $# -eq 0 ]] && echo -e "Usage: manol [section] <page>\nExample: manol 3 printf" >&2; return 1
-  local page section url base_url="https://man.archlinux.org/man"
-  if [[ $# -eq 1 ]]; then
-    page="$1"; url="${base_url}/${page}"
-  else
-    section="$1" page="$2"; url="${base_url}/${page}.${section}"
-  fi
-  curl -sfLZ --http3 --tlsv1.3 --compressed --tls-earlydata --tcp-fastopen --tcp-nodelay "$url" | bat -plman
+  [[ $# -eq 0 ]] && {echo "Usage: manol [section] <page>">&2;return 1;}
+  local url="https://man.archlinux.org/man/${2:+$2.$1}"
+  url="${url:-https://man.archlinux.org/man/$1}"
+  curl -sfLZ --http3 --tlsv1.3 --compressed "$url"|bat -plman
 }
 
 # Explain any bash command via mankier.com manpage API
