@@ -137,32 +137,25 @@ alias pacsk='fusky_pacman'
 
 # Display online manpages using curl
 manol(){
-  if [[ $# -eq 0 ]]; then
-    echo "Usage: manol [section] <page>" >&2
-    echo "Example: manol 3 printf" >&2; return 1
-  fi
-  local page section url
-  local base_url="https://man.archlinux.org/man"
-  local pager="${PAGER:-less}"
+  [[ $# -eq 0 ]] && echo -e "Usage: manol [section] <page>\nExample: manol 3 printf" >&2; return 1
+  local page section url base_url="https://man.archlinux.org/man"
   if [[ $# -eq 1 ]]; then
-    page="$1"
-    url="${base_url}/${page}"
+    page="$1"; url="${base_url}/${page}"
   else
-    section="$1" page="$2"
-    url="${base_url}/${page}.${section}"
+    section="$1" page="$2"; url="${base_url}/${page}.${section}"
   fi
-  curl -sL --compressed "$url" | "$pager"
+  curl -sfLZ --http3 --tlsv1.3 --compressed --tls-earlydata --tcp-fastopen --tcp-nodelay "$url" | bat -plman
 }
 
 # Explain any bash command via mankier.com manpage API
 explain() {
   if [ "$#" -eq 0 ]; then
     while read -r -p "Command: " cmd; do
-      curl -Gs "https://www.mankier.com/api/explain/?cols=$(tput cols)" --data-urlencode "q=$cmd"
+      curl -sfG "https://www.mankier.com/api/explain/?cols=$(tput cols)" --data-urlencode "q=$cmd"
     done
     echo "Bye!"
   elif [ "$#" -eq 1 ]; then
-    curl -Gs "https://www.mankier.com/api/explain/?cols=$(tput cols)" --data-urlencode "q=$1"
+    curl -sfG "https://www.mankier.com/api/explain/?cols=$(tput cols)" --data-urlencode "q=$1"
   else
     echo "Usage"
     echo "explain                  interactive mode."
