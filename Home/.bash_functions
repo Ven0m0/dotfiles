@@ -4,84 +4,32 @@
 # -----------------------------------------------------------------------------
 # General Purpose Functions
 # -----------------------------------------------------------------------------
-
 # Update dotfiles git repository
-dotupdate() {
+dotupdate(){
   if [[ -d "${HOME}/.dotfiles" ]]; then
-    (
-      cd "${HOME}/.dotfiles" &&
-      git pull --rebase --autostash &&
-      printf '%s\n' "Updated dotfiles"
-    )
+    cd "${HOME}/.dotfiles" && git pull --rebase --autostash && printf '%s\n' "Updated dotfiles"
   else
     printf '%s\n' "Failed to update dotfiles"
   fi
 }
 
 # Setup SSH keys and add to ssh-agent and GitHub
-Setup-ssh() {
-  local email="${email:-ven0m0.wastaken@gmail.com}"
-  local key_path="${HOME}/.ssh/id_ed25519"
-  
-  if [[ ! -f "$key_path" ]]; then
-    ssh-keygen -t ed25519 -C "$email" -f "$key_path"
-  fi
-  
+Setup-ssh(){
+  local email="${email:-ven0m0.wastaken@gmail.com}" key_path="${HOME}/.ssh/id_ed25519"
+  [[ -f "$key_path" ]] || ssh-keygen -t ed25519 -C "$email" -f "$key_path"
   eval "$(ssh-agent -s)"
   ssh-add "$key_path"
-  
-  if command -v gh &>/dev/null; then
-    gh ssh-key add "${key_path}.pub" --type signing
-  fi
-
+  command -v gh &>/dev/null && gh ssh-key add "${key_path}.pub" --type signing
   local hosts=("dietpi@192.168.178.81" "root@192.168.178.81" "dietpi@192.168.178.86" "root@192.168.178.86")
   for host in "${hosts[@]}"; do
     ssh-copy-id -i "${key_path}.pub" "$host"
   done
 }
 
-# Explain any bash command via mankier.com manpage API
-explain() {
-  if [ "$#" -eq 0 ]; then
-    while read -r -p "Command: " cmd; do
-      curl -Gs "https://www.mankier.com/api/explain/?cols=$(tput cols)" --data-urlencode "q=$cmd"
-    done
-    echo "Bye!"
-  elif [ "$#" -eq 1 ]; then
-    curl -Gs "https://www.mankier.com/api/explain/?cols=$(tput cols)" --data-urlencode "q=$1"
-  else
-    echo "Usage"
-    echo "explain                  interactive mode."
-    echo "explain 'cmd -o | ...'   one quoted command to explain it."
-  fi
-}
-
-# Display online manpages using curl
-manol() {
-  if [[ $# -eq 0 ]]; then
-    echo "Usage: manol [section] <page>" >&2
-    echo "Example: manol 3 printf" >&2
-    return 1
-  fi
-  local page section url
-  local base_url="https://man.archlinux.org/man"
-  local pager="${PAGER:-less}"
-  if [[ $# -eq 1 ]]; then
-    page="$1"
-    url="${base_url}/${page}"
-  else
-    section="$1"
-    page="$2"
-    url="${base_url}/${page}.${section}"
-  fi
-  curl --silent --location --user-agent "curl-manpage-viewer/1.0" --compressed "$url" | "$pager" -R
-}
-
 # Fancy man pages with bat
-fman() {
+fman(){
   local -a less_env=(LESS_TERMCAP_md=$'\e[01;31m' LESS_TERMCAP_me=$'\e[0m' LESS_TERMCAP_us=$'\e[01;32m' LESS_TERMCAP_ue=$'\e[0m' LESS_TERMCAP_so=$'\e[45;93m' LESS_TERMCAP_se=$'\e[0m')
   local -a bat_env=(LANG='C.UTF-8' MANROFFOPT='-c' BAT_STYLE='full' BAT_PAGER="less -RFQs --use-color --no-histdups --mouse --wheel-lines=2")
-  
   if command -v batman &>/dev/null; then
     env "${bat_env[@]}" "${less_env[@]}" command batman "$@"
   elif command -v bat &>/dev/null; then
@@ -92,16 +40,14 @@ fman() {
 }
 
 # Get help for a command with bat
-bathelp() {
-  "$@" --help 2>&1 | command bat -splhelp --squeeze-limit 0
-}
+bathelp(){ "$@" --help 2>&1 | bat -plhelp; }
 
 # -----------------------------------------------------------------------------
 # Arch Linux Specific Functions
 # -----------------------------------------------------------------------------
 
 # Display installed package sizes
-pacsize() {
+pacsize(){
   local pager="${PAGER:-less}"
   if command -v pacinfo &>/dev/null; then
     pacman -Qqt | pacinfo --removable-size | awk '/^Name:/ { name = $2 } /^Installed Size:/ { size = $3$4 } /^$/ { print size" "name } ' | sort -uk2 | sort -rh | "$pager"
@@ -156,7 +102,7 @@ pac_fuzzy(){
 # -----------------------------------------------------------------------------
 
 # Apply a patch from a GitHub commit URL
-ghpatch() {
+ghpatch(){
   local url="${1:?usage: ghpatch <commit-url>}" patch
   patch="$(mktemp)" || return 1
   trap 'rm -f "$patch"' EXIT
@@ -170,7 +116,7 @@ ghpatch() {
 }
 
 # Perform maximum git maintenance
-git_maintain_max() {
+git_maintain_max(){
   echo "Git gc"
   git gc --prune=now --aggressive --cruft
   echo "Git repack"
@@ -184,27 +130,22 @@ git_maintain_max() {
 # -----------------------------------------------------------------------------
 
 # Open the selected file in the default editor
-fe() {
+fe(){
   local IFS=$'\n' line; local files=()
   while IFS='' read -r line; do files+=("$line"); done < <(fzf -q "$1" -m --inline-info -1 -0 --layout=reverse-list)
   [[ -n "${files[0]}" ]] && ${EDITOR:-nano} "${files[@]}"
 }
 
 # cd to the selected directory
-fcd() {
-  local dir
-  dir=$(find "${1:-.}" -path '*/\.*' -prune \
-      -o -type d -print 2> /dev/null | fzf +m) \
-      && cd "$dir" || return 1
-}
+fcd(){ local dir; dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -print | fzf +m) && cd "$dir" || return 1; }
 
 # Cat^2 (cat for files and directories)
-catt() {
+catt(){
   for i in "$@"; do
     if [[ -d "$i" ]]; then
-      ls "$i"
+      eza -al "$i"
     else
-      cat "$i"
+      bat -p "$i"
     fi
   done
 }
@@ -212,56 +153,36 @@ catt() {
 # -----------------------------------------------------------------------------
 # Miscellaneous
 # -----------------------------------------------------------------------------
-
 # Deduplicate an array
-_bash-it-array-dedup() {
-  printf '%s\n' "$@" | sort -u
-}
+_array-dedup(){ printf '%s\n' "$@" | sort -u; }
 
 # -----------------------------------------------------------------------------
 # Aliases
 # -----------------------------------------------------------------------------
 
 alias _='sudo'
-alias edit='${EDITOR:-${ALTERNATE_EDITOR:-nano}}'
+alias edit='${EDITOR:-micro}'
 alias pager='${PAGER:-less}'
-alias q='exit'
-alias h='history'
-alias rd='rmdir'
-alias md='mkdir -p'
-alias rmd='rm -rf'
-alias bhelp='bathelp'
-alias g='git'
 
-gh() {
+gh(){
 	[[ $( command git rev-parse --is-inside-work-tree ) ]] || return
-	command git log --date=relative --format="%C(auto)%h%d %C(white)%s %C(cyan)%an %C(black)%C(bold)%cd%C(auto)" --graph --color=always | 
-	command fzf --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
+	git log --date=relative --format="%C(auto)%h%d %C(white)%s %C(cyan)%an %C(black)%C(bold)%cd%C(auto)" --graph --color=always | 
+	fzf --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
 		--header 'Press CTRL-S to toggle sort' \
 		--preview='grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always | delta -n' \
 		--bind 'enter:execute(grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always | delta -n | less -R)'
-		# --preview='grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always' | grep -o "[a-f0-9]\{7,\}"
-		# --preview="git show {1} --color=always" | grep -o "[a-f0-9]\{7,\}"
+		--preview='grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always' | grep -o "[a-f0-9]\{7,\}"
+		--preview="git show {1}" | grep -o "[a-f0-9]\{7,\}"
 }
 
-
-
 # Search for and install packages with an fzf preview
-paruf() {
-  if [[ -z "$1" ]]; then
-    echo "Usage: paruf <package-query>"
-    return 1
-  fi
-
-  paru -Ssq "$1" |
-    fzf --multi --ansi --cycle --preview 'paru -Si {} | bat -p --color=always' |
-    xargs -r paru -S --needed
+paruf(){
+  [[ -z "$1" ]] && echo "Usage: paruf <package-query>"; return 1
+  paru -Ssq "$1" | fzf -m --ansi --cycle --preview 'paru -Si {} | bat -p' | xargs -r paru --needed --noconform --skipreview -Sq
 }
 
 # An fzf wrapper for paru to search and install repo and AUR packages.
-fuzzy_paru() {
-  # Use an awk script to generate a single, tagged list in one pass.
-  # This avoids redundant commands and sub-processes.
+fuzzy_paru(){
   local fzf_input
   fzf_input=$(
     awk '
@@ -279,44 +200,33 @@ fuzzy_paru() {
       }
     ' <(paru -Qq) <(paru -Ssq '^') # Pass installed list, then all available repo/AUR packages
   )
-
   # Use mapfile to read fzf's output into a proper bash array.
   local -a selections
   mapfile -t selections < <(
     # Pass the generated list to fzf via a here-string
     <<<"$fzf_input" fzf \
-      --ansi \
-      --multi \
-      --cycle \
-      --layout=reverse-list \
-      --preview '
-        # `paru -Si` can show info for both repo and AUR packages.
-        # Uses fzf'\''s fast built-in {1} field index placeholder.
-        paru -Si {1} 2>/dev/null | bat -p --language=ini --color=always
-      '
+      --ansi -m --cycle --layout=reverse-list \
+      --preview 'paru -Si {1} 2>/dev/null | bat -plini'
   )
-
   # Check if the array of selections is not empty.
   if (( ${#selections[@]} > 0 )); then
     # Strip the "[installed]" tag from the selections.
     local -a packages_to_install=("${selections[@]%% *}")
-
     printf '\e[32mInstalling packages:\e[0m %s\n' "${packages_to_install[*]}"
     # `paru` handles sudo elevation automatically.
-    paru -S --needed "${packages_to_install[@]}"
+    paru --needed --noconfirm --skipreview -Sq "${packages_to_install[@]}"
   else
     printf 'No packages selected.\n'
   fi
 }
 
-execinpath() {
+execinpath(){
   local q="$1"
   local cmds
   cmds=$(compgen -c | sort -u | grep -v '^_' |
     xargs -r -n1 -P"$(nproc)" bash -c '
       for c; do type -P -- "$c" >/dev/null && printf "%s\n" "$c"; done
     ' _ | sort -u)
-
   if [[ -n $q ]]; then
     grep -x "$q" <<<"$cmds" || {
       printf '%s\n' "$cmds" | fzf
@@ -324,16 +234,6 @@ execinpath() {
   else
     printf '%s\n' "$cmds" | fzf
   fi
-}
-adb-connect(){
-  local IP PORT
-  if ! adb devices >/dev/null 2>&1; then
-    exit 1
-  fi
-  IP="${1:-$(adb shell ip route | awk '{print $9}')}"
-  PORT="${2:-5555}"
-  adb tcpip "$PORT" >/dev/null 2>&1
-  adb connect "${IP}:${PORT}"
 }
 
 shlint(){
@@ -344,4 +244,3 @@ shlint(){
 # for f in *.sh; do shlint "$f"; done
 
 search(){ curl -s "https://aur.archlinux.org/rpc/?v=5&type=search&arg=$1" | jq '.results[] | {Name,Description,Version,URL,NumVotes,Popularity,Maintainer}' || echo "Cannot query database"; }
-
