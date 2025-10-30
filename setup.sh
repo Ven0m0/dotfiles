@@ -26,7 +26,7 @@ die(){ printf '%b\n' "${BLD}${RED}==> ERROR:${BWHT} $1${DEF}" >&2; exit 1; }
 readonly DOTFILES_REPO="https://github.com/Ven0m0/dotfiles.git"
 readonly DOTFILES_DIR="${HOME}/.local/share/yadm/repo.git" # yadm's default git dir
 readonly TUCKR_DIR="${DOTFILES_DIR}" # Source for tuckr packages
-readonly PARU_OPTS="--needed --noconfirm --skipreview --sudoloop --batchinstall"
+readonly PARU_OPTS="--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade"
 #--- Main Logic ---#
 main(){
   setup_aur
@@ -52,7 +52,7 @@ install_packages(){
   # From your yadm bootstrap + tuckr for system files
   local pkgs=(
     git gitoxide aria2 curl zsh fd sd ripgrep bat jq
-    zoxide starship fzf yadm tuckr-bin
+    zoxide starship fzf yadm tuckr
   )
   if has paru; then
     # Word splitting is intentional for PARU_OPTS
