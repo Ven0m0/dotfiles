@@ -108,30 +108,28 @@ drmi(){ docker images | sed 1d | fzf -q "$1" --no-sort -m --tac | awk '{ print $
 
 
 fuzzy_pacman(){ 
-  local sel SHELL=bash; sel=$(comm -23 <(command pacman -Slq | sort) <(command pacman -Qq | sort) |
+  local sel SHELL=bash; sel=$(comm -23 <(pacman -Slq | sort) <(pacman -Qq | sort) |
     cat - <(command pacman -Qq | awk '{printf "%-30s \033[32m[installed]\033[0m\n", $1}') |
-    fzf --ansi -m --style=full --cycle --border --height=~100% --inline-info -0 --layout=reverse-list \
+    fzf --ansi -m --style=full --cycle --border --height=~100% --info=inline -0 --layout=reverse-list --no-mouse \
       --preview '
-        command pacman -Si $(awk "{print \$1}" <<< {}) 2>/dev/null | \
-        command bat -p --language=ini --color=always | \
+        pacman -Si $(awk "{print \$1}" <<< {}) 2>/dev/null | bat -plini | \
         sed -r "s/(Installed Size|Name|Version|Depends On|Optional Deps|Maintainer|Repository|Licenses|URL)/\x1b[96;1m\1\x1b[0m/g"
       ' --preview-window=right:60%:wrap | awk '{print $1}' | paste -sd " " -)
   [[ -n $sel ]] && { printf '%b\n' "\e[32mInstalling packages:\e[0m $sel"; \
-    sudo pacman -S ${sel// / } --noconfirm --needed; } || printf '%s\n' "No packages selected."
+    sudo pacman --noconfirm --needed -S ${sel// / }; } || printf '%s\n' "No packages selected."
 }
 alias pacf='fuzzy_pacman'
 
 fusky_pacman(){ 
-  local sel SHELL=bash; sel=$(comm -23 <(command pacman -Slq | sort) <(command pacman -Qq | sort) |
-    cat - <(command pacman -Qq | awk '{printf "%-30s \033[32m[installed]\033[0m\n", $1}') |
-    sk --ansi -m --cycle --border --inline-info --height=~100% -0 --layout=reverse-list \
+  local sel SHELL=bash; sel=$(comm -23 <(pacman -Slq | sort) <(pacman -Qq | sort) |
+    cat - <(pacman -Qq | awk '{printf "%-30s \033[32m[installed]\033[0m\n", $1}') |
+    sk --ansi -m --cycle --border --info=inline --height=~100% -0 --layout=reverse-list --no-mouse \
       --preview '
-        command pacman -Si $(awk "{print \$1}" <<< {}) 2>/dev/null | \
-        command bat -p --language=ini --color=always | \
+        pacman -Si $(awk "{print \$1}" <<< {}) 2>/dev/null | bat -plini | \
         sed -r "s/(Installed Size|Name|Version|Depends On|Optional Deps|Maintainer|Repository|Licenses|URL)/\x1b[96;1m\1\x1b[0m/g"
       ' --preview-window=right:60%:wrap | awk '{print $1}' | paste -sd " " -)
   [[ -n $sel ]] && { printf '%b\n' "\e[32mInstalling packages:\e[0m $sel"; \
-    sudo pacman -S ${sel// / } --noconfirm --needed; } || printf '%s\n' "No packages selected."
+    sudo pacman --noconfirm --needed -S ${sel// / }; } || printf '%s\n' "No packages selected."
 }
 alias pacsk='fusky_pacman'
 
