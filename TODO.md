@@ -85,3 +85,8 @@ mkdir transcoded; for i in *.mp4; do ffmpeg -n -hwaccel cuda -i "$i" -vcodec mjp
 ```
 
 https://github.com/hollowillow/scripts/blob/main/fzman
+
+# Claude
+```sh
+claude plugin marketplace add wshobson/agents
+```
