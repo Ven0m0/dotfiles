@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
 
 fzf-man(){
-	MAN="/usr/bin/man"
-	if [ -n "$1" ]; then
-		$MAN "$@"
-		return $?
-	else
-		$MAN -k . | fzf --reverse --preview="echo {1,2} | sed 's/ (/./' | sed -E 's/\)\s*$//' | xargs $MAN" | awk '{print $1 "." $2}' | tr -d '()' | xargs -r $MAN
-		return $?
-	fi
+  [[ $# -gt 0 ]] && {man "$@";return;}
+  man -k . | fzf --reverse --preview="echo {1,2} | sed 's/ (/./' | sed -E 's/\)\s*$//' | xargs man" | awk '{print $1"."$2}' | tr -d '()' | xargs -r man
 }
 
 # View aliases
@@ -130,6 +124,12 @@ manol(){
   local url="https://man.archlinux.org/man/${2:+$2.$1}"
   url="${url:-https://man.archlinux.org/man/$1}"
   curl -sfLZ --http3 --tlsv1.3 --compressed "$url"|bat -plman
+}
+manol(){
+  [[ $# -eq 0 ]] && {echo "Usage: manol [section] <page>">&2;return 1;}
+  local url="https://man.archlinux.org/man/${2:+$2.$1}"
+  url="${url:-https://man.archlinux.org/man/$1}"
+  curl -sfLZ --http3 --tlsv1.3 --compressed "$url" | bat -plman
 }
 
 # Explain any bash command via mankier.com manpage API
