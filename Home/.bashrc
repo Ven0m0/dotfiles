@@ -16,6 +16,21 @@ if [[ -f /usr/lib/librl_custom_complete.so ]]; then export INPUTRC=$HOME/.inputr
 ifsource /usr/share/bash-preexec/bash-preexec.sh
 has mise && eval "$(mise activate -yq bash)"
 
+ifsource "$HOME/.sdkman/bin/sdkman-init.sh" && export SDKMAN_DIR="$HOME/.sdkman"
+
+has wikiman && ifsource /usr/share/wikiman/widgets/widget.bash
+
+[[ $TERM == xterm-ghostty ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
+
+has intelli-shell && eval "$(intelli-shell init bash)"
+has zellij && { eval "$(zellij setup --generate-auto-start bash)"; ifsource ~/.config/bash/completions/zellij.bash; }
+has gh && eval "$(gh completion -s bash)"
+
+if has zoxide; then
+  export _ZO_DOCTOR=0 _ZO_ECHO=0 _ZO_EXCLUDE_DIRS="$HOME:.cache:go" _ZO_FZF_OPTS="--cycle -0 -1 --inline-info --no-multi --no-sort --preview 'eza -1 --color=always {2..}'"
+  eval "$(zoxide init --cmd cd bash)"
+fi
+
 #============ History & Prompt ============
 HISTSIZE=1000 HISTFILESIZE=2000
 HISTCONTROL="erasedups:ignoreboth:autoshare"
@@ -49,7 +64,6 @@ export LANG=C.UTF-8 LC_COLLATE=C LC_CTYPE=C.UTF-8 LC_MEASUREMENT=C
 export TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
 
 # System
-export jobs=$(nproc) SHELL=${BASH:-$(command -v bash 2>/dev/null)}
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 has ibus && export GTK_IM_MODULE=ibus XMODIFIERS=@im=ibus QT_IM_MODULE=ibus
 
@@ -144,7 +158,10 @@ fuzzy_finders
 runch(){ chmod +x -- "$1" && "$@" || { echo "runch: failed to run '$1'" >&2; return 1; }; }
 sel(){ if [[ -d "$1" ]]; then ls "$1"; elif [[ -f "$1" ]]; then cat "$1"; else echo "sel: not found: $1" >&2; return 1; fi; }
 cargo_run(){ local cmd=(cargo mommy clicker); command "${cmd[@]}" "$@"; }
+
 sudo-cl(){ [[ -z $READLINE_LINE ]] && READLINE_LINE=$(fc -ln -1); [[ $READLINE_LINE == sudo* ]] && READLINE_LINE=${READLINE_LINE#sudo } || READLINE_LINE="sudo $READLINE_LINE"; READLINE_POINT=${#READLINE_LINE}; }
+bind -x '"\e\e": sudo-cl'
+
 gclone(){ command git clone --filter=blob:none --depth 1 --no-tags -c protocol.version=2 -c http.sslVersion=tlsv1.3 -c http.version=HTTP/2 "$@"; }
 gpush(){ command git add . && command git commit -m "${1:-Update}" && command git push; }
 symbreak(){ command find -L "${1:-.}" -type l; }
@@ -203,7 +220,6 @@ complete -A file less cat head tail cp mv rm tar unzip unrar 7z
 run-help(){ help "$READLINE_LINE" 2>/dev/null || man "$READLINE_LINE"; }
 bind -m vi-insert -x '"\eh": run-help'
 bind -m emacs -x '"\eh": run-help'
-bind -x '"\e\e": sudo-cl'
 
 bind 'set completion-query-items 250' 'set page-completions off' 'set show-all-if-ambiguous on'
 bind 'set show-all-if-unmodified on' 'set menu-complete-display-prefix on' 'set completion-ignore-case on'
@@ -244,17 +260,5 @@ if [[ $SHLVL -le 2 ]]; then
   [[ -n $fetch_cmd ]] && eval "$fetch_cmd"
 fi
 
-# Sourcing (Final)
-ifsource "$HOME/.sdkman/bin/sdkman-init.sh" && export SDKMAN_DIR="$HOME/.sdkman"
-if has zoxide; then
-  export _ZO_DOCTOR=0 _ZO_ECHO=0 _ZO_EXCLUDE_DIRS="$HOME:.cache:go"
-  export _ZO_FZF_OPTS="--cycle -0 -1 --inline-info --no-multi --no-sort --preview 'eza -1 --color=always {2..}'"
-  eval "$(zoxide init bash)"
-fi
-has intelli-shell && eval "$(intelli-shell init bash)"
-if has zellij; then eval "$(zellij setup --generate-auto-start bash)"; ifsource ~/.config/bash/completions/zellij.bash; fi
-has gh && eval "$(gh completion -s bash)"
-[[ $TERM == xterm-ghostty ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
-has wikiman && ifsource /usr/share/wikiman/widgets/widget.bash
-
+# Final
 unset -f ifsource prependpath configure_prompt dedupe_path fuzzy_finders
