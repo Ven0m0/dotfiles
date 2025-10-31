@@ -225,22 +225,23 @@ configure_prompt(){
   PS2='> '
   has mommy && (( ${stealth:-0} == 1 )) && [[ ${PROMPT_COMMAND-} != *mommy* ]] && PROMPT_COMMAND="mommy -1 -s \$?; $PROMPT_COMMAND"
 }
-(configure_prompt &>/dev/null &)
+configure_prompt &>/dev/null
 
 # Path Deduplication
 dedupe_path(){ local IFS=: p new_path; declare -A seen; for p in $PATH; do [[ -n $p && -z ${seen[$p]} ]] && seen[$p]=1 && new_path="${new_path:+$new_path:}$p"; done; [[ -n $new_path ]] && export PATH="$new_path"; }
 (dedupe_path &>/dev/null &)
 
 # Fetch on Login
-if [[ $SHLVL -eq 1 && -z ${BASH_SUBSHELL-} ]]; then
+if [[ $SHLVL -le 2 ]]; then
   fetch_cmd=""
   if (( ${stealth:-0} != 1 )); then
-    if has hyfetch; then fetch_cmd='hyfetch -b fastfetch -m rgb -p transgender'
+    if has hyfetch && has maccina; then fetch_cmd='hyfetch -b macchina -m rgb -p transgender'
+    elif has hyfetch && has fastfetch; then fetch_cmd='hyfetch -b fastfetch -m rgb -p transgender --args="--ds-force-drm true --thread true --detect-version false"'
+    elif has maccina; then fetch_cmd='macchina -o "host,kernel,desktop-environment,window-manager,packages,shell,terminal,local-ip,uptime,processor,gpu,resolution,processor-load,memory,gpu,disk-space"'
     elif has fastfetch; then fetch_cmd='fastfetch --ds-force-drm --thread --detect-version false'
-    elif has vnfetch; then fetch_cmd='vnfetch'
     fi
   fi
-  [[ -n $fetch_cmd ]] && ($fetch_cmd &>/dev/null &)
+  [[ -n $fetch_cmd ]] && eval "$fetch_cmd"
 fi
 
 # Sourcing (Final)
