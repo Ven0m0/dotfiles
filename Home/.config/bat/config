@@ -2,11 +2,11 @@
 # a command-line option that you want to pass to `bat` by default. You can
 # run `bat --help` to get a list of all possible configuration options.
 --squeeze-blank
---squeeze-limit 1
+--squeeze-limit 0
+--pager="less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups --no-edit-warn"
+--paging auto
 --strip-ansi auto
 --style auto
---paging auto
---pager="less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups --no-edit-warn"
 --wrap auto
 --decorations auto
 --color auto
