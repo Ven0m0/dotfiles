@@ -7,7 +7,7 @@
   autocrlf = input
   preloadIndex = true
   eol = native
-  compression = -1
+  compression = 9
   multiPackIndex = true
   fsyncMethod = batch
   repositoryformatversion = 1
@@ -26,7 +26,7 @@
   default = simple
   autoSetupRemote = true
   recurseSubmodules = on-demand
-  useBitmaps = true
+  # useBitmaps = true
   followTags = true
 [pull]
   ff = only
@@ -107,6 +107,10 @@
   sslVersion = tlsv1.3
   postBuffer = 104857600
   followRedirects = true
+[remote "origin"]
+	prune = true
+[transfer]
+	fsckobjects = true
 [gui]
   fastCopyBlame = true
   pruneDuringFetch = true
