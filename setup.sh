@@ -29,24 +29,12 @@ readonly TUCKR_DIR="${DOTFILES_DIR}" # Source for tuckr packages
 readonly PARU_OPTS="--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade"
 #--- Main Logic ---#
 main(){
-  setup_aur
   install_packages
   setup_dotfiles
   tuckr_system_configs
   final_steps
 }
 #--- Functions ---#
-setup_aur(){
-  if ! has paru; then
-    xecho "Installing AUR helper (paru)..."
-    sudo pacman -S --needed --noconfirm base-devel git
-    local tmpdir; tmpdir=$(mktemp -d)
-    git clone --depth=1 https://aur.archlinux.org/paru-bin.git "$tmpdir"
-    (cd "$tmpdir" && makepkg -si --noconfirm) || die "paru installation failed."
-    rm -rf "$tmpdir"
-  fi
-  xecho "AUR helper (paru) is ready."
-}
 install_packages(){
   xecho "Installing packages from official and AUR repositories..."
   local pkgs=(
