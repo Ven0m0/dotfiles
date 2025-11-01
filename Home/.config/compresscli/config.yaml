@@ -1,64 +1,54 @@
 video_presets:
-  slow:
-    codec: H264
-    crf: 20
-    bitrate: null
-    audio_codec: opus
-    audio_bitrate: 192k
-    preset: slow
-    two_pass: true
-    extra_args: []
-  veryslow:
-    codec: H265
-    crf: 18
-    bitrate: null
-    audio_codec: opus
-    audio_bitrate: 256k
-    preset: veryslow
-    two_pass: true
-    extra_args: []
-  medium:
-    codec: H264
-    crf: 23
-    bitrate: null
-    audio_codec: opus
-    audio_bitrate: 128k
-    preset: medium
-    two_pass: false
-    extra_args: []
   fast:
-    codec: H264
+    codec: Vp9
     crf: 25
     bitrate: null
-    audio_codec: opus
+    audio_codec: Opus
     audio_bitrate: 128k
     preset: fast
     two_pass: false
     extra_args: []
+  slow:
+    codec: Av1
+    crf: 20
+    bitrate: null
+    audio_codec: Opus
+    audio_bitrate: 128k
+    preset: slow
+    two_pass: true
+    extra_args: []
+  medium:
+    codec: H265
+    crf: 23
+    bitrate: null
+    audio_codec: Opus
+    audio_bitrate: 128k
+    preset: medium
+    two_pass: false
+    extra_args: []
   ultrafast:
-    codec: H264
+    codec: H265
     crf: 28
     bitrate: null
-    audio_codec: opus
+    audio_codec: Opus
     audio_bitrate: 128k
     preset: ultrafast
     two_pass: false
     extra_args: []
-  optimal:
-    codec: av1
-    audio_codec: opus
-    audio_bitrate: 128k
-    preset: slow
-    resolution: 1920x1080
-    two_pass: true
+  veryslow:
+    codec: Av1
+    crf: 18
     bitrate: null
-    crf: 28
-    extra_args: []
+    audio_codec: Opus
+    audio_bitrate: 96k
+    preset: veryslow
+    two_pass: true
+    extra_args: [--fps 60]
 image_presets:
   lossless:
-    quality: 100
+    quality: 99
     optimize: true
-    progressive: true
+    progressive: false
     lossless: true
   web:
     quality: 85
@@ -66,7 +56,7 @@ image_presets:
     progressive: true
     lossless: false
   high:
-    quality: 95
+    quality: 90
     optimize: true
     progressive: false
     lossless: false
