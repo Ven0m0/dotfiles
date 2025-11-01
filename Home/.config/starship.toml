@@ -5,10 +5,10 @@ $username$directory\
 ${custom.git_repo}\
 $hostname\
 $localip\
- $sudo\
-$shell\
+$shell$shlvl\
 ${custom.yazi_level}\
 $time\
+$sudo\$status\
 $character
 """
 
@@ -36,7 +36,10 @@ format = '[$path]($style)[$read_only]($read_only_style)'
 [username]
 disabled = false
 show_always = false
+style_user = 'pink bold'
+style_root = 'red bold'
 format = '[$user]($style)@'
+aliases = { "ven0m0" = "lucy" }
 
 [hostname]
 ssh_only = true
@@ -89,8 +92,19 @@ disabled = true
 
 [status]
 disabled = false
-symbol = "✖ "
-format = '[$symbol$status$custom]($style)'
+symbol = '❌ '
+success_symbol = '✅ '
+not_executable_symbol = '🚫 '
+not_found_symbol = '🔍 '
+map_symbol = true
+format = '[$symbol]($style) '
+
+[memory_usage]
+disabled = true
+threshold = 25
+symbol = ' '
+style = 'bold dimmed green'
+format = 'via $symbol [${ram_pct}( | ${swap_pct})]($style) '
 
 [shell]
 disabled = false
@@ -101,6 +115,13 @@ fish_indicator = ' fsh'
 zsh_indicator = ' zsh'
 ion_indicator = ' ion'
 unknown_indicator = ''
+
+[shlvl]
+disabled = false
+format = '$[shlvl]($style)'
+threshold = 2
+repeat = false
+repeat_offset = 0
 
 # https://github.com/fwdekker/mommy
 [custom.mommy]
