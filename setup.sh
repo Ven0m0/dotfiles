@@ -49,7 +49,6 @@ setup_aur(){
 }
 install_packages(){
   xecho "Installing packages from official and AUR repositories..."
-  # From your yadm bootstrap + tuckr for system files
   local pkgs=(
     git gitoxide aria2 curl zsh fd sd ripgrep bat jq
     zoxide starship fzf yadm tuckr
@@ -61,6 +60,15 @@ install_packages(){
   else
     die "paru not found after installation attempt."
   fi
+  ensure_tuckr
+}
+ensure_tuckr(){
+  if ! has tuckr; then
+    xecho "tuckr not found — installing via paru..."
+    # shellcheck disable=SC2086
+    paru -S $PARU_OPTS tuckr || die "Failed to install tuckr via paru."
+  fi
+  xecho "tuckr is ready."
 }
 setup_dotfiles(){
   has yadm || die "yadm command not found. Package installation failed."
@@ -76,13 +84,10 @@ tuckr_system_configs(){
   xecho "Linking system-wide configs for /etc and /usr with tuckr..."
   has tuckr || die "tuckr command not found. Cannot link system configs."
   [[ -d "$TUCKR_DIR" ]] || die "Dotfiles directory not found at $TUCKR_DIR."
-  # tuckr packages are the top-level dirs in the repo to be linked
   local tuckr_pkgs=(etc usr)
   for pkg in "${tuckr_pkgs[@]}"; do
     if [[ -d "${TUCKR_DIR}/${pkg}" ]]; then
       xecho "Linking '${pkg}' to target '/'..."
-      # -d: dotfiles_path (source), -t: target_path
-      # Run with sudo to write symlinks to /etc, /usr
       sudo tuckr link -d "$TUCKR_DIR" -t / "$pkg"
     else
       warn "tuckr package '${pkg}' not found in repo, skipping."
