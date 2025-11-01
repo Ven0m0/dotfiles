@@ -7,112 +7,105 @@ pre_sudo = true
 # Sudo command to be used
 #sudo_command = "sudo"
 # Disable specific steps - same options as the command line flag
-disable = ["config_update", "micro", "uv", "pipx", "shell", "yazi"]
+disable = ["config_update", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise"]
 # Ignore failures for these steps
-ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi"]
-# Don't ask for confirmations
+ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise"]
 assume_yes = true
-# Do not ask to retry failed steps (default: false)
 no_retry = true
-# Cleanup temporary or old files (default: false)
 cleanup = true
-# The Bash-it branch to update (default: "stable")
 # bashit_branch = "stable"
-# Run specific steps - same options as the command line flag
 # only = ["system", "emacs"]
-# Skip sending a notification at the end of a run (default: false)
 skip_notify = true
-# Whether to self update
 no_self_update = true
+
 [pre_commands]
-# "Emacs Snapshot" = "rm -rf ~/.emacs.d/elpa.bak && cp -rl ~/.emacs.d/elpa ~/.emacs.d/elpa.bak"
+"pacfree" = "[ -f /var/lib/pacman/db.lck ] && sudo rm -f '/var/lib/pacman/db.lck'"
 
 [post_commands]
-# "Emacs Snapshot" = "rm -rf ~/.emacs.d/elpa.bak && cp -rl ~/.emacs.d/elpa ~/.emacs.d/elpa.bak"
+"paru_clean" = "paru -Scc --noconfirm; sudo paccache -rk0"
+"mise_clear" = "mise cache c -y"
+"bun_clear" = "bun pm cache rm"
+"pnpm_clear" = "pnpm prune; pnpm store prune"
+"uv_clear" = "uv clean"
+"cargo_cache" = "cargo cache -efg; cargo cache -ef trim --limit 1B"
 
 [commands]
-# "Python Environment" = "~/dev/.env/bin/pip install -i https://pypi.python.org/simple -U --upgrade-strategy eager jupyter"
-# "Custom command using interactive shell (unix)" = "-i vim_upgrade"
+"bun_up" = "bun update --latest -g"
+"npm_up" = "sudo npm up -g"
+"pnpm_up" = " sudo pnpm up -g"
+"mise_up" = "sudo mise up -y"
+"ya_up" = "ya pkg upgrade"
 
 [brew]
-# If `Repo Cask Upgrade` exists, then use the `-a` option.
-# Otherwise, use the `--greedy` option.
-# greedy_cask = true
-
-# If `Repo Cask Upgrade` does not exist, then use the `--greedy_latest` option.
-# NOTE: the above entry `greedy_cask` contains this entry, though you can enable
-# both of them, they won't clash with each other.
-# greedy_latest = true
-
-# If `Repo Cask Upgrade` does not exist, then use the `--greedy_auto_updates` option.
-# NOTE: the above entry `greedy_cask` contains this entry, though you can enable
-# both of them, they won't clash with each other.
-# greedy_auto_updates = true
-
-# Execute `brew autoremove` after the step.
+greedy_cask = true
+greedy_latest = true
+greedy_auto_updates = true
 autoremove = true
-
-# Upgrade formulae built from the HEAD branch
-# fetch_head = true
+fetch_head = true
 
 [linux]
 # Arch Package Manager to use.
-#   autodetect, aura, garuda_update, pacman, pamac, paru, pikaur, trizen, yay
-arch_package_manager = "autodetect"
-# Arguments to pass to paru
-# Combined upgrade with batch install and no check is concise and fast
+#  autodetect, pacman, paru, yay, aura, pamac, pikaur, trizen
+arch_package_manager = "paru"
 yay_arguments = "--combinedupgrade --batchinstall --nocheck --removemake --cleanafter --noconfirm --needed"
 show_arch_news = false
 enable_tlmgr = true
 nix_arguments = "--flake"
 # nix_env_arguments = "--prebuilt-only"
-# home_manager_arguments = ["--flake", "file"]
+home_manager_arguments = ["--flake", "file"]
 [git]
-# How many repos to pull at max in parallel
 max_concurrency = 8
-# Don't pull the predefined git repos
 # pull_predefined = false
-# Arguments to pass Git when pulling Repositories
-arguments = "-r -p --autostash"
+#arguments = "-r -p --autostash"
 
 [windows]
 accept_all_updates = true
 winget_silent_install = true
 self_rename = true
+
 [npm]
-use_sudo = true
+#use_sudo = true
+
 [yarn]
-use_sudo = true
+#use_sudo = true
+
 [deno]
 # Upgrade deno executable to the given version.
 # version = "stable"
 [vim]
-# For `vim-plug`, execute `PlugUpdate!` instead of `PlugUpdate`
 # force_plug_update = true
+
 [firmware]
 # Offer to update firmware
 upgrade = true
+
 [vagrant]
 # power on vagrant boxes if needed
 # power_on = true
 # Always suspend vagrant boxes instead of powering off
 # always_suspend = true
+
 [flatpak]
 # Use sudo for updating the system-wide installation
-use_sudo = true
+#use_sudo = true
+
 [distrobox]
-use_root = true
+#use_root = true
 # containers = ["archlinux-latest"]
+
 [containers]
 # Specify the containers to ignore while updating (Wildcard supported)
 # ignored_containers = ["ghcr.io/rancher-sandbox/rancher-desktop/rdx-proxy:latest", "docker.io*"]
 # Specify the runtime to use for containers (default: "docker", allowed values: "docker", "podman")
-# runtime = "podman"
+runtime = "podman"
+
 [lensfun]
-use_sudo = true
+#use_sudo = true
+
 [zigup]
 cleanup = true
+
 [vscode]
 # If this is set and is a non-empty string, it specifies the profile the
 # extensions should be updated for. (default: this won't be set by default)
-# profile = ""
+profile = "Main"
