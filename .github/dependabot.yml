@@ -6,8 +6,19 @@ updates:
       interval: "weekly"
       timezone: "Europe/Berlin"
       time: "04:00"
-    open-pull-requests-limit: 10
   - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      timezone: "Europe/Berlin"
+      time: "04:00"
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      timezone: "Europe/Berlin"
+      time: "04:00"
+  - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -19,18 +30,3 @@ updates:
       interval: "weekly"
       timezone: "Europe/Berlin"
       time: "04:00"
-    open-pull-requests-limit: 10
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      timezone: "Europe/Berlin"
-      time: "04:00"
-    open-pull-requests-limit: 10
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      timezone: "Europe/Berlin"
-      time: "04:00"
-    open-pull-requests-limit: 10
