@@ -16,7 +16,9 @@ window-theme = dark
 window-subtitle = false
 window-decoration = true
 window-padding-balance = true
-#background-opacity = 0.8
+window-inherit-working-directory = true
+working-directory = home
+background-opacity = 0.85
 theme = TokyoNight Night
 
 mouse-hide-while-typing = true
@@ -39,7 +41,8 @@ app-notifications = config-reload,no-clipboard-copy
 gtk-single-instance = detect
 gtk-opengl-debug = false
 async-backend = auto
-quick-terminal-animation-duration = 0
+quick-terminal-animation-duration = 0.1
+quick-terminal-autohide = true
 quit-after-last-window-closed = true
 quit-after-last-window-closed-delay = 5
 grapheme-width-method = unicode
@@ -47,3 +50,5 @@ grapheme-width-method = unicode
 keybind = alt+k=new_tab
 keybind = alt+z=reload_config
 keybind = shift+enter=text:\x1b\r
+keybind = home=scroll_to_top
+keybind = end=scroll_to_bottom
