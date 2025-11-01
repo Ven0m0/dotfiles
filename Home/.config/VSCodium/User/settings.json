@@ -1,0 +1,258 @@
+{
+  // --------------------------------------------------------------------
+  // Appearance & UI
+  // --------------------------------------------------------------------
+  "workbench.colorTheme": "Catppuccin Mocha",
+  "workbench.iconTheme": "Monokai Pro Icons",
+  "editor.fontFamily": "'JetBrains Mono', 'monospace', monospace",
+  "editor.fontSize": 12,
+  "editor.fontLigatures": true,
+  "editor.inlineSuggest.fontFamily": "'Monaspace Neon Var', 'monospace', monospace",
+  "editor.minimap.autohide": "mouseover",
+  "editor.stickyScroll.enabled": false,
+  "breadcrumbs.enabled": false,
+  "window.density.editorTabHeight": "compact",
+  "workbench.editor.highlightModifiedTabs": true,
+  "catppuccin.accentColor": "pink",
+  "catppuccin.extraBordersEnabled": true,
+  "VirtualRepos.UseRepoOwnerAvatar": true,
+
+  // --------------------------------------------------------------------
+  // Editor Behavior
+  // --------------------------------------------------------------------
+  "editor.tabSize": 2,
+  "editor.acceptSuggestionOnEnter": "smart",
+  "editor.foldingImportsByDefault": true,
+  "editor.inlineSuggest.syntaxHighlightingEnabled": true,
+  "editor.mouseWheelZoom": true,
+  "editor.suggest.localityBonus": true,
+  "editor.suggest.selectionMode": "whenTriggerCharacter",
+  "editor.tabCompletion": "on",
+  "editor.unicodeHighlight.nonBasicASCII": false,
+  "editor.unusualLineTerminators": "auto",
+  "editor.wordWrap": "wordWrapColumn",
+  "diffEditor.experimental.showEmptyDecorations": false,
+  "diffEditor.hideUnchangedRegions.enabled": true,
+  "diffEditor.codeLens": true,
+
+  // --------------------------------------------------------------------
+  // File Handling & Formatting
+  // --------------------------------------------------------------------
+  "files.autoSave": "onWindowChange",
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.autoGuessEncoding": true,
+  "explorer.incrementalNaming": "smart",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "remove-empty-lines.runOnSave": true,
+  "remove-tabs-on-save.ignoreFileExtensions": [
+    "*.go"
+  ],
+  "runOnSave.commands": [
+    {
+      "match": "\\.sh$",
+      "command": "shellharden --transform \"${file}\"",
+      "runIn": "terminal"
+    },
+    {
+      "match": "\\.bash$",
+      "command": "shellharden --transform \"${file}\"",
+      "runIn": "terminal"
+    }
+  ],
+
+  // --------------------------------------------------------------------
+  // Performance & Telemetry
+  // --------------------------------------------------------------------
+  "telemetry.telemetryLevel": "off",
+  "telemetry.editStats.enabled": false,
+  "telemetry.feedback.enabled": false,
+  "geminicodeassist.enableTelemetry": false,
+  "fynix.telemetry.disable": true,
+  "editor.accessibilitySupport": "auto",
+  "editor.experimentalWhitespaceRendering": "font",
+  "editor.smoothScrolling": false,
+  "extensions.experimental.deferredStartupFinishedActivation": true,
+  "terminal.integrated.gpuAcceleration": "on",
+  "workbench.list.smoothScrolling": true,
+  "workbench.reduceMotion": "on",
+
+  // --------------------------------------------------------------------
+  // Git Integration
+  // --------------------------------------------------------------------
+  "git.enableSmartCommit": true,
+  "git.fetchOnPull": true,
+  "git.ignoreLegacyWarning": true,
+  "git.ignoreWindowsGit27Warning": true,
+  "git.pruneOnFetch": true,
+  "git.pullBeforeCheckout": true,
+  "git.rebaseWhenSync": true,
+  "git.allowNoVerifyCommit": false,
+
+  // --------------------------------------------------------------------
+  // Security
+  // --------------------------------------------------------------------
+  "security.promptForLocalFileProtocolHandling": true,
+  "security.promptForRemoteFileProtocolHandling": true,
+  "security.workspace.trust.banner": "never",
+  "security.workspace.trust.startupPrompt": "never",
+  "security.workspace.trust.untrustedFiles": "open",
+  "extensions.verifySignature": true,
+  "extensions.autoUpdate": "onlyEnabledExtensions",
+
+  // --------------------------------------------------------------------
+  // Integrated Terminal
+  // --------------------------------------------------------------------
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultLocation": "editor",
+  "terminal.integrated.enableFileLinks": "notRemote",
+  "terminal.integrated.enableImages": true,
+  "terminal.integrated.experimental.windowsUseConptyDll": true,
+  "terminal.integrated.hideOnStartup": "whenEmpty",
+  "terminal.integrated.ignoreBracketedPasteMode": true,
+  "terminal.integrated.suggest.enabled": true,
+  "terminal.integrated.useWslProfiles": false,
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "terminal.integrated.fontLigatures.enabled": true,
+
+  // --------------------------------------------------------------------
+  // General Workbench
+  // --------------------------------------------------------------------
+  "window.closeWhenEmpty": true,
+  "window.confirmBeforeClose": "keyboardOnly",
+  "window.newWindowProfile": "Default",
+  "workbench.commandPalette.preserveInput": true,
+  "workbench.editor.defaultBinaryEditor": "default",
+  "workbench.externalBrowser": "firefox",
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.empty.hint": "hidden",
+
+  // --------------------------------------------------------------------
+  // Language-Specific Settings
+  // --------------------------------------------------------------------
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "javascript.format.semicolons": "remove",
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "css.lint.duplicateProperties": "warning",
+
+  // --------------------------------------------------------------------
+  // Extension Config: AI (Gemini, Copilot, Claude, ChatGPT)
+  // --------------------------------------------------------------------
+  "geminicodeassist.geminiApiKey": "${env:GEMINI_API_KEY}",
+  "geminicodeassist.inlineSuggestions.nextEditPredictions": true,
+  "geminicodeassist.languages": [
+    "*",
+    "shellscript"
+  ],
+  "geminicodeassist.rules": "Use bash-native idioms. 2-space indent. Short CLI args. Prefer arrays and here-strings. Use while read -r for input. Use nameref and ret=$(fn). Favor in-memory ops. Use expr/grep for =~. Use [[ ... ]] for tests. Silence with >/dev/null 2>&1 || true. Prefer Rust tools (fd, bat). Target Arch/Wayland and Debian (Pi). Allow experimental apps. Provide precise, optimized answers.",
+  "geminicodeassist.updateChannel": "Default",
+  "geminicodeassist.project": "vocal-triumph-ltj12",
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "github.copilot.chat.codesearch.enabled": true,
+  "github.copilot.chat.agent.thinkingTool": true,
+  "github.copilot.chat.completionsFetcher": "node-fetch",
+  "github.copilot.chat.executePrompt.enabled": true,
+  "github.copilot.chat.edits.temporalContext.enabled": true,
+    "claudeCode.environmentVariables": [
+        {
+            "name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
+            "value": "claude-sonnet-4.5"
+        },
+        {
+            "name": "ANTHROPIC_API_BASE_URL",
+            "value": "http://localhost:4000"
+        },
+        {
+            "name": "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+            "value": "1"
+        },
+        {
+            "name": "DISABLE_NON_ESSENTIAL_MODEL_CALLS",
+            "value": "1"
+        },
+        {
+            "name": "DISABLE_ERROR_REPORTING",
+            "value": "1"
+        },
+        {
+            "name": "CLAUDE_CODE_ENABLE_TELEMETRY",
+            "value": "0"
+        },
+        {
+            "name": "DISABLE_TELEMETRY",
+            "value": "1"
+        },
+    ],
+  "claude-config.autoSync": true,
+  "claude-config.autoUseContext7": true,
+  "claude-config.cloudSync.autoSync": true,
+  "chatgpt.autoAddCurrentFile": true,
+  "chatgpt.lang": "en",
+  "chatgpt.promptBasedTools.enabled": true,
+  "chatgpt.temperature": 0.5,
+  "chatgpt.gpt3.apiKey": "${env:OPENAI_API_KEY}",
+  "chatgpt.gpt3.claudeCodePath": "/usr/bin/claude",
+  "chatgpt.gpt3.searchGrounding.enabled": true,
+  "chatgpt.gpt3.model": "gpt-5",
+  "chatgpt.gpt3.provider": "OpenAI",
+  "chatgpt.gpt3.responsesAPI.enabled": true,
+
+  // --------------------------------------------------------------------
+  // Extension Config: Linters, Formatters, Tools
+  // --------------------------------------------------------------------
+  "shellformat.useEditorConfig": true,
+  "bashBeautify.tabSize": 2,
+  "bashIde.enableSourceErrorDiagnostics": true,
+  "bashIde.shfmt.binaryNextLine": true,
+  "bashIde.shfmt.extraArgs": [
+    "-i 2"
+  ],
+  "bashIde.shfmt.simplifyCode": true,
+  "bashIde.shfmt.languageDialect": "bash",
+  "shellcheck.run": "onSave",
+  "eslint.format.enable": true,
+  "eslint.problems.shortenToSingleLine": true,
+  "eslint.quiet": true,
+  "prettier.bracketSameLine": true,
+  "npm.packageManager": "bun",
+  "npm.runSilent": true,
+  "markdown-checkboxes.label": true,
+  "markdown-preview-github-styles.colorTheme": "dark",
+  "markdown.extension.tableFormatter.normalizeIndentation": true,
+  "markdown.updateLinksOnFileMove.enabled": "always",
+  "markdown.validate.enabled": true,
+  "markdownlint.run": "onSave",
+  "evenBetterToml.formatter.alignComments": true,
+  "evenBetterToml.formatter.arrayAutoExpand": true,
+  "evenBetterToml.formatter.compactEntries": true,
+  "MinifyAll.disableHexadecimalShortener": false,
+  "MinifyAll.disableJavascriptReact": false,
+  "MinifyAll.terserMinifyOptions": {
+    "mangle": true,
+    "compress": {
+      "drop_console": [
+        "log"
+      ],
+      "dead_code": true,
+      "passes": 2
+    },
+    "format": {
+      "wrap_func_args": true
+    },
+    "keep_fnames": false,
+    "keep_classnames": false,
+    "ie8": true
+  },
+  "linter.cache": true,
+  "textPowerTools.caseSensitiveFiltering": true,
+  "trunk.addToolsToPath": true,
+  "cSpell.enabled": false
+}
