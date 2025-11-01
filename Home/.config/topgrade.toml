@@ -9,10 +9,10 @@ ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi", "bun", "mis
 assume_yes = true
 no_retry = true
 cleanup = true
-# bashit_branch = "stable"
-# only = ["system", "emacs"]
 skip_notify = true
 no_self_update = true
+# bashit_branch = "stable"
+# only = ["system", "emacs"]
 
 [pre_commands]
 "pacfree" = "[ -f /var/lib/pacman/db.lck ] && sudo rm -f '/var/lib/pacman/db.lck'"
