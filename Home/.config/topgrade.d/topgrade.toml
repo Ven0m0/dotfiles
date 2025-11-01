@@ -4,8 +4,8 @@
 [misc]
 pre_sudo = true
 sudo_command = "sudo"
-disable = ["config_update", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise"]
-ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise"]
+disable = ["config_update", "micro", "uv", "pipx", "yazi", "bun", "mise", "yadm", "node", "sheldon"]
+ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise", "yadm", "node", "sheldon", "shell"]
 assume_yes = true
 no_retry = true
 cleanup = true
@@ -27,10 +27,11 @@ no_self_update = true
 
 [commands]
 "bun_up" = "bun update --latest -g"
-"npm_up" = "sudo npm up -g"
+# "npm_up" = "sudo npm up -g"
 "pnpm_up" = " sudo pnpm up -g"
 "mise_up" = "sudo mise up -y"
 "ya_up" = "ya pkg upgrade"
+"sheldon_up" = "/usr/bin/sheldon lock --update"
 
 [brew]
 greedy_cask = true
