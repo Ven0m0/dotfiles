@@ -1,47 +1,43 @@
-require("git"):setup { order = 0 }
-
+require("git"):setup{ order = 0 }
 require("full-border"):setup()
-
 require("starship"):setup()
+require("smart-enter"):setup{ open_multi = true }
 
--- acts like ranger (enter directories, open marked files, open file at point;
--- priority in that order)
-require("smart-enter"):setup {
-    open_multi = true,
-}
-
--- https://yazi-rs.github.io/docs/tips/#symlink-in-status
+-- Symlink target in status
 Status:children_add(function(self)
-	local h = self._current.hovered
-	if h and h.link_to then
-		return " -> " .. tostring(h.link_to)
-	else
-		return ""
-	end
+  local h = self._current and self._current.hovered
+  if h and h.link_to then
+    return " -> " .. tostring(h.link_to)
+  end
+  return ""
 end, 3300, Status.LEFT)
 
--- modification time
--- https://github.com/sxyazi/yazi/discussions/1658
+-- Modification time (24h), nil-safe
 Status:children_add(function()
-	local h = cx.active.current.hovered
-	return ui.Line({
-		ui.Span(os.date("%Y-%m-%d %I:%M:%S %p", tostring(h.cha.mtime):sub(1, 10))):fg("blue"),
-		ui.Span(" "),
-	})
+  local a = cx.active
+  if not a or not a.current then return "" end
+  local h = a.current.hovered
+  if not h or not h.cha or not h.cha.mtime then return "" end
+  local ts = tonumber(tostring(h.cha.mtime):sub(1, 10))
+  local t = os.date("%Y-%m-%d %H:%M:%S", ts)
+  return ui.Line{
+    ui.Span(t):fg("blue"),
+    ui.Span(" "),
+  }
 end, 500, Status.RIGHT)
 
--- user:group
--- https://yazi-rs.github.io/docs/tips#user-group-in-status
+-- user:group (unix), nil-safe
 Status:children_add(function()
-	local h = cx.active.current.hovered
-	if h == nil or ya.target_family() ~= "unix" then
-		return ""
-	end
-
-	return ui.Line {
-		ui.Span(ya.user_name(h.cha.uid) or tostring(h.cha.uid)):fg("magenta"),
-		":",
-		ui.Span(ya.group_name(h.cha.gid) or tostring(h.cha.gid)):fg("magenta"),
-		" ",
-	}
+  local a = cx.active
+  if not a or not a.current then return "" end
+  local h = a.current.hovered
+  if not h or ya.target_family() ~= "unix" then
+    return ""
+  end
+  return ui.Line{
+    ui.Span(ya.user_name(h.cha.uid) or tostring(h.cha.uid)):fg("magenta"),
+    ":",
+    ui.Span(ya.group_name(h.cha.gid) or tostring(h.cha.gid)):fg("magenta"),
+    " ",
+  }
 end, 500, Status.RIGHT)
