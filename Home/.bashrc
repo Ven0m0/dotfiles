@@ -132,7 +132,9 @@ fi
 #============ Fuzzy Finders ============
 fuzzy_finders(){
   local FIND_CMD='find . -type f -print'
+  has fdf && FIND_CMD='fdf -t f --same-file-system --size +1k'
   has fd && FIND_CMD='fd -tf -gH -c always --strip-cwd-prefix'
+  has rga && FIND_CMD='rga --files --no-messages'
   has rg && FIND_CMD='rg --files --no-messages'
   local FZF_PREVIEW='cat -sn {}'
   has bat && FZF_PREVIEW="bat -n --color=always --line-range=:250 {}"
@@ -146,12 +148,12 @@ fuzzy_finders(){
     -1 -0 --inline-info --preview '$FZF_PREVIEW' \
     --bind 'ctrl-/:change-preview-window(down|hidden|)'"
   export FZF_CTRL_R_OPTS='\
-    -1 -0 --tiebreak=index --inline-info --no-sort --exact \
+    -1 -0 --inline-info --no-sort --exact \
     --preview "echo {}" --preview-window=down:3:hidden:wrap --bind "?:toggle-preview"'
   export FZF_ALT_C_OPTS='\
-    -1 -0 --tiebreak=index --inline-info --walker-skip=".git,node_modules,target,go" \
+    -1 -0 --inline-info --walker-skip=".git,node_modules,target,go" \
     --preview "tree -C {} 2>/dev/null | head -200"'
-  export FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=index'
+  export FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=chunk'
   
   mkdir -p "$HOME/.config/bash/completions" &>/dev/null
   if has fzf; then
