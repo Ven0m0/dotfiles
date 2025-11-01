@@ -24,7 +24,10 @@ export FZF_ALT_C_COMMAND='fd -td -gH -c always'
 export GPG_TTY=$TTY
 if has mise; then eval "$(mise activate zsh)"; fi
 alias mx="mise x --"
-if has fzf; then eval "$(fzf --zsh)"; fi
+if has fzf; then 
+  eval "$(fzf --zsh)"
+  ifsource "/usr/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh" && bindkey '^I' fzf_completion
+fi
 if has zoxide; then eval "$(zoxide init zsh)"; fi
 if has mise; then eval "$(mise activate zsh)"; fi
 
