@@ -1,47 +1,37 @@
 [[plugin.deps]]
-use = "yazi-rs/plugins:git"
-rev = "de53d90"
-hash = "63b6c222bf2103b3023389dde5e2ecfe"
-
-[[plugin.deps]]
-use = "yazi-rs/plugins:diff"
-rev = "de53d90"
-hash = "47865a70cade14a0b9b6bc6a54f16bdb"
-
-[[plugin.deps]]
-use = "yazi-rs/plugins:chmod"
-rev = "de53d90"
-hash = "1adc12c2b2b025411ab61eb8f0879574"
-
-[[plugin.deps]]
-use = "yazi-rs/plugins:mime-ext"
-rev = "de53d90"
-hash = "4c49c446328c4553a4ccab7facc10b21"
-
-[[plugin.deps]]
 use = "yazi-rs/plugins:mount"
-rev = "de53d90"
-hash = "f10a14e823382d90fab5b3ee54cb38fe"
+rev = "8f1d971"
+hash = "4fccaaf10c36dc2466e2438a386ff017"
 
 [[plugin.deps]]
-use = "Rolv-Apneseth/starship"
-rev = "a63550b"
-hash = "c2021386289a0cbb3e152a052f67c177"
-
-[[plugin.deps]]
-use = "yazi-rs/plugins:full-border"
-rev = "de53d90"
-hash = "3996fc74044bc44144b323686f887e1"
-
-[[plugin.deps]]
-use = "yazi-rs/plugins:smart-enter"
-rev = "de53d90"
-hash = "56fdabc96fc1f4d53c96eb884b02a5be"
+use = "yazi-rs/plugins:smart-paste"
+rev = "8f1d971"
+hash = "75fd60b2df7115e0a6ca31a6a804d320"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "864a021"
-hash = "f0c4b41b5d19a3144958383333eff6e7"
+rev = "8f1d971"
+hash = "bcda8eeb3f4013bae156aecabfc745e8"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-enter"
+rev = "8f1d971"
+hash = "56fdabc96fc1f4d53c96eb884b02a5be"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:mime-ext"
+rev = "8f1d971"
+hash = "4c49c446328c4553a4ccab7facc10b21"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:git"
+rev = "8f1d971"
+hash = "63b6c222bf2103b3023389dde5e2ecfe"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:chmod"
+rev = "8f1d971"
+hash = "8ad3e90b079190b4905f24a44f4ca06b"
 
 [[plugin.deps]]
 use = "lpanebr/yazi-plugins:first-non-directory"
@@ -50,8 +40,65 @@ hash = "5c20ffa5171dab34042e03d273dddc5b"
 
 [[plugin.deps]]
 use = "ndtoan96/ouch"
-rev = "2496cd9"
-hash = "5b9dea47776a30946cfbf83232d18fb1"
+rev = "0742fff"
+hash = "2bd799b42b8e42b8ef100310be71f8d1"
 
-[flavor]
-deps = []
+[[plugin.deps]]
+use = "orhnk/system-clipboard"
+rev = "888026c"
+hash = "9f82a544335a53d79e87ea315746caaa"
+
+[[plugin.deps]]
+use = "KKV9/compress"
+rev = "c264639"
+hash = "e17c11b605d989568a1d1741ca17c584"
+
+[[plugin.deps]]
+use = "TD-Sky/sudo"
+rev = "8148f91"
+hash = "5db5b16dc96e971f0560a31999271065"
+
+[[plugin.deps]]
+use = "Rolv-Apneseth/starship"
+rev = "a63550b"
+hash = "c2021386289a0cbb3e152a052f67c177"
+
+[[plugin.deps]]
+use = "KKV9/command"
+rev = "4762ecc"
+hash = "65fff40a0060fe4b1c42d49d29f770fd"
+
+[[plugin.deps]]
+use = "Ven0m0/bat"
+rev = "80cdae1"
+hash = "94adcc3cf648e93cecc2bcb52925fed8"
+
+[[plugin.deps]]
+use = "ahkohd/eza-preview"
+rev = "a97cf55"
+hash = "cc3aef07a8b1c3fe820f1fbb9a5a2483"
+
+[[plugin.deps]]
+use = "ourongxing/fast-enter"
+rev = "738356f"
+hash = "b209b5db91df69bdc6a4656cb8276cd9"
+
+[[plugin.deps]]
+use = "atareao/convert"
+rev = "ce060d9"
+hash = "1c0465351f2a344e842f065ab316f265"
+
+[[plugin.deps]]
+use = "pirafrank/what-size"
+rev = "d896656"
+hash = "62251f94eb67648d42cdfcfb8be0fad2"
+
+[[flavor.deps]]
+use = "BennyOe/tokyo-night"
+rev = "5f56364"
+hash = "c0bf69ad2c44005892d586e9693993c6"
+
+[[flavor.deps]]
+use = "yazi-rs/flavors:catppuccin-frappe"
+rev = "f6b425a"
+hash = "2af5f0305730530f23e61ccaba119efe"
