@@ -20,10 +20,9 @@
 ##-----------------------------------------------------------------------------
 ## Basic settings
 
-bleopt input_encoding=UTF-8
-#bleopt input_encoding=C
+#bleopt input_encoding=UTF-8
+bleopt input_encoding='C'
 bleopt pager=bat
-#bleopt pager=less
 bleopt editor=micro
 
 ##-----------------------------------------------------------------------------
@@ -66,7 +65,6 @@ bleopt edit_magic_opts=inline-sabbrev-no-insert
 ## printing the expansion result.  The default value of this option is empty.
 
 #bleopt edit_magic_accept=sabbrev
-
 bleopt prompt_command_changes_layout=1
 
 ## "exec_restore_pipestatus" controls whether ble.sh restores PIPESTATUS of the
@@ -206,7 +204,6 @@ bleopt complete_source_sabbrev_opts=no-empty-completion
 ## Color settings
 
 bleopt term_index_colors=auto
-#bleopt term_index_colors=256
 
 ## The setting "filename_ls_colors" can be used to import the filename coloring
 ## scheme by the environment variable LS_COLORS.
@@ -336,3 +333,10 @@ bleopt internal_exec_type=gexec
 ## from Bash.
 
 bleopt internal_suppress_bash_output=1
+
+##-----------------------------------------------------------------------------
+## Prompt
+
+# starship.rs/advanced-config
+# bleopt prompt_ps1_final='$(starship module character)'
+# bleopt prompt_rps1_final='$(starship module memory_usage)'
