@@ -7,13 +7,19 @@
     "DISABLE_ERROR_REPORTING": "1",
     "DISABLE_PROMPT_CACHING": "0",
     "DISABLE_TELEMETRY": "1",
-    "USE_BUILTIN_RIPGREP": "0"
+    "USE_BUILTIN_RIPGREP": "0",
+    "DISABLE_AUTOUPDATER": "1"
   },
   "permissions": {
     "allow": [
       "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(sed:*)",
+      "Bash(git:*)",
+      "mcp__serena",
       "WebFetch"
     ]
+    "deny": []
   },
   "statusLine": {
     "type": "command",
