@@ -8,19 +8,19 @@ checksum-freshness = true
 cargo-lints = true
 trim-paths = true
 no-embed-metadata = true
-build-std = ["std", "panic_abort"]
-build-std-features = ["panic_immediate_abort"]
 gc = true
 panic-abort-tests = true
+#build-std = ["core", "std", "alloc", "panic_abort"]
+#build-std-features = ["panic_immediate_abort"]
+#panic-immediate-abort = true
 
 [alias]
 b = "build"
 i = "install"
 rr = "run -r"
-insta = "+nightly install -f --bins --ignore-rust-version"
+insta = "+nightly -Zunstable-options -gitoxide install"
 builda = "+nightly build --bins --lib -r"
 installgit = "+nightly install -f --bins --git"
-
 [rust]
 jemalloc = true
 optimize = true
@@ -74,8 +74,7 @@ incompatible-rust-versions = "allow"
 opt-level = 3
 codegen-units = 1
 lto = "fat"
-panic = "immediate-abort"
-#panic = "abort"
+panic = "abort"
 strip = "symbols"
 debug = false
 debug-assertions = false
@@ -104,7 +103,7 @@ rustflags = [
   "-C", "target-cpu=native","-Z", "tune-cpu=native",
   "-C", "link-arg=-fuse-ld=mold", "-C", "link-arg=-Wl,--icf=safe,--as-needed,--gc-sections",
   "-C", "llvm-args=-enable-dfa-jump-thread", "-Z", "precise-enum-drop-elaboration=yes",
-  "-Z", "share-generics=y", "-Z", "plt",
+  "-Z", "share-generics=y", "-Z", "plt", "-Z", "unstable-options",
   "-Z", "mir-opt-level=4", "-Z", "threads=8",
   "-Z", "location-detail=none", "-Z", "fmt-debug=none",
 ]
