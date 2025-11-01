@@ -104,10 +104,10 @@ unknown_indicator = ''
 
 # https://github.com/fwdekker/mommy
 [custom.mommy]
-disabled = true
+disabled = false
 style = "red"
 command = "mommy -1 -s $status"
-when = "true"
+when = "true >/dev/null 2>&1"
 
 # Git repo name
 [custom.git_repo]
