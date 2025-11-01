@@ -1,14 +1,14 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-$username$directory
-${custom.git_repo}
-$hostname
-$localip
-$sudo
-$shell
-${custom.yazi_level}
-$time
+$username$directory\
+${custom.git_repo}\
+$hostname\
+$localip\
+ $sudo\
+$shell\
+${custom.yazi_level}\
+$time\
 $character
 """
 
@@ -75,17 +75,25 @@ modified = '!${count}'
 untracked = '?${count}'
 
 [package]
-format = 'via $version(208 bold) '
+disabled = true
+format = 'via $version(208 bold)'
+
+[bun]
+disabled = true
+format = 'via [🍔 $version](bold green) '
+detect_files = ['bun.lock', 'bun.lockb', 'bunfig.toml', 'package.json', 'package-lock.json']
+detect_folders = ['.bun']
+[mise]
 disabled = true
 
 [status]
 disabled = false
 symbol = "✖ "
-format = '[$symbol$status$custom]($style) '
+format = '[$symbol$status$custom]($style)'
 
 [shell]
 disabled = false
-format = '[$indicator]($style) '
+format = '[$indicator]($style)'
 style = "cyan"
 bash_indicator = ' bsh'
 fish_indicator = ' fsh'
