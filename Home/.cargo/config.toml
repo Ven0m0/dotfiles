@@ -8,18 +8,21 @@ checksum-freshness = true
 cargo-lints = true
 trim-paths = true
 no-embed-metadata = true
-#build-std = ["std", "panic_abort"]
+build-std = ["std", "panic_abort"]
+build-std-features = ["panic_immediate_abort"]
 gc = true
 panic-abort-tests = true
 script = true
+binary-dep-depinfo = true
+codegen-backend = true
 
 [alias]
 b = "build"
 i = "install"
-rr = "run --release"
-insta = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata install -f --bins --ignore-rust-version -q"
-builda = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata build --bins --lib -r -q"
-installgit = "+nightly -Z unstable-options -Z mtime-on-use -Z git -Z gitoxide -Z build-dir-new-layout -Z avoid-dev-deps -Z no-embed-metadata install -f --bins -q --git"
+rr = "run -r"
+insta = "+nightly -Zunstable-options -Zmtime-on-use -Zgit -Zgitoxide -Zbuild-std=std,panic_abort -Zbuild-std-features=panic_immediate_abort -Zavoid-dev-deps -Zno-embed-metadata install -f --bins --ignore-rust-version -q"
+builda = "+nightly -Zunstable-options -Zmtime-on-use -Zgit -Zgitoxide -Zbuild-std=std,panic_abort -Zbuild-std-features=panic_immediate_abort -Zavoid-dev-deps -Zno-embed-metadata build --bins --lib -r -q"
+installgit = "+nightly -Zunstable-options -Zmtime-on-use -Zgit -Zgitoxide -Zbuild-std=std,panic_abort -Zbuild-std-features=panic_immediate_abort -Zavoid-dev-deps -Zno-embed-metadata install -f --bins -q --git"
 
 [rust]
 jemalloc = true
@@ -35,9 +38,6 @@ frame-pointers = false
 codegen-backends = ['llvm']
 
 [llvm]
-cflags = "-march=native"
-cxxflags = "-march=native"
-ccache = 'ccache'
 libzstd = true
 optimize = true
 polly = true
@@ -46,29 +46,28 @@ clang = true
 [build]
 rustc-wrapper = "sccache"
 incremental = false
-#target = ["x86_64-unknown-linux-gnu"]
+jobs = 0
+pipelining = true
 compiler-docs = false
 optimized-compiler-builtins = true
 ccache = true
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
-RUSTC_BOOTSTRAP = { value = "1", force = true }
-RUST_PANIC_STRATEGY = { value = "abort", force = true }
-CARGO_CACHE_RUSTC_INFO = { value = "1", force = true }
+RUSTC_BOOTSTRAP = "1"
+CARGO_CACHE_RUSTC_INFO = "1"
 RUSTC_ICE = "0"
 CARGO_LOG = "off"
 RUSTDOC_LOG = "off"
 RUSTC_LOG = "off"
-MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
-_RJEM_MALLOC_CONF = { value = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu", force = true }
+MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
+_RJEM_MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
 MIMALLOC_ALLOW_LARGE_OS_PAGES = "1"
 ZSTD_NBTHREADS = "0"
 RUST_LIB_BACKTRACE = "0"
-#RUST_BACKTRACE = "1"
-CMAKE_BUILD_TYPE = { value = "Release", force = true }
-OPT_LEVEL = { value = "3", force = true }
-CARGO_INCREMENTAL = { value = "0", force = true }
+CMAKE_BUILD_TYPE = "Release"
+OPT_LEVEL = "3"
+CARGO_INCREMENTAL = "0"
 
 [cache]
 auto-clean-frequency = "7 days"
@@ -87,10 +86,11 @@ ssl-version.min = "tlsv1.2"
 timeout = 30
 check-revoke = false
 multiplexing = true
+low-speed-limit = 10
 
 [net]
 git-fetch-with-cli = true
-retry = 3
+retry = 2
 offline = false
 
 [registries.crates-io]
@@ -117,51 +117,30 @@ ar = 'llvm-ar'
 ranlib = 'llvm-ranlib'
 rustflags = [
   "-C", "target-cpu=native","-Z", "tune-cpu=native",
-  "-C", "llvm-args=-enable-dfa-jump-thread","-Z", "precise-enum-drop-elaboration=yes",
-  "-C", "link-args=-fuse-ld=mold --threads --sort-common --as-needed --now --icf=safe --strip-all --gc-sections",
-  "-C", "linker-plugin-lto", "-Z", "threads=8", "-Z", "fmt-debug=none", "-Z", "location-detail=none", "-Z", "function-sections"
-]
-[target.aarch64-linux-android]
-linker = "clang"
-rustflags = [
-  "-C", "target-cpu=native","-Z", "tune-cpu=native",
-  "-C", "llvm-args=-enable-dfa-jump-thread","-Z", "precise-enum-drop-elaboration=yes",
-  "-C", "link-args=-fuse-ld=mold --threads --sort-common --as-needed --now --icf=safe --strip-all --gc-sections",
-  "-C", "linker-plugin-lto", "-Z", "threads=8"
+  "-C", "link-arg=-Wl,--icf=safe", "-C", "link-arg=-Wl,--as-needed", "-C", "link-arg=-Wl,--gc-sections",
+  "-C", "link-arg=-Wl,--lto-O3", "-C", "link-arg=-Wl,--threads=8", "-C", "link-arg=-Wl,--fat-lto-objects" "-C", "link-arg=-Wl,--optimize-bb-jumps"
+  "-C", "link-args=-fuse-ld=lld", "-C", "linker-plugin-lto", "-C", "embed-bitcode=yes",
+  "-Z", "virtual-function-elimination", "-Z", "function-sections"
+  "-C", "llvm-args=-enable-dfa-jump-thread -enable-new-pm=1", "-Z", "precise-enum-drop-elaboration=yes",
+  "-Z", "share-generics=y", "-Z", "plt",
+  "-Z", "mir-opt-level=4", "-Z", "threads=8",
+  "-Z", "location-detail=none", "-Z", "fmt-debug=none",
 ]
 
 [profile.dev]
-opt-level = 0
-codegen-units = 16
+opt-level = 1
+codegen-units = 256
+incremental = true
 debug = "line-tables-only"
 split-debuginfo = "unpacked"
 
 [profile.dev.package."*"]
+opt-level = 2
 debug = false
 
 [profile.release.build-override]
 inherits = "release"
 codegen-units = 16
-
-[profile.debug]
-inherits = "dev"
-debug = "full"
-
-[target.'cfg(target_os = "linux")']
-linker = "clang"
-rustflags = [
-  "-C", "target-cpu=native","-Z", "tune-cpu=native",
-  "-C", "llvm-args=-enable-dfa-jump-thread","-Z", "precise-enum-drop-elaboration=yes",
-  "-C", "link-args=-fuse-ld=mold --threads","-C", "linker-plugin-lto",
-  "-Z", "threads=8"
-]
-[target.'cfg(all())']
-rustflags = [
-  "-C", "target-cpu=native","-Z", "tune-cpu=native",
-  "-C", "llvm-args=-enable-dfa-jump-thread","-Z", "precise-enum-drop-elaboration=yes",
-  "-C", "link-args=-fuse-ld=mold --threads","-C", "linker-plugin-lto",
-  "-Z", "threads=8"
-]
 
 [term]
 quiet = false
