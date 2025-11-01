@@ -99,7 +99,7 @@ if has cargo; then export CARGO_HOME=$HOME/.cargo RUSTUP_HOME=$HOME/.rustup; ifs
 export PYTHONOPTIMIZE=2 PYTHONUTF8=1 PYTHONNODEBUGRANGES=1 PYTHON_JIT=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1 PYTHONSTARTUP=$HOME/.pythonstartup PYTHON_COLORS=1
 if has uv; then export UV_NO_VERIFY_HASHES=1 UV_SYSTEM_PYTHON=1 UV_BREAK_SYSTEM_PACKAGES=0 UV_TORCH_BACKEND=auto UV_FORK_STRATEGY=fewest UV_RESOLUTION=highest UV_PRERELEASE="if-necessary-or-explicit" UV_COMPILE_BYTECODE=1 UV_LINK_MODE=hardlink; fi
 export NODE_OPTIONS="--max-old-space-size=4096"
-if has go; then export CGO_ENABLED=0 GOGC=200 GOMAXPROCS=$jobs GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -pgo auto"; go telemetry off &>/dev/null; fi
+if has go; then export CGO_ENABLED=0 GOGC=200 GOMAXPROCS="$(nproc)" GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -pgo auto"; go telemetry off &>/dev/null; fi
 
 # Misc App Env
 export ZSTD_NBTHREADS=0  
