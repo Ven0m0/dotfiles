@@ -336,3 +336,9 @@ desc = "Enter the subfolder faster, or open the file directly"
 on   = [ ".", "s" ]
 run  = "plugin what-size -- '--clipboard'"
 desc = "Calc size of selection or cwd"
+
+[[mgr.prepend_keymap]]
+on = ["C"]
+run = "plugin ouch"
+desc = "Compress with ouch"
+
