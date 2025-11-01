@@ -121,6 +121,15 @@ export __GL_SHADER_DISK_CACHE=1 __GL_SHADER_DISK_CACHE_PATH=$HOME/.cache/nvidia/
 export ANTHROPIC_MODEL="claude-sonnet-4.5" CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 export DISABLE_NON_ESSENTIAL_MODEL_CALLS=1 DISABLE_ERROR_REPORTING=1 DO_NOT_TRACK=1
 
+if has yazi; then
+  y(){
+	  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	  yazi "$@" --cwd-file="$tmp"
+	  IFS= read -r -d '' cwd < "$tmp"
+	  [[ -n "$cwd" ]] && [[ "$cwd" != "$PWD" ]] && builtin cd -- "$cwd"
+	  rm -f -- "$tmp"
+  }
+fi
 #============ Fuzzy Finders ============
 fuzzy_finders(){
   local FIND_CMD='find . -type f -print'
