@@ -8,6 +8,7 @@
     "arrowParens": "always",
     "bracketSpacing": false,
     "plugins": [
-      "prettier-plugin-sh"
+        "@prettier-plugin-sh"
+        "@prettier/plugin-oxc"
     ],
 }
