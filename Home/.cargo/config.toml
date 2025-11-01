@@ -8,7 +8,7 @@ checksum-freshness = true
 cargo-lints = true
 trim-paths = true
 no-embed-metadata = true
-build-std = ["std", "panic_abort"]
+#build-std = ["std", "panic_abort"]
 gc = true
 panic-abort-tests = true
 script = true
@@ -66,22 +66,19 @@ MIMALLOC_ALLOW_LARGE_OS_PAGES = "1"
 ZSTD_NBTHREADS = "0"
 RUST_LIB_BACKTRACE = "0"
 #RUST_BACKTRACE = "1"
-CMAKE_BUILD_TYPE = "Release"
+CMAKE_BUILD_TYPE = { value = "Release", force = true }
+OPT_LEVEL = { value = "3", force = true }
+CARGO_INCREMENTAL = { value = "0", force = true }
 
 [cache]
 auto-clean-frequency = "7 days"
 
 [cache.global-clean]
-# Anything older than this duration will be deleted in the source cache.
 max-src-age = "1 month"
-# Anything older than this duration will be deleted in the compressed crate cache.
-max-crate-age = "3 months"
-# Any index older than this duration will be deleted from the index cache.
-max-index-age = "3 months"
-# Any git checkout older than this duration will be deleted from the checkout cache.
+max-crate-age = "2 months"
+max-index-age = "2 months"
 max-git-co-age = "1 month"
-# Any git clone older than this duration will be deleted from the git cache.
-max-git-db-age = "3 months"
+max-git-db-age = "1 months"
 
 [http]
 debug = false
@@ -121,15 +118,15 @@ ranlib = 'llvm-ranlib'
 rustflags = [
   "-C", "target-cpu=native","-Z", "tune-cpu=native",
   "-C", "llvm-args=-enable-dfa-jump-thread","-Z", "precise-enum-drop-elaboration=yes",
-  "-C", "link-args=-fuse-ld=mold --threads --sort-common --as-needed",
-  "-C", "linker-plugin-lto", "-Z", "threads=8"
+  "-C", "link-args=-fuse-ld=mold --threads --sort-common --as-needed --now --icf=safe --strip-all --gc-sections",
+  "-C", "linker-plugin-lto", "-Z", "threads=8", "-Z", "fmt-debug=none", "-Z", "location-detail=none", "-Z", "function-sections"
 ]
 [target.aarch64-linux-android]
 linker = "clang"
 rustflags = [
   "-C", "target-cpu=native","-Z", "tune-cpu=native",
   "-C", "llvm-args=-enable-dfa-jump-thread","-Z", "precise-enum-drop-elaboration=yes",
-  "-C", "link-args=-fuse-ld=mold --threads --sort-common --as-needed",
+  "-C", "link-args=-fuse-ld=mold --threads --sort-common --as-needed --now --icf=safe --strip-all --gc-sections",
   "-C", "linker-plugin-lto", "-Z", "threads=8"
 ]
 
