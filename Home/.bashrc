@@ -133,7 +133,7 @@ fi
 fuzzy_finders(){
   local FIND_CMD='find . -type f -print'
   has fdf && FIND_CMD='fdf -t f --same-file-system --size +1k'
-  has fd && FIND_CMD='fd -tf -gH -c always --strip-cwd-prefix'
+  has fd && FIND_CMD='fd -tf'
   has rga && FIND_CMD='rga --files --no-messages'
   has rg && FIND_CMD='rg --files --no-messages'
   local FZF_PREVIEW='cat -sn {}'
@@ -141,17 +141,13 @@ fuzzy_finders(){
   
   export FZF_DEFAULT_COMMAND="$FIND_CMD --hidden --glob '!.git'"
   export FZF_CTRL_T_COMMAND="$FIND_CMD --hidden --glob '!.git'"
-  export FZF_DEFAULT_OPTS='\
-    -1 -0 --cycle --border --preview-window=wrap --smart-case --marker="*" \
+  export FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window=wrap --smart-case \
     --walker-skip=".git,node_modules,target,go,.cache" --inline-info --layout=reverse-list'
-  export FZF_CTRL_T_OPTS="\
-    -1 -0 --inline-info --preview '$FZF_PREVIEW' \
+  export FZF_CTRL_T_OPTS="-1 -0 --inline-info --preview '$FZF_PREVIEW' \
     --bind 'ctrl-/:change-preview-window(down|hidden|)'"
-  export FZF_CTRL_R_OPTS='\
-    -1 -0 --inline-info --no-sort --exact \
+  export FZF_CTRL_R_OPTS='-1 -0 --inline-info --no-sort --exact \
     --preview "echo {}" --preview-window=down:3:hidden:wrap --bind "?:toggle-preview"'
-  export FZF_ALT_C_OPTS='\
-    -1 -0 --inline-info --walker-skip=".git,node_modules,target,go" \
+  export FZF_ALT_C_OPTS='-1 -0 --inline-info --walker-skip=".git,node_modules,target,go" \
     --preview "tree -C {} 2>/dev/null | head -200"'
   export FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=chunk'
   
