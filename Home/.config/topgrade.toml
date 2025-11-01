@@ -2,13 +2,9 @@
 [include]
 # paths = ["/etc/topgrade.toml"]
 [misc]
-# Run `sudo -v` to cache credentials at the start of the run
 pre_sudo = true
-# Sudo command to be used
-#sudo_command = "sudo"
-# Disable specific steps - same options as the command line flag
+sudo_command = "sudo"
 disable = ["config_update", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise"]
-# Ignore failures for these steps
 ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise"]
 assume_yes = true
 no_retry = true
