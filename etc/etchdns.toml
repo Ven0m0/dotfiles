@@ -10,92 +10,31 @@ log_level = "warn"
 listen_addresses = ["0.0.0.0:53"]
 dns_packet_len_max = 4096
 upstream_servers = [
-	"45.90.28.147:53",
-	"45.90.30.147:53"
-    #"1.1.1.2:53",
-    #"1.0.0.2:53"
+  "45.90.28.147:53",
+	"45.90.30.147:53",
+  "1.1.1.2:53",
+  "1.0.0.2:53"
 ]
 load_balancing_strategy = "fastest"
 server_timeout = 3
 probe_interval = 60
-# Maximum number of UDP clients to to allow concurrently (default: 1000)
-# Increase for higher concurrency
 max_udp_clients = 1000
-
-# Maximum number of TCP clients to allow concurrently (default: 1000)
-# Increase for higher concurrency
 max_tcp_clients = 1000
-
-# Maximum number of concurrent connections to the DoH server (default: 10)
-# Increase for higher concurrency
-max_doh_connections = 1000
-
-# Maximum number of simultaneous in-flight queries (default: 500)
-# Increase for higher concurrency
-max_inflight_queries = 500
-
-# Size of the DNS cache in number of entries (default: 10000)
-# Increase for better performance with high query volumes
-cache_size = 100000
-
-# Whether this server is authoritative for DNS responses (default: false)
-# If false, TTLs in cached responses will be adjusted based on remaining time
+max_doh_connections = 100
+max_inflight_queries = 1000
 authoritative_dns = false
-
-# Grace period in seconds to serve stale (expired) cache entries when upstream servers fail (default: 0)
-# Set to 0 to disable serving stale entries
-# 86400 seconds (1 day) allows continued operation during upstream outages
 serve_stale_grace_time = 86400
-
-# TTL in seconds to use when serving stale cache entries (default: 30)
-# 60 seconds is a reasonable TTL for stale entries
 serve_stale_ttl = 120
-
-# TTL in seconds to use for negative DNS responses when no TTL is available (default: 1)
-# 60 seconds is a reasonable TTL for negative responses
 negative_cache_ttl = 120
-
-# Minimum TTL in seconds for cached DNS responses (default: 1)
-# This is the minimum time a valid response will be stored in the cache
-# Applied in both authoritative and non-authoritative modes
-# In authoritative mode, original TTLs are still returned to clients
-min_cache_ttl = 3
+min_cache_ttl = 1
 udp_rate_limit_window = 0
-
-# Maximum number of queries allowed per client IP in the UDP window (default: 100)
-# 500 queries per second is reasonable for legitimate clients
 udp_rate_limit_count = 1000
-
-# Maximum number of client IPs to track for UDP rate limiting (default: 10000)
-# 100000 allows tracking more clients in high-traffic environments
 udp_rate_limit_max_clients = 100000
-
-# TCP Rate Limiting
-# Time window in seconds for TCP rate limiting (default: 5)
-# Set to 0 to disable rate limiting for TCP
-# 5 seconds is appropriate for TCP due to its connection-oriented nature
 tcp_rate_limit_window = 0
-
-# Maximum number of queries allowed per client IP in the TCP window (default: 20)
-# 100 queries per 5 seconds is reasonable for legitimate clients
-tcp_rate_limit_count = 200
-
-# Maximum number of client IPs to track for TCP rate limiting (default: 5000)
-# 50000 allows tracking more clients in high-traffic environments
+tcp_rate_limit_count = 100
 tcp_rate_limit_max_clients = 50000
-
-# DoH Rate Limiting
-# Time window in seconds for DoH rate limiting (default: 10)
-# Set to 0 to disable rate limiting for DoH
-# 10 seconds is appropriate for DoH due to its connection-oriented nature
 doh_rate_limit_window = 0
-
-# Maximum number of queries allowed per client IP in the DoH window (default: 30)
-# 200 queries per 10 seconds is reasonable for legitimate clients
 doh_rate_limit_count = 400
-
-# Maximum number of client IPs to track for DoH rate limiting (default: 5000)
-# 50000 allows tracking more clients in high-traffic environments
 doh_rate_limit_max_clients = 50000
 
 metrics_address = "127.0.0.1:9100"
@@ -113,7 +52,6 @@ enable_strict_ip_validation = false
 block_private_ips = false
 block_loopback_ips = false
 min_client_port = 1024
-
 blocked_ip_ranges = [
     # Example: Block a specific range
     # "203.0.113.0/24"   # TEST-NET-3 (Documentation)
@@ -127,5 +65,3 @@ group = "lucy"
 # If not set, chroot will not be performed
 # Uncomment to enable chroot (ensure the directory exists and is properly set up)
 # chroot = "/var/empty"
-
-
