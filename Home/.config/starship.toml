@@ -12,7 +12,6 @@ $time\
 $character
 """
 
-#right_format = ""
 right_format = "${custom.mommy}"
 
 scan_timeout = 50
@@ -28,9 +27,10 @@ error_symbol = '[x](bold red) '
 [directory]
 style = "purple"
 truncate_to_repo = true
-fish_style_pwd_dir_length = 2
-truncation_length = 2
+fish_style_pwd_dir_length = 3
+truncation_length = 3
 truncation_symbol = "…/"
+home_symbol = '~'
 format = '[$path]($style)[$read_only]($read_only_style)'
 
 [username]
@@ -83,6 +83,7 @@ disabled = true
 format = 'via [🍔 $version](bold green) '
 detect_files = ['bun.lock', 'bun.lockb', 'bunfig.toml', 'package.json', 'package-lock.json']
 detect_folders = ['.bun']
+
 [mise]
 disabled = true
 
@@ -110,13 +111,15 @@ when = "true"
 
 # Git repo name
 [custom.git_repo]
+disabled = false
 command = "basename $(git rev-parse --show-toplevel 2>/dev/null || echo '')"
-#when = "git rev-parse --is-inside-work-tree >/dev/null 2>&1"
+when = "git rev-parse --is-inside-work-tree >/dev/null 2>&1"
 require_repo = true
 style = "bold magenta"
 format = " [$output]($style)"
 
 [custom.yazi_level]
+disabled = false
 description = "Indicate the shell was launched by `yazi`"
 variable = "YAZI_LEVEL"
 symbol = "🦆"
