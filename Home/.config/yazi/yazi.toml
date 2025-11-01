@@ -102,10 +102,22 @@ preloaders = [
 ]
 [plugin]
 prepend_previewers = [
-    { name = "*.csv", run = "bat" },
-    { name = "*.md", run = "bat" }
+	# Archive previewer
+	{ mime = "application/*zip",            run = "ouch" },
+	{ mime = "application/x-tar",           run = "ouch" },
+	{ mime = "application/x-bzip2",         run = "ouch" },
+	{ mime = "application/x-7z-compressed", run = "ouch" },
+	{ mime = "application/x-rar",           run = "ouch" },
+	{ mime = "application/vnd.rar",         run = "ouch" },
+	{ mime = "application/x-xz",            run = "ouch" },
+	{ mime = "application/xz",              run = "ouch" },
+	{ mime = "application/x-zstd",          run = "ouch" },
+	{ mime = "application/zstd",            run = "ouch" },
+	{ mime = "application/java-archive",    run = "ouch" },
+	# Bat
+  { name = "*.csv", run = "bat" },
+  { name = "*.md", run = "bat" }
 ]
-
 previewers = [
 	{ name = "*/", run = "folder", sync = true },
 	{ mime = "text/*",                 run = "bat" },
@@ -116,9 +128,13 @@ previewers = [
 ]
 
 previewers = [
-  { name = "*/", run = "folder" },
-  { mime = "text/*", run = "code" },
-  { mime = "application/{mbox,javascript,wine-extension-ini}", run = "code" },
+  { name = "*/", run = "folder", sync = true },
+  { mime = "text/*", run = "bat" },
+  { mime = "*/xml",                  run = "bat" },
+  { mime = "*/cs",                   run = "bat" },
+  { mime = "*/javascript",           run = "bat" },
+  { mime = "*/x-wine-extension-ini", run = "bat" },
+  { mime = "application/{mbox,javascript,wine-extension-ini}", run = "bat" },
   { mime = "application/{json,ndjson}", run = "json" },
   { mime = "image/{avif,hei?,jxl}", run = "magick" },
   { mime = "image/svg+xml", run = "svg" },
