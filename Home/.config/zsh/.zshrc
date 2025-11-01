@@ -8,7 +8,6 @@ export PS4='+%N:%i> '
 # =================== CORE / ENV ===================
 setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS no_global_rcs
 skip_global_compinit=1
-SHELL=zsh
 export EDITOR=micro VISUAL=${VISUAL:-code}
 export PAGER=bat GIT_PAGER=delta BAT_STYLE=auto BATDIFF_USE_DELTA=true BATPIPE=color
 export LESSCHARSET='utf-8' LESSHISTFILE=- LESSQUIET=1
