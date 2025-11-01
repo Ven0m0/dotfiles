@@ -14,9 +14,9 @@ observation-path = "/var/run/ntpd-rs/observe"
 ## to discover 4 distinct sources).
 [[source]]
 mode = "pool"
-address = "ntpd-rs.pool.ntp.org"
+#address = "de.pool.ntp.org"
+address = "time.cloudflare.com"
 count = 4
-
 ## If you have an NTS server, you can configure a source that connects using NTS
 ## by adding a configuration such as the one below
 #[[source]]
