@@ -1,6 +1,14 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-format = """[$username$directory]${custom.git_repo}$hostname$localip$sudo$shell$time
+format = """
+[$username$directory]
+${custom.git_repo}
+$hostname
+$localip
+$sudo
+$shell
+${custom.yazi_level}
+$time
 $character
 """
 
@@ -99,3 +107,9 @@ command = "basename $(git rev-parse --show-toplevel 2>/dev/null || echo '')"
 require_repo = true
 style = "bold magenta"
 format = " [$output]($style)"
+
+[custom.yazi_level]
+description = "Indicate the shell was launched by `yazi`"
+variable = "YAZI_LEVEL"
+symbol = "🦆"
+format = '[ $symbol ]($style)'
