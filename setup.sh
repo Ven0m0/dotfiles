@@ -20,7 +20,7 @@ warn(){ printf '%b\n' "${BLD}${YLW}==> WARNING:${BWHT} $1${DEF}"; }
 die(){ printf '%b\n' "${BLD}${RED}==> ERROR:${BWHT} $1${DEF}" >&2; exit 1; }
 #--- Pre-flight Checks ---#
 [[ $EUID -eq 0 ]] && die "Run as a regular user, not root."
-! has sudo && die "Sudo is required. Please install it first."
+sudo -v
 ! ping -c 1 archlinux.org &>/dev/null && die "No internet connection."
 #--- Configuration ---#
 readonly DOTFILES_REPO="https://github.com/Ven0m0/dotfiles.git"
