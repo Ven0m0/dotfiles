@@ -28,7 +28,6 @@ optimize = true
 [build]
 rustc-wrapper = "sccache"
 incremental = false
-jobs = 0
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
