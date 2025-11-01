@@ -1,40 +1,36 @@
 {
-	"inputs": [],
-	"servers": {
-		"read-website-fast": {
-			"command": "bunx",
-			"args": [
-				"@just-every/mcp-read-website-fast"
-			],
-			"type": "stdio"
-		},
-		"Github": {
-			"url": "https://api.githubcopilot.com/mcp/",
-			"disabled": false,
-			"autoApprove": [],
-			"type": "http"
-		},
-    	"promptboost": {
-    		"url": "https://promptboost.dev/mcp",
-    		"type": "http"
-    	},
-    	"Sequential": {
-      		"url": "https://remote.mcpservers.org/sequentialthinking/mcp",
-	  		"type": "http",
-    	},
-		"microsoft/playwright-mcp": {
-			"command": "bunx",
-			"args": [
-				"@playwright/mcp@latest"
-			],
-			"type": "stdio",
-		},
-		"upstash/context7": {
-			"url": "https://mcp.context7.com/mcp",
-			"type": "http",
-			"headers": {
-				"CONTEXT7_API_KEY": "${input:context7_api_key}"
-			}
-		}
-  	}
+  "inputs": [],
+  "servers": {
+    "read-website-fast": {
+      "command": "bunx",
+      "args": ["@just-every/mcp-read-website-fast"],
+      "type": "stdio"
+    },
+    "Github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "disabled": false,
+      "autoApprove": [],
+      "type": "http"
+    },
+    "promptboost": {
+      "url": "https://promptboost.dev/mcp",
+      "type": "http"
+    },
+    "Sequential": {
+      "url": "https://remote.mcpservers.org/sequentialthinking/mcp",
+      "type": "http"
+    },
+    "microsoft/playwright-mcp": {
+      "command": "bunx",
+      "args": ["@playwright/mcp@latest"],
+      "type": "stdio"
+    },
+    "upstash/context7": {
+      "url": "https://mcp.context7.com/mcp",
+      "type": "http",
+      "headers": {
+        "CONTEXT7_API_KEY": "${input:context7_api_key}"
+      }
+    }
+  }
 }
