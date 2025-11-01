@@ -19,7 +19,9 @@ command_timeout = 250
 add_newline = false
 follow_symlinks = false
 
-# Customize the prompt symbol
+[line_break]
+disabled = true
+
 [character]
 success_symbol = '[>](bold green) '
 error_symbol = '[x](bold red) '
@@ -55,11 +57,11 @@ disabled = false
 style = 'bold red'
 
 [time]
-disabled = false
+disabled = true
 use_12hr = false
 time_format = "%H:%M"
 utc_time_offset = "local"
-time_range = "-"
+time_range = "00:00:00-24:00:00"
 
 [git_branch]
 disabled = true
@@ -145,3 +147,50 @@ description = "Indicate the shell was launched by `yazi`"
 variable = "YAZI_LEVEL"
 symbol = "🦆"
 format = '[ $symbol ]($style)'
+
+[aws]
+disabled = true
+[cmake]
+disabled=true
+[cobol]
+disabled=true
+[dart]
+disabled = true
+[docker_context]
+disabled = true
+[elixir]
+disabled = true
+[elm]
+disabled = true
+[golang]
+disabled = true
+[haskell]
+disabled=true
+[hg_branch]
+disabled = true
+[java]
+disabled = true
+[julia]
+disabled = true
+[nim]
+disabled = true
+[nix_shell]
+disabled = true
+[nodejs]
+disabled = true
+[perl]
+disabled = true
+[php]
+disabled = true
+[python]
+disabled = true
+[ruby]
+disabled = true
+[rust]
+disabled = true
+[scala]
+disabled = true
+[swift]
+disabled = true
+[lua]
+disabled = true
