@@ -1,0 +1,3 @@
+# ~/.brushrc
+PS1="brush$ "
+source ~/.bashrc

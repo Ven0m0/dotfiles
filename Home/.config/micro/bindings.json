@@ -2,12 +2,14 @@
     "Alt-/": "lua:comment.comment",
     "Alt-d": "command:definition",
     "Alt-f": "lua:fzf.fzf",
+    "Alt-j": "lua:joinLines.joinLines",
     "Alt-k": "command:hover",
     "Alt-p": "lua:filemanager.toggle_tree",
-    "Alt-r": "command:references",
+    "Alt-r": "command:format",
     "Alt-s": "Save,Quit",
     "CtrlSpace": "command:lspcompletion",
     "CtrlUnderscore": "lua:comment.comment",
     "F1": "command:cheat",
-    "F4": "command:jumptag"
+    "F4": "command:jumptag",
+    "F5": "lua:wc.wordCount"
 }

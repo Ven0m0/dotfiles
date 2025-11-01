@@ -3,21 +3,14 @@
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
-    fi
+  [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
 fi
 
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ]; then
-    PATH="$HOME/bin:$PATH"
-fi
-if [ -d "$HOME/.local/bin" ]; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
+[ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
+[ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:$PATH"
 
+export PATH
 # FZF tab completions
-if [ -f "/usr/lib/librl_custom_complete.so" ]; then
-  export LD_PRELOAD="/usr/lib/librl_custom_complete.so"
-fi
+[ -f "/usr/lib/librl_custom_complete.so" ] && LD_PRELOAD="/usr/lib/librl_custom_complete.so"

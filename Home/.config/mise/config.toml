@@ -32,19 +32,16 @@ github-cli = "latest"
 codex = "latest"
 go = "latest"
 minify = "latest"
-yamlfmt = "latest"
 #rust = { version = "nightly", profile = "minimal", components = "rust-src,llvm-tools", targets = "x86_64-unknown-linux-gnu,wasm32-unknown-unknown }
 #java = "temurin-25.0.1+8.0.LTS"
 #graalvm = "latest"
 
 [env]
-NODE_ENV = 'production'
 _.python.venv = { path = ".venv" }
 DO_NOT_TRACK = "1"
-BUN_OPTIONS = "--linker=hoisted --only-missing --concurrent-scripts=8 --backend=hardlink --silent --no-deprecation --dns-result-order=ipv4first --prefer-offline"
+BUN_OPTIONS = "--linker=hoisted --only-missing --concurrent-scripts=8 --backend=hardlink --no-deprecation --dns-result-order=ipv4first --prefer-offline"
 CARGO_HTTP_MULTIPLEXING = "true"
 UV_LINK_MODE = "hardlink"
-COPILOT_ALLOW_ALL = "true"
 CGO_ENABLED = "0"
 
 [tasks.clean]
@@ -52,7 +49,7 @@ depends = ['cleancache']
 run = "cargo cache -efg; cargo clean"
 
 [tasks.cleancache]
-run = "rm -rf .cache"
+run = "rm -rf ~/.cache/*"
 hide = true
 
 [tasks.bunx]
@@ -62,5 +59,5 @@ alias = 'bx'
 
 [tasks.buni]
 description = 'Bun install'
-run = "bun i -p "
+run = "bun i -g"
 alias = 'bi'
