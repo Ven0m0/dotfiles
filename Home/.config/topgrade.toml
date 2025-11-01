@@ -68,11 +68,11 @@ self_rename = true
 [deno]
 # Upgrade deno executable to the given version.
 # version = "stable"
+
 [vim]
 # force_plug_update = true
 
 [firmware]
-# Offer to update firmware
 upgrade = true
 
 [vagrant]
