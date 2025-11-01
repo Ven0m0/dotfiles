@@ -15,7 +15,7 @@ no_self_update = true
 # only = ["system", "emacs"]
 
 [pre_commands]
-"pacfree" = "[ -f /var/lib/pacman/db.lck ] && sudo rm -f '/var/lib/pacman/db.lck'"
+"pacfree" = "rm -f /var/lib/pacman/db.lck"
 
 [post_commands]
 "paru_clean" = "paru -Scc --noconfirm; sudo paccache -rk0"
