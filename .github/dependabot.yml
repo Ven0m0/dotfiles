@@ -18,6 +18,8 @@ updates:
       interval: "weekly"
       timezone: "Europe/Berlin"
       time: "04:00"
+    ignore:
+      - dependency-name: "pip"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
