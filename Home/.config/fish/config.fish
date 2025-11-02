@@ -1,7 +1,5 @@
-status -i || exit 0
-if not status --is-interactive
-    return
-end
+status -i || return
+
 source /usr/share/cachyos-fish-config/cachyos-config.fish
 
 set -g fish_greeting
