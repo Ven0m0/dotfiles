@@ -29,7 +29,8 @@ fish_add_path $HOME/.local/bin
 fish_add_path $HOME/bin
 fish_add_path $HOME/bun/bin
 
-set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
+#set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
+set -gx FZF_DEFAULT_COMMAND 'fdf -tf -H --size +1k'
 set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
 
 init_tool fzf "fzf --fish"
