@@ -25,10 +25,8 @@ set -U __done_notification_urgency_level low
 set -x GPG_TTY (tty)
 set -gx COLORTERM truecolor
 
-fish_add_path $HOME/.cargo/bin
 fish_add_path $HOME/.local/bin
 fish_add_path $HOME/bin
-fish_add_path $HOME/.bin
 fish_add_path $HOME/bun/bin
 
 set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
