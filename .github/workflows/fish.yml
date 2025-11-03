@@ -27,6 +27,8 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 1
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+
       - name: Install Fish
         run: |
           sudo apt-add-repository -yu ppa:fish-shell/release-3
