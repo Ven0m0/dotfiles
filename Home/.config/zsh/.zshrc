@@ -30,6 +30,12 @@ fi
 if has zoxide; then eval "$(zoxide init zsh)"; fi
 if has mise; then eval "$(mise activate zsh)"; fi
 
+ifsource /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+ifsource /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+ifsource /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+ifsource /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+ifsource /usr/share/doc/pkgfile/command-not-found.zsh
+
 # =================== ZSH OPTIONS ===================
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME PUSHD_MINUS CD_SILENT path_dirs
 setopt EXTENDED_GLOB GLOB_DOTS NULL_GLOB GLOB_STAR_SHORT NUMERIC_GLOB_SORT HASH_EXECUTABLES_ONLY
@@ -45,6 +51,10 @@ unsetopt menu_complete
 setopt list_packed auto_list auto_menu auto_param_keys complete_in_word nonomatch
 setopt short_loops long_list_jobs rm_star_wait
 stty stop undef &>/dev/null || :
+
+DISABLE_MAGIC_FUNCTIONS="true"
+ENABLE_CORRECTION="true"
+COMPLETION_WAITING_DOTS="true"
 
 # =================== PATHS ===================
 typeset -gaU cdpath fpath mailpath path prepath
@@ -69,6 +79,8 @@ export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/.zcompdump"
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000 SAVEHIST=10000
 HISTTIMEFORMAT="%F %T "
+export HISTCONTROL=ignoreboth
+export HISTORY_IGNORE="(\&|[bf]g|c|clear|history|exit|q|pwd|* --help)"
 
 # =================== Antidote plugin manager ===================
 antidote_dir=${XDG_DATA_HOME:-$HOME/.local/share}/antidote
@@ -139,6 +151,7 @@ fi
 
 # =================== PROMPT ===================
 [[ -f $HOME/.p10k.zsh ]] && source "$HOME/.p10k.zsh"
+export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 # =================== FUNCTIONS ===================
 mkcd(){ mkdir -p -- "$1" && cd -- "$1" || return; }
