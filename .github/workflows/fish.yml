@@ -39,7 +39,7 @@ jobs:
     - name: Run tests
       shell: fish {0}
       run: |
-        set -l tests (find . -name '*.fish' -type f)
+        set -l tests (LC_ALL=C find . -name '*.fish' -type f)
         test -n "$tests" && fishtape $tests || echo "No tests found"
     - uses: stefanzweifel/git-auto-commit-action@v5
       with:
