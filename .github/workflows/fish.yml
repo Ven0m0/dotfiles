@@ -20,29 +20,12 @@ jobs:
         fetch-depth: 0
         ref: ${{github.head_ref}}
         token: ${{secrets.GITHUB_TOKEN}}
-    - name: Install fish
-      run: |
-        sudo apt-add-repository -yu ppa:fish-shell/release-3 && sudo apt-get install -y fish
-    - name: Find and format
-      run: |
-        files=($(LC_ALL=C find -O2 . -type f \( -name '*.fish' -o -name 'fish_*' \) -print))
-        for f in "${files[@]}"; do
-          echo "==> $f"
-          fish_indent -w "$f" || echo "Failed: $f"
-        done
-    - name: Install fisher & fishtape
-      shell: fish {0}
-      run: |
-        curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
-        fisher install jorgebucaran/fishtape
-    - name: Run tests
-      shell: fish {0}
-      run: |
-        set -l tests (LC_ALL=C find . -name '*.fish' -type f)
-        test -n "$tests" && fishtape $tests || echo "No tests found"
-    - uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: 'chore(fish): auto-format fish scripts'
-        branch: ${{github.head_ref || github.ref_name}}
-        commit_user_name: 'github-actions[bot]'
-        commit_user_email: '41898282+github-actions[bot]@users.noreply.github.com'
+    - name: Install fish shell
+      uses: fish-shop/install-fish-shell@v1
+  
+    - name: Syntax check
+      uses: fish-shop/syntax-check@v2
+    - name: Indent check
+      uses: fish-shop/indent-check@v1
+    - name: Run Fishtape tests
+      uses: fish-shop/run-fishtape-tests@v2
