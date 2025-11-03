@@ -84,7 +84,8 @@ if has bat; then
   if has batman; then eval "$(batman --export-env)"; else export MANPAGER="sh -c 'col -bx | bat -lman -p -s --squeeze-limit 0'" MANROFFOPT="-c"; fi
   has batpipe && eval "$(SHELL=bash batpipe)"
 fi
-export GIT_PAGER="${GIT_PAGER:-delta}"
+# No pager for systemd
+export GIT_PAGER="${GIT_PAGER:-delta}" SYSTEMD_PAGER='bat -pp'
 
 # Colors & XDG
 if has vivid; then export LS_COLORS=$(vivid generate molokai); elif has dircolors; then eval "$(dircolors -b)"; fi
