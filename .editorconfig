@@ -28,7 +28,7 @@ shell_variant = bash
 [.profile,**.dash]
 shell_variant = posix
 
-[**.{fish,fish_*,fishd.*}]
+[**.{fish,fish_*,fishd.*},fish_*]
 indent_size = 4
 
 [**.{bat,cmd}]
