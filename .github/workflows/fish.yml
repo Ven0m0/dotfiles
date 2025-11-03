@@ -22,8 +22,7 @@ jobs:
         token: ${{secrets.GITHUB_TOKEN}}
     - name: Install fish
       run: |
-        sudo apt-add-repository -yu ppa:fish-shell/release-3
-        sudo apt-get install -y fish
+        sudo apt-add-repository -yu ppa:fish-shell/release-3 && sudo apt-get install -y fish
     - name: Find and format
       run: |
         files=($(LC_ALL=C find -O2 . -type f \( -name '*.fish' -o -name 'fish_*' \) -print))
