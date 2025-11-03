@@ -1,4 +1,4 @@
-status -i || return
+status -i >/dev/null 2>&1 || return
 
 source /usr/share/cachyos-fish-config/cachyos-config.fish
 
