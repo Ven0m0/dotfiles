@@ -26,7 +26,7 @@ jobs:
         sudo apt-get install -y fish
     - name: Find and format
       run: |
-        files=($(find -O2 . -type f \( -name '*.fish' -o -name 'fish_*' \) -print))
+        files=($(LC_ALL=C find -O2 . -type f \( -name '*.fish' -o -name 'fish_*' \) -print))
         for f in "${files[@]}"; do
           echo "==> $f"
           fish_indent -w "$f" || echo "Failed: $f"
