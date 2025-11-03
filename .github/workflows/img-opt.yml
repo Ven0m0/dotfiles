@@ -12,6 +12,7 @@ concurrency:
   cancel-in-progress: true
 permissions:
   contents: write
+  pull-requests: write
 jobs:
   optimize-images:
     runs-on: ubuntu-latest
