@@ -11,3 +11,10 @@ update-pkglist(){
   paclist manual | sed 's/\s.*//' > "$HOME/.pkglist/manual"
   sudo pacman -Qkk |& grep Modification | sed -e 's/^[^/]*//' -e 's/ (.*)$//' | sort > "$HOME/.pkglist/modified-files"
 }
+
+ssh-key(){
+  email="${email:=${1:-ven0m0.wastaken@gmail.com}}"
+  target="${2:=dietpi@192.168.178.86}"
+  ssh-keygen -t ed25519 -a 100 -f ~/.ssh/pi_ed25519 -C "$email"
+  ssh-copy-id -i ~/.ssh/pi_ed25519.pub "$target"
+}
