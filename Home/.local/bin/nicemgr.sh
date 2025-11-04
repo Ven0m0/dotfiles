@@ -14,12 +14,15 @@
 
 set -euo pipefail
 
+# Source common shell utilities
+source "${HOME}/.local/lib/shell-common.sh" || {
+  echo "Error: Failed to load shell-common.sh" >&2
+  exit 1
+}
+
 # Ensure required commands are available
 for cmd in pgrep ps sort renice uname; do
-  if ! command -v "$cmd" >/dev/null 2>&1; then
-    echo "Error: '$cmd' command not found. Please install it." >&2
-    exit 1
-  fi
+  require "$cmd"
 done
 
 # Describe a nice value in human-friendly terms
@@ -59,28 +62,27 @@ EOF
 
 # Detect OS for ps options
 OS=$(uname)
-if [ "$OS" = "Linux" ]; then
+if [[ "$OS" = "Linux" ]]; then
   PS_LIST_OPTS=( -eo pid,ni,comm )    # GNU ps
-elif [ "$OS" = "Darwin" ]; then
+elif [[ "$OS" = "Darwin" ]]; then
   PS_LIST_OPTS=( axo pid,ni,comm )    # BSD ps on macOS
 else
-  echo "Unsupported OS: $OS" >&2
-  exit 1
+  die "Unsupported OS: $OS"
 fi
 
 # Must have at least one argument
-if [ $# -lt 1 ]; then
+if [[ $# -lt 1 ]]; then
   usage
 fi
 
 # Global all-process check
-if [ "$1" = "checkALL" ]; then
+if [[ "$1" = "checkALL" ]]; then
   ps "${PS_LIST_OPTS[@]}" | sort -n -k2
   exit 0
 fi
 
 # Per-process operations expect exactly two arguments
-if [ $# -ne 2 ]; then
+if [[ $# -ne 2 ]]; then
   usage
 fi
 
@@ -91,13 +93,12 @@ action=$2
 # Using read -a for compatibility with Bash 3.x
 read -r -a pids <<< "$(pgrep -x "$proc_name" || echo)"
 # Ensure we have at least one non-empty PID
-if [ ${#pids[@]} -eq 0 ] || [ -z "${pids[0]:-}" ]; then
-  echo "No processes found matching '$proc_name'." >&2
-  exit 1
+if [[ ${#pids[@]} -eq 0 ]] || [[ -z "${pids[0]:-}" ]]; then
+  die "No processes found matching '$proc_name'."
 fi
 
 # Show current nice values
-if [ "$action" = "check" ]; then
+if [[ "$action" = "check" ]]; then
   for pid in "${pids[@]}"; do
     nice_val=$(ps -o ni= -p "$pid" | tr -d ' ')
     echo "$proc_name \"PID: $pid\" is currently set to $(priority_desc "$nice_val")"

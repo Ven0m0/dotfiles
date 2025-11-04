@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Usage: bash avif2webp.sh /path/to/dir
 
 dir="${1:?missing directory}"

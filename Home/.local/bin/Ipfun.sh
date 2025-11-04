@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Display global/public IP
 echo "Your Global IP is: $(curl -s https://api.ipify.org/)"

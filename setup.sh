@@ -9,10 +9,13 @@ cd -P -- "$(cd -P -- "${BASH_SOURCE[0]%/*}" && echo "$PWD")" || exit 1
 # 3. Runs yadm bootstrap for user-level setup.
 # 4. Uses tuckr to link system-wide configs (/etc, /usr).
 #--- Helpers ---#
+# Define color codes (used before common lib is installed)
 BLK=$'\e[30m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
 BLU=$'\e[34m' MGN=$'\e[35m' CYN=$'\e[36m' WHT=$'\e[37m'
 LBLU=$'\e[38;5;117m' PNK=$'\e[38;5;218m' BWHT=$'\e[97m'
 DEF=$'\e[0m' BLD=$'\e[1m'
+
+# Basic utility functions (duplicated here as common lib may not exist yet)
 has(){ command -v "$1" &>/dev/null; }
 warn(){ printf '%b\n' "${BLD}${YLW}==> WARNING:${BWHT} $1${DEF}"; }
 die(){ printf '%b\n' "${BLD}${RED}==> ERROR:${BWHT} $1${DEF}" >&2; exit 1; }
