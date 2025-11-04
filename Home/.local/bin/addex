@@ -4,4 +4,4 @@
 # TODO: Experiment with grep and shebang based solution
 # TODO: grep -rIzl '^#!' ./
 # TODO: skip everything in git submodules
-find ./ -type f -regex ".*\.\(sh\|zsh\|bash\|fish\|dash\)" -exec chmod +x {} \;
+LC_ALL=C find -O2 ./ -type f -regex ".*\.\(sh\|zsh\|bash\|fish\|dash\)" -exec chmod +x {} \;
