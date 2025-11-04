@@ -9,3 +9,6 @@ execinpath(){
 	for f in "$d"/.[ "$d"/..?* "$d"/*; do [[ -f $f ]] && [[ -x $f ]] && printf '%s\n' "${f##*/}"; done
   done | sort -u
 }
+
+# shows the RAM usage
+showram(){ ps -eo size,pid,user,command --sort -size | awk '{ hr=$1/1024 ; printf("%13.2f Mb ",hr) } { for ( x=4 ; x<=NF ; x++ ) { printf("%s ",$x) } print "" }' | sort; }
