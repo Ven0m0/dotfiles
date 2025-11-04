@@ -1,0 +1,5 @@
+[default]
+duration = "30m"
+mode = "center"
+sorting = "ascending"
+path = "/home/lucy/.local/share/wallpapers"
