@@ -3,8 +3,9 @@
 source "${HOME}/.local/lib/shell-common.sh" 2>/dev/null || {
   # Fallback if common lib not available
   has() { command -v "$1" &>/dev/null; }
+  set_c_locale() { export LC_ALL=C LANG=C; }
 }
-set_c_locale 2>/dev/null || export LC_ALL=C LANG=C
+set_c_locale
 
 gitctl() {
   [[ $# -eq 0 ]] && { echo "Usage: gitctl <git-repo-url> [directory]" >&2; return 1; }
