@@ -28,8 +28,15 @@ shell_variant = bash
 [.profile,**.dash]
 shell_variant = posix
 
-[**.{fish,fish_*,fishd.*},fish_*]
+[*.fish]
+indent_style = space
 indent_size = 4
+tab_width = 2
+
+[**.{fish,fish_*,fishd.*},fish_*]
+indent_style = space
+indent_size = 4
+tab_width = 2
 
 [**.{bat,cmd}]
 indent_style = tab
