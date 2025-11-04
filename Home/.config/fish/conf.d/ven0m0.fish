@@ -36,10 +36,10 @@ _evalcache fzf --fish 2>/dev/null
 switch "$stealth"
   case 1
     if type -q fastfetch
-      set -g fetch 'fastfetch --detect-version false --users-myself-only --localip-compact --ds-force-drm --thread'
+      set -g fetch fastfetch
     else
       set -e fetch
-  end
+    end
   # disable mommy plugin
   if functions -q __call_mommy; functions -e __call_mommy; end
     function __disable_mommy --on-event fish_postexec
@@ -48,9 +48,9 @@ switch "$stealth"
   end
   case '*'
     if type -q hyfetch
-      set -g fetch 'hyfetch -b fastfetch -m rgb -p transgender'
+      set -g fetch hyfetch -b fastfetch -m rgb -p transgender
     else if type -q fastfetch
-      set -g fetch 'fastfetch --detect-version false --users-myself-only --localip-compact --ds-force-drm --thread'
+      set -g fetch fastfetch
     else
       set -e fetch
     end
@@ -58,7 +58,9 @@ end
 
 function fish_greeting
   if set -q fetch
-    LC_ALL=C LANG=C eval $fetch 2>/dev/null
+    set -lx LC_ALL C
+    set -lx LANG C
+    _evalcache_async $fetch 2>/dev/null
   end
 end
 
@@ -119,7 +121,7 @@ function qcd
 end
 abbr -a qcd --position command --regex 'q+' --function qcd
 
-alias cat='\bat -pp'
+alias cat='command bat -pp'
 alias ptch='patch -p1 <'
 alias updatesh='curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
 alias clearnsh='curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
