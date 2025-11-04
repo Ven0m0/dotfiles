@@ -143,20 +143,34 @@ Desktop.ini
 $RECYCLE.BIN/
 
 # ---------------------
-# Super-linter ouputs
+# Linter
 # ---------------------
 super-linter.report
 super-linter-output/
 custom-super-linter-output-directory-name/
 super-linter-github-actions-step-summary-output*
 github-step-summary.md
-
-# GitHub Actions leftovers
-github_conf
+megalinter-reports/
+**/megalinter-reports/*
+mega-linter.report
+*megalinter_file_names_cspell.txt
 
 # ---------------------
 # Other
 # ---------------------
-.vscode/*
-!.vscode/extensions.json
 .idea
+.ruff_cache/
+.eslintcache
+/package-lock.json
+
+# GitHub Actions leftovers
+github_conf
+# ---------------------
+# VS Code
+# ---------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
