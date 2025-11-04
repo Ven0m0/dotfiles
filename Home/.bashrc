@@ -142,13 +142,13 @@ fuzzy_finders(){
   
   export FZF_DEFAULT_COMMAND="$FIND_CMD --hidden --glob '!.git'"
   export FZF_CTRL_T_COMMAND="$FIND_CMD --hidden --glob '!.git'"
-  export FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window=wrap --smart-case \
+  export FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window=wrap --height=90%  --smart-case --marker="*" \
     --walker-skip=".git,node_modules,target,go,.cache,.venv" --inline-info --layout=reverse-list'
-  export FZF_CTRL_T_OPTS="-1 -0 --inline-info --smart-case --walker-skip=".git,node_modules,target,go,.cache,.venv" \
+  export FZF_CTRL_T_OPTS="-1 -0 --inline-info --smart-case --walker-skip=".git,node_modules,target,go,.cache,.venv" --marker="*" \
 	--preview '$FZF_PREVIEW' --bind 'ctrl-/:change-preview-window(down|hidden|)' --preview-window=wrap"
-  export FZF_CTRL_R_OPTS="-1 -0 --inline-info --no-sort --exact \
+  export FZF_CTRL_R_OPTS="-1 -0 --inline-info --no-sort --exact --marker="*" \
     --preview 'echo {}' --preview-window=down:3:hidden:wrap --bind "?:toggle-preview" --preview-window=wrap"
-  export FZF_ALT_C_OPTS='-1 -0 --inline-info --walker-skip=".git,node_modules,target,go" \
+  export FZF_ALT_C_OPTS='-1 -0 --inline-info --walker-skip=".git,node_modules,target,go" --marker="*" \
     --preview "tree -C {} 2>/dev/null | head -200"'
   export FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=chunk -0 --walker-skip=".git,node_modules,target,go,.cache,.venv"'
   
