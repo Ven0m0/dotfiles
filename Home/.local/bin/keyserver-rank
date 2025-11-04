@@ -1,107 +1,83 @@
-#!/bin/bash
-# https://github.com/endeavouros-team/PKGBUILDS/blob/master/keyserver-rank/keyserver-rank
-shopt -s nullglob globstar; LC_ALL=C LANG=C
-sync
-_echo2(){ echo "$@" >&2 ; }
-_printf2(){ printf "$@" >&2 ; }
-_echo2c(){ test "$show_fastest" = "yes" || _echo2 "$@" ; }
-_printf2c(){ test "$show_fastest" = "yes" || _printf2 "$@" ; }
-_die(){ _echo2 "Error: $1" _usage; exit 1; }
+#!/usr/bin/env bash
+set -euo pipefail; shopt -s nullglob
+LC_ALL=C LANG=C
+has(){ command -v -- "$1" &>/dev/null; }
+die(){ echo "Error: $*" >&2; exit 1; }
 
-_options(){
-  local arg tmp serverlistfile
-  for arg in "$@"; do
-    case "$arg" in
-      [yY]* | -[yY]* | --[yY]*) yesno="yes" ;;
-      [nN]* | -[nN]* | --[nN]*) yesno="no" ;;
-      --servers=*)
-        serverlistfile="${arg#*=}"
-        readarray -t tmp <<< $(cat "$serverlistfile")
-        servers_array+=("${tmp[@]}")
-        ;;
-      --servers-replace=*)
-        serverlistfile="${arg#*=}"
-        readarray -t tmp <<< $(cat "$serverlistfile")
-        servers_array=("${tmp[@]}")
-        ;;
-     --show-fastest) yesno=no; show_fastest=yes ;;
-     --list-servers) yesno=no; list_servers=yes ;;
-     -h | --help) _usage; exit 0 ;;
-     *) _die "unsupported parameter '$arg'." ;;
-    esac
-  done
-}
-
-_usage(){
-    cat <<EOF >&2
-Usage: $0 [options]
-Options:
-    --servers=FILE          FILE includes a list of (additional) keyservers, one for each line.
-                            Note: empty lines or comments are not allowed.
-    --servers-replace=FILE  Like above, but use only keyservers listed in FILE, and not the predefined ones.
-    --show-fastest          Only show (to /dev/stdout) the fastest keyserver. Implies --no. Useful for scripts.
-    --list-servers          Only list servers (to /dev/stdout) that would be used for ranking. Implies --no.
-    --yes                   Allow refreshing pacman keys using the fastest keyserver.
-    --no                    Do not refresh pacman keys.
-
-Without any options, a list of predefined keyservers are ranked, and permission is asked for
-refreshing pacman keys using the fastest keyserver.
-EOF
-}
-
-_run(){
-  local yesno="ask" show_fastest=no list_servers=no
-  local servers_array=(
-      # We want to use keyservers only with secured (hkps or https) connections!
-      ############ These don't seem to work:
-      ## "pgp.mit.edu"
-      #  "keyring.debian.org"
-      ## "subset.pool.sks-keyservers.net"
-      #  "ipv6.pool.sks-keyservers.net"
-      # hkps://keys.mailvelope.com
-      ## hkps://hkps.pool.sks-keyservers.net
-      # hkps://attester.flowcrypt.com
-      ############ These do seem to work:
-      hkps://keys.openpgp.org
-      hkps://keyserver.ubuntu.com
-      hkps://zimmermann.mayfirst.org
-      https://keyserver.ubuntu.com
-      # https://zimmermann.mayfirst.org
-      ############ These seem to work but only with hkp:
-      # "hkp://ipv4.pool.sks-keyservers.net"
-      # "hkp://pool.sks-keyservers.net"
-      # "hkp://na.pool.sks-keyservers.net"
-      # "hkp://eu.pool.sks-keyservers.net"
-      # "hkp://oc.pool.sks-keyservers.net"
-      # "hkp://p80.pool.sks-keyservers.net"
-      # hkp://hkps.pool.sks-keyservers.net
-  )
-  local helper=${HOME}/.local/bin/keyserver-rank-helper server cmdresult timeresult fastest log=$(mktemp)
-  _options "$@"
-  if [[ $list_servers = "yes" ]] ; then
-    for server in "${servers_array[@]}"; do echo "$server"; done; return
+rank_server(){
+  local srv=$1 keyid=003DB8B0CB23504F
+  local out code time
+  time=$(TIMEFORMAT='%3R'; { time gpg --batch --keyserver "$srv" --search-keys info@endeavouros.com &>/dev/null; } 2>&1)
+  code=$?
+  if [[ $code -eq 0 ]]; then
+    gpg --batch --keyserver "$srv" --search-keys info@endeavouros.com 2>/dev/null | grep -qw "$keyid" && echo "$srv OK $time" || echo "$srv FAIL 99.999"
+  else
+    echo "$srv FAIL 99.999"
   fi
-    for server in "${servers_array[@]}"; do
-      _echo2c "Ranking $server ..."
-      timeresult="$(time -f %e $helper $server $log 2>&1 | tail -n 1)"
-      echo "$timeresult" >> $log
-    done
-    _printf2c "\nResults:\n\n"
-    test "$show_fastest" = "yes" || cat $log | sort -k 3 | column -t >&2
-    fastest="$(cat $log | grep -v -w FAIL | sort -k 3 | head -n 1 | awk '{print $1}')"
-    rm -f $log
-    _printf2c "\nFastest keyserver is: $fastest\n\n"
-    [[ "$show_fastest" = "yes" ]] && { echo "$fastest"; return; }
-    case "$yesno" in
-      yes) ;;
-      no) return ;;
-      ask)
-        read -p "Refresh pacman keys using the fastest keyserver (y/N)? " >&2
-        case "$REPLY" in "" | [nN]*) return ;;
-        esac
-        ;;
-    esac
-    sudo pacman-key --refresh-keys --keyserver "$fastest"
 }
 
-_run "$@"
+main(){
+  local servers=(
+    hkps://keys.openpgp.org
+    hkps://keyserver.ubuntu.com
+    hkps://zimmermann.mayfirst.org
+    https://keyserver.ubuntu.com
+  )
+  local mode=ask show_fastest=no
+  
+  while (($#)); do
+    case $1 in
+      --yes|-y) mode=yes;;
+      --no|-n) mode=no;;
+      --show-fastest) mode=no; show_fastest=yes;;
+      --list-servers) printf '%s\n' "${servers[@]}"; exit;;
+      --servers=*) mapfile -t -O ${#servers[@]} servers < "${1#*=}";;
+      --servers-replace=*) mapfile -t servers < "${1#*=}";;
+      -h|--help)
+        cat <<EOF
+Usage: $0 [options]
+  --yes               Auto-refresh keys with fastest server
+  --no                Rank only, no refresh
+  --show-fastest      Output fastest server to stdout
+  --list-servers      List servers and exit
+  --servers=FILE      Add servers from FILE
+  --servers-replace=FILE  Replace servers with FILE contents
+EOF
+        exit;;
+      *) die "Unknown option: $1";;
+    esac
+    shift
+  done
+  
+  local tmp=$(mktemp); trap "rm -f $tmp" EXIT
+  
+  [[ $show_fastest = no ]] && echo "Ranking ${#servers[@]} keyservers..." >&2
+  
+  export -f rank_server
+  printf '%s\n' "${servers[@]}" | xargs -P$(nproc) -I{} bash -c 'rank_server "$@"' _ {} > "$tmp"
+  
+  local fastest=$(grep -v FAIL "$tmp" | sort -k3,3n | head -n1 | awk '{print $1}')
+  
+  if [[ $show_fastest = yes ]]; then
+    echo "$fastest"
+    return
+  fi
+  
+  echo -e "\nResults:\n" >&2
+  sort -k3,3n "$tmp" | column -t >&2
+  echo -e "\nFastest: $fastest\n" >&2
+  
+  case $mode in
+    yes) ;;
+    no) return;;
+    ask)
+      read -rp "Refresh pacman keys using $fastest? (y/N) " -n1 >&2
+      echo >&2
+      [[ $REPLY =~ ^[Yy]$ ]] || return
+      ;;
+  esac
+  
+  sudo pacman-key --refresh-keys --keyserver "$fastest"
+}
+
+main "$@"
