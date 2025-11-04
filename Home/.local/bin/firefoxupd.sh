@@ -17,7 +17,7 @@ while IFS= read -r line; do
 done < <(flatpak list --app 2>/dev/null | grep -Ei 'firefox|librewolf|waterfox|floorp|icecat')
 # Check binaries in PATH
 for browser in firefox librewolf waterfox floorp; do
-  if command -v "$browser" >/dev/null; then
+  if has "$browser"; then
     found+=("binary: $browser")
   fi
 done
