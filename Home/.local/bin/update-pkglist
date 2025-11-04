@@ -1,19 +1,13 @@
 #!/usr/bin/env bash
 # https://github.com/alfunx/.dotfiles/blob/master/.bin/update-pkglist
 
-mkdir -p -- "$HOME/.pkglist"
-pacman -Qeq \
-    | grep -v "$(paclist aur | sed 's/\s.*//')" \
+update-pkglist(){
+  mkdir -p -- "$HOME/.pkglist"
+  pacman -Qeq | grep -v "$(paclist aur | sed 's/\s.*//')" \
     | grep -v "$(paclist manual | sed 's/\s.*//')" \
-    > "$HOME/.pkglist/pacman"
-pacman -Qeq > "$HOME/.pkglist/pacman-all"
-paclist aur \
-    | sed 's/\s.*//' \
-    > "$HOME/.pkglist/aur"
-paclist manual \
-    | sed 's/\s.*//' \
-    > "$HOME/.pkglist/manual"
-sudo pacman -Qkk \
-    |& grep Modification \
-    | sed -e 's/^[^/]*//' -e 's/ (.*)$//' | sort \    
-    > "$HOME/.pkglist/modified-files"
+    > "${HOME}/.pkglist/pacman"
+  pacman -Qeq > "$HOME/.pkglist/pacman-all"
+  paclist aur | sed 's/\s.*//' > "$HOME/.pkglist/aur"
+  paclist manual | sed 's/\s.*//' > "$HOME/.pkglist/manual"
+  sudo pacman -Qkk |& grep Modification | sed -e 's/^[^/]*//' -e 's/ (.*)$//' | sort > "$HOME/.pkglist/modified-files"
+}
