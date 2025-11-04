@@ -2,7 +2,7 @@
 export LC_ALL=C LANG=C
 # From: https://github.com/ericlay/fuzzy-pkg-finder
 ### Help 
-Help() {
+Help(){
     helpF="/tmp/fpf-help"
     { printf "\n%s\n" "Use fzf to search and install with Pacman or Yay/Paru"
     printf "\n%s\n\t%s\n\t\t%s\n" "SYNTAX" \
@@ -19,7 +19,7 @@ Help() {
     printf "\t%s\n\\t\t%s\n\n" "-h, --help" "Print this help screen"; } > "$helpF"
 }
 
-KBINDS() {
+KBINDS(){
     kbindF="/tmp/fpf-kbinds"
     { printf "\n%s\n\n  %s\n" "Keybinds:" "GLOBAL"
     printf "\t%s\t%s\n" "'ctrl + h'" "Show help in the preview window"
@@ -32,17 +32,16 @@ KBINDS() {
     printf "\t%s\t%s\n" "'ctrl + x'" "Return to the highlighted pkg info"; } > "$kbindF"
 }
 
-#	Check things are up to date
-UpdateInfos() {
-    [ -f /var/lib/pacman/sync/core.files ] || { printf "Syncing files database"; sudo pacman -Fy; }
+# Check things are up to date
+UpdateInfos(){
+    [[ -f /var/lib/pacman/sync/core.files ]] || { printf "Syncing files database"; sudo pacman -Fy; }
     d1=$(stat -c %y /var/lib/pacman/sync/core.files)
     d2=$(stat -c %y /var/lib/pacman/sync/core.db)
-    d1="${d1:0:10}"
-    d2="${d2:0:10}"
+    d1="${d1:0:10}" d2="${d2:0:10}"
     [[ "${d2///-/}" > "${d1//-/}" ]] && { printf "Files database is out of date\nSyncing now..."; sudo pacman -Fy; }
 }
 
-UpdateAurInfos() {
+UpdateAurInfos(){
     [[ ! -d /tmp/aur ]] && mkdir -p /tmp/aur
     zcat <(curl  https://aur.archlinux.org/packages-meta-ext-v1.json.gz) |
     jq --compact-output '.[] |
@@ -56,8 +55,8 @@ UpdateAurInfos() {
     awk -F"\t" '{print $1" \033[32m*\033[0m  ", $2}') -o /tmp/aur/fpf-packages-meta
 }
 
-AurFD() {
-    [ -f /tmp/aur/packages-meta ] || 
+AurFD(){
+    [[ -f /tmp/aur/packages-meta ]] || 
     printf "Syncing AUR package information..." && UpdateAurInfos
     d1=$(stat -c %y /tmp/aur/fpf-packages-meta)
     d1="${d1:0:10}"
@@ -66,23 +65,17 @@ AurFD() {
     printf "Syncing AUR package information..."; UpdateAurInfos; }
 }
 
-#	Check AUR helper
+# Check AUR helper
 AHELPR=""
 AHELPRUPDATE=""
-if [[ -z "$AHELPR" ]]
-then
-    if [[ -f /usr/bin/paru ]]
-    then 
-        AHELPR="paru"
-        AHELPRUPDATE="paru -Sua"
-    elif [[ -f /usr/bin/yay ]]
-    then
-        AHELPR="yay"
-        AHELPRUPDATE="yay -a"
-    else
-        printf "Suitable AUR Helper not found.\nPlease install \"paru\" or \"yay\" to continue."
-        exit 1
-    fi
+if [[ -z "$AHELPR" ]]; then
+  if [[ -f /usr/bin/paru ]]; then
+    AHELPR="paru" AHELPRUPDATE="paru -Sua"
+  elif [[ -f /usr/bin/yay ]]; then
+      AHELPR="yay" AHELPRUPDATE="yay -a"
+  else
+    printf "Suitable AUR Helper not found.\nPlease install \"paru\" or \"yay\" to continue."; exit 1
+  fi
 fi
 
 #	Create the helper files
@@ -91,148 +84,117 @@ KBINDS
 
 ### Official Repo
 #	Get Official package list, sort, mark installed, preview infos and finally hand off to pacman for install
-Official() {
-    echo "Setting things up..."
-    KBINDS
-
-    # Detect current shell type (bash/zsh/fish)
-    if [ -n "$BASH_VERSION" ] || [ -n "$ZSH_VERSION" ]; then
-        # bash/zsh: Using standard process redirects
-        sort <(comm -23 <(expac -S '%-20n\t%d' | sort) <(expac '%-20n\t%d' | sort)) \
-             <(comm -12 <(expac -S '%-20n\t%d' | sort) <(expac '%-20n\t%d' | sort) | awk -F"\t" '{print $1"\033[32m*\033[0m  ", $2}') \
-        &>/dev/null > /tmp/fpf-packages
-    elif [ "$SHELL" = "/usr/bin/fish" ]; then
-        # fish:
-        tmp1=$(comm -23 <(expac -S '%-20n\t%d' | sort) <(expac '%-20n\t%d' | sort))
-        tmp2=$(comm -12 <(expac -S '%-20n\t%d' | sort) <(expac '%-20n\t%d' | sort) | awk -F"\t" '{print $1"\033[32m*\033[0m  ", $2}')
-        sort $tmp1 $tmp2 > /tmp/fpf-packages
-    else
-        echo "Shell no compatible"
-        return 1
-    fi
-
-    # Use fzf to select packages
-    cat /tmp/fpf-packages | fzf -q "$1" -e -m \
-        --preview='cat <(pacman -Si {1}) <(pacman -Fl {1} | awk "{print \$2}")' \
-        --preview-window=55%:wrap:border-sharp \
-        --layout=reverse-list \
-        --marker='>>' \
-        --header="$(echo -e '\n Select packages to install\n (use TAB to toggle selection)\n\n')" \
-        --info=hidden \
-        --ansi \
-        --margin="2%,1%,2%,1%" \
-        --cycle \
-        --tiebreak=begin,chunk,length \
-        --bind 'focus:transform-preview-label:echo ⌇ {1} ⌇' \
-        --bind=ctrl-k:preview:"cat /tmp/fpf-kbinds" \
-        --bind=ctrl-h:preview:"cat /tmp/fpf-help" \
-        --bind 'ctrl-/:change-preview-window(hidden|)' \
-        --bind ctrl-n:next-selected,ctrl-b:prev-selected | \
-        awk '{print $1}' | \
-        sed -e 's/\*$//' | \
-        xargs -ro sudo pacman -S
+Official(){
+  echo "Setting things up..."
+  KBINDS
+  if [[ -n "$BASH_VERSION" ]] || [ -n "$ZSH_VERSION" ]; then
+    sort <(comm -23 <(expac -S '%-20n\t%d' | sort) <(expac '%-20n\t%d' | sort)) \
+          <(comm -12 <(expac -S '%-20n\t%d' | sort) <(expac '%-20n\t%d' | sort) | awk -F"\t" '{print $1"\033[32m*\033[0m  ", $2}') &>/dev/null > /tmp/fpf-packages
+  elif [ "$SHELL" = "/usr/bin/fish" ]; then
+    tmp1=$(comm -23 <(expac -S '%-20n\t%d' | sort) <(expac '%-20n\t%d' | sort))
+    tmp2=$(comm -12 <(expac -S '%-20n\t%d' | sort) <(expac '%-20n\t%d' | sort) | awk -F"\t" '{print $1"\033[32m*\033[0m  ", $2}')
+    sort $tmp1 $tmp2 > /tmp/fpf-packages
+  else
+    echo "Shell no compatible"; return 1
+  fi
+  # Use fzf to select packages
+  cat /tmp/fpf-packages | fzf -q "$1" -e -m \
+    --preview='cat <(pacman -Si {1}) <(pacman -Fl {1} | awk "{print \$2}")' \
+    --preview-window=55%:wrap:border-sharp --info=hidden --ansi --cycle \
+    --layout=reverse-list --tiebreak=begin,chunk,length \
+    --header="$(echo -e '\n Select packages to install\n (use TAB to toggle selection)\n\n')" \
+    --margin="2%,1%,2%,1%" --marker='>>' \
+    --bind 'focus:transform-preview-label:echo ⌇ {1} ⌇' \
+    --bind=ctrl-k:preview:"cat /tmp/fpf-kbinds" \
+    --bind=ctrl-h:preview:"cat /tmp/fpf-help" \
+    --bind 'ctrl-/:change-preview-window(hidden|)' \
+    --bind ctrl-n:next-selected,ctrl-b:prev-selected | \
+    awk '{print $1}' | sed -e 's/\*$//' | xargs -ro sudo pacman -S
 }
 
 #	List installed pkgs
-Installed() {
-    expac '%-20n\t%d' |
-    fzf -q "$1" -e -m \
+Installed(){
+  expac '%-20n\t%d' | fzf -q "$1" -e -m --info=hidden --ansi --cycle \
     --preview='cat <(pacman -Qik {1}) <(echo "") <(pacman -Fl {1} | awk "{print \$2}")' \
-    --preview-window=65%:wrap \
-    --layout=reverse-list \
-    --marker='>>' \
+    --preview-window=65%:wrap --layout=reverse-list \
+    --marker='>>' --margin="2%,1%,2%,1%" \
     --header="$(echo -e '\n Select packages to print info\n (use TAB to toggle selection)\n\n')" \
-    --info=hidden \
-    --ansi \
-    --margin="2%,1%,2%,1%" \
-    --cycle \
     --bind 'focus:transform-preview-label:echo ⌇ {1} ⌇' \
     --bind=ctrl-k:preview:"cat /tmp/fpf-kbinds" \
     --bind=ctrl-h:preview:"cat /tmp/fpf-help" \
     --bind 'ctrl-/:change-preview-window(hidden|)' \
     --bind ctrl-n:next-selected,ctrl-b:prev-selected |
-    awk '{print $1}' |
-    xargs -ro pacman -Qik
+    awk '{print $1}' | xargs -ro pacman -Qik
 }
 
 #	Remove installed pkgs
-Remove() {
+Remove(){
     expac '%-20n\t%d' |
-    fzf -q "$1" -e -m \
+    fzf -q "$1" -e -m --info=hidden --ansi --cycle \
     --preview='cat <(pacman -Si {1} 2>/dev/null || yay -Qi {1} 2>/dev/null || paru -Qi {1}) <(pacman -Ql {1} | awk "{print \$2}")' \
-    --preview-window=65%:wrap \
-    --layout=reverse \
-    --marker='>>' \
-      --header="$(echo -e '\n Select packages to remove\n (use TAB to toggle selection)\n\n')" \
-    --info=hidden \
-    --ansi \
-    --margin="2%,1%,2%,1%" \
-    --cycle \
+    --preview-window=65%:wrap --layout=reverse --marker='>>' --margin="2%,1%,2%,1%" \
+    --header="$(echo -e '\n Select packages to remove\n (use TAB to toggle selection)\n\n')" \
     --bind 'focus:transform-preview-label:echo ⌇ {1} ⌇' \
     --bind=ctrl-k:preview:"cat /tmp/fpf-kbinds" \
     --bind=ctrl-h:preview:"cat /tmp/fpf-help" \
     --bind 'ctrl-/:change-preview-window(hidden|)' \
     --bind ctrl-n:next-selected,ctrl-b:prev-selected |
-    awk '{print $1}' |
-    xargs -ro sudo pacman -Rsn
+    awk '{print $1}' | xargs -ro sudo pacman -Rsn
 }
 
 #	Update installed pkgs
-Update() (
-    viewUpdates() {
-        fzf --preview='cat <(pacman -Si {1}) <(pacman -Fl {1} | awk "{print \$2}")' \
-        --preview-window=65%:wrap \
-        --layout=reverse \
-        --marker='>>' \
-          --header="$(echo -e '\nPackages with updates available:\n\n')" \
-        --info=hidden \
-        --ansi \
-        --margin="2%,1%,2%,1%" \
-        --cycle \
-        --bind 'focus:transform-preview-label:echo \
-        ⌇ Commit History: https://gitlab.archlinux.org/archlinux/packaging/packages/{1}/-/commits/main ⌇' \
-        --bind=ctrl-k:preview:"cat /tmp/fpf-kbinds" \
-        --bind=ctrl-h:preview:"cat /tmp/fpf-help" \
-        --bind 'ctrl-/:change-preview-window(hidden|)' \
-        --bind ctrl-n:next-selected,ctrl-b:prev-selected < /tmp/fpf-updates > /dev/null
-        [[ "$(printf '\nWould you like to update? [y/N]> ' >&2; read; echo $REPLY)" == [Nn]* ]] \
-          && printf "\nPlease update soon :(\n" || sudo pacman -Syu
+Update()(
+  viewUpdates(){
+    fzf --preview='cat <(pacman -Si {1}) <(pacman -Fl {1} | awk "{print \$2}")' \
+      --preview-window=65%:wrap \
+      --layout=reverse \
+      --marker='>>' \
+      --header="$(echo -e '\nPackages with updates available:\n\n')" \
+      --info=hidden \
+      --ansi \
+      --margin="2%,1%,2%,1%" \
+      --cycle \
+      --bind 'focus:transform-preview-label:echo \
+      ⌇ Commit History: https://gitlab.archlinux.org/archlinux/packaging/packages/{1}/-/commits/main ⌇' \
+      --bind=ctrl-k:preview:"cat /tmp/fpf-kbinds" \
+      --bind=ctrl-h:preview:"cat /tmp/fpf-help" \
+      --bind 'ctrl-/:change-preview-window(hidden|)' \
+      --bind ctrl-n:next-selected,ctrl-b:prev-selected < /tmp/fpf-updates >/dev/null
+      [[ "$(printf '\nWould you like to update? [y/N]> ' >&2; read; echo $REPLY)" == [Nn]* ]] \
+        && printf "\nPlease update soon :(\n" || sudo pacman -Syu
     }
-    checkupdates > "/tmp/fpf-updates"
-    [ -s "/tmp/fpf-updates" ] && viewUpdates ||
-    printf "\nThere are no available updates :)\n"
+  checkupdates > "/tmp/fpf-updates"
+  [[ -s "/tmp/fpf-updates" ]] && viewUpdates || printf "\nThere are no available updates :)\n"
 )
 
 ### AUR
 #	Get AUR package database, remove unwanted lines, sort, mark installed, preview infos and finally hand off to yay for install
-Aur() {
-    AurFD	
-    fzf -q "$1" -e -m \
-    --preview='cat <(yay -Si {1} 2>/dev/null || paru -Si {1}) <(pacman -Ql {1} 2>/dev/null | awk "{print \$2}")' \
-    --preview-window=55%:wrap:border-sharp \
-    --layout=reverse \
-    --marker='>>' \
-    --header="$(echo -e ' Select packages to install\n (use TAB to toggle selection)\n')" \
-    --info=hidden \
-    --ansi \
-    --margin="2%,1%,2%,1%" \
-    --cycle \
-    --tiebreak=begin,chunk,length \
-    --bind 'focus:transform-preview-label:echo ⌇ {1} ⌇' \
-    --bind=ctrl-k:preview:"cat /tmp/fpf-kbinds" \
-    --bind=ctrl-h:preview:"cat /tmp/fpf-help" \
-    --bind ctrl-n:next-selected,ctrl-b:prev-selected \
-    --bind 'ctrl-/:change-preview-window(hidden|)' \
-    --bind=ctrl-p:preview:'curl --silent https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD\?h={1}' \
-    --bind=ctrl-x:preview:'cat <(yay -Si {1} 2>/dev/null || paru -Si {1}) <(pacman -Ql {1} 2>/dev/null | awk "{print \$2}")' \
-    < /tmp/aur/fpf-packages-meta |
-    awk '{print $1}' |
-    sed -e 's/\*$//' |
-    xargs -ro $AHELPR -S
+Aur(){
+  AurFD	
+  fzf -q "$1" -e -m \
+  --preview='cat <(yay -Si {1} 2>/dev/null || paru -Si {1}) <(pacman -Ql {1} 2>/dev/null | awk "{print \$2}")' \
+  --preview-window=55%:wrap:border-sharp \
+  --layout=reverse \
+  --marker='>>' \
+  --header="$(echo -e ' Select packages to install\n (use TAB to toggle selection)\n')" \
+  --info=hidden \
+  --ansi \
+  --margin="2%,1%,2%,1%" \
+  --cycle \
+  --tiebreak=begin,chunk,length \
+  --bind 'focus:transform-preview-label:echo ⌇ {1} ⌇' \
+  --bind=ctrl-k:preview:"cat /tmp/fpf-kbinds" \
+  --bind=ctrl-h:preview:"cat /tmp/fpf-help" \
+  --bind ctrl-n:next-selected,ctrl-b:prev-selected \
+  --bind 'ctrl-/:change-preview-window(hidden|)' \
+  --bind=ctrl-p:preview:'curl --silent https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD\?h={1}' \
+  --bind=ctrl-x:preview:'cat <(yay -Si {1} 2>/dev/null || paru -Si {1}) <(pacman -Ql {1} 2>/dev/null | awk "{print \$2}")' \
+  < /tmp/aur/fpf-packages-meta |
+  awk '{print $1}' | sed -e 's/\*$//' | xargs -ro $AHELPR -S
 }
 
 #	List installed pkgs only from AUR
-AurInstalled() {
+AurInstalled(){
     AurFD
     while IFS= read -r pkgName; do
     grep -w "^$pkgName " /tmp/aur/fpf-packages-meta >> /tmp/aur/fpf-installed
@@ -262,7 +224,7 @@ AurInstalled() {
 
 #	Update AUR installed pkgs
 UpdateAURpkgs() (
-    viewAURUpdates() {
+    viewAURUpdates(){
         fzf --preview='cat <(yay -Si {1} 2>/dev/null || paru -Si {1}) <(pacman -Ql {1} 2>/dev/null | awk "{print \$2}")' \
         --preview-window=65%:wrap \
         --layout=reverse \
@@ -291,7 +253,7 @@ UpdateAURpkgs() (
 
 ### ORPHANS
 #	List orphaned packages and remove selected 
-Orphans() {
+Orphans(){
     [ -f /tmp/fpf-orphans ] ||
     while IFS= read -r pkgName; do
     expac '%-20n\t%d' "$pkgName" >> /tmp/fpf-orphans
