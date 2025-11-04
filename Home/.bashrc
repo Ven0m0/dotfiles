@@ -133,24 +133,24 @@ fi
 #============ Fuzzy Finders ============
 fuzzy_finders(){
   local FIND_CMD='find . -type f -print'
-  has fdf && FIND_CMD='fdf -t f --same-file-system --size +1k'
-  has fd && FIND_CMD='fd -tf'
-  has rga && FIND_CMD='rga --files --no-messages'
-  has rg && FIND_CMD='rg --files --no-messages'
-  local FZF_PREVIEW='cat -sn {}'
-  has bat && FZF_PREVIEW="bat -n --color=always --line-range=:250 {}"
+  has fdf && FIND_CMD='fdf -tf -H --size +1k'
+  has fd && FIND_CMD='fd -tf -H -s +1k -E '*.pyc,*.log,*.old,*.bak,*.tmp,*.zwc,*.bck,*.lock,*.git,node_modules,target,go,.cache,.venv''
+  has rga && FIND_CMD='rga --files --no-messages --no-ignore-messages --mmap -S'
+  has rg && FIND_CMD='rg --files --no-messages --no-ignore-messages --mmap -S'
+  local FZF_PREVIEW='cat -s {}'
+  has bat && FZF_PREVIEW="bat -p -r :250 {}"
   
   export FZF_DEFAULT_COMMAND="$FIND_CMD --hidden --glob '!.git'"
   export FZF_CTRL_T_COMMAND="$FIND_CMD --hidden --glob '!.git'"
   export FZF_DEFAULT_OPTS='-1 -0 --cycle --border --preview-window=wrap --smart-case \
-    --walker-skip=".git,node_modules,target,go,.cache" --inline-info --layout=reverse-list'
-  export FZF_CTRL_T_OPTS="-1 -0 --inline-info --preview '$FZF_PREVIEW' \
-    --bind 'ctrl-/:change-preview-window(down|hidden|)'"
-  export FZF_CTRL_R_OPTS='-1 -0 --inline-info --no-sort --exact \
-    --preview "echo {}" --preview-window=down:3:hidden:wrap --bind "?:toggle-preview"'
+    --walker-skip=".git,node_modules,target,go,.cache,.venv" --inline-info --layout=reverse-list'
+  export FZF_CTRL_T_OPTS="-1 -0 --inline-info --smart-case --walker-skip=".git,node_modules,target,go,.cache,.venv" \
+	--preview '$FZF_PREVIEW' --bind 'ctrl-/:change-preview-window(down|hidden|)' --preview-window=wrap"
+  export FZF_CTRL_R_OPTS="-1 -0 --inline-info --no-sort --exact \
+    --preview 'echo {}' --preview-window=down:3:hidden:wrap --bind "?:toggle-preview" --preview-window=wrap"
   export FZF_ALT_C_OPTS='-1 -0 --inline-info --walker-skip=".git,node_modules,target,go" \
     --preview "tree -C {} 2>/dev/null | head -200"'
-  export FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=chunk'
+  export FZF_COMPLETION_OPTS='--border --info=inline --tiebreak=chunk -0 --walker-skip=".git,node_modules,target,go,.cache,.venv"'
   
   mkdir -p "$HOME/.config/bash/completions" &>/dev/null
   if has fzf; then
