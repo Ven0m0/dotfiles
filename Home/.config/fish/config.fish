@@ -18,6 +18,10 @@ else
 	end
 end
 
+function my_async_prompt
+  _evalcache_async starship prompt
+end
+set -g async_prompt_functions my_async_prompt
 
 #set -x MANPAGER "sh -c 'col -bx | bat -l man -p'"
 
