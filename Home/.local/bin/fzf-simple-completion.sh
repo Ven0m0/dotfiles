@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
-LC_ALL=C LANG=C
 # FZF SIMPLE COMPLETION - Pipe bash tab-completion suggestions into fzf fuzzy finder
 # More details at https://github.com/duong-db/fzf-simple-completion
+# Source common shell utilities
+source "${HOME}/.local/lib/shell-common.sh" || {
+  echo "Error: Failed to load shell-common.sh" >&2
+  exit 1
+}
+set_c_locale
 
 bind '"\e[0n": redraw-current-line' 
 export FZF_DEFAULT_OPTS="--bind=tab:down --bind=btab:up --cycle"
@@ -62,4 +67,4 @@ complete -o nospace -D -F _fzf_argument_completion
 
 # Turn off case sensitivity for better user experience
 bind 'set completion-ignore-case on'
-unset LC_ALL
+reset_locale

@@ -1,4 +1,4 @@
-#/bin/bash
+#!/usr/bin/env bash
 
 # shows the rum usage
 # part of shell-tools (GPLv3)

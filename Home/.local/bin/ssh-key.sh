@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+# SSH key generation and deployment script
 EmailL=""
 ssh-keygen -t ed25519 -a 100 -f ~/.ssh/pi_ed25519 -C "${email}"
 Target=""

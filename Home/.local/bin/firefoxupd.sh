@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-LC_ALL=C LANG=C
+# Source common shell utilities
+source "${HOME}/.local/lib/shell-common.sh" || {
+  echo "Error: Failed to load shell-common.sh" >&2
+  exit 1
+}
+set_c_locale
 
 declare -a found=()
 # Check native packages
@@ -32,5 +37,4 @@ foxdir(){
 }
 FOXYDIR="$(foxdir)"
 
-
-unset LC_ALL
+reset_locale

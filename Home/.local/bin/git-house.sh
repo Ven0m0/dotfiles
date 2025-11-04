@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 shopt -s nullglob globstar; set -u
-export LC_ALL=C LANG=C.UTF-8
+# Source common shell utilities
+source "${HOME}/.local/lib/shell-common.sh" || {
+  echo "Error: Failed to load shell-common.sh" >&2
+  exit 1
+}
+set_c_locale
 ##==================================================================================================
 ##	Requirements
-has() { command -v "$1" &>/dev/null || { echo "Aborting: '$1' not found"; exit 1; }; }
-has git
+require git
 ##==================================================================================================
 ##	Helper functions
 getGitDirs() {
