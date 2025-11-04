@@ -4,14 +4,14 @@ Ven0m0/fish-async-prompt
 # archelaus/shell-mommy
 oh-my-fish/plugin-xdg
 patrickf1/fzf.fish
-kyohsuke/fish-evalcache
+#kyohsuke/fish-evalcache
+Ven0m0/fish-evalcache
 scaryrawr/cheat.sh.fish
 y3owk1n/fish-x
 scaryrawr/zoxide.fish
 eugene-babichenko/fish-codegen-cache
 wk/plugin-ssh-term-helper
 rubiev/plugin-fuck
-ven0m0/z-fish
 jorgebucaran/autopair.fish
 ven0m0/sponge
 nickeb96/puffer-fish
