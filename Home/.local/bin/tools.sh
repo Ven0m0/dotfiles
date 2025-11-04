@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # List all executables on PATH
 # https://unix.stackexchange.com/questions/120786/list-all-binaries-from-path
