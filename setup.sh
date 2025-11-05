@@ -38,13 +38,17 @@ main(){
 }
 #--- Functions ---#
 setup_aur(){
-  if ! has paru; then
+  local has_paru
+  has_paru=$(has paru && echo 1 || echo 0)
+  
+  if [[ "$has_paru" == "0" ]]; then
     printf '%b\n' "${BLD}${BLU}==>${BWHT} Installing AUR helper (paru)...${DEF}"
     sudo pacman -S --needed --noconfirm base-devel git
     local tmpdir; tmpdir=$(mktemp -d)
     git clone --depth=1 https://aur.archlinux.org/paru-bin.git "$tmpdir"
     (cd "$tmpdir" && makepkg -si --noconfirm) || die "paru installation failed."
     rm -rf "$tmpdir"
+    has_paru=1
   fi
   printf '%b\n' "${BLD}${BLU}==>${BWHT} AUR helper (paru) is ready.${DEF}"
 }
@@ -54,7 +58,10 @@ install_packages(){
     git gitoxide aria2 curl zsh fd sd ripgrep bat jq
     zoxide starship fzf yadm tuckr
   )
-  if has paru; then
+  local has_paru
+  has_paru=$(has paru && echo 1 || echo 0)
+  
+  if [[ "$has_paru" == "1" ]]; then
     # Word splitting is intentional for PARU_OPTS
     # shellcheck disable=SC2086
     paru -Syuq $PARU_OPTS "${pkgs[@]}"
@@ -64,7 +71,10 @@ install_packages(){
   ensure_tuckr
 }
 ensure_tuckr(){
-  if ! has tuckr; then
+  local has_tuckr
+  has_tuckr=$(has tuckr && echo 1 || echo 0)
+  
+  if [[ "$has_tuckr" == "0" ]]; then
     printf '%b\n' "${BLD}${BLU}==>${BWHT} tuckr not found — installing via paru...${DEF}"
     # shellcheck disable=SC2086
     paru -S $PARU_OPTS tuckr || die "Failed to install tuckr via paru."

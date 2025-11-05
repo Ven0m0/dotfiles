@@ -29,12 +29,6 @@ SanitizeFilePath(){
 	echo -n "$path"
 }
 
-readLine(){
-	# This function will read line $1. Output to stdout
-	# Usage is $1, where $1 is the line to read.
-	sed "$1q;d" "$file"
-}
-
 processData(){
 	# This function will format any input line to be able to fit in a one liner. 
 	# Usage is $1, where $1 is the data.
@@ -157,17 +151,18 @@ if [[ "$force" != 1 ]]; then
 fi
 
 # Minify
-FirstLine="$(readLine 1)"
-body=""
-line=2
-linesInFile=$(wc -l < "$file")
+# Read entire file into array once for O(n) instead of O(n²)
+mapfile -t lines < "$file"
 
-while [[ $((line-1)) -le $linesInFile ]]; do
+FirstLine="${lines[0]}"
+body=""
+
+# Process lines starting from index 1 (skip shebang line)
+for ((i=1; i<${#lines[@]}; i++)); do
 	if [[ "$debug" == "1" ]]; then
-		echo "$line"
+		echo "$((i+1))"
 	fi
-	body+="$(processData "$(readLine "$line")")"
-	((line++))
+	body+="$(processData "${lines[i]}")"
 done
 
 fullfile="$FirstLine"$'\n'"$body"
