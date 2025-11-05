@@ -27,7 +27,7 @@ load_completion _gh gh eval "$(gh completion -s bash)"
 load_completion _rustup rustup eval "$(rustup completions bash rustup)"
 load_completion _cargo  cargo  eval "$(rustup completions bash cargo)"
 
-curl -sf https://github.com/endeavouros-team/PKGBUILDS/blob/master/reflector-bash-completion/reflector-bash-completion -o "${HOME}/.config/bash/completions/reflector.bash"
-
-cd "$HOME"
-curl -sf -O https://raw.githubusercontent.com/trapd00r/LS_COLORS/refs/heads/master/lscolors.sh
+# NOTE: These downloads should be run during setup, not at shell sourcing time
+# Run manually or add to setup script:
+# curl -sf https://raw.githubusercontent.com/endeavouros-team/PKGBUILDS/master/reflector-bash-completion/reflector-bash-completion -o "${HOME}/.config/bash/completions/reflector.bash"
+# curl -sf -O https://raw.githubusercontent.com/trapd00r/LS_COLORS/master/lscolors.sh
