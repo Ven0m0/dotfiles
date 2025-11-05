@@ -5,8 +5,7 @@ has(){ command -v -- "$1" &>/dev/null; }
 die(){ echo "Error: $*" >&2; exit 1; }
 
 rank_server(){
-  local srv=$1 keyid=003DB8B0CB23504F
-  local out code time
+  local srv=$1 keyid=003DB8B0CB23504F out time code
   time=$(TIMEFORMAT='%3R'; { time gpg --batch --keyserver "$srv" --search-keys info@endeavouros.com &>/dev/null; } 2>&1)
   code=$?
   if [[ $code -eq 0 ]]; then
@@ -17,7 +16,7 @@ rank_server(){
 }
 
 main(){
-  local servers=(
+  local -a servers=(
     hkps://keys.openpgp.org
     hkps://keyserver.ubuntu.com
     hkps://zimmermann.mayfirst.org
