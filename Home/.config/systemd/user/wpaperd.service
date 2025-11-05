@@ -1,0 +1,13 @@
+[Unit]
+Description=Wayland wallpaper daemon (wpaperd)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/wpaperd -c %h/.config/wpaperd/config.toml
+Restart=on-failure
+RestartSec=2s
+
+[Install]
+WantedBy=graphical-session.target
