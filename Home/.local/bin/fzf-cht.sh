@@ -21,9 +21,11 @@ read -r -p "Type a $selected topic to query (Empty query prints $selected summar
 if grep -qs "$selected" "$CHT_SH_LIST_CACHE"; then
     query="${query// /+}"  # Replace spaces with +
     if [[ -z $query ]]; then
-        echo "curl cht.sh/$selected" & curl cht.sh/$selected
+        echo "curl cht.sh/$selected"
+        curl cht.sh/$selected
     else
-        echo "curl cht.sh/$selected/$query/" & curl cht.sh/$selected/$query
+        echo "curl cht.sh/$selected/$query/"
+        curl cht.sh/$selected/$query
     fi
 else
     #If its not in the cache, query cht.sh anyways and hope for the best

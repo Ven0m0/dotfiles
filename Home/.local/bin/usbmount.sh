@@ -26,9 +26,16 @@ fi
 
 echo "Mount/Umount tool"
 
-# Display new device(s) and read user input
+# Read device info into arrays once
+mapfile -t device_lines < /tmp/usbstick
+declare -a device_names device_uuids device_fstypes device_labels
+
 i=0
 while read -r name uuid fstype label; do
+    device_names[i]="$name"
+    device_uuids[i]="$uuid"
+    device_fstypes[i]="$fstype"
+    device_labels[i]="$label"
     ((i++))
     echo "    $i)    $uuid $fstype [$label]"
 done < /tmp/usbstick
@@ -42,12 +49,12 @@ if [[ "$input" == "Q" || "$input" == "q" ]]; then
 fi
 
 if [[ $input -ge 1 && $input -le $deviceCount ]]; then
-    # Get the device selected by the user
-    i=0
-    while read -r name uuid fstype label; do
-        ((i++))
-        [[ $i -eq $input ]] && break
-    done < /tmp/usbstick
+    # Get the device selected by the user from pre-loaded arrays
+    idx=$((input - 1))
+    name="${device_names[idx]}"
+    uuid="${device_uuids[idx]}"
+    fstype="${device_fstypes[idx]}"
+    label="${device_labels[idx]}"
 
     # Check if the device is already mounted
     mountpoint=$(grep -o "/mnt/usbstick[1-$usbCount]" <<< "$label")
