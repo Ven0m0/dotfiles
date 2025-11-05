@@ -3,13 +3,19 @@
 
 update-pkglist(){
   mkdir -p -- "$HOME/.pkglist"
-  pacman -Qeq | grep -v "$(paclist aur | sed 's/\s.*//')" \
-    | grep -v "$(paclist manual | sed 's/\s.*//')" \
-    > "${HOME}/.pkglist/pacman"
+  
+  # Generate intermediate files once instead of inline command substitution
+  local aur_list="${HOME}/.pkglist/aur"
+  local manual_list="${HOME}/.pkglist/manual"
+  
+  paclist aur | sed 's/\s.*//' > "$aur_list"
+  paclist manual | sed 's/\s.*//' > "$manual_list"
   pacman -Qeq > "$HOME/.pkglist/pacman-all"
-  paclist aur | sed 's/\s.*//' > "$HOME/.pkglist/aur"
-  paclist manual | sed 's/\s.*//' > "$HOME/.pkglist/manual"
-  sudo pacman -Qkk |& grep Modification | sed -e 's/^[^/]*//' -e 's/ (.*)$//' | sort > "$HOME/.pkglist/modified-files"
+  
+  # Use grep -v -f for efficient filtering against file contents
+  pacman -Qeq | grep -v -f "$aur_list" | grep -v -f "$manual_list" > "${HOME}/.pkglist/pacman"
+  
+  sudo pacman -Qkk 2>&1 | grep Modification | sed -e 's/^[^/]*//' -e 's/ (.*)$//' | sort > "$HOME/.pkglist/modified-files"
 }
 
 ssh-key(){

@@ -1,10 +1,16 @@
 # https://github.com/lincheney/fzf-tab-completion
 _FZF_COMPLETION_SEP=$'\x01'
 
-# shell parsing stuff
-_fzf_bash_completion_awk="$( builtin command -v mawk &>/dev/null && echo mawk || echo awk )"
-_fzf_bash_completion_sed="$( builtin command -v gsed &>/dev/null && echo gsed || echo sed )"
-_fzf_bash_completion_grep="$( builtin command -v ggrep &>/dev/null && echo ggrep || echo builtin command grep )"
+# shell parsing stuff - cache command lookups for performance
+if [[ -z "${_fzf_bash_completion_awk:-}" ]]; then
+  _fzf_bash_completion_awk="$( builtin command -v mawk &>/dev/null && echo mawk || echo awk )"
+fi
+if [[ -z "${_fzf_bash_completion_sed:-}" ]]; then
+  _fzf_bash_completion_sed="$( builtin command -v gsed &>/dev/null && echo gsed || echo sed )"
+fi
+if [[ -z "${_fzf_bash_completion_grep:-}" ]]; then
+  _fzf_bash_completion_grep="$( builtin command -v ggrep &>/dev/null && echo ggrep || echo builtin command grep )"
+fi
 
 _fzf_bash_completion_awk_escape() {
     "$_fzf_bash_completion_sed" 's/\\/\\\\\\\\/g; s/[[*^$.]/\\\\&/g' <<<"$1"
