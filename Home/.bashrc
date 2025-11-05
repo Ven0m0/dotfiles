@@ -238,6 +238,7 @@ bind '"\C-o": kill-whole-line' '"\e[1;5D": backward-word' '"\e[1;5C": forward-wo
 
 #============ Finalization ============
 # Prompt
+has mommy && (( ${stealth:-0} == 1 )) && [[ ${PROMPT_COMMAND-} != *mommy* ]] && PROMPT_COMMAND="mommy -1 -s \$?; $PROMPT_COMMAND"
 configure_prompt(){
   has starship && { eval "$(starship init bash)"; return; }
   local MGN='\[\e[35m\]' BLU='\[\e[34m\]' YLW='\[\e[33m\]' BLD='\[\e[1m\]' UND='\[\e[4m\]' GRN='\[\e[32m\]'
@@ -247,7 +248,6 @@ configure_prompt(){
   exstat(){ [[ $? == 0 ]] && printf '%s:)${DEF}' "$GRN" || printf '%sD:${DEF}' "$RED"; }
   PS1="[${USERN}@${HOSTL}${UND}|${DEF}${CYN}\w${DEF}]>${PNK}\A${DEF}|\$(exstat) ${BLD}\$${DEF} "
   PS2='> '
-  has mommy && (( ${stealth:-0} == 1 )) && [[ ${PROMPT_COMMAND-} != *mommy* ]] && PROMPT_COMMAND="mommy -1 -s \$?; $PROMPT_COMMAND"
 }
 configure_prompt &>/dev/null
 
