@@ -24,6 +24,15 @@ binary_next_line = true
 # Shell
 [**.{sh,bash*},bash_*,PKGBUILD]
 shell_variant = bash
+indent_style = space
+indent_size = 2
+tab_width = 2
+
+[.bashrc,.zshrc]
+shell_variant = bash
+indent_style = space
+indent_size = 2
+tab_width = 2
 
 [.profile,**.dash]
 shell_variant = posix
