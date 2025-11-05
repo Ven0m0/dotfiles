@@ -131,6 +131,9 @@ if has yazi; then
 	  rm -f -- "$tmp"
   }
 fi
+if has wget2; then
+  alias wget=wget2
+fi
 #============ Fuzzy Finders ============
 fuzzy_finders(){
   local FIND_CMD='find . -type f -print'
