@@ -1,0 +1,49 @@
+{
+  "files": {
+    "includes": ["**"]
+    "ignoreUnknown": true
+  }
+}
+{
+  "organizeImports": { "enabled": true },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "nursery": {
+        "recommended": true
+      }
+    }
+  }
+}
+"formatter": {
+  "includes": ["**"]
+  "formatWithErrors": true
+  "formatter.indentWidth": 2
+  formatter.indentStyle: space
+  formatter.useEditorconfig: true
+}
+{
+  "javascript": {
+    "formatter": {
+      "enabled": true
+      trailingCommas: "es5"
+      indentStyle: space
+      indentWidth: 2
+      lineWidth: 88
+    }
+  }
+}
+{
+  "css": {
+    "formatter": {
+      "enabled": false
+    }
+  }
+}
+{
+  "html": {
+    "formatter": {
+      "enabled": false
+    }
+  }
+}
