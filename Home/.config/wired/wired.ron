@@ -1,0 +1,46 @@
+(
+  general: (
+    default_timeout: 5.0,  // seconds
+    margin: (10.0, 10.0),
+    spacing: 8.0,
+    border_radius: 4.0,
+    background_color: "#282c34",
+    foreground_color: "#abb2bf",
+    font: "Iosevka Nerd Font 10",
+  ),
+
+  layout: [
+    // app icon
+    block: Icon {
+      size: 24.0,
+    },
+    block: VStack {
+      spacing: 2.0,
+      block: Text {
+        text: &"{summary}",
+        style: Bold,
+        size: 11.0,
+      },
+      block: Text {
+        text: &"{body}",
+        size: 9.0,
+      },
+    },
+    block: Timestamp {
+      format: "%H:%M",
+      size: 8.0,
+      color: "#5c6370",
+    },
+  ],
+
+  filter_rules: [
+    (
+      criteria: (app_name: "firefox", urgency: Normal),
+      timeout: 3.0,
+    ),
+    (
+      criteria: (urgency: Critical),
+      timeout: 0.0,  // stay until dismissed
+    ),
+  ],
+)
