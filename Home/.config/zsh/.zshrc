@@ -1,9 +1,15 @@
 #!/usr/bin/env zsh
 [[ $- != *i* ]] && return
 has(){ command -v -- "$1" &>/dev/null; }
-ifsource(){ [[ -r $1 ]] && source "$1"; }
+ifsource(){ [[ -f $1 ]] && . "$1"; }
 ifsource "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-export PS4='+%N:%i> '
+
+if has mommy; then
+  export MOMMY_COLOR="" MOMMY_PREFIX="%F{005}/%F{006}" MOMMY_SUFFIX="~%f" MOMMY_COMPLIMENTS_ENABLED=0
+  set -o PROMPT_SUBST
+  RPS1='$(mommy -1 -s $?)'
+  #precmd() { mommy -1 -s $? }
+fi
 
 # =================== CORE / ENV ===================
 setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS no_global_rcs
