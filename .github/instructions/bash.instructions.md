@@ -8,18 +8,6 @@ Scope and targets
 - Audience: power users; allow experimental apps and flags.
 - Tone: blunt, factual; compact logs and messages.
 
-Repository map
-- Cachyos/: Arch-focused setup
-  - Scripts/: AIO installers (curlable entrypoints)
-  - Rust/: toolchains
-  - Firefox/: patch sets
-  - Top-level .sh wrappers: maintenance tasks
-- RaspberryPi/: imaging/upkeep
-  - raspi-f2fs.sh: orchestrates loop/partition flows
-  - Scripts/: Pi automation
-- Linux-Settings/: reference configs (compiler, kernel, shell). Treat as data sources, not code.
-- Root docs (Shell-book.md, Tweaks.txt, todo.md): house style, helpers, pending work. Reuse helpers from there before adding new ones.
-
 Formatting
 - Shebang: #!/usr/bin/env bash
 - Options (top of file): set -Eeuo pipefail; shopt -s nullglob globstar extglob dotglob
