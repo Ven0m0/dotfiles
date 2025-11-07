@@ -8,8 +8,8 @@ update-pkglist(){
   local aur_list="${HOME}/.pkglist/aur"
   local manual_list="${HOME}/.pkglist/manual"
   
-  paclist aur | sed 's/\s.*//' > "$aur_list"
-  paclist manual | sed 's/\s.*//' > "$manual_list"
+  paclist aur | sed 's/[[:space:]].*//' > "$aur_list"
+  paclist manual | sed 's/[[:space:]].*//' > "$manual_list"
   pacman -Qeq > "$HOME/.pkglist/pacman-all"
   
   # Use grep -v -f for efficient filtering against file contents
