@@ -3,7 +3,7 @@ on:
   pull_request:
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
   checks: write
   packages: read
@@ -17,20 +17,6 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      # --- Dynamic ShellCheck cache ---
-      - name: Get ShellCheck version
-        id: shellcheck-version
-        run: |
-          version=$(reviewdog/action-shellcheck@v1.32.0 --version 2>&1 | head -n1 | awk '{print $2}')
-          echo "shellcheck_version=$version" >> $GITHUB_OUTPUT
-      - name: Cache ShellCheck
-        id: cache-shellcheck
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/shellcheck
-          key: ${{ runner.os }}-shellcheck-${{ steps.shellcheck-version.outputs.shellcheck_version }}
-          restore-keys: |
-            ${{ runner.os }}-shellcheck-
 
       # Run ShellCheck via Reviewdog
       - name: Run ShellCheck via Reviewdog
@@ -50,6 +36,41 @@ jobs:
             ./Linux-Settings
           check_all_files_with_shebangs: "true"
           shellcheck_flags: "-x -s bash"
+
+      # Apply ShellCheck automatic fixes
+      - name: Apply ShellCheck fixes
+        continue-on-error: true
+        run: |
+          set -e
+          # Find all shell files
+          shell_files=$(find . -type f \( -name "*.sh" -o -name "*.bash" -o -name ".bashrc" -o -name "bash_*" \) \
+            ! -path "*/.git/*" ! -path "./.cache/*" ! -path "./Linux-Settings/*" 2>/dev/null || true)
+
+          # Also find files with shell shebangs
+          shebang_files=$(find . -type f -executable ! -path "*/.git/*" ! -path "./.cache/*" \
+            -exec grep -l '^#!.*\(bash\|sh\)' {} \; 2>/dev/null || true)
+
+          # Combine and deduplicate
+          all_files=$(echo -e "${shell_files}\n${shebang_files}" | sort -u | grep -v '^$' || true)
+
+          if [[ -n "$all_files" ]]; then
+            echo "Applying ShellCheck fixes to files..."
+            echo "$all_files" | while IFS= read -r file; do
+              if [[ -f "$file" ]]; then
+                echo "Processing: $file"
+                shellcheck -f diff "$file" | patch -p1 -N || true
+              fi
+            done
+          fi
+
+      - name: Commit ShellCheck fixes
+        if: github.event_name == 'pull_request'
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          branch: ${{ github.head_ref }}
+          commit_message: "style: apply shellcheck automatic fixes"
+          commit_user_name: "shellcheck-bot"
+          commit_user_email: "shellcheck-bot@users.noreply.github.com"
 
       # --- Dynamic Super-Linter cache ---
       - name: Get Super-Linter version

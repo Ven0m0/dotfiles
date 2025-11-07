@@ -74,7 +74,7 @@ if [[ $input -ge 1 && $input -le $deviceCount ]]; then
         fi
 
         # Mount the device
-        mount -o gid=users,fmask=113,dmask=002 -U $uuid /mnt/usbstick$i
+        mount -o gid=users,fmask=113,dmask=002 -U $uuid /mnt/usbstick"$i"
         echo "    ---> Device $uuid mounted as /mnt/usbstick$i"
     else
         # Unmount the device

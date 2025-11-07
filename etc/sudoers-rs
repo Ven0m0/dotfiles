@@ -2,5 +2,10 @@ Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 root  ALL=(ALL:ALL) ALL
 %sudo ALL=(ALL:ALL) ALL
 %wheel ALL=(ALL:ALL) ALL
-%wheel ALL=(ALL:ALL) ALL NOPASSWD: ALL
+
+# NOPASSWD for package managers and system update tools
+%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/pacman
+%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/paru
+%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/octopi
+%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/topgrade
 

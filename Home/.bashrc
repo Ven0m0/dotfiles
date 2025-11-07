@@ -101,7 +101,7 @@ y() {
   tmp_file="$(mktemp -t "yazi-cwd.XXXXXX")"
   yazi "$@" --cwd-file="$tmp_file"
   if IFS= read -r -d '' cwd < "$tmp_file" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
-    cd -- "$cwd"
+    cd -- "$cwd" || exit
   fi
   rm -f -- "$tmp_file"
 }
