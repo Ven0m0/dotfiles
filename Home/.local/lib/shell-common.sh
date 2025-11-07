@@ -5,14 +5,9 @@ builtin cd -P -- "$(dirname -- "${BASH_SOURCE[0]:-}")" && printf '%s\n' "$PWD" |
 # Common shell utilities and functions for dotfiles scripts
 # Source this file in your scripts: source "${HOME}/.local/lib/shell-common.sh"
 
-# Locale management
-set_c_locale(){ export LC_ALL=C LANG=C LANGUAGE=C; }
-reset_locale(){ unset LC_ALL LANG LANGUAGE; }
-
 # Check if a command exists
 has(){ command -v -- "$1" &>/dev/null; }
 # Check if a command exists, exit with error if not found
-# Usage: require <command>
 require(){ command -v "$1" &>/dev/null || { echo "Error: Required command '$1' not found" >&2; exit 1; }; }
 # ANSI color codes
 readonly C_RESET=$'\e[0m'
