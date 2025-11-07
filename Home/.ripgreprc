@@ -1,23 +1,44 @@
-# Don't let ripgrep vomit really long lines to my terminal, and show a preview.
+# ripgrep configuration
+# https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
+
+# Display Settings
 --max-columns=150
 --max-columns-preview
+--color=auto
+--smart-case
+--trim
 
-# Using glob patterns to include/exclude files or folders
+# Show line numbers and context
+--line-number
+--column
+--with-filename
+
+# Performance
+--threads=0
+--mmap
+
+# Ignore patterns
 --glob=!.git/*
+--glob=!node_modules/*
+--glob=!.cache/*
+--glob=!dist/*
+--glob=!build/*
+--glob=!target/*
+--glob=!*.min.js
+--glob=!*.min.css
 --ignore
 --no-require-git
 --ignore-vcs
 --ignore-parent
 --ignore-global
 --ignore-dot
---ignore-file="$HOME/.gitignore"
---ignore-file="$HOME/.ignore"
-
---color=auto
---smart-case
---threads 0
---trim
-#--no-line-number
---no-heading
+--ignore-file=$HOME/.gitignore
+--ignore-file=$HOME/.ignore
 --no-ignore-messages
+
+# Follow symlinks
+--follow
+
+# Search hidden files (but respect ignore files)
+--hidden
 
