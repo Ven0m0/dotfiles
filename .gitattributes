@@ -8,9 +8,6 @@
 *.bash text eol=lf diff=bash
 *.zsh text eol=lf
 *.fish text eol=lf
-*.ksh text eol=lf
-*.csh text eol=lf
-*.dash text eol=lf
 .bashrc text eol=lf
 .bash_profile text eol=lf
 .bash_logout text eol=lf
@@ -19,190 +16,64 @@
 .zshenv text eol=lf
 .profile text eol=lf
 
-# Windows Scripts
-*.{cmd,[cC][mM][dD]} text eol=crlf
-*.{bat,[bB][aA][tT]} text eol=crlf
-*.ps1 text eol=crlf
-*.psm1 text eol=crlf
-
 # =============================================================================
-# Programming Languages - Diff Drivers
+# Programming Languages
 # =============================================================================
-*.c diff=cpp
-*.cc diff=cpp
-*.cpp diff=cpp
-*.cxx diff=cpp
-*.h diff=cpp
-*.hpp diff=cpp
-*.hxx diff=cpp
-*.cs diff=csharp
-*.go diff=golang
-*.java diff=java
-*.js diff=java
-*.jsx diff=java
-*.mjs diff=java
-*.cjs diff=java
-*.ts diff=java
-*.tsx diff=java
-*.php diff=php
-*.pl diff=perl
-*.pm diff=perl
 *.py diff=python
-*.pyw diff=python
-*.pyi diff=python
-*.rb diff=ruby
-*.rs diff=rust
-*.swift diff=swift
+*.js diff=java
+*.lua linguist-language=Lua
+*.nix linguist-language=Nix
 
 # =============================================================================
 # Configuration & Data Formats
 # =============================================================================
 *.json diff=json
-*.json5 diff=json linguist-language=JSON5
 *.jsonc diff=json linguist-language=JSONC
 *.yaml diff=yaml
 *.yml diff=yaml
 *.toml diff=toml linguist-language=TOML
+*.ron linguist-language=RON
 *.xml diff=xml
 *.html diff=html
 *.css diff=css
-*.scss diff=css
-*.sass diff=css
-*.less diff=css
 *.md diff=markdown linguist-detectable linguist-documentation
-*.markdown diff=markdown linguist-detectable linguist-documentation
-*.rst diff=markdown linguist-documentation
 *.txt linguist-documentation
+*.ini text
+*.cfg text
+*.conf text
+*.service text
+*.rules text
 
 # =============================================================================
 # Binary Files
 # =============================================================================
 # Images
-*.png binary diff=exif
 *.jpg binary diff=exif
 *.jpeg binary diff=exif
-*.gif binary diff=exif
-*.ico binary diff=exif
 *.webp binary diff=exif
 *.avif binary diff=exif
 *.svg text
-*.bmp binary
-*.tiff binary
-*.tif binary
-
-# Archives
-*.zip binary
-*.tar binary
-*.gz binary
-*.bz2 binary
-*.xz binary
-*.7z binary
-*.rar binary
-
-# Documents
-*.pdf binary diff=pdf
-*.doc binary
-*.docx binary
-*.xls binary
-*.xlsx binary
-*.ppt binary
-*.pptx binary
-
-# Media
-*.mp3 binary
-*.mp4 binary
-*.avi binary
-*.mov binary
-*.flv binary
-*.mkv binary
-*.webm binary
-*.ogg binary
-*.wav binary
-*.flac binary
 
 # Fonts
-*.woff binary
-*.woff2 binary
-*.eot binary
 *.ttf binary
-*.otf binary
-
-# Executables & Libraries
-*.exe binary
-*.dll binary
-*.so binary
-*.dylib binary
-*.a binary
-*.lib binary
-*.jar binary
-*.class binary
-*.pyc binary
-*.pyd binary
-*.wasm binary
-
-# =============================================================================
-# Lock Files - Disable Diff
-# =============================================================================
-*.lock -diff linguist-generated
-package-lock.json -diff linguist-generated
-yarn.lock -diff linguist-generated
-pnpm-lock.yaml -diff linguist-generated
-Cargo.lock -diff linguist-generated
-Gemfile.lock -diff linguist-generated
-poetry.lock -diff linguist-generated
-composer.lock -diff linguist-generated
-go.sum -diff
-
-# =============================================================================
-# Generated Files
-# =============================================================================
-*.min.js -diff linguist-generated
-*.min.css -diff linguist-generated
-*.map -diff linguist-generated
-*-min.js -diff linguist-generated
-*-min.css -diff linguist-generated
-*.bundle.js -diff linguist-generated
-dist/** linguist-generated
-build/** linguist-generated
-coverage/** linguist-generated
-
-# =============================================================================
-# Large Files (Git LFS candidates)
-# =============================================================================
-# Uncomment to use Git LFS
-# *.psd filter=lfs diff=lfs merge=lfs -text
-# *.ai filter=lfs diff=lfs merge=lfs -text
-# *.tif filter=lfs diff=lfs merge=lfs -text
-# *.tiff filter=lfs diff=lfs merge=lfs -text
-# *.mp4 filter=lfs diff=lfs merge=lfs -text
-# *.mov filter=lfs diff=lfs merge=lfs -text
-# *.zip filter=lfs diff=lfs merge=lfs -text
-# *.tar.gz filter=lfs diff=lfs merge=lfs -text
 
 # =============================================================================
 # Special Cases
 # =============================================================================
 # Makefiles must use tabs
 Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
-*.mk text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
 
-# Go files must use tabs
-*.go text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
+# Patches
+*.patch diff=patch
+
+# Git files
+.gitignore text
+.gitattributes text
+.editorconfig text
 
 # Vim swap files
 *.swp binary
 *.swo binary
 
-# =============================================================================
-# Merge Strategies
-# =============================================================================
-# Changelog files - union merge strategy
-CHANGELOG* merge=union
-CHANGES* merge=union
-HISTORY* merge=union
-NEWS* merge=union
-
-# Database files - binary merge
-*.db binary merge=binary
-*.sqlite binary merge=binary
-*.sqlite3 binary merge=binary
+# Sample files
+*.sample linguist-documentation
