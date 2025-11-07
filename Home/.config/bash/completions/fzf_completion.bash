@@ -252,7 +252,7 @@ __fzf_orig_completion_get_orig_func() {
   orig_var="_fzf_orig_completion_${cmd//[^A-Za-z0-9_]/_}"
   orig="${!orig_var-}"
   REPLY="${orig##*#}"
-  [[ $REPLY ]] && type "$REPLY" &> /dev/null
+  [[ -n $REPLY ]] && type "$REPLY" &> /dev/null
 }
 
 # @param $1 cmd - Command name for which the original completion is searched
@@ -452,7 +452,7 @@ _fzf_handle_dynamic_completion() {
       fi
     fi
     [[ $ret -eq 0 ]] && return 124
-    return $ret
+    return "$ret"
   fi
 }
 
@@ -492,7 +492,7 @@ __fzf_generic_path_completion() {
             fi
             __fzf_comprun "$4" -q "$leftover" --walker "$walker" --walker-root="$dir" "${rest[@]}"
           fi | while read -r item; do
-            printf "%q " "${item%$3}$3"
+            printf "%q " "${item%"$3"}$3"
           done
         )
         matches=${matches% }

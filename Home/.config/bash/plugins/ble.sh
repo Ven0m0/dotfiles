@@ -3,4 +3,4 @@
   [[ -r "${XDG_DATA_HOME}/blesh/ble.sh" ]] && . "${XDG_DATA_HOME}/blesh/ble.sh" --noattach 2>/dev/null; }
 ble-import -d integration/fzf-key-bindings
 ble-import -d integration/fzf-completion
-[[ ! ${BLE_VERSION-} ]] || ble-attach
+[[ ! -n ${BLE_VERSION-} ]] || ble-attach
