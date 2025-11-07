@@ -1,9 +1,9 @@
 default_profile = "default"
-cache_path = "/home/lucy/cache"
-db_path = "/home/lucy/db"
-bin_path = "/home/lucy/bin"
-repositories_path = "/home/lucy/repos"
-portable_dirs = "/home/lucy/portable-dirs"
+cache_path = "~/cache"
+db_path = "~/db"
+bin_path = "~/bin"
+repositories_path = "~/repos"
+portable_dirs = "~/portable-dirs"
 parallel = true
 parallel_limit = 8
 ghcr_concurrency = 12
@@ -18,8 +18,8 @@ install_patterns = [
 ]
 
 [profile.default]
-root_path = "/home/lucy"
-packages_path = "/home/lucy/packages"
+root_path = "~"
+packages_path = "~/packages"
 
 [[repositories]]
 name = "bincache"

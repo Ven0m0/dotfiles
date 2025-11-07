@@ -47,4 +47,7 @@ init_tool intelli-shell "intelli-shell init fish"
 init_tool cod "cod init $fish_pid fish"
 
 # ─── Path Deduplication ─────────────────────────────────────────────────────────
-set PATH (printf "%s" "$PATH" | awk -O -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')
+# Note: fish_add_path already handles deduplication automatically
+# This manual deduplication is only needed if external sources add duplicates
+# Commented out for performance - uncomment if you notice duplicate PATH entries
+# set PATH (printf "%s" "$PATH" | awk -O -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')

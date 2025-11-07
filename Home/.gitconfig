@@ -7,7 +7,7 @@
   autocrlf = input
   preloadIndex = true
   eol = native
-  compression = 9
+  compression = 6
   multiPackIndex = true
   fsyncMethod = batch
   repositoryformatversion = 1
@@ -15,6 +15,7 @@
   deltaBaseCacheLimit = 1g
   preferSymlinkRefs = true
   symlinks = true
+  untrackedCache = true
 [interactive]
   diffFilter = delta --color-only --features=interactive
 [color]
@@ -45,7 +46,7 @@
   window = 50
   depth = 50
   deltaCacheSize = 512m
-  compression = 9
+  compression = 6
 [fetch]
   all = true
   prune = true
@@ -78,8 +79,6 @@
   reflogExpireUnreachable = 0
   reflogExpire = 7.days.ago
   aggressive = false
-  aggressiveDepth = 250
-  aggressiveWindow = 250
   repackFilter = blob:none
   pruneExpire = 7.days.ago
 [repack]
@@ -195,6 +194,12 @@
 	resolveConflict = true
 [init]
   defaultBranch = main
+[commit]
+  verbose = true
+[branch]
+  sort = -committerdate
+[column]
+  ui = auto
 [alias]
   sub = submodule update --init --recursive
 [credential]
