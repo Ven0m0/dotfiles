@@ -189,7 +189,7 @@
         {
             "name": "DISABLE_TELEMETRY",
             "value": "1"
-        },
+        }
     ],
   "claude-config.autoSync": true,
   "claude-config.autoUseContext7": true,

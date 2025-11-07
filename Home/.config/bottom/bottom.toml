@@ -109,8 +109,8 @@ battery = false
 #whole_word = false
 
 # Temperature widget configuration
-#[temperature]
-#[sensor_filter]
+[temperature]
+[sensor_filter]
 is_list_ignored = true
 list = ["cpu", "wifi", "hwmon"]
 regex = true
