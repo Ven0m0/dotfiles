@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+shopt -s lastpipe
+export LC_ALL=C LANG=C
+
+has(){ command -v "$1" &>/dev/null; }
+die(){ echo "ERR: $*" >&2; exit 1; }
+
+for c in curl wget; do has "$c" && HTTP=$c && break; done
+[[ -z $HTTP ]] && die "need curl/wget"
+for f in sk fzf; do has "$f" && FZF=$f && break; done
+[[ -z $FZF ]] && die "need sk/fzf"
+for p in bat batcat less; do has "$p" && PAGER=$p && break; done
+
+get(){ 
+  case $HTTP in
+    curl) curl -fsL -A curl "$@";;
+    wget) wget -qO- "$@";;
+  esac
+}
+
+CHT_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/cht_list"
+CHT_URL="cheat.sh"
+
+_cache(){
+  [[ -f $CHT_CACHE && $(find "$CHT_CACHE" -mtime -7 2>/dev/null) ]] && return
+  mkdir -p "${CHT_CACHE%/*}"
+  get "$CHT_URL/:list" > "$CHT_CACHE" 2>/dev/null || die "failed to fetch :list"
+}
+
+_browse(){
+  local sel q url
+  _cache
+  sel=$($FZF --ansi --cycle --reverse --no-mouse --prompt='cht> ' \
+    --preview="curl -fsL $CHT_URL/{} 2>/dev/null | head -50" \
+    --preview-window=right:60%:wrap < "$CHT_CACHE") || return
+  read -rp "Query [$sel] (empty=summary): " q
+  q="${q// /+}"
+  url="$CHT_URL/$sel${q:+/$q}"
+  echo -e "\n→ $url\n"
+  get "$url" | $PAGER
+}
+
+_query(){
+  local lang="$1" topic="$2" flags="" url
+  [[ $search == 1 ]] && lang="~$lang" && topic="~${topic}"
+  [[ -n $topic ]] && url="$CHT_URL/$lang/$topic" || url="$CHT_URL/$lang"
+  [[ -n $insens ]] && flags+="i"
+  [[ -n $bound ]] && flags+="b"
+  [[ -n $recur ]] && flags+="r"
+  [[ -n $flags ]] && url+="/$flags"
+  get "$url"
+}
+
+usage(){
+  cat <<'EOF'
+cht - cheat.sh wrapper w/ fuzzy search
+USAGE
+  cht [-sibr] [lang] [topic]
+  cht -l          list all sheets
+  cht -u          update cache
+FLAGS
+  -s  search mode (~)
+  -i  case insensitive
+  -b  word boundary
+  -r  recursive
+  -l  browse/list mode
+  -u  update cache
+  -h  help
+EOF
+}
+
+search="" insens="" bound="" recur=""
+while getopts "sibrluha" o; do
+  case $o in
+    s) search=1;;
+    i) insens=1; search=1;;
+    b) bound=1; search=1;;
+    r) recur=1; search=1;;
+    l) _browse; exit;;
+    u) rm -f "$CHT_CACHE"; _cache; echo "✓ cache updated"; exit;;
+    h|*) usage; exit;;
+  esac
+done
+shift $((OPTIND-1))
+
+if [[ $# -eq 0 ]]; then
+  _browse
+elif [[ $# -eq 1 ]]; then
+  _query "$1"
+else
+  _query "$1" "$2"
+fi
