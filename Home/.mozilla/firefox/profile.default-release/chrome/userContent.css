@@ -1,117 +1,87 @@
-/*
- * This file can be used to apply a style to all web pages you view
- * Rules without !important are overruled by author rules if the
- * author sets any.  Rules with !important overrule author rules.
- */
-/* You can find the latest version of this ad blocking css at:
- * http://www.floppymoose.com
- * hides many ads by preventing display of images that are inside
- * links when the link HREF contans certain substrings.
- */
+/* Merged Firefox content styles - Ad blocking + Compact addons/config + Privacy */
 
-A:link[HREF*="addata"]  IMG, 
-A:link[HREF*="ad."]  IMG, 
-A:link[HREF*="ads."]  IMG, 
-A:link[HREF*="/ad"]  IMG, 
-A:link[HREF*="/A="]  IMG, 
-A:link[HREF*="/click"]  IMG, 
-A:link[HREF*="?click"]  IMG, 
-A:link[HREF*="?banner"]  IMG, 
-A:link[HREF*="=click"]  IMG, 
-A:link[HREF*="clickurl="]  IMG, 
-A:link[HREF*=".atwola."]  IMG, 
-A:link[HREF*="spinbox."]  IMG, 
-A:link[HREF*="transfer.go"]  IMG, 
-A:link[HREF*="adfarm"]  IMG, 
-A:link[HREF*="adSpace"]  IMG, 
-A:link[HREF*="adserve"]  IMG, 
-A:link[HREF*=".banner"]  IMG, 
-A:link[HREF*="bluestreak"]  IMG, 
-A:link[HREF*="doubleclick"]  IMG, 
-A:link[HREF*="/rd."]  IMG, 
-A:link[HREF*="/0AD"]  IMG, 
-A:link[HREF*=".falkag."]  IMG, 
-A:link[HREF*="trackoffer."]  IMG, 
-A:link[HREF*="casalemedia."]  IMG, 
-A:link[HREF*="valueclick."]  IMG, 
-A:link[HREF*="betterbasketball."]  IMG, 
-A:link[HREF*="sponsors.phtml"]  IMG, 
-A:link[HREF*="realgmtix.phtml"]  IMG, 
-A:link[HREF*="BurstingPipe"]  IMG,
-A:link[HREF*="ebayobjects"]  IMG,
-A:link[HREF*="tracksponsor."]  IMG { display: none ! important } 
-
-/* disable ad iframes */
-IFRAME[SRC*="addata"],
-IFRAME[SRC*="ad."],
-IFRAME[SRC*="ads."],
-IFRAME[SRC*="/ad"],
-IFRAME[SRC*="/A="],
-IFRAME[SRC*="/click"],
-IFRAME[SRC*="?click"],
-IFRAME[SRC*="?banner"],
-IFRAME[SRC*="=click"],
-IFRAME[SRC*="clickurl="],
-IFRAME[SRC*=".atwola."],
-IFRAME[SRC*="spinbox."],
-IFRAME[SRC*="transfer.go"],
-IFRAME[SRC*="adfarm"],
-IFRAME[SRC*="adSpace"],
-IFRAME[SRC*="adserve"],
-IFRAME[SRC*="adjuggler"],
-IFRAME[SRC*=".banner"],
-IFRAME[SRC*="bluestreak"],
-IFRAME[SRC*="doubleclick"],
-IFRAME[SRC*="/rd."],
-IFRAME[SRC*="/0AD"],
-IFRAME[SRC*=".falkag."], 
-IFRAME[SRC*="trackoffer."],
-IFRAME[SRC*="connextra."],
-IFRAME[ID*="merchandisingMERC"],
-IFRAME[SRC*="tracksponsor."]  { display: none ! important } 
-
-/* miscellaneous different blocking rules to block some stuff that gets through */
-A:link[onmouseover*="AdSolution"] IMG,
-*[class=sponsors],
-*[class=sp_links],
-*[class=advertising],
-*[ID=sponsors],
-*[ID=ad],
-*[ID=inlinead],
-*[ID=ad_creative],
-*[ID=contextualLinks],
-IMG[SRC*=".msads."] { display: none ! important } 
-
-/* turning some false positives back off */
-A:link[HREF*="/add"]  IMG, 
-A:link[HREF*="/adsl"] IMG,
-A:link[HREF*="thread."] IMG,
-A:link[HREF*="download."] IMG,
-A:link[HREF*="downloads."] IMG,
-A:link[HREF*="netflix.com/AddToQueue"] IMG,
-A:link[HREF*="load."], 
-A:link[HREF*="loads."], 
-IFRAME[SRC*="load."], 
-IFRAME[SRC*="loads."],
-A:link[HREF*="click.mp3"] IMG { display: inline ! important }
-
-/* Prevent flash animations from playing until you click on them. */
-object[classid$=":D27CDB6E-AE6D-11cf-96B8-444553540000"],
-object[codebase*="swflash.cab"],
-object[type="application/x-shockwave-flash"],
-embed[type="application/x-shockwave-flash"],
-embed[src$=".swf"]
-{ -moz-binding: url("http://www.squarefree.com/turing/clickToView.xml#ctv"); }
-
-/* Generic catch‑alls */
-img[src*="ad"],
-div[class*="ad-"],
-div[id*="sponsor"],{
-  display: none !important;
+@-moz-document url("about:config"){
+  :is(.button-delete,.button-edit,.button-reset,.button-save,.button-toggle){
+    margin-block:1px!important;
+    padding:11px 0 0!important;
+    min-height:22px!important;
+    width:22px!important;
+    outline-offset:0!important;
+  }
+  .cell-edit{width:28px!important}
+  form>input,tr:not(.add)>th,tr:not(.add)>.cell-value{padding-block:0!important}
+  tr:not(:hover) .semi-transparent:not(.primary,.button-add){background-color:transparent!important}
 }
 
-/* Pixel & social widget hides */
-img[src*="pixel"],
-img[src*="track.gif"],
-  display: none !important;
+@-moz-document url-prefix("chrome://mozapps/content/extensions/aboutaddons.html"),url("about:addons"){
+  :root{overflow-x:hidden;--sidebar-width:60px!important}
+  addon-card .addon-name-link{font-size:.9em}
+  @media (min-width:420px){
+    #main{max-width:unset!important;padding-right:28px}
+    addon-list>section{
+      padding:1em;
+      display:grid;
+      grid-template-areas:"hd hd" "cd cd";
+      grid-auto-columns:1fr;
+      column-gap:1em;
+    }
+    addon-card .card-contents{width:unset!important;white-space:initial!important}
+    addon-list[type="extension"] .addon-name-container{
+      display:grid!important;
+      grid-template-areas:"name badge opt" "name toggle toggle";
+      grid-row-gap:6px;
+      grid-auto-columns:1fr 24px auto;
+    }
+    .addon-icon{align-self:center}
+    .addon-name-container>.addon-name{grid-area:name}
+    .addon-name-container>:is(.toggle-button,moz-toggle){grid-area:toggle;justify-self:end}
+    .addon-name-container>.more-options-button{grid-area:opt;margin-inline:0!important}
+    .addon-name-container>.addon-badge{grid-area:badge}
+    .card-heading-image{max-width:calc(100% + 32px);object-position:left}
+    section>h2{grid-area:hd}
+    addon-card{padding-block:0!important;grid-area:auto}
+    addon-card .addon-description{max-height:3em;scrollbar-width:thin}
+    addon-list[type="theme"] addon-card{margin-right:auto}
+  }
+  @media (min-width:640px){addon-list[type="extension"]>section{grid-template-areas:"hd hd hd" "cd cd cd"}}
+  @media (min-width:960px){addon-list[type="extension"]>section{grid-template-areas:"hd hd hd hd" "cd cd cd cd"}}
+  @media (min-width:1180px){addon-list[type="extension"]>section{grid-template-areas:"hd hd hd hd hd" "cd cd cd cd cd"}}
+  @media (min-width:1420px){addon-list[type="extension"]>section{grid-template-areas:"hd hd hd hd hd hd" "cd cd cd cd cd cd"}}
+  addon-card:not([expanded]) :is(.addon-badge-verified,.addon-badge-recommended,.addon-description,.addon-card-message button[action]){display:none!important}
+  addon-list[type="extension"]{--card-padding:8px}
+  #categories{width:var(--sidebar-width)!important}
+  #categories>.category{margin-left:10px!important;-moz-box-pack:center}
+  .sidebar-footer-list{margin-left:18px!important}
+  .sidebar-footer-label,.category>.category-name{display:none}
+}
+
+@namespace html url("http://www.w3.org/1999/xhtml");
+body input:not([value=""])[type],
+body input:not([value=""])[type]:focus~*,
+body input:not([value=""])[type] *{
+  background-image:none!important;
+  border-image:none!important;
+  font-family:inherit!important;
+  list-style-image:none!important;
+  cursor:unset!important;
+  content:none!important;
+}
+body input:not([value=""])[type]::before,
+body input:not([value=""])[type]:focus~*::before,
+body input:not([value=""])[type] *::before,
+body input:not([value=""])[type]::after,
+body input:not([value=""])[type]:focus~*::after,
+body input:not([value=""])[type] *::after{
+  content:none!important;
+}
+
+/* Ad blocking */
+A:link[HREF*="ad"] IMG,A:link[HREF*="click"] IMG,A:link[HREF*="banner"] IMG,A:link[HREF*="doubleclick"] IMG,A:link[HREF*="adserve"] IMG,A:link[HREF*="sponsor"] IMG{display:none!important}
+IFRAME[SRC*="ad"],IFRAME[SRC*="click"],IFRAME[SRC*="banner"],IFRAME[SRC*="doubleclick"],IFRAME[SRC*="adserve"]{display:none!important}
+*[class*="ad-"],*[class*="sponsor"],*[ID*="ad"],*[ID*="sponsor"],img[src*="pixel"],img[src*="track"]{display:none!important}
+A:link[HREF*="/add"] IMG,A:link[HREF*="/adsl"] IMG,A:link[HREF*="download"] IMG,A:link[HREF*="thread"] IMG,A:link[HREF*="load"] IMG{display:inline!important}
+
+/* Flash click-to-play */
+object[type="application/x-shockwave-flash"],embed[type="application/x-shockwave-flash"]{
+  -moz-binding:url("http://www.squarefree.com/turing/clickToView.xml#ctv");
 }
