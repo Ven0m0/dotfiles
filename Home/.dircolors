@@ -1,0 +1,228 @@
+# Configuration file for dircolors, a utility to setup LS_COLORS
+# for ls, tree, and other utilities
+# https://linux.die.net/man/1/dircolors
+
+# Text color codes:
+# 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
+# Foreground:  30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+# Background:  40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
+# Extended:    38;5;COLOR   256-color mode
+#              38;2;R;G;B   true-color mode
+
+# Core files
+NORMAL 00                    # no color code at all
+RESET 0                      # reset to "normal" color
+FILE 00                      # regular file
+DIR 01;34                    # directory (bold blue)
+LINK 01;36                   # symbolic link (bold cyan)
+MULTIHARDLINK 00             # regular file with more than one link
+FIFO 40;33                   # pipe (yellow background)
+SOCK 01;35                   # socket (bold magenta)
+DOOR 01;35                   # door
+BLK 40;33;01                 # block device driver (yellow bg, bold)
+CHR 40;33;01                 # character device driver (yellow bg, bold)
+ORPHAN 40;31;01              # orphaned symlink (red bg, bold)
+MISSING 00                   # missing file (normal)
+SETUID 37;41                 # file with setuid bit (white fg, red bg)
+SETGID 30;43                 # file with setgid bit (black fg, yellow bg)
+CAPABILITY 30;41             # file with capability (black fg, red bg)
+STICKY_OTHER_WRITABLE 30;42  # dir sticky+other writable (black fg, green bg)
+OTHER_WRITABLE 34;42         # dir other writable (blue fg, green bg)
+STICKY 37;44                 # dir with sticky bit (white fg, blue bg)
+EXEC 01;32                   # executable file (bold green)
+
+# Archives and compressed files (bright red)
+.tar 01;31
+.tgz 01;31
+.arc 01;31
+.arj 01;31
+.taz 01;31
+.lha 01;31
+.lz4 01;31
+.lzh 01;31
+.lzma 01;31
+.tlz 01;31
+.txz 01;31
+.tzo 01;31
+.t7z 01;31
+.zip 01;31
+.z 01;31
+.dz 01;31
+.gz 01;31
+.lrz 01;31
+.lz 01;31
+.lzo 01;31
+.xz 01;31
+.zst 01;31
+.tzst 01;31
+.bz2 01;31
+.bz 01;31
+.tbz 01;31
+.tbz2 01;31
+.tz 01;31
+.deb 01;31
+.rpm 01;31
+.jar 01;31
+.war 01;31
+.ear 01;31
+.sar 01;31
+.rar 01;31
+.alz 01;31
+.ace 01;31
+.zoo 01;31
+.cpio 01;31
+.7z 01;31
+.rz 01;31
+.cab 01;31
+.wim 01;31
+.swm 01;31
+.dwm 01;31
+.esd 01;31
+
+# Image formats (bright magenta)
+.jpg 01;35
+.jpeg 01;35
+.mjpg 01;35
+.mjpeg 01;35
+.gif 01;35
+.bmp 01;35
+.pbm 01;35
+.pgm 01;35
+.ppm 01;35
+.tga 01;35
+.xbm 01;35
+.xpm 01;35
+.tif 01;35
+.tiff 01;35
+.png 01;35
+.svg 01;35
+.svgz 01;35
+.mng 01;35
+.pcx 01;35
+.mov 01;35
+.mpg 01;35
+.mpeg 01;35
+.m2v 01;35
+.mkv 01;35
+.webm 01;35
+.webp 01;35
+.ogm 01;35
+.mp4 01;35
+.m4v 01;35
+.mp4v 01;35
+.vob 01;35
+.qt 01;35
+.nuv 01;35
+.wmv 01;35
+.asf 01;35
+.rm 01;35
+.rmvb 01;35
+.flc 01;35
+.avi 01;35
+.fli 01;35
+.flv 01;35
+.gl 01;35
+.dl 01;35
+.xcf 01;35
+.xwd 01;35
+.yuv 01;35
+.cgm 01;35
+.emf 01;35
+.ogv 01;35
+.ogx 01;35
+.avif 01;35
+
+# Audio formats (bright cyan)
+.aac 01;36
+.au 01;36
+.flac 01;36
+.m4a 01;36
+.mid 01;36
+.midi 01;36
+.mka 01;36
+.mp3 01;36
+.mpc 01;36
+.ogg 01;36
+.ra 01;36
+.wav 01;36
+.oga 01;36
+.opus 01;36
+.spx 01;36
+.xspf 01;36
+
+# Documents (white/normal)
+.pdf 00;37
+.doc 00;37
+.docx 00;37
+.odt 00;37
+.xls 00;37
+.xlsx 00;37
+.ods 00;37
+.ppt 00;37
+.pptx 00;37
+.odp 00;37
+
+# Source code files (bright yellow)
+.c 01;33
+.cc 01;33
+.cpp 01;33
+.cxx 01;33
+.h 01;33
+.hpp 01;33
+.hxx 01;33
+.py 01;33
+.rb 01;33
+.java 01;33
+.js 01;33
+.ts 01;33
+.rs 01;33
+.go 01;33
+.sh 01;33
+.bash 01;33
+.pl 01;33
+.php 01;33
+.cs 01;33
+.swift 01;33
+
+# Configuration files (cyan)
+.json 00;36
+.yaml 00;36
+.yml 00;36
+.toml 00;36
+.xml 00;36
+.conf 00;36
+.config 00;36
+.ini 00;36
+.cfg 00;36
+
+# Markup files (green)
+.html 00;32
+.htm 00;32
+.md 00;32
+.markdown 00;32
+.rst 00;32
+.txt 00;32
+
+# Build files (bright black/gray)
+Makefile 01;30
+CMakeLists.txt 01;30
+Dockerfile 01;30
+.mk 01;30
+
+# Backup and temp files (gray)
+*~ 00;90
+*# 00;90
+.bak 00;90
+.old 00;90
+.orig 00;90
+.swp 00;90
+.tmp 00;90
+.temp 00;90
+
+# Special files
+README 01;37
+README.md 01;37
+LICENSE 01;37
+CHANGELOG 01;37
+AUTHORS 01;37
+CONTRIBUTORS 01;37
