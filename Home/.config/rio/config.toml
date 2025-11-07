@@ -64,7 +64,7 @@ weight = 400
 
 [fonts.bold]
 family = "JetBrainsMono Nerd Font Mono"
-style = "Normal"
+style = "Bold"
 width = "Normal"
 weight = 800
 
