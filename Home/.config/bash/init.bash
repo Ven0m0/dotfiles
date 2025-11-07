@@ -14,6 +14,11 @@ shopt -s nullglob
 for plugin in "$BASH_CONFIG_DIR"/plugins/*.{bash,sh}; do
   . "$plugin"
 done
+
+# --- Completions
+ifsource ~/.config/bash/completer.sh
+ifsource ~/.config/bash/completions/fzf-completion.sh
+
 # --- Initialize Lazy Loading for Functions
 # Scans function directories and creates stubs for on-demand loading.
 lazy_init "$BASH_CONFIG_DIR/functions"
