@@ -21,7 +21,7 @@ jobs:
       - name: Get ShellCheck version
         id: shellcheck-version
         run: |
-          version=$(reviewdog/action-shellcheck@v1.32.0 --version 2>&1 | head -n1 | awk '{print $2}')
+          version=$(shellcheck --version 2>&1 | head -n1 | awk '{print $2}')
           echo "shellcheck_version=$version" >> $GITHUB_OUTPUT
       - name: Cache ShellCheck
         id: cache-shellcheck

@@ -107,7 +107,7 @@ tuckr_system_configs(){
 }
 final_steps(){
   printf '%b\n' "${BLD}${BLU}==>${BWHT} Setup complete. Some changes may require a reboot or new login session.${DEF}"
-  [[ "$SHELL" != "/bin/zsh" ]] && warn "Your shell is set to Zsh. Log out and back in to use it."
+  [[ "$SHELL" == "/bin/zsh" ]] && warn "Your shell is set to Zsh. Log out and back in to use it."
   printf '%b\n' "${BLD}${BLU}==>${BWHT} Run 'yadm status' to check the state of your dotfiles.${DEF}"
 }
 #--- Execution ---#
