@@ -9,13 +9,13 @@ declare -a found=()
 # Check native packages - use mapfile for efficient array population
 mapfile -t pacman_lines < <(pacman -Q 2>/dev/null | grep -Ei 'firefox|librewolf|waterfox|floorp|icecat')
 for line in "${pacman_lines[@]}"; do
-  [[ -n "$line" ]] && found+=("pacman: $line")
+  found+=("pacman: $line")
 done
 
 # Check flatpak - use mapfile for efficient array population
 mapfile -t flatpak_lines < <(flatpak list --app 2>/dev/null | grep -Ei 'firefox|librewolf|waterfox|floorp|icecat')
 for line in "${flatpak_lines[@]}"; do
-  [[ -n "$line" ]] && found+=("flatpak: $line")
+  found+=("flatpak: $line")
 done
 
 # Check binaries in PATH
