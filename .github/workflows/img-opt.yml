@@ -40,14 +40,14 @@ jobs:
         if: steps.compress.outputs.changes_detected == 'true'
         run: |
           set -e
-          LC_ALL=C find -O2 . -type f -name '*.avif' -print0 | while IFS= read -r -d '' avif_file; do
+          LC_ALL=C find . -type f -name '*.avif' -print0 | while IFS= read -r -d '' avif_file; do
             base_path="${avif_file%.avif}"
             for ext in png jpg jpeg; do
               original="${base_path}.${ext}"
               [[ -f "$original" ]] && echo "Replacing static image with AVIF: $original" && rm "$original"
             done
           done
-          LC_ALL=C find -O2 . -type f -name '*.webp' -print0 | while IFS= read -r -d '' webp_file; do
+          LC_ALL=C find . -type f -name '*.webp' -print0 | while IFS= read -r -d '' webp_file; do
             base_path="${webp_file%.webp}"
             original_gif="${base_path}.gif"
             [[ -f "$original_gif" ]] && echo "Replacing animated GIF with WebP: $original_gif" && rm "$original_gif"

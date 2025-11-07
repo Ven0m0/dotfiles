@@ -17,20 +17,6 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      # --- Dynamic ShellCheck cache ---
-      - name: Get ShellCheck version
-        id: shellcheck-version
-        run: |
-          version=$(shellcheck --version 2>&1 | head -n1 | awk '{print $2}')
-          echo "shellcheck_version=$version" >> $GITHUB_OUTPUT
-      - name: Cache ShellCheck
-        id: cache-shellcheck
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/shellcheck
-          key: ${{ runner.os }}-shellcheck-${{ steps.shellcheck-version.outputs.shellcheck_version }}
-          restore-keys: |
-            ${{ runner.os }}-shellcheck-
 
       # Run ShellCheck via Reviewdog
       - name: Run ShellCheck via Reviewdog
