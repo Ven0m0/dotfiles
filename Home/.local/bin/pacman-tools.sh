@@ -19,8 +19,8 @@ update-pkglist(){
 }
 
 ssh-key(){
-  email="${email:=${1:-ven0m0.wastaken@gmail.com}}"
-  target="${2:=dietpi@192.168.178.86}"
+  [[ $# -lt 2 ]] && { echo "Usage: ssh-key <email> <user@host>" >&2; return 1; }
+  local email="$1" target="$2"
   ssh-keygen -t ed25519 -a 100 -f ~/.ssh/pi_ed25519 -C "$email"
   ssh-copy-id -i ~/.ssh/pi_ed25519.pub "$target"
 }

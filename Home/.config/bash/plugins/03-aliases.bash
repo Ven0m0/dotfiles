@@ -1,0 +1,12 @@
+#================================= [Aliases] ==================================
+alias sudo='sudo ' e="$EDITOR" c='clear' q='exit'
+alias ..='cd ..' ...='cd ../..' bd='cd "$OLDPWD"'
+alias ls='eza -F --color=auto --group-directories-first --icons=auto'
+alias la='eza -aF --color=auto --group-directories-first --icons=auto'
+alias ll='eza -alF --color=auto --git --header --group-directories-first --icons=auto'
+alias lt='eza -aT -L 2 --color=auto --group-directories-first --icons=auto'
+alias grep='grep --color=auto' cp='cp -iv' mv='mv -iv' rm='rm -Iv --preserve-root'
+alias ssh='TERM=xterm-256color command ssh'
+has wget2 && alias wget='wget2'
+has btm && alias top='btm'
+pip() { if has uv && [[ " install uninstall " =~ " $1 " ]]; then uv pip "$@"; else command python -m pip "$@"; fi; }

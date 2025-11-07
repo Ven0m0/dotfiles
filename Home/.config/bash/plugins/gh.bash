@@ -1,4 +1,5 @@
 if command -v gh &>/dev/null; then
-  gh extension install gennaro-tedesco/gh-f
-  eval "$(gh completion -s bash)"
+  # Install extension manually: gh extension install gennaro-tedesco/gh-f
+  # Note: gh completion is handled in completer.sh
+  :
 fi
