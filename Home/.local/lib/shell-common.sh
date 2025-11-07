@@ -30,19 +30,12 @@ print_color(){ local color="${1}"; shift; printf '%b%s%b\n' "${color}" "$*" "${C
 # Print error message and exit
 # Usage: die <message> [exit_code]
 die(){ printf '%b%s%b\n' "${C_BOLD}${C_RED}ERROR: ${C_BRIGHT_WHITE}" "${1}" "${C_RESET}" >&2; exit "${2:-1}"; }
-# Print warning message
-# Usage: warn <message>
-warn(){ printf '%b%s%b\n' "${C_BOLD}${C_YELLOW}WARNING: ${C_BRIGHT_WHITE}" "${1}" "${C_RESET}" >&2; }
 # Print info message
 # Usage: info <message>
 info(){ printf '%b%s%b\n' "${C_BOLD}${C_BLUE}INFO: ${C_BRIGHT_WHITE}" "${1}" "${C_RESET}"; }
 # Print success message
 # Usage: success <message>
 success(){ printf '%b%s%b\n' "${C_BOLD}${C_GREEN}SUCCESS: ${C_BRIGHT_WHITE}" "${1}" "${C_RESET}"; }
-
-# File utilities
-# Add execute rights to all shell files recursively
-chxmod(){ LC_ALL=C find -O2 ./ -type f -regex ".*\.\(sh\|zsh\|bash\|fish\|dash\)" -exec chmod +x {} \; }
 
 # Append line to file if not already present
 # Usage: appendabsent <line> <file>
@@ -56,6 +49,3 @@ execinpath(){
     for f in "$d"/.[ "$d"/..?* "$d"/*; do [[ -f $f ]] && [[ -x $f ]] && printf '%s\n' "${f##*/}"; done
   done | sort -u
 }
-
-# Show RAM usage sorted by size
-showram(){ ps -eo size,pid,user,command --sort -size | awk '{ hr=$1/1024 ; printf("%13.2f Mb ",hr) } { for ( x=4 ; x<=NF ; x++ ) { printf("%s ",$x) } print "" }' | sort; }
