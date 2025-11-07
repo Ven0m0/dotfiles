@@ -23,7 +23,7 @@ _reflector_complete_countries() {
     local country_names
 
     mkdir -p $folder
-    if [ -r $file ] ; then
+    if [[ -r $file ]] ; then
         country_names="$(< $file)"
     else
         rm -f ${file%.*}.*
@@ -41,13 +41,13 @@ _reflector_complete_countries() {
 _reflector_complete_mirrors() {
     local -r file=$folder/mirrors.$date
     mkdir -p $folder
-    if [ -r $file ] ; then
+    if [[ -r $file ]] ; then
         local mirrors=$(< $file)
     else
         local -r timeout=30
         local -r url="https://archlinux.org/mirrorlist/?protocol=https&ip_version=4&use_mirror_status=on"
-        local mirrors=$(curl --fail -Lsm $timeout "$url" | grep "^#Server = " | awk '{print $NF}')
-        [ "$mirrors" ] || exit 1
+        local mirrors=$(curl --fail -Lsm "$timeout" "$url" | grep "^#Server = " | awk '{print $NF}')
+        [[ -n "$mirrors" ]] || exit 1
         echo "$mirrors" > $file
     fi
     mirrors=$(fzf -m < $file)
