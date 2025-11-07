@@ -18,7 +18,7 @@ editor_completion(){
     --bind=tab:down,btab:up \
     --cycle)"; then
     # Append slash if directory, space if file
-    if [ -d "$selected" ]; then
+    if [[ -d "$selected" ]]; then
       selected="${selected}/"
     else
       selected="${selected} "

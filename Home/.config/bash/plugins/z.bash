@@ -165,7 +165,7 @@ _z(){
       if (( echo )); then
         printf "%s\n" "$cd_to"
       else
-        cd "$cd_to"
+        cd "$cd_to" || exit
       fi
     fi
   }
