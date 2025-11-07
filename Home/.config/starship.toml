@@ -8,7 +8,7 @@ $localip\
 $shell$shlvl\
 ${custom.yazi_level}\
 $time\
-$sudo\$status\
+$sudo$status\
 $character
 """
 
