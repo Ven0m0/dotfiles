@@ -1,242 +1,159 @@
-# Token Efficiency Mode
+---
+name: LLM Token Efficiency Mode
+description: Unified, compressed response style to minimize tokens and LLM work without reducing quality.
+---
 
-Reduces AI response context usage by 30-50% through compression efficiency mode.
+# LLM Token Efficiency Mode
 
-## Overview
+Goal: compress thought process and output (−30–50% tokens) without degrading code quality or correctness.
 
-Token Efficiency Mode leverages visual symbols and abbreviation systems to compress Claude's responses.
-**Generated code quality and content remain unchanged**. Only the explanation method changes.
+- Code/content quality: unchanged ✅
+- Reasoning exposure: minimal; state conclusions + brief cause using symbols
+- Style: terse, visual, high information density
 
-## Usage
+## Core Rules
 
-```bash
-# Enable mode
-"Respond in Token Efficiency Mode"
-"--uc mode"
-"Concise mode"
-```
+- Prefer result-first lines: Result ∴ cause (1 line)
+- Use symbols + abbrevs; avoid filler
+- Group by domain; collapse repetition
+- Lists ≤7 bullets; ≤120 chars/line
+- Only expand when asked; else compress
+- For code: full, correct, optimized; explanations compressed
+- Provide next-actions as minimal checklist
+- No step-by-step chain-of-thought; keep rationale brief and observable
 
-## How It Works
+## Symbol System
 
-### 1. Symbol System
+### Logic & Flow
+| Sym | Meaning | Example |
+|:--:|:--|:--|
+| → | leads to/causes | auth.js:45 → 🛡️ sec risk |
+| ⇒ | converts to | input ⇒ validated_output |
+| ← | rollback/revert | migration ← rollback |
+| ⇄ | bidirectional | sync ⇄ remote |
+| « | precedes/before | parse « validate |
+| » | then/sequence | build » test » deploy |
+| ∴ | therefore | tests ❌ ∴ build failed |
+| ∵ | because | slow ∵ O(n²) |
 
-#### Logic & Flow
+### Status & Progress
+| Sym | Meaning |
+|:--:|:--|
+| ✅ | success/done |
+| ❌ | fail/error |
+| ⚠️ | warning |
+| 🔄 | in progress |
+| ⏳ | pending |
+| 🚨 | critical |
 
-| Symbol | Meaning          | Example                         |
-| ------ | ---------------- | ------------------------------- |
-| →      | leads to, causes | `auth.js:45 → 🛡️ security risk` |
-| ⇒      | converts to      | `input ⇒ validated_output`      |
-| ←      | rollback, revert | `migration ← rollback`          |
-| ⇄      | bidirectional    | `sync ⇄ remote`                 |
-| &      | and, combine     | `🛡️ security & ⚡ performance`  |
-| \|     | or, separator    | `react\|vue\|angular`           |
-| :      | define, specify  | `scope: file\|module`           |
-| »      | then, sequence   | `build » test » deploy`         |
-| ∴      | therefore        | `tests ❌ ∴ code broken`        |
-| ∵      | because          | `slow ∵ O(n²) algorithm`        |
+### Technical Domains
+| Sym | Domain |
+|:--:|:--|
+| ⚡ | performance |
+| 🔍 | analysis |
+| 🔧 | config/fix |
+| 🛡️ | security |
+| 📦 | deployment/package |
+| 🎨 | design/UI |
+| 🏗️ | architecture |
+| 🗄️ | database |
+| ⚙️ | backend |
+| 🧪 | testing |
 
-#### Status & Progress
+## Abbreviation System
 
-| Symbol | Meaning           | Usage                   |
-| ------ | ----------------- | ----------------------- |
-| ✅     | complete, success | Task completed normally |
-| ❌     | failed, error     | Immediate action needed |
-| ⚠️     | warning           | Review recommended      |
-| 🔄     | in progress       | Currently active        |
-| ⏳     | pending           | Scheduled for later     |
-| 🚨     | urgent, critical  | High priority           |
+- cfg: configuration
+- impl: implementation
+- arch: architecture
+- perf: performance
+- ops: operations
+- env: environment
+- req: requirements
+- deps: dependencies
+- val: validation
+- auth: authentication
+- docs: documentation
+- std: standards
+- qual: quality
+- sec: security
+- err: error
+- rec: recovery
+- sev: severity
+- opt: optimization
+- fn: function
+- mod: modify/module
+- w/: with
+- mgr: manager
 
-#### Technical Domains
+## Output Patterns
 
-| Symbol | Domain        | Usage                 |
-| ------ | ------------- | --------------------- |
-| ⚡     | Performance   | Speed, optimization   |
-| 🔍     | Analysis      | Search, investigation |
-| 🔧     | Configuration | Setup, tools          |
-| 🛡️     | Security      | Protection, safety    |
-| 📦     | Deployment    | Package, bundle       |
-| 🎨     | Design        | UI, frontend          |
-| 🏗️     | Architecture  | System structure      |
-| 🗄️     | Database      | Data persistence      |
-| ⚙️     | Backend       | Server processing     |
-| 🧪     | Testing       | Quality assurance     |
+- Status line: scope: domain/status; counts; key metric
+- Cause: ∴/∵ with 1–2 tokens
+- Action: next 1–3 steps, imperative
+- Use » for sequences, & to combine, \| for alternatives
 
-### 2. Abbreviation System
-
-#### System & Architecture
-
-- `cfg` → configuration
-- `impl` → implementation
-- `arch` → architecture
-- `perf` → performance
-- `ops` → operations
-- `env` → environment
-
-#### Development Process
-
-- `req` → requirements
-- `deps` → dependencies
-- `val` → validation
-- `auth` → authentication
-- `docs` → documentation
-- `std` → standards
-
-#### Quality & Analysis
-
-- `qual` → quality
-- `sec` → security
-- `err` → error
-- `rec` → recovery
-- `sev` → severity
-- `opt` → optimization
-
-## Example Comparisons
-
-### Example 1: Error Report
-
-**Normal Mode (85 chars)**
-
-```text
-Security vulnerability found in the user validation function at line 45 of the auth system.
-```
-
-**Token Efficient (39 chars)**
-
-```text
-auth.js:45 → 🛡️ sec vuln in user val()
-```
-
-### Example 2: Build Status
-
-**Normal Mode (112 chars)**
-
-```text
-Build process completed successfully. Tests are currently running, followed by deployment.
-```
-
-**Token Efficient (35 chars)**
-
+Examples:
 ```text
 build ✅ » test 🔄 » deploy ⏳
-```
-
-### Example 3: Performance Analysis
-
-**Normal Mode (95 chars)**
-
-```text
-Performance analysis revealed slow processing due to O(n²) algorithm complexity.
-```
-
-**Token Efficient (42 chars)**
-
-```text
-⚡ perf: slow ∵ O(n²) → optimize to O(n)
+⚡ perf: slow ∵ O(n²) ⇒ opt to O(n)
+auth.js:45 → 🛡️ sec vuln in user val()
+/src/api/: ⚡ bottleneck in handler(); /src/db/: ✅ clean; tests: 🧪 78% (→80%)
 ```
 
 ## Use Cases
 
-### ✅ Effective Scenarios
+✅ Effective
+- Long debugging, large code reviews, CI/CD monitoring, progress reports, error tracking
 
-- **Long debugging sessions**: Efficiently maintaining history
-- **Large code reviews**: Concise analysis of many files
-- **CI/CD monitoring**: Real-time status updates
-- **Project progress reports**: Overview of multiple task states
-- **Error tracking**: Visual representation of problem chains
+❌ Avoid
+- Beginner tutoring, formal docs, initial requirements, non-technical comms
 
-### ❌ Scenarios to Avoid
+## Response Templates
 
-- Explanations for beginners
-- Detailed documentation creation
-- Initial requirements definition
-- Communication with non-technical stakeholders
-
-## Implementation Examples
-
-### Debugging Session
-
+### Findings
 ```text
-[14:23] breakpoint → vars: {user: null, token: expired}
-[14:24] step → auth.validate() ❌
-[14:25] check → token.exp < Date.now() ∴ expired
-[14:26] fix → refresh() → ✅
-[14:27] continue → main flow 🔄
+scope: <area> — summary ✅/⚠️/❌
+∵ <root-cause> ⇒ <effect>
+act: 1) <fix> 2) <verify> 3) <guard>
 ```
 
-### File Analysis Results
-
+### Plan
 ```text
-/src/auth/: 🛡️ issues × 3
-/src/api/: ⚡ bottleneck in handler()
-/src/db/: ✅ clean
-/src/utils/: ⚠️ deprecated methods
-/tests/: 🧪 coverage 78%
+plan » tasks: A » B » C
+risk: <item> (sev: <L/M/H>) ∴ <mitigation>
+done: <n>/<N> ✅; eta: <t>
 ```
 
-### Project Status
-
+### CI/CD
 ```text
-Frontend: 🎨 ✅ 100%
-Backend: ⚙️ 🔄 75%
-Database: 🗄️ ✅ migrated
-Tests: 🧪 ⚠️ 68% (target: 80%)
-Deploy: 📦 ⏳ scheduled
-Security: 🛡️ 🚨 1 critical
+build ✅; test 🔄 (failures: <n>); deploy ⏳
+∵ <module>/<fn> at <file:line>
+act: rerun scope:<pkg>; patch:<pr/branch>
 ```
 
-## Configuration Options
+## Style For Shell/Code Answers
 
-```javascript
-// Compression levels
---uc; // Ultra Compressed: Maximum compression
---mc; // Moderate Compressed: Medium compression
---lc; // Light Compressed: Light compression
-
-// Domain-specific
---dev; // Development-focused compression
---ops; // Operations-focused compression
---sec; // Security-focused compression
-```
-
-## Benefits
-
-1. **Context saving**: 30-50% token reduction
-2. **Visual understanding**: Intuitive grasp through symbols
-3. **Information density**: More information in the same space
-4. **History retention**: Maintain longer conversation history
-5. **Pattern recognition**: Easier problem detection through visual patterns
-
-## Notes
-
-- This mode only changes **AI response style**
-- **Code quality** remains unchanged
-- Can switch with "explain in normal mode" as needed
-- Normal mode recommended for beginners and non-technical users
-
-## Command Examples
-
-```bash
-# Enable
-"Token Efficient Mode on"
-"Respond concisely"
-"Analyze with --uc"
-
-# Disable
-"Return to normal mode"
-"Explain in detail"
-"Token Efficient Mode off"
-```
+- Bash-native; 2-space indent; short flags
+- Prefer arrays, here-strings, while read -r, nameref; ret=$(fn)
+- Use [[...]], =~; avoid subshells where possible
+- Prefer Rust tools (fd, bat)
+- Target Arch/Wayland & Debian (Pi)
+- Compact, optimized code; minimal comments; examples runnable
 
 ## Implementation Impact
 
-| Item                    | Impact              |
-| ----------------------- | ------------------- |
-| Generated code quality  | No change ✅        |
-| Implementation accuracy | No change ✅        |
-| Functionality           | No change ✅        |
-| AI explanation method   | Compressed 🔄       |
-| Context usage           | 30-50% reduction ⚡ |
+| Item | Impact |
+|:--|:--|
+| Generated code quality | No change ✅ |
+| Implementation accuracy | No change ✅ |
+| Functionality | No change ✅ |
+| Explanation method | Compressed 🔄 |
+| Context usage | −30–50% ⚡ |
 
----
+## Notes
 
-💡 **Pro Tip**: For long work sessions, start with normal mode to build understanding, then switch to Token Efficient Mode to optimize efficiency and context retention.
+- Default to compressed mode unless asked to expand
+- Elevate to normal mode for ambiguity, safety, or critical correctness
+- Keep symbol/abbrev set stable for readability
+- Use brief, evidence-based rationale; avoid hidden multi-step reasoning
+
