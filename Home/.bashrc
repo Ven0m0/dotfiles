@@ -24,6 +24,10 @@ stty -ixon -ixoff -ixany
 export IGNOREEOF=10
 
 # --- Environment
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config} XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share} XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID} XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-$HOME/Projects}
+
 export EDITOR='micro' VISUAL="$EDITOR" GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR"
 export BROWSER='firefox' TERMINAL='ghostty' SUDO='doas'
 export LANG='C.UTF-8' LC_COLLATE='C'
@@ -39,6 +43,7 @@ dotfiles=(
   "$HOME/.bash_functions"
   "$HOME/.bash_completions"
   /usr/share/doc/pkgfile/command-not-found.bash
+  "${XDG_CONFIG_HOME}/bash/init.bash"
 )
 for p in "${dotfiles[@]}"; do ifsource "$p"; done
 
