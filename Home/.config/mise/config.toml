@@ -32,6 +32,7 @@ github-cli = "latest"
 codex = "latest"
 go = "latest"
 minify = "latest"
+vfox = "latest"
 #rust = { version = "nightly", profile = "minimal", components = "rust-src,llvm-tools", targets = "x86_64-unknown-linux-gnu,wasm32-unknown-unknown }
 #java = "temurin-25.0.1+8.0.LTS"
 #graalvm = "latest"
