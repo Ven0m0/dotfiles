@@ -26,6 +26,6 @@ jobs:
     - name: Syntax check
       uses: fish-shop/syntax-check@v2
     - name: Indent check
-      uses: fish-shop/indent-check@v1
+      uses: fish-shop/indent-check@v2
     - name: Run Fishtape tests
       uses: fish-shop/run-fishtape-tests@v2
