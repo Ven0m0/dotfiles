@@ -21,7 +21,7 @@ jobs:
         ref: ${{github.head_ref}}
         token: ${{secrets.GITHUB_TOKEN}}
     - name: Install fish shell
-      uses: fish-shop/install-fish-shell@v1
+      uses: fish-shop/install-fish-shell@v2
   
     - name: Syntax check
       uses: fish-shop/syntax-check@v2
