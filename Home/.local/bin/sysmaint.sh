@@ -2,9 +2,6 @@
 set -Eeuo pipefail; shopt -s nullglob globstar extglob
 IFS=$'\n\t'; export LC_ALL=C LANG=C
 
-# sysmaint: ln2 | swap | symclean | usb | sysz | prsync
-# Integrated full sysz logic (no external wrapper needed).
-
 have(){ command -v "$1" &>/dev/null; }
 die(){ printf 'error: %s\n' "$*" >&2; exit 1; }
 warn(){ printf 'warn: %s\n' "$*" >&2; }
