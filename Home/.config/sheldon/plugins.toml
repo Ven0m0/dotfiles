@@ -1,0 +1,17 @@
+shell = "zsh"
+
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+use = ["{{ name }}.zsh"]
+
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+
+[plugins.fast-syntax-highlighting]
+github = "zdharma-continuum/fast-syntax-highlighting"
+
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+
+[plugins.antidote]
+github = "mattmc3/antidote"
