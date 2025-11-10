@@ -1,3 +1,4 @@
+[[ $- != *i* ]] && return
 #============================== [Framework Init] ==============================
 export BASH_CONFIG_DIR="$XDG_CONFIG_HOME/bash" BASH_CACHE_DIR="$XDG_CACHE_HOME/bash"
 # --- Ensure Core Directories Exist
