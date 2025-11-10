@@ -13,12 +13,9 @@ prependpath(){ prepend_var PATH "$1"; }
 HISTCONTROL="erasedups:ignoreboth" HISTSIZE=5000 HISTFILESIZE=10000
 HISTIGNORE="&:bg:fg:clear:cls:exit:history:?"
 HISTTIMEFORMAT="%F %T " HISTFILE="$HOME/.bash_history"
-PROMPT_DIRTRIM=3
-shopt -s histappend cmdhist
 
 # --- Shell Behavior
-shopt -s autocd cdable_vars cdspell checkwinsize dirspell extglob globstar hostcomplete no_empty_cmd_completion nullglob
-set -o noclobber
+shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob hostcomplete no_empty_cmd_completion histappend cmdhist
 bind -r '\C-s'
 stty -ixon -ixoff -ixany
 export IGNOREEOF=10
@@ -28,8 +25,17 @@ export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config} XDG_CACHE_HOME=${XDG_CA
 export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share} XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID} XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-$HOME/Projects}
 
-export EDITOR='micro' VISUAL="$EDITOR" GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR"
-export BROWSER='firefox' TERMINAL='ghostty' SUDO='doas'
+has micro && EDITOR='micro'
+export EDITOR="${EDITOR:-nano}" VISUAL="$EDITOR" GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR"
+has firefox && BROWSER='firefox'
+has 
+if has sudo-rs; then
+  export SUDO=sudo-rs
+elif has doas; then
+  export SUDO=doas
+else
+  export SUDO=sudo
+fi
 export LANG='C.UTF-8' LC_COLLATE='C'
 export TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
 export GPG_TTY="$(tty)"
@@ -99,7 +105,7 @@ if has ghostty; then
 fi
 
 #================================ [Functions] =================================
-y() {
+y(){
   local tmp_file cwd
   tmp_file="$(mktemp -t "yazi-cwd.XXXXXX")"
   yazi "$@" --cwd-file="$tmp_file"
@@ -108,19 +114,17 @@ y() {
   fi
   rm -f -- "$tmp_file"
 }
-
-gclone() {
-  command git clone --filter=blob:none --depth 1 --no-tags \
-    -c protocol.version=2 -c http.sslVersion=tlsv1.3 \
-    -c http.version=HTTP/2 "$@"
+gclone(){
+  if has gix; then
+    LC_ALL=C gix clone --depth 1 --no-tags -c protocol.version=2 -c http.sslVersion=tlsv1.3 -c http.version=HTTP/2 "$@"
+  else
+    LC_ALL=C git clone --depth 1 --no-tags --filter=blob:none -c protocol.version=2 -c http.sslVersion=tlsv1.3 -c http.version=HTTP/2 "$@"
+  fi
 }
-
-gpush() {
-  command git add . && command git commit -m "${1:-Update}" && command git push
-}
+gpush(){ LC_ALL=C git add -A && LC_ALL=C git commit -m "${1:-Update}" && LC_ALL=C git push -q --recurse-submodules=on-demand; }
 
 #================================ [Aliases] ===================================
-alias sudo='sudo '
+alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
 alias e="$EDITOR"
 alias c='clear'
 alias q='exit'
@@ -138,31 +142,30 @@ alias rm='rm -Iv --preserve-root'
 alias ssh='TERM=xterm-256color command ssh'
 has wget2 && alias wget='wget2'
 has btm && alias top='btm'
-pip() { if has uv && [[ " install uninstall list show freeze check " =~ " $1 " ]]; then uv pip "$@"; else command python -m pip "$@"; fi; }
+pip(){ if has uv && [[ " install uninstall list show freeze check " =~ " $1 " ]]; then uv pip "$@"; else command python -m pip "$@"; fi; }
 
 #============================== [FZF & Prompt] ================================
-configure_fzf() {
+configure_fzf(){
   local find_cmd='fd --type f --hidden --no-ignore --exclude .git'
   export FZF_DEFAULT_COMMAND="$find_cmd"
   export FZF_CTRL_T_COMMAND="$find_cmd"
-
   local base_opts='--height=90% --layout=reverse --border --cycle'
   base_opts+=' --preview-window=wrap --inline-info --marker=*'
   export FZF_DEFAULT_OPTS="$base_opts"
   export FZF_CTRL_T_OPTS="$base_opts --preview 'bat --color=always -p -r :250 {}'"
   export FZF_CTRL_R_OPTS="$base_opts --preview 'echo {}' --preview-window=down:3:wrap"
   export FZF_ALT_C_OPTS="$base_opts --preview 'eza -T {}'"
-
   ifsource /usr/share/fzf/key-bindings.bash
   ifsource /usr/share/fzf/completion.bash
 }
 has fzf && has bat && has eza && configure_fzf
 
 # --- Prompt
-configure_prompt() {
+configure_prompt(){
+  PROMPT_DIRTRIM=3
+  PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
   if has starship; then
-    eval "$(starship init bash)"
-    return
+    eval "$(starship init bash)"; return
   fi
   local c_red='\[\e[31m\]' c_grn='\[\e[32m\]' c_blu='\[\e[34m\]' c_cyn='\[\e[36m\]' c_def='\[\e[0m\]'
   local user_color="$c_blu"
@@ -173,18 +176,14 @@ configure_prompt() {
   export COLUMNS
 }
 configure_prompt
-PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 #============================== [Finalization] ================================
 # --- Asynchronous Path Deduplication
 (
-  new_path=""
-  declare -A seen
-  IFS=:
+  new_path=""; declare -A seen; IFS=:
   for p in $PATH; do
     [[ -z "$p" || -n "${seen[$p]}" ]] && continue
-    seen[$p]=1
-    new_path="${new_path:+$new_path:}$p"
+    seen[$p]=1; new_path="${new_path:+$new_path:}$p"
   done
   [[ -n "$new_path" ]] && export PATH="$new_path"
 ) &>/dev/null &
@@ -199,5 +198,4 @@ if [[ $SHLVL -eq 1 && -z "${DISPLAY}" ]]; then
   fi
   [[ -n "$fetch_cmd" ]] && eval "$fetch_cmd"
 fi
-
 unset -f ifsource exportif prepend_var prependpath configure_fzf configure_prompt
