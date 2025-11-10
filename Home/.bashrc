@@ -93,7 +93,10 @@ if [[ "${XDG_SESSION_TYPE-}" == "wayland" ]]; then
   exportif __GL_SHADER_DISK_CACHE_PATH "$HOME/.cache/nvidia/GLCache"
 fi
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
-[[ "$TERM" == "xterm-ghostty" ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
+if has ghostty; then
+  [[ "$TERM" == "xterm-ghostty" ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
+  export TERMINAL="ghostty +ssh-cache --wait-after-command"
+fi
 
 #================================ [Functions] =================================
 y() {
@@ -167,6 +170,7 @@ configure_prompt() {
   local exit_status='$(ret=$?; if [[ $ret -eq 0 ]]; then echo -e "$c_grn:)$c_def"; else echo -e "$c_red$ret$c_def"; fi)'
   PS1="[$user_color\u@\h$c_def:$c_cyn\w$c_def] $exit_status > "
   PS2="> "
+  export COLUMNS
 }
 configure_prompt
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
