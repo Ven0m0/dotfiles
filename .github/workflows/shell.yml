@@ -9,9 +9,6 @@ on:
 permissions:
   contents: write
 
-env:
-  SHELLCHECK_OPTS: "--source-path=SCRIPTDIR --external-sources --check-sourced --shell=bash --severity=style"
-
 jobs:
   lint:
     uses: Ven0m0/.github/.github/workflows/shell-lint.yml@main
