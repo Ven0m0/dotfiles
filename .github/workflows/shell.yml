@@ -38,10 +38,14 @@ jobs:
 
       - name: Install tools
         run: |
-          sudo apt-get update -yq && sudo apt-get upgrade -y; sudo apt-get install -y shellcheck shfmt
+          sudo apt-get update -yq && sudo apt-get upgrade -yq
+          sudo apt-get install -y shellcheck shfmt
+          mkdir -p /tmp/shellharden-build
+          cd /tmp/shellharden-build
           curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz | tar xz
-          sudo mv shellharden /usr/local/bin/ && sudo chmod +x /usr/local/bin/shellharden || :
-
+          sudo install -m755 shellharden /usr/local/bin/
+          cd -; rm -rf /tmp/shellharden-build
+          
       - name: Find & fix shell files
         shell: bash
         run: |
