@@ -2,11 +2,9 @@ name: Optimize Images
 on:
   workflow_dispatch:
   push:
-    paths:
-      - '**/*.{jpg,jpeg,png,webp,avif,gif,svg}'
+    paths: ['**/*.{jpg,jpeg,png,webp,avif,gif,svg}']
   pull_request:
-    paths:
-      - '**/*.{jpg,jpeg,png,webp,avif,gif,svg}'
+    paths: ['**/*.{jpg,jpeg,png,webp,avif,gif,svg}']
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
@@ -14,50 +12,8 @@ permissions:
   contents: write
   pull-requests: write
 jobs:
-  optimize-images:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-
-      - name: Compress and Convert Images
-        id: compress
-        uses: stellasoftio/image-optimizer-action@v1.2.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          export-webp: true
-          export-avif: false
-          compress-png: true
-          compress-svg: true
-          compress-jpg: true
-          compress-webp: true
-          compress-avif: true
-          replace-original-after-export-webp: false
-
-      - name: Remove Originals After Conversion
-        if: steps.compress.outputs.changes_detected == 'true'
-        run: |
-          set -e
-          LC_ALL=C find -O2 . -type f -name '*.avif' -print0 | while IFS= read -r -d '' avif_file; do
-            base_path="${avif_file%.avif}"
-            for ext in png jpg jpeg; do
-              original="${base_path}.${ext}"
-              [[ -f "$original" ]] && echo "Replacing static image with AVIF: $original" && rm "$original"
-            done
-          done
-          LC_ALL=C find -O2 . -type f -name '*.webp' -print0 | while IFS= read -r -d '' webp_file; do
-            base_path="${webp_file%.webp}"
-            original_gif="${base_path}.gif"
-            [[ -f "$original_gif" ]] && echo "Replacing animated GIF with WebP: $original_gif" && rm "$original_gif"
-          done
-
-      - name: Commit Changes
-        if: steps.compress.outputs.changes_detected == 'true' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v7
-        with:
-          commit_message: 'chore(images): Convert static to AVIF, animated to WebP'
-          branch: ${{ github.head_ref || github.ref_name }}
-          commit_user_name: 'github-actions[bot]'
-          commit_user_email: '41898282+github-actions[bot]@users.noreply.github.com'
+  optimize:
+    uses: Ven0m0/.github/.github/workflows/img-opt.yml@main
+    with:
+      export_webp: true
+      export_avif: false
