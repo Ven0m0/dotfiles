@@ -146,15 +146,15 @@ pip(){ if has uv && [[ " install uninstall list show freeze check " =~ " $1 " ]]
 
 #============================== [FZF & Prompt] ================================
 configure_fzf(){
-  local find_cmd='fd --type f --hidden --no-ignore --exclude .git'
+  local find_cmd='fd -tf --hidden --no-ignore --exclude .git'
   export FZF_DEFAULT_COMMAND="$find_cmd"
   export FZF_CTRL_T_COMMAND="$find_cmd"
-  local base_opts='--height=90% --layout=reverse --border --cycle'
-  base_opts+=' --preview-window=wrap --inline-info --marker=*'
+  local base_opts='--height=~90% --layout=reverse-list --border --cycle --preview-window=wrap --inline-info -0 -1'
+  base_opts+='--marker=*'
   export FZF_DEFAULT_OPTS="$base_opts"
-  export FZF_CTRL_T_OPTS="$base_opts --preview 'bat --color=always -p -r :250 {}'"
-  export FZF_CTRL_R_OPTS="$base_opts --preview 'echo {}' --preview-window=down:3:wrap"
-  export FZF_ALT_C_OPTS="$base_opts --preview 'eza -T {}'"
+  export FZF_CTRL_T_OPTS="$base_opts --preview 'bat -p --color=always -r :250 {}' --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+  export FZF_CTRL_R_OPTS="$base_opts --preview 'echo {}' --preview-window=down:3:wrap --bind '?:toggle-preview'"
+  export FZF_ALT_C_OPTS="$base_opts --walker-skip='.git,node_modules' --preview 'eza -T {}'"
   ifsource /usr/share/fzf/key-bindings.bash
   ifsource /usr/share/fzf/completion.bash
 }
