@@ -52,6 +52,18 @@
 *.jpeg binary diff=exif
 *.webp binary diff=exif
 *.avif binary diff=exif
+*.png binary diff=exif
+*.ico binary diff=exif
+*.gif binary diff=exif
+*.bmp binary diff=exif
+*.opus binary diff=exif
+*.ogg binary diff=exif
+*.mp3 binary diff=exif
+*.mp4 binary diff=exif
+*.avi binary diff=exif
+*.mkv binary diff=exif
+*.flac binary diff=exif
+*.wav binary diff=exif
 *.svg text
 
 # Fonts
@@ -65,20 +77,6 @@
 *.tar binary
 *.gz binary
 *.bz2 binary
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.gif binary
-*.bmp binary
-*.ico binary
-*.avif binary
-*.webp binary
-*.mp3 binary
-*.mp4 binary
-*.avi binary
-*.mkv binary
-*.flac binary
-*.wav binary
 *.pdf binary
 
 # =============================================================================
@@ -89,6 +87,7 @@ Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab
 
 # Patches
 *.patch diff=patch
+*.diff diff=patch
 
 # Git files
 .gitignore text
@@ -105,15 +104,14 @@ Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab
 # =============================================================================
 # Windows
 # =============================================================================
-# AutoHotkey files - Windows line endings (CRLF)
+# AutoHotkey files
 *.ahk text eol=crlf
 
-# PowerShell files - Windows line endings (CRLF)
+# PowerShell files
 *.ps1 text eol=crlf
 *.psm1 text eol=crlf
 *.psd1 text eol=crlf
 
-# CMD/Batch files - Windows line endings (CRLF)
+# CMD/Batch files
 *.cmd text eol=crlf
 *.bat text eol=crlf
-
