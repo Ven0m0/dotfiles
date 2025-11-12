@@ -4,23 +4,15 @@
 # =============================================================================
 # Shell Scripts
 # =============================================================================
-*.sh text eol=lf diff=bash
-*.bash text eol=lf diff=bash
-*.zsh text eol=lf
+*.{sh,bash,bashrc,bash_profile,bash_logout,profile} text eol=lf diff=bash
 *.fish text eol=lf
-.bashrc text eol=lf
-.bash_profile text eol=lf
-.bash_logout text eol=lf
-.zshrc text eol=lf
-.zprofile text eol=lf
-.zshenv text eol=lf
-.profile text eol=lf
+*.{zsh,zshrc,zprofile,zshenv} text eol=lf
 
 # =============================================================================
 # Programming Languages
 # =============================================================================
 *.py diff=python
-*.js diff=java
+*.{js,java} diff=java
 *.lua linguist-language=Lua
 *.nix linguist-language=Nix
 
@@ -38,45 +30,21 @@
 *.css diff=css
 *.md diff=markdown linguist-detectable linguist-documentation
 *.txt linguist-documentation
-*.ini text
-*.cfg text
-*.conf text
-*.service text
-*.rules text
+*.{ini,cfg,conf,service,rules} text
 
 # =============================================================================
 # Binary Files
 # =============================================================================
 # Images
-*.jpg binary diff=exif
-*.jpeg binary diff=exif
-*.webp binary diff=exif
-*.avif binary diff=exif
-*.png binary diff=exif
-*.ico binary diff=exif
-*.gif binary diff=exif
-*.bmp binary diff=exif
-*.opus binary diff=exif
-*.ogg binary diff=exif
-*.mp3 binary diff=exif
-*.mp4 binary diff=exif
-*.avi binary diff=exif
-*.mkv binary diff=exif
-*.flac binary diff=exif
-*.wav binary diff=exif
+*.{jpg,jpeg,webp,avif,jxl,png,gif,bmp,ico,ogg,opus,mp3,mp4,avi,mkv,flac,wav} binary diff=exif
 *.svg text
 
 # Fonts
 *.ttf binary
 
-*.exe binary
-*.dll binary
-*.zip binary
-*.7z binary
-*.rar binary
-*.tar binary
-*.gz binary
-*.bz2 binary
+*.{exe,dll,so} binary
+
+*.{7z,zip,rar,tar,gz,zstd,bz2} binary
 *.pdf binary
 
 # =============================================================================
@@ -86,17 +54,13 @@
 Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
 
 # Patches
-*.patch diff=patch
-*.diff diff=patch
+*.{patch,diff} diff=patch
 
 # Git files
-.gitignore text
-.gitattributes text
-.editorconfig text
+.{gitignore,gitattributes,gitconfig,gitmodules,editorconfig} text
 
 # Vim swap files
-*.swp binary
-*.swo binary
+*.{swp.swo} binary
 
 # Sample files
 *.sample linguist-documentation
@@ -104,14 +68,7 @@ Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab
 # =============================================================================
 # Windows
 # =============================================================================
-# AutoHotkey files
 *.ahk text eol=crlf
-
-# PowerShell files
-*.ps1 text eol=crlf
-*.psm1 text eol=crlf
-*.psd1 text eol=crlf
-
-# CMD/Batch files
-*.cmd text eol=crlf
-*.bat text eol=crlf
+*.{ps1,psm1,psd1} text eol=crlf
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
