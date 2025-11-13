@@ -2,4 +2,6 @@ pre-commit:
   parallel: true
   no_tty: true
   jobs:
-  
+  commands:
+    lint:
+     runn: bun run eslint {staged_files}
