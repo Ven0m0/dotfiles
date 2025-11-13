@@ -14,7 +14,7 @@ Scope and targets
 
 Formatting
 - Shebang: #!/usr/bin/env bash
-- Options (top of file): set -Eeuo pipefail; shopt -s nullglob globstar extglob dotglob
+- Options (top of file): set -euo pipefail; shopt -s nullglob globstar
 - IFS: IFS=$'\n\t' when line-splitting needed
 - Indent: 2 spaces; no tabs; minimize blank lines; break long pipes with \
 - No hidden Unicode (no U+202F, U+200B, U+00AD). No trailing whitespace.
