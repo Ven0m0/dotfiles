@@ -34,7 +34,7 @@
 ## 4. Language-Specific Guidelines
 
 ### **Bash**
-- **Strict Mode**: `set -Eeuo pipefail`, `shopt -s nullglob globstar`, `IFS=$'\n\t'`, `export LC_ALL=C LANG=C`.
+- **Strict Mode**: `set -euo pipefail`, `shopt -s nullglob globstar`, `IFS=$'\n\t'`, `export LC_ALL=C LANG=C`.
 - **Idioms**: Prefer native bashisms: arrays, `mapfile -t`, `[[...]]`, parameter expansion. Avoid parsing `ls`, `eval`, and backticks.
 - **Tooling**: Prefer modern Rust-based tools (`fd->find`, `rg->grep`, `bat->cat`, `sd->sed`, `zoxide`, `choose->cut`, `jaq->jq`, `bun->pnpm->npm`, `uv->pip`, `mawk->awk/gawk`, `sk->fzf`, `rust-parallel->parallel->xargs`) with fallbacks to traditional counterparts.
 - **Structure**: Use the canonical template in `prompts/bash-script.prompt.md`.
