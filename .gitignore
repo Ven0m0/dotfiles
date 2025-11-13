@@ -134,10 +134,6 @@ $RECYCLE.BIN/
 # ---------------------
 # Linter
 # ---------------------
-super-linter.report
-super-linter-output/
-custom-super-linter-output-directory-name/
-super-linter-github-actions-step-summary-output*
 github-step-summary.md
 megalinter-reports/
 **/megalinter-reports/*
