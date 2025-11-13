@@ -55,6 +55,7 @@ Videos/
 *.orig
 *.rej
 *.TAG
+false.*
 
 # ---------------------
 # Logs / tmp
