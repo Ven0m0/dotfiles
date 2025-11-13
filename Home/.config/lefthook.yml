@@ -1,3 +1,6 @@
+skip_lfs: true
+glob_matcher: doublestar
+
 pre-commit:
   parallel: true
   no_tty: true
