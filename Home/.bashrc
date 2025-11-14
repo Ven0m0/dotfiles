@@ -19,13 +19,13 @@ stty -ixon -ixoff -ixany
 export IGNOREEOF=10
 
 # --- Environment
-XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config} XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
-XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share} XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
-XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID} XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-$HOME/Projects}
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-${HOME}/.config} XDG_CACHE_HOME=${XDG_CACHE_HOME:-${HOME}/.cache}
+XDG_DATA_HOME=${XDG_DATA_HOME:-${HOME}/.local/share} XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME}/.local/state}
+XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID} XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-${HOME}/Projects}
 export XDG_CONFIG_HOME XDG_CACHE_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_RUNTIME_DIR XDG_PROJECTS_DIR
 
-has micro && EDITOR='micro'
-export EDITOR="${EDITOR:-nano}" GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR"
+has micro && export EDITOR='micro' MICRO_TRUECOLOR=1
+export GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR"
 if has code; then
   export VISUAL="code -w"
 elif has vscode; then
@@ -47,11 +47,16 @@ elif has doas; then
 else
   export SUDO=sudo
 fi
-export LANG='C.UTF-8' LC_COLLATE='C'
-export TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
+export LANG='C.UTF-8' LC_COLLATE='C' TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
 export GPG_TTY="$(tty)"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export NODE_OPTIONS='--max-old-space-size=4096'
+
+# Paging
+if has bat; then
+  export PAGER='bat -p'
+fi
+export LESSQUIET=1 BATPIPE=color CLICOLOR=1 SYSTEMD_COLORS=1 PYTHON_COLORS=1
 
 #=============================== [Sourcing] =================================
 dotfiles=(/etc/bashrc
@@ -76,44 +81,55 @@ prependpath "$BUN_INSTALL/bin"
 
 #=============================== [Tooling Init] ===============================
 # --- Language & Runtimes
-has mise && eval "$(mise activate -yq bash)"
-ifsource "$HOME/.sdkman/bin/sdkman-init.sh"
+if has mise; then
+  eval "$(mise activate -yq bash)"
+  alias mx="mise x --"
+fi
+ifsource "${HOME}/.sdkman/bin/sdkman-init.sh"
 
-has cargo && {
-  exportif RUSTUP_HOME "$HOME/.rustup"
-  exportif CARGO_HOME "$HOME/.cargo"
-  ifsource "$CARGO_HOME/env"
-}
+if has cargo || has rustup; then
+  exportif RUSTUP_HOME "${HOME}/.rustup"
+  exportif CARGO_HOME "${HOME}/.cargo"
+  ifsource "${CARGO_HOME:-${HOME}/.cargo}/env"
+  export CARGO_HTTP_MULTIPLEXING=true CARGO_NET_GIT_FETCH_WITH_CLI=true RUST_LOG=off BINSTALL_DISABLE_TELEMETRY=true
+fi
 
 # --- Shell Enhancement Tools
 has gh && eval "$(gh completion -s bash)"
-has zoxide && {
-  export _ZO_EXCLUDE_DIRS="$HOME"
-  export _ZO_FZF_OPTS='--cycle --inline-info --no-multi --no-sort'
+if has zoxide; then
+  export _ZO_EXCLUDE_DIRS="$HOME" _ZO_FZF_OPTS='--cycle --inline-info --no-multi'
   eval "$(zoxide init --cmd cd bash)"
-}
-has zellij && {
+fi
+if has zellij; then
   eval "$(zellij setup --generate-auto-start bash)"
   ifsource "$HOME/.config/bash/completions/zellij.bash"
-}
+fi
+has fdf && eval "$(fdf --generate bash)"
+
+if has eza; then
+  export EZA_ICONS_AUTO=1
+  alias ls='eza --group-directories-first --no-git'
+  alias la='eza -al --group-directories-first --no-git --no-time --no-user --no-permissions'
+  alias ll='eza -al --group-directories-first --git-repos-no-status'
+  alias tree='eza -T --color=always --no-git'
+fi
 
 # --- Graphics & Session
 if [[ "${XDG_SESSION_TYPE-}" == "wayland" ]]; then
   export GDK_BACKEND=wayland QT_QPA_PLATFORM=wayland SDL_VIDEODRIVER=wayland
-  export MOZ_ENABLE_WAYLAND=1
-  export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-  export _JAVA_AWT_WM_NONREPARENTING=1
-  export NVD_BACKEND=direct LIBVA_DRIVER_NAME=nvidia VDPAU_DRIVER=nvidia
-  export __GLX_VENDOR_LIBRARY_NAME=nvidia
-  export __GL_THREADED_OPTIMIZATIONS=1 __GL_VRR_ALLOWED=1
-  export __GL_SHADER_DISK_CACHE=1
-  exportif __GL_SHADER_DISK_CACHE_PATH "$HOME/.cache/nvidia/GLCache"
+  export MOZ_ENABLE_WAYLAND=1 MOZ_DBUS_REMOTE=1 MOZ_ENABLE_XINPUT2=1 MOZ_DISABLE_RDD_SANDBOX=1
+  export QT_WAYLAND_DISABLE_WINDOWDECORATION=1 QT_ENABLE_HIGHDPI_SCALING=1 QT_AUTO_SCREEN_SCALE_FACTOR=1 GTK_USE_PORTAL=1
+  export _JAVA_AWT_WM_NONREPARENTING=1 _NROFF_U=1
 fi
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 if has ghostty; then
   [[ "$TERM" == "xterm-ghostty" ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
   export TERMINAL="ghostty +ssh-cache --wait-after-command"
 fi
+
+# --- Tuning
+export GLIBC_TUNABLES="glibc.malloc.hugetlb=1" MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"; 
+export _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 PYTHONOPTIMIZE=2 
 
 #================================ [Functions] =================================
 y(){
