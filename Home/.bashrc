@@ -1,6 +1,4 @@
-#============================== [Initial Guard] ===============================
 [[ $- != *i* ]] && return
-
 #================================ [Helpers] ===================================
 has(){ command -v -- "$1" &>/dev/null; }
 ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}"; }
@@ -56,15 +54,14 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export NODE_OPTIONS='--max-old-space-size=4096'
 
 #=============================== [Sourcing] =================================
-dotfiles=(
-  /etc/bashrc
+dotfiles=(/etc/bashrc
   "${HOME}/.bash_aliases"
   "${HOME}/.bash_functions"
   "${HOME}/.bash_completions"
   /usr/share/doc/pkgfile/command-not-found.bash
   "${XDG_CONFIG_HOME}/bash/init.bash"
 )
-for p in "${dotfiles[@]}"; do ifsource "$p"; done
+for p in "${dotfiles[@]}"; do ifsource "$p"; done; unset p
 
 ifsource /usr/share/bash-preexec/bash-preexec.sh
 [[ -r "/usr/share/blesh/ble.sh" ]] && . -- "/usr/share/blesh/ble.sh" --attach=none
