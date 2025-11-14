@@ -96,10 +96,6 @@ fi
 
 # --- Shell Enhancement Tools
 has gh && eval "$(gh completion -s bash)"
-if has zoxide; then
-  export _ZO_EXCLUDE_DIRS="$HOME" _ZO_FZF_OPTS='--cycle --inline-info --no-multi'
-  eval "$(zoxide init --cmd cd bash)"
-fi
 if has zellij; then
   eval "$(zellij setup --generate-auto-start bash)"
   ifsource "$HOME/.config/bash/completions/zellij.bash"
@@ -152,30 +148,24 @@ gpush(){ LC_ALL=C git add -A && LC_ALL=C git commit -m "${1:-Update}" && LC_ALL=
 
 #================================ [Aliases] ===================================
 alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
-alias e="$EDITOR"
-alias c='clear'
-alias q='exit'
+alias e="$EDITOR" se='sudo "EDITOR" '
+alias c='clear' q='exit'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias bd='cd "$OLDPWD"'
-alias ls='eza -F --color=auto --group-directories-first --icons=auto'
-alias la='eza -AF --color=auto --group-directories-first --icons=auto'
-alias ll='eza -AlF --color=auto --group-directories-first --icons=auto --git --header'
-alias lt='eza -AlT -L 2 --color=auto --group-directories-first --icons=auto'
 alias grep='grep --color=auto'
-alias cp='cp -iv'
-alias mv='mv -iv'
+alias cp='cp -iv --strip-trailing-slashes'
+alias mv='mv -iv --strip-trailing-slashes'
 alias rm='rm -Iv --preserve-root'
-alias ssh='TERM=xterm-256color command ssh'
+alias ssh='TERM=xterm-256color LANG=C.UTF-8 LC_ALL=C.UTF-8 command ssh'
 has wget2 && alias wget='wget2'
 has btm && alias top='btm'
 pip(){ if has uv && [[ " install uninstall list show freeze check " =~ " $1 " ]]; then uv pip "$@"; else command python -m pip "$@"; fi; }
 
 #============================== [FZF & Prompt] ================================
 configure_fzf(){
-  local find_cmd='fd -tf --hidden --no-ignore --exclude .git'
-  export FZF_DEFAULT_COMMAND="$find_cmd"
-  export FZF_CTRL_T_COMMAND="$find_cmd"
+  local find_cmd='fd -tf -HI -S +10k --exclude .git'
+  export FZF_DEFAULT_COMMAND="$find_cmd" FZF_CTRL_T_COMMAND="$find_cmd"
   local base_opts='--height=~90% --layout=reverse-list --border --cycle --preview-window=wrap --inline-info -0 -1'
   base_opts+='--marker=*'
   export FZF_DEFAULT_OPTS="$base_opts"
@@ -185,27 +175,28 @@ configure_fzf(){
   ifsource /usr/share/fzf/key-bindings.bash
   ifsource /usr/share/fzf/completion.bash
 }
-has fzf && has bat && has eza && configure_fzf
+has fzf && configure_fzf
+
+if has zoxide; then
+  export _ZO_EXCLUDE_DIRS="$HOME" _ZO_FZF_OPTS='--cycle --inline-info --no-multi'
+  eval "$(zoxide init --cmd cd bash)"
+fi
 
 # --- Prompt
 configure_prompt(){
-  PROMPT_DIRTRIM=3
-  PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+  PROMPT_DIRTRIM=3 PROMPT_COMMAND="history -a"; export COLUMNS
   if has starship; then
     eval "$(starship init bash)"; return
   fi
-  local c_red='\[\e[31m\]' c_grn='\[\e[32m\]' c_blu='\[\e[34m\]' c_cyn='\[\e[36m\]' c_def='\[\e[0m\]'
-  local user_color="$c_blu"
-  [[ $EUID -eq 0 ]] && user_color="$c_red"
+  local c_red='\[\e[31m\]' c_grn='\[\e[32m\]' c_blu='\[\e[34m\]' c_cyn='\[\e[36m\]' c_def='\[\e[0m\]' uc="$c_blu"
+  [[ $EUID -eq 0 ]] && uc="$c_red"
   local exit_status='$(ret=$?; if [[ $ret -eq 0 ]]; then echo -e "$c_grn:)$c_def"; else echo -e "$c_red$ret$c_def"; fi)'
-  PS1="[$user_color\u@\h$c_def:$c_cyn\w$c_def] $exit_status > "
-  PS2="> "
-  export COLUMNS
+  PS1="[$uc\u@\h$c_def:$c_cyn\w$c_def] $exit_status > "; PS2="> "
 }
 configure_prompt
 
 #============================== [Finalization] ================================
-# --- Asynchronous Path Deduplication
+# Path Deduplication
 (
   new_path=""; declare -A seen; IFS=:
   for p in $PATH; do
@@ -213,17 +204,15 @@ configure_prompt
     seen[$p]=1; new_path="${new_path:+$new_path:}$p"
   done
   [[ -n "$new_path" ]] && export PATH="$new_path"
-) &>/dev/null &
+) &>/dev/null
 
 # --- Welcome Fetch
-if [[ $SHLVL -eq 1 && -z "${DISPLAY}" ]]; then
-  fetch_cmd=""
-  if has hyfetch && has fastfetch; then
-    fetch_cmd='hyfetch -b fastfetch -p transgender'
+if [[ $SHLVL -eq 1 && -z $DISPLAY ]]; then
+  if has hyfetch; then
+    hyfetch
   elif has fastfetch; then
-    fetch_cmd='fastfetch'
+    fastfetch
   fi
-  [[ -n "$fetch_cmd" ]] && eval "$fetch_cmd"
 fi
 unset -f ifsource exportif prepend_var prependpath configure_fzf configure_prompt
 [[ ! ${BLE_VERSION-} ]] || ble-attach
