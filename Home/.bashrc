@@ -4,15 +4,15 @@
 #================================ [Helpers] ===================================
 has(){ command -v -- "$1" &>/dev/null; }
 ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}"; }
-exportif(){ [[ -e "$2" ]] && export "$1=$2"; }
+exportif(){ [[ -e "$2" ]] && export "${1}=${2}"; }
 prepend_var(){ local -n p="$1"; [[ -d "$2" && ":$p:" != *":$2:"* ]] && p="$2${p:+:$p}"; }
 prependpath(){ prepend_var PATH "$1"; }
 
 #============================ [Core Configuration] ============================
 # --- History
-HISTCONTROL="erasedups:ignoreboth" HISTSIZE=5000 HISTFILESIZE=10000
+HISTCONTROL="erasedups:ignoreboth" HISTSIZE=10000 HISTFILESIZE=10000
 HISTIGNORE="&:bg:fg:clear:cls:exit:history:?"
-HISTTIMEFORMAT="%F %T " HISTFILE="$HOME/.bash_history"
+HISTTIMEFORMAT="%F %T " HISTFILE="${HOME}/.bash_history"
 
 # --- Shell Behavior
 shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob hostcomplete no_empty_cmd_completion histappend cmdhist
@@ -21,14 +21,27 @@ stty -ixon -ixoff -ixany
 export IGNOREEOF=10
 
 # --- Environment
-export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config} XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
-export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share} XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
-export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID} XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-$HOME/Projects}
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config} XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share} XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID} XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-$HOME/Projects}
+export XDG_CONFIG_HOME XDG_CACHE_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_RUNTIME_DIR XDG_PROJECTS_DIR
 
 has micro && EDITOR='micro'
-export EDITOR="${EDITOR:-nano}" VISUAL="$EDITOR" GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR"
-has firefox && BROWSER='firefox'
-has 
+export EDITOR="${EDITOR:-nano}" GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR"
+if has code; then
+  export VISUAL="code -w"
+elif has vscode; then
+  export VISUAL="vscode -w"
+elif has kate; then
+  export VISUAL="kate"
+else
+  export VISUAL="$EDITOR"
+fi
+if has firefox; then
+  export BROWSER='firefox'
+else
+  export BROWSER='xdg-open'
+fi
 if has sudo-rs; then
   export SUDO=sudo-rs
 elif has doas; then
@@ -45,15 +58,16 @@ export NODE_OPTIONS='--max-old-space-size=4096'
 #=============================== [Sourcing] =================================
 dotfiles=(
   /etc/bashrc
-  "$HOME/.bash_aliases"
-  "$HOME/.bash_functions"
-  "$HOME/.bash_completions"
+  "${HOME}/.bash_aliases"
+  "${HOME}/.bash_functions"
+  "${HOME}/.bash_completions"
   /usr/share/doc/pkgfile/command-not-found.bash
   "${XDG_CONFIG_HOME}/bash/init.bash"
 )
 for p in "${dotfiles[@]}"; do ifsource "$p"; done
 
 ifsource /usr/share/bash-preexec/bash-preexec.sh
+[[ -r "/usr/share/blesh/ble.sh" ]] && . -- "/usr/share/blesh/ble.sh" --attach=none
 
 #================================ [PATH Setup] ================================
 prependpath "$HOME/.local/bin"
@@ -199,3 +213,4 @@ if [[ $SHLVL -eq 1 && -z "${DISPLAY}" ]]; then
   [[ -n "$fetch_cmd" ]] && eval "$fetch_cmd"
 fi
 unset -f ifsource exportif prepend_var prependpath configure_fzf configure_prompt
+[[ ! ${BLE_VERSION-} ]] || ble-attach
