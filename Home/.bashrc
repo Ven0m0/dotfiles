@@ -54,9 +54,13 @@ export NODE_OPTIONS='--max-old-space-size=4096'
 
 # Paging
 if has bat; then
-  export PAGER='bat -p'
+  export PAGER='bat -p' BAT_PAGER='less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups --no-edit-warn'
+  has batman && export MANPAGER='env BATMAN_IS_BEING_MANPAGER=yes bash /usr/bin/batman' MANROFFOPT=-c
+  if has batpipe; then export LESSOPEN="|/usr/bin/batpipe %s" LESS="${LESS:-} -R" BATPIPE=color; unset LESSCLOSE; fi
+  if has batdiff && has delta; then export BATDIFF_USE_DELTA=true; fi
+  eval $(bat --completion bash)
 fi
-export LESSQUIET=1 BATPIPE=color CLICOLOR=1 SYSTEMD_COLORS=1 PYTHON_COLORS=1
+export LESSQUIET=1 CLICOLOR=1 SYSTEMD_COLORS=1 PYTHON_COLORS=1
 
 #=============================== [Sourcing] =================================
 dotfiles=(/etc/bashrc
