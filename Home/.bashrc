@@ -55,8 +55,8 @@ export NODE_OPTIONS='--max-old-space-size=4096'
 # Paging
 if has bat; then
   export PAGER='bat -p' BAT_PAGER='less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups --no-edit-warn'
-  has batman && export MANPAGER='env BATMAN_IS_BEING_MANPAGER=yes bash /usr/bin/batman' MANROFFOPT=-c
-  if has batpipe; then export LESSOPEN="|/usr/bin/batpipe %s" LESS="${LESS:-} -R" BATPIPE=color; unset LESSCLOSE; fi
+  has batman && { export MANPAGER='env BATMAN_IS_BEING_MANPAGER=yes bash /usr/bin/batman' MANROFFOPT=-c; alias man=batman; }
+  has batpipe && { export LESSOPEN="|/usr/bin/batpipe %s" LESS="${LESS:-} -R" BATPIPE=color; unset LESSCLOSE; }
   if has batdiff && has delta; then export BATDIFF_USE_DELTA=true; fi
   eval $(bat --completion bash)
 fi
@@ -107,7 +107,7 @@ fi
 has fdf && eval "$(fdf --generate bash)"
 
 if has eza; then
-  export EZA_ICONS_AUTO=1
+  export EZA_ICONS_AUTO=1 EZA_COLORS="$LS_COLORS"
   alias ls='eza --group-directories-first --no-git'
   alias la='eza -al --group-directories-first --no-git --no-time --no-user --no-permissions'
   alias ll='eza -al --group-directories-first --git-repos-no-status'
