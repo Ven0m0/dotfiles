@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
-shopt -s nullglob globstar
 IFS=$'\n\t'
-LC_ALL=C; LANG=C.UTF-8
-HOME="/home/${SUDO_USER:-$USER}"
+export LC_ALL=C HOME="/home/${SUDO_USER:-$USER}" jobs="$(nproc 2>/dev/null || echo 4)"
 builtin cd -- "$(command dirname -- "${BASH_SOURCE[0]:-$0}")" || exit 1
-jobs="$(command nproc --all 2>/dev/null || echo 4)"
 #–– Colors
 # Pre-gen common colors
 declare -rA _c=([def]=0 [bld]=1 [dim]=2 [und]=4 [inv]=7 [hid]=8 \
