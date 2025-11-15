@@ -27,7 +27,7 @@ if command -v ghostty &>/dev/null; then
   [[ "$TERM" == "xterm-ghostty" ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-/usr/share/ghostty}/shell-integration/bash/ghostty.bash"
   export TERMINAL="ghostty +ssh-cache --wait-after-command"
 fi
-export LANG='C.UTF-8' LC_COLLATE='C'
+export LANG='C.UTF-8' LC_COLLATE=C LC_CTYPE=C
 export TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
 export GPG_TTY="$(tty)"
 
