@@ -1,6 +1,7 @@
 [unstable]
 unstable-options = true
 git = true
+#git = { shallow_index = true, shallow_deps = true }
 gitoxide = true
 avoid-dev-deps = true
 no-embed-metadata = true
@@ -39,6 +40,8 @@ MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena
 _RJEM_MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
 RUST_LIB_BACKTRACE = "0"
 CMAKE_BUILD_TYPE = "Release"
+RUST_PANIC_STRATEGY = "abort"
+GITOXIDE_CORE_MULTIPACKINDEX = "true"
 
 [cache]
 auto-clean-frequency = "7 days"
