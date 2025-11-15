@@ -9,4 +9,3 @@ alias grep='grep --color=auto' cp='cp -iv' mv='mv -iv' rm='rm -Iv --preserve-roo
 alias ssh='TERM=xterm-256color command ssh'
 has wget2 && alias wget='wget2'
 has btm && alias top='btm'
-pip() { if has uv && [[ " install uninstall " =~ " $1 " ]]; then uv pip "$@"; else command python -m pip "$@"; fi; }
