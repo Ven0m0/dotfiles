@@ -1,8 +1,11 @@
+# .bashrc - Minimal Bootstrap Configuration
+# Skip if non-interactive
 [[ $- != *i* ]] && return
+
 #================================ [Helpers] ===================================
 has(){ command -v -- "$1" &>/dev/null; }
 ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}"; }
-exportif(){ [[ -e "$2" ]] && export "${1}=${2}"; }
+exportif(){ [[ -e "$2" ]] && export "$1=$2"; }
 prepend_var(){ local -n p="$1"; [[ -d "$2" && ":$p:" != *":$2:"* ]] && p="$2${p:+:$p}"; }
 prependpath(){ prepend_var PATH "$1"; }
 
@@ -13,217 +16,39 @@ HISTIGNORE="&:bg:fg:clear:cls:exit:history:?"
 HISTTIMEFORMAT="%F %T " HISTFILE="${HOME}/.bash_history"
 
 # === Shell Behavior ===
-shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob hostcomplete no_empty_cmd_completion histappend cmdhist
-bind -r '\C-s'
-stty -ixon -ixoff -ixany
+shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob \
+         hostcomplete no_empty_cmd_completion histappend cmdhist
+bind -r '\C-s' 2>/dev/null
+stty -ixon -ixoff -ixany 2>/dev/null
 export IGNOREEOF=10
 
-# === Environment ===
-XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-${HOME}/.config} XDG_CACHE_HOME=${XDG_CACHE_HOME:-${HOME}/.cache}
-XDG_DATA_HOME=${XDG_DATA_HOME:-${HOME}/.local/share} XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME}/.local/state}
-XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID} XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-${HOME}/Projects}
+# === XDG Base Directories ===
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-${HOME}/.config}
+XDG_CACHE_HOME=${XDG_CACHE_HOME:-${HOME}/.cache}
+XDG_DATA_HOME=${XDG_DATA_HOME:-${HOME}/.local/share}
+XDG_STATE_HOME=${XDG_STATE_HOME:-${HOME}/.local/state}
+XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID}
+XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-${HOME}/Projects}
 export XDG_CONFIG_HOME XDG_CACHE_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_RUNTIME_DIR XDG_PROJECTS_DIR
 
-has micro && export EDITOR='micro' MICRO_TRUECOLOR=1
-export GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR"
-if has code; then
-  export VISUAL="code -w"
-elif has vscode; then
-  export VISUAL="vscode -w"
-elif has kate; then
-  export VISUAL="kate"
-else
-  export VISUAL="$EDITOR"
-fi
-if has firefox; then
-  export BROWSER='firefox'
-else
-  export BROWSER='xdg-open'
-fi
-if has sudo-rs; then
-  export SUDO=sudo-rs
-elif has doas; then
-  export SUDO=doas
-else
-  export SUDO=sudo
-fi
-export LANG='C.UTF-8' LC_COLLATE='C' TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
-export GPG_TTY="$(tty)"
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-export NODE_OPTIONS='--max-old-space-size=4096'
-
-# === Paging ===
-if has bat; then
-  export PAGER='bat -p' BAT_PAGER='less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups --no-edit-warn'
-  has batman && { export MANPAGER='env BATMAN_IS_BEING_MANPAGER=yes bash /usr/bin/batman' MANROFFOPT=-c; alias man=batman; }
-  has batpipe && { export LESSOPEN="|/usr/bin/batpipe %s" LESS="${LESS:-} -R" BATPIPE=color; unset LESSCLOSE; }
-  if has batdiff && has delta; then export BATDIFF_USE_DELTA=true; fi
-  eval $(bat --completion bash)
-fi
-export LESSQUIET=1 CLICOLOR=1 SYSTEMD_COLORS=1 PYTHON_COLORS=1
-
-#=============================== [Sourcing] =================================
-dotfiles=(/etc/bashrc
-  "${HOME}/.bash_aliases"
-  "${HOME}/.bash_functions"
-  "${HOME}/.bash_completions"
-  /usr/share/doc/pkgfile/command-not-found.bash
-  "${XDG_CONFIG_HOME}/bash/init.bash"
-)
-for p in "${dotfiles[@]}"; do ifsource "$p"; done; unset p
-
+#=============================== [Sourcing] ===================================
+# Source legacy dotfiles for compatibility
+ifsource /etc/bashrc
+ifsource "${HOME}/.bash_aliases"
+ifsource "${HOME}/.bash_functions"
+ifsource "${HOME}/.bash_completions"
+ifsource /usr/share/doc/pkgfile/command-not-found.bash
 ifsource /usr/share/bash-preexec/bash-preexec.sh
+
+# Load modular bash configuration framework
+ifsource "${XDG_CONFIG_HOME}/bash/init.bash"
+
+# Ble.sh integration (if available)
 [[ -r "/usr/share/blesh/ble.sh" ]] && . -- "/usr/share/blesh/ble.sh" --attach=none
 
-#================================ [PATH Setup] ================================
-prependpath "$HOME/.local/bin"
-prependpath "$HOME/.bin"
-prependpath "$HOME/bin"
-exportif BUN_INSTALL "$HOME/.bun"
-prependpath "$BUN_INSTALL/bin"
-
-#=============================== [Tooling Init] ===============================
-# === Language & Runtimes
-if has mise; then
-  eval "$(mise activate -yq bash)"
-  alias mx="mise x --"
-fi
-ifsource "${HOME}/.sdkman/bin/sdkman-init.sh"
-
-if has cargo || has rustup; then
-  exportif RUSTUP_HOME "${HOME}/.rustup"
-  exportif CARGO_HOME "${HOME}/.cargo"
-  ifsource "${CARGO_HOME:-${HOME}/.cargo}/env"
-  prependpath "$HOME/.cargo/bin"
-  export CARGO_HTTP_MULTIPLEXING=true CARGO_NET_GIT_FETCH_WITH_CLI=true RUST_LOG=off BINSTALL_DISABLE_TELEMETRY=true
-fi
-
-# === Shell Enhancement Tools
-has gh && eval "$(gh completion -s bash)"
-if has zellij; then
-  eval "$(zellij setup --generate-auto-start bash)"
-  ifsource "$HOME/.config/bash/completions/zellij.bash"
-fi
-has fdf && eval "$(fdf --generate bash)"
-
-if has vivid; then
-  export LS_COLORS="$(vivid generate molokai)"
-elif has dircolors; then
-  eval $(dircolors -c)
-else
-  export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:'
-fi
-if has eza; then
-  export EZA_ICONS_AUTO=1 EZA_COLORS="$LS_COLORS"
-  alias ls='eza --group-directories-first --no-git'
-  alias la='eza -al --group-directories-first --no-git --no-time --no-user --no-permissions'
-  alias ll='eza -al --group-directories-first --git-repos-no-status'
-  alias tree='eza -T --color=always --no-git'
-fi
-
-# === Graphics & Session
-if [[ "${XDG_SESSION_TYPE-}" == "wayland" ]]; then
-  export GDK_BACKEND=wayland QT_QPA_PLATFORM=wayland SDL_VIDEODRIVER=wayland
-  export MOZ_ENABLE_WAYLAND=1 MOZ_DBUS_REMOTE=1 MOZ_ENABLE_XINPUT2=1 MOZ_DISABLE_RDD_SANDBOX=1
-  export QT_WAYLAND_DISABLE_WINDOWDECORATION=1 QT_ENABLE_HIGHDPI_SCALING=1 QT_AUTO_SCREEN_SCALE_FACTOR=1 QT_NO_SYNTHESIZED_BOLD=1
-  export _JAVA_AWT_WM_NONREPARENTING=1 _NROFF_U=1 GTK_USE_PORTAL=1
-fi
-has dbus-launch && export "$(dbus-launch 2>/dev/null)"
-if has ghostty; then
-  [[ "$TERM" == "xterm-ghostty" ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-/usr/share/ghostty}/shell-integration/bash/ghostty.bash"
-  export TERMINAL="ghostty +ssh-cache --wait-after-command"
-fi
-
-# === Tuning
-export GLIBC_TUNABLES="glibc.malloc.hugetlb=1" MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"; 
-export _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 PYTHONOPTIMIZE=2 
-
-#================================ [Functions] =================================
-y(){
-  local tmp_file cwd
-  tmp_file="$(mktemp -t "yazi-cwd.XXXXXX")"
-  yazi "$@" --cwd-file="$tmp_file"
-  if IFS= read -r -d '' cwd < "$tmp_file" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
-    cd -- "$cwd" || exit
-  fi
-  rm -f -- "$tmp_file"
-}
-gclone(){
-  if has gix; then
-    LC_ALL=C gix clone --depth 1 --no-tags -c protocol.version=2 -c http.sslVersion=tlsv1.3 -c http.version=HTTP/2 "$@"
-  else
-    LC_ALL=C git clone --depth 1 --no-tags --filter=blob:none -c protocol.version=2 -c http.sslVersion=tlsv1.3 -c http.version=HTTP/2 "$@"
-  fi
-}
-gpush(){ LC_ALL=C git add -A && LC_ALL=C git commit -m "${1:-Update}" && LC_ALL=C git push -q --recurse-submodules=on-demand; }
-
-#================================ [Aliases] ===================================
-alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
-alias e="$EDITOR" se='sudo "EDITOR" '
-alias c='clear' q='exit'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias bd='cd "$OLDPWD"'
-alias grep='grep --color=auto'
-alias cp='cp -iv --strip-trailing-slashes'
-alias mv='mv -iv --strip-trailing-slashes'
-alias rm='rm -Iv --preserve-root'
-alias ssh='TERM=xterm-256color LANG=C.UTF-8 LC_ALL=C.UTF-8 command ssh'
-has wget2 && alias wget='wget2'
-has btm && alias top='btm'
-pip(){ if has uv && [[ " install uninstall list show freeze check " =~ " $1 " ]]; then uv pip "$@"; else command python -m pip "$@"; fi; }
-
-#============================== [FZF & Prompt] ================================
-configure_fzf(){
-  local find_cmd='fd -tf -HI -S +10k --exclude .git'
-  export FZF_DEFAULT_COMMAND="$find_cmd" FZF_CTRL_T_COMMAND="$find_cmd"
-  local base_opts='--height=~90% --layout=reverse-list --border --cycle --preview-window=wrap --inline-info -0 -1'
-  base_opts+='--marker=*'
-  export FZF_DEFAULT_OPTS="$base_opts"
-  export FZF_CTRL_T_OPTS="$base_opts --preview 'bat -p --color=always -r :250 {}' --bind 'ctrl-/:change-preview-window(down|hidden|)'"
-  export FZF_CTRL_R_OPTS="$base_opts --preview 'echo {}' --preview-window=down:3:wrap --bind '?:toggle-preview'"
-  export FZF_ALT_C_OPTS="$base_opts --walker-skip='.git,node_modules' --preview 'eza -T {}'"
-  ifsource /usr/share/fzf/key-bindings.bash
-  ifsource /usr/share/fzf/completion.bash
-}
-has fzf && configure_fzf
-
-if has zoxide; then
-  export _ZO_EXCLUDE_DIRS="$HOME" _ZO_FZF_OPTS='--cycle --inline-info --no-multi'
-  eval "$(zoxide init --cmd cd bash)"
-fi
-
-# === Prompt ===
-PROMPT_DIRTRIM=3 
-PROMPT_COMMAND="history -a"
-export COLUMNS
-configure_prompt(){
-  has starship && { eval "$(starship init bash)"; return; }
-  local c_red='\[\e[31m\]' c_grn='\[\e[32m\]' c_blu='\[\e[34m\]' c_cyn='\[\e[36m\]' c_def='\[\e[0m\]'
-  local uc="$c_blu"; [[ $EUID -eq 0 ]] && uc="$c_red"
-  local exit_status='$(ret=$?; if [[ $ret -eq 0 ]]; then echo -e "$c_grn:)$c_def"; else echo -e "$c_red$ret$c_def"; fi)'
-  PS1="[$uc\u@\h$c_def:$c_cyn\w$c_def] $exit_status > "; PS2="> "
-}
-configure_prompt
-
 #============================== [Finalization] ================================
-# Path Deduplication
-(
-  new_path=""; declare -A seen; IFS=:
-  for p in $PATH; do
-    [[ -z "$p" || -n "${seen[$p]}" ]] && continue
-    seen[$p]=1; new_path="${new_path:+$new_path:}$p"
-  done
-  [[ -n "$new_path" ]] && export PATH="$new_path"
-) &>/dev/null
+# Cleanup helper functions
+unset -f ifsource exportif prepend_var prependpath
 
-# === Welcome Fetch
-if [[ $SHLVL -eq 1 && -z $DISPLAY ]]; then
-  if has hyfetch; then
-    hyfetch
-  elif has fastfetch; then
-    fastfetch
-  fi
-fi
-unset -f ifsource exportif prepend_var prependpath configure_fzf configure_prompt
+# Attach ble.sh if loaded
 [[ ! ${BLE_VERSION-} ]] || ble-attach

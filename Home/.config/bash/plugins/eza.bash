@@ -1,4 +1,11 @@
-if command -v eza &>/dev/null; then
-  export COLUMNS=80 EZA_ICONS_AUTO=1
-  export EZA_COLORS="$LS_COLORS" 
+#=================================== [Eza] ====================================
+if ! has eza; then
+  return 0
 fi
+
+# Eza aliases for modern ls replacement
+alias ls='eza -F --color=auto --group-directories-first --icons=auto'
+alias la='eza -aF --color=auto --group-directories-first --icons=auto'
+alias ll='eza -alF --color=auto --git --header --group-directories-first --icons=auto'
+alias lt='eza -aT -L 2 --color=auto --group-directories-first --icons=auto'
+alias tree='eza -T --color=always --icons=auto'
