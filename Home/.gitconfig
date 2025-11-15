@@ -2,7 +2,7 @@
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
   pager = delta
-  whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+  whitespace = fix,-indent-with-non-tab,trailing-space,space-before-tab,cr-at-eol
   editor = micro
   autocrlf = input
   preloadIndex = true
@@ -19,6 +19,20 @@
 [alias]
   sub = submodule update --init --recursive --remote -r --depth 1
   dot = !--git-dir=$HOME/.dotfiles --work-tree=$HOME
+	st = status
+	unstage = reset HEAD --
+	# Logging
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	last = log -1 HEAD
+	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+	# Diff
+	df = diff
+	dc = diff --cached
+	# Useful commands
+	amend = commit --amend --no-edit
+	undo = reset --soft HEAD~1
+	discard = checkout --
+	cleanup = !git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d
 [interactive]
   diffFilter = delta --color-only --features=interactive
 [color]
@@ -86,7 +100,7 @@
   pruneExpire = 7.days.ago
 [repack]
   cruftThreads = 0
-  writeBitmaps = true
+  # writeBitmaps = true
   useDeltaBaseOffset = true
 [checkout]
   workers = 0
@@ -134,6 +148,7 @@
   decorations = true
   navigate = true
 [diff]
+	tool = vscode
   algorithm = histogram
   suppressBlankEmpty = true
   renames = true
@@ -141,6 +156,8 @@
   mnemonicprefix = true
   external = difft
   compactionHeuristic = true
+[difftool "vscode"]
+	cmd = code --wait --diff $LOCAL $REMOTE
 [difftool]
   prompt = false
 [diff-so-fancy]
@@ -150,11 +167,14 @@
   options = --line-numbers
 [merge]
   conflictStyle = zdiff3
-  tool = meld
+  tool = vscode
 [mergetool]
   prompt = false
   keepBackup = false
   hideResolved = true
+[mergetool "vscode"]
+	cmd = code --wait $MERGED
+	useAutoMerge = true
 [mergetool "meld"]
   useAutoMerge = true
 [protocol]
