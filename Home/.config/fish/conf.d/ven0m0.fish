@@ -83,11 +83,7 @@ end
 abbr -a qcd --position command --regex 'q+' --function qcd
 
 alias cat='command bat -pp'
-if type -q mpatch
-	alias ptch='mpatch'
-else
-	alias ptch='patch -Np1 <'
-end
+
 alias sudo='sudo '; alias doas='doas '; alias sudo-rs='sudo-rs '
 alias mkdir='mkdir -pv '; alias ed='$EDITOR '
 alias ping='ping -c 4'
