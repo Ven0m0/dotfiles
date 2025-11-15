@@ -7,18 +7,18 @@ prepend_var(){ local -n p="$1"; [[ -d "$2" && ":$p:" != *":$2:"* ]] && p="$2${p:
 prependpath(){ prepend_var PATH "$1"; }
 
 #============================ [Core Configuration] ============================
-# --- History
+# === History ===
 HISTCONTROL="erasedups:ignoreboth" HISTSIZE=10000 HISTFILESIZE=10000
 HISTIGNORE="&:bg:fg:clear:cls:exit:history:?"
 HISTTIMEFORMAT="%F %T " HISTFILE="${HOME}/.bash_history"
 
-# --- Shell Behavior
+# === Shell Behavior ===
 shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob hostcomplete no_empty_cmd_completion histappend cmdhist
 bind -r '\C-s'
 stty -ixon -ixoff -ixany
 export IGNOREEOF=10
 
-# --- Environment
+# === Environment ===
 XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-${HOME}/.config} XDG_CACHE_HOME=${XDG_CACHE_HOME:-${HOME}/.cache}
 XDG_DATA_HOME=${XDG_DATA_HOME:-${HOME}/.local/share} XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME}/.local/state}
 XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID} XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-${HOME}/Projects}
@@ -52,7 +52,7 @@ export GPG_TTY="$(tty)"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export NODE_OPTIONS='--max-old-space-size=4096'
 
-# Paging
+# === Paging ===
 if has bat; then
   export PAGER='bat -p' BAT_PAGER='less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups --no-edit-warn'
   has batman && { export MANPAGER='env BATMAN_IS_BEING_MANPAGER=yes bash /usr/bin/batman' MANROFFOPT=-c; alias man=batman; }
@@ -83,7 +83,7 @@ exportif BUN_INSTALL "$HOME/.bun"
 prependpath "$BUN_INSTALL/bin"
 
 #=============================== [Tooling Init] ===============================
-# --- Language & Runtimes
+# === Language & Runtimes
 if has mise; then
   eval "$(mise activate -yq bash)"
   alias mx="mise x --"
@@ -98,7 +98,7 @@ if has cargo || has rustup; then
   export CARGO_HTTP_MULTIPLEXING=true CARGO_NET_GIT_FETCH_WITH_CLI=true RUST_LOG=off BINSTALL_DISABLE_TELEMETRY=true
 fi
 
-# --- Shell Enhancement Tools
+# === Shell Enhancement Tools
 has gh && eval "$(gh completion -s bash)"
 if has zellij; then
   eval "$(zellij setup --generate-auto-start bash)"
@@ -121,7 +121,7 @@ if has eza; then
   alias tree='eza -T --color=always --no-git'
 fi
 
-# --- Graphics & Session
+# === Graphics & Session
 if [[ "${XDG_SESSION_TYPE-}" == "wayland" ]]; then
   export GDK_BACKEND=wayland QT_QPA_PLATFORM=wayland SDL_VIDEODRIVER=wayland
   export MOZ_ENABLE_WAYLAND=1 MOZ_DBUS_REMOTE=1 MOZ_ENABLE_XINPUT2=1 MOZ_DISABLE_RDD_SANDBOX=1
@@ -134,7 +134,7 @@ if has ghostty; then
   export TERMINAL="ghostty +ssh-cache --wait-after-command"
 fi
 
-# --- Tuning
+# === Tuning
 export GLIBC_TUNABLES="glibc.malloc.hugetlb=1" MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"; 
 export _RJEM_MALLOC_CONF="$MALLOC_CONF" MIMALLOC_ALLOW_LARGE_OS_PAGES=1 MIMALLOC_VERBOSE=0 MIMALLOC_SHOW_ERRORS=0 PYTHONOPTIMIZE=2 
 
@@ -193,7 +193,7 @@ if has zoxide; then
   eval "$(zoxide init --cmd cd bash)"
 fi
 
-# --- Prompt
+# === Prompt ===
 PROMPT_DIRTRIM=3 
 PROMPT_COMMAND="history -a"
 export COLUMNS
@@ -217,7 +217,7 @@ configure_prompt
   [[ -n "$new_path" ]] && export PATH="$new_path"
 ) &>/dev/null
 
-# --- Welcome Fetch
+# === Welcome Fetch
 if [[ $SHLVL -eq 1 && -z $DISPLAY ]]; then
   if has hyfetch; then
     hyfetch
