@@ -1,18 +1,48 @@
-# F2FS:
+# ========================================
+# Filesystem Table (fstab)
+# ========================================
+# Optimized mount options for different filesystems
+# https://wiki.archlinux.org/title/Fstab
+
+# ========================================
+# F2FS Filesystem
+# ========================================
+# Flash-Friendly File System optimized for flash storage
+# Options: compression, inline data, async discard, GC optimizations
 defaults,noatime,lazytime,compress_algorithm=zstd:3,compress_chksum,compress_cache,atgc,gc_merge,inline_xattr,inline_data,inline_dentry,background_gc=on,extent_cache,age_extent_cache,alloc_mode=reuse,discard=async,nat_bits,flush_merge
 
-# TMPFS
+# ========================================
+# TMPFS (RAM-based filesystem)
+# ========================================
+# Temporary filesystem in RAM for /tmp
 tmpfs /tmp tmpfs defaults,noatime,lazytime,mode=1777 0 0
 
-# BTRFS
+# ========================================
+# Btrfs Filesystem
+# ========================================
+# Modern CoW filesystem with compression and snapshots
+# Options: zstd compression, SSD optimizations, async discard
 defaults,noatime,lazytime,space_cache=v2,ssd,discard=async,commit=120,compress=zstd:3,nofail,rw,user,exec 0 0
 
-# EXT4
+# ========================================
+# EXT4 Filesystem
+# ========================================
+# Traditional Linux filesystem with performance optimizations
+# Options: writeback mode, async journal commit, reduced barriers
 defaults,noatime,lazytime,commit=120,discard=async,data=writeback,journal_async_commit,nobh,barrier=0
 
-# XFS
+# ========================================
+# XFS Filesystem
+# ========================================
+# High-performance 64-bit journaling filesystem
+# Options: large IO, optimized log buffers
 defaults,noatime,lazytime,inode64,swalloc,largeio,logbufs=8,logbsize=256k
 
-# Check
+# ========================================
+# EXT4 Tuning Commands
+# ========================================
+# Check current settings:
 # sudo tune2fs -l /dev/nvme0n1p2
+#
+# Enable fast_commit feature for better performance:
 # sudo tune2fs -O fast_commit /dev/nvme0n1p2
