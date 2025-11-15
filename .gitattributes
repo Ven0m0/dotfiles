@@ -19,7 +19,7 @@
 # =============================================================================
 # Configuration & Data Formats
 # =============================================================================
-*.json diff=json
+*.json text diff=json
 *.jsonc diff=json linguist-language=JSONC
 *.yaml diff=yaml
 *.yml diff=yaml
@@ -31,7 +31,8 @@
 *.md diff=markdown linguist-detectable linguist-documentation
 *.txt linguist-documentation
 *.{ini,cfg,conf,service,rules} text
-*.winget linguist-language=yaml
+*.winget diff=yaml linguist-language=yaml
+.editorconfig text
 
 # =============================================================================
 # Binary Files
