@@ -35,9 +35,9 @@ compile = true
 [tools]
 minify = "latest"
 vfox = "latest"
-java = "oracle-graalvm"
-#java = "temurin"
-#black = "latest"
+java = "oracle-graalvm" #java = "temurin"
+bun = "latest"
+black = "latest"
 #rust = { version = "nightly", profile = "minimal", components = "rust-src,llvm-tools,llvm-bitcode-linker,rust-analyzer", targets = "x86_64-unknown-linux-gnu,wasm32-unknown-unknown }
 "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
 
