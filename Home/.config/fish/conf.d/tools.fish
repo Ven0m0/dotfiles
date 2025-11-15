@@ -33,3 +33,6 @@ if test -d ~/.basher
 end
 
 abbr -a pip "uv pip"
+abbr -a npm bun
+abbr -a npx bunx
+abbr -a pnpm bun
