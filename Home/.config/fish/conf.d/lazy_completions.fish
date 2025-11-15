@@ -1,7 +1,4 @@
-# ─── Only run in interactive sessions ─────────────────────────────────────────
-if not status --is-interactive
-    return
-end
+status -i >/dev/null 2>&1 || return
 
 # ─── Commands with disabled completions ───────────────────────────────────────
 set -l lazy_completion_cmds fisher procs rg
@@ -9,11 +6,9 @@ set -l lazy_completion_cmds fisher procs rg
 for cmd in $lazy_completion_cmds
     set -l compfile "$__fish_config_dir/completions/$cmd.fish"
     set -l disabled "$compfile.disabled"
-
     if test -f $compfile -a ! -f $disabled
         mv $compfile $disabled
     end
-
     # Define stub function to load real completions on demand
     set -l fnname "__lazy_${cmd}_completions"
     functions -q $fnname; or function $fnname --description "lazy‑load $cmd completions"
@@ -22,7 +17,6 @@ for cmd in $lazy_completion_cmds
         functions -e $fnname
         commandline -f repaint
     end
-
     complete -c $cmd -f -a "($fnname)"
 end
 
