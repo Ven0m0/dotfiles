@@ -4,13 +4,17 @@ git = true
 gitoxide = true
 avoid-dev-deps = true
 no-embed-metadata = true
+profile-rustflags = true
 trim-paths = true
+parallel-tests = true 
 mtime-on-use = true
-#checksum-freshness = true
+checksum-freshness = true
+feature-unification = true
+doctest = false
+panic-abort-tests = true
+gc = true
 #cargo-lints = true
-#gc = true
-#panic-abort-tests = true
-#build-std = ["core", "std", "alloc", "panic_abort"]
+#build-std = ["std", "panic_abort"]
 #build-std-features = ["panic_immediate_abort"]
 
 [alias]
