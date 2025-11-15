@@ -33,6 +33,12 @@ if test -d ~/.basher
 end
 
 abbr -a pip "uv pip"
+abbr -a py python3
+
 abbr -a npm bun
 abbr -a npx bunx
 abbr -a pnpm bun
+
+if test -r ~/.venv/bin/activate.fish
+	source "$HOME/.venv/bin/activate.fish"
+end
