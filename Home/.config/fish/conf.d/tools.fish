@@ -3,7 +3,7 @@ status -i >/dev/null 2>&1 || return
 # ─── Tool Initialization ─────────────
 
 for tool in batman batpipe pay-respects starship
-  if type -q $tool >/dev/null 2>&1
+  if command -q $tool >/dev/null 2>&1
     switch $tool
     	case batman; _evalcache batman --export-env >/dev/null 2>&1
     	case batpipe; _evalcache batpipe >/dev/null 2>&1
@@ -25,8 +25,14 @@ if type -q yazi >/dev/null 2>&1
 end
 
 type -q ast-grep && ast-grep completions fish | source
+command -q cod && _evalcache cod init $fish_pid fish >/dev/null 2>&1
+command -q fixit && _evalcache fixit init fish
 
-if type -q mpatch
+if command -q starship
+	starship init fish | source >/dev/null 2>&1
+end
+
+if command -q mpatch
 	alias ptch='mpatch'
 else
 	alias ptch='patch -Np1 <'
@@ -38,9 +44,10 @@ if test -d ~/.basher >/dev/null 2>&1
 	_evalcache basher init - fish
 end
 
+alias which="command -v"
+alias yay='paru'
 abbr -a pip "uv pip"
 abbr -a py python3
-
 abbr -a npm bun
 abbr -a npx bunx
 abbr -a pnpm bun
@@ -48,7 +55,7 @@ abbr -a pnpm bun
 if test -r ~/.venv/bin/activate.fish
 	source "$HOME/.venv/bin/activate.fish"
 end
-if type -q vs
+if command -q vx
 	vx shell completions fish | source
 	vx shell init fish | source
 end
