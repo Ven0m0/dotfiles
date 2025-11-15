@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-IFS=$'\n\t'
-export LC_ALL=C HOME="/home/${SUDO_USER:-$USER}" jobs="$(nproc 2>/dev/null || echo 4)"
+IFS=$'\n\t' LC_ALL=C 
+export HOME="/home/${SUDO_USER:-$USER}" jobs="$(nproc 2>/dev/null || echo 4)"
 builtin cd -- "$(command dirname -- "${BASH_SOURCE[0]:-$0}")" || exit 1
 #–– Colors
 # Pre-gen common colors
