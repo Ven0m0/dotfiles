@@ -1,3 +1,4 @@
+has git || return
 LC_ALL=C LANG=C
 gpush(){ 
   command git add -A
