@@ -1,3 +1,0 @@
-if command -v fclones &>/dev/null; then
-  eval "$(fclones complete bash)"
-fi
