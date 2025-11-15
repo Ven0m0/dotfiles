@@ -223,6 +223,9 @@
   sort = -committerdate
 [column]
   ui = auto
+[user]
+	name = Ven0m0
+  email = ven0m0.wastaken@gmail.com
 [credential]
   helper = store
 [credential "https://github.com"]
