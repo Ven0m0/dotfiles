@@ -83,7 +83,11 @@ inherits = "release"
 codegen-units = 16
 
 [target.x86_64-unknown-linux-gnu]
-rustflags = ["-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread"]
+linker = "clang"
+rustflags = ["-C", "target-cpu=native", ,"-C", "link-arg=-fuse-ld=lld", "-C", "llvm-args=-enable-dfa-jump-thread"]
+
+[target.aarch64-linux-android]
+linker = "clang"
 
 [term]
 quiet = false
