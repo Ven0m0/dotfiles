@@ -74,7 +74,7 @@ abbr -a free free -h
 abbr -a ip ip --color=auto
 abbr -a du du -hcsx
 abbr -a c clear
-abbr -a py python3
+abbr -a e $EDITOR
 
 # https://www.reddit.com/r/fishshell/comments/1g3nh1u/any_way_to_create_functions_with_dynamic_names/
 function qcd
