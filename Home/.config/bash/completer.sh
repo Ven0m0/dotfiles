@@ -25,10 +25,8 @@ _editor_completion(){
   if selected=$(compgen -f -- "${COMP_WORDS[COMP_CWORD]}" | fzf --prompt='❯ ' --height=~100% \
     --tiebreak=begin,index -1 -0--exact --layout=reverse-list --bind=tab:down,btab:up --cycle)
   then
-    [[ -d $selected ]] && selected="${selected}/" || selected="${selected} "
-    COMPREPLY=( "$selected" )
-  fi
-  printf '\e[5n'
+    [[ -d $selected ]] && selected="${selected}/" || selected="${selected} "; COMPREPLY=( "$selected" )
+  fi; printf '\e[5n'
 }
 
 # Register editors - extend array as needed
