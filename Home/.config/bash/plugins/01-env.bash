@@ -34,6 +34,7 @@ export GPG_TTY="$(tty)"
 # --- Tooling
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export NODE_OPTIONS='--max-old-space-size=4096'
+export HOMEBREW_NO_ANALYTICS=true
 
 # --- Path Setup
 prependpath "$HOME/.local/bin"
