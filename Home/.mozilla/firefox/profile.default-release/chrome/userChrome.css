@@ -172,3 +172,21 @@ menuseparator{padding-block:0!important}
 #context_sendTabToDevice,#context_sendTabToDevice_separator{
   display:none!important;
 }
+
+/************** compact_menus_proton *********************/
+.subview-subheader,
+panelview .toolbarbutton-1,
+.subviewbutton,
+.widget-overflow-list .toolbarbutton-1 {
+  padding: 2px !important;
+}
+	
+menupopup > menuitem,
+menupopup > menu {
+  padding-block: 2px !important;
+}
+
+#context-navigation :-moz-any(#context-back,#context-forward,#context-reload,#context-stop,#context-bookmarkpage) {
+  padding: 2px !important;
+  -moz-margin-start: -10px !important;
+}
