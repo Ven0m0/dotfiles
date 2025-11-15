@@ -194,13 +194,13 @@ if has zoxide; then
 fi
 
 # --- Prompt
+PROMPT_DIRTRIM=3 
+PROMPT_COMMAND="history -a"
+export COLUMNS
 configure_prompt(){
-  PROMPT_DIRTRIM=3 PROMPT_COMMAND="history -a"; export COLUMNS
-  if has starship; then
-    eval "$(starship init bash)"; return
-  fi
-  local c_red='\[\e[31m\]' c_grn='\[\e[32m\]' c_blu='\[\e[34m\]' c_cyn='\[\e[36m\]' c_def='\[\e[0m\]' uc="$c_blu"
-  [[ $EUID -eq 0 ]] && uc="$c_red"
+  has starship && { eval "$(starship init bash)"; return; }
+  local c_red='\[\e[31m\]' c_grn='\[\e[32m\]' c_blu='\[\e[34m\]' c_cyn='\[\e[36m\]' c_def='\[\e[0m\]'
+  local uc="$c_blu"; [[ $EUID -eq 0 ]] && uc="$c_red"
   local exit_status='$(ret=$?; if [[ $ret -eq 0 ]]; then echo -e "$c_grn:)$c_def"; else echo -e "$c_red$ret$c_def"; fi)'
   PS1="[$uc\u@\h$c_def:$c_cyn\w$c_def] $exit_status > "; PS2="> "
 }
