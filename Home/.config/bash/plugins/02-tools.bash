@@ -12,8 +12,6 @@ has sccache && export RUSTC_WRAPPER=sccache
 
 has go && export CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
-export HOMEBREW_NO_ANALYTICS=true
-
 export JAVA_OPTIONS="${JAVA_OPTIONS:-'-Dfile.encoding=UTF-8 -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true'}"
 
 # --- Shell Enhancement Tools
@@ -23,7 +21,6 @@ has zoxide && {
   eval "$(zoxide init --cmd cd bash)"
 }
 has zellij && eval "$(zellij setup --generate-auto-start bash)"
-[[ "$TERM" == "xterm-ghostty" ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
 
 has thefuck && eval "$(thefuck --alias)"
 has pay-respects && eval "$(pay-respects bash)"
