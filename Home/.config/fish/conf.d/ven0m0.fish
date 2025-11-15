@@ -34,63 +34,25 @@ _evalcache fzf --fish 2>/dev/null
 
 # ─── Fetch Command ────────────────────
 switch "$stealth"
-  case 1
-    if type -q fastfetch
-      set -g fetch fastfetch
-    else
-      set -e fetch
-    end
-  # disable mommy plugin
-  if functions -q __call_mommy; functions -e __call_mommy; end
-    function __disable_mommy --on-event fish_postexec
-  if functions -q __call_mommy; functions -e __call_mommy; end
-    functions -e __disable_mommy
-  end
-  case '*'
-    if type -q hyfetch
-      set -g fetch hyfetch -b fastfetch -m rgb -p transgender
-    else if type -q fastfetch
-      set -g fetch fastfetch
-    else
-      set -e fetch
-    end
+	case 1
+		# disable mommy plugin
+		if functions -q __call_mommy; functions -e __call_mommy; end
+			function __disable_mommy --on-event fish_postexec
+		if functions -q __call_mommy; functions -e __call_mommy; end
+    		functions -e __disable_mommy
+		end
+	case 0
+
+	case '*'
+
 end
 
 function fish_greeting
-  if set -q fetch
-    set -lx LC_ALL C
-    set -lx LANG C
-    _evalcache_async $fetch 2>/dev/null
-  end
-end
-
-# ─── Tool Initialization ─────────────
-for tool in batman batpipe pay-respects starship
-  if type -q $tool >/dev/null 2>&1
-    switch $tool
-    	case batman; _evalcache batman --export-env >/dev/null
-    	case batpipe; _evalcache batpipe >/dev/null
-    	case pay-respects; _evalcache pay-respects fish --alias >/dev/null
-    	case starship; _evalcache starship init fish && enable_transience
+	if type -q hyfetch
+		LC_ALL C hyfetch 2>/dev/null
+    else if type -q fastfetch
+		fastfetch
 	end
-  end
-end
-
-if type -q yazi >/dev/null 2>&1
-	function y
-		set tmp (mktemp -t "yazi-cwd.XXXXXX")
-		yazi $argv --cwd-file="$tmp"
-		if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
-			builtin cd -- "$cwd"
-		end
-		rm -f -- "$tmp"
-	end
-end
-
-if test -d ~/.basher
-	set basher ~/.basher/bin
-	set -gx PATH $basher $PATH
-	_evalcache basher init - fish
 end
 
 # Ghostty integration
@@ -99,15 +61,14 @@ if test "$TERM" = "xterm-ghostty" -a -e "$GHOSTTY_RESOURCES_DIR/shell-integratio
 end
 
 # Async prompt
-set -Ux async_prompt_functions fish_prompt # fish_right_prompt
-set -Ux async_prompt_enable 1
+set -U async_prompt_functions fish_prompt # fish_right_prompt
+set -U async_prompt_enable 1
 
 # ─── Abbreviations & Aliases ─────────
 abbr -a mv mv -iv
 abbr -a rm rm -iv
 abbr -a cp cp -iv
 abbr -a sort sort -h
-abbr -a mkdir mkdir -pv
 abbr -a df df -h
 abbr -a free free -h
 abbr -a ip ip --color=auto
@@ -122,14 +83,15 @@ end
 abbr -a qcd --position command --regex 'q+' --function qcd
 
 alias cat='command bat -pp'
-alias ptch='patch -p1 <'
-alias updatesh='curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash'
-alias clearnsh='curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash'
+if type -q mpatch
+	alias ptch='mpatch'
+else
+	alias ptch='patch -Np1 <'
+end
 alias sudo='sudo '; alias doas='doas '; alias sudo-rs='sudo-rs '
-alias mkdir='mkdir -p '; alias ed='$EDITOR '
+alias mkdir='mkdir -pv '; alias ed='$EDITOR '
 alias ping='ping -c 4'
-alias clear='command clear; and fish_greeting 2>/dev/null'
-alias cls='command clear; and fish_greeting 2>/dev/null'
+alias cls='clear'
 
 # ─── Functions ───────────────────────
 function mkdircd
