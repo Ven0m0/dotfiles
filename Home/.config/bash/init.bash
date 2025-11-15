@@ -1,4 +1,7 @@
+#!/usr/bin/env bash
 [[ $- != *i* ]] && return
+shopt -s nullglob globstar
+IFS=$'\n\t' LC_ALL=C 
 #============================== [Framework Init] ==============================
 export BASH_CONFIG_DIR="${XDG_CONFIG_HOME}/bash" BASH_CACHE_DIR="${XDG_CACHE_HOME}/bash"
 # --- Ensure Core Directories Exist
@@ -11,8 +14,7 @@ mkdir -p "${BASH_CONFIG_DIR}/{lib,plugins,functions}" "$BASH_CACHE_DIR"
 
 # --- Load Plugins
 # Plugins are sourced in order. Naming convention 'NN-name.bash' controls load order.
-shopt -s nullglob globstar
-for plugin in "${BASH_CONFIG_DIR}/plugins/"*.{bash,sh}; do . "$plugin"; done
+for plugin in "${BASH_CONFIG_DIR}/plugins/"*.{bash,sh}; do . "$plugin"; done; unset $plugin
 
 # --- Completions
 ifsource ~/.config/bash/completer.sh
