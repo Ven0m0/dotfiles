@@ -5,7 +5,7 @@ gitoxide = true
 avoid-dev-deps = true
 no-embed-metadata = true
 trim-paths = true
-#mtime-on-use = true
+mtime-on-use = true
 #checksum-freshness = true
 #cargo-lints = true
 #gc = true
@@ -75,12 +75,17 @@ overflow-checks = false
 rpath = false
 
 [profile.dev]
+opt-level = 1
+lto = false
 codegen-units = 16
 debug = false
 
 [profile.release.build-override]
 inherits = "release"
-codegen-units = 16
+opt-level = 0
+lto = false
+codegen-units = 256
+incremental = true
 
 [target.x86_64-unknown-linux-gnu]
 linker = "clang"
