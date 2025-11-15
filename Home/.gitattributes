@@ -1,0 +1,79 @@
+# Auto detect text files and normalize line endings to LF
+* text=auto eol=lf
+
+# =============================================================================
+# Shell Scripts
+# =============================================================================
+*.sh text eol=lf diff=bash
+*.bash text eol=lf diff=bash
+*.zsh text eol=lf
+*.fish text eol=lf
+.bashrc text eol=lf
+.bash_profile text eol=lf
+.bash_logout text eol=lf
+.zshrc text eol=lf
+.zprofile text eol=lf
+.zshenv text eol=lf
+.profile text eol=lf
+
+# =============================================================================
+# Programming Languages
+# =============================================================================
+*.py diff=python
+*.js diff=java
+*.lua linguist-language=Lua
+*.nix linguist-language=Nix
+
+# =============================================================================
+# Configuration & Data Formats
+# =============================================================================
+*.json diff=json
+*.jsonc diff=json linguist-language=JSONC
+*.yaml diff=yaml
+*.yml diff=yaml
+*.toml diff=toml linguist-language=TOML
+*.ron linguist-language=RON
+*.xml diff=xml
+*.html diff=html
+*.css diff=css
+*.md diff=markdown linguist-detectable linguist-documentation
+*.txt linguist-documentation
+*.ini text
+*.cfg text
+*.conf text
+*.service text
+*.rules text
+
+# =============================================================================
+# Binary Files
+# =============================================================================
+# Images
+*.jpg binary diff=exif
+*.jpeg binary diff=exif
+*.webp binary diff=exif
+*.avif binary diff=exif
+*.svg text
+
+# Fonts
+*.ttf binary
+
+# =============================================================================
+# Special Cases
+# =============================================================================
+# Makefiles must use tabs
+Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
+
+# Patches
+*.patch diff=patch
+
+# Git files
+.gitignore text
+.gitattributes text
+.editorconfig text
+
+# Vim swap files
+*.swp binary
+*.swo binary
+
+# Sample files
+*.sample linguist-documentation
