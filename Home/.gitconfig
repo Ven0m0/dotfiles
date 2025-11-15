@@ -95,7 +95,7 @@
   packRefs = true
   reflogExpireUnreachable = 0
   reflogExpire = 7.days.ago
-  aggressive = false
+  aggressive = true
   repackFilter = blob:none
   pruneExpire = 7.days.ago
 [repack]
