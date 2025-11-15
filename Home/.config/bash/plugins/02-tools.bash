@@ -1,7 +1,7 @@
 #============================== [Tooling Init] ================================
 # --- Language & Runtimes
 if has mise; then
-  eval "$(mise activate -yq bash)" || true
+  eval "$(mise activate -yq bash)" || :
   alias mx="mise x --"
 fi
 
@@ -17,22 +17,23 @@ if has cargo || has rustup; then
 fi
 
 has sccache && export RUSTC_WRAPPER=sccache
-has go && export CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+has go && export GOOS=linux GOARCH=amd64 GOFLAGS="-ldflags=-s -w -trimpath -modcacherw"
 
 # --- Shell Enhancement Tools
 if has gh; then
-  eval "$(gh completion -s bash 2>/dev/null)" || true
+  eval "$(gh completion -s bash 2>/dev/null)" || :
 fi
 
 if has zoxide; then
   export _ZO_EXCLUDE_DIRS="$HOME" _ZO_FZF_OPTS='--cycle --inline-info --no-multi'
-  eval "$(zoxide init --cmd cd bash)" || true
+  eval "$(zoxide init --cmd cd bash)" || :
 fi
 
 if has zellij; then
-  eval "$(zellij setup --generate-auto-start bash 2>/dev/null)" || true
+  eval "$(zellij setup --generate-auto-start bash 2>/dev/null)" || :
   ifsource "$HOME/.config/bash/completions/zellij.bash"
 fi
 
-has thefuck && eval "$(thefuck --alias 2>/dev/null)" || true
-has pay-respects && eval "$(pay-respects bash 2>/dev/null)" || true
+has thefuck && eval "$(thefuck --alias)"
+has pay-respects && eval "$(pay-respects bash)"
+has ast-grep && eval "$(ast-grep completions bash)"
