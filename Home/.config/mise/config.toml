@@ -19,6 +19,9 @@ bun = true
 [settings.python]
 venv_auto_create = true
 uv_venv_auto = true
+compile = true
+precompiled_os = "x86_64_v3"
+venv_create_args = ["--system-site-packages --symlinks"]
 
 [settings.pipx]
 uvx = true
@@ -35,13 +38,19 @@ vfox = "latest"
 java = "oracle-graalvm"
 #java = "temurin"
 #black = "latest"
+#rust = { version = "nightly", profile = "minimal", components = "rust-src,llvm-tools,llvm-bitcode-linker,rust-analyzer", targets = "x86_64-unknown-linux-gnu,wasm32-unknown-unknown }
+"cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
 
 [env]
-_.python.venv = { path = ".venv" }
+_.python.venv = { path = "{{env.HOME}}/.venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
+#_.python.venv = { path = ".venv", create = true, uv_create_args = ['--seed'] }
 DO_NOT_TRACK = "1"
 BUN_OPTIONS = "--linker=hoisted --backend=hardlink --dns-result-order=ipv4first"
+MISE_NODE_NINJA = "true"
+MISE_NODE_CONCURRENCY = "12"
 CARGO_HTTP_MULTIPLEXING = "true"
 UV_LINK_MODE = "hardlink"
+ENABLE_BETA_FEATURES = { required = true }
 
 [tasks.clean]
 depends = ['cleancache']
