@@ -130,7 +130,7 @@ if [[ "${XDG_SESSION_TYPE-}" == "wayland" ]]; then
 fi
 has dbus-launch && export "$(dbus-launch 2>/dev/null)"
 if has ghostty; then
-  [[ "$TERM" == "xterm-ghostty" ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-}/shell-integration/bash/ghostty.bash"
+  [[ "$TERM" == "xterm-ghostty" ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-/usr/share/ghostty}/shell-integration/bash/ghostty.bash"
   export TERMINAL="ghostty +ssh-cache --wait-after-command"
 fi
 
