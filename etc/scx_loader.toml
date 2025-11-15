@@ -1,14 +1,50 @@
-default_sched = "scx_rusty"
+default_sched = "scx_bpfland"
+default_mode = "gaming_mode"
+
+[scheds.scx_p2dq]
+auto_mode = []
+gaming_mode = ["--task-slice", "true", "-f", "--sched-mode", "performance"]
+lowlatency_mode = ["-y", "-f", "--task-slice", "true"]
+powersave_mode = ["--sched-mode", "efficiency"]
+server_mode = ["--keep-running"]
+
+[scheds.scx_tickless]
+auto_mode = []
+gaming_mode = ["-f", "5000", "-s", "5000"]
+lowlatency_mode = ["-f", "5000", "-s", "1000"]
+powersave_mode = ["-f", "50", "-p"]
+server_mode = ["-f", "100"]
 
 [scheds.scx_rusty]
 auto_mode = []
-gaming_mode = ["--perf", "1024", "-k", "-i", "1.0", "-I", "0.05"]
+gaming_mode = ["-k", "--perf", "1024"]
 lowlatency_mode = []
 powersave_mode = []
 server_mode = []
 
+[scheds.scx_flash]
+auto_mode = []
+gaming_mode = ["-m", "all"]
+lowlatency_mode = ["-m", "performance", "-w", "-C", "0"]
+powersave_mode = ["-m", "powersave", "-I", "10000", "-t", "10000", "-s", "10000", "-S", "1000"]
+server_mode = ["-m", "all", "-s", "20000", "-S", "1000", "-I", "-1", "-D", "-L"]
+
+[scheds.scx_rustland]
+auto_mode = []
+gaming_mode = []
+lowlatency_mode = []
+powersave_mode = []
+server_mode = []
+
+[scheds.scx_cosmos]
+auto_mode = ["-d"]
+gaming_mode = ["-c", "0", "-p", "0"]
+lowlatency_mode = ["-m", "performance", "-c", "0", "-p", "0", "-w"]
+powersave_mode = ["-m", "powersave", "-d", "-p", "5000"]
+server_mode = ["-a", "-s", "20000"]
+
 [scheds.scx_lavd]
-auto_mode = [--autopilot]
+auto_mode = []
 gaming_mode = ["--performance"]
 lowlatency_mode = ["--performance"]
 powersave_mode = ["--powersave"]
@@ -16,7 +52,7 @@ server_mode = []
 
 [scheds.scx_bpfland]
 auto_mode = []
-gaming_mode = ["-m", "performance"]
+gaming_mode = ["-m", "performance", "-p", "--disable-numa"]
 lowlatency_mode = ["-s", "5000", "-S", "500", "-l", "5000", "-m", "performance"]
 powersave_mode = ["-m", "powersave"]
 server_mode = ["-p"]
