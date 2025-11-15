@@ -11,6 +11,7 @@ not_found_auto_install = true
 task_run_auto_install = true
 yes = true
 activate_aggressive = false
+jobs = 8
 
 [settings.npm]
 bun = true
@@ -29,7 +30,7 @@ binstall = false
 minify = "latest"
 vfox = "latest"
 java = "oracle-graalvm"
-#java = "temurin-25.0.1+8.0.LTS"
+#java = "temurin"
 #black = "latest"
 
 [env]
