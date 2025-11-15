@@ -1,20 +1,12 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+shopt -s nullglob globstar
 SHELL=/usr/bin/bash 
-
 # Install and load plugins
-_bash_plugins() {
+_bash_plugins(){
   unset -f "$0"
-  local reset_nullglob="$(shopt -p nullglob)"
-  shopt -s nullglob # suppress errors when for loops have no matching files
-  local xdg_config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
-  local bash_configs="${xdg_config_home}/bash"
-  local bash_plugins="${bash_configs}/plugins"
-  for file in "$bash_plugins"/*.sh; do
-    source "$file"
-  done
-  for file in "$bash_plugins"/*.bash; do
-    source "$file" 
-  done
-  "$reset_nullglob"
+  local XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
+  local bash_configs="${XDG_CONFIG_HOME}/bash"; local bash_plugins="${bash_configs}/plugins"
+  for file in "$bash_plugins"/*.sh; do . "$file"; done; unset $file
+  for file in "$bash_plugins"/*.bash; do . "$file"; done; unset $file
 }
-_bash_plugins
+_bash_plugins &>/dev/null
