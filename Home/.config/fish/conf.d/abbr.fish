@@ -1,2 +1,3 @@
-abbr -a --position anywhere -- --help '--help | bat -plhelp -s --squeeze-limit 0'
-abbr -a --position anywhere -- -h     '-h     | bat -plhelp -s --squeeze-limit 0'
+status -i >/dev/null 2>&1 || return
+abbr -a --position anywhere -- --help '--help | bat -plhelp'
+abbr -a --position anywhere -- -h '-h | bat -plhelp'
