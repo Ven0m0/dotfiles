@@ -3,23 +3,30 @@
     "fetch": {
       "command": "uvx",
       "args": ["mcp-server-fetch"]
-    }
+    },
     "sequential-thinking": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
     },
-    }
     "filesystem": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "${workspaceFolder}"
-      ]
-    }
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"],
+    },
     "memory": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-memory"],
+    },
+    "mcp-server-commands": {
+      "command": "npx",
+      "args": ["-y", "mcp-server-commands"],
+    },
+    "fast-filesystem": {
+      "command": "npx",
+      "args": ["-y", "fast-filesystem-mcp"]
+    },
+    "think-tool": {
+      "command": "npx",
+      "args": ["-y", "think-tool-mcp"]
     }
   }
 }
