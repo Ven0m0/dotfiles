@@ -12,12 +12,13 @@ if has cargo || has rustup; then
   exportif CARGO_HOME "$HOME/.cargo"
   ifsource "${CARGO_HOME:-$HOME/.cargo}/env"
   prependpath "${CARGO_HOME:-$HOME/.cargo}/bin"
-  export CARGO_HTTP_MULTIPLEXING=true CARGO_NET_GIT_FETCH_WITH_CLI=true
-  export RUST_LOG=off BINSTALL_DISABLE_TELEMETRY=1
+  export CARGO_HTTP_MULTIPLEXING=true CARGO_NET_GIT_FETCH_WITH_CLI=true RUST_LOG=off BINSTALL_DISABLE_TELEMETRY=1 FIGNORE=Cargo.lock
+  has sccache && export RUSTC_WRAPPER=sccache
 fi
 
-has sccache && export RUSTC_WRAPPER=sccache
 has go && export GOOS=linux GOARCH=amd64 GOFLAGS="-ldflags=-s -w -trimpath -modcacherw"
+
+export PARALLEL_HOME="$XDG_CONFIG_HOME"/parallel
 
 # --- Shell Enhancement Tools
 if has gh; then
