@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-IFS=$'\n\t' LC_ALL=C 
-export HOME="/home/${SUDO_USER:-$USER}" jobs="$(nproc 2>/dev/null || echo 4)"
-builtin cd -- "$(command dirname -- "${BASH_SOURCE[0]:-$0}")" || exit 1
 #–– Colors
 # Pre-gen common colors
 declare -rA _c=([def]=0 [bld]=1 [dim]=2 [und]=4 [inv]=7 [hid]=8 \
