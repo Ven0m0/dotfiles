@@ -1,5 +1,5 @@
 status -i >/dev/null 2>&1 || return
-function cheat.sh
+function cheat
     curl cheat.sh/$argv
 end
-complete -c cheat.sh -xa '(curl -s cheat.sh/:list)'
+complete -c cheat -xa '(curl -s cheat.sh/:list)'
