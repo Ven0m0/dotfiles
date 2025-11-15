@@ -1,11 +1,9 @@
-#   Refer for explanation to following link:
-#   https://lefthook.dev/configuration/
 skip_lfs: true
 glob_matcher: doublestar
 pre-commit:
   parallel: true
   no_tty: true
-  jobs:
-  - run: bun run eslint {staged_files}
-    glob: "*.{js,ts,jsx,tsx}"
-    
+  commands:
+    eslint:
+      glob: "*.{js,ts,jsx,tsx}"
+      run: bun run eslint {staged_files}
