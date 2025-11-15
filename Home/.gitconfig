@@ -16,6 +16,9 @@
   preferSymlinkRefs = true
   symlinks = true
   untrackedCache = true
+[alias]
+  sub = submodule update --init --recursive --remote -r --depth 1
+  dot = !--git-dir=$HOME/.dotfiles --work-tree=$HOME
 [interactive]
   diffFilter = delta --color-only --features=interactive
 [color]
@@ -200,8 +203,6 @@
   sort = -committerdate
 [column]
   ui = auto
-[alias]
-  sub = submodule update --init --recursive
 [credential]
   helper = store
 [credential "https://github.com"]
