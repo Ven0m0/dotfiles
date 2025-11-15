@@ -75,7 +75,7 @@ shellharden --replace file.sh
 ```
 
 ### Tool Fallback Chains
-- File operations: `fdf` → `fd` → `find` (avoid fd -exec, use find for exec)
+- File operations: `fd` → `find`
 - Downloads: `aria2` → `curl` → `wget2` → `wget` (no aria2 if piping)
 - Parallelization: `rust-parallel` → `parallel` → `xargs`
 
