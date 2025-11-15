@@ -26,7 +26,13 @@ end
 
 type -q ast-grep && ast-grep completions fish | source
 
-if test -d ~/.basher
+if type -q mpatch
+	alias ptch='mpatch'
+else
+	alias ptch='patch -Np1 <'
+end
+
+if test -d ~/.basher >/dev/null 2>&1
 	set basher ~/.basher/bin
 	set -gx PATH $basher $PATH
 	_evalcache basher init - fish
@@ -42,3 +48,9 @@ abbr -a pnpm bun
 if test -r ~/.venv/bin/activate.fish
 	source "$HOME/.venv/bin/activate.fish"
 end
+if type -q vs
+	vx shell completions fish | source
+	vx shell init fish | source
+end
+# uv python update-shell
+# uv venv
