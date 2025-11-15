@@ -2,10 +2,13 @@
   "policies": {
     "DisableFeedbackCommands": true,
     "DisableFirefoxStudies": true,
+    "DisableFirefoxScreenshots": true,
     "DisablePocket": true,
     "DisableTelemetry": true,
+    "DisableAppUpdate": true,
     "NoDefaultBookmarks": true,
     "DontCheckDefaultBrowser": true,
+    "DisableSetDesktopBackground": true,
     "NetworkPrediction": false,
     "EnableTrackingProtection": {
       "Value": true,
