@@ -7,13 +7,6 @@
 .gitconfig.local
 
 # ---------------------
-# Dotter
-# ---------------------
-.dotter/local.toml
-.dotter/cache.toml
-.dotter/cache
-
-# ---------------------
 # Dotfiles / shell history
 # ---------------------
 .*history
@@ -35,6 +28,7 @@ Pictures/
 Public/
 Templates/
 Videos/
+Projects/
 
 # ---------------------
 # Security
@@ -150,6 +144,7 @@ mega-linter.report
 
 # GitHub Actions leftovers
 github_conf
+
 # ---------------------
 # VS Code
 # ---------------------
