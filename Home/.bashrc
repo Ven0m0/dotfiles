@@ -79,7 +79,6 @@ ifsource /usr/share/bash-preexec/bash-preexec.sh
 prependpath "$HOME/.local/bin"
 prependpath "$HOME/.bin"
 prependpath "$HOME/bin"
-prependpath "$HOME/.cargo/bin"
 exportif BUN_INSTALL "$HOME/.bun"
 prependpath "$BUN_INSTALL/bin"
 
@@ -95,6 +94,7 @@ if has cargo || has rustup; then
   exportif RUSTUP_HOME "${HOME}/.rustup"
   exportif CARGO_HOME "${HOME}/.cargo"
   ifsource "${CARGO_HOME:-${HOME}/.cargo}/env"
+  prependpath "$HOME/.cargo/bin"
   export CARGO_HTTP_MULTIPLEXING=true CARGO_NET_GIT_FETCH_WITH_CLI=true RUST_LOG=off BINSTALL_DISABLE_TELEMETRY=true
 fi
 
