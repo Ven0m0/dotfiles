@@ -10,8 +10,6 @@ log_level = "warn"
 listen_addresses = ["0.0.0.0:53"]
 dns_packet_len_max = 4096
 upstream_servers = [
-  "45.90.28.147:53",
-	"45.90.30.147:53",
   "1.1.1.2:53",
   "1.0.0.2:53"
 ]
