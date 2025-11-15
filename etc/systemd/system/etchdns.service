@@ -1,0 +1,13 @@
+[Unit]
+Description=EtchDNS high-performance DNS proxy
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/etchdns -c /etc/etchdns.toml
+User=root
+Group=root
+LimitNOFILE=65536
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
