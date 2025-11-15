@@ -1,25 +1,33 @@
 # Auto detect text files and normalize line endings to LF
-* text=auto eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tabwidth=2
+* text=auto eol=lf
 
 # =============================================================================
 # Shell Scripts
 # =============================================================================
-*.{sh,bash,bashrc,bash_profile,bash_logout,profile} text eol=lf diff=bash
+*.sh text eol=lf diff=bash
+*.bash text eol=lf diff=bash
+*.zsh text eol=lf
 *.fish text eol=lf
-*.{zsh,zshrc,zprofile,zshenv} text eol=lf
+.bashrc text eol=lf
+.bash_profile text eol=lf
+.bash_logout text eol=lf
+.zshrc text eol=lf
+.zprofile text eol=lf
+.zshenv text eol=lf
+.profile text eol=lf
 
 # =============================================================================
 # Programming Languages
 # =============================================================================
 *.py diff=python
-*.{js,java} diff=java
+*.js diff=java
 *.lua linguist-language=Lua
 *.nix linguist-language=Nix
 
 # =============================================================================
 # Configuration & Data Formats
 # =============================================================================
-*.json text diff=json
+*.json diff=json
 *.jsonc diff=json linguist-language=JSONC
 *.yaml diff=yaml
 *.yml diff=yaml
@@ -30,24 +38,24 @@
 *.css diff=css
 *.md diff=markdown linguist-detectable linguist-documentation
 *.txt linguist-documentation
-*.{ini,cfg,conf,service,rules} text
-*.winget diff=yaml linguist-language=yaml
-.editorconfig text
+*.ini text
+*.cfg text
+*.conf text
+*.service text
+*.rules text
 
 # =============================================================================
 # Binary Files
 # =============================================================================
 # Images
-*.{jpg,jpeg,webp,avif,jxl,png,gif,bmp,ico,ogg,opus,mp3,mp4,avi,mkv,flac,wav} binary diff=exif
+*.jpg binary diff=exif
+*.jpeg binary diff=exif
+*.webp binary diff=exif
+*.avif binary diff=exif
 *.svg text
 
 # Fonts
 *.ttf binary
-
-*.{exe,dll,so} binary
-
-*.{7z,zip,rar,tar,gz,zstd,bz2} binary
-*.pdf binary
 
 # =============================================================================
 # Special Cases
@@ -56,42 +64,16 @@
 Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
 
 # Patches
-*.{patch,diff} diff=patch
+*.patch diff=patch
 
 # Git files
-.{gitignore,gitattributes,gitconfig,gitmodules,editorconfig} text
+.gitignore text
+.gitattributes text
+.editorconfig text
 
 # Vim swap files
-*.{swp.swo} binary
+*.swp binary
+*.swo binary
 
-# =============================================================================
-# Windows
-# =============================================================================
-*.ahk text eol=crlf
-*.{ps1,psm1,psd1} text eol=crlf
-*.{cmd,[cC][mM][dD]} text eol=crlf
-*.{bat,[bB][aA][tT]} text eol=crlf
-
-*.cs diff=csharp
-*.doc diff=astextplain
-*.DOC diff=astextplain
-*.docx diff=astextplain
-*.DOCX diff=astextplain
-*.dot diff=astextplain
-*.DOT diff=astextplain
-*.pdf diff=astextplain
-*.PDF diff=astextplain
-*.rtf diff=astextplain
-*.RTF diff=astextplain
-*.sln merge=binary
-*.csproj merge=binary
-*.vbproj merge=binary
-*.vcxproj merge=binary
-*.vcproj merge=binary
-*.dbproj merge=binary
-*.fsproj merge=binary
-*.lsproj merge=binary
-*.wixproj merge=binary
-*.modelproj merge=binary
-*.sqlproj merge=binary
-*.wwaproj merge=binary
+# Sample files
+*.sample linguist-documentation

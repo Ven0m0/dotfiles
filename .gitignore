@@ -7,6 +7,18 @@
 .gitconfig.local
 
 # ---------------------
+# Dotter
+# ---------------------
+.dotter/local.toml
+.dotter/cache.toml
+.dotter/cache
+
+# ---------------------
+# yadm
+# ---------------------
+.yadm/
+
+# ---------------------
 # Dotfiles / shell history
 # ---------------------
 .*history
@@ -16,6 +28,14 @@
 fishd.*
 .*hist
 .thumbnails/
+.antidote/
+.zcompcache/
+.zsh_sessions/
+.zcompdump*
+.zsh_history
+*.local.zsh
+*.zwc
+*.zwc.old
 
 # ---------------------
 # XDG user dirs
@@ -28,7 +48,6 @@ Pictures/
 Public/
 Templates/
 Videos/
-Projects/
 
 # ---------------------
 # Security
@@ -36,7 +55,6 @@ Projects/
 .gnupg/
 .gitconfig.local
 .ssh/
-!.ssh/config
 .android/
 .config/gh/hosts.yml
 
@@ -49,7 +67,12 @@ Projects/
 *.orig
 *.rej
 *.TAG
-false.*
+
+# ---------------------
+# Keep
+# ---------------------
+!.cargo/config.toml
+!.ssh/config
 
 # ---------------------
 # Logs / tmp
@@ -99,23 +122,22 @@ __pycache__/
 .pytest_cache/
 *.py[cod]
 *$py.class
-pip-log.txt
-pip-delete-this-directory.txt
 node_modules/
 go/
 jspm_packages/
 dependencies/composer/vendor
 target/
 build/
-.rustup/
 .cargo/
-!.cargo/config.toml
 **/*.rs.bk
 *.mutants.out*/
 .npm
-npm-debug.log*
+.eslintcache
 *.tgz
 dist
+result
+result-*
+*.rdb
 
 # ---------------------
 # Windows system files
@@ -128,6 +150,10 @@ $RECYCLE.BIN/
 # ---------------------
 # Linter
 # ---------------------
+super-linter.report
+super-linter-output/
+custom-super-linter-output-directory-name/
+super-linter-github-actions-step-summary-output*
 github-step-summary.md
 megalinter-reports/
 **/megalinter-reports/*
@@ -144,7 +170,6 @@ mega-linter.report
 
 # GitHub Actions leftovers
 github_conf
-
 # ---------------------
 # VS Code
 # ---------------------
