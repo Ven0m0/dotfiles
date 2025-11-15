@@ -14,16 +14,14 @@ trim-paths = true
 #build-std-features = ["panic_immediate_abort"]
 
 [alias]
-b = "build"
+b = "build -r"
 i = "install"
 rr = "run -r"
-insta = "+nightly -Zunstable-options -gitoxide install"
-builda = "+nightly build --bins --lib -r"
-installgit = "+nightly install -f --bins --git"
 
 [build]
 rustc-wrapper = "sccache"
 incremental = false
+rustflags = ["-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread"]
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
