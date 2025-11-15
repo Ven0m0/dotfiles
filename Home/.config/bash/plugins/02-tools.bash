@@ -16,7 +16,7 @@ if has cargo || has rustup; then
   has sccache && export RUSTC_WRAPPER=sccache
 fi
 
-has go && export GOOS=linux GOARCH=amd64 GOFLAGS="-ldflags=-s -w -trimpath -modcacherw"
+has go && export GOOS=linux GOARCH=amd64 GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -gcflags=all=-c=4 -buildvcs=false"
 
 export PARALLEL_HOME="$XDG_CONFIG_HOME"/parallel
 
