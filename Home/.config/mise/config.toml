@@ -26,6 +26,9 @@ uvx = true
 [settings.cargo]
 binstall = false
 
+[settings.node]
+compile = true
+
 [tools]
 minify = "latest"
 vfox = "latest"
