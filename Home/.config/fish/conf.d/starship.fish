@@ -6,8 +6,13 @@ end
 function starship_transient_rprompt_func
     starship module time 2>/dev/null
 end
+
 if type -q _evalcache
-  _evalcache starship init fish 2>/dev/null
+  function my_async_prompt
+    _evalcache starship prompt
+  end
+  set -g async_prompt_functions my_async_prompt
+  _evalcache_async starship init fish 2>/dev/null
 else
   starship init fish 2>/dev/null | source 2>/dev/null
 end
