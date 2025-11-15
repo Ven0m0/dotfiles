@@ -1,15 +1,15 @@
 [unstable]
 unstable-options = true
-mtime-on-use = true
-avoid-dev-deps = true
 git = true
 gitoxide = true
-checksum-freshness = true
-cargo-lints = true
-trim-paths = true
+avoid-dev-deps = true
 no-embed-metadata = true
-gc = true
-panic-abort-tests = true
+trim-paths = true
+#mtime-on-use = true
+#checksum-freshness = true
+#cargo-lints = true
+#gc = true
+#panic-abort-tests = true
 #build-std = ["core", "std", "alloc", "panic_abort"]
 #build-std-features = ["panic_immediate_abort"]
 
@@ -20,9 +20,6 @@ rr = "run -r"
 insta = "+nightly -Zunstable-options -gitoxide install"
 builda = "+nightly build --bins --lib -r"
 installgit = "+nightly install -f --bins --git"
-[rust]
-jemalloc = true
-optimize = true
 
 [build]
 rustc-wrapper = "sccache"
@@ -38,10 +35,8 @@ RUSTDOC_LOG = "off"
 RUSTC_LOG = "off"
 MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
 _RJEM_MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
-MIMALLOC_ALLOW_LARGE_OS_PAGES = "1"
 RUST_LIB_BACKTRACE = "0"
 CMAKE_BUILD_TYPE = "Release"
-CARGO_INCREMENTAL = "0"
 
 [cache]
 auto-clean-frequency = "7 days"
@@ -58,6 +53,7 @@ timeout = 30
 check-revoke = false
 multiplexing = true
 low-speed-limit = 10
+ssl-version = "tlsv1.3"
 
 [net]
 git-fetch-with-cli = true
@@ -78,18 +74,10 @@ strip = "symbols"
 debug = false
 debug-assertions = false
 overflow-checks = false
-incremental = false
 rpath = false
 
 [profile.dev]
-opt-level = 1
-codegen-units = 256
-incremental = true
-debug = "line-tables-only"
-split-debuginfo = "unpacked"
-
-[profile.dev.package."*"]
-opt-level = 2
+codegen-units = 16
 debug = false
 
 [profile.release.build-override]
@@ -97,15 +85,7 @@ inherits = "release"
 codegen-units = 16
 
 [target.x86_64-unknown-linux-gnu]
-linker = "clang"
-rustflags = [
-  "-C", "target-cpu=native","-Z", "tune-cpu=native",
-  "-C", "link-arg=-fuse-ld=mold", "-C", "link-arg=-Wl,--icf=safe,--as-needed,--gc-sections",
-  "-C", "llvm-args=-enable-dfa-jump-thread", "-Z", "precise-enum-drop-elaboration=yes",
-  "-Z", "share-generics=y", "-Z", "plt", "-Z", "unstable-options",
-  "-Z", "mir-opt-level=4", "-Z", "threads=8",
-  "-Z", "location-detail=none", "-Z", "fmt-debug=none",
-]
+rustflags = ["-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread"]
 
 [term]
 quiet = false
