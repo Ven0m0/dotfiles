@@ -24,19 +24,10 @@ fi
 export FIGNORE=Cargo.lock
 export RUST_LOG=off
 
-if [ -e "$HOME/.cargo/bin" ]; then
-  PATH="${HOME}/.cargo/bin:${PATH}"
-fi
-
 command -v sccache &>/dev/null && export RUSTC_WRAPPER=sccache
 command -v gix &>/dev/null && export GITOXIDE_CORE_MULTIPACKINDEX=true GITOXIDE_HTTP_SSLVERSIONMAX=tls1.3 GITOXIDE_HTTP_SSLVERSIONMIN=tls1.2
 
-export CC=clang++
-export AR=llvm-ar
-export NM=llvm-nm
-export OBJCOPY=llvm-objcopy
-export OBJDUMP=llvm-objdump
-export STRIP=llvm-strip
+export CC=clang CXX=clang++ AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump
 
 # Wayland
 if [[ ${XDG_SESSION_TYPE:-} = "wayland" ]]; then
@@ -51,38 +42,15 @@ if [[ ${XDG_SESSION_TYPE:-} = "wayland" ]]; then
   export GTK_USE_PORTAL=1
 fi
 
-# Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
-export PYTHONOPTIMIZE=2 PYTHONIOENCODING='UTF-8' PYTHON_JIT=1
-export PYTORCH_ENABLE_MPS_FALLBACK=1
-
-if command -v go &>/dev/null; then
-  export CGO_ENABLED=0
-  export GOOS=linux
-  export GOARCH=amd64
-fi
-
 # Java
-export JAVA_OPTIONS="-Xmx2G -Dfile.encoding=UTF-8 -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions"
+# export JAVA_OPTIONS="-Dfile.encoding=UTF-8 -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -XX:+IgnoreUnrecognizedVMOptions"
 # export JAVA_HOME=""
-
-command -v thefuck &>/dev/null && eval "$(thefuck --alias)"
 
 # Homebrew
 export HOMEBREW_NO_ANALYTICS=true
 
-export LC_CTYPE=C LC_COLLATE=C
-# https://www.reddit.com/r/programming/comments/109rjuj/how_setting_the_tz_environment_variable_avoids/
-#export TZ=$(readlink -f /etc/localtime | cut -d/ -f 5-)
-
 # Rust-parallel
 command -v rust-parallel &>/dev/null && export PROGRESS_STYLE=simple
-
-# Bins
-#if [ -d "${HOME}/bin" ] && [[ ":$PATH:" != *":${HOME}/bin:"* ]]; then
-#export PATH="${HOME}/bin:${PATH}"
-#fi
-# Inline
-[[ -d "${HOME}/bin" && ":$PATH:" != *":${HOME}/bin:"* ]] && export PATH="${HOME}/bin:${PATH}"
 
 # Path dedupe
 #PATH=$(echo "$PATH" | awk -v RS=: '!($0 in a) {a[$0]; printf("%s%s", length(a) > 1 ? ":" : "", $0)}')
