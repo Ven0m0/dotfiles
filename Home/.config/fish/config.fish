@@ -1,37 +1,32 @@
 status -i >/dev/null 2>&1 || return
 
-source /usr/share/cachyos-fish-config/cachyos-config.fish
-
-set -g fish_greeting
+if test -r /usr/share/cachyos-fish-config/cachyos-config.fish >/dev/null 2>&1
+	source /usr/share/cachyos-fish-config/cachyos-config.fish >/dev/null 2>&1
+end
 
 if type -q _evalcache
 	function init_tool
 		if type -qf $argv[1]
-      		_evalcache "$argv[2] 2>/dev/null"
+      		_evalcache "$argv[2] 2>/dev/null" >/dev/null 2>&1
   		end
 	end
 else
 	function init_tool
 		if type -qf $argv[1]
-			eval "$argv[2] 2>/dev/null" 
+			eval "$argv[2] 2>/dev/null" >/dev/null 2>&1
 		end
 	end
 end
 
-function my_async_prompt
-  _evalcache_async starship prompt
-end
-set -g async_prompt_functions my_async_prompt
-
-#set -x MANPAGER "sh -c 'col -bx | bat -l man -p'"
-
 set -U __done_notification_urgency_level low
-set -x GPG_TTY (tty)
+set -gx GPG_TTY (tty)
 set -gx COLORTERM truecolor
 
-fish_add_path $HOME/.local/bin
-fish_add_path $HOME/bin
-fish_add_path $HOME/bun/bin
+fish_add_path ~/bun/bin
+fish_add_path ~/.local/bin
+fish_add_path /usr/local/bin
+fish_add_path ~/bin
+fish_add_path ~/.bin
 
 #set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
 set -gx FZF_DEFAULT_COMMAND 'fdf -tf -H --size +1k'
@@ -48,6 +43,12 @@ init_tool cod "cod init $fish_pid fish"
 
 # ─── Path Deduplication ─────────────────────────────────────────────────────────
 # Note: fish_add_path already handles deduplication automatically
-# This manual deduplication is only needed if external sources add duplicates
-# Commented out for performance - uncomment if you notice duplicate PATH entries
 # set PATH (printf "%s" "$PATH" | awk -O -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')
+
+function fish_greeting
+	if type -q hyfetch
+		LC_ALL C hyfetch 2>/dev/null
+    else if type -q fastfetch
+		LC_ALL C fastfetch 2>/dev/null
+	end
+end
