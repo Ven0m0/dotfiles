@@ -1,6 +1,3 @@
 # Python settings (main config in bashenv.env)
-if command -v pypy3 &>/dev/null; then
-  export PYTHON_DISABLE_REMOTE_DEBUG=1
-  unset PYPY_DISABLE_JIT PYPYLOG
-fi
-  
+export PYTHONOPTIMIZE=2 PYTHONIOENCODING='UTF-8' PYTHON_JIT=1 PYTHON_DISABLE_REMOTE_DEBUG=1 PYTORCH_ENABLE_MPS_FALLBACK=1
+
