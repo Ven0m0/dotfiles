@@ -1,6 +1,4 @@
-# Only for interactive shells
 status -i >/dev/null 2>&1 || return
-
 # ─── Fish Setup ─────────────────────────
 set -U fish_prompt_pwd_dir_length 2
 set -g __fish_git_prompt_show_informative_status 0
