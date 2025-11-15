@@ -1,26 +1,38 @@
 #============================== [Tooling Init] ================================
 # --- Language & Runtimes
-has mise && eval "$(mise activate -yq bash)"
+if has mise; then
+  eval "$(mise activate -yq bash)" || true
+  alias mx="mise x --"
+fi
+
 ifsource "$HOME/.sdkman/bin/sdkman-init.sh"
-if has cargo; then
+
+if has cargo || has rustup; then
   exportif RUSTUP_HOME "$HOME/.rustup"
   exportif CARGO_HOME "$HOME/.cargo"
-  ifsource "$CARGO_HOME/env"
-  prependpath "$CARGO_HOME/bin"
+  ifsource "${CARGO_HOME:-$HOME/.cargo}/env"
+  prependpath "${CARGO_HOME:-$HOME/.cargo}/bin"
+  export CARGO_HTTP_MULTIPLEXING=true CARGO_NET_GIT_FETCH_WITH_CLI=true
+  export RUST_LOG=off BINSTALL_DISABLE_TELEMETRY=1
 fi
-has sccache && export RUSTC_WRAPPER=sccache
 
+has sccache && export RUSTC_WRAPPER=sccache
 has go && export CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
-export JAVA_OPTIONS="${JAVA_OPTIONS:-'-Dfile.encoding=UTF-8 -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true'}"
-
 # --- Shell Enhancement Tools
-has gh && eval "$(gh completion -s bash)"
-has zoxide && {
-  export _ZO_EXCLUDE_DIRS="$HOME"
-  eval "$(zoxide init --cmd cd bash)"
-}
-has zellij && eval "$(zellij setup --generate-auto-start bash)"
+if has gh; then
+  eval "$(gh completion -s bash 2>/dev/null)" || true
+fi
 
-has thefuck && eval "$(thefuck --alias)"
-has pay-respects && eval "$(pay-respects bash)"
+if has zoxide; then
+  export _ZO_EXCLUDE_DIRS="$HOME" _ZO_FZF_OPTS='--cycle --inline-info --no-multi'
+  eval "$(zoxide init --cmd cd bash)" || true
+fi
+
+if has zellij; then
+  eval "$(zellij setup --generate-auto-start bash 2>/dev/null)" || true
+  ifsource "$HOME/.config/bash/completions/zellij.bash"
+fi
+
+has thefuck && eval "$(thefuck --alias 2>/dev/null)" || true
+has pay-respects && eval "$(pay-respects bash 2>/dev/null)" || true
