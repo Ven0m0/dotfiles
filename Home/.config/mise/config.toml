@@ -26,28 +26,23 @@ uvx = true
 binstall = false
 
 [tools]
-claude = "latest"
-claude-code = "latest"
-github-cli = "latest"
-codex = "latest"
-go = "latest"
 minify = "latest"
 vfox = "latest"
-#rust = { version = "nightly", profile = "minimal", components = "rust-src,llvm-tools", targets = "x86_64-unknown-linux-gnu,wasm32-unknown-unknown }
+java = "oracle-graalvm"
 #java = "temurin-25.0.1+8.0.LTS"
-#graalvm = "latest"
+#black = "latest"
 
 [env]
 _.python.venv = { path = ".venv" }
 DO_NOT_TRACK = "1"
-BUN_OPTIONS = "--linker=hoisted --only-missing --concurrent-scripts=8 --backend=hardlink --no-deprecation --dns-result-order=ipv4first --prefer-offline"
+BUN_OPTIONS = "--linker=hoisted --backend=hardlink --dns-result-order=ipv4first"
 CARGO_HTTP_MULTIPLEXING = "true"
 UV_LINK_MODE = "hardlink"
-CGO_ENABLED = "0"
 
 [tasks.clean]
 depends = ['cleancache']
 run = "cargo cache -efg; cargo clean"
+hide = true
 
 [tasks.cleancache]
 run = "rm -rf ~/.cache/*"
@@ -57,8 +52,3 @@ hide = true
 description = 'Bunx'
 run = "bunx --bun"
 alias = 'bx'
-
-[tasks.buni]
-description = 'Bun install'
-run = "bun i -g"
-alias = 'bi'
