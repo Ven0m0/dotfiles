@@ -8,7 +8,7 @@ load_completion(){
   declare -F "$name" &>/dev/null && return
   case "$kind" in
     eval) eval "$src" &>/dev/null;;
-    source) [[ -r ${src/#\~\//${HOME}/} ]] && . -- "${src/#\~\//${HOME}/}" &>/dev/null ;;
+    source|.) [[ -r ${src/#\~\//${HOME}/} ]] && . -- "${src/#\~\//${HOME}/}" &>/dev/null ;;
   esac
 }
 # System completions - extend below
