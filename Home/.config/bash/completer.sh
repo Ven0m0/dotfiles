@@ -21,8 +21,7 @@ has rustup && {
 }
 # Editor completions - specialized fullscreen picker
 _editor_completion(){
-  bind '"\e[0n": redraw-current-line' 2>/dev/null
-  local selected
+  bind '"\e[0n": redraw-current-line' &>/dev/null; local selected
   if selected=$(compgen -f -- "${COMP_WORDS[COMP_CWORD]}" | fzf --prompt='❯ ' --height=~100% \
     --tiebreak=begin,index -1 -0--exact --layout=reverse-list --bind=tab:down,btab:up --cycle)
   then
