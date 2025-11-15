@@ -70,7 +70,6 @@ MISE_NODE_CONCURRENCY = "12"
 CARGO_HTTP_MULTIPLEXING = "true"
 UV_LINK_MODE = "hardlink"
 
-
 [tasks.clean]
 depends = ['cleancache']
 run = "cargo cache -efg; cargo clean"
@@ -84,3 +83,17 @@ hide = true
 description = 'Bunx'
 run = "bunx --bun"
 alias = 'bx'
+
+[tasks.cbin]
+description = 'Mise cargo-binstall use'
+run = "env MISE_CARGO_BINSTALL=true mise use -gy"
+
+[tasks."lint:eslint"]
+run = "eslint ."
+
+[tasks."lint:prettier"]
+run = "prettier --check ."
+
+[tasks.lint]
+depends = ["lint:*"]
+wait_for = ["render"] 
