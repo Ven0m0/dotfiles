@@ -1,7 +1,4 @@
-#=================================== [Eza] ====================================
-if ! has eza; then
-  return 0
-fi
+has eza || return
 
 # Eza aliases for modern ls replacement
 alias ls='eza -F --color=auto --group-directories-first --icons=auto'
