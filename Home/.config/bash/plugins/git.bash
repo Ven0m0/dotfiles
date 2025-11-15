@@ -17,5 +17,5 @@ gctl(){
       --shallow-submodules -c protocol.version=2 -c http.version=HTTP/2 -c http.sslVersion=tlsv1.3 \
       "$url" "$dir" || return 1
   fi
-  [[ -d "$dir" ]] && { cd -- "$dir" || return; command git pull; return 0; } 
+  [[ -d "$dir" ]] && { cd -- "$dir" || return; command git pull -c protocol.version=2 -c http.version=HTTP/2 -c http.sslVersion=tlsv1.3; return 0; } 
 }
