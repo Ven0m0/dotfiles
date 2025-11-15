@@ -7,7 +7,8 @@ cd -P -- "$(cd -P -- "${BASH_SOURCE[0]%/*}" && echo "$PWD")" || exit 1
 # 1. Installs AUR helper (paru) & essential packages.
 # 2. Clones dotfiles repo with yadm.
 # 3. Runs yadm bootstrap for user-level setup.
-# 4. Uses tuckr to link system-wide configs (/etc, /usr).
+# 4. Deploys dotfiles from Home/ subdirectory to home directory.
+# 5. Uses tuckr to link system-wide configs (/etc, /usr).
 #--- Helpers ---#
 # Define color codes (used before common lib is installed)
 BLK=$'\e[30m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
@@ -33,6 +34,7 @@ main(){
   setup_aur
   install_packages
   setup_dotfiles
+  deploy_dotfiles
   tuckr_system_configs
   final_steps
 }
@@ -91,6 +93,38 @@ setup_dotfiles(){
     yadm pull && yadm bootstrap
   fi
 }
+deploy_dotfiles(){
+  printf '%b\n' "${BLD}${BLU}==>${BWHT} Deploying dotfiles from Home/ subdirectory...${DEF}"
+
+  # Determine the repository location
+  local repo_dir
+  if command -v yadm &>/dev/null && yadm rev-parse --git-dir &>/dev/null; then
+    repo_dir="$(yadm rev-parse --show-toplevel)"
+  elif [[ -d "$DOTFILES_DIR" ]]; then
+    repo_dir="$DOTFILES_DIR"
+  else
+    warn "Cannot determine repository location for Home/ deployment, skipping."
+    return 0
+  fi
+
+  local home_dir="${repo_dir}/Home"
+
+  if [[ ! -d "$home_dir" ]]; then
+    warn "Home directory not found at: $home_dir, skipping deployment."
+    return 0
+  fi
+
+  # Use rsync if available, otherwise fallback to cp
+  if command -v rsync &>/dev/null; then
+    printf '%b\n' "${BLD}${BLU}==>${BWHT} Using rsync for deployment...${DEF}"
+    rsync -av --exclude='.git' "${home_dir}/" "${HOME}/"
+  else
+    printf '%b\n' "${BLD}${BLU}==>${BWHT} Using cp for deployment (rsync not available)...${DEF}"
+    cp -r "${home_dir}/." "${HOME}/"
+  fi
+
+  printf '%b\n' "${BLD}${GRN}==>${BWHT} Dotfiles from Home/ deployed successfully!${DEF}"
+}
 tuckr_system_configs(){
   printf '%b\n' "${BLD}${BLU}==>${BWHT} Linking system-wide configs for /etc and /usr with tuckr...${DEF}"
   has tuckr || die "tuckr command not found. Cannot link system configs."
@@ -106,7 +140,9 @@ tuckr_system_configs(){
   done
 }
 final_steps(){
-  printf '%b\n' "${BLD}${BLU}==>${BWHT} Setup complete. Some changes may require a reboot or new login session.${DEF}"
+  printf '%b\n' "${BLD}${GRN}==>${BWHT} Setup complete! ${DEF}"
+  printf '%b\n' "${BLD}${BLU}==>${BWHT} Dotfiles have been cloned, deployed, and system configs linked.${DEF}"
+  printf '%b\n' "${BLD}${BLU}==>${BWHT} Some changes may require a reboot or new login session.${DEF}"
   [[ "$SHELL" == "/bin/zsh" ]] && warn "Your shell is set to Zsh. Log out and back in to use it."
   printf '%b\n' "${BLD}${BLU}==>${BWHT} Run 'yadm status' to check the state of your dotfiles.${DEF}"
 }
