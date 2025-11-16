@@ -40,6 +40,10 @@
       "command": "bunx",
       "args": ["-y", "think-tool-mcp"]
     },
+    "mcp-tasks": {
+      "command": "bunx",
+      "args": ["-y", "mcp-tasks"]
+    },
     "playwright": {
       "command": "bunx",
       "args": ["@playwright/mcp@latest"],
