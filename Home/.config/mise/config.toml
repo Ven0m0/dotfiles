@@ -58,13 +58,6 @@ java = "oracle-graalvm"
 cpz = "latest"
 rmz = "latest"
 
-[tools.graalvm.env]
-GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
-PATH = "${GRAALVM_HOME}/bin:${PATH}"
-
-[tools.lefthook.env]
-LEFTHOOK_HOME = "${MISE_INSTALLS}/lefthook/${version}"
-
 [env]
 _.python.venv = { path = "{{env.HOME}}/.venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
 DO_NOT_TRACK = "1"
@@ -74,6 +67,8 @@ CARGO_HTTP_MULTIPLEXING = "true"
 UV_LINK_MODE = "hardlink"
 UV_COMPILE_BYTECODE = "1"
 UV_CONCURRENT_DOWNLOADS = "16"
+GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
+PATH = "${GRAALVM_HOME}/bin:${PATH}"
 
 [tasks.clean]
 depends = ['cleancache']
