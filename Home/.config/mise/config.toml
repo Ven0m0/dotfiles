@@ -27,7 +27,7 @@ venv_create_args = ["--system-site-packages --symlinks"]
 uvx = true
 
 [settings.cargo]
-binstall = true
+binstall = false
 
 [settings.node]
 compile = true
