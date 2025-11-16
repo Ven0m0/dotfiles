@@ -1,0 +1,3 @@
+sync_dir = "/home/lucy/Onedrive"
+check_nomount = "true"
+skip_file = "~*|.~*|*.tmp|*.swp|*.partial|*.log|*.old|*.bak"
