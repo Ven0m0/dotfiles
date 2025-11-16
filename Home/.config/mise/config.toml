@@ -67,7 +67,6 @@ java = "oracle-graalvm" #java = "temurin"
 _.python.venv = { path = "{{env.HOME}}/.venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
 #_.python.venv = { path = ".venv", create = true, uv_create_args = ['--seed'] }
 DO_NOT_TRACK = "1"
-BUN_OPTIONS = "--linker=hoisted --backend=hardlink --dns-result-order=ipv4first"
 MISE_NODE_NINJA = "true"
 MISE_NODE_CONCURRENCY = "12"
 CARGO_HTTP_MULTIPLEXING = "true"
