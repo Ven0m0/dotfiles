@@ -8,6 +8,6 @@
     "sortby": "votes",
     "bottomup": true,
     "combinedupgrade": true,
-    "git": "git clone --depth 1 --filter='blob:none --no-tags'",
+    "git": "gix clone --depth 1 --no-tags'",
     "doublelineresults": true
 }
