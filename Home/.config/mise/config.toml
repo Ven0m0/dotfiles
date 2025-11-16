@@ -21,7 +21,7 @@ venv_auto_create = true
 uv_venv_auto = true
 compile = true
 precompiled_os = "x86_64_v3"
-venv_create_args = ["--system-site-packages --symlinks"]
+venv_create_args = ["--system-site-packages"]
 
 [settings.pipx]
 uvx = true
