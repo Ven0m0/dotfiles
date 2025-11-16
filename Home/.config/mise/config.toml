@@ -33,12 +33,11 @@ binstall = true
 compile = true
 
 [tools]
-minify = "latest"
-vfox = "latest"
-java = "oracle-graalvm" #java = "temurin"
-bun = "latest"
-black = "latest"
 #rust = { version = "nightly", profile = "minimal", components = "rust-src,llvm-tools,llvm-bitcode-linker,rust-analyzer", targets = "x86_64-unknown-linux-gnu,wasm32-unknown-unknown }
+java = "oracle-graalvm" #java = "temurin"
+"cargo:cargo-alias-exec" = "latest"
+"cargo:cargo-syu" = "latest"
+"cargo:image-find" = "latest"
 "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
 "cargo:image-optimizer" = "latest"
 "cargo:imgc" = "latest"
@@ -50,15 +49,18 @@ black = "latest"
 "cargo:mpatch" = "latest"
 "cargo:fdf" = "latest"
 "cargo:frep" = "latest"
+"cargo:ripuniq" = "latest"
 "cargo:caligula" = "latest"
-"cargo:dedup" = "latest"
 "cargo:roxide" = "latest"
 "cargo:https://github.com/fthomys/update-alternatives" = "latest"
 "cargo:https://github.com/Blobfolio/flaca" = "latest"
 "cargo:etchdns" = "latest"
 "cargo:rmz" = "latest"
 "cargo:cpz" = "latest"
+"cargo:dedup" = "latest"
 "cargo:nvidia_oc" = "latest"
+"cargo:shell-mommy" = "latest"
+"cargo:cargo-mommy" = "latest"
 "github:zeroBzeroT/ChunkCleaner" = "latest"
 
 [env]
