@@ -12,6 +12,7 @@ task_run_auto_install = true
 yes = true
 activate_aggressive = false
 jobs = 8
+# default_mirrors = ["https://github.com/", "https://gitlab.com/", "https://registry.npmjs.org/"]
 
 [settings.npm]
 bun = true
@@ -33,6 +34,8 @@ binstall = false
 compile = true
 
 [tools]
+# use_system = true
+# auto_install = true
 #rust = { version = "nightly", profile = "minimal", components = "rust-src,llvm-tools,llvm-bitcode-linker,rust-analyzer", targets = "x86_64-unknown-linux-gnu,wasm32-unknown-unknown }
 java = "oracle-graalvm" #java = "temurin"
 "cargo:cargo-alias-exec" = "latest"
@@ -62,6 +65,16 @@ java = "oracle-graalvm" #java = "temurin"
 "cargo:shell-mommy" = "latest"
 "cargo:cargo-mommy" = "latest"
 "github:zeroBzeroT/ChunkCleaner" = "latest"
+cpz = "latest"
+rmz = "latest"
+
+[tools.graalvm.env]
+GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
+PATH = "${GRAALVM_HOME}/bin:${PATH}"
+
+[tools.lefthook.env]
+LEFTHOOK_HOME = "${MISE_INSTALLS}/lefthook/${version}"
+
 
 [env]
 _.python.venv = { path = "{{env.HOME}}/.venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
@@ -71,6 +84,12 @@ MISE_NODE_NINJA = "true"
 MISE_NODE_CONCURRENCY = "12"
 CARGO_HTTP_MULTIPLEXING = "true"
 UV_LINK_MODE = "hardlink"
+
+[aliases]
+node = "bun"
+graal = "graalvm"
+js = "bun"
+rg = "ripgrep"
 
 [tasks.clean]
 depends = ['cleancache']
