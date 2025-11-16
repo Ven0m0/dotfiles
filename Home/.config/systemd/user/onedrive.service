@@ -1,0 +1,16 @@
+[Unit]
+Description=OneDrive sync
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/onedrive --monitor --confdir=%h/.config/onedrive
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=10
+KillMode=process
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=default.target
