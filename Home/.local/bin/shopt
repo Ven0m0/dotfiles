@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+shopt -s nullglob globstar
+IFS=$'\n\t'
+export LC_ALL=C LANG=C
+# Bash Script Optimizer & Minifier
+# Formats, hardens, lints, and minifies shell scripts
+# Supports single files, directories, and stdout output
+
+#──────────── Colors ────────────
+RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' DEF=$'\e[0m'
+
+#──────────── Helpers ────────────
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2; exit 1; }
+log(){ printf '%b%s%b\n' "$GRN" "$*" "$DEF"; }
+warn(){ printf '%b%s%b\n' "$YLW" "$*" "$DEF"; }
+
+usage(){
+  cat <<'EOF'
+Usage: shopt [-rfmsh] [-o FILE] [-p PERM] <file_or_dir>
+
+Options:
+  -r, --recursive   Process directory recursively
+  -f, --format      Apply shfmt formatting (default: on)
+  -m, --minify      Minify with shfmt -mn (implies -f)
+  -s, --strip       Strip comments and headers
+  -o, --output      Output file (stdout if -, overwrite if same as input)
+  -p, --permission  Set chmod mode on output (default: u+x)
+  -F, --force       Overwrite existing files without prompt
+  -h, --help        Show this help
+EOF
+  exit 0
+}
+
+#──────────── Args ────────────
+declare -a files
+recursive=0 format=1 minify=0 strip=0 force=0
+output="" permission="u+x"
+
+[[ $# -eq 0 ]] && usage
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -r|--recursive) recursive=1; shift ;;
+    -f|--format) format=1; shift ;;
+    -m|--minify) minify=1; format=1; shift ;;
+    -s|--strip) strip=1; shift ;;
+    -F|--force) force=1; shift ;;
+    -o|--output) output="${2:?output requires arg}"; shift 2 ;;
+    -p|--permission) permission="${2:?permission requires arg}"; shift 2 ;;
+    -h|--help) usage ;;
+    -*) die "Unknown option: $1" ;;
+    *) break ;;
+  esac
+done
+target="${1:?No file/dir specified}"
+
+#──────────── Deps ────────────
+for cmd in shfmt shellharden shellcheck awk; do
+  has "$cmd" || die "Missing: $cmd"
+done
+readonly HAS_SD=$(has sd && echo 1 || echo 0)
+
+#──────────── File Collection ────────────
+if [[ -d "$target" ]]; then
+  (( recursive == 0 )) && die "Use -r for directories"
+  mapfile -d '' files < <(find "$target" -type f \( -name '*.sh' -o -name '*.bash' \) -print0)
+elif [[ -f "$target" ]]; then
+  files=("$target")
+else
+  die "Not found: $target"
+fi
+(( ${#files[@]} == 0 )) && { log "No scripts found"; exit 0; }
+[[ ${#files[@]} -gt 1 && -n $output && $output != - ]] && die "Multiple files with single output unsupported"
+
+#──────────── Comment Strip AWK ────────────
+read -r -d '' AWK_STRIP <<'AWK' || :
+NR==1 && /^#!/ { print; next }
+!hdr && /^#/ { next }
+!hdr { hdr=1 }
+/^[[:space:]]*#/ { next }
+{ sub(/[[:space:]]+#.*/, ""); print }
+AWK
+
+#──────────── Optimizer ────────────
+optimize(){
+  local f="$1" content out_target="$f"
+  # Handle output redirection
+  if [[ -n $output ]]; then
+    if [[ $output == - ]]; then
+      out_target=""  # stdout
+    else
+      out_target="$output"
+      [[ -f $out_target && $force -eq 0 && $out_target != "$f" ]] && {
+        read -rp "Overwrite $out_target? [y/N] " ans
+        [[ ${ans,,} != y ]] && return 0
+      }
+    fi
+  fi
+  content=$(<"$f")
+
+  # Strip comments/headers
+  (( strip )) && content=$(awk "$AWK_STRIP" <<<"$content")
+
+  # Normalize bashisms
+  if (( HAS_SD )); then
+    content=$(sd '\|\| true' '|| :' <<<"$content")
+    content=$(sd '\s*\(\)\s*\{' '(){' <<<"$content")
+    content=$(sd '>\/dev\/null 2>&1' '\&>/dev/null' <<<"$content")
+  else
+    content=$(sed -e 's/|| true/|| :/g' -e 's/[[:space:]]*()[[:space:]]*{/(){/g' -e 's|>/dev/null 2>&1|\&>/dev/null|g' <<<"$content")
+  fi
+
+  # Format/Minify
+  if (( format )); then
+    local -a opts=(-ln bash -bn -i 2 -s)
+    (( minify )) && opts+=(-mn)
+    content=$(shfmt "${opts[@]}" <<<"$content")
+  fi
+  # Output handling
+  if [[ -z $out_target ]]; then
+    # stdout
+    printf '%s' "$content"
+    return 0
+  fi
+  # Write to file (temp → move for safety)
+  local tmp; tmp=$(mktemp)
+  trap 'rm -f "$tmp"' RETURN
+  printf '%s' "$content" > "$tmp"
+
+  # Harden & lint in-place on temp
+  shellharden --replace "$tmp" &>/dev/null || :
+  shellcheck -a -x -s bash -f diff "$tmp" 2>/dev/null | patch -p1 "$tmp" &>/dev/null || :
+
+  # Atomic move
+  cat "$tmp" > "$out_target"
+  chmod "$permission" "$out_target"
+  log "✓ $out_target"
+}
+
+#──────────── Main ────────────
+for f in "${files[@]}"; do
+  optimize "$f"
+done
+
+[[ -z $output ]] && log "Done: ${#files[@]} file(s)"
