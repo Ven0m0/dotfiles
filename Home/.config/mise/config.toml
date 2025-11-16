@@ -2,42 +2,34 @@
 experimental = true
 auto_install = true
 color = true
+yes = true
+activate_aggressive = true
+jobs = 8
+lockfile = true
 python_venv_auto_create = true
 gix = true
 go_skip_checksum = true
-exec_auto_install = true
-lockfile = true
-not_found_auto_install = true
-task_run_auto_install = true
-yes = true
-activate_aggressive = false
-jobs = 8
-# default_mirrors = ["https://github.com/", "https://gitlab.com/", "https://registry.npmjs.org/"]
 
 [settings.npm]
 bun = true
 
 [settings.python]
-venv_auto_create = true
-uv_venv_auto = true
 compile = true
 precompiled_os = "x86_64_v3"
 venv_create_args = ["--system-site-packages"]
+uv_venv_auto = true
 
 [settings.pipx]
 uvx = true
 
 [settings.cargo]
-binstall = false
+binstall = true
 
 [settings.node]
 compile = true
 
 [tools]
-# use_system = true
-# auto_install = true
-#rust = { version = "nightly", profile = "minimal", components = "rust-src,llvm-tools,llvm-bitcode-linker,rust-analyzer", targets = "x86_64-unknown-linux-gnu,wasm32-unknown-unknown }
-java = "oracle-graalvm" #java = "temurin"
+java = "oracle-graalvm"
 "cargo:cargo-alias-exec" = "latest"
 "cargo:cargo-syu" = "latest"
 "cargo:image-find" = "latest"
@@ -55,15 +47,13 @@ java = "oracle-graalvm" #java = "temurin"
 "cargo:ripuniq" = "latest"
 "cargo:caligula" = "latest"
 "cargo:roxide" = "latest"
-"cargo:https://github.com/fthomys/update-alternatives" = "latest"
-"cargo:https://github.com/Blobfolio/flaca" = "latest"
-"cargo:etchdns" = "latest"
-"cargo:rmz" = "latest"
-"cargo:cpz" = "latest"
 "cargo:dedup" = "latest"
 "cargo:nvidia_oc" = "latest"
 "cargo:shell-mommy" = "latest"
 "cargo:cargo-mommy" = "latest"
+"cargo:https://github.com/fthomys/update-alternatives" = "latest"
+"cargo:https://github.com/Blobfolio/flaca" = "latest"
+"cargo:etchdns" = "latest"
 "github:zeroBzeroT/ChunkCleaner" = "latest"
 cpz = "latest"
 rmz = "latest"
@@ -75,26 +65,19 @@ PATH = "${GRAALVM_HOME}/bin:${PATH}"
 [tools.lefthook.env]
 LEFTHOOK_HOME = "${MISE_INSTALLS}/lefthook/${version}"
 
-
 [env]
 _.python.venv = { path = "{{env.HOME}}/.venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
-#_.python.venv = { path = ".venv", create = true, uv_create_args = ['--seed'] }
 DO_NOT_TRACK = "1"
 MISE_NODE_NINJA = "true"
 MISE_NODE_CONCURRENCY = "12"
 CARGO_HTTP_MULTIPLEXING = "true"
 UV_LINK_MODE = "hardlink"
-
-[aliases]
-node = "bun"
-graal = "graalvm"
-js = "bun"
-rg = "ripgrep"
+UV_COMPILE_BYTECODE = "1"
+UV_CONCURRENT_DOWNLOADS = "16"
 
 [tasks.clean]
 depends = ['cleancache']
 run = "cargo cache -efg; cargo clean"
-hide = true
 
 [tasks.cleancache]
 run = "rm -rf ~/.cache/*"
@@ -109,12 +92,3 @@ alias = 'bx'
 description = 'Mise cargo-binstall use'
 run = "env MISE_CARGO_BINSTALL=true mise use -gy"
 
-[tasks."lint:eslint"]
-run = "eslint ."
-
-[tasks."lint:prettier"]
-run = "prettier --check ."
-
-[tasks.lint]
-depends = ["lint:*"]
-wait_for = ["render"] 
