@@ -1,31 +1,59 @@
 {
-  "inputs": [],
+  "inputs": [
+    {
+      "id": "context7_api_key",
+      "type": "password",
+      "description": "Context7 API Key"
+    }
+  ],
   "servers": {
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
+    },
     "read-website-fast": {
       "command": "bunx",
       "args": ["@just-every/mcp-read-website-fast"],
       "type": "stdio"
     },
+    "sequential-thinking": {
+      "command": "bunx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "filesystem": {
+      "command": "bunx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"]
+    },
+    "fast-filesystem": {
+      "command": "bunx",
+      "args": ["-y", "fast-filesystem-mcp"]
+    },
+    "memory": {
+      "command": "bunx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "mcp-server-commands": {
+      "command": "bunx",
+      "args": ["-y", "mcp-server-commands"]
+    },
+    "think-tool": {
+      "command": "bunx",
+      "args": ["-y", "think-tool-mcp"]
+    },
+    "playwright": {
+      "command": "bunx",
+      "args": ["@playwright/mcp@latest"],
+      "type": "stdio"
+    },
     "Github": {
       "url": "https://api.githubcopilot.com/mcp/",
-      "disabled": false,
-      "autoApprove": [],
       "type": "http"
     },
     "promptboost": {
       "url": "https://promptboost.dev/mcp",
       "type": "http"
     },
-    "Sequential": {
-      "url": "https://remote.mcpservers.org/sequentialthinking/mcp",
-      "type": "http"
-    },
-    "microsoft/playwright-mcp": {
-      "command": "bunx",
-      "args": ["@playwright/mcp@latest"],
-      "type": "stdio"
-    },
-    "upstash/context7": {
+    "context7": {
       "url": "https://mcp.context7.com/mcp",
       "type": "http",
       "headers": {
