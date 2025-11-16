@@ -8,6 +8,6 @@
     "sortby": "votes",
     "bottomup": true,
     "combinedupgrade": true,
-    "git": "git clone --depth 1 --single-branch --shallow-submodules --filter='blob:none'",
+    "git": "git clone --depth 1 --filter='blob:none --no-tags'",
     "doublelineresults": true
 }
