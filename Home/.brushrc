@@ -1,0 +1,49 @@
+if [[ -n "$PS1" ]]; then
+    fastfetch
+fi
+PROMPT_COMMAND='history -a; '"$PROMPT_COMMAND"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/Applications/depot_tools:$PATH"
+
+backup() {
+    cp -- "$1" "$1.bak"
+}
+copy() {
+    if [[ $# -eq 2 && -d "$1" ]]; then
+        local from="${1%/}"
+        command cp -r -- "$from" "$2"
+    else
+        command cp -- "$@"
+    fi
+}
+
+alias ls='eza -la --color=always --group-directories-first --icon=always'
+alias la='eza -a  --color=always --group-directories-first --icon=always'
+alias ll='eza -l  --color=always --group-directories-first --icon=always'
+alias lt='eza -a --tree --color=always --group-directories-first --icon=always'
+alias l.='eza -a --color=always | grep -E "^\."'
+alias grubup="sudo grub-mkconfig -o /boot/grub/grub.cfg"
+alias fixpacman="sudo rm /var/lib/pacman/db.lck"
+alias update='sudo cachyos-rate-mirrors && sudo pacman -Syu'
+alias cleanup="paru -Rcs $(pacman -Qdtq)"
+alias mirror="sudo cachyos-rate-mirrors"
+alias tarnow='tar -acf '
+alias untar='tar -zxvf '
+alias wget='wget -c '
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+alias dir='dir --color=auto'
+alias vdir='vdir --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias hw='hwinfo --short'
+alias big="expac -H M '%m\t%n' | sort -h | nl"
+alias tb='nc termbin.com 9999'
+alias jctl="journalctl -p 3 -xb"
+alias rip="expac --timefmt='%Y-%m-%d %T' '%l\t%n %v' | sort | tail -200 | nl"
+
+eval "$(fzf --bash)"
+eval "$(starship init bash)"
