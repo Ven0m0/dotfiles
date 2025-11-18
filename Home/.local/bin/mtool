@@ -1,30 +1,216 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar
+set -euo pipefail; shopt -s nullglob globstar extglob
 IFS=$'\n\t'; export LC_ALL=C LANG=C
+
+#══════════════════════════════════════════════════════════════
+#  mtool - Unified Media Tool
+#  Combines image/video/audio optimization with display & utilities
+#══════════════════════════════════════════════════════════════
+
 #──────────── Colors ────────────
-RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' DEF=$'\e[0m'
-#──────────── Config ────────────
+RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' BLU=$'\e[34m' DEF=$'\e[0m'
+
+#──────────── Global Config (for optimize) ────────────
 declare -gi QUALITY=85 VID_CRF=27 AUD_BR=128 ZOPFLI_ITER=60
 declare -gi LOSSLESS=0 DRY=0 BACKUP=0 KEEP=0 JOBS=0 FFZAP_T=2 INTERACTIVE=0
 declare -g OUTDIR="" BACKUP_DIR="" TYPE="all" SUFFIX="_opt"
 declare -g IMG_FMT="webp" VID_CODEC="av1"
 declare -gi TOTAL=0 OK=0 SKIP=0 FAIL=0
+
 #──────────── Helpers ────────────
 has(){ command -v "$1" &>/dev/null; }
 die(){ printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2; exit 1; }
 warn(){ printf '%b%s%b\n' "$YLW" "$*" "$DEF"; }
 log(){ printf '%s\n' "$*"; }
+
 #──────────── Cleanup ────────────
 TMPDIR=$(mktemp -d)
 cleanup(){ rm -rf "$TMPDIR"; }
 trap cleanup EXIT
-#──────────── File Discovery ────────────
+
+#──────────── Tool Resolution (cached) ────────────
+MAGICK="${MAGICK:-}"; [[ -z "$MAGICK" ]] && has magick && MAGICK=magick || :
+CWEBP="${CWEBP:-}"; [[ -z "$CWEBP" ]] && has cwebp && CWEBP=cwebp || :
+AVIFENC="${AVIFENC:-}"; [[ -z "$AVIFENC" ]] && has avifenc && AVIFENC=avifenc || :
+FFTHUMB="${FFTHUMB:-}"; [[ -z "$FFTHUMB" ]] && has ffmpegthumbnailer && FFTHUMB=ffmpegthumbnailer || :
+CHAFACMD="${CHAFACMD:-}"; [[ -z "$CHAFACMD" ]] && has chafa && CHAFACMD=chafa || :
+
+#──────────── Type Detection ────────────
+is_image(){ local m; m=$(file --mime-type -b -- "$1" 2>/dev/null || :); [[ "$m" == image/* ]]; }
+is_video(){ local m; m=$(file --mime-type -b -- "$1" 2>/dev/null || :); [[ "$m" == video/* ]]; }
+
+#══════════════════════════════════════════════════════════════
+#  DISPLAY COMMAND (from imgtool)
+#══════════════════════════════════════════════════════════════
+term_dim(){
+  local lines cols
+  read -r lines cols < <(stty size </dev/tty 2>/dev/null || printf '40 120\n')
+  printf '%sx%s' "$cols" "$lines"
+}
+
+display_one(){
+  local p="$1" dim; dim="$(term_dim)"
+  if [[ -n "${KITTY_WINDOW_ID:-}" || -n "${GHOSTTY_RESOURCES_DIR:-}" ]] && has kitten; then
+    kitten icat --clear --transfer-mode=memory --unicode-placeholder --stdin=no --place="$dim@0x0" -- "$p" | sed '$d' | sed $'$s/$/\e[m/'
+  elif [[ -n "$CHAFACMD" ]]; then
+    "$CHAFACMD" -f sixel -s "$dim" --animate false -- "$p" || "$CHAFACMD" -f symbols -s "$dim" -- "$p"
+  else
+    file --brief --dereference --mime -- "$p"
+  fi
+}
+
+cmd_display(){
+  (( $# )) || { printf 'Usage: mtool display FILE|DIR...\n' >&2; return 2; }
+  local p
+  for p in "$@"; do
+    if [[ -d "$p" ]]; then
+      mapfile -t imgs < <(find -- "$p" -maxdepth 1 -type f)
+      ((${#imgs[@]})) || { printf 'empty: %s\n' "$p" >&2; continue; }
+      display_one "${imgs[0]}"
+    else
+      display_one "$p"
+    fi
+  done
+}
+
+#══════════════════════════════════════════════════════════════
+#  THUMB COMMAND (from imgtool)
+#══════════════════════════════════════════════════════════════
+cmd_thumb(){
+  local size="1200" outdir="."
+  while (( $# )); do
+    case "$1" in
+      -s) size="$2"; shift 2 ;;
+      -o) outdir="$2"; shift 2 ;;
+      --) shift; break ;;
+      -h|--help) printf 'Usage: mtool thumb [-s SIZE] [-o OUTDIR] FILE...\n'; return 0 ;;
+      -*) printf 'bad flag: %s\n' "$1" >&2; return 2 ;;
+      *) break ;;
+    esac
+  done
+  mkdir -p -- "$outdir" || :
+  (( $# )) || { printf 'no inputs\n' >&2; return 2; }
+
+  local f out base
+  for f in "$@"; do
+    [[ -f "$f" ]] || { printf 'skip (not file): %s\n' "$f" >&2; continue; }
+    base="${f##*/}"; base="${base%.*}"
+    out="${outdir%/}/${base}.jpg"
+    if is_video "$f"; then
+      [[ -n "$FFTHUMB" ]] || { printf 'need ffmpegthumbnailer for video: %s\n' "$f" >&2; continue; }
+      "$FFTHUMB" -i "$f" -o "$out" -s "$size"
+    elif is_image "$f"; then
+      [[ -n "$MAGICK" ]] || { printf 'need magick for image: %s\n' "$f" >&2; continue; }
+      "$MAGICK" convert "$f" -thumbnail "${size}x${size}>" -strip "$out"
+    else
+      printf 'skip (unknown type): %s\n' "$f" >&2
+    fi
+    printf '%s -> %s\n' "$f" "$out"
+  done
+}
+
+#══════════════════════════════════════════════════════════════
+#  CONVERT COMMAND (from imgtool)
+#══════════════════════════════════════════════════════════════
+out_path(){
+  local outdir="$1" in="$2" newext="$3"
+  local base="${in##*/}" stem="${base%.*}"
+  printf '%s/%s.%s' "${outdir%/}" "$stem" "$newext"
+}
+
+cmd_convert(){
+  local to="webp" q="" outdir="."
+  while (( $# )); do
+    case "$1" in
+      -t) to="$2"; shift 2 ;;
+      -q) q="$2"; shift 2 ;;
+      -o) outdir="$2"; shift 2 ;;
+      --) shift; break ;;
+      -h|--help) printf 'Usage: mtool convert [-t webp|avif] [-q Q] [-o OUTDIR] FILE...\n'; return 0 ;;
+      -*) printf 'bad flag: %s\n' "$1" >&2; return 2 ;;
+      *) break ;;
+    esac
+  done
+  mkdir -p -- "$outdir" || :
+  [[ "$to" =~ ^(webp|avif)$ ]] || { printf 'target must be webp|avif\n' >&2; return 2; }
+  (( $# )) || { printf 'no inputs\n' >&2; return 2; }
+
+  local f out
+  for f in "$@"; do
+    [[ -f "$f" ]] || { printf 'skip (not file): %s\n' "$f" >&2; continue; }
+    is_image "$f" || { printf 'skip (not image): %s\n' "$f" >&2; continue; }
+    if [[ "$to" == "webp" ]]; then
+      out="$(out_path "$outdir" "$f" webp)"
+      if [[ -n "$CWEBP" ]]; then
+        "$CWEBP" ${q:+-q "$q"} -mt -m 6 -metadata all -- "$f" -o "$out"
+      elif [[ -n "$MAGICK" ]]; then
+        "$MAGICK" convert "$f" -quality "${q:-82}" -define webp:method=6 -strip "$out"
+      else
+        printf 'need cwebp or magick\n' >&2; return 3
+      fi
+    else
+      out="$(out_path "$outdir" "$f" avif)"
+      if [[ -n "$AVIFENC" ]]; then
+        "$AVIFENC" ${q:+--min "$q" --max "$q"} --speed 6 --jobs 0 -- "$f" "$out"
+      elif [[ -n "$MAGICK" ]]; then
+        "$MAGICK" convert "$f" -quality "${q:-32}" -define heic:speed=6 -strip "$out"
+      else
+        printf 'need avifenc or magick\n' >&2; return 3
+      fi
+    fi
+    printf '%s -> %s\n' "$f" "$out"
+  done
+}
+
+#══════════════════════════════════════════════════════════════
+#  COMPRESS COMMAND (from imgtool)
+#══════════════════════════════════════════════════════════════
+cmd_compress(){
+  local q="82"
+  while (( $# )); do
+    case "$1" in
+      -q) q="$2"; shift 2 ;;
+      --) shift; break ;;
+      -h|--help) printf 'Usage: mtool compress [-q Q] FILE...\n'; return 0 ;;
+      -*) printf 'bad flag: %s\n' "$1" >&2; return 2 ;;
+      *) break ;;
+    esac
+  done
+  (( $# )) || { printf 'no inputs\n' >&2; return 2; }
+
+  local f ext tmp
+  for f in "$@"; do
+    [[ -f "$f" ]] || { printf 'skip (not file): %s\n' "$f" >&2; continue; }
+    ext="${f##*.}"; ext="${ext,,}"
+    case "$ext" in
+      jpg|jpeg|png)
+        [[ -n "$MAGICK" ]] || { printf 'need magick for %s\n' "$f" >&2; continue; }
+        tmp="${f}.tmp"; "$MAGICK" convert "$f" -strip -quality "$q" "$tmp" && mv -f -- "$tmp" "$f"
+        ;;
+      webp)
+        [[ -n "$CWEBP" ]] || { printf 'need cwebp for %s\n' "$f" >&2; continue; }
+        tmp="${f%.webp}.tmp.webp"
+        "$CWEBP" -q "$q" -mt -m 6 -metadata all -- "$f" -o "$tmp" && mv -f -- "$tmp" "$f"
+        ;;
+      avif)
+        [[ -n "$AVIFENC" ]] || { printf 'need avifenc for %s\n' "$f" >&2; continue; }
+        tmp="${f%.avif}.tmp.avif"
+        "$AVIFENC" --min "$q" --max "$q" --speed 6 --jobs 0 -- "$f" "$tmp" && mv -f -- "$tmp" "$f"
+        ;;
+      *) printf 'skip (unknown ext): %s\n' "$f" >&2 ;;
+    esac
+  done
+}
+
+#══════════════════════════════════════════════════════════════
+#  OPTIMIZE COMMAND (comprehensive, from mtool)
+#══════════════════════════════════════════════════════════════
 find_files(){
   local dir=${1:-.}
   local -a img=(jpg jpeg png gif webp avif jxl tiff bmp)
   local -a vid=(mp4 mkv mov webm avi flv)
   local -a aud=(opus flac mp3 m4a aac ogg wav)
-  local -a doc=(html htm css js)
+  local -a doc=(html htm css js svg)
   local -a exts=()
   case $TYPE in
     all) exts=("${img[@]}" "${vid[@]}" "${aud[@]}" "${doc[@]}");;
@@ -43,7 +229,6 @@ find_files(){
   fi
 }
 
-#──────────── Output Path ────────────
 outpath(){
   local src=$1 fmt=${2:-${src##*.}}
   local dir=${OUTDIR:-$(dirname "$src")}
@@ -52,7 +237,6 @@ outpath(){
   printf '%s/%s%s.%s' "$dir" "$name" "$SUFFIX" "$fmt"
 }
 
-#──────────── Backup ────────────
 backup_file(){
   (( BACKUP == 0 )) && return 0
   local src=$1
@@ -61,9 +245,6 @@ backup_file(){
   cp -p "$src" "$dst"
 }
 
-#══════════════════════════════════════════════════════════════
-#  IMAGE OPTIMIZATION
-#══════════════════════════════════════════════════════════════
 opt_image(){
   local src=$1 ext="${src##*.}" && ext="${ext,,}"
   local out=$(outpath "$src" "$IMG_FMT")
@@ -72,6 +253,7 @@ opt_image(){
   backup_file "$src"
   local tmp="$TMPDIR/$(basename "$src")"
   cp "$src" "$tmp" || return 1
+
   # Format conversion
   if [[ $IMG_FMT != "$ext" ]]; then
     local conv="$TMPDIR/$(basename "$src" ."$ext").$IMG_FMT"
@@ -141,12 +323,12 @@ opt_image(){
     fi
     mv -f "$tmp" "$out"
   fi
-  
+
   [[ -f $out ]] || { ((FAIL++)); return 1; }
-  
+
   local orig=$(stat -c%s "$src" 2>/dev/null || echo 0)
   local new=$(stat -c%s "$out" 2>/dev/null || echo 0)
-  
+
   if (( new > 0 && new < orig )); then
     printf '%s → %d%%\n' "$(basename "$src")" "$((100 - new * 100 / orig))"
     [[ $KEEP -eq 0 ]] && rm -f "$src"
@@ -157,17 +339,14 @@ opt_image(){
   fi
 }
 
-#══════════════════════════════════════════════════════════════
-#  VIDEO OPTIMIZATION
-#══════════════════════════════════════════════════════════════
 opt_video(){
   local src=$1 out=$(outpath "$src")
-  
+
   [[ -f $out && $KEEP -eq 1 ]] && { ((SKIP++)); return 0; }
   [[ $DRY -eq 1 ]] && { log "[DRY] $(basename "$src")"; return 0; }
-  
+
   has ffmpeg || { warn "ffmpeg missing"; ((FAIL++)); return 1; }
-  
+
   backup_file "$src"
   local enc=$(ffmpeg -hide_banner -encoders 2>/dev/null)
   local vc="libx264"
@@ -207,9 +386,6 @@ opt_video(){
   fi
 }
 
-#══════════════════════════════════════════════════════════════
-#  AUDIO OPTIMIZATION
-#══════════════════════════════════════════════════════════════
 opt_audio(){
   local src=$1 ext="${src##*.}" && ext="${ext,,}"
   local out=$(outpath "$src" "opus")
@@ -238,20 +414,17 @@ opt_audio(){
   fi
 }
 
-#══════════════════════════════════════════════════════════════
-#  WEB OPTIMIZATION
-#══════════════════════════════════════════════════════════════
 opt_web(){
   local src=$1 ext="${src##*.}" && ext="${ext,,}"
   local out=$(outpath "$src" "$ext")
-  
+
   [[ -f $out && $KEEP -eq 1 ]] && { ((SKIP++)); return 0; }
   [[ $DRY -eq 1 ]] && { log "[DRY] $(basename "$src")"; return 0; }
-  
+
   backup_file "$src"
   local tmp="$TMPDIR/$(basename "$src")"
   cp "$src" "$tmp"
-  
+
   case $ext in
     svg)
       has svgo && svgo --multipass --quiet "$tmp" &>/dev/null
@@ -267,12 +440,12 @@ opt_web(){
       has minhtml && minhtml --in-place --minify-js "$tmp" &>/dev/null
       ;;
   esac
-  
+
   mv "$tmp" "$out"
-  
+
   local orig=$(stat -c%s "$src" 2>/dev/null || echo 0)
   local new=$(stat -c%s "$out" 2>/dev/null || echo 0)
-  
+
   if (( new > 0 && new < orig )); then
     printf '%s → %d%%\n' "$(basename "$src")" "$((100 - new * 100 / orig))"
     [[ $KEEP -eq 0 ]] && rm -f "$src"
@@ -282,13 +455,10 @@ opt_web(){
   fi
 }
 
-#══════════════════════════════════════════════════════════════
-#  DISPATCHER
-#══════════════════════════════════════════════════════════════
 process(){
   local f=$1 ext="${f##*.}" && ext="${ext,,}"
   ((TOTAL++))
-  
+
   case $ext in
     jpg|jpeg|png|gif|webp|avif|jxl|tiff|bmp)
       [[ $TYPE =~ ^(all|image)$ ]] && opt_image "$f";;
@@ -302,16 +472,13 @@ process(){
   esac
 }
 
-#══════════════════════════════════════════════════════════════
-#  MAIN
-#══════════════════════════════════════════════════════════════
-main(){
+cmd_optimize(){
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -h|--help) cat <<'EOF'
-media-opt - Unified media optimizer (image/video/audio/web)
+mtool optimize - Comprehensive media optimizer
 
-USAGE: media-opt [OPTIONS] [paths...]
+USAGE: mtool optimize [OPTIONS] [paths...]
 
 OPTIONS:
   -t TYPE      Type: all|image|video|audio|web (default: all)
@@ -336,14 +503,8 @@ FEATURES:
   • Backup system with timestamp
   • Interactive picker with preview
   • Parallel: rust-parallel → parallel → xargs
-
-TOOLS:
-  Image: flaca, rimage, oxipng, optipng, pngquant, jpegoptim, cwebp, avifenc, cjxl, gifsicle
-  Video: ffzap, ffmpeg (svtav1/aom-av1/vpx-vp9/x265/x264)
-  Audio: ffmpeg (libopus)
-  Web: svgo, scour, minhtml
 EOF
-        exit 0;;
+        return 0;;
       -t) TYPE="${2,,}"; shift 2;;
       -q) QUALITY=$2; shift 2;;
       -c) VID_CRF=$2; shift 2;;
@@ -363,15 +524,15 @@ EOF
       *) break;;
     esac
   done
-  
+
   (( QUALITY < 1 || QUALITY > 100 )) && die "Quality: 1-100"
   (( VID_CRF < 0 || VID_CRF > 51 )) && die "CRF: 0-51"
   [[ -n $OUTDIR ]] && mkdir -p "$OUTDIR"
   [[ $BACKUP -eq 1 ]] && mkdir -p "$BACKUP_DIR"
   [[ $JOBS -eq 0 ]] && JOBS=$(nproc)
-  
+
   local -a files=()
-  
+
   if (( INTERACTIVE )); then
     has fzf || has sk || die "Interactive requires fzf/sk"
     local picker=$(has fzf && echo fzf || echo sk)
@@ -386,17 +547,17 @@ EOF
       [[ -f $p ]] && files+=("$p") || mapfile -t -O "${#files[@]}" files < <(find_files "$p")
     done
   fi
-  
+
   [[ ${#files[@]} -eq 0 ]] && die "No files"
-  
+
   log "Files: ${#files[@]} | Jobs: $JOBS | Mode: $([[ $LOSSLESS -eq 1 ]] && echo Lossless || echo "Lossy Q=$QUALITY")"
   log "Formats: Img=$IMG_FMT Vid=$VID_CODEC | Backup: $([[ $BACKUP -eq 1 ]] && echo "$BACKUP_DIR" || echo "Disabled")"
-  
+
   if (( JOBS > 1 )); then
     export -f process opt_image opt_video opt_audio opt_web outpath backup_file has
     export QUALITY VID_CRF AUD_BR LOSSLESS OUTDIR KEEP DRY TYPE SUFFIX TMPDIR BACKUP BACKUP_DIR
     export IMG_FMT VID_CODEC FFZAP_T ZOPFLI_ITER JOBS RED GRN YLW DEF
-    
+
     if has rust-parallel; then
       printf '%s\0' "${files[@]}" | rust-parallel -0 -j "$JOBS" bash -c 'process "$1"' _ {}
     elif has parallel; then
@@ -407,9 +568,54 @@ EOF
   else
     for f in "${files[@]}"; do process "$f"; done
   fi
-  
+
   log "Done: OK=$OK Skip=$SKIP Fail=$FAIL Total=$TOTAL"
   [[ $BACKUP -eq 1 ]] && log "Backups: $BACKUP_DIR"
+}
+
+#══════════════════════════════════════════════════════════════
+#  MAIN DISPATCHER
+#══════════════════════════════════════════════════════════════
+usage(){
+  cat <<'EOF'
+mtool - Unified Media Tool
+
+USAGE:
+  mtool <command> [options] [args...]
+
+COMMANDS:
+  optimize     Comprehensive media optimization (image/video/audio/web)
+  convert      Convert images to webp/avif
+  compress     Compress images in-place
+  display      Display images/videos in terminal
+  thumb        Generate thumbnails
+
+OPTIONS:
+  -h, --help   Show help for command
+
+EXAMPLES:
+  mtool optimize -t image -q 85 photos/
+  mtool convert -t webp -o output/ *.jpg
+  mtool compress -q 80 image.png
+  mtool display image.jpg
+  mtool thumb -s 800 video.mp4
+
+For detailed help on a command:
+  mtool <command> --help
+EOF
+}
+
+main(){
+  local cmd="${1:-}"; shift || :
+  case "${cmd:-}" in
+    optimize) cmd_optimize "$@" ;;
+    convert) cmd_convert "$@" ;;
+    compress) cmd_compress "$@" ;;
+    display) cmd_display "$@" ;;
+    thumb) cmd_thumb "$@" ;;
+    ""|-h|--help|help) usage ;;
+    *) printf '%bUnknown command: %s%b\n' "$RED" "$cmd" "$DEF" >&2; usage; return 2 ;;
+  esac
 }
 
 main "$@"
