@@ -43,11 +43,11 @@ CMAKE_BUILD_TYPE = "Release"
 MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
 _RJEM_MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
 GITOXIDE_CORE_MULTIPACKINDEX = "true"
-SCCACHE_DIRECT=true
-SCCACHE_RECACHE=true
-SCCACHE_IDLE_TIMEOUT=10800
-CC="sccache clang"
-CXX="sccache clang++"
+SCCACHE_DIRECT = "true"
+SCCACHE_RECACHE = "true"
+SCCACHE_IDLE_TIMEOUT = "10800"
+CC = "sccache clang"
+CXX = "sccache clang++"
 
 [cache]
 auto-clean-frequency = "7 days"
