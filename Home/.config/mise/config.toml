@@ -65,7 +65,6 @@ _.python.venv = { path = "{{env.HOME}}/.venv", create = true, uv_create_args = [
 DO_NOT_TRACK = "1"
 MISE_NODE_NINJA = "true"
 MISE_NODE_CONCURRENCY = "12"
-CARGO_HTTP_MULTIPLEXING = "true"
 UV_LINK_MODE = "hardlink"
 UV_COMPILE_BYTECODE = "1"
 UV_CONCURRENT_DOWNLOADS = "16"
@@ -82,6 +81,11 @@ CARGO_HTTP_MULTIPLEXING=true
 OPT_LEVEL=3
 RUSTC_WRAPPER=sccache
 RUSTC_LINKER=clang
+CC="sccache clang"
+CXX="sccache clang++"
+SCCACHE_DIRECT=true
+SCCACHE_RECACHE=true
+SCCACHE_IDLE_TIMEOUT=10800
 CMAKE_BUILD_TYPE = "Release"
 GITOXIDE_CORE_MULTIPACKINDEX = "true"
 
