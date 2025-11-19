@@ -1,3 +1,142 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/rule.json
 
 severity: warning
+
+utils:
+  is-console:
+    kind: member_expression
+    pattern: console.$METHOD
+    has:
+      kind: property_identifier
+      regex: ^(log|debug|info|warn|error)$
+  is-debugger:
+    kind: debugger_statement
+  has-todo:
+    kind: comment
+    regex: \b(TODO|FIXME|XXX|HACK)\b
+  unsafe-eval:
+    any:
+      - pattern: eval($EXPR)
+      - pattern: new Function($$$ARGS)
+      - pattern: setTimeout($STRING, $$$)
+        has:
+          kind: string
+  dangerous-html:
+    any:
+      - pattern: innerHTML = $VAL
+      - pattern: outerHTML = $VAL
+      - pattern: insertAdjacentHTML($POS, $VAL)
+      - pattern: document.write($VAL)
+      - pattern: document.writeln($VAL)
+
+rules:
+  - id: no-console
+    language: typescript
+    message: Remove console statements
+    utils: is-console
+    severity: error
+    fix: ''
+  - id: no-debugger
+    language: typescript
+    message: Remove debugger statement
+    utils: is-debugger
+    severity: error
+    fix: ''
+  - id: no-todo-comments
+    languages: [typescript, javascript, bash]
+    message: Resolve TODO/FIXME comment
+    utils: has-todo
+    severity: warning
+  - id: no-unsafe-eval
+    language: typescript
+    message: Avoid eval and Function constructor
+    utils: unsafe-eval
+    severity: error
+  - id: no-dangerous-html
+    language: typescript
+    message: Avoid direct HTML manipulation (XSS risk)
+    utils: dangerous-html
+    severity: warning
+  - id: prefer-const
+    language: typescript
+    message: Use const for variables that are never reassigned
+    rule:
+      kind: lexical_declaration
+      pattern: let $VAR = $INIT
+      not:
+        any:
+          - inside:
+              kind: for_statement
+          - inside:
+              kind: assignment_expression
+              has:
+                field: left
+                pattern: $VAR
+    fix: const $VAR = $INIT
+  - id: no-var
+    language: typescript
+    message: Use let or const instead of var
+    rule:
+      kind: variable_declaration
+      pattern: var $VAR = $INIT
+    fix: let $VAR = $INIT
+    severity: error
+  - id: prefer-arrow-function
+    language: typescript
+    message: Prefer arrow functions for callbacks
+    rule:
+      kind: function_expression
+      inside:
+        any:
+          - kind: arguments
+          - kind: array
+    fix: ($PARAMS) => $BODY
+  - id: no-empty-catch
+    language: typescript
+    message: Empty catch block - handle error or remove try-catch
+    rule:
+      kind: catch_clause
+      has:
+        kind: statement_block
+        pattern: '{}'
+    severity: warning
+  - id: bash-unquoted-var
+    language: bash
+    message: Quote variable to prevent word splitting
+    rule:
+      kind: expansion
+      regex: ^\$[A-Za-z_][A-Za-z0-9_]*$
+      not:
+        inside:
+          any:
+            - kind: double_quoted_string
+            - kind: single_quoted_string
+            - kind: arithmetic_expansion
+    severity: error
+  - id: bash-useless-cat
+    language: bash
+    message: Useless cat - redirect directly
+    rule:
+      kind: pipeline
+      pattern: cat $FILE | $CMD
+    fix: $CMD < $FILE
+  - id: bash-prefer-mapfile
+    language: bash
+    message: Use mapfile instead of while read loop
+    rule:
+      kind: while_statement
+      pattern: |
+        while IFS= read -r $VAR; do
+          $ARRAY+=("$$VAR")
+        done
+    fix: mapfile -t $ARRAY
+  - id: prefer-strict-equality
+    language: typescript
+    message: Use === instead of ==
+    rule:
+      kind: binary_expression
+      any:
+        - pattern: $A == $B
+        - pattern: $A != $B
+    fix: $A === $B
+    severity: error
