@@ -1,16 +1,31 @@
 #!/usr/bin/env bash
-# sanitize-filenames.sh
-# Recursively rename files to be Linux-safe
-LC_ALL=C
+# sanitize-filenames - Recursively rename files to be Linux-safe
+set -euo pipefail
 shopt -s globstar nullglob
+export LC_ALL=C LANG=C
+
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
+
+# Check dependencies
+has iconv || die "iconv is required"
+has sed || die "sed is required"
+
+count=0
 for f in **/*; do
   [[ -f "$f" ]] || continue
-  dir=${f%/*}
-  base=${f##*/}
+  dir="${f%/*}"
+  base="${f##*/}"
+
   new=$(printf '%s' "$base" |
     iconv -f utf8 -t ascii//translit 2>/dev/null |
     sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^_+|_+$//g; s/_+/_/g')
+
   [[ "$base" == "$new" ]] && continue
-  printf 'Renaming: %s -> %s\n' "$f" "$dir/$new"
-  mv -n -- "$f" "$dir/$new"
+
+  printf 'Renaming: %s -> %s/%s\n' "$f" "$dir" "$new"
+  mv -n -- "$f" "$dir/$new" || { printf 'Failed to rename: %s\n' "$f" >&2; continue; }
+  ((count++))
 done
+
+printf 'Renamed %d file(s)\n' "$count"

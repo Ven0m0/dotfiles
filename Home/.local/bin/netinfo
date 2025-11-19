@@ -1,58 +1,125 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar
-LC_ALL=C LANG=C IFS=$'\n\t'
-# netinfo: IP, weather, speed
-# deps: curl (req) awk (speed fmt) dd (upload test) jq (optional), python speedtest.py (optional faster alt)
-UA="netinfo/1.0"
-WT_FMT="%l: %c %+t\n"
+# netinfo - Network information: IP, weather, speed test
+set -euo pipefail
+shopt -s nullglob globstar
+export LC_ALL=C LANG=C IFS=$'\n\t'
+
+readonly UA="netinfo/1.0"
 has(){ command -v "$1" &>/dev/null; }
-jget(){ # jq wrapper if available else grep fallback
-  if has jq; then jq -r "$2" <<<"$1"; else
-    # naive extraction for simple fields
-    printf '%s\n' "$1" | sed -n "s/.*\"${2//./\\.}\":[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p" | head -1
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
+
+# Check dependencies
+has curl || die "curl is required"
+has awk || die "awk is required"
+
+# JSON getter with jq fallback
+jget(){
+  local json="$1" field="$2"
+
+  if has jq; then
+    jq -r "${field}" <<<"${json}"
+  else
+    # Naive extraction for simple fields
+    printf '%s\n' "${json}" | sed -n "s/.*\"${field//./\\.}\":[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p" | head -1
   fi
 }
+
 speed_test(){
-  local down raw up
-  raw=$(curl -sL -o /dev/null -w "%{speed_download}" "https://speed.cloudflare.com/__down?bytes=50000000") || raw=0
-  awk -v s="$raw" 'BEGIN{printf "Down: %.2f Mbps\n",(s*8)/(1024*1024)}'
-  # Upload (10 MiB)
+  local raw up
+
+  printf 'Testing download speed...\n' >&2
+  raw=$(curl -sL -o /dev/null -w "%{speed_download}" "https://speed.cloudflare.com/__down?bytes=50000000" 2>/dev/null || printf '0')
+  awk -v s="${raw}" 'BEGIN{printf "Down: %.2f Mbps\n",(s*8)/(1024*1024)}'
+
+  printf 'Testing upload speed...\n' >&2
   up=$(dd if=/dev/zero bs=1M count=10 2>/dev/null | \
-    curl -sS -o /dev/null -w "%{speed_upload}" --data-binary @- https://speed.cloudflare.com/__up || printf 0)
-  awk -v s="$up" 'BEGIN{printf "Up:   %.2f Mbps\n",(s*8)/(1024*1024)}'
+    curl -sS -o /dev/null -w "%{speed_upload}" --data-binary @- https://speed.cloudflare.com/__up 2>/dev/null || printf '0')
+  awk -v s="${up}" 'BEGIN{printf "Up:   %.2f Mbps\n",(s*8)/(1024*1024)}'
 }
-weather(){ curl -sf "https://wttr.in/${1}?0" || printf 'Weather lookup failed\n' >&2; }
+
+weather(){
+  local location="${1:-}"
+  [[ -z "${location}" ]] && location="Bielefeld"
+
+  curl -sf "https://wttr.in/${location}?0" || {
+    printf 'Weather lookup failed for: %s\n' "${location}" >&2
+    return 1
+  }
+}
+
 ip_info(){
-  local json loc ip
-  json=$(curl -fsS -H "User-Agent: $UA" https://ipinfo.io/json || :)
-  ip=$(jget "$json" '.ip')
-  loc=$(jget "$json" '.region')
-  [[ -z "$loc" ]] && loc="Bielefeld"
-  printf "IP: %s\n" "${ip:-unknown}"
-  weather "$loc"
+  local json ip loc
+
+  json=$(curl -fsS -H "User-Agent: ${UA}" https://ipinfo.io/json 2>/dev/null || printf '{}')
+  ip=$(jget "${json}" '.ip')
+  loc=$(jget "${json}" '.region')
+
+  [[ -z "${loc}" ]] && loc="Bielefeld"
+  [[ -z "${ip}" ]] && ip="unknown"
+
+  printf 'IP: %s\n' "${ip}"
+  weather "${loc}"
 }
+
 usage(){
-  printf 'netinfo usage:\n'
-  printf '  ip        Show IP + weather\n'
-  printf '  weather   Show weather (region arg opt)\n'
-  printf '  speed     Run speed test (simple CF method)\n'
-  printf '  all       IP+weather+speed\n'
-  exit 0
+  cat <<'EOF'
+netinfo - Network information tool
+
+USAGE:
+  netinfo [command] [args]
+
+COMMANDS:
+  ip        Show IP address and weather
+  weather   Show weather (optional: region name)
+  speed     Run speed test (Cloudflare method)
+  all       Show IP, weather, and speed test (default)
+  -h, --help  Show this help
+
+EXAMPLES:
+  netinfo              # Show all information
+  netinfo ip           # Show IP and weather
+  netinfo weather Berlin  # Show weather for Berlin
+  netinfo speed        # Run speed test only
+
+DEPENDENCIES:
+  Required: curl, awk
+  Optional: jq (for better JSON parsing), dd (for upload test)
+EOF
 }
+
 main(){
-  local cmd="${1:-all}"; shift || :
-  case "$cmd" in
-    ip) ip_info ;;
-    weather) weather "${1:-Bielefeld}" ;;
+  local cmd="${1:-all}"
+  shift || :
+
+  case "${cmd}" in
+    ip)
+      ip_info
+      ;;
+    weather)
+      weather "${1:-Bielefeld}"
+      ;;
     speed)
+      # Use speedtest.py if available, otherwise fallback
       if has python && [[ -f "$(dirname "$0")/speedtest.py" ]]; then
-        python "$(dirname "$0")/speedtest.py" --simple || speed_test
+        python "$(dirname "$0")/speedtest.py" --simple 2>/dev/null || speed_test
       else
         speed_test
-      fi ;;
-    all) ip_info; speed_test ;;
-    -h|--help|help) usage ;;
-    *) printf 'Unknown cmd: %s\n' "$cmd"; usage ;;
+      fi
+      ;;
+    all)
+      ip_info
+      printf '\n'
+      speed_test
+      ;;
+    -h|--help|help)
+      usage
+      ;;
+    *)
+      printf 'Unknown command: %s\n' "${cmd}" >&2
+      usage
+      exit 1
+      ;;
   esac
 }
+
 main "$@"

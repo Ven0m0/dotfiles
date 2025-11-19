@@ -1,29 +1,41 @@
 #!/usr/bin/env bash
-# https://github.com/zzzdeb/dotfiles/blob/master/scripts/tools/onedrive_log
+# onedrive_log - Colorized OneDrive sync log viewer
+# Source: https://github.com/zzzdeb/dotfiles
+set -euo pipefail
+export LC_ALL=C LANG=C
 
-black=$(tput setaf 0)
-red=$(tput setaf 1)
-green=$(tput setaf 2)
-yellow=$(tput setaf 3)
-blue=$(tput setaf 4)
-magenta=$(tput setaf 5)
-cyan=$(tput setaf 6)
-white=$(tput setaf 7)
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 
-normal=$(tput sgr0)
-journalctl -o cat --user-unit ${1:-onedrive} -f  |
-   ag -v 'Remaining free space' |                   # removing unwanted lines from log
-  sed -u "s/Uploading/$(printf "${blue}Uploading${normal}")/;
-          s/Successfully created/$(printf "${blue}Successfully created${normal}")/;
-          s/Downloading/$(printf "${magenta}Downloading${normal}")/;
-          s/Moving/$(printf "${magenta}Moving${normal}")/;
-          s/Deleting/$(printf "${yellow}Deleting${normal}")/;
-          s/deleted/$(printf "${yellow}deleted${normal}")/gI;
-          " |                                         # changing colors of words
-   ccze -A -c default=white  # |                        # nice program to colorize log
-          #>> /tmp/tmp1.txt
-  # ag --passthru "↗ |Stopping|Stopped|Uploading|Downloading|Error|Deleting"
-          # s/error/$(printf "${red}❎ERROR${normal}")/gI;
-          # s/done./$(printf "${green}✔${normal}")/
+# Check dependencies
+has journalctl || die "journalctl is required"
+has sed || die "sed is required"
 
-# tip: bind some key to $TERMINAL -e onedrive_log. really convinient
+# Optional dependencies
+has ag || has grep || die "ag or grep is required"
+has ccze && use_ccze=1 || use_ccze=0
+
+# Color definitions using tput for portability
+readonly blue=$(tput setaf 4 2>/dev/null || echo '')
+readonly magenta=$(tput setaf 5 2>/dev/null || echo '')
+readonly yellow=$(tput setaf 3 2>/dev/null || echo '')
+readonly normal=$(tput sgr0 2>/dev/null || echo '')
+
+unit="${1:-onedrive}"
+
+# Stream journal output with colorization
+journalctl -o cat --user-unit "$unit" -f 2>/dev/null |
+  (has ag && ag -v 'Remaining free space' || grep -v 'Remaining free space') |
+  sed -u "s/Uploading/${blue}Uploading${normal}/;
+          s/Successfully created/${blue}Successfully created${normal}/;
+          s/Downloading/${magenta}Downloading${normal}/;
+          s/Moving/${magenta}Moving${normal}/;
+          s/Deleting/${yellow}Deleting${normal}/;
+          s/deleted/${yellow}deleted${normal}/gI;" |
+  if (( use_ccze )); then
+    ccze -A -c default=white
+  else
+    cat
+  fi
+
+# Tip: bind to key: $TERMINAL -e onedrive_log
