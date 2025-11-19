@@ -1,52 +1,72 @@
 #!/usr/bin/env bash
 set -euo pipefail; shopt -s nullglob globstar
-LC_ALL=C LANG=C IFS=$'\n\t'
-# https://github.com/sheepla/fzman
+IFS=$'\n\t'
+export LC_ALL=C LANG=C DEBIAN_FRONTEND=noninteractive HOME="/home/${SUDO_USER:-$USER}"
+
 readonly THIS_CMD="${0##*/}"
-readonly VERSION='0.0.2'
+readonly VERSION='0.0.3'
 readonly PROMPT='manpage: '
 
-function _help(){
-	echo -e "\
-${THIS_CMD} -- manpage finder with fzf
+_help(){
+  printf '%s\n' \
+    "${THIS_CMD} -- manpage finder with fzf/bat" \
+    "" \
+    "USAGE" \
+    "  ${THIS_CMD} KEYWORDS..." \
+    "  ${THIS_CMD} [OPTIONS]" \
+    "OPTIONS" \
+    "  -h, --help   Show this help and exit" \
+    "  --version    Show version info and exit"
+}
+_err(){ printf '[ \e[31mERR\e[m ] %s\n' "$*" >&2; }
 
-USAGE
-    ${THIS_CMD} KEYWORDS...
-    ${THIS_CMD} [OPTIONS]
-OPTIONS
-    -h, --help   Show this help message and exit
-    --version    Show version information and exit"
-}
-function _err(){ echo -e "[ \e[31mERR\e[m ] ${*}" >&2; }
-function _test_cmd(){
-	for cmd in "${@}"; do
-		if command -v "${cmd}" &>/dev/null; then
-			return 0
-		else
-			_err "${cmd}: command not found."
-			return 1
-		fi
-	done
-}
-function _main(){
-	_test_cmd fzf || return 1
-	local -a keywords=()
-	while [[ $# -gt 0 ]]; do
-		case "${1}" in
-		-h | --help) _help; return 0;;
-		--version) echo "${VERSION}"; return 0 ;;
-		*) keywords+=("${1}"); shift;;
-		esac
-	done
-	[[ "${#keywords[@]}" -eq 0 ]] && keywords=('.')
-	_select_manual "${keywords[@]}"; return 0
-}
-function _select_manual(){ man -k "${@}" | sed 's/ * - .*//g' | _fzf_preview; }
-function _entry2args(){ local -a arr; read -ra arr <<<"${1//[()]/ }"; echo "${arr[1]}" "${arr[0]}"; }
-function _fzf_preview(){
-	export -f _entry2args; local -r lookup='_entry2args {} | xargs -n2 -- man'
-	fzf --layout=reverse-list --prompt="${PROMPT}" --preview="${lookup} 2>/dev/null" --bind="enter:execute(${lookup})"
+_test_cmd(){
+  for cmd in "$@"; do command -v "$cmd" &>/dev/null || { _err "$cmd: not found."; return 1; }; done
 }
 
-_main "${@}"
+_main(){
+  _test_cmd fzf man || return 1
+  local -a keywords=()
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help) _help; return 0 ;;
+      --version) printf '%s\n' "$VERSION"; return 0 ;;
+      *) keywords+=("$1"); shift ;;
+    esac
+  done
+  (( ${#keywords[@]} == 0 )) && keywords=('.')
+  _select_manual "${keywords[@]}"
+}
+
+_select_manual(){
+  man -k "$@" | sed -E 's/ *- .*$//' | _fzf_preview
+}
+
+_entry2args(){
+  local arr
+  read -ra arr <<<"${1//[()]/ }"
+  printf '%s %s' "${arr[1]}" "${arr[0]}"
+}
+
+_preview_man(){
+  local sec name
+  read -r sec name < <(_entry2args "$1")
+  if command -v batman &>/dev/null; then
+    batman "$name" "$sec"
+  elif command -v bat &>/dev/null; then
+    man "$sec" "$name" | col -bx | bat --style=plain --paging=never --language=man
+  else
+    man "$sec" "$name"
+  fi 2>/dev/null
+}
+
+_fzf_preview(){
+  export -f _entry2args _preview_man
+  fzf --layout=reverse-list \
+    --prompt="$PROMPT" \
+    --preview='_preview_man {}' \
+    --bind="enter:execute(_preview_man {})"
+}
+
+_main "$@"
 exit $?
