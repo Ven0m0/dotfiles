@@ -1,72 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail; shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C DEBIAN_FRONTEND=noninteractive HOME="/home/${SUDO_USER:-$USER}"
+IFS=$'\n\t'; export LC_ALL=C LANG=C DEBIAN_FRONTEND=noninteractive HOME="/home/${SUDO_USER:-$USER}"
 
-readonly THIS_CMD="${0##*/}"
-readonly VERSION='0.0.3'
-readonly PROMPT='manpage: '
+THIS_CMD="${0##*/}"; VERSION=0.0.3; PROMPT='manpage: '
 
-_help(){
-  printf '%s\n' \
-    "${THIS_CMD} -- manpage finder with fzf/bat" \
-    "" \
-    "USAGE" \
-    "  ${THIS_CMD} KEYWORDS..." \
-    "  ${THIS_CMD} [OPTIONS]" \
-    "OPTIONS" \
-    "  -h, --help   Show this help and exit" \
-    "  --version    Show version info and exit"
-}
+_help(){ printf '%s\n' \
+ "$THIS_CMD -- manpage finder with fuzzy preview" \
+ "" USAGE "  $THIS_CMD KEYWORDS..." "  $THIS_CMD [OPTIONS]" \
+ OPTIONS "  -h, --help  Show this help" "  --version  Show version"; }
 _err(){ printf '[ \e[31mERR\e[m ] %s\n' "$*" >&2; }
-
-_test_cmd(){
-  for cmd in "$@"; do command -v "$cmd" &>/dev/null || { _err "$cmd: not found."; return 1; }; done
-}
-
+_test_cmd(){ for _;do command -v "$1"&>/dev/null||{_err "$1: not found.";return 1;};shift;done; }
+_entry2args(){ local a;read -ra a<<<"${1//[()]/ }";printf '%s %s' "${a[1]}" "${a[0]}"; }
+_preview_man(){ local s n;read -r s n< <(_entry2args "$1"); 
+ if command -v batman&>/dev/null;then batman "$n" "$s"; 
+ elif command -v bat&>/dev/null;then man "$s" "$n"|col -bx|bat --style=plain --paging=never --language=man; 
+ else man "$s" "$n"; fi 2>/dev/null; }
+_fzf_preview(){ export -f _entry2args _preview_man
+ fzf --layout=reverse-list --prompt="$PROMPT" --preview='_preview_man {}' --bind="enter:execute(_preview_man {})"; }
 _main(){
-  _test_cmd fzf man || return 1
-  local -a keywords=()
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      -h|--help) _help; return 0 ;;
-      --version) printf '%s\n' "$VERSION"; return 0 ;;
-      *) keywords+=("$1"); shift ;;
-    esac
-  done
-  (( ${#keywords[@]} == 0 )) && keywords=('.')
-  _select_manual "${keywords[@]}"
-}
-
-_select_manual(){
-  man -k "$@" | sed -E 's/ *- .*$//' | _fzf_preview
-}
-
-_entry2args(){
-  local arr
-  read -ra arr <<<"${1//[()]/ }"
-  printf '%s %s' "${arr[1]}" "${arr[0]}"
-}
-
-_preview_man(){
-  local sec name
-  read -r sec name < <(_entry2args "$1")
-  if command -v batman &>/dev/null; then
-    batman "$name" "$sec"
-  elif command -v bat &>/dev/null; then
-    man "$sec" "$name" | col -bx | bat --style=plain --paging=never --language=man
-  else
-    man "$sec" "$name"
-  fi 2>/dev/null
-}
-
-_fzf_preview(){
-  export -f _entry2args _preview_man
-  fzf --layout=reverse-list \
-    --prompt="$PROMPT" \
-    --preview='_preview_man {}' \
-    --bind="enter:execute(_preview_man {})"
-}
-
-_main "$@"
-exit $?
+ _test_cmd fzf man||return 1; local -a k=()
+ while (($#));do case "$1" in -h|--help) _help;return 0;; --version)printf '%s\n' "$VERSION";return 0;;*)k+=("$1");; esac;shift;done
+ ((${#k[@]}==0))&&k=('.'); man -k "${k[@]}"|sed -E 's/ *- .*$//'|_fzf_preview; }
+_main "$@";exit $?
