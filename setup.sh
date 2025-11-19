@@ -44,16 +44,13 @@ install_packages(){
     git gitoxide aria2 curl zsh fd sd ripgrep bat jq
     zoxide starship fzf yadm tuckr
   )
-  local has_paru
-  has_paru=$(has paru && echo 1 || echo 0)
-  
-  if [[ "$has_paru" == "1" ]]; then
-    # Word splitting is intentional for PARU_OPTS
-    # shellcheck disable=SC2086
-    paru -Syuq $PARU_OPTS "${pkgs[@]}"
-  else
-    die "paru not found after installation attempt."
-  fi
+
+  # paru is a hard dependency on CachyOS and should always be available
+  has paru || die "paru not found. This script requires CachyOS or Arch with paru installed."
+
+  # Word splitting is intentional for PARU_OPTS
+  # shellcheck disable=SC2086
+  paru -Syuq $PARU_OPTS "${pkgs[@]}"
   ensure_tuckr
 }
 ensure_tuckr(){
