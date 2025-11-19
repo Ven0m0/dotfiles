@@ -6,7 +6,6 @@ has fd && export FZF_DEFAULT_COMMAND='fd -tf -HI -S +10k --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # Base options for all FZF instances
-FZF_BASE_OPTS='--height=~90% --layout=reverse-list --border --cycle --preview-window=wrap --inline-info -0 -1 --marker=*'
 export FZF_DEFAULT_OPTS='--height=~90% --layout=reverse-list --border --cycle --preview-window=wrap --inline-info -0 -1 --marker=*'
 
 # Ctrl-T: File selection with preview
