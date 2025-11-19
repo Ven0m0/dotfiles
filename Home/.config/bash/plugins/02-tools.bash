@@ -13,6 +13,16 @@ if has zellij; then
   ifsource "$HOME/.config/bash/completions/zellij.bash"
 fi
 
+if has yazi; then
+  y(){
+    local cwd tmp_file="$(mktemp -t "yazi-cwd.XXXXXX")"
+    yazi "$@" --cwd-file="$tmp_file"
+    if IFS= read -r -d '' cwd < "$tmp_file" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
+      cd "$cwd" || return 1
+    fi; rm -f "$tmp_file"
+  }
+fi
+
 # --- Command correction/enhancement
 has thefuck && eval "$(thefuck --alias)" || :
 has pay-respects && eval "$(pay-respects bash)" || :
