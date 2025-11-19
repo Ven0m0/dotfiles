@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-set -Eeuo pipefail; shopt -s nullglob globstar extglob
-IFS=$'\n\t'; export LC_ALL=C LANG=C
-
+set -euo pipefail; shopt -s nullglob globstar
+IFS=$'\n\t' LC_ALL=C LANG=C
 # fzf-tools preview: unified file previewer for fzf
 # Usage:
 #   fzf-tools preview <PATH or PATH:LINE>
@@ -13,7 +12,6 @@ have(){ command -v "$1" &>/dev/null; }
 batcmd(){ if have batcat; then printf '%s' batcat; elif have bat; then printf '%s' bat; else printf '%s' cat; fi; }
 cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/fzf"
 mkdir -p "$cache_dir" || :
-
 mime_of(){ file --mime-type -b -- "$1"; }
 ext_of(){ local b="${1##*/}"; b="${b##*.}"; printf '%s' "${b,,}"; }
 abspath(){ readlink -f -- "$1"; }
@@ -127,7 +125,6 @@ preview_file(){
     *) preview_archive "$loc" || preview_misc_by_ext "$loc" ;;
   esac
 }
-
 parse_arg(){
   local in="$1" file="$1" center=0
   if [[ ! -r "$file" ]]; then
@@ -139,11 +136,7 @@ parse_arg(){
   fi
   printf '%s\n%s\n' "${file/#\~\//$HOME/}" "$center"
 }
-
-usage(){
-  printf 'usage: %s preview <PATH|PATH:LINE>\n' "${0##*/}"
-}
-
+usage(){ printf 'usage: %s preview <PATH|PATH:LINE>\n' "${0##*/}"; }
 cmd_preview(){
   [[ $# -ge 1 ]] || { usage; return 1; }
   local file center
@@ -151,7 +144,6 @@ cmd_preview(){
   [[ -r "$file" ]] || { printf 'not readable: %s\n' "$file" >&2; return 2; }
   preview_file "$file" "$center"
 }
-
 main(){
   local cmd="${1:-}"; shift || :
   case "${cmd:-}" in
