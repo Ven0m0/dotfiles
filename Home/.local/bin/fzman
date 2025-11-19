@@ -28,7 +28,6 @@ function _test_cmd(){
 		fi
 	done
 }
-
 function _main(){
 	_test_cmd fzf || return 1
 	local -a keywords=()
@@ -39,7 +38,7 @@ function _main(){
 		*) keywords+=("${1}"); shift;;
 		esac
 	done
-	[[ "${#keywords[@]}" == 0 ]] && keywords=('.')
+	[[ "${#keywords[@]}" -eq 0 ]] && keywords=('.')
 	_select_manual "${keywords[@]}"; return 0
 }
 function _select_manual(){ man -k "${@}" | sed 's/ * - .*//g' | _fzf_preview; }
