@@ -1,21 +1,13 @@
 #!/usr/bin/env bash
 # pkgui - Unified pacman/paru/yay TUI with fuzzy search
-set -euo pipefail
-shopt -s lastpipe nullglob globstar
+set -euo pipefail; shopt -s lastpipe nullglob globstar
 export LC_ALL=C LANG=C SHELL="$(command -v bash)" HOME="/home/${SUDO_USER:-$USER}"
-
 # Colors
 readonly RED=$'\e[31m' BLD=$'\e[1m' DEF=$'\e[0m' UL=$'\e[4m'
-
 has(){ command -v "$1" &>/dev/null; }
 err(){ printf '%b[ERR]%b %s\n' "${RED}" "${DEF}" "$*" >&2; }
 die(){ err "$@"; exit 1; }
-
-_ver(){
-  printf '%b%s%b -- %bv3.0.1%b unified pacman/paru/yay TUI\n' \
-    "${BLD}" "${0##*/}" "${DEF}" "${UL}" "${DEF}"
-}
-
+_ver(){ printf '%b%s%b -- %bv3.0.1%b unified pacman/paru TUI\n' "${BLD}" "${0##*/}" "${DEF}" "${UL}" "${DEF}"; }
 _help(){
   cat <<EOF
 ${BLD}USAGE${DEF}  ${0##*/} ${UL}CMD${DEF} [${UL}KEYWORDS${DEF}]
@@ -45,18 +37,14 @@ EOF
 # Find package manager
 for p in ${PARUZ:-paru yay pacman}; do has "${p}" && PAC="${p}" && break; done
 [[ -z ${PAC:-} ]] && die "No package manager found (pacman/paru/yay)"
-
 # Find fuzzy finder
 for f in ${FINDER:-sk fzf}; do has "${f}" && FND="${f}" && break; done
 [[ -z ${FND:-} ]] && die "No fuzzy finder found (sk/fzf)"
-
 # Cache for package info
 declare -A _CACHE_INFO _CACHE_INFOQ _CACHE_LIST _CACHE_LOCALLIST
-
 _fzf(){
   local -a opts=(--ansi --cycle --no-mouse --reverse --inline-info)
   [[ ${FND} == sk ]] && opts+=(--no-hscroll) || opts+=(--no-scrollbar)
-
   while (($#)); do
     case "$1" in
       -m) opts+=(--multi); shift ;;
@@ -66,7 +54,6 @@ _fzf(){
       *) shift ;;
     esac
   done
-
   "${FND}" "${opts[@]}"
 }
 
@@ -103,40 +90,26 @@ _getlocal(){
 }
 
 _search(){
-  export -f _info _fzf
-  export PAC FND
-  declare -gA _CACHE_INFO
-
-  _getlist "$@" | _fzf -m -h "Ctrl-S:info" \
-    -p "bash -c '_info {}'" \
+  export -f _info _fzf; export PAC FND; declare -gA _CACHE_INFO
+  _getlist "$@" | _fzf -m -h "Ctrl-S:info" -p "bash -c '_info {}'" \
     -b "ctrl-s:execute(bash -c '_info {} | less -R')"
 }
 
 _local(){
-  export -f _infoq _fzf
-  export PAC FND
-  declare -gA _CACHE_INFOQ
-
-  _getlocal "$@" | _fzf -m -h "Ctrl-S:info" \
-    -p "bash -c '_infoq {}'" \
+  export -f _infoq _fzf; export PAC FND; declare -gA _CACHE_INFOQ
+  _getlocal "$@" | _fzf -m -h "Ctrl-S:info" -p "bash -c '_infoq {}'" \
     -b "ctrl-s:execute(bash -c '_infoq {} | less -R')"
 }
 
 _orphans(){
-  export -f _infoq _fzf
-  export PAC FND
-  declare -gA _CACHE_INFOQ
-
-  "${PAC}" -Qdttq "$@" 2>/dev/null | _fzf -m -h "Ctrl-S:info" \
-    -p "bash -c '_infoq {}'" \
+  export -f _infoq _fzf; export PAC FND; declare -gA _CACHE_INFOQ
+  "${PAC}" -Qdttq "$@" 2>/dev/null | _fzf -m -h "Ctrl-S:info" -p "bash -c '_infoq {}'" \
     -b "ctrl-s:execute(bash -c '_infoq {} | less -R')"
 }
 
 _inst(){
-  local -a pkgs=()
-  mapfile -t pkgs
+  local -a pkgs=(); mapfile -t pkgs
   (( ${#pkgs[@]} == 0 )) && return 0
-
   if [[ ${PAC} == pacman ]]; then
     sudo pacman -S "${pkgs[@]}"
   else
@@ -145,10 +118,8 @@ _inst(){
 }
 
 _rmv(){
-  local -a pkgs=()
-  mapfile -t pkgs
+  local -a pkgs=(); mapfile -t pkgs
   (( ${#pkgs[@]} == 0 )) && return 0
-
   if [[ ${PAC} == pacman ]]; then
     sudo pacman -Rns --nosave "${pkgs[@]}"
   else
@@ -159,41 +130,35 @@ _rmv(){
 _pkglist(){
   local dir="${HOME}/.pkglist"
   local aur="${dir}/aur" manual="${dir}/manual"
-
   mkdir -p "${dir}"
   has paclist || die "pacman-contrib is required for this feature"
-
   paclist aur 2>/dev/null | awk '{print $1}' > "${aur}"
   paclist manual 2>/dev/null | awk '{print $1}' > "${manual}"
   pacman -Qeq > "${dir}/pacman-all"
   pacman -Qeq | grep -vFf "${aur}" | grep -vFf "${manual}" > "${dir}/pacman"
   sudo pacman -Qkk 2>&1 | awk '/Modification/{sub(/^[^\/]*/,"");sub(/ \(.*\)$/,"");print}' | sort > "${dir}/modified-files"
-
   printf 'Package list updated → %s\n' "${dir}"
 }
 
 _sshkey(){
   [[ $# -lt 2 ]] && die "Usage: ${0##*/} k <email> <user@host>"
-
   local email="$1" target="$2"
   local keyfile="${HOME}/.ssh/${target%%@*}_ed25519"
-
   ssh-keygen -t ed25519 -a 100 -f "${keyfile}" -C "${email}"
   ssh-copy-id -i "${keyfile}.pub" "${target}"
 }
 
 # Main command dispatcher
 [[ $# -eq 0 ]] && { _help; exit 1; }
-
 case "$1" in
-  s) shift; _search "$@" ;;
-  l) shift; _local "$@" ;;
-  S) shift; _search "$@" | _inst ;;
-  R) shift; _local "$@" | _rmv ;;
-  A) shift; _orphans "$@" | _rmv ;;
-  u) _pkglist ;;
-  k) shift; _sshkey "$@" ;;
-  -h|h|--help) _help ;;
-  -v|v|--version) _ver ;;
-  *) die "Invalid command: $1" ;;
+  s) shift; _search "$@";;
+  l) shift; _local "$@";;
+  S) shift; _search "$@" | _inst;;
+  R) shift; _local "$@" | _rmv;;
+  A) shift; _orphans "$@" | _rmv;;
+  u) _pkglist;;
+  k) shift; _sshkey "$@";;
+  -h|h|--help) _help;;
+  -v|v|--version) _ver;;
+  *) die "Invalid command: $1";;
 esac
