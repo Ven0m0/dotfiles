@@ -56,7 +56,6 @@ preview_symlink(){
 preview_image_backend(){
   local img="$1" dim; dim="$(term_dim)"
   local handler="${FZF_PREVIEW_IMAGE_HANDLER:-auto}"
-
   if [[ "$handler" == "kitty" || ( "$handler" == "auto" && ( -n "${KITTY_WINDOW_ID:-}" || -n "${GHOSTTY_RESOURCES_DIR:-}" ) && have kitten ) ]]; then
     kitten icat --clear --transfer-mode=memory --unicode-placeholder --stdin=no --place="$dim@0x0" -- "$img" | sed '$d' | sed $'$s/$/\e[m/'
     have mediainfo && mediainfo -- "$img" || :
@@ -115,13 +114,11 @@ preview_file(){
     video/*)
       local base hash out; base="$(abspath "$loc")"; hash="$(sha256_of "$base")"; out="${cache_dir}/thumb-${hash}.jpg"
       if ! [[ -s "$out" ]]; then have ffmpegthumbnailer && ffmpegthumbnailer -i "$loc" -o "$out" -s 1200 || :; fi
-      [[ -s "$out" ]] && preview_image_backend "$out" || file -- "$loc"
-      ;;
+      [[ -s "$out" ]] && preview_image_backend "$out" || file -- "$loc";;
     application/pdf)
       local base hash out; base="$(abspath "$loc")"; hash="$(sha256_of "$base")"; out="${cache_dir}/pdf-${hash}.jpg"
       if ! [[ -s "$out" ]]; then have pdftoppm && pdftoppm -jpeg -f 1 -singlefile -- "$loc" "${cache_dir}/pdf-${hash}" || :; fi
-      [[ -s "$out" ]] && preview_image_backend "$out" || file -- "$loc"
-      ;;
+      [[ -s "$out" ]] && preview_image_backend "$out" || file -- "$loc";;
     *) preview_archive "$loc" || preview_misc_by_ext "$loc" ;;
   esac
 }
