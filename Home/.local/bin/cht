@@ -28,8 +28,7 @@ _cache(){
 }
 
 _browse(){
-  local sel q url
-  _cache
+  local sel q url; _cache
   sel=$($FZF --ansi --cycle --reverse --no-mouse --prompt='cht> ' \
     --preview="curl -fsL $CHT_URL/{} 2>/dev/null | head -50" \
     --preview-window=right:60%:wrap < "$CHT_CACHE") || return
