@@ -5,7 +5,7 @@
 **Purpose:** Production-grade dotfiles repository for CachyOS/Arch Linux systems with performance optimization, modern tooling, and AI-assisted development workflows.
 
 **Target System:** CachyOS (Arch-based) with x86-64-v3 optimization
-**Repository Size:** ~12.4 MB (430+ files)
+**Repository Size:** ~19 MB (521 files)
 **Primary Focus:** System configuration, shell scripting, performance optimization, automated deployment
 
 ## Core Directives
@@ -35,8 +35,8 @@ y=Yes n=No c=Continue r=Review u=Undo | cfg=config impl=implementation arch=arch
 
 ```
 /home/user/dotfiles/
-├── Home/                          # User configurations (383 files, 12 MB)
-│   ├── .config/                   # 70+ application configs
+├── Home/                          # User configurations (~400 files, ~15 MB)
+│   ├── .config/                   # 59 application configs
 │   │   ├── zsh/                   # Primary shell (269-line .zshrc)
 │   │   ├── fish/                  # Alternative shell
 │   │   ├── starship.toml          # Prompt configuration
@@ -44,7 +44,22 @@ y=Yes n=No c=Continue r=Review u=Undo | cfg=config impl=implementation arch=arch
 │   │   ├── alacritty/             # GPU terminal emulator
 │   │   ├── Code/, VSCodium/       # VS Code configurations
 │   │   ├── mpv/, soar/            # Media players
-│   │   └── [70+ other apps]
+│   │   ├── vesktop/               # Discord client flags
+│   │   ├── chromium-flags.conf    # Chromium/Electron flags
+│   │   ├── electron-flags.conf    # Electron flags
+│   │   ├── vesktop-flags.conf     # Vesktop flags
+│   │   ├── ghostty/, rio/         # Alternative terminals
+│   │   ├── mise/                  # Polyglot version manager
+│   │   ├── mommy/                 # Shell prompt motivator
+│   │   ├── gh/                    # GitHub CLI
+│   │   ├── nixpkgs/, nix/         # Nix configs
+│   │   ├── onedrive/              # OneDrive sync
+│   │   ├── sheldon/               # Shell plugin manager
+│   │   ├── superfile/, xplr/      # File managers
+│   │   ├── tealdeer/              # tldr client
+│   │   ├── yamlfmt/               # YAML formatter
+│   │   ├── zellij/                # Terminal multiplexer
+│   │   └── [50+ other apps]
 │   ├── .cargo/                    # Rust toolchain config
 │   ├── .claude/                   # Claude CLI setup
 │   │   ├── settings.json          # Claude environment
@@ -52,7 +67,7 @@ y=Yes n=No c=Continue r=Review u=Undo | cfg=config impl=implementation arch=arch
 │   │   └── agents/                # Custom agents (13)
 │   ├── .bashrc, .zshenv           # Shell configs
 │   └── .gitconfig                 # Git configuration (239 lines)
-├── etc/                           # System configs (47 files, 124 KB)
+├── etc/                           # System configs (~50 files, ~130 KB)
 │   ├── systemd/                   # System daemon configs
 │   ├── sysctl.d/                  # Kernel parameters (100+ tweaks)
 │   │   ├── 99-tweak-settings.conf # TCP BBR, VM tuning
@@ -62,11 +77,18 @@ y=Yes n=No c=Continue r=Review u=Undo | cfg=config impl=implementation arch=arch
 │   │   ├── nvidia.conf            # NVIDIA optimization
 │   │   ├── nvme.conf              # NVMe tweaks
 │   │   └── bluetooth.conf
-│   ├── pacman.conf                # Package manager (x86-64-v3)
+│   ├── pacman.conf                # Package manager (141 lines, x86-64-v3)
 │   ├── paru.conf                  # AUR helper
-│   ├── makepkg.conf               # Build system (highly optimized)
+│   ├── makepkg.conf               # Build system (102 lines, highly optimized)
 │   ├── mkinitcpio.conf            # Initramfs (zstd compression)
-│   ├── environment                # Global env vars
+│   ├── environment                # Global env vars (128 lines)
+│   ├── doas.conf                  # sudo alternative config
+│   ├── fstab                      # Filesystem mount table
+│   ├── locale.conf, locale.gen    # Locale settings
+│   ├── scx_loader.toml            # SCX scheduler loader
+│   ├── preload.conf, prelockd.conf # Memory preloading
+│   ├── zram-generator.conf        # Swap on RAM
+│   ├── uresourced.conf            # Resource management
 │   └── NetworkManager/
 ├── .github/                       # CI/CD & AI automation
 │   ├── workflows/                 # 7 GitHub Actions
@@ -83,7 +105,7 @@ y=Yes n=No c=Continue r=Review u=Undo | cfg=config impl=implementation arch=arch
 │   └── chatmodes/
 ├── .vscode/
 │   ├── settings.json              # VS Code config
-│   └── mcp.json                   # MCP servers (4)
+│   └── mcp.json                   # MCP servers (16+)
 ├── setup.sh                       # Bootstrap script (151 lines)
 ├── CLAUDE.MD                      # This file
 ├── README.md                      # Overview & references
@@ -203,24 +225,24 @@ nvidia-drm modeset=1 fbdev=1  # Critical for Wayland/KMS
 - Performance: compression=6, deltaBaseCacheLimit=1g, multiPackIndex
 - Submodule: fast-syntax-highlighting (GitHub)
 
-**CI/CD Workflows (GitHub Actions):**
-1. **Unified Linters** - Reusable workflow integration
-2. **Shell Linting** - shellcheck for .sh, .bash files
-3. **Fish Validation** - Syntax, indent, fishtape tests
-4. **Image Optimization** - WebP export, compression
-5. **MegaLinter** - All linters (excludes: .github, .git, .cache, etc.)
-6. **Submodule Auto-Update** - Weekly Sunday 5 AM UTC
-7. **Dependabot Auto-Merge** - Automatic dependency updates
+**CI/CD Workflows (GitHub Actions - 7 workflows):**
+1. **aio.yml** - Unified Linters workflow integration
+2. **shell.yml** - Shell linting (shellcheck for .sh, .bash files)
+3. **fish.yml** - Fish validation (syntax, indent, fishtape tests)
+4. **img-opt.yml** - Image optimization (WebP export, compression)
+5. **mega-linter.yml** - MegaLinter (all linters, excludes: .github, .git, .cache)
+6. **update-git-submodules.yml** - Submodule auto-update (weekly)
+7. **automerge-dependabot.yml** - Automatic dependency PR merges
 
 **Dependabot Updates (Weekly Monday 04:00 UTC):**
 - GitHub Actions, Git submodules, Python pip, npm, Docker
 
-### 5. Application Configurations (70+ apps)
+### 5. Application Configurations (59 apps in .config/)
 
 **Terminal/Shell:**
 - alacritty (Nord theme, 100x30, 10k history)
 - ghostty, rio (alternative terminals)
-- bottom, btop (system monitors)
+- bottom, btop, macchina (system monitors)
 
 **File Management:**
 - yazi (primary file manager: toml, theme, keymap, package)
@@ -238,6 +260,9 @@ nvidia-drm modeset=1 fbdev=1  # Critical for Wayland/KMS
 - soar (CLI music player)
 - wpaperd (wallpaper daemon with systemd service)
 
+**Communication:**
+- vesktop (Discord client with flags: vesktop-flags.conf)
+
 **Desktop:**
 - KDE Plasma: qt6ct, kdedefaults, plasma-localerc, kate
 - GTK: gtk-3.0, gtk-4.0
@@ -245,10 +270,13 @@ nvidia-drm modeset=1 fbdev=1  # Critical for Wayland/KMS
 
 **Utilities:**
 - aria2 (download manager)
-- fastfetch, neofetch, hyfetch (system info)
+- fastfetch, neofetch, hyfetch, macchina (system info)
 - tealdeer (tldr client)
 - topgrade (system updater)
 - zellij (terminal multiplexer)
+- sheldon (shell plugin manager)
+- yamlfmt (YAML formatter)
+- onedrive (cloud sync)
 
 ---
 
@@ -465,6 +493,10 @@ rust-parallel → parallel → xargs
 
 **Invoke:** `@agent-name [task]`
 
+**Recent Additions:**
+- insight-documenter (technical documentation)
+- kiro-feature-designer, kiro-spec-creator (workflow support)
+
 ### Chat Modes (6 available)
 
 **Located in:** `.github/chat-modes.yml` and `.github/chatmodes/`
@@ -478,12 +510,12 @@ rust-parallel → parallel → xargs
 
 **Activate:** `/mode [mode-name]`
 
-### Custom Commands
+### Custom Commands (14 commands)
 
 **Located in:** `Home/.claude/commands/`
 
 **Thinking Commands:**
-- think, think-harder, think-ultra
+- think-harder, think-ultra
 - criticalthink, eureka
 - reflection, reflection-harder
 
@@ -509,7 +541,40 @@ rust-parallel → parallel → xargs
 - revanced-optimization
 - review-and-refactor
 
-**Use:** `/template [template-name]`
+### Browser/Electron Application Flags
+
+**Chromium/Electron Optimizations** (`Home/.config/chromium-flags.conf`, `electron-flags.conf`, `vesktop-flags.conf`):
+```conf
+# Wayland Native
+--ozone-platform=wayland
+--enable-wayland-ime
+--enable-features=WaylandWindowDecorations
+
+# GPU & Rendering (ANGLE/Vulkan)
+--use-gl=angle
+--use-angle=vulkan
+--enable-gpu-rasterization
+--enable-oop-rasterization
+--num-raster-threads=8
+--disable-gpu-vsync
+
+# Performance
+--enable-features=ParallelDownloading,CanvasOopRasterization,UseSkiaRenderer
+--enable-quic
+--enable-tls13-early-data
+
+# JavaScript V8 Optimizations
+--js-flags="--opt --turbo-fast-api-calls --max-old-space-size=4096 --gc-global --concurrent-recompilation"
+
+# Privacy/Telemetry
+--disable-crash-reporter
+--disable-logging
+--no-pings
+```
+
+**Applications Using Flags:**
+- Chromium, Electron-based apps (VSCode, VSCodium, etc.)
+- Vesktop (Discord client)
 
 ### Language-Specific Instructions
 
@@ -521,12 +586,29 @@ rust-parallel → parallel → xargs
 
 ### VS Code MCP Servers
 
-**Located in:** `.vscode/mcp.json`
+**Located in:** `.vscode/mcp.json` (16+ servers configured)
 
-1. **fetch** - uvx mcp-server-fetch
-2. **sequential-thinking** - npx @modelcontextprotocol/server-sequential-thinking
-3. **filesystem** - npx @modelcontextprotocol/server-filesystem
-4. **memory** - npx @modelcontextprotocol/server-memory
+**Active Servers:**
+1. **fetch** - uvx mcp-server-fetch (web content fetching)
+2. **read-website-fast** - bunx @just-every/mcp-read-website-fast
+3. **sequential-thinking** - bunx @modelcontextprotocol/server-sequential-thinking
+4. **filesystem** - bunx @modelcontextprotocol/server-filesystem
+5. **fast-filesystem** - bunx fast-filesystem-mcp
+6. **memory** - bunx @modelcontextprotocol/server-memory
+7. **mcp-server-commands** - bunx mcp-server-commands
+8. **think-tool** - bunx think-tool-mcp
+9. **mcp-tasks** - bunx mcp-tasks (task management)
+10. **playwright** - bunx @playwright/mcp (browser automation)
+11. **Github** - https://api.githubcopilot.com/mcp/ (HTTP)
+12. **promptboost** - https://promptboost.dev/mcp (HTTP)
+13. **context7** - https://mcp.context7.com/mcp (HTTP, API key required)
+14. **shell-readonly** - uvx mcp-shell-server (read-only shell access)
+15. **json-processor** - bunx @gongrzhe/server-json-mcp
+16. **git** - bunx @cyanheads/git-mcp-server
+
+**Disabled Servers:**
+- **code-checker** - uvx mcp-code-checker
+- **eslint** - bunx @eslint/mcp
 
 ---
 
@@ -747,6 +829,25 @@ fish_indent --check file.fish        # Indent check
 
 ---
 
+---
+
+## Recent Changes
+
+**Latest Commits:**
+- `ae5d376` - Update chromium-flags.conf
+- `6bce743` - Create vesktop-flags.conf
+- `43d678a` - Update chromium-flags.conf
+- `1181195` - Update electron-flags.conf
+- `32d407e` - Create vesktop.sh
+
+**Recent Focus Areas:**
+1. Browser/Electron application optimization (Wayland, GPU, V8)
+2. Discord client (Vesktop) configuration
+3. Prettier and npm configuration updates
+4. Cargo package manager tweaks
+
+---
+
 *Optimized for Claude's context window and reasoning capabilities*
-*Last updated: 2025-11-15*
+*Last updated: 2025-11-19*
 *Repository version: See git log for latest commit*
