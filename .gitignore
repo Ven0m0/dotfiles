@@ -9,7 +9,15 @@
 # ---------------------
 # yadm
 # ---------------------
-.yadm/
+# Ignore yadm state files but keep repository configuration
+.yadm/repo.git/
+.yadm/archive
+.yadm/encrypt
+.yadm/files.gpg
+# Keep repository .yadm/ configuration files
+!.yadm/bootstrap
+!.yadm/config
+!.yadm/hooks/
 
 # ---------------------
 # Dotfiles / shell history
