@@ -38,6 +38,30 @@ main(){
   final_steps
 }
 #--- Functions ---#
+install_paru(){
+  printf '%b\n' "${BLD}${BLU}==>${BWHT} Installing paru (AUR helper)...${DEF}"
+
+  # Install base-devel if needed (required for building AUR packages)
+  sudo pacman -Sy --needed --noconfirm base-devel
+
+  # Clone and build paru in a subshell to preserve working directory
+  local tmp_dir
+  tmp_dir=$(mktemp -d)
+  (
+    cd "$tmp_dir" || exit 1
+    git clone https://aur.archlinux.org/paru.git || exit 1
+    cd paru || exit 1
+    makepkg -si --needed --noconfirm || exit 1
+  ) || {
+    rm -rf "$tmp_dir"
+    die "Failed to build and install paru."
+  }
+
+  # Clean up
+  rm -rf "$tmp_dir"
+
+  printf '%b\n' "${BLD}${GRN}==>${BWHT} paru installed successfully!${DEF}"
+}
 install_packages(){
   printf '%b\n' "${BLD}${BLU}==>${BWHT} Installing packages from official and AUR repositories...${DEF}"
   local pkgs=(
@@ -46,14 +70,16 @@ install_packages(){
   )
   local has_paru
   has_paru=$(has paru && echo 1 || echo 0)
-  
-  if [[ "$has_paru" == "1" ]]; then
-    # Word splitting is intentional for PARU_OPTS
-    # shellcheck disable=SC2086
-    paru -Syuq $PARU_OPTS "${pkgs[@]}"
-  else
-    die "paru not found after installation attempt."
+
+  if [[ "$has_paru" == "0" ]]; then
+    install_paru
+    has_paru=$(has paru && echo 1 || echo 0)
+    [[ "$has_paru" == "0" ]] && die "paru not found after installation attempt."
   fi
+
+  # Word splitting is intentional for PARU_OPTS
+  # shellcheck disable=SC2086
+  paru -Syuq $PARU_OPTS "${pkgs[@]}"
   ensure_tuckr
 }
 ensure_tuckr(){
