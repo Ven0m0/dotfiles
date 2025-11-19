@@ -1,22 +1,17 @@
 #!/usr/bin/env bash
 # cht - cheat.sh wrapper with fuzzy search
-set -euo pipefail
-shopt -s lastpipe nullglob
+set -euo pipefail; shopt -s lastpipe nullglob
 export LC_ALL=C LANG=C
 
 has(){ command -v "$1" &>/dev/null; }
 die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
-
 # Find available tools
 for c in curl wget; do has "$c" && HTTP="$c" && break; done
 [[ -z ${HTTP:-} ]] && die "curl or wget is required"
-
 for f in sk fzf; do has "$f" && FZF="$f" && break; done
 [[ -z ${FZF:-} ]] && die "sk or fzf is required"
-
 for p in bat batcat less; do has "$p" && PAGER="$p" && break; done
 PAGER="${PAGER:-less}"
-
 get(){
   case "${HTTP}" in
     curl) curl -fsL -A curl "$@" ;;
@@ -24,7 +19,6 @@ get(){
     *) die "Invalid HTTP client: ${HTTP}" ;;
   esac
 }
-
 readonly CHT_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/cht_list"
 readonly CHT_URL="cheat.sh"
 
@@ -33,41 +27,30 @@ _cache(){
   mkdir -p "${CHT_CACHE%/*}"
   get "${CHT_URL}/:list" > "${CHT_CACHE}" 2>/dev/null || die "Failed to fetch sheet list"
 }
-
 _browse(){
-  local sel q url
-  _cache
-
+  local sel q url; _cache
   sel=$("${FZF}" --ansi --cycle --reverse --no-mouse --prompt='cht> ' \
     --preview="curl -fsL ${CHT_URL}/{} 2>/dev/null | head -50" \
     --preview-window=right:60%:wrap < "${CHT_CACHE}") || return 1
-
   read -rp "Query [${sel}] (empty=summary): " q
-  q="${q// /+}"
-  url="${CHT_URL}/${sel}${q:+/${q}}"
-
+  q="${q// /+}"; url="${CHT_URL}/${sel}${q:+/${q}}"
   printf '\n→ %s\n\n' "${url}"
   get "${url}" | "${PAGER}"
 }
 
 _query(){
   local lang="${1:-}" topic="${2:-}" flags="" url
-
   [[ -z "${lang}" ]] && die "Language/topic required"
-
   [[ ${search:-0} -eq 1 ]] && lang="~${lang}" && topic="~${topic}"
-
   if [[ -n "${topic}" ]]; then
     url="${CHT_URL}/${lang}/${topic}"
   else
     url="${CHT_URL}/${lang}"
   fi
-
   [[ -n ${insens:-} ]] && flags+="i"
   [[ -n ${bound:-} ]] && flags+="b"
   [[ -n ${recur:-} ]] && flags+="r"
   [[ -n "${flags}" ]] && url+="/${flags}"
-
   get "${url}"
 }
 
@@ -97,16 +80,15 @@ EOF
 }
 
 search=0 insens="" bound="" recur=""
-
 while getopts "sibrluha" o; do
   case "${o}" in
-    s) search=1 ;;
-    i) insens=1; search=1 ;;
-    b) bound=1; search=1 ;;
-    r) recur=1; search=1 ;;
-    l) _browse; exit 0 ;;
-    u) rm -f "${CHT_CACHE}"; _cache; printf '✓ Cache updated\n'; exit 0 ;;
-    h|*) usage; exit 0 ;;
+    s) search=1;;
+    i) insens=1; search=1;;
+    b) bound=1; search=1;;
+    r) recur=1; search=1;;
+    l) _browse; exit 0;;
+    u) rm -f "${CHT_CACHE}"; _cache; printf '✓ Cache updated\n'; exit 0;;
+    h|*) usage; exit 0;;
   esac
 done
 shift $((OPTIND - 1))
