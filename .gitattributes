@@ -19,7 +19,9 @@
 # =============================================================================
 # Programming Languages
 # =============================================================================
-*.py diff=python
+*.py text diff=python
+*.py3 text diff=python
+*.pyc text diff=python
 *.js diff=java
 *.lua linguist-language=Lua
 *.nix linguist-language=Nix
@@ -67,13 +69,6 @@ Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab
 *.patch diff=patch
 
 # Git files
-.gitignore text
-.gitattributes text
+.gitignore export-ignore
+.gitattributes export-ignore
 .editorconfig text
-
-# Vim swap files
-*.swp binary
-*.swo binary
-
-# Sample files
-*.sample linguist-documentation
