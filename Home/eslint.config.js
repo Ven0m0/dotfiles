@@ -1,4 +1,4 @@
-[const { FlatCompat } = require("@eslint/eslintrc");
+const { FlatCompat } = require("@eslint/eslintrc");
 const eslint = require("@eslint/js");
 const globals = require("globals");
 const tseslint = require("typescript-eslint");
@@ -6,35 +6,35 @@ const perfectionist = require("eslint-plugin-perfectionist");
 const json = require("@eslint/json");
 const markdown = require("@eslint/markdown");
 const css = require("@eslint/css");
-
-// Keep Prettier last so it can disable conflicting rules and report formatting issues
 const prettierRecommended = require("eslint-plugin-prettier/recommended");
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+const compat = new FlatCompat({ baseDirectory: __dirname });
 
 module.exports = [
-  // JS/TS files: enable @eslint/js recommended and browser globals
-  { files: ["**/*.{js,mjs,cjs,ts,mts,cts}"], plugins: { js: eslint }, extends: ["js/recommended"], languageOptions: { globals: globals.browser } },
-  // Plain .js files use CommonJS by default
+  // JS/TS: recommended + browser globals
+  {
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
+    ...eslint.configs.recommended,
+    languageOptions: { globals: globals.browser }
+  },
   { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
 
-  // JSON (json, jsonc, json5)
-  { files: ["**/*.json"], plugins: { json }, language: "json/json", extends: ["json/recommended"] },
-  { files: ["**/*.jsonc"], plugins: { json }, language: "json/jsonc", extends: ["json/recommended"] },
-  { files: ["**/*.json5"], plugins: { json }, language: "json/json5", extends: ["json/recommended"] },
+  // JSON variants
+  { files: ["**/*.json"], plugins: { json }, language: "json/json", ...json.configs.recommended },
+  { files: ["**/*.jsonc"], plugins: { json }, language: "json/jsonc", ...json.configs.recommended },
+  { files: ["**/*.json5"], plugins: { json }, language: "json/json5", ...json.configs.recommended },
 
   // Markdown (GFM)
-  { files: ["**/*.md"], plugins: { markdown }, language: "markdown/gfm", extends: ["markdown/recommended"] },
+  { files: ["**/*.md"], plugins: { markdown }, language: "markdown/gfm", ...markdown.configs.recommended },
 
   // CSS
-  { files: ["**/*.css"], plugins: { css }, language: "css/css", extends: ["css/recommended"] },
+  { files: ["**/*.css"], plugins: { css }, language: "css/css", ...css.configs.recommended },
 
-  // TypeScript + shared rules, Perfectionist sorting, and custom rules
+  // TypeScript + Perfectionist + custom rules
   ...tseslint.config(
     eslint.configs.all,
-    tseslint.configs.all,
+    ...tseslint.configs.strictTypeChecked,
+    ...tseslint.configs.stylisticTypeChecked,
     perfectionist.configs["recommended-natural"],
     {
       languageOptions: {
@@ -44,102 +44,36 @@ module.exports = [
         },
       },
       rules: {
-        "@typescript-eslint/array-type": [
-          "error",
-          {
-            default: "generic",
-          },
-        ],
+        "@typescript-eslint/array-type": ["error", { default: "generic" }],
         "@typescript-eslint/consistent-return": "off",
         "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-        "@typescript-eslint/explicit-function-return-type": [
-          "error",
-          {
-            allowExpressions: true,
-          },
-        ],
+        "@typescript-eslint/explicit-function-return-type": ["error", { allowExpressions: true }],
         "@typescript-eslint/naming-convention": [
           "error",
-          {
-            format: ["camelCase"],
-            selector: "default",
-          },
-          {
-            format: [],
-            selector: "property",
-          },
-          {
-            format: ["PascalCase"],
-            selector: "typeLike",
-          },
-          {
-            format: ["camelCase", "PascalCase"],
-            selector: "import",
-          },
-          {
-            format: ["camelCase", "UPPER_CASE"],
-            modifiers: ["const", "global"],
-            selector: "variable",
-          },
-          {
-            format: ["camelCase", "PascalCase"],
-            selector: "variable",
-            types: ["function"],
-          },
-          {
-            filter: {
-              match: true,
-              regex: "^_",
-            },
-            format: [],
-            selector: "parameter",
-          },
-          {
-            format: ["camelCase", "PascalCase"],
-            selector: "function",
-          },
+          { format: ["camelCase"], selector: "default" },
+          { format: [], selector: "property" },
+          { format: ["PascalCase"], selector: "typeLike" },
+          { format: ["camelCase", "PascalCase"], selector: "import" },
+          { format: ["camelCase", "UPPER_CASE"], modifiers: ["const", "global"], selector: "variable" },
+          { format: ["camelCase", "PascalCase"], selector: "variable", types: ["function"] },
+          { filter: { match: true, regex: "^_" }, format: [], selector: "parameter" },
+          { format: ["camelCase", "PascalCase"], selector: "function" },
         ],
-        "@typescript-eslint/no-confusing-void-expression": [
-          "error",
-          {
-            ignoreArrowShorthand: true,
-          },
-        ],
-        "@typescript-eslint/no-magic-numbers": [
-          "off",
-          { ignore: [0, 1, 2, -1] },
-        ],
+        "@typescript-eslint/no-confusing-void-expression": ["error", { ignoreArrowShorthand: true }],
+        "@typescript-eslint/no-magic-numbers": "off",
         "@typescript-eslint/no-unsafe-type-assertion": "off",
-        "@typescript-eslint/no-unused-vars": [
-          "error",
-          {
-            argsIgnorePattern: "^_",
-            destructuredArrayIgnorePattern: "^_",
-          },
-        ],
+        "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", destructuredArrayIgnorePattern: "^_" }],
         "@typescript-eslint/no-use-before-define": "off",
-        "@typescript-eslint/strict-boolean-expressions": [
-          "error",
-          {
-            allowNullableBoolean: true,
-          },
-        ],
-        "func-style": [
-          "error",
-          "declaration",
-          {
-            allowArrowFunctions: true,
-          },
-        ],
-        "id-length": [
-          "error",
-          {
-            exceptions: ["x", "y", "z", "w"],
-          },
-        ],
+        "@typescript-eslint/prefer-destructuring": "off",
+        "@typescript-eslint/strict-boolean-expressions": ["error", { allowNullableBoolean: true }],
+        "capitalized-comments": "off",
+        "func-style": ["error", "declaration", { allowArrowFunctions: true }],
+        "id-length": ["error", { exceptions: ["x", "y", "z", "w", "i", "j", "k"] }],
         "max-lines-per-function": ["error", 150],
-        "no-console": "on",
-        "no-duplicate-imports": "on",
+        "max-statements": ["error", 30],
+        "no-console": "error",
+        "no-duplicate-imports": "error",
+        "no-inline-comments": "off",
         "no-ternary": "off",
         "no-undefined": "off",
         "no-warning-comments": "off",
@@ -148,19 +82,18 @@ module.exports = [
         "sort-keys": "off",
       },
     },
-    // File-specific overrides
+    // File overrides
     { files: ["**/*.tsx"], rules: { "max-lines": ["warn", 150] } },
-    { files: ["**/*Datas.ts"], rules: { "max-lines": "off" } },
+    { files: ["**/*Datas.ts", "**/*.config.{js,ts}"], rules: { "max-lines": "off" } },
+    { files: ["**/*.{test,spec}.{ts,tsx}"], rules: { "@typescript-eslint/no-magic-numbers": "off" } },
   ),
 
-  // Next.js core web vitals (via FlatCompat)
+  // Next.js
   ...compat.config({
     extends: ["next/core-web-vitals"],
-    rules: {
-      "@next/next/no-img-element": "off",
-    },
+    rules: { "@next/next/no-img-element": "off" },
   }),
 
-  // Prettier plugin recommended (MUST be last)
+  // Prettier MUST be last
   prettierRecommended,
 ];
