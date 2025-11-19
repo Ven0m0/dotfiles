@@ -11,41 +11,24 @@
 #   niceValue     Integer from -20 (highest) to 20 (lowest) to renice matching processes.
 #
 # Note: Negative nice values require root or the process owner.
-
-set -euo pipefail
-
-# Source common shell utilities
-source "${HOME}/.local/lib/shell-common.sh" || {
-  echo "Error: Failed to load shell-common.sh" >&2
-  exit 1
-}
-
-# Ensure required commands are available
-for cmd in pgrep ps sort renice uname; do
-  require "$cmd"
-done
-
+set -euo pipefail; shopt -s nullglob globstar
+LC_ALL=C LANG=C IFS=$'\n\t'
 # Describe a nice value in human-friendly terms
-priority_desc() {
-  local nv=$1
-  case $nv in
+priority_desc(){
+  local nv="$1"; case "$nv" in
     -20) echo "top priority." ;;
-    -19|-18|-17|-16|-15|-14|-13|-12|-11|-10)
-         echo "high priority level \"$nv\"." ;;
-    -9|-8|-7|-6|-5|-4|-3|-2|-1)
-         echo "priority level \"$nv\"." ;;
+    -19|-18|-17|-16|-15|-14|-13|-12|-11|-10) echo "high priority level \"$nv\"." ;;
+    -9|-8|-7|-6|-5|-4|-3|-2|-1) echo "priority level \"$nv\"." ;;
      0) echo "standard priority." ;;
-     1|2|3|4|5|6|7|8|9|10)
-         echo "background priority \"$nv\"." ;;
-    11|12|13|14|15|16|17|18|19)
-         echo "low priority \"$nv\"." ;;
+     1|2|3|4|5|6|7|8|9|10) echo "background priority \"$nv\"." ;;
+    11|12|13|14|15|16|17|18|19) echo "low priority \"$nv\"." ;;
      20) echo "lowest priority." ;;
      *)  echo "nice value \"$nv\" out of range." ;;
   esac
 }
 
 # Print usage and exit
-usage() {
+usage(){
   cat <<EOF >&2
 Usage: $(basename "$0") checkALL
        $(basename "$0") <process-name> check
