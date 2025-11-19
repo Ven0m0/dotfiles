@@ -10,6 +10,6 @@
 #
 # Also it's better to disable Zswap, as this may prevent ZRAM from working
 # properly or keeping a proper count of compressed pages via zramctl.
-ACTION=="change", KERNEL=="zram0", ATTR{initstate}=="1", SYSCTL{vm.swappiness}="150", \
+ACTION=="change", KERNEL=="zram0", ATTR{initstate}=="1", SYSCTL{vm.swappiness}="180", \
   SYSCTL{vm.watermark_boost_factor}="0", SYSCTL{vm.page-cluster}="0", SYSCTL{vm.watermark_scale_factor}="125", \
   RUN+="/bin/sh -c 'echo N > /sys/module/zswap/parameters/enabled'"
