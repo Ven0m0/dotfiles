@@ -50,7 +50,7 @@
       "type": "stdio"
     },
     "Github": {
-      "url": "https://api.githubcopilot.com/mcp/",
+      "url": "https://api.githubcopilot.com/mcp",
       "type": "http"
     },
     "promptboost": {
