@@ -1,3 +1,1 @@
-[submodule "Home/.config/zsh/plugins/fast-syntax-highlighting"]
-	path = Home/.config/zsh/plugins/fast-syntax-highlighting
-	url = git@github.com:BachoSeven/fast-syntax-highlighting.git
+
