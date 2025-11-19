@@ -31,17 +31,23 @@ rustflags = ["-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
 RUSTC_BOOTSTRAP = "1"
+RUST_PANIC_STRATEGY = "abort"
+RUST_MIN_STACK= "16777216"
+RUST_LIB_BACKTRACE = "0"
 CARGO_CACHE_RUSTC_INFO = "1"
 RUSTC_ICE = "0"
 CARGO_LOG = "off"
 RUSTDOC_LOG = "off"
 RUSTC_LOG = "off"
+CMAKE_BUILD_TYPE = "Release"
 MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
 _RJEM_MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
-RUST_LIB_BACKTRACE = "0"
-CMAKE_BUILD_TYPE = "Release"
-RUST_PANIC_STRATEGY = "abort"
 GITOXIDE_CORE_MULTIPACKINDEX = "true"
+SCCACHE_DIRECT = "true"
+SCCACHE_RECACHE = "true"
+SCCACHE_IDLE_TIMEOUT = "10800"
+CC = "sccache clang"
+CXX = "sccache clang++"
 
 [cache]
 auto-clean-frequency = "7 days"
@@ -89,7 +95,7 @@ debug = false
 
 [profile.release.build-override]
 inherits = "release"
-opt-level = 0
+opt-level = 1
 lto = false
 codegen-units = 256
 incremental = true
