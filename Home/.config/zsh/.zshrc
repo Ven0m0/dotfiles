@@ -4,11 +4,11 @@ has(){ command -v -- "$1" &>/dev/null; }
 ifsource(){ [[ -f $1 ]] && . "$1"; }
 ifsource "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 
+# =================== MOMMY ===================
 if has mommy; then
   export MOMMY_COLOR="" MOMMY_PREFIX="%F{005}/%F{006}" MOMMY_SUFFIX="~%f" MOMMY_COMPLIMENTS_ENABLED=0
   set -o PROMPT_SUBST
   RPS1='$(mommy -1 -s $?)'
-  #precmd() { mommy -1 -s $? }
 fi
 
 # =================== CORE / ENV ===================
@@ -21,26 +21,12 @@ export TERM=xterm-256color CLICOLOR=1 MICRO_TRUECOLOR=1 KEYTIMEOUT=1
 export TZ=Europe/Berlin TIME_STYLE='+%d-%m %H:%M'
 export LC_ALL=C.UTF-8 LANG=C.UTF-8 LANGUAGE=C.UTF-8
 WORDCHARS='*?_-[]~&;!#$%^(){}<>|'
-export LESS='-g -i -M -R -S -w -z-4' LESSHISTFILE=- LESSCHARSET=utf-8
+export LESS='-g -i -M -R -S -w -z-4'
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --info=inline"
 export FZF_DEFAULT_COMMAND='fd -tf -gH -c always -strip-cwd-prefix -E ".git"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd -td -gH -c always'
 export GPG_TTY=$TTY
-if has mise; then eval "$(mise activate zsh)"; fi
-alias mx="mise x --"
-if has fzf; then 
-  eval "$(fzf --zsh)"
-  ifsource "/usr/share/fzf-tab-completion/zsh/fzf-zsh-completion.sh" && bindkey '^I' fzf_completion
-fi
-if has zoxide; then eval "$(zoxide init zsh)"; fi
-if has mise; then eval "$(mise activate zsh)"; fi
-
-ifsource /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
-ifsource /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-ifsource /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-ifsource /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-ifsource /usr/share/doc/pkgfile/command-not-found.zsh
 
 # =================== ZSH OPTIONS ===================
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME PUSHD_MINUS CD_SILENT path_dirs
@@ -57,7 +43,6 @@ unsetopt menu_complete
 setopt list_packed auto_list auto_menu auto_param_keys complete_in_word nonomatch
 setopt short_loops long_list_jobs rm_star_wait
 stty stop undef &>/dev/null || :
-
 DISABLE_MAGIC_FUNCTIONS="true"
 ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
@@ -97,18 +82,22 @@ list=${XDG_CONFIG_HOME:-$HOME/.config}/zsh/config/plugins.txt
 [[ -f $bundle && $list -ot $bundle ]] || "$antidote_bin" bundle <"$list" >"$bundle"
 source "$bundle"
 
-# Post-load plugin tunables
+# =================== PLUGIN TUNABLES ===================
 typeset -g ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-# OMZ ssh-agent plugin config
 zstyle ':omz:plugins:ssh-agent' agent-forwarding yes
 zstyle ':omz:plugins:ssh-agent' lazy yes
 zstyle ':omz:plugins:ssh-agent' quiet yes
-# fzf-tab keybinding (keep Tab for zsh-autocomplete if used)
-(( $+functions[fzf_completion] )) && bindkey '^T' fzf_completion
-# f-sy-h: disable buggy chromas
 unset 'FAST_HIGHLIGHT[chroma-man]' 2>/dev/null || :
 unset 'FAST_HIGHLIGHT[chroma-ssh]' 2>/dev/null || :
+
+# =================== TOOL ACTIVATION ===================
+if has fzf; then
+  eval "$(fzf --zsh)"
+  (( $+functions[fzf_completion] )) && bindkey '^T' fzf_completion
+fi
+has zoxide && eval "$(zoxide init zsh)" && alias cd=z
+has mise && eval "$(mise activate zsh)"
 
 # =================== COMPLETION (fast + styled) ===================
 autoload -Uz compinit
@@ -120,7 +109,6 @@ autoload -Uz compinit
   fi
   if (( skip )); then compinit -C -d "$zdump"; else compinit -d "$zdump"; { zcompile "$zdump" } &!; fi
 }
-# Styles
 zstyle ':completion:*:default' menu select=1
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
@@ -139,13 +127,10 @@ zstyle ':completion:*:warnings' format ' %F{yellow}-- no matches found --%f'
 zstyle ':completion:*' format ' %F{blue}-- %d --%f'
 zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
 zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin
-# zsh-autocomplete tuning (optional)
 zstyle ':autocomplete:*' min-input 1
 zstyle ':autocomplete:*' insert-unambiguous yes
-# fzf-tab previews
 zstyle ':fzf-tab:complete:pacman:*' fzf-preview 'pacman -Si $word'
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
-# Colors for completion lists
 if has vivid; then LS_COLORS="$(vivid generate molokai)"; elif has dircolors; then eval "$(dircolors -b)" &>/dev/null; fi
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
@@ -159,8 +144,21 @@ fi
 [[ -f $HOME/.p10k.zsh ]] && source "$HOME/.p10k.zsh"
 export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
+# =================== ALIASES ===================
+if has eza; then
+  alias ls='eza --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
+  alias l='eza --git-ignore --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
+  alias ll='eza --all --header --long --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
+  alias llm='eza --all --header --long --sort=modified --git --icons --classify --group-directories-first --time-style=long-iso --group --color-scale'
+  alias la='eza -lbhHigUmuSa'
+  alias lx='eza -lbhHigUmuSa@'
+  alias lt='eza --tree'
+  alias tree='eza --tree'
+fi
+has mise && alias mx="mise x --"
+
 # =================== FUNCTIONS ===================
-mkcd(){ mkdir -p -- "$1" && cd -- "$1" || return; }
+mkcd(){ mkdir -p -- "$1" && cd -- "$1" || return; has eza && eza || ls; }
 touchf(){ mkdir -p -- "${1:h}"; command touch -- "$1"; }
 extract(){ local f=$1; [[ -f $f ]] || { print -r -- "File does not exist: $f" >&2; return 1; }
   case "$f" in
@@ -210,7 +208,6 @@ bindkey '\e\e' prepend-sudo
 bindkey '^Z' undo
 bindkey '^Y' redo
 zmodload zsh/complist
-bindkey '^[[Z' reverse-menu-complete
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 dot-expansion(){ if [[ $LBUFFER = *.. ]]; then LBUFFER+='/..'; else LBUFFER+='.'; fi; }
 zle -N dot-expansion
@@ -241,12 +238,10 @@ if (( $+functions[lazyload] )); then
   lazyload gh 'source =(smartcache 7d gh completion -s zsh)'
   lazyload docker 'source =(smartcache 7d docker completion zsh)'
   lazyload carapace 'export CARAPACE_BRIDGES="zsh,fish,bash,inshellisense"; source =(smartcache 7d carapace _carapace)'
-  lazyload mise 'eval "$($HOME/.local/bin/mise activate zsh)"'
   lazyload pyenv 'eval "$(smartcache 7d pyenv init -)"'
   lazyload zellij 'eval "$(zellij setup --generate-auto-start zsh)"'
-  lazyload z 'eval "$(zoxide init zsh)"; alias cd=z'
   lazyload fuck 'local f="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"; mkdir -p -- "${f:h}"; [[ -f $f ]] || smartcache 30d thefuck --alias >"$f"; source "$f"'
-  lazyload shit '(( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"'
+  (( $+commands[theshit] )) && lazyload shit 'eval "$($HOME/.cargo/bin/theshit alias shit)"'
 fi
 if (( $+functions[zsh-defer] )); then
   zsh-defer -c '(( $+functions[smartcache] )) || return 0; smartcache 7d vivid generate molokai &>/dev/null || :'
@@ -254,8 +249,6 @@ if (( $+functions[zsh-defer] )); then
   zsh-defer -c '(( $+functions[smartcache] )) || return 0; has carapace && smartcache 7d carapace _carapace &>/dev/null || :'
 else
   (( $+commands[zellij] )) && eval "$(zellij setup --generate-auto-start zsh)"
-  eval "$(zoxide init zsh)"; alias cd=z
-  [[ -f $HOME/.local/bin/mise ]] && eval "$($HOME/.local/bin/mise activate zsh)"
   if (( $+commands[carapace] )); then export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'; source <(carapace _carapace); fi
   if (( $+commands[thefuck] )); then f="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/thefuck"; mkdir -p -- "${f:h}"; [[ -f $f ]] || thefuck --alias >"$f"; source "$f"; fi
   (( $+commands[theshit] )) && eval "$($HOME/.cargo/bin/theshit alias shit)"
