@@ -1,172 +1,120 @@
-#! /usr/bin/env bash
-#
+#!/usr/bin/env bash
+set -euo pipefail; shopt -s nullglob
+export LC_ALL=C LANG=C IFS=$'\n\t'
+
+# Copy ISO/IMG file to USB device with progress indicator
 # Author: Bert Van Vreckem <bert.vanvreckem@gmail.com>
-#
-#/ Usage: iso-to-usb ISO_FILE DEVICE
-#/
-#/ Copies a CDROM/DVD ISO to USB stick, showing progress.
-#/
-#/ OPTIONS
-#/   -h, --help
-#/                Print this help message
-#/
-#/ EXAMPLES
-#/  iso-to-usb fedora-livecd.iso /dev/sdc
-#
-# Dependencies: dd, stat and pv (Pipe Viewer)
+# Requires: dd, pv, stat
 
-#{{{ Bash settings
+# Helper functions
+die(){ printf '\e[0;31mERROR: %s\e[0m\n' "$*" >&2; exit 1; }
+log(){ printf '\e[0;33m>>> %s\e[0m\n' "$*"; }
+info(){ printf '\e[0;36m### %s\e[0m\n' "$*"; }
 
-# abort on nonzero exitstatus
-set -o errexit
-# abort on unbound variable
-set -o nounset
-# don't hide errors within pipes
-set -o pipefail
-#}}}
-#{{{ Variables
-readonly script_name=$(basename "${0}")
-readonly script_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
-dependencies=(dd pv stat)
+usage(){
+  cat <<'EOF'
+iso-to-usb - Copy ISO/IMG file to USB device with progress
 
-# Debug info ('on' to enable)
-readonly debug='on'
+USAGE:
+  iso-to-usb ISO_FILE DEVICE
 
-#}}}
+ARGUMENTS:
+  ISO_FILE    Path to .iso or .img file
+  DEVICE      Block device (e.g., /dev/sdc)
 
-main() {
-  check_dependencies
-  check_args "${@}"
+OPTIONS:
+  -h, --help  Show this help message
 
-  local iso="${1}"
-  local destination="${2}"
+EXAMPLES:
+  iso-to-usb fedora-livecd.iso /dev/sdc
+  iso-to-usb ubuntu.img /dev/sdb
 
-  log "Copying ${iso} to ${destination}"
+REQUIREMENTS:
+  - dd (for writing to device)
+  - pv (for progress indicator)
+  - stat (for file size detection)
 
-  check_mounts "${destination}"
-  confirm_copy
-  copy_iso_to_usb "${iso}" "${destination}"
+WARNING:
+  This will DESTROY all data on the target device!
+  Double-check the device path before proceeding.
+EOF
 }
 
-#{{{ Helper functions
-
-check_dependencies() {
-  debug "Checking dependencies"
-  for dep in "${dependencies[@]}"; do
-    check_command_exists "${dep}"
+check_dependencies(){
+  local -a deps=(dd pv stat)
+  for cmd in "${deps[@]}"; do
+    command -v "$cmd" &>/dev/null || die "Required command '$cmd' not found"
   done
 }
 
-# Usage: check_command_exists COMMAND
-check_command_exists() {
-  local command="${1}"
-  if ! command -v "${command}" > /dev/null 2>&1; then
-    error "Command ${command} is needed but not available, please install it first. Bailing out."
-    exit 1
+check_args(){
+  case ${#} in
+    1)
+      if [[ $1 == -h || $1 == --help ]]; then
+        usage
+        exit 0
+      fi
+      die "Expected 2 arguments, got ${#}"
+      ;;
+    2) ;;
+    *)
+      die "Expected 2 arguments, got ${#}"
+      ;;
+  esac
+
+  [[ -f $1 ]] || die "First argument should be a file: $1"
+
+  # Check file extension
+  local ext="${1##*.}"
+  ext="${ext,,}"
+  [[ $ext == iso || $ext == img ]] || die "First argument should be an .iso or .img file: $1"
+
+  [[ -b $2 ]] || die "Destination should be a block device (e.g., /dev/sdc): $2"
+}
+
+check_mounts(){
+  local device="$1"
+  log "Checking if $device is currently mounted..."
+
+  if grep -q "$device" /proc/mounts; then
+    die "Device $device is mounted. Unmount it first!"
   fi
 }
 
-# Usage: check_mounts DEVICE
-check_mounts() {
-  local device="${1}"
-
-  log "Checking if ${device} is currently mounted"
-
-  if grep "${device}" /proc/mounts > /dev/null 2>&1; then
-    error "Device ${device} is mounted, bailing out"
-    exit 1
-  fi
-}
-
-confirm_copy() {
+confirm_copy(){
+  log "⚠️  WARNING: This will DESTROY all data on $1!"
   log "Are you sure you want to continue? [y/N]"
   read -r confirm
-  if [ "${confirm}" != 'y' ] && [ "${confirm}" != 'Y' ]; then
-    info "Cancelled on user's request"
+  if [[ $confirm != y && $confirm != Y ]]; then
+    info "Cancelled by user"
     exit 0
   fi
 }
 
-# Usage: copy_iso_to_usb ISO DEVICE
-copy_iso_to_usb() {
-  local iso="${1}"
-  local iso_size
-  local destination="${2}"
+copy_iso_to_usb(){
+  local iso="$1" destination="$2" iso_size
 
-  iso_size=$(stat -c '%s' "${iso}")
+  iso_size=$(stat -c '%s' "$iso")
+  log "Copying $iso (${iso_size} bytes) to $destination..."
 
-  debug "Copying ${iso} (${iso_size}B) to ${destination}"
+  dd if="$iso" bs=4M status=none | \
+    pv --size "$iso_size" --progress --timer --eta --rate --bytes | \
+    sudo dd of="$destination" bs=4M status=none conv=fsync
 
-  dd if="${iso}" \
-    | pv --size "${iso_size}" \
-    | sudo dd of="${destination}"
+  log "Syncing..."
+  sync
+  log "✓ Copy completed successfully!"
 }
 
-# Print usage message on stdout by parsing start of script comments
-usage() {
-  grep '^#/' "${script_dir}/${script_name}" | sed 's/^#\/\w*//'
+main(){
+  check_dependencies
+  check_args "$@"
+
+  local iso="$1" destination="$2"
+
+  check_mounts "$destination"
+  confirm_copy "$destination"
+  copy_iso_to_usb "$iso" "$destination"
 }
 
-# Check if command line arguments are valid
-check_args() {
-  case "${#}" in
-    '1' )     # First, check if help message is requested
-      if [ "${1}" = '-h' ] || [ "${1}" = '--help' ]; then
-        usage
-        exit 0
-      fi
-      ;;
-    '2' ) ;;  # 2 arguments is what's expected
-    * )       # All other cases are invalid
-      error "Expected 2 arguments, got ${#}"
-      usage
-      exit 2
-      ;;
-  esac
-
-  if [ ! -f "${1}" ]; then
-    error "First argument should be a file: ${1}"
-    exit 1
-  fi
-
-  # Check the extension of the source file, should be .iso or .img
-  local extension
-  extension="$(tr '[:upper:]' '[:lower:]' <<< "${1##*.}")"
-
-  if [ "${extension}" != 'iso' ] && [ "${extension}" != 'img' ]; then
-    error "First argument should be an .iso or .img file: ${1}"
-  fi
-
-  if [ ! -b "${2}" ]; then
-    error "Destination should be a block special file (e.g. /dev/sdc): ${2}"
-    exit 1
-  fi
-}
-
-# Usage: log [ARG]...
-#
-# Prints all arguments on the standard output stream
-log() {
-  printf '\e[0;33m>>> %s\e[0m\n' "${*}"
-}
-
-# Usage: debug [ARG]...
-#
-# Prints all arguments on the standard output stream,
-# if debug output is enabled
-debug() {
-  [ "${debug}" != 'on' ] || printf '\e[0;36m### %s\e[0m\n' "${*}"
-}
-
-# Usage: error [ARG]...
-#
-# Prints all arguments on the standard error stream
-error() {
-  printf '\e[0;31m!!! %s\e[0m\n' "${*}" 1>&2
-}
-
-#}}}
-
-main "${@}"
-
+main "$@"
