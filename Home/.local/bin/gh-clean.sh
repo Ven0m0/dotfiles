@@ -20,6 +20,8 @@ check_ext() {
 check_ext HaywardMorihara/gh-tidy HaywardMorihara/gh-tidy || die "gh-tidy required"
 check_ext seachicken/gh-poi seachicken/gh-poi || die "gh-poi required"
 
+# TODO: add https://github.com/HaywardMorihara/gh-tidy/blob/main/gh-tidy directly instead of relying on it installed
+# git fetch --prune
 # cleanup operations
 printf '==> Removing merged branches (gh-tidy)...\n'
 gh tidy || :
@@ -32,5 +34,7 @@ git gc --aggressive --prune=now
 
 printf '==> Running git maintenance run...\n'
 git maintenance run
+
+# TODO: add more cleanup
 
 printf '==> Cleanup complete\n'
