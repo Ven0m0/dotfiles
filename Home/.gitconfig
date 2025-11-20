@@ -3,7 +3,7 @@
   attributesfile = ~/.gitattributes
   pager = delta
   whitespace = fix,-indent-with-non-tab,trailing-space,space-before-tab,cr-at-eol
-  editor = micro
+  editor = $EDITOR
   autocrlf = input
   preloadIndex = true
   eol = native
@@ -147,6 +147,12 @@
   line-numbers = true
   decorations = true
   navigate = true
+	hunk-header-style = omit
+	blame-code-style = syntax
+	blame-separator-format = none
+	line-numbers-right-format = " "
+	line-numbers-minus-style = syntax
+	line-numbers-plus-style = syntax
 [diff]
 	tool = vscode
   algorithm = histogram
