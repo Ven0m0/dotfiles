@@ -1,75 +1,122 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -euo pipefail; shopt -s nullglob
+export LC_ALL=C LANG=C IFS=$'\n\t'
+
+# Completely remove Git submodules
 # Author: Bert Van Vreckem <bert.vanvreckem@gmail.com>
-# Completely removes a Git submodule.
-# See usage() for details.
 
-# Variables
-readonly SCRIPT_NAME=$(basename "${0}")
-readonly SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
+# Colors
+readonly RED=$'\e[0;31m' GREEN=$'\e[0;32m' YELLOW=$'\e[0;33m' RESET=$'\e[0m'
+
+# Helper functions
+die(){ printf '%bError: %s%b\n' "$RED" "$*" "$RESET" >&2; exit 1; }
+log(){ printf '%s\n' "$*"; }
+ok(){ printf '%b[ OK ]%b\n' "$GREEN" "$RESET"; }
+fail(){ printf '%b[FAIL]%b\n' "$RED" "$RESET"; }
+
+# Log file for operations
 readonly LOG_FILE=$(mktemp)
-readonly BLUE='\e[0;34m'
-readonly YELLOW='\e[0;33m'
-readonly GREEN='\e[0;32m'
-readonly RED='\e[0;31m'
-readonly RESET='\e[0m'
+trap 'rm -f "$LOG_FILE"' EXIT
 
-main() {
-  check_args "$@"
-  remove_git_submodules "$@"
+usage(){
+  cat <<'EOF'
+git-rm-submodule - Completely remove Git submodules
+
+USAGE:
+  git-rm-submodule MODULE [MODULE...]
+
+ARGUMENTS:
+  MODULE    Path to submodule(s) to remove
+
+OPTIONS:
+  -h, --help  Show this help message
+
+DESCRIPTION:
+  Completely removes Git submodule(s) from the repository. This includes:
+  - Deinitializing the submodule
+  - Removing from working directory
+  - Cleaning up .git/modules/
+
+  This command must be run from the root of your Git repository.
+
+EXAMPLES:
+  git-rm-submodule libs/vendor
+  git-rm-submodule sub1 sub2 sub3
+
+REQUIREMENTS:
+  - git (with submodule support)
+  - Must be run from Git repository root
+
+NOTE:
+  After removal, you'll need to commit the changes:
+    git commit -m "Remove submodule: MODULE"
+EOF
 }
 
-#{{{ Helper functions
-# Check if command line arguments are valid
-check_args() {
-  if [ "${#}" -lt "1" ]; then
-    echo -e "${RED}Expected at least 1 argument, got ${#}${RESET}" >&2
-    usage; exit 2
+check_args(){
+  if [[ ${#} -lt 1 ]]; then
+    die "Expected at least 1 argument, got ${#}"
   fi
 
-  if [ ! -d "${PWD}/.git" ]; then
-    echo -e "${RED}fatal: Not a git repository${RESET}" >&2
-    usage; exit 1
+  if [[ ! -d ${PWD}/.git ]]; then
+    die "Not a Git repository. Run from repository root."
   fi
 }
 
-# For each argument, run the function remove_git_submodule
-remove_git_submodules() {
-  for module in "${@}"; do
-    echo -e "${YELLOW}--- Removing module ${module} ---${RESET}"
-    remove_git_submodule "${module}"
+remove_git_submodule(){
+  local submodule="$1"
+
+  printf '  Deinitializing submodule                  '
+  if git submodule deinit "$submodule" >> "$LOG_FILE" 2>&1; then
+    ok
+  else
+    fail
+    cat "$LOG_FILE"
+    return 1
+  fi
+
+  printf '  Removing from working directory            '
+  if git rm "$submodule" >> "$LOG_FILE" 2>&1; then
+    ok
+  else
+    fail
+    cat "$LOG_FILE"
+    return 1
+  fi
+
+  printf '  Removing from .git/modules/                '
+  if rm -rf ".git/modules/${submodule}" >> "$LOG_FILE" 2>&1; then
+    ok
+  else
+    fail
+    cat "$LOG_FILE"
+    return 1
+  fi
+}
+
+remove_git_submodules(){
+  for module in "$@"; do
+    printf '%b--- Removing module: %s ---%b\n' "$YELLOW" "$module" "$RESET"
+    remove_git_submodule "$module"
   done
 }
 
-# Removes the specified Git submodule completely
-remove_git_submodule() {
-  local submodule="${1}"
-  echo -en "  deinit module                          "
-  git submodule deinit "${submodule}" >> "${LOG_FILE}" 2>&1 || fail
-  echo -e "${GREEN}[ OK ]${RESET}"
-  echo -en "  removing module from working directory "
-  git rm "${submodule}" >> "${LOG_FILE}" 2>&1 || fail
-  echo -e "${GREEN}[ OK ]${RESET}"
-  echo -en "  removing module from .git/             "
-  rm -rf ".git/modules/${submodule}" >> "${LOG_FILE}" 2>&1 || fail
-  echo -e "${GREEN}[ OK ]${RESET}"
-}
+main(){
+  # Check for help
+  for arg in "$@"; do
+    if [[ $arg == -h || $arg == --help ]]; then
+      usage
+      exit 0
+    fi
+  done
 
-# Print failure message, error messages and exit
-fail() {
-  echo -e "${RED}[FAIL]${RESET}"
-  cat "${LOG_FILE}"; rm "${LOG_FILE}"; exit 1
-}
+  check_args "$@"
+  remove_git_submodules "$@"
 
-# Print usage message on stdout
-usage() {
-cat << 'EOF'
-Usage: ${0} [MODULE]
-
-  Completely removes a Git submodule. This command should be run from the
-  root directory of your local Git workin directory.
-EOF
+  log ""
+  printf '%b✓ All submodules removed successfully%b\n' "$GREEN" "$RESET"
+  log "Don't forget to commit the changes:"
+  log "  git commit -m 'Remove submodules'"
 }
 
 main "$@"

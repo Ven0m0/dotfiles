@@ -1,78 +1,107 @@
 #!/usr/bin/env bash
-# Copyright 2022 Chmouel Boudjnah <chmouel@chmouel.com>
-set -eufo pipefail
-TMP=$(mktemp /tmp/.mm.XXXXXX)
-clean() { rm -f ${TMP}; }
-trap clean EXIT
+set -euo pipefail; shopt -s nullglob
+export LC_ALL=C LANG=C
 
-curlargs=(-L)
-release=
-output=(-O)
+# Download GitHub release assets
+# Author: Chmouel Boudjnah <chmouel@chmouel.com>
+# Homepage: https://github.com/chmouel/gh-get-asset
 
-print_help() {
-	cat <<EOF
-USAGE: gh get-asset owner/repo substring_in_assset
+# Cleanup
+TMP=$(mktemp)
+trap 'rm -f "$TMP"' EXIT
 
- -o OUTPUT_FILE to output to that file instead of the asset name in curdir
- -r RELEASE to grab this specific release (default to latest)
- -s make it silent
+# Defaults
+release=""
+output_opt=(-O)
+curl_args=(-fsSL)
 
-Example:
-  gh-get-release -o /tmp/gosmee.rpm chmouel/gosmee Linux-ARM64.rpm
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 
-Author:
-    Chmouel Boudjnah - https://fosstodon.org/web/@chmouel
+usage(){
+  cat <<'EOF'
+gh-get-asset - Download GitHub release assets
 
-Homepage:
-    https://github.com/chmouel/gh-get-asset
+USAGE:
+  gh-get-asset [OPTIONS] OWNER/REPO ASSET_SUBSTRING
+
+ARGUMENTS:
+  OWNER/REPO         GitHub repository (e.g., chmouel/gosmee)
+  ASSET_SUBSTRING    Substring to match in asset name
+
+OPTIONS:
+  -o FILE            Output to FILE instead of asset name
+  -r RELEASE         Specific release tag (default: latest)
+  -s, --silent       Silent mode (no progress)
+  -h, --help         Show this help message
+
+DESCRIPTION:
+  Downloads release assets from GitHub repositories. Searches for
+  assets matching the given substring in the asset name.
+
+EXAMPLES:
+  gh-get-asset chmouel/gosmee Linux-ARM64.rpm
+  gh-get-asset -o /tmp/binary.tar.gz user/repo linux-amd64
+  gh-get-asset -r v1.2.3 owner/repo asset.zip
+
+REQUIREMENTS:
+  - curl (for downloading)
+  - jq (for JSON parsing)
+
+AUTHOR:
+  Chmouel Boudjnah - https://fosstodon.org/web/@chmouel
 EOF
 }
 
-while getopts "r:so:" o; do
-	case "${o}" in
-	r)
-		release=${OPTARG}
-		;;
-	s)
-		curlargs+=(-s)
-		;;
-	o)
-		output=(-o "${OPTARG}")
-		;;
-	h)
-		print_help
-		exit 0
-		;;
-	*)
-		echo "Invalid option"
-		print_help
-		exit 1
-		;;
-	esac
-done
-shift $((OPTIND - 1))
+gh_get_release(){
+  local repo="$1" substring="$2"
 
-[[ -z ${1-""} || -z ${2:-""} ]] && {
-	print_help
-	exit 1
+  curl -fsSL -o "$TMP" "https://api.github.com/repos/${repo}/releases"
+
+  local selector='.[0]'
+  if [[ -n $release ]]; then
+    selector=".[] | select(.tag_name==\"${release}\")"
+  fi
+
+  jq -rM "${selector}.assets[]|select(.name| contains(\"${substring}\"))? | .browser_download_url" < "$TMP"
 }
 
-gh_get_release() {
-	curl -o ${TMP} -s https://api.github.com/repos/${1}/releases
-	s='.[0]'
-	if [[ -n ${release} ]]; then
-		s=".[] | select(.tag_name==\"${release}\")"
-	fi
-	binary=$(jq -rM "${s}.assets[]|select(.name| contains(\"${2}\"))? | .browser_download_url" <${TMP})
-	echo ${binary}
+main(){
+  # Parse options
+  while getopts "r:so:h" opt; do
+    case "$opt" in
+      r) release="$OPTARG" ;;
+      s) curl_args+=(-s) ;;
+      o) output_opt=(-o "$OPTARG") ;;
+      h) usage; exit 0 ;;
+      *) die "Invalid option. Use -h for help." ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+
+  # Check arguments
+  [[ $# -eq 2 ]] || die "Expected 2 arguments. Use -h for help."
+
+  # Check dependencies
+  command -v curl &>/dev/null || die "curl is required"
+  command -v jq &>/dev/null || die "jq is required"
+
+  local repo="$1" substring="$2"
+
+  # Get assets
+  local -a assets
+  mapfile -t assets < <(gh_get_release "$repo" "$substring")
+
+  if [[ ${#assets[@]} -eq 0 ]]; then
+    die "Could not find asset matching '${substring}' in ${repo}"
+  fi
+
+  # Download each asset
+  for asset in "${assets[@]}"; do
+    printf 'Downloading: %s\n' "$asset"
+    curl "${output_opt[@]}" "${curl_args[@]}" "$asset"
+  done
+
+  printf '✓ Download complete\n'
 }
 
-assets=$(gh_get_release ${1} ${2})
-[[ -z ${assets} ]] && {
-	echo "coudl not find asset"
-	exit 1
-}
-
-for asset in ${assets}; do
-	curl "${output[@]}" "${curlargs[@]}" $asset
-done
+main "$@"
