@@ -8,6 +8,7 @@ warn() { printf '\033[0;93mWARN: %s\033[0m\n' "$1"; }
 ok() { printf '\033[0;92m%s\033[0m\n' "$1"; }
 err() { printf '\033[0;31mERROR: %s\033[0m\n' "$1" >&2; }
 
+# TODO: integrate gix (gitoxide) and optionally gh (github-cli)
 command -v git &>/dev/null || die "git not found"
 [[ -d .git ]] || die "Not a git repository"
 
@@ -83,5 +84,6 @@ msg "Running git gc --aggressive --prune=now..."
 git gc --aggressive --prune=now
 msg "Running git maintenance..."
 git maintenance run
+# TODO: git repack, more cleanup etc
 
 ok "Cleanup complete"
