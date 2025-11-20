@@ -39,7 +39,7 @@ deploy_home_dotfiles() {
     rsync -av --exclude='.git' --exclude='.gitignore' "${home_dir}/" "${HOME}/"
   else
     warn "rsync not available, using cp (install rsync for better deployment)"
-    cp -rf "${home_dir}/." "${HOME}/"
+    cp -a "${home_dir}/." "${HOME}/"
   fi
 
   success "User dotfiles deployed successfully"

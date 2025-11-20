@@ -147,6 +147,7 @@ EXCLUDES
     --exclude='.git'
     --exclude='.gitignore'
     --filter='dir-merge,- .gitignore'
+    --files-from=-
   )
   [[ "$dry_run" == "1" ]] && rsync_opts+=(--dry-run)
 
@@ -156,15 +157,18 @@ EXCLUDES
     warn "DRY RUN - Showing what would be synced..."
   fi
 
-  # Instead of syncing all of ~/, we sync specific paths that exist in Home/
+  # Build list of files to sync (only those that exist in both locations)
+  local -a files_to_sync=()
   while IFS= read -r -d '' file; do
     local rel_path="${file#${home_dir}/}"
     local source_file="${HOME}/${rel_path}"
-
-    if [[ -e "$source_file" ]]; then
-      rsync "${rsync_opts[@]}" "$source_file" "$file" 2>/dev/null || true
-    fi
+    [[ -e "$source_file" ]] && files_to_sync+=("$rel_path")
   done < <(find "$home_dir" -type f -print0)
+
+  # Sync all files at once using --files-from
+  if (( ${#files_to_sync[@]} > 0 )); then
+    printf '%s\n' "${files_to_sync[@]}" | rsync "${rsync_opts[@]}" "${HOME}/" "${home_dir}/"
+  fi
 
   rm -f "$exclude_file"
 

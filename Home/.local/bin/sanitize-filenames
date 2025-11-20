@@ -22,6 +22,6 @@ count=0
   [[ "$base" != "$new" ]] || continue
   target="$dir/$new"
   [[ ! -e "$target" ]] || { printf 'Collision: %s\n' "$f" >&2; continue; }
-  mv -f -T -- "$f" "$target" && printf '%s → %s\n' "$base" "$new" && ((count++)) || :
+  mv -f -- "$f" "$target" && printf '%s → %s\n' "$base" "$new" && ((count++)) || :
 done
 printf 'Renamed %d item(s)\n' "$count"
