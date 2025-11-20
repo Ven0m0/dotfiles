@@ -42,6 +42,7 @@ disk_space_percentage = true
 show = [
   "Kernel",
   "Distribution",
+  "OperatingSystem",
   "DesktopEnvironment",
   "Shell",
   "Terminal",
@@ -51,4 +52,5 @@ show = [
   "Memory",
   "DiskSpace",
   "LocalIP",
+  "Uptime",
 ]
