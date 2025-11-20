@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob
+set -eufo pipefail; shopt -s nullglob
 export LC_ALL=C LANG=C
-
 # Download GitHub release assets
-# Author: Chmouel Boudjnah <chmouel@chmouel.com>
-# Homepage: https://github.com/chmouel/gh-get-asset
-
+# https://github.com/chmouel/gh-get-asset
 # Cleanup
 TMP=$(mktemp)
 trap 'rm -f "$TMP"' EXIT
-
 # Defaults
 release=""
 output_opt=(-O)
 curl_args=(-fsSL)
-
 die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 
 usage(){
