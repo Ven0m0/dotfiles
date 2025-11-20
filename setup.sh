@@ -54,10 +54,7 @@ install_packages(){
   ensure_tuckr
 }
 ensure_tuckr(){
-  local has_tuckr
-  has_tuckr=$(has tuckr && echo 1 || echo 0)
-  
-  if [[ "$has_tuckr" == "0" ]]; then
+  if ! has tuckr; then
     printf '%b\n' "${BLD}${BLU}==>${BWHT} tuckr not found — installing via paru...${DEF}"
     # shellcheck disable=SC2086
     paru -S $PARU_OPTS tuckr || die "Failed to install tuckr via paru."
@@ -79,7 +76,7 @@ deploy_dotfiles(){
 
   # Determine the repository location
   local repo_dir
-  if command -v yadm &>/dev/null && yadm rev-parse --git-dir &>/dev/null; then
+  if has yadm && yadm rev-parse --git-dir &>/dev/null; then
     repo_dir="$(yadm rev-parse --show-toplevel)"
   elif [[ -d "$DOTFILES_DIR" ]]; then
     repo_dir="$DOTFILES_DIR"
@@ -96,7 +93,7 @@ deploy_dotfiles(){
   fi
 
   # Use rsync if available, otherwise fallback to cp
-  if command -v rsync &>/dev/null; then
+  if has rsync; then
     printf '%b\n' "${BLD}${BLU}==>${BWHT} Using rsync for deployment...${DEF}"
     rsync -av --exclude='.git' "${home_dir}/" "${HOME}/"
   else
