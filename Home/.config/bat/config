@@ -6,7 +6,7 @@
 --pager="less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups --no-edit-warn"
 --paging auto
 --strip-ansi auto
---style auto
+--style='header,changes,grid,snip'
 --wrap auto
 --decorations auto
 --color auto
@@ -15,4 +15,8 @@
 --map-syntax ".ignore:Git Ignore"
 --map-syntax='*.conf:INI'
 --map-syntax='.bash:Bash'
+--map-syntax "zsh*:Bash"
 --map-syntax='.fish:Fish'
+--map-syntax "log*:log"
+--map-syntax "requirements*:Requirements.txt"
+--map-syntax "*.cheat:Bourne Again Shell (bash)"
