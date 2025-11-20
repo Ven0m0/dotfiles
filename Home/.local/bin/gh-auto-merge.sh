@@ -27,14 +27,21 @@ cd "$work_dir"
 printf 'Fetching PR %s/%s#%s...\n' "$owner" "$repo" "$pr"
 command -v gh &>/dev/null || { printf 'Error: gh CLI not installed\n'; exit 1; }
 
-pr_info=$(gh pr view "$pr" -R "$owner/$repo" --json headRefName,baseRefName,headRepository)
+pr_info=$(gh pr view "$pr" -R "$owner/$repo" --json headRefName,baseRefName,headRepository,isCrossRepository)
 head_ref=$(jq -r .headRefName <<< "$pr_info")
 base_ref=$(jq -r .baseRefName <<< "$pr_info")
-head_repo=$(jq -r .headRepository.nameWithOwner <<< "$pr_info")
+is_cross=$(jq -r .isCrossRepository <<< "$pr_info")
 
-git clone -q --depth 1 --shallow-submodules --filter=blob:none "https://github.com/$head_repo.git" repo && cd repo
-git fetch -q origin "$base_ref:refs/remotes/origin/$base_ref" || :
-git checkout -q "$head_ref" 2>/dev/null || git checkout -q -b "$head_ref" "origin/$head_ref"
+if [[ $is_cross == true ]]; then
+  head_repo=$(jq -r .headRepository.nameWithOwner <<< "$pr_info")
+  [[ -n $head_repo && $head_repo != null ]] || { printf 'Error: Cannot access fork repo\n' >&2; exit 1; }
+else
+  head_repo="$owner/$repo"
+fi
+
+git clone -q --depth 1 "https://github.com/$head_repo.git" repo && cd repo
+git fetch -q --depth 1 origin "+$head_ref:refs/heads/$head_ref" "+$base_ref:refs/remotes/origin/$base_ref"
+git checkout -q "$head_ref"
 printf 'Merging %s into %s (strategy: %s)...\n' "$base_ref" "$head_ref" "$strategy"
 
 case $strategy in
