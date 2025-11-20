@@ -13,7 +13,7 @@ elif has sed; then
 else
   die "sed/sd required"
 fi
-has fd && finder=(fd -tf -td -H -I -X printf '%s\0') || finder=(find . -print0)
+has fd && finder=(fd -tf -td -H -I -0) || finder=(find . -print0)
 count=0
 "${finder[@]}" | sort -zr | while IFS= read -r -d '' f; do
   [[ -e "$f" ]] || continue
