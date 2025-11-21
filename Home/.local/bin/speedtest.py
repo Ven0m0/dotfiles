@@ -531,12 +531,13 @@ if HTTPSConnection:
                                 self.sock,
                                 cert_reqs=ssl_module.CERT_REQUIRED,
                                 ca_certs=ssl_module.get_default_verify_paths().cafile,
+                                ssl_version=ssl_module.PROTOCOL_TLSv1_2,
                             )
                         else:
                             # Last resort: wrap without verification but warn
-                            self.sock = ssl_module.wrap_socket(self.sock)
+                            self.sock = ssl_module.wrap_socket(self.sock, ssl_version=ssl_module.PROTOCOL_TLSv1_2)
                     except (AttributeError, TypeError):
-                        self.sock = ssl.wrap_socket(self.sock)
+                        self.sock = ssl.wrap_socket(self.sock, ssl_version=ssl.PROTOCOL_TLSv1_2)
                     try:
                         self.sock.server_hostname = server_hostname
                     except AttributeError:
