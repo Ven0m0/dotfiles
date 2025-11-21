@@ -1,0 +1,53 @@
+# YADM Encryption Configuration
+# Files and patterns listed here will be encrypted by 'yadm encrypt'
+# and decrypted by 'yadm decrypt' using GPG
+#
+# Usage:
+#   yadm encrypt      - Encrypt all files listed below
+#   yadm decrypt      - Decrypt the archive
+#   yadm list -a      - List all tracked files including encrypted ones
+#
+# Note: You must have GPG configured with a key before using encryption
+# Setup: gpg --full-generate-key
+
+# SSH Keys
+.ssh/id_*
+.ssh/*_key
+.ssh/*.pem
+!.ssh/*.pub
+
+# GPG Keys
+.gnupg/*.key
+.gnupg/*secret*
+.gnupg/private-keys-v1.d/*
+
+# Git Credentials & Config
+.gitconfig.local
+.git-credentials
+
+# GitHub CLI
+.config/gh/hosts.yml
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+!.env.template
+
+# API Keys & Tokens
+.aws/credentials
+.config/gcloud/credentials.db
+.config/gcloud/access_tokens.db
+.docker/config.json
+
+# Password Managers
+.password-store/*
+
+# Security Tokens
+.mozilla/firefox/*/key*.db
+.mozilla/firefox/*/logins.json
+
+# Private Configuration
+.netrc
+.authinfo
+.authinfo.gpg
