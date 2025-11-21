@@ -531,6 +531,7 @@ if HTTPSConnection:
                                 self.sock,
                                 cert_reqs=ssl_module.CERT_REQUIRED,
                                 ca_certs=ssl_module.get_default_verify_paths().cafile,
+                                ssl_version=ssl_module.PROTOCOL_TLSv1_2,
                             )
                         else:
                             # Last resort: wrap without verification but warn
