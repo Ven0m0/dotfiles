@@ -2,19 +2,15 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012 Matt Martz
 # All Rights Reserved.
-#
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
 #    a copy of the License at
-#
 #         http://www.apache.org/licenses/LICENSE-2.0
-#
 #    Unless required by applicable law or agreed to in writing, software
 #    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-
 import csv
 import datetime
 import errno
@@ -2107,15 +2103,12 @@ def shell():
         speedtest.get_best_server()
     elif args.mini:
         speedtest.get_best_server(speedtest.set_mini_server(args.mini))
-
     results = speedtest.results
-
     printer(
         "Hosted by %(sponsor)s (%(name)s) [%(d)0.2f km]: "
         "%(latency)s ms" % results.server,
         quiet,
     )
-
     if args.download:
         printer("Testing download speed", quiet, end=("", "\n")[bool(debug)])
         speedtest.download(callback=callback, threads=(None, 1)[args.single])
@@ -2126,7 +2119,6 @@ def shell():
         )
     else:
         printer("Skipping download test", quiet)
-
     if args.upload:
         printer("Testing upload speed", quiet, end=("", "\n")[bool(debug)])
         speedtest.upload(
@@ -2141,12 +2133,9 @@ def shell():
         )
     else:
         printer("Skipping upload test", quiet)
-
     printer("Results:\n%r" % results.dict(), debug=True)
-
     if not args.simple and args.share:
         results.share()
-
     if args.simple:
         printer(
             "Ping: %s ms\nDownload: %0.2f M%s/s\nUpload: %0.2f M%s/s"
@@ -2162,10 +2151,8 @@ def shell():
         printer(results.csv(delimiter=args.csv_delimiter))
     elif args.json:
         printer(results.json())
-
     if args.share and not machine_format:
         printer("Share results: %s" % results.share())
-
 
 def main():
     try:
@@ -2180,7 +2167,6 @@ def main():
             if not msg:
                 msg = "%r" % e
             raise SystemExit("ERROR: %s" % msg)
-
 
 if __name__ == "__main__":
     main()
