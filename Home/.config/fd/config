@@ -2,3 +2,8 @@
 --ignore
 --ignore-vcs
 --one-file-system
+--threads=0
+--follow
+--color=auto
+--absolute-path
+--strip-cwd-prefix

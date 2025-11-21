@@ -20,8 +20,8 @@ export LESSCHARSET='utf-8' LESSHISTFILE=- LESSQUIET=1
 export TERM=xterm-256color CLICOLOR=1 MICRO_TRUECOLOR=1 KEYTIMEOUT=1
 export TZ=Europe/Berlin TIME_STYLE='+%d-%m %H:%M'
 export LC_ALL=C.UTF-8 LANG=C.UTF-8 LANGUAGE=C.UTF-8
-WORDCHARS='*?_-[]~&;!#$%^(){}<>|'
 export LESS='-g -i -M -R -S -w -z-4'
+WORDCHARS='*?[]~&;!#$%^(){}<>'
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --info=inline"
 export FZF_DEFAULT_COMMAND='fd -tf -gH -c always -strip-cwd-prefix -E ".git"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -34,14 +34,12 @@ setopt EXTENDED_GLOB GLOB_DOTS NULL_GLOB GLOB_STAR_SHORT NUMERIC_GLOB_SORT HASH_
 setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS INC_APPEND_HISTORY EXTENDED_HISTORY
 setopt HIST_REDUCE_BLANKS HIST_SAVE_NO_DUPS SHARE_HISTORY HIST_IGNORE_SPACE
 setopt HIST_EXPIRE_DUPS_FIRST HIST_FCNTL_LOCK
-setopt INTERACTIVE_COMMENTS RC_QUOTES NO_BEEP NO_FLOW_CONTROL
+setopt INTERACTIVE_COMMENTS RC_QUOTES NO_BEEP NO_FLOW_CONTROL NO_HIST_BEEP
 setopt NO_CLOBBER AUTO_RESUME COMBINING_CHARS NO_MAIL_WARNING
-setopt LONG_LIST_JOBS TRANSIENT_RPROMPT prompt_subst
-setopt NOTIFY no_beep NO_hist_beep
-setopt magic_equal_subst auto_resume
-unsetopt menu_complete
-setopt list_packed auto_list auto_menu auto_param_keys complete_in_word nonomatch
-setopt short_loops long_list_jobs rm_star_wait
+setopt LONG_LIST_JOBS TRANSIENT_RPROMPT PROMPT_SUBST NOTIFY
+setopt MAGIC_EQUAL_SUBST LIST_PACKED AUTO_LIST AUTO_MENU AUTO_PARAM_KEYS
+setopt COMPLETE_IN_WORD NONOMATCH SHORT_LOOPS RM_STAR_WAIT
+unsetopt MENU_COMPLETE
 stty stop undef &>/dev/null || :
 DISABLE_MAGIC_FUNCTIONS="true"
 ENABLE_CORRECTION="true"
@@ -229,7 +227,6 @@ qc-word-widgets(){ local wordpat='[[:WORD:]]##|[[:space:]]##|[^[:WORD:][:space:]
 }}; for w in qc{,-kill}-{sub,shell}-{l,r}; zle -N $w qc-word-widgets
 bindkey '\E[1;5D' qc-sub-l; bindkey '\E[1;5C' qc-sub-r; bindkey '\E[1;3D' qc-shell-l; bindkey '\E[1;3C' qc-shell-r
 bindkey '^H' qc-kill-sub-l; bindkey '^W' qc-kill-sub-l; bindkey '\E[3;5~' qc-kill-sub-r; bindkey '\E^?' qc-kill-shell-l; bindkey '\E[3;3~' qc-kill-shell-r
-WORDCHARS='*?[]~&;!#$%^(){}<>'
 qc-trim-paste(){ zle .$WIDGET && LBUFFER=${LBUFFER%%[[:space:]]#}; }
 zle -N bracketed-paste qc-trim-paste
 qc-rationalize-dot(){ if [[ $LBUFFER == *.. ]]; then LBUFFER+='/..'; else LBUFFER+='.'; fi; }
