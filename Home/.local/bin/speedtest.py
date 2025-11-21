@@ -544,8 +544,11 @@ if HTTPSConnection:
                         if hasattr(ssl, "PROTOCOL_TLSv1_2"):
                             self.sock = ssl.wrap_socket(self.sock, ssl_version=ssl.PROTOCOL_TLSv1_2)
                         else:
-                            # Fallback: wrap without secure protocol (INSECURE)
-                            self.sock = ssl.wrap_socket(self.sock)
+                            # Fallback: do not wrap with insecure protocol; raise error if TLSv1.2 is not available
+                            raise SpeedtestException(
+                                "Unable to establish a secure SSL/TLS connection: "
+                                "No TLSv1.2+ protocol available in ssl module."
+                            )
                     try:
                         self.sock.server_hostname = server_hostname
                     except AttributeError:
