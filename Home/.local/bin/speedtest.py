@@ -534,9 +534,18 @@ if HTTPSConnection:
                             )
                         else:
                             # Last resort: wrap without verification but warn
-                            self.sock = ssl_module.wrap_socket(self.sock)
+                            # Try to use a secure protocol (TLSv1.2) if possible
+                            if hasattr(ssl_module, "PROTOCOL_TLSv1_2"):
+                                self.sock = ssl_module.wrap_socket(self.sock, ssl_version=ssl_module.PROTOCOL_TLSv1_2)
+                            else:
+                                # Fallback: wrap without secure protocol (INSECURE)
+                                self.sock = ssl_module.wrap_socket(self.sock)
                     except (AttributeError, TypeError):
-                        self.sock = ssl.wrap_socket(self.sock)
+                        if hasattr(ssl, "PROTOCOL_TLSv1_2"):
+                            self.sock = ssl.wrap_socket(self.sock, ssl_version=ssl.PROTOCOL_TLSv1_2)
+                        else:
+                            # Fallback: wrap without secure protocol (INSECURE)
+                            self.sock = ssl.wrap_socket(self.sock)
                     try:
                         self.sock.server_hostname = server_hostname
                     except AttributeError:
