@@ -9,6 +9,9 @@ cd -P -- "$(cd -P -- "${BASH_SOURCE[0]%/*}" && echo "$PWD")" || exit 1
 # 3. Runs yadm bootstrap for user-level setup.
 # 4. Deploys dotfiles from Home/ subdirectory to home directory.
 # 5. Uses tuckr to link system-wide configs (/etc, /usr).
+#--- Options ---#
+DRY_RUN=false
+VERBOSE=false
 #--- Helpers ---#
 # Define color codes (used before common lib is installed)
 BLK=$'\e[30m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
@@ -20,9 +23,79 @@ DEF=$'\e[0m' BLD=$'\e[1m'
 has(){ command -v "$1" &>/dev/null; }
 warn(){ printf '%b\n' "${BLD}${YLW}==> WARNING:${BWHT} $1${DEF}"; }
 die(){ printf '%b\n' "${BLD}${RED}==> ERROR:${BWHT} $1${DEF}" >&2; exit 1; }
+info(){ printf '%b\n' "${BLD}${BLU}==>${BWHT} $1${DEF}"; }
+success(){ printf '%b\n' "${BLD}${GRN}==>${BWHT} $1${DEF}"; }
+
+# Dry-run execution wrapper
+run_cmd(){
+  if [[ "$DRY_RUN" == true ]]; then
+    printf '%b\n' "${BLD}${CYN}[DRY-RUN]${BWHT} $*${DEF}"
+    return 0
+  fi
+  "$@"
+}
+#--- Argument Parsing ---#
+parse_args(){
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --dry-run|-n)
+        DRY_RUN=true
+        info "Dry-run mode enabled - no changes will be made"
+        shift
+        ;;
+      --verbose|-v)
+        VERBOSE=true
+        shift
+        ;;
+      --help|-h)
+        show_help
+        exit 0
+        ;;
+      *)
+        warn "Unknown option: $1"
+        show_help
+        exit 1
+        ;;
+    esac
+  done
+}
+
+show_help(){
+  cat <<EOF
+${BLD}Dotfiles Setup Script${DEF}
+
+Usage: $(basename "$0") [OPTIONS]
+
+Options:
+  -n, --dry-run    Show what would be done without making changes
+  -v, --verbose    Enable verbose output
+  -h, --help       Show this help message
+
+Description:
+  This script sets up the dotfiles repository by:
+  1. Installing required packages (paru, yadm, tuckr, etc.)
+  2. Cloning dotfiles with yadm
+  3. Deploying user configs from Home/ to ~/
+  4. Linking system configs from etc/ and usr/ to /
+
+Requirements:
+  - Arch Linux or CachyOS
+  - Internet connection
+  - sudo access
+  - Must NOT be run as root
+
+EOF
+}
+
 #--- Pre-flight Checks ---#
+parse_args "$@"
+
 [[ $EUID -eq 0 ]] && die "Run as a regular user, not root."
-sudo -v
+
+if [[ "$DRY_RUN" == false ]]; then
+  sudo -v || die "sudo access required"
+fi
+
 ! ping -c 1 archlinux.org &>/dev/null && die "No internet connection."
 #--- Configuration ---#
 readonly DOTFILES_REPO="https://github.com/Ven0m0/dotfiles.git"
@@ -39,7 +112,7 @@ main(){
 }
 #--- Functions ---#
 install_packages(){
-  printf '%b\n' "${BLD}${BLU}==>${BWHT} Installing packages from official and AUR repositories...${DEF}"
+  info "Installing packages from official and AUR repositories..."
   local pkgs=(
     git gitoxide aria2 curl zsh fd sd ripgrep bat jq
     zoxide starship fzf yadm tuckr
@@ -48,31 +121,48 @@ install_packages(){
   # paru is a hard dependency on CachyOS and should always be available
   has paru || die "paru not found. This script requires CachyOS or Arch with paru installed."
 
-  # Word splitting is intentional for PARU_OPTS
-  # shellcheck disable=SC2086
-  paru -Syuq $PARU_OPTS "${pkgs[@]}"
+  if [[ "$DRY_RUN" == true ]]; then
+    info "[DRY-RUN] Would install packages: ${pkgs[*]}"
+  else
+    # Word splitting is intentional for PARU_OPTS
+    # shellcheck disable=SC2086
+    paru -Syuq $PARU_OPTS "${pkgs[@]}" || die "Failed to install packages"
+  fi
   ensure_tuckr
 }
 ensure_tuckr(){
   if ! has tuckr; then
-    printf '%b\n' "${BLD}${BLU}==>${BWHT} tuckr not found — installing via paru...${DEF}"
-    # shellcheck disable=SC2086
-    paru -S $PARU_OPTS tuckr || die "Failed to install tuckr via paru."
+    info "tuckr not found — installing via paru..."
+    if [[ "$DRY_RUN" == true ]]; then
+      info "[DRY-RUN] Would install tuckr"
+    else
+      # shellcheck disable=SC2086
+      paru -S $PARU_OPTS tuckr || die "Failed to install tuckr via paru."
+    fi
   fi
-  printf '%b\n' "${BLD}${BLU}==>${BWHT} tuckr is ready.${DEF}"
+  success "tuckr is ready."
 }
 setup_dotfiles(){
   has yadm || die "yadm command not found. Package installation failed."
   if [[ ! -d "$DOTFILES_DIR" ]]; then
-    printf '%b\n' "${BLD}${BLU}==>${BWHT} Cloning dotfiles with yadm...${DEF}"
-    yadm clone --bootstrap "$DOTFILES_REPO"
+    info "Cloning dotfiles with yadm..."
+    if [[ "$DRY_RUN" == true ]]; then
+      info "[DRY-RUN] Would clone: $DOTFILES_REPO"
+    else
+      yadm clone --bootstrap "$DOTFILES_REPO" || die "Failed to clone dotfiles"
+    fi
   else
-    printf '%b\n' "${BLD}${BLU}==>${BWHT} Dotfiles repo exists. Pulling latest changes & re-running bootstrap...${DEF}"
-    yadm pull && yadm bootstrap
+    info "Dotfiles repo exists. Pulling latest changes & re-running bootstrap..."
+    if [[ "$DRY_RUN" == true ]]; then
+      info "[DRY-RUN] Would pull and bootstrap"
+    else
+      yadm pull || warn "Failed to pull latest changes"
+      yadm bootstrap || warn "Bootstrap failed"
+    fi
   fi
 }
 deploy_dotfiles(){
-  printf '%b\n' "${BLD}${BLU}==>${BWHT} Deploying dotfiles from Home/ subdirectory...${DEF}"
+  info "Deploying dotfiles from Home/ subdirectory..."
 
   # Determine the repository location
   local repo_dir
@@ -92,37 +182,58 @@ deploy_dotfiles(){
     return 0
   fi
 
-  # Use rsync if available, otherwise fallback to cp
-  if has rsync; then
-    printf '%b\n' "${BLD}${BLU}==>${BWHT} Using rsync for deployment...${DEF}"
-    rsync -av --exclude='.git' "${home_dir}/" "${HOME}/"
-  else
-    printf '%b\n' "${BLD}${BLU}==>${BWHT} Using cp for deployment (rsync not available)...${DEF}"
-    cp -r "${home_dir}/." "${HOME}/"
+  if [[ "$DRY_RUN" == true ]]; then
+    info "[DRY-RUN] Would deploy from: $home_dir to $HOME"
+    if has rsync; then
+      info "[DRY-RUN] Using rsync for deployment"
+    else
+      info "[DRY-RUN] Using cp for deployment (rsync not available)"
+    fi
+    return 0
   fi
 
-  printf '%b\n' "${BLD}${GRN}==>${BWHT} Dotfiles from Home/ deployed successfully!${DEF}"
+  # Use rsync if available, otherwise fallback to cp
+  if has rsync; then
+    info "Using rsync for deployment..."
+    rsync -av --exclude='.git' "${home_dir}/" "${HOME}/" || die "rsync deployment failed"
+  else
+    info "Using cp for deployment (rsync not available)..."
+    cp -r "${home_dir}/." "${HOME}/" || die "cp deployment failed"
+  fi
+
+  success "Dotfiles from Home/ deployed successfully!"
 }
 tuckr_system_configs(){
-  printf '%b\n' "${BLD}${BLU}==>${BWHT} Linking system-wide configs for /etc and /usr with tuckr...${DEF}"
+  info "Linking system-wide configs for /etc and /usr with tuckr..."
   has tuckr || die "tuckr command not found. Cannot link system configs."
   [[ -d "$TUCKR_DIR" ]] || die "Dotfiles directory not found at $TUCKR_DIR."
+
   local tuckr_pkgs=(etc usr)
   for pkg in "${tuckr_pkgs[@]}"; do
     if [[ -d "${TUCKR_DIR}/${pkg}" ]]; then
-      printf '%b\n' "${BLD}${BLU}==>${BWHT} Linking '${pkg}' to target '/'...${DEF}"
-      sudo tuckr link -d "$TUCKR_DIR" -t / "$pkg"
+      if [[ "$DRY_RUN" == true ]]; then
+        info "[DRY-RUN] Would link '${pkg}' to target '/'"
+      else
+        info "Linking '${pkg}' to target '/'..."
+        sudo tuckr link -d "$TUCKR_DIR" -t / "$pkg" || warn "Failed to link ${pkg}"
+      fi
     else
       warn "tuckr package '${pkg}' not found in repo, skipping."
     fi
   done
 }
 final_steps(){
-  printf '%b\n' "${BLD}${GRN}==>${BWHT} Setup complete! ${DEF}"
-  printf '%b\n' "${BLD}${BLU}==>${BWHT} Dotfiles have been cloned, deployed, and system configs linked.${DEF}"
-  printf '%b\n' "${BLD}${BLU}==>${BWHT} Some changes may require a reboot or new login session.${DEF}"
-  [[ "$SHELL" == "/bin/zsh" ]] && warn "Your shell is set to Zsh. Log out and back in to use it."
-  printf '%b\n' "${BLD}${BLU}==>${BWHT} Run 'yadm status' to check the state of your dotfiles.${DEF}"
+  if [[ "$DRY_RUN" == true ]]; then
+    success "Dry-run complete! No changes were made."
+    info "To apply changes, run without --dry-run flag"
+  else
+    success "Setup complete!"
+    info "Dotfiles have been cloned, deployed, and system configs linked."
+    info "Some changes may require a reboot or new login session."
+    [[ "$SHELL" != "/bin/zsh" ]] && warn "Consider changing your shell to Zsh with: chsh -s /bin/zsh"
+    info "Run 'yadm status' to check the state of your dotfiles."
+    info "Run 'yadm encrypt' to encrypt sensitive files (configured in .yadm/encrypt)"
+  fi
 }
 #--- Execution ---#
 main "$@"
