@@ -1,3 +1,8 @@
+# Use cargo binstall
+[tasks.cbin]
+description = 'Mise cargo-binstall use'
+run = "env MISE_CARGO_BINSTALL=true mise use -gy"
+
 # Install Rust dependencies
 [tasks.install]
 alias = "i"
