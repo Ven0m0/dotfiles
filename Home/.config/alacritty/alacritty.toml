@@ -74,10 +74,10 @@ action = "PasteSelection"
 
 [keyboard]
 bindings = [
-{ key = "Insert", mods = "Shift", action = "Paste" },
-{ key = "Insert", mods = "Control", action = "Copy" }
-{ key = "Paste", action = "Paste" }
-{ key = "Copy", action = "Copy" }
+  { key = "Insert", mods = "Shift", action = "Paste" },
+  { key = "Insert", mods = "Control", action = "Copy" },
+  { key = "Paste", action = "Paste" },
+  { key = "Copy", action = "Copy" },
 ]
 
 [[keyboard.bindings]]

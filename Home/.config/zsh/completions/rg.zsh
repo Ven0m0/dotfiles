@@ -47,9 +47,9 @@ _rg() {
 
     + '(buffered)' # buffering options
     '--line-buffered[force line buffering]'
-    $no"--no-line-buffered[don't force line buffering]"
+    "$no--no-line-buffered[don't force line buffering]"
     '--block-buffered[force block buffering]'
-    $no"--no-block-buffered[don't force block buffering]"
+    "$no--no-block-buffered[don't force block buffering]"
 
     + '(case)' # Case-sensitivity options
     {-i,--ignore-case}'[search case-insensitively]'
@@ -67,17 +67,17 @@ _rg() {
 
     + '(column)' # Column options
     '--column[show column numbers for matches]'
-    $no"--no-column[don't show column numbers for matches]"
+    "$no--no-column[don't show column numbers for matches]"
 
     + '(count)' # Counting options
     {-c,--count}'[only show count of matching lines for each file]'
     '--count-matches[only show count of individual matches for each file]'
     '--include-zero[include files with zero matches in summary]'
-    $no"--no-include-zero[don't include files with zero matches in summary]"
+    "$no--no-include-zero[don't include files with zero matches in summary]"
 
     + '(encoding)' # Encoding options
     {-E+,--encoding=}'[specify text encoding of files to search]: :_rg_encodings'
-    $no'--no-encoding[use default text encoding]'
+    "$no"'--no-encoding[use default text encoding]'
 
     + '(engine)' # Engine choice options
     '--engine=[select which regex engine to use]:when:((
@@ -99,15 +99,15 @@ _rg() {
 
     + '(file-system)' # File system options
     "--one-file-system[don't descend into directories on other file systems]"
-    $no'--no-one-file-system[descend into directories on other file systems]'
+    "$no"'--no-one-file-system[descend into directories on other file systems]'
 
     + '(fixed)' # Fixed-string options
     {-F,--fixed-strings}'[treat pattern as literal string instead of regular expression]'
-    $no"--no-fixed-strings[don't treat pattern as literal string]"
+    "$no--no-fixed-strings[don't treat pattern as literal string]"
 
     + '(follow)' # Symlink-following options
     {-L,--follow}'[follow symlinks]'
-    $no"--no-follow[don't follow symlinks]"
+    "$no--no-follow[don't follow symlinks]"
 
     + '(generate)' # Options for generating ancillary data
     '--generate=[generate man page or completion scripts]:when:((
@@ -124,7 +124,7 @@ _rg() {
 
     + '(glob-case-insensitive)' # File-glob case sensitivity options
     '--glob-case-insensitive[treat -g/--glob patterns case insensitively]'
-    $no'--no-glob-case-insensitive[treat -g/--glob patterns case sensitively]'
+    "$no"'--no-glob-case-insensitive[treat -g/--glob patterns case sensitively]'
 
     + '(heading)' # Heading options
     '(pretty-vimgrep)--heading[show matches grouped by file name]'
@@ -132,51 +132,51 @@ _rg() {
 
     + '(hidden)' # Hidden-file options
     {-.,--hidden}'[search hidden files and directories]'
-    $no"--no-hidden[don't search hidden files and directories]"
+    "$no--no-hidden[don't search hidden files and directories]"
 
     + '(hybrid)' # hybrid regex options
     '--auto-hybrid-regex[DEPRECATED: dynamically use PCRE2 if necessary]'
-    $no"--no-auto-hybrid-regex[DEPRECATED: don't dynamically use PCRE2 if necessary]"
+    "$no--no-auto-hybrid-regex[DEPRECATED: don't dynamically use PCRE2 if necessary]"
 
     + '(ignore)' # Ignore-file options
     "(--no-ignore-global --no-ignore-parent --no-ignore-vcs --no-ignore-dot)--no-ignore[don't respect ignore files]"
-    $no'(--ignore-global --ignore-parent --ignore-vcs --ignore-dot)--ignore[respect ignore files]'
+    "$no"'(--ignore-global --ignore-parent --ignore-vcs --ignore-dot)--ignore[respect ignore files]'
 
     + '(ignore-file-case-insensitive)' # Ignore-file case sensitivity options
     '--ignore-file-case-insensitive[process ignore files case insensitively]'
-    $no'--no-ignore-file-case-insensitive[process ignore files case sensitively]'
+    "$no"'--no-ignore-file-case-insensitive[process ignore files case sensitively]'
 
     + '(ignore-exclude)' # Local exclude (ignore)-file options
     "--no-ignore-exclude[don't respect local exclude (ignore) files]"
-    $no'--ignore-exclude[respect local exclude (ignore) files]'
+    "$no"'--ignore-exclude[respect local exclude (ignore) files]'
 
     + '(ignore-global)' # Global ignore-file options
     "--no-ignore-global[don't respect global ignore files]"
-    $no'--ignore-global[respect global ignore files]'
+    "$no"'--ignore-global[respect global ignore files]'
 
     + '(ignore-parent)' # Parent ignore-file options
     "--no-ignore-parent[don't respect ignore files in parent directories]"
-    $no'--ignore-parent[respect ignore files in parent directories]'
+    "$no"'--ignore-parent[respect ignore files in parent directories]'
 
     + '(ignore-vcs)' # VCS ignore-file options
     "--no-ignore-vcs[don't respect version control ignore files]"
-    $no'--ignore-vcs[respect version control ignore files]'
+    "$no"'--ignore-vcs[respect version control ignore files]'
 
     + '(require-git)' # git specific settings
     "--no-require-git[don't require git repository to respect gitignore rules]"
-    $no'--require-git[require git repository to respect gitignore rules]'
+    "$no"'--require-git[require git repository to respect gitignore rules]'
 
     + '(ignore-dot)' # .ignore options
     "--no-ignore-dot[don't respect .ignore files]"
-    $no'--ignore-dot[respect .ignore files]'
+    "$no"'--ignore-dot[respect .ignore files]'
 
     + '(ignore-files)' # custom global ignore file options
     "--no-ignore-files[don't respect --ignore-file flags]"
-    $no'--ignore-files[respect --ignore-file files]'
+    "$no"'--ignore-files[respect --ignore-file files]'
 
     + '(json)' # JSON options
     '--json[output results in JSON Lines format]'
-    $no"--no-json[don't output results in JSON Lines format]"
+    "$no--no-json[don't output results in JSON Lines format]"
 
     + '(line-number)' # Line-number options
     {-n,--line-number}'[show line numbers for matches]'
@@ -184,12 +184,12 @@ _rg() {
 
     + '(line-terminator)' # Line-terminator options
     '--crlf[use CRLF as line terminator]'
-    $no"--no-crlf[don't use CRLF as line terminator]"
+    "$no--no-crlf[don't use CRLF as line terminator]"
     '(text)--null-data[use NUL as line terminator]'
 
     + '(max-columns-preview)' # max column preview options
     '--max-columns-preview[show preview for long lines (with -M)]'
-    $no"--no-max-columns-preview[don't show preview for long lines (with -M)]"
+    "$no--no-max-columns-preview[don't show preview for long lines (with -M)]"
 
     + '(max-depth)' # Directory-depth options
     {-d,--max-depth}'[specify max number of directories to descend]:number of directories'
@@ -198,11 +198,11 @@ _rg() {
 
     + '(messages)' # Error-message options
     '(--no-ignore-messages)--no-messages[suppress some error messages]'
-    $no"--messages[don't suppress error messages affected by --no-messages]"
+    "$no--messages[don't suppress error messages affected by --no-messages]"
 
     + '(messages-ignore)' # Ignore-error message options
     "--no-ignore-messages[don't show ignore-file parse error messages]"
-    $no'--ignore-messages[show ignore-file parse error messages]'
+    "$no"'--ignore-messages[show ignore-file parse error messages]'
 
     + '(mmap)' # mmap options
     '--mmap[search using memory maps when possible]'
@@ -210,11 +210,11 @@ _rg() {
 
     + '(multiline)' # Multiline options
     {-U,--multiline}'[permit matching across multiple lines]'
-    $no'(multiline-dotall)--no-multiline[restrict matches to at most one line each]'
+    "$no"'(multiline-dotall)--no-multiline[restrict matches to at most one line each]'
 
     + '(multiline-dotall)' # Multiline DOTALL options
     '(--no-multiline)--multiline-dotall[allow "." to match newline (with -U)]'
-    $no"(--no-multiline)--no-multiline-dotall[don't allow \".\" to match newline (with -U)]"
+    "$no(--no-multiline)--no-multiline-dotall[don't allow \".\" to match newline (with -U)]"
 
     + '(only)' # Only-match options
     {-o,--only-matching}'[show only matching part of each line]'
@@ -225,15 +225,15 @@ _rg() {
 
     + '(pcre2)' # PCRE2 options
     {-P,--pcre2}'[enable matching with PCRE2]'
-    $no'(pcre2-unicode)--no-pcre2[disable matching with PCRE2]'
+    "$no"'(pcre2-unicode)--no-pcre2[disable matching with PCRE2]'
 
     + '(pcre2-unicode)' # PCRE2 Unicode options
-    $no'(--no-pcre2 --no-pcre2-unicode)--pcre2-unicode[DEPRECATED: enable PCRE2 Unicode mode (with -P)]'
+    "$no"'(--no-pcre2 --no-pcre2-unicode)--pcre2-unicode[DEPRECATED: enable PCRE2 Unicode mode (with -P)]'
     '(--no-pcre2 --pcre2-unicode)--no-pcre2-unicode[DEPRECATED: disable PCRE2 Unicode mode (with -P)]'
 
     + '(pre)' # Preprocessing options
     '(-z --search-zip)--pre=[specify preprocessor utility]:preprocessor utility:_command_names -e'
-    $no'--no-pre[disable preprocessor utility]'
+    "$no"'--no-pre[disable preprocessor utility]'
 
     + pre-glob # Preprocessing glob options
     '*--pre-glob[include/exclude files for preprocessing with --pre]'
@@ -264,24 +264,24 @@ _rg() {
       created\:"sort by creation time"
     ))'
     '(threads)--sort-files[DEPRECATED: sort results by file path (disables parallelism)]'
-    $no"--no-sort-files[DEPRECATED: do not sort results]"
+    "$no--no-sort-files[DEPRECATED: do not sort results]"
 
     + '(stats)' # Statistics options
     '(--files file-match)--stats[show search statistics]'
-    $no"--no-stats[don't show search statistics]"
+    "$no--no-stats[don't show search statistics]"
 
     + '(text)' # Binary-search options
     {-a,--text}'[search binary files as if they were text]'
     "--binary[search binary files, don't print binary data]"
-    $no"--no-binary[don't search binary files]"
-    $no"(--null-data)--no-text[don't search binary files as if they were text]"
+    "$no--no-binary[don't search binary files]"
+    "$no(--null-data)--no-text[don't search binary files as if they were text]"
 
     + '(threads)' # Thread-count options
     '(sort)'{-j+,--threads=}'[specify approximate number of threads to use]:number of threads'
 
     + '(trim)' # Trim options
     '--trim[trim any ASCII whitespace prefix from each line]'
-    $no"--no-trim[don't trim ASCII whitespace prefix from each line]"
+    "$no--no-trim[don't trim ASCII whitespace prefix from each line]"
 
     + type # Type options
     '*'{-t+,--type=}'[only search files matching specified type]: :_rg_types'
@@ -296,16 +296,16 @@ _rg() {
     {-x,--line-regexp}'[only show matches surrounded by line boundaries]'
 
     + '(unicode)' # Unicode options
-    $no'--unicode[enable Unicode mode]'
+    "$no"'--unicode[enable Unicode mode]'
     '--no-unicode[disable Unicode mode]'
 
     + '(zip)' # Compression options
     '(--pre)'{-z,--search-zip}'[search in compressed files]'
-    $no"--no-search-zip[don't search in compressed files]"
+    "$no--no-search-zip[don't search in compressed files]"
 
     + misc # Other options — no need to separate these at the moment
     '(-b --byte-offset)'{-b,--byte-offset}'[show 0-based byte offset for each matching line]'
-    $no"--no-byte-offset[don't show byte offsets for each matching line]"
+    "$no--no-byte-offset[don't show byte offsets for each matching line]"
     '--color=[specify when to use colors in output]:when:((
       never\:"never use colors"
       auto\:"use colors or not based on stdout, TERM, etc."
@@ -314,7 +314,7 @@ _rg() {
     ))'
     '*--colors=[specify color and style settings]: :->colorspec'
     '--context-separator=[specify string used to separate non-continuous context lines in output]:separator'
-    $no"--no-context-separator[don't print context separators]"
+    "$no--no-context-separator[don't print context separators]"
     '--debug[show debug messages]'
     '--field-context-separator[set string to delimit fields in context lines]'
     '--field-match-separator[set string to delimit fields in matching lines]'
@@ -325,7 +325,7 @@ _rg() {
     "(1 stats)--files[show each file that would be searched (but don't search)]"
     '*--ignore-file=[specify additional ignore file]:ignore file:_files'
     '(-v --invert-match)'{-v,--invert-match}'[invert matching]'
-    $no"--no-invert-match[do not invert matching]"
+    "$no--no-invert-match[do not invert matching]"
     '(-M --max-columns)'{-M+,--max-columns=}'[specify max length of lines to print]:number of bytes'
     '(-m --max-count)'{-m+,--max-count=}'[specify max number of matches per file]:number of matches'
     '--max-filesize=[specify size above which files should be ignored]:file size (bytes)'
@@ -345,15 +345,15 @@ _rg() {
   # This is used with test-complete to verify that there are no options
   # listed in the help output that aren't also defined here
   [[ $_RG_COMPLETE_LIST_ARGS == (1|t*|y*) ]] && {
-    print -rl - $args
+    print -rl - "$args"
     return 0
   }
 
   # Strip out argument groups where unsupported (see above)
   [[ $ZSH_VERSION == (4|5.<0-3>)(.*)# ]] &&
-  args=( ${(@)args:#(#i)(+|[a-z0-9][a-z0-9_-]#|\([a-z0-9][a-z0-9_-]#\))} )
+  args=( "${(@)args:#(#i)(+|[a-z0-9][a-z0-9_-]#|\([a-z0-9][a-z0-9_-]#\))}" )
 
-  _arguments -C -s -S : $args && ret=0
+  _arguments -C -s -S : "$args" && ret=0
 
   case $state in
     colorspec)
@@ -388,7 +388,7 @@ _rg() {
 
       (( $#tmp )) && {
         compset -P '*:'
-        _describe -t colorspec $descr tmp $suf && ret=0
+        _describe -t colorspec "$descr" tmp "$suf" && ret=0
       }
       ;;
 
@@ -456,12 +456,12 @@ _rg_types() {
   local -a expl
   local -aU _types
 
-  _types=( ${(@)${(f)"$( _call_program types $words[1] --type-list )"}//:[[:space:]]##/:} )
+  _types=( "${(@)${(f)"$( _call_program types $words[1] --type-list )"}//:[[:space:]]##/:}" )
 
   if zstyle -t ":completion:${curcontext}:types" extra-verbose; then
     _describe -t types 'file type' _types
   else
-    _wanted types expl 'file type' compadd "$@" - ${(@)_types%%:*}
+    _wanted types expl 'file type' compadd "$@" - "${(@)_types%%:*}"
   fi
 }
 
@@ -491,14 +491,14 @@ _rg_hyperlink_format_strings() {
 
   compquote op ed
 
-  sfx=( -S $ed )
-  rmv=( -r ${(q)ed[1]} )
+  sfx=( -S "$ed" )
+  rmv=( -r "${(q)ed[1]}" )
 
   compset -S "$op*"
   compset -S "$ed*" && sfx=( -S '' )
   compset -P "*$ed"
   compset -p ${#PREFIX%$op*}
-  compset -P $op || pfx=( -P $op )
+  compset -P "$op" || pfx=( -P "$op" )
 
   WSL_DISTRO_NAME=${WSL_DISTRO_NAME:-\$WSL_DISTRO_NAME} \
   _describe -t format-variables 'hyperlink format variable' '(

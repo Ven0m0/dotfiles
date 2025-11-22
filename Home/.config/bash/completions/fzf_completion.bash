@@ -34,7 +34,7 @@ __fzf_exec_awk() {
     __fzf_awk=awk
     if command -v mawk >/dev/null 2>&1; then
       local n x y z d
-      IFS=' .' read -r n x y z d <<< $(command mawk -W version 2>/dev/null)
+      IFS=' .' read -r n x y z d <<< "$(command mawk -W version 2>/dev/null)"
       [[ $n == mawk ]] && (( d >= 20230302 && (x * 1000 + y) * 1000 + z >= 1003004 )) && __fzf_awk=mawk
     fi
   fi
@@ -45,7 +45,7 @@ __fzf_exec_awk() {
 __fzf_select__() {
   FZF_DEFAULT_COMMAND=${FZF_CTRL_T_COMMAND:-} \
   FZF_DEFAULT_OPTS=$(__fzf_defaults "--reverse --walker=file,dir,follow,hidden --scheme=path" "${FZF_CTRL_T_OPTS-} -m") \
-  FZF_DEFAULT_OPTS_FILE='' $(__fzfcmd) "$@" |
+  FZF_DEFAULT_OPTS_FILE='' "$(__fzfcmd)" "$@" |
     while read -r item; do
       printf '%q ' "$item"  # escape special chars
     done
@@ -67,7 +67,7 @@ __fzf_cd__() {
   dir=$(
     FZF_DEFAULT_COMMAND=${FZF_ALT_C_COMMAND:-} \
     FZF_DEFAULT_OPTS=$(__fzf_defaults "--reverse --walker=dir,follow,hidden --scheme=path" "${FZF_ALT_C_OPTS-} +m") \
-    FZF_DEFAULT_OPTS_FILE='' $(__fzfcmd)
+    FZF_DEFAULT_OPTS_FILE='' "$(__fzfcmd)"
   ) && printf 'builtin cd -- %q' "$(builtin unset CDPATH && builtin cd -- "$dir" && builtin pwd)"
 }
 
@@ -80,7 +80,7 @@ if command -v perl > /dev/null; then
       builtin fc -lnr -2147483648 |
         last_hist=$(HISTTIMEFORMAT='' builtin history 1) command perl -n -l0 -e "$script" |
         FZF_DEFAULT_OPTS=$(__fzf_defaults "" "-n2..,.. --scheme=history --bind=ctrl-r:toggle-sort --wrap-sign '"$'\t'"↳ ' --highlight-line ${FZF_CTRL_R_OPTS-} +m --read0") \
-        FZF_DEFAULT_OPTS_FILE='' $(__fzfcmd) --query "$READLINE_LINE"
+        FZF_DEFAULT_OPTS_FILE='' "$(__fzfcmd)" --query "$READLINE_LINE"
     ) || return
     READLINE_LINE=$(command perl -pe 's/^\d*\t//' <<< "$output")
     if [[ -z "$READLINE_POINT" ]]; then
@@ -103,7 +103,7 @@ else # awk - fallback for POSIX systems
       builtin fc -lnr -2147483648 2> /dev/null |   # ( $'\t '<lines>$'\n' )* ; <lines> ::= [^\n]* ( $'\n'<lines> )*
         __fzf_exec_awk "$script"               |   # ( <counter>$'\t'<lines>$'\000' )*
         FZF_DEFAULT_OPTS=$(__fzf_defaults "" "-n2..,.. --scheme=history --bind=ctrl-r:toggle-sort --wrap-sign '"$'\t'"↳ ' --highlight-line ${FZF_CTRL_R_OPTS-} +m --read0") \
-        FZF_DEFAULT_OPTS_FILE='' $(__fzfcmd) --query "$READLINE_LINE"
+        FZF_DEFAULT_OPTS_FILE='' "$(__fzfcmd)" --query "$READLINE_LINE"
     ) || return
     READLINE_LINE=${output#*$'\t'}
     if [[ -z "$READLINE_POINT" ]]; then
@@ -208,7 +208,7 @@ __fzf_exec_awk() {
       __fzf_awk=/usr/xpg4/bin/awk
     elif command -v mawk >/dev/null 2>&1; then
       local n x y z d
-      IFS=' .' read -r n x y z d <<< $(command mawk -W version 2> /dev/null)
+      IFS=' .' read -r n x y z d <<< "$(command mawk -W version 2> /dev/null)"
       [[ $n == mawk ]] && (( d >= 20230302 && (x * 1000 + y) * 1000 + z >= 1003004 )) && __fzf_awk=mawk
     fi
   fi
@@ -221,7 +221,7 @@ __fzf_comprun() {
     _fzf_comprun "$@"
   elif [[ -n "${TMUX_PANE-}" ]] && { [[ "${FZF_TMUX:-0}" != 0 ]] || [[ -n "${FZF_TMUX_OPTS-}" ]]; }; then
     shift
-    fzf-tmux ${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}} -- "$@"
+    fzf-tmux "${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}}" -- "$@"
   else
     shift
     fzf "$@"
@@ -355,29 +355,29 @@ _fzf_opts_completion() {
     -q --query
     --"
 
-  case "${prev}" in
+  case "$prev" in
   --scheme)
-    COMPREPLY=( $(compgen -W "default path history" -- "$cur") )
+    COMPREPLY=( "$(compgen -W "default path history" -- "$cur")" )
     return 0
     ;;
   --tiebreak)
-    COMPREPLY=( $(compgen -W "length chunk begin end index" -- "$cur") )
+    COMPREPLY=( "$(compgen -W "length chunk begin end index" -- "$cur")" )
     return 0
     ;;
   --color)
-    COMPREPLY=( $(compgen -W "dark light 16 bw no" -- "$cur") )
+    COMPREPLY=( "$(compgen -W "dark light 16 bw no" -- "$cur")" )
     return 0
     ;;
   --layout)
-    COMPREPLY=( $(compgen -W "default reverse reverse-list" -- "$cur") )
+    COMPREPLY=( "$(compgen -W "default reverse reverse-list" -- "$cur")" )
     return 0
     ;;
   --info)
-    COMPREPLY=( $(compgen -W "default right hidden inline inline-right" -- "$cur") )
+    COMPREPLY=( "$(compgen -W "default right hidden inline inline-right" -- "$cur")" )
     return 0
     ;;
   --preview-window)
-    COMPREPLY=( $(compgen -W "
+    COMPREPLY=( "$(compgen -W "
       default
       hidden
       nohidden
@@ -403,21 +403,21 @@ _fzf_opts_completion() {
       border-left
       border-right
       follow
-      nofollow" -- "$cur") )
+      nofollow" -- "$cur")" )
     return 0
     ;;
   --border)
-    COMPREPLY=( $(compgen -W "rounded sharp bold block thinblock double horizontal vertical top bottom left right none" -- "$cur") )
+    COMPREPLY=( "$(compgen -W "rounded sharp bold block thinblock double horizontal vertical top bottom left right none" -- "$cur")" )
     return 0
     ;;
   --border-label-pos|--preview-label-pos)
-    COMPREPLY=( $(compgen -W "center bottom top" -- "$cur") )
+    COMPREPLY=( "$(compgen -W "center bottom top" -- "$cur")" )
     return 0
     ;;
   esac
 
   if [[ "$cur" =~ ^-|\+ ]]; then
-    COMPREPLY=( $(compgen -W "${opts}" -- "$cur") )
+    COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
     return 0
   fi
 
@@ -433,7 +433,7 @@ _fzf_handle_dynamic_completion() {
     "$REPLY" "$@"
   elif [[ -n "${_fzf_completion_loader-}" ]]; then
     orig_complete=$(complete -p "$orig_cmd" 2> /dev/null)
-    $_fzf_completion_loader "$@"
+    "$_fzf_completion_loader" "$@"
     ret=$?
     # _completion_loader may not have updated completion for the command
     if [[ "$(complete -p "$orig_cmd" 2> /dev/null)" != "$orig_complete" ]]; then
@@ -771,7 +771,7 @@ a_cmds="${FZF_COMPLETION_PATH_COMMANDS-"
 v_cmds="${FZF_COMPLETION_VAR_COMMANDS-export unset printenv}"
 
 # Preserve existing completion
-__fzf_orig_completion < <(complete -p $d_cmds $a_cmds $v_cmds unalias kill ssh 2> /dev/null)
+__fzf_orig_completion < <(complete -p "$d_cmds" "$a_cmds" "$v_cmds" unalias kill ssh 2> /dev/null)
 
 if type _comp_load > /dev/null 2>&1; then
   # _comp_load was added in bash-completion 2.12 to replace _completion_loader.
@@ -798,17 +798,17 @@ __fzf_defc() {
 }
 
 # Anything
-for cmd in $a_cmds; do
+for cmd in "${a_cmds[@]}"; do
   __fzf_defc "$cmd" _fzf_path_completion "-o default -o bashdefault"
 done
 
 # Directory
-for cmd in $d_cmds; do
+for cmd in "${d_cmds[@]}"; do
   __fzf_defc "$cmd" _fzf_dir_completion "-o bashdefault -o nospace -o dirnames"
 done
 
 # Variables
-for cmd in $v_cmds; do
+for cmd in "${v_cmds[@]}"; do
   __fzf_defc "$cmd" _fzf_var_completion "-o default -o nospace -v"
 done
 

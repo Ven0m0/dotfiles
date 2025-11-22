@@ -100,7 +100,7 @@ fi
 #--- Configuration ---#
 readonly DOTFILES_REPO="https://github.com/Ven0m0/dotfiles.git"
 readonly DOTFILES_DIR="${HOME}/.local/share/yadm/repo.git" # yadm's default git dir
-readonly TUCKR_DIR="${DOTFILES_DIR}" # Source for tuckr packages
+readonly TUCKR_DIR="$DOTFILES_DIR" # Source for tuckr packages
 readonly PARU_OPTS="--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade"
 #--- Main Logic ---#
 main(){
@@ -126,7 +126,7 @@ install_packages(){
   else
     # Word splitting is intentional for PARU_OPTS
     # shellcheck disable=SC2086
-    paru -Syuq $PARU_OPTS "${pkgs[@]}" || die "Failed to install packages"
+    paru -Syuq "$PARU_OPTS" "${pkgs[@]}" || die "Failed to install packages"
   fi
   ensure_tuckr
 }
@@ -137,7 +137,7 @@ ensure_tuckr(){
       info "[DRY-RUN] Would install tuckr"
     else
       # shellcheck disable=SC2086
-      paru -S $PARU_OPTS tuckr || die "Failed to install tuckr via paru."
+      paru -S "$PARU_OPTS" tuckr || die "Failed to install tuckr via paru."
     fi
   fi
   success "tuckr is ready."

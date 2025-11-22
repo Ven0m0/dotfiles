@@ -6,14 +6,15 @@ git submodule sync --recursive
 git submodule update --init --recursive
 ```
 
-
 **Quick web server serving current dir**
+
 ```bash
 # https://catonmat.net/top-ten-one-liners-from-commandlinefu-explained
 alias pyserver='python3 -m SimpleHTTPServer 8000'
 ```
 
 **Find files**
+
 ```bash
 #!/usr/bin/env bash
 # Usage:
@@ -52,12 +53,14 @@ done
 ```
 
 **Pacman modules**
+
 ```markdown
 /usr/share/libalpm/scripts/
 /etc/pacman.d/hooks
 ```
 
 **Misc**
+
 ```bash
 # Delete logs
 find -O3 . -type f -name "*.log" -delete
@@ -84,9 +87,10 @@ mkdir transcoded; for i in *.mp4; do ffmpeg -n -hwaccel cuda -i "$i" -vcodec mjp
 
 ```
 
-https://github.com/hollowillow/scripts/blob/main/fzman
+<https://github.com/hollowillow/scripts/blob/main/fzman>
 
 # Claude
+
 ```sh
 claude plugin marketplace add wshobson/agents
 ```

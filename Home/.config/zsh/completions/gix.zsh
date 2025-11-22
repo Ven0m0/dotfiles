@@ -41,7 +41,7 @@ _gix() {
 && ret=0
     case $state in
     (gix)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-command-$line[1]:"
         case $line[1] in
@@ -102,7 +102,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (commit-graph)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-commit-graph-command-$line[1]:"
         case $line[1] in
@@ -131,7 +131,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-commit-graph-help-command-$line[1]:"
         case $line[1] in
@@ -165,7 +165,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (odb)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-odb-command-$line[1]:"
         case $line[1] in
@@ -203,7 +203,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-odb-help-command-$line[1]:"
         case $line[1] in
@@ -248,7 +248,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (tree)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-tree-command-$line[1]:"
         case $line[1] in
@@ -280,7 +280,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-tree-help-command-$line[1]:"
         case $line[1] in
@@ -314,7 +314,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (commit)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-commit-command-$line[1]:"
         case $line[1] in
@@ -355,7 +355,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-commit-help-command-$line[1]:"
         case $line[1] in
@@ -389,7 +389,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (tag)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-tag-command-$line[1]:"
         case $line[1] in
@@ -407,7 +407,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-tag-help-command-$line[1]:"
         case $line[1] in
@@ -437,7 +437,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (tag)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-tag-command-$line[1]:"
         case $line[1] in
@@ -455,7 +455,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-tag-help-command-$line[1]:"
         case $line[1] in
@@ -497,7 +497,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (revision)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-revision-command-$line[1]:"
         case $line[1] in
@@ -659,7 +659,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-revision-help-command-$line[1]:"
         case $line[1] in
@@ -701,7 +701,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (revision)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-revision-command-$line[1]:"
         case $line[1] in
@@ -863,7 +863,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-revision-help-command-$line[1]:"
         case $line[1] in
@@ -905,7 +905,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (revision)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-revision-command-$line[1]:"
         case $line[1] in
@@ -1067,7 +1067,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-revision-help-command-$line[1]:"
         case $line[1] in
@@ -1109,7 +1109,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (credential)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-credential-command-$line[1]:"
         case $line[1] in
@@ -1157,7 +1157,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-credential-help-command-$line[1]:"
         case $line[1] in
@@ -1233,7 +1233,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (mailmap)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-mailmap-command-$line[1]:"
         case $line[1] in
@@ -1258,7 +1258,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-mailmap-help-command-$line[1]:"
         case $line[1] in
@@ -1296,7 +1296,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (remote)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-remote-command-$line[1]:"
         case $line[1] in
@@ -1323,7 +1323,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-remote-help-command-$line[1]:"
         case $line[1] in
@@ -1361,7 +1361,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (remote)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-remote-command-$line[1]:"
         case $line[1] in
@@ -1388,7 +1388,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-remote-help-command-$line[1]:"
         case $line[1] in
@@ -1422,7 +1422,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (attributes)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-attributes-command-$line[1]:"
         case $line[1] in
@@ -1452,7 +1452,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-attributes-help-command-$line[1]:"
         case $line[1] in
@@ -1486,7 +1486,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (attributes)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-attributes-command-$line[1]:"
         case $line[1] in
@@ -1516,7 +1516,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-attributes-help-command-$line[1]:"
         case $line[1] in
@@ -1550,7 +1550,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (exclude)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-exclude-command-$line[1]:"
         case $line[1] in
@@ -1575,7 +1575,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-exclude-help-command-$line[1]:"
         case $line[1] in
@@ -1605,7 +1605,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-index-command-$line[1]:"
         case $line[1] in
@@ -1661,7 +1661,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-index-help-command-$line[1]:"
         case $line[1] in
@@ -1695,7 +1695,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (submodule)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-submodule-command-$line[1]:"
         case $line[1] in
@@ -1715,7 +1715,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-submodule-help-command-$line[1]:"
         case $line[1] in
@@ -1805,7 +1805,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (merge)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-merge-command-$line[1]:"
         case $line[1] in
@@ -1873,7 +1873,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-merge-help-command-$line[1]:"
         case $line[1] in
@@ -1917,7 +1917,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (diff)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-diff-command-$line[1]:"
         case $line[1] in
@@ -1945,7 +1945,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-diff-help-command-$line[1]:"
         case $line[1] in
@@ -1986,7 +1986,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (worktree)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-worktree-command-$line[1]:"
         case $line[1] in
@@ -2004,7 +2004,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-worktree-help-command-$line[1]:"
         case $line[1] in
@@ -2034,7 +2034,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (free)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-command-$line[1]:"
         case $line[1] in
@@ -2048,7 +2048,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (commit-graph)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-commit-graph-command-$line[1]:"
         case $line[1] in
@@ -2069,7 +2069,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-commit-graph-help-command-$line[1]:"
         case $line[1] in
@@ -2101,7 +2101,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (mailmap)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-mailmap-command-$line[1]:"
         case $line[1] in
@@ -2119,7 +2119,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-mailmap-help-command-$line[1]:"
         case $line[1] in
@@ -2149,7 +2149,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (pack)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-command-$line[1]:"
         case $line[1] in
@@ -2163,7 +2163,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-index-command-$line[1]:"
         case $line[1] in
@@ -2186,7 +2186,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-index-help-command-$line[1]:"
         case $line[1] in
@@ -2218,7 +2218,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (multi-index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-multi-index-command-$line[1]:"
         case $line[1] in
@@ -2255,7 +2255,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-multi-index-help-command-$line[1]:"
         case $line[1] in
@@ -2355,7 +2355,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-help-command-$line[1]:"
         case $line[1] in
@@ -2367,7 +2367,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-help-index-command-$line[1]:"
         case $line[1] in
@@ -2387,7 +2387,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (multi-index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-help-multi-index-command-$line[1]:"
         case $line[1] in
@@ -2452,7 +2452,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-index-command-$line[1]:"
         case $line[1] in
@@ -2503,7 +2503,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-index-help-command-$line[1]:"
         case $line[1] in
@@ -2549,7 +2549,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-command-$line[1]:"
         case $line[1] in
@@ -2561,7 +2561,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (commit-graph)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-commit-graph-command-$line[1]:"
         case $line[1] in
@@ -2581,7 +2581,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (mailmap)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-mailmap-command-$line[1]:"
         case $line[1] in
@@ -2601,7 +2601,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (pack)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-pack-command-$line[1]:"
         case $line[1] in
@@ -2613,7 +2613,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-pack-index-command-$line[1]:"
         case $line[1] in
@@ -2633,7 +2633,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (multi-index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-pack-multi-index-command-$line[1]:"
         case $line[1] in
@@ -2685,7 +2685,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-index-command-$line[1]:"
         case $line[1] in
@@ -2735,7 +2735,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (free)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-command-$line[1]:"
         case $line[1] in
@@ -2749,7 +2749,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (commit-graph)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-commit-graph-command-$line[1]:"
         case $line[1] in
@@ -2770,7 +2770,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-commit-graph-help-command-$line[1]:"
         case $line[1] in
@@ -2802,7 +2802,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (mailmap)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-mailmap-command-$line[1]:"
         case $line[1] in
@@ -2820,7 +2820,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-mailmap-help-command-$line[1]:"
         case $line[1] in
@@ -2850,7 +2850,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (pack)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-command-$line[1]:"
         case $line[1] in
@@ -2864,7 +2864,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-index-command-$line[1]:"
         case $line[1] in
@@ -2887,7 +2887,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-index-help-command-$line[1]:"
         case $line[1] in
@@ -2919,7 +2919,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (multi-index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-multi-index-command-$line[1]:"
         case $line[1] in
@@ -2956,7 +2956,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-multi-index-help-command-$line[1]:"
         case $line[1] in
@@ -3056,7 +3056,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-help-command-$line[1]:"
         case $line[1] in
@@ -3068,7 +3068,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-help-index-command-$line[1]:"
         case $line[1] in
@@ -3088,7 +3088,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (multi-index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-pack-help-multi-index-command-$line[1]:"
         case $line[1] in
@@ -3153,7 +3153,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-index-command-$line[1]:"
         case $line[1] in
@@ -3204,7 +3204,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-index-help-command-$line[1]:"
         case $line[1] in
@@ -3250,7 +3250,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-command-$line[1]:"
         case $line[1] in
@@ -3262,7 +3262,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (commit-graph)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-commit-graph-command-$line[1]:"
         case $line[1] in
@@ -3282,7 +3282,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (mailmap)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-mailmap-command-$line[1]:"
         case $line[1] in
@@ -3302,7 +3302,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (pack)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-pack-command-$line[1]:"
         case $line[1] in
@@ -3314,7 +3314,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-pack-index-command-$line[1]:"
         case $line[1] in
@@ -3334,7 +3334,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (multi-index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-pack-multi-index-command-$line[1]:"
         case $line[1] in
@@ -3386,7 +3386,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-free-help-index-command-$line[1]:"
         case $line[1] in
@@ -3472,7 +3472,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-command-$line[1]:"
         case $line[1] in
@@ -3492,7 +3492,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (commit-graph)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-commit-graph-command-$line[1]:"
         case $line[1] in
@@ -3516,7 +3516,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (odb)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-odb-command-$line[1]:"
         case $line[1] in
@@ -3548,7 +3548,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (tree)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-tree-command-$line[1]:"
         case $line[1] in
@@ -3572,7 +3572,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (commit)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-commit-command-$line[1]:"
         case $line[1] in
@@ -3596,7 +3596,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (tag)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-tag-command-$line[1]:"
         case $line[1] in
@@ -3620,7 +3620,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (revision)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-revision-command-$line[1]:"
         case $line[1] in
@@ -3652,7 +3652,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (credential)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-credential-command-$line[1]:"
         case $line[1] in
@@ -3688,7 +3688,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (mailmap)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-mailmap-command-$line[1]:"
         case $line[1] in
@@ -3712,7 +3712,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (remote)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-remote-command-$line[1]:"
         case $line[1] in
@@ -3736,7 +3736,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (attributes)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-attributes-command-$line[1]:"
         case $line[1] in
@@ -3760,7 +3760,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (exclude)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-exclude-command-$line[1]:"
         case $line[1] in
@@ -3780,7 +3780,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-index-command-$line[1]:"
         case $line[1] in
@@ -3804,7 +3804,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (submodule)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-submodule-command-$line[1]:"
         case $line[1] in
@@ -3852,7 +3852,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (merge)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-merge-command-$line[1]:"
         case $line[1] in
@@ -3884,7 +3884,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (diff)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-diff-command-$line[1]:"
         case $line[1] in
@@ -3912,7 +3912,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (worktree)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-worktree-command-$line[1]:"
         case $line[1] in
@@ -3932,7 +3932,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (free)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-free-command-$line[1]:"
         case $line[1] in
@@ -3944,7 +3944,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (commit-graph)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-free-commit-graph-command-$line[1]:"
         case $line[1] in
@@ -3964,7 +3964,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (mailmap)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-free-mailmap-command-$line[1]:"
         case $line[1] in
@@ -3984,7 +3984,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (pack)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-free-pack-command-$line[1]:"
         case $line[1] in
@@ -3996,7 +3996,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-free-pack-index-command-$line[1]:"
         case $line[1] in
@@ -4016,7 +4016,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (multi-index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-free-pack-multi-index-command-$line[1]:"
         case $line[1] in
@@ -4068,7 +4068,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (index)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:gix-help-free-index-command-$line[1]:"
         case $line[1] in

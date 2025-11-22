@@ -492,2329 +492,2329 @@ _zoi() {
         esac
     done
 
-    case "${cmd}" in
+    case "$cmd" in
         zoi)
             opts="-v -y -h --version --yes --help generate-completions generate-manual version about info check sync list show pin unpin update install uninstall run env upgrade autoremove why owner files search shell setup exec clean repo telemetry create extension rollback man package pgp helper help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__about)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__autoremove)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__check)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__clean)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__create)
             opts="-y -h --yes --help <SOURCE> [APP_NAME]"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__env)
             opts="-y -h --yes --help [ENV_ALIAS]"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__exec)
             opts="-y -h --upstream --cache --local --yes --help [ARGS]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__extension)
             opts="-y -h --yes --help add remove help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__extension__add)
             opts="-y -h --yes --help <NAME>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__extension__help)
             opts="add remove help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__extension__help__add)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__extension__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__extension__help__remove)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__extension__remove)
             opts="-y -h --yes --help <NAME>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__files)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__generate__completions)
             opts="-y -h --yes --help bash elvish fish powershell zsh"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__generate__manual)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help)
             opts="generate-completions generate-manual version about info check sync list show pin unpin update install uninstall run env upgrade autoremove why owner files search shell setup exec clean repo telemetry create extension rollback man package pgp helper help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__about)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__autoremove)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__check)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__clean)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__create)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__env)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__exec)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__extension)
             opts="add remove"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__extension__add)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__extension__remove)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__files)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__generate__completions)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__generate__manual)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__helper)
             opts="get-hash"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__helper__get__hash)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__info)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__install)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__list)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__man)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__owner)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__package)
             opts="build install"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__package__build)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__package__install)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__pgp)
             opts="add remove list search show verify"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__pgp__add)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__pgp__list)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__pgp__remove)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__pgp__search)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__pgp__show)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__pgp__verify)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__pin)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__repo)
             opts="add remove list git"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__repo__add)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__repo__git)
             opts="list rm"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__repo__git__list)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__repo__git__rm)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__repo__list)
             opts="all"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__repo__list__all)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__repo__remove)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__rollback)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__run)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__search)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__setup)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__shell)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__show)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__sync)
             opts="add remove list set"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__sync__add)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__sync__list)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__sync__remove)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__sync__set)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__telemetry)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__uninstall)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__unpin)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__update)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__upgrade)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__version)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__help__why)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__helper)
             opts="-y -h --yes --help get-hash help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__helper__get__hash)
             opts="-y -h --hash --yes --help <SOURCE>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --hash)
-                    COMPREPLY=($(compgen -W "sha512 sha256" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "sha512 sha256" -- "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__helper__help)
             opts="get-hash help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__helper__help__get__hash)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__helper__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__info)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__install)
             opts="-y -h --repo --force --all-optional --scope --local --global --save --type --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --repo)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --scope)
-                    COMPREPLY=($(compgen -W "user system project" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "user system project" -- "$cur")")
                     return 0
                     ;;
                 --type)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__list)
             opts="-a -t -y -h --all --repo --type --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --repo)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --type)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -t)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__man)
             opts="-y -h --upstream --raw --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__owner)
             opts="-y -h --yes --help <PATH>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__package)
             opts="-y -h --yes --help build install help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__package__build)
             opts="-p -y -h --type --platform --sign --yes --help <PACKAGE_FILE>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --type)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --platform)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -p)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --sign)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__package__help)
             opts="build install help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__package__help__build)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__package__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__package__help__install)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__package__install)
             opts="-h --scope --yes --help <PACKAGE_FILE>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --scope)
-                    COMPREPLY=($(compgen -W "user system" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "user system" -- "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp)
             opts="-y -h --yes --help add remove list search show verify help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__add)
             opts="-y -h --path --fingerprint --url --name --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --path)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --fingerprint)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --url)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --name)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__help)
             opts="add remove list search show verify help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__help__add)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__help__list)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__help__remove)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__help__search)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__help__show)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__help__verify)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__list)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__remove)
             opts="-y -h --fingerprint --yes --help [NAME]"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --fingerprint)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__search)
             opts="-y -h --yes --help <TERM>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__show)
             opts="-y -h --yes --help <NAME>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pgp__verify)
             opts="-y -h --file --sig --key --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --file)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --sig)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --key)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__pin)
             opts="-y -h --yes --help <VERSION>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo)
             opts="-y -h --yes --help add remove list git help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__add)
             opts="-y -h --yes --help [REPO_OR_URL]"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__git)
             opts="-y -h --yes --help list rm help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__git__help)
             opts="list rm help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__git__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__git__help__list)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__git__help__rm)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__git__list)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__git__rm)
             opts="-y -h --yes --help <REPO_NAME>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__help)
             opts="add remove list git help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__help__add)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__help__git)
             opts="list rm"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__help__git__list)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__help__git__rm)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__help__list)
             opts="all"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__help__list__all)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__help__remove)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__list)
             opts="-y -h --yes --help all help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__list__all)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__list__help)
             opts="all help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__list__help__all)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__list__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 5 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__repo__remove)
             opts="-y -h --yes --help <REPO_NAME>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__rollback)
             opts="-y -h --last-transaction --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__run)
             opts="-y -h --yes --help [CMD_ALIAS] [ARGS]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__search)
             opts="-t -y -h --repo --type --tag --yes --help <SEARCH_TERM>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --repo)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --type)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --tag)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -t)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__setup)
             opts="-y -h --scope --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --scope)
-                    COMPREPLY=($(compgen -W "user system" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "user system" -- "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__shell)
             opts="-y -h --yes --help bash elvish fish powershell zsh"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__show)
             opts="-y -h --raw --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync)
             opts="-v -y -h --verbose --fallback --no-pm --no-shell-setup --yes --help add remove list set help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync__add)
             opts="-y -h --yes --help <URL>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync__help)
             opts="add remove list set help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync__help__add)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync__help__list)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync__help__remove)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync__help__set)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync__list)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync__remove)
             opts="-y -h --yes --help <HANDLE>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__sync__set)
             opts="-y -h --yes --help <URL>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__telemetry)
             opts="-y -h --yes --help status enable disable"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__uninstall)
             opts="-y -h --scope --local --global --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --scope)
-                    COMPREPLY=($(compgen -W "user system project" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "user system project" -- "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__unpin)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__update)
             opts="-y -h --all --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__upgrade)
             opts="-y -h --force --tag --branch --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --tag)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --branch)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__version)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         zoi__why)
             opts="-y -h --yes --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
     esac

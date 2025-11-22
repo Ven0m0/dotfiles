@@ -20,7 +20,7 @@ path_dedupe() {
   local new_path=""
   declare -A seen
   IFS=:
-  for p in $PATH; do
+  for p in "${PATH[@]}"; do
     [[ -z "$p" || -n "${seen[$p]}" ]] && continue
     seen[$p]=1
     new_path="${new_path:+$new_path:}$p"

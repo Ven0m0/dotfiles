@@ -52,9 +52,7 @@
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "remove-empty-lines.runOnSave": true,
-  "remove-tabs-on-save.ignoreFileExtensions": [
-    "*.go"
-  ],
+  "remove-tabs-on-save.ignoreFileExtensions": ["*.go"],
   "runOnSave.commands": [
     {
       "match": "\\.sh$",
@@ -155,10 +153,7 @@
   // --------------------------------------------------------------------
   "geminicodeassist.geminiApiKey": "${env:GEMINI_API_KEY}",
   "geminicodeassist.inlineSuggestions.nextEditPredictions": true,
-  "geminicodeassist.languages": [
-    "*",
-    "shellscript"
-  ],
+  "geminicodeassist.languages": ["*", "shellscript"],
   "geminicodeassist.rules": "Use bash-native idioms. 2-space indent. Short CLI args. Prefer arrays and here-strings. Use while read -r for input. Use nameref and ret=$(fn). Favor in-memory ops. Use expr/grep for =~. Use [[ ... ]] for tests. Silence with >/dev/null 2>&1 || true. Prefer Rust tools (fd, bat). Target Arch/Wayland and Debian (Pi). Allow experimental apps. Provide precise, optimized answers.",
   "geminicodeassist.updateChannel": "Default",
   "geminicodeassist.project": "vocal-triumph-ltj12",
@@ -168,36 +163,36 @@
   "github.copilot.chat.completionsFetcher": "node-fetch",
   "github.copilot.chat.executePrompt.enabled": true,
   "github.copilot.chat.edits.temporalContext.enabled": true,
-    "claudeCode.environmentVariables": [
-        {
-            "name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
-            "value": "claude-sonnet-4.5"
-        },
-        {
-            "name": "ANTHROPIC_API_BASE_URL",
-            "value": "http://localhost:4000"
-        },
-        {
-            "name": "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
-            "value": "1"
-        },
-        {
-            "name": "DISABLE_NON_ESSENTIAL_MODEL_CALLS",
-            "value": "1"
-        },
-        {
-            "name": "DISABLE_ERROR_REPORTING",
-            "value": "1"
-        },
-        {
-            "name": "CLAUDE_CODE_ENABLE_TELEMETRY",
-            "value": "0"
-        },
-        {
-            "name": "DISABLE_TELEMETRY",
-            "value": "1"
-        }
-    ],
+  "claudeCode.environmentVariables": [
+    {
+      "name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
+      "value": "claude-sonnet-4.5"
+    },
+    {
+      "name": "ANTHROPIC_API_BASE_URL",
+      "value": "http://localhost:4000"
+    },
+    {
+      "name": "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+      "value": "1"
+    },
+    {
+      "name": "DISABLE_NON_ESSENTIAL_MODEL_CALLS",
+      "value": "1"
+    },
+    {
+      "name": "DISABLE_ERROR_REPORTING",
+      "value": "1"
+    },
+    {
+      "name": "CLAUDE_CODE_ENABLE_TELEMETRY",
+      "value": "0"
+    },
+    {
+      "name": "DISABLE_TELEMETRY",
+      "value": "1"
+    }
+  ],
   "claude-config.autoSync": true,
   "claude-config.autoUseContext7": true,
   "claude-config.cloudSync.autoSync": true,
@@ -219,9 +214,7 @@
   "bashBeautify.tabSize": 2,
   "bashIde.enableSourceErrorDiagnostics": true,
   "bashIde.shfmt.binaryNextLine": true,
-  "bashIde.shfmt.extraArgs": [
-    "-i 2"
-  ],
+  "bashIde.shfmt.extraArgs": ["-i 2"],
   "bashIde.shfmt.simplifyCode": true,
   "bashIde.shfmt.languageDialect": "bash",
   "shellcheck.run": "onSave",
@@ -245,9 +238,7 @@
   "MinifyAll.terserMinifyOptions": {
     "mangle": true,
     "compress": {
-      "drop_console": [
-        "log"
-      ],
+      "drop_console": ["log"],
       "dead_code": true,
       "passes": 2
     },

@@ -1,9 +1,6 @@
 {
   "caution (callout)": {
-    "body": [
-      "> [!CAUTION]",
-      "> $0"
-    ],
+    "body": ["> [!CAUTION]", "> $0"],
     "description": "https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts",
     "prefix": "caution (callout)"
   },
@@ -12,17 +9,9 @@
     "prefix": "centerdiv"
   },
   "details & summary": {
-    "body": [
-      "<details>",
-      "<summary>${1:Text}</summary>",
-      "$0",
-      "</details>"
-    ],
+    "body": ["<details>", "<summary>${1:Text}</summary>", "$0", "</details>"],
     "description": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details",
-    "prefix": [
-      "toggle / fold",
-      "details & summary"
-    ]
+    "prefix": ["toggle / fold", "details & summary"]
   },
   "div": {
     "body": "<div>$0</div>",
@@ -35,37 +24,22 @@
     "prefix": "image"
   },
   "important (callout)": {
-    "body": [
-      "> [!IMPORTANT]",
-      "> $0"
-    ],
+    "body": ["> [!IMPORTANT]", "> $0"],
     "description": "https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts",
     "prefix": "important (callout)"
   },
   "note (callout)": {
-    "body": [
-      "> [!NOTE]",
-      "> $0"
-    ],
+    "body": ["> [!NOTE]", "> $0"],
     "description": "https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts",
-    "prefix": [
-      "info (callout)",
-      "note (callout)"
-    ]
+    "prefix": ["info (callout)", "note (callout)"]
   },
   "tip (callout)": {
-    "body": [
-      "> [!TIP]",
-      "> $0"
-    ],
+    "body": ["> [!TIP]", "> $0"],
     "description": "https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts",
     "prefix": "tip (callout)"
   },
   "warning (callout)": {
-    "body": [
-      "> [!WARNING]",
-      "> $0"
-    ],
+    "body": ["> [!WARNING]", "> $0"],
     "description": "https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts",
     "prefix": "warning (callout)"
   }

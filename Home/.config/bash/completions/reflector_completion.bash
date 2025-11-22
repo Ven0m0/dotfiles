@@ -1,59 +1,59 @@
 # bash completion for reflector        -*- shell-script -*-
 
 _reflector_complete() {
-    COMPREPLY=($(compgen -W "$1" -- "$cur"))
+    COMPREPLY=("$(compgen -W "$1" -- "$cur")")
     [[ $COMPREPLY == *= ]] && compopt -o nospace
     compopt -o nosort
 }
 
 _reflector_complete_delay() {
-    COMPREPLY=($(compgen -W "$1" -- "$cur"))          # float
+    COMPREPLY=("$(compgen -W "$1" -- "$cur")")          # float
     [[ $COMPREPLY == *= ]] && compopt -o nospace
     compopt -o nosort
 }
 
 _reflector_complete_threads() {
-    COMPREPLY=($(compgen -W "{1..99}" -- "$cur"))     # uint8
+    COMPREPLY=("$(compgen -W "{1..99}" -- "$cur")")     # uint8
     [[ $COMPREPLY == *= ]] && compopt -o nospace
     compopt -o nosort
 }
 
 _reflector_complete_countries() {
-    local -r file=$folder/countrylist.$(/bin/date +%Y%V)     # update countrylist weekly
+    local -r file="$folder/countrylist.$(/bin/date +%Y%V)"     # update countrylist weekly
     local country_names
 
-    mkdir -p $folder
+    mkdir -p "$folder"
     if [[ -r $file ]] ; then
-        country_names="$(< $file)"
+        country_names="$(< "$file")"
     else
-        rm -f ${file%.*}.*
+        rm -f "${file%.*}".*
         country_names=$(/bin/reflector --list-countries) || return 1
         country_names=$(echo "$country_names" | /bin/sed -e '1,2d' -e 's|^\(.*[a-z]\)[ ]*[A-Z][A-Z].*$|\1|')
-        echo "$country_names" > $file
+        echo "$country_names" > "$file"
     fi
 
     local IFS=$'\n'
-    COMPREPLY=( $(compgen -W "$country_names" -- "$cur") )
+    COMPREPLY=( "$(compgen -W "$country_names" -- "$cur")" )
     compopt -o nosort
     compopt -o filenames
 }
 
 _reflector_complete_mirrors() {
-    local -r file=$folder/mirrors.$date
-    mkdir -p $folder
+    local -r file="$folder/mirrors.$date"
+    mkdir -p "$folder"
     if [[ -r $file ]] ; then
-        local mirrors=$(< $file)
+        local mirrors=$(< "$file")
     else
         local -r timeout=30
         local -r url="https://archlinux.org/mirrorlist/?protocol=https&ip_version=4&use_mirror_status=on"
         local mirrors=$(curl --fail -Lsm "$timeout" "$url" | grep "^#Server = " | awk '{print $NF}')
         [[ -n "$mirrors" ]] || exit 1
-        echo "$mirrors" > $file
+        echo "$mirrors" > "$file"
     fi
-    mirrors=$(fzf -m < $file)
+    mirrors=$(fzf -m < "$file")
 
     local IFS=$'\n'
-    COMPREPLY=( $(compgen -W "$mirrors" -- "$cur") )
+    COMPREPLY=( "$(compgen -W "$mirrors" -- "$cur")" )
     compopt -o nosort
     #compopt -o filenames
 }
@@ -95,18 +95,18 @@ _reflector_()
     local cur prev #words cword split
     _init_completion -s || return
 
-    local -r folder=$HOME/.config/reflector-complete
+    local -r folder="$HOME"/.config/reflector-complete
 
     # Handle options that need sub-options.
     # Each option "case" should return immediately.
 
     case "$prev" in
         --age | --cache-timeout | --connection-timeout | --download-timeout | --fastest | --latest | --score | --number | -a | -f | -l | -n)
-            COMPREPLY=($(compgen -P "$cur" -W "{0..9}"))
+            COMPREPLY=("$(compgen -P "$cur" -W "{0..9}")")
             compopt -o nospace
             ;;
         --completion-percent)
-            COMPREPLY=($(compgen -W "{0..100}" -- "$cur"))
+            COMPREPLY=("$(compgen -W "{0..100}" -- "$cur")")
             compopt -o nosort
             ;;
         --country | -c)  _reflector_complete_countries ;;

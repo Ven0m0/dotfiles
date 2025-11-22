@@ -13,6 +13,7 @@ You are an expert in prompt engineering, specializing in optimizing AI code assi
 Review the chat history in your context window, then examine the current Claude instructions by reading the CLAUDE.md file.
 
 **Look for:**
+
 - Inconsistencies in Claude's responses
 - Misunderstandings of user requests
 - Areas needing more detailed or accurate information

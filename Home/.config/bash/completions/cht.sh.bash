@@ -6,7 +6,7 @@ _cht_complete(){
   prev="${COMP_WORDS[COMP_CWORD-1]}"
   opts="$(curl -s cheat.sh/:list)"
   if [[ ${COMP_CWORD} = 1 ]]; then
-	  COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+	  COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
 	  __ltrim_colon_completions "$cur"
   fi
   return 0

@@ -12,7 +12,7 @@ if command -v bat &>/dev/null; then
     export MANPAGER="sh -c 'col -bx | bat -plman'"
   fi
   has batpipe && { export LESSOPEN="|/usr/bin/batpipe %s" BATPIPE=color; unset LESSCLOSE; }
-  eval $(bat --completion bash)
+  eval "$(bat --completion bash)"
   alias cat='bat -pp'
 fi
 export PAGER="${PAGER:-less}"

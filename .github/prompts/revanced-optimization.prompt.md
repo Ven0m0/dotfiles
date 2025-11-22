@@ -8,6 +8,7 @@ description: 'Comprehensive optimization prompt for ReVanced APK building reposi
 ## Task Overview
 
 Optimize the rvx-apks ReVanced building repository by:
+
 1. **Enhanced aapt2 integration and optimization**
 2. **Privacy patches integration from jkennethcarino/privacy-revanced-patches**
 3. **Multi-stage patching workflows** (privacy patches first, then main patches)
@@ -17,6 +18,7 @@ Optimize the rvx-apks ReVanced building repository by:
 ## Current Repository Analysis
 
 ### Repository: Ven0m0/rvx-apks
+
 - **Primary Focus**: Automated ReVanced APK building with GitHub Actions
 - **Current Patches**: ReVanced Extended (anddea/revanced-patches)
 - **Build Tools**: ReVanced CLI, Java-based patching, parallel processing
@@ -24,6 +26,7 @@ Optimize the rvx-apks ReVanced building repository by:
 - **Architecture**: Single-file Bash utilities with comprehensive error handling
 
 ### Repository: jkennethcarino/privacy-revanced-patches
+
 - **Focus**: Privacy-focused patches for multiple apps
 - **Key Features**:
   - Ad blocking and tracker removal
@@ -38,11 +41,13 @@ Optimize the rvx-apks ReVanced building repository by:
 ### 1. AAPT2 Integration Enhancement
 
 **Current State Analysis**:
+
 - AAPT2 usage detected in patch_apk function: `--custom-aapt2-binary=${AAPT2}`
 - Architecture-specific binaries: `aapt2-arm64`, `aapt2-arm`, `aapt2-x86`, `aapt2-x86_64`
 - Platform detection for Android builds
 
 **Optimization Goals**:
+
 - **Enhanced AAPT2 Configuration**: Optimize resource processing and compression
 - **Advanced Resource Management**: Better handling of app resources during patching
 - **Performance Tuning**: Faster APK processing and smaller output sizes
@@ -51,12 +56,14 @@ Optimize the rvx-apks ReVanced building repository by:
 ### 2. Privacy Patches Integration
 
 **Integration Strategy**:
+
 - **Primary Privacy Layer**: Apply privacy patches first for foundational privacy protection
 - **Secondary Enhancement Layer**: Apply main ReVanced Extended patches on top
 - **Compatibility Matrix**: Ensure patch compatibility and resolve conflicts
 - **Selective Application**: Allow granular control over which privacy patches to apply
 
 **Key Privacy Features to Integrate**:
+
 - `Remove ads, annoyances, and telemetry` for Reddit
 - `Disable mobile ads` for comprehensive ad network blocking
 - `Block ads, trackers, and analytics` using hosts file
@@ -68,6 +75,7 @@ Optimize the rvx-apks ReVanced building repository by:
 ### 3. Multi-Stage Patching Workflow
 
 **Proposed Workflow**:
+
 ```bash
 Stage 1: Privacy Foundation
 ├── Apply privacy patches from jkennethcarino/privacy-revanced-patches
@@ -83,6 +91,7 @@ Stage 2: Feature Enhancement
 ```
 
 **Implementation Requirements**:
+
 - **Patch Conflict Resolution**: Detect and resolve overlapping patches
 - **Dependency Management**: Handle patch dependencies across repositories
 - **Rollback Capability**: Allow reverting to previous stage if conflicts occur
@@ -93,6 +102,7 @@ Stage 2: Feature Enhancement
 ### Phase 1: Enhanced AAPT2 Integration
 
 #### 1.1 Advanced AAPT2 Configuration
+
 ```bash
 # Enhanced AAPT2 setup with optimization flags
 setup_aapt2_advanced() {
@@ -119,6 +129,7 @@ setup_aapt2_advanced() {
 ```
 
 #### 1.2 Resource Optimization Pipeline
+
 ```bash
 optimize_resources() {
   local input_apk="$1"
@@ -145,6 +156,7 @@ optimize_resources() {
 ### Phase 2: Privacy Patches Integration
 
 #### 2.1 Privacy Patch Repository Setup
+
 ```bash
 setup_privacy_patches() {
   local privacy_src="jkennethcarino/privacy-revanced-patches"
@@ -180,6 +192,7 @@ validate_privacy_compatibility() {
 ```
 
 #### 2.2 Multi-Stage Patching Implementation
+
 ```bash
 patch_apk_multistage() {
   local stock_apk="$1"
@@ -222,6 +235,7 @@ patch_apk_multistage() {
 ### Phase 3: Configuration and Integration
 
 #### 3.1 Enhanced Configuration Options
+
 ```toml
 # config.toml additions
 [main]
@@ -247,6 +261,7 @@ optimization-level = "aggressive"
 ```
 
 #### 3.2 Build Process Integration
+
 ```bash
 build_rv_enhanced() {
   eval "declare -A args=${1#*=}"
@@ -278,6 +293,7 @@ build_rv_enhanced() {
 ### Phase 4: Testing and Validation
 
 #### 4.1 Comprehensive Testing Suite
+
 ```bash
 validate_patched_apk() {
   local apk="$1"
@@ -327,24 +343,28 @@ validate_privacy_features() {
 ## Expected Deliverables
 
 ### 1. Enhanced Build Scripts
+
 - **Multi-stage patching pipeline**
 - **Advanced AAPT2 integration**
 - **Privacy patches compatibility layer**
 - **Resource optimization utilities**
 
 ### 2. Configuration Enhancements
+
 - **Privacy-focused build profiles**
 - **Granular patch selection**
 - **AAPT2 optimization settings**
 - **Testing and validation options**
 
 ### 3. Documentation Updates
+
 - **Multi-stage patching workflow guide**
 - **Privacy patches integration instructions**
 - **AAPT2 optimization best practices**
 - **Troubleshooting guide for conflicts**
 
 ### 4. Testing Infrastructure
+
 - **APK validation pipeline**
 - **Privacy feature verification**
 - **Performance regression testing**
@@ -353,18 +373,21 @@ validate_privacy_features() {
 ## Success Criteria
 
 ### Performance Metrics
+
 - **Build Time**: Maintain or improve current build times despite multi-stage processing
 - **APK Size**: Achieve 5-10% size reduction through AAPT2 optimizations
 - **Privacy Score**: Verify removal of 95%+ tracking/analytics components
 - **Compatibility**: Ensure 100% compatibility with existing build configurations
 
 ### Quality Assurance
+
 - **Zero Build Failures**: All existing apps continue to build successfully
 - **Privacy Validation**: Comprehensive verification of privacy feature implementation
 - **Resource Optimization**: Measurable improvements in APK efficiency
 - **Conflict Resolution**: Robust handling of patch conflicts and dependencies
 
 ### User Experience
+
 - **Backward Compatibility**: Existing configurations continue to work
 - **Enhanced Privacy**: Users gain comprehensive privacy protection
 - **Improved Performance**: Faster, more efficient patched APKs
@@ -373,21 +396,25 @@ validate_privacy_features() {
 ## Implementation Timeline
 
 ### Week 1-2: Foundation
+
 - AAPT2 enhancement implementation
 - Privacy patches repository integration
 - Basic multi-stage patching framework
 
 ### Week 3-4: Integration
+
 - Configuration system updates
 - Build process integration
 - Initial testing and validation
 
 ### Week 5-6: Optimization
+
 - Performance tuning and optimization
 - Advanced privacy features
 - Comprehensive testing suite
 
 ### Week 7-8: Finalization
+
 - Documentation and guides
 - Final testing and validation
 - Release preparation and deployment
@@ -395,14 +422,15 @@ validate_privacy_features() {
 ## Risk Mitigation
 
 ### Technical Risks
+
 - **Patch Conflicts**: Implement comprehensive conflict detection and resolution
 - **Performance Degradation**: Continuous benchmarking and optimization
 - **Compatibility Issues**: Extensive testing across different Android versions
 
 ### Operational Risks
+
 - **Build Failures**: Robust error handling and fallback mechanisms
 - **User Disruption**: Maintain backward compatibility throughout implementation
 - **Maintenance Burden**: Automate as much of the process as possible
 
 This optimization plan provides a comprehensive approach to enhancing your ReVanced building repository with advanced privacy protection, improved AAPT2 integration, and sophisticated multi-stage patching capabilities.
-
