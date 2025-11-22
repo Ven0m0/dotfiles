@@ -1,15 +1,15 @@
 #!/bin/sh
-# ~/.profile
+[[ $- != *i* ]] && return
 
 # if running bash
-if [ -n "$BASH_VERSION" ]; then
-  [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
-fi
+[ -n "$BASH_VERSION" ] && . "$HOME/.bashrc"
 
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
-# set PATH so it includes user's private bin if it exists
 [ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
 [ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:$PATH"
+
+export EDITOR="${EDITOR:-micro}"
+export BROWSER="${BROWSER:-firefox"
 
 export PATH
 # FZF tab completions
