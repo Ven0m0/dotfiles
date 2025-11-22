@@ -1,245 +1,124 @@
+[user]
+	name = Ven0m0
+	email = ven0m0.wastaken@gmail.com
 [core]
-  excludesfile = ~/.gitignore
-  attributesfile = ~/.gitattributes
-  pager = delta
-  whitespace = fix,-indent-with-non-tab,trailing-space,space-before-tab,cr-at-eol
-  editor = $EDITOR
-  autocrlf = input
-  preloadIndex = true
-  eol = native
-  compression = 6
-  multiPackIndex = true
-  fsyncMethod = batch
-  repositoryformatversion = 1
-  fileMode = true
-  deltaBaseCacheLimit = 1g
-  preferSymlinkRefs = true
-  symlinks = true
-  untrackedCache = true
+	excludesfile = ~/.gitignore
+	attributesfile = ~/.gitattributes
+	pager = delta
+	whitespace = fix,-indent-with-non-tab,trailing-space,space-before-tab,cr-at-eol
+	editor = $EDITOR
+	autocrlf = input
+	compression = 6
+	multiPackIndex = true
+	fsyncMethod = batch
+	deltaBaseCacheLimit = 1g
+	untrackedCache = true
+[init]
+	defaultBranch = main
 [alias]
-  sub = submodule update --init --recursive --remote -r --depth 1
-  dot = !--git-dir=$HOME/.dotfiles --work-tree=$HOME
 	st = status
 	unstage = reset HEAD --
-	# Logging
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	last = log -1 HEAD
-	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
-	# Diff
 	df = diff
 	dc = diff --cached
-	# Useful commands
 	amend = commit --amend --no-edit
 	undo = reset --soft HEAD~1
-	discard = checkout --
 	cleanup = !git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d
-[interactive]
-  diffFilter = delta --color-only --features=interactive
 [color]
-  branch = auto
-  diff = auto
-  status = auto
-  ui = auto
+	ui = auto
 [push]
-  default = simple
-  autoSetupRemote = true
-  recurseSubmodules = on-demand
-  # useBitmaps = true
-  followTags = true
+	default = simple
+	autoSetupRemote = true
+	recurseSubmodules = on-demand
+	followTags = true
 [pull]
-  ff = only
-  rebase = true
-[clone]
-  filterSubmodules = true
-[pack]
-  threads = 0
-  allowPackReuse = true
-  indexVersion = 2
-  useBitmapBoundaryTraversal = true
-  useBitmaps = true
-  preferBitmapTips = true
-  writeBitmapHashCache = true
-  writeBitmapLookupTable = true
-  window = 50
-  depth = 50
-  deltaCacheSize = 512m
-  compression = 6
+	ff = only
+	rebase = true
 [fetch]
-  all = true
-  prune = true
-  pruneTags = true
-  parallel = 0
-  fsckobjects = true
-  recurseSubmodules = true
-  negotiationAlgorithm = skipping
-[receive]
-  autogc = true
-  shallowUpdate = true
-[submodule]
-  fetchJobs = 0
-[rebase]
-  autoSquash = true
-  autoStash = true
-  updateRefs = true
-  backend = merge
-  missingCommitsCheck = true
-  abbreviateCommands = true
-[fsck]
-  duplicateEntries = true
-  gitmodulesSymlink = true
-  gitmodulesUpdate = true
-[gc]
-  auto = 256
-  autoPackLimit = 50
-  autoDetach = true
-  packRefs = true
-  reflogExpireUnreachable = 0
-  reflogExpire = 7.days.ago
-  aggressive = true
-  repackFilter = blob:none
-  pruneExpire = 7.days.ago
-[repack]
-  cruftThreads = 0
-  # writeBitmaps = true
-  useDeltaBaseOffset = true
-[checkout]
-  workers = 0
-[grep]
-  threads = 0
-  extendRegexp = true
-  lineNumber = true
-[index]
-  skipHash = true
-  sparse = true
-  threads = 0
-  version = 4
-[rerere]
-  enabled = true
-  autoupdate = true
-[http]
-  sslBackend = openssl
-  maxRequests = 10
-  version = HTTP/2
-  sslVersion = tlsv1.3
-  postBuffer = 104857600
-  followRedirects = true
-[remote "origin"]
+	all = true
 	prune = true
+	pruneTags = true
+	parallel = 0
+	fsckobjects = true
+	recurseSubmodules = true
+	negotiationAlgorithm = skipping
+[pack]
+	threads = 0
+	allowPackReuse = true
+	useBitmaps = true
+	writeBitmapHashCache = true
+	deltaCacheSize = 512m
+	compression = 6
+[rebase]
+	autoSquash = true
+	autoStash = true
+	updateRefs = true
+	missingCommitsCheck = true
+[gc]
+	auto = 256
+	autoPackLimit = 50
+	packRefs = true
+	aggressive = true
+[index]
+	threads = 0
+	version = 4
+[rerere]
+	enabled = true
+	autoupdate = true
+[http]
+	version = HTTP/2
+	postBuffer = 104857600
+	followRedirects = true
 [transfer]
 	fsckobjects = true
-[gui]
-  fastCopyBlame = true
-  pruneDuringFetch = true
-  encoding = utf-8
 [help]
-  autoCorrect = 1
-[apply]
-  whitespace = fix
-[pager]
-  log = delta
-  reflog = delta
-  show = delta
-  diff = delta
-  difftool = true
+	autoCorrect = 1
 [delta]
-  hyperlinks = true
-  features = decorations
-  line-numbers = true
-  decorations = true
-  navigate = true
+	hyperlinks = true
+	features = decorations
+	line-numbers = true
+	navigate = true
 	hunk-header-style = omit
-	blame-code-style = syntax
-	blame-separator-format = none
-	line-numbers-right-format = " "
-	line-numbers-minus-style = syntax
-	line-numbers-plus-style = syntax
 [diff]
 	tool = vscode
-  algorithm = histogram
-  suppressBlankEmpty = true
-  renames = true
-  colorMoved = plain
-  mnemonicprefix = true
-  external = difft
-  compactionHeuristic = true
+	algorithm = histogram
+	renames = true
+	colorMoved = plain
+	external = difft
+[difftool]
+	prompt = false
 [difftool "vscode"]
 	cmd = code --wait --diff $LOCAL $REMOTE
-[difftool]
-  prompt = false
-[diff-so-fancy]
-  markEmptyLines = false
-  stripLeadingSymbols = true
-[icdiff]
-  options = --line-numbers
 [merge]
-  conflictStyle = zdiff3
-  tool = vscode
+	conflictStyle = zdiff3
+	tool = vscode
 [mergetool]
-  prompt = false
-  keepBackup = false
-  hideResolved = true
+	prompt = false
+	keepBackup = false
+	hideResolved = true
 [mergetool "vscode"]
 	cmd = code --wait $MERGED
 	useAutoMerge = true
-[mergetool "meld"]
-  useAutoMerge = true
-[protocol]
-  version = 2
 [feature]
-  manyFiles = true
-  experimental = true
-[worktree]
-  useRelativePaths = true
+	manyFiles = true
 [status]
-  aheadBehind = true 
-  short = true
-  submoduleSummary = true
-  showUntrackedFiles = true
-  renames = false
-[maintenance]
-  strategy = incremental
-[maintenance "prefetch"]
-  enabled = true
-[maintenance "gc"]
-  enabled = true
-[maintenance "loose-objects"]
-  enabled = true
-[maintenance "incremental-repack"]
-  enabled = true
-[maintenance "pack-refs"]
-  enabled = true
-[maintenance "reflog-expire"]
-  enabled = true
-[maintenance "rerere-gc"]
-  enabled = true
-[maintenance "worktree-prune"]
-  enabled = true
-[include]
-  path = ~/.gitconfig.local
-[advice]
-  statusUoption = false
-	statusHints = true
-	rmHints = true
-	resolveConflict = true
-[init]
-  defaultBranch = main
+	short = true
+	submoduleSummary = true
+	showUntrackedFiles = true
 [commit]
-  verbose = true
+	verbose = true
 [branch]
-  sort = -committerdate
-[column]
-  ui = auto
-[user]
-	name = Ven0m0
-  email = ven0m0.wastaken@gmail.com
+	sort = -committerdate
 [credential]
-  helper = store
+	helper = store
 [credential "https://github.com"]
-  helper = "gh auth git-credential"
+	helper = gh auth git-credential
 [credential "https://gist.github.com"]
-  helper = "gh auth git-credential"
+	helper = gh auth git-credential
 [filter "lfs"]
-  clean = "git-lfs clean -- %f"
-	process = "git-lfs filter-process"
+	process = git-lfs filter-process
 [tag]
-	sort = "version:refname"
+	sort = version:refname
+[include]
+	path = ~/.gitconfig.local
