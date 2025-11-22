@@ -21,6 +21,9 @@
     "enabled": true,
     "rules": {
       "recommended": true
+      "nursery": {
+        "noDuplicateDependencies": "error"
+        }
     }
   },
   "javascript": {
