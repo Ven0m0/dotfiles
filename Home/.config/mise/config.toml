@@ -1,29 +1,39 @@
 [settings]
 experimental = true
-auto_install = true
 color = true
-yes = true
-activate_aggressive = true
-jobs = 12
+auto_install = true
+task_run_auto_install = true
 lockfile = true
+yes = true
+gix = true
+pipx_uvx = true
 python.uv_venv_auto = true
 python_venv_auto_create = true
-gix = true
+cargo_binstall = true
+activate_aggressive = true
 go_skip_checksum = true
-legacy_version_file = true
-always_keep_download = false
-always_keep_install = false
+jobs = 12
+legacy_version_file = false
 verbose = false
 not_found_auto_install = true
 disable_default_shorthands = false
-cargo_binstall = true
-pipx_uvx = true
-npm.bun = true
+
+system_config_file = "~/.config/mise/config.toml"
 
 [settings.python]
 compile = true
 precompiled_os = "x86_64_v3"
-venv_create_args = ["--system-site-packages"]
+uv_venv_auto = true
+uv_venv_create_args = ["--system-site-packages"]
+
+[settings.pipx]
+uvx = true
+
+[settings.cargo]
+binstall = true
+
+[settings.npm]
+bun = true
 
 [settings.node]
 compile = true
