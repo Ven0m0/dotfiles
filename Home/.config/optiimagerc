@@ -1,0 +1,4 @@
+[General]
+SafeMode=false
+[jpg]
+jpgProgressive=true
