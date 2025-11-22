@@ -1,0 +1,11 @@
+[defaults]
+ignore = "dirty"
+update = "rebase"
+branch = "main"
+
+[vendor-utils]
+path = "vendor/utils"
+url = "https://github.com/example/utils.git"
+sparse_paths = ["src/", "include/", "*.md"]
+ignore = "untracked"
+active = false
