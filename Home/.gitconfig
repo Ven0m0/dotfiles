@@ -8,11 +8,14 @@
 	whitespace = fix,-indent-with-non-tab,trailing-space,space-before-tab,cr-at-eol
 	editor = $EDITOR
 	autocrlf = input
+	eol = native
 	compression = 6
 	multiPackIndex = true
 	fsyncMethod = batch
 	deltaBaseCacheLimit = 1g
 	untrackedCache = true
+	preferSymlinkRefs = true
+	symlinks = true
 [init]
 	defaultBranch = main
 [alias]
@@ -20,11 +23,14 @@
 	unstage = reset HEAD --
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	last = log -1 HEAD
+	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
 	df = diff
 	dc = diff --cached
 	amend = commit --amend --no-edit
 	undo = reset --soft HEAD~1
+ 	discard = checkout --
 	cleanup = !git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d
+	dot = !--git-dir=$HOME/.dotfiles --work-tree=$HOME
 [color]
 	ui = auto
 [push]
