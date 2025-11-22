@@ -17,43 +17,56 @@
       "recommended": true,
       "complexity": {
         "noExcessiveCognitiveComplexity": "warn",
-        "noForEach": "off"
+        "noForEach": "off",
+        "useFlatMap": "warn"
       },
       "correctness": {
         "noUnusedVariables": "error",
-        "useHookAtTopLevel": "error"
+        "noUnusedImports": "error",
+        "useHookAtTopLevel": "error",
+        "useExhaustiveDependencies": "warn"
       },
       "nursery": {
         "noDuplicateDependencies": "error",
+        "noEvolvingTypes": "warn",
+        "noMissingVarFunction": "warn",
         "useSortedClasses": "warn"
       },
       "performance": {
         "noAccumulatingSpread": "warn",
-        "noDelete": "warn"
+        "noBarrelFile": "warn",
+        "noDelete": "warn",
+        "noReExportAll": "warn"
       },
       "style": {
+        "noDefaultExport": "off",
         "noNegationElse": "off",
+        "noNonNullAssertion": "warn",
+        "noParameterAssign": "warn",
         "useConsistentArrayType": "error",
         "useFilenamingConvention": "off",
-        "useNodejsImportProtocol": "error"
+        "useNodejsImportProtocol": "error",
+        "useShorthandArrayType": "warn",
+        "useSingleVarDeclarator": "warn"
       },
       "suspicious": {
         "noConsoleLog": "warn",
-        "noDoubleEquals": "error"
+        "noDoubleEquals": "error",
+        "noEmptyBlockStatements": "warn",
+        "noExplicitAny": "warn"
       }
     }
   },
   "javascript": {
     "formatter": {
       "jsxQuoteStyle": "double",
+      "quoteStyle": "single",
       "quoteProperties": "asNeeded",
       "trailingCommas": "all",
       "semicolons": "always",
       "arrowParentheses": "always",
       "bracketSpacing": true,
-      "bracketSameLine": false,
-      "quoteStyle": "single",
-      "attributePosition": "auto"
+      "bracketSameLine": false
     }
   },
   "json": {
@@ -66,8 +79,22 @@
   },
   "overrides": [
     {
-      "include": ["*.config.js", "*.config.ts", ".*.js"],
-      "linter": {"rules": {"suspicious": {"noConsoleLog": "off"}}}
+      "include": ["*.config.{js,ts,mjs,cjs}", ".*rc.{js,ts}", ".*.{js,ts}"],
+      "linter": {
+        "rules": {
+          "suspicious": {"noConsoleLog": "off"},
+          "style": {"noDefaultExport": "off"}
+        }
+      }
+    },
+    {
+      "include": ["**/__tests__/**", "**/*.test.{js,ts,jsx,tsx}", "**/*.spec.{js,ts,jsx,tsx}"],
+      "linter": {
+        "rules": {
+          "suspicious": {"noExplicitAny": "off"},
+          "style": {"noNonNullAssertion": "off"}
+        }
+      }
     }
   ]
 }
