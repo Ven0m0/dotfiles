@@ -1,0 +1,8 @@
+esbenp.prettier-vscode
+ms-vscode.remote-explorer
+tamasfe.even-better-toml
+timonwong.shellcheck
+mads-hartmann.bash-ide-vscode
+bmalehorn.vscode-fish
+redhat.vscode-yaml
+yzhang.markdown-all-in-one
