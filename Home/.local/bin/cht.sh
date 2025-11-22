@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # cht - cheat.sh wrapper with fuzzy search
 set -euo pipefail; shopt -s lastpipe nullglob
-export LC_ALL=C LANG=C
+LC_ALL=C LANG=C
 
 has(){ command -v "$1" &>/dev/null; }
 die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
@@ -37,7 +37,6 @@ _browse(){
   printf '\n→ %s\n\n' "${url}"
   get "${url}" | "${PAGER}"
 }
-
 _query(){
   local lang="${1:-}" topic="${2:-}" flags="" url
   [[ -z "${lang}" ]] && die "Language/topic required"
