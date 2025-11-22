@@ -1,14 +1,15 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-$username$directory\
-${custom.git_repo}\
-$hostname\
+$username$hostname\
+$directory\
+${custom.git_repo}$git_branch$git_status\
 $localip\
 $shell$shlvl\
 ${custom.yazi_level}\
 $time\
-$sudo$status\
+$sudo\
+$status\
 $character
 """
 
@@ -64,13 +65,13 @@ utc_time_offset = "local"
 time_range = "00:00:00-24:00:00"
 
 [git_branch]
-disabled = true
+disabled = false
 truncation_length = 4
 truncation_symbol = ''
 
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
-disabled = true
+disabled = false
 use_git_executable = false
 ignore_submodules = true
 ahead = '⇡${count}'
