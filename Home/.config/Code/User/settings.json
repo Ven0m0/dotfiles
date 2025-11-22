@@ -17,6 +17,9 @@
   "catppuccin.extraBordersEnabled": true,
   "VirtualRepos.UseRepoOwnerAvatar": true,
   "update.mode": "none",
+  "update.channel": "none",
+  "update.showReleaseNotes": false,
+  "npm.fetchOnlinePackageInfo": false,
 
   // --------------------------------------------------------------------
   // Editor Behavior
@@ -69,6 +72,8 @@
   // Performance & Telemetry
   // --------------------------------------------------------------------
   "telemetry.telemetryLevel": "off",
+  "telemetry.enableTelemetry": false,
+  "telemetry.enableCrashReporter": false,
   "telemetry.editStats.enabled": false,
   "telemetry.feedback.enabled": false,
   "geminicodeassist.enableTelemetry": false,
@@ -92,6 +97,7 @@
   "git.pullBeforeCheckout": true,
   "git.rebaseWhenSync": true,
   "git.allowNoVerifyCommit": false,
+  "git.autofetch": false,
 
   // --------------------------------------------------------------------
   // Security
