@@ -16,6 +16,7 @@
   "catppuccin.accentColor": "pink",
   "catppuccin.extraBordersEnabled": true,
   "VirtualRepos.UseRepoOwnerAvatar": true,
+  "update.mode": "none",
 
   // --------------------------------------------------------------------
   // Editor Behavior
