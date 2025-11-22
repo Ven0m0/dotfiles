@@ -32,8 +32,7 @@ readonly debug='on'
 readonly dvd_device='/dev/sr0'
 #}}}
 
-main() {
-  check_args "${@}"
+main(){ check_args "${@}"
 
   local iso_image="${1}"
   create_iso "$iso_image"
@@ -42,16 +41,9 @@ main() {
 
 #{{{ Helper functions
 
-check_args() {
-  if [ "$#" -ne '1' ]; then
-    error "Expected 1 argument, but got: $#"
-    usage
-    exit 1
-  fi
-}
+check_args(){ [[ $# -eq 1 ]] || { error "Expected 1 argument, but got: $#"; usage; exit 1; }; }
 
-create_iso() {
-  local iso_image="${1}"
+create_iso(){ local iso_image="${1}"
   local dvd_info block_size volume_size total_size
 
   # Read info on the DVD
@@ -68,8 +60,7 @@ create_iso() {
     dd of="$iso_image" bs="$block_size"
 }
 
-check_image() {
-  local iso_image="${1}"
+check_image(){ local iso_image="${1}"
   local orig_check copy_check
 
   info "Comparing checksums..."
@@ -90,29 +81,21 @@ check_image() {
 # Usage: info [ARG]...
 #
 # Prints all arguments on the standard output stream
-info() {
-  printf "${yellow}>>> %s${reset}\\n" "${*}"
-}
+info(){ printf "${yellow}>>> %s${reset}\\n" "${*}"; }
 
 # Usage: debug [ARG]...
 #
 # Prints all arguments on the standard output stream,
 # if debug output is enabled
-debug() {
-  [ "$debug" != 'on' ] || printf "${cyan}### %s${reset}\\n" "${*}"
-}
+debug(){ [[ $debug != on ]] || printf "${cyan}### %s${reset}\\n" "${*}"; }
 
 # Usage: error [ARG]...
 #
 # Prints all arguments on the standard error stream
-error() {
-  printf "${red}!!! %s${reset}\\n" "${*}" 1>&2
-}
+error(){ printf "${red}!!! %s${reset}\\n" "${*}" 1>&2; }
 
 # Print usage message on stdout by parsing start of script comments
-usage() {
-  grep '^#/' "${script_dir}/${script_name}" | sed 's/^#\/\w*//'
-}
+usage(){ grep '^#/' "${script_dir}/${script_name}" | sed 's/^#\/\w*//'; }
 
 #}}}
 

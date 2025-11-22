@@ -7,46 +7,37 @@
 # =============================================================================
 
 # Create directory and cd into it
-mkcd() { mkdir -p -- "$1" && cd -- "$1" || exit; }
+mkcd(){ mkdir -p -- "$1" && cd -- "$1" || exit; }
 
 # cd and list contents
-cdls() { cd -- "$1" && ls -A; }
+cdls(){ cd -- "$1" && ls -A; }
 
 # Go up N directories
-up() {
-  local d="" limit=$1
+up(){ local d="" limit=$1
   for ((i = 1; i <= limit; i++)); do d=$d/..; done
-  d=${d#/}
-  cd -- "${d:=..}" || exit
-}
+  d=${d#/}; cd -- "${d:=..}" || exit; }
 
 # Display file/directory sizes (prefer dust)
-fs() {
-  if command -v dust &>/dev/null; then
+fs(){ if command -v dust &>/dev/null; then
     dust -r ${1:-.}
   elif [[ $# -gt 0 ]]; then
     du -sbh -- "$@"
   else
     du -sbh -- .[!.]* ./* 2>/dev/null | sort -hr
-  fi
-}
+  fi; }
 
 # Cat for files, ls for directories
-catt() {
-  for i in "$@"; do
-    [[ -d "$i" ]] && ls "$i" || bat -p "$i" 2>/dev/null || cat "$i"
-  done
-}
+catt(){ for i in "$@"; do
+    [[ -d $i ]] && ls "$i" || bat -p "$i" 2>/dev/null || cat "$i"
+  done; }
 
 # =============================================================================
 # ARCHIVE MANAGEMENT
 # =============================================================================
 
 # Extract various archive formats
-extract() {
-  [[ $# -eq 0 ]] && { echo "Usage: extract <archive_file>"; return 1; }
-  [[ ! -f "$1" ]] && { echo "❌ '$1' is not a valid file"; return 1; }
-  
+extract(){ [[ $# -eq 0 ]] && { echo "Usage: extract <archive_file>"; return 1; }
+  [[ ! -f $1 ]] && { echo "❌ '$1' is not a valid file"; return 1; }
   echo "📦 Extracting $1..."
   case $1 in
     *.tar.bz2|*.tbz2) tar xjf "$1" ;;
@@ -68,9 +59,7 @@ extract() {
 }
 
 # Create compressed archives
-cr() {
-  [[ $# -eq 0 ]] && { echo "Usage: cr <file_or_folder1> ..."; return 1; }
-  
+cr(){ [[ $# -eq 0 ]] && { echo "Usage: cr <file_or_folder1> ..."; return 1; }
   echo "Choose format: 1)tar.gz 2)tar.xz 3)tar.zst 4)zip 5)7z"
   read -rp "Choice [1-5]: " choice
   read -rp "Output name (no extension): " out
@@ -90,21 +79,18 @@ cr() {
 # =============================================================================
 
 # Copy/move and cd to destination
-cpg() { [[ -d "$2" ]] && cp "$1" "$2" && cd "$2" || cp "$1" "$2"; }
-mvg() { [[ -d "$2" ]] && mv -- "$1" "$2" && cd -- "$2" || mv -- "$1" "$2"; }
+cpg(){ [[ -d $2 ]] && cp "$1" "$2" && cd "$2" || cp "$1" "$2"; }
+mvg(){ [[ -d $2 ]] && mv -- "$1" "$2" && cd -- "$2" || mv -- "$1" "$2"; }
 
 # Search for text in files (prefer rg)
-ftext() {
-  if command -v rg &>/dev/null; then
+ftext(){ if command -v rg &>/dev/null; then
     rg -i --hidden --color=always "$@" | bat --paging=always
   else
     grep -iIHrn --color=always "$1" . | bat --paging=always
-  fi
-}
+  fi; }
 
 # Strip metadata from images (prefer GraphicsMagick)
-fiximg() {
-  local GM_CMD GM_IDENTIFY
+fiximg(){ local GM_CMD GM_IDENTIFY
   if command -v gm &>/dev/null; then
     GM_CMD="gm convert"
     GM_IDENTIFY="gm identify"
@@ -118,8 +104,7 @@ fiximg() {
   
   local -a exts=(png jpg jpeg webp avif jxl)
   
-  strip_file() {
-    local f="$1" tmp
+  strip_file(){ local f="$1" tmp
     if [[ -n $($GM_IDENTIFY -format "%[EXIF:*]" "$f" 2>/dev/null) ]] \
       || [[ -n $($GM_IDENTIFY -format "%[IPTC:*]" "$f" 2>/dev/null) ]] \
       || [[ -n $($GM_IDENTIFY -format "%[Comment]" "$f" 2>/dev/null) ]]; then
@@ -148,9 +133,7 @@ fiximg() {
 # =============================================================================
 
 # Find and kill processes with confirmation (prefer rg)
-pk() {
-  [[ $# -ne 1 ]] && { echo "Usage: pk <process_name>"; return 1; }
-  
+pk(){ [[ $# -ne 1 ]] && { echo "Usage: pk <process_name>"; return 1; }
   local pids
   if command -v rg &>/dev/null; then
     pids=$(ps aux | rg "$1" | rg -v 'rg' | awk '{print $2}')
@@ -172,8 +155,7 @@ pk() {
 }
 
 # Fuzzy process killer (prefer sk if faster)
-fkill() {
-  local pid fuzzy
+fkill(){ local pid fuzzy
   # Use sk for large datasets, fzf for small ones
   fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   
@@ -183,17 +165,15 @@ fkill() {
 }
 
 # Run process in background
-bgd() { (nohup "$@" &>/dev/null </dev/null & disown); }
-bgd_full() { (nohup setsid "$@" &>/dev/null </dev/null & disown); }
+bgd(){ (nohup "$@" &>/dev/null </dev/null & disown); }
+bgd_full(){ (nohup setsid "$@" &>/dev/null </dev/null & disown); }
 
 # =============================================================================
 # MAN PAGES & HELP
 # =============================================================================
 
 # Fuzzy man page search
-fman() {
-  local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
-  
+fman(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   [[ $# -gt 0 ]] && { man "$@"; return; }
   
   if command -v sd &>/dev/null; then
@@ -208,11 +188,10 @@ fman() {
 }
 
 # Get help with bat syntax highlighting
-bathelp() { "$@" --help 2>&1 | bat -plhelp; }
+bathelp(){ "$@" --help 2>&1 | bat -plhelp; }
 
 # Explain commands via API
-explain() {
-  if [[ $# -eq 0 ]]; then
+explain(){ if [[ $# -eq 0 ]]; then
     while read -rp "Command: " cmd; do
       curl -sfG "https://www.mankier.com/api/explain/?cols=$(tput cols)" --data-urlencode "q=$cmd"
     done
@@ -232,8 +211,7 @@ explain() {
 #   fz -f       - fuzzy find and edit file
 #   fz -p       - fuzzy cd to parent directory
 #   fz <path>   - search within specific path
-fz() {
-  local mode="dir" search_path="${1:-.}" fuzzy
+fz(){ local mode="dir" search_path="${1:-.}" fuzzy
   fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   
   # Parse flags
@@ -303,8 +281,7 @@ alias fzf-cd-to-parent='fz -p'
 # =============================================================================
 
 # Apply patch from GitHub commit URL
-ghpatch() {
-  local url="${1:?usage: ghpatch <commit-url>}" patch
+ghpatch(){ local url="${1:?usage: ghpatch <commit-url>}" patch
   patch="$(mktemp)" || return 1
   trap 'rm -f "$patch"' EXIT
   curl -sSfL "${url}.patch" -o "$patch" || return 1
@@ -327,8 +304,7 @@ ghpatch() {
 }
 
 # Fuzzy git log viewer
-ghf() {
-  local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
+ghf(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
   
   $git_cmd rev-parse --is-inside-work-tree &>/dev/null || return
@@ -341,8 +317,7 @@ ghf() {
 }
 
 # Fuzzy git status editor
-fzf-git-status() {
-  local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
+fzf-git-status(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
   
   $git_cmd rev-parse --git-dir &>/dev/null || { echo "❌ Not in git repo"; return; }
@@ -364,8 +339,7 @@ fzf-git-status() {
 }
 
 # Maximum git maintenance
-git_maintain_max() {
-  local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
+git_maintain_max(){ local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
   
   echo "🧹 Git gc"
   $git_cmd gc --prune=now --aggressive --cruft
@@ -378,15 +352,13 @@ git_maintain_max() {
 }
 
 # Update git repo with submodules
-update_git_pull() {
-  local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
+update_git_pull(){ local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
   command -v $git_cmd &>/dev/null || return
   $git_cmd pull --rebase --autostash && $git_cmd submodule update --init --recursive
 }
 
 # Delete merged/gone branches
-gdbr() {
-  local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
+gdbr(){ local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
   $git_cmd fetch --prune
   if command -v rg &>/dev/null; then
     $git_cmd branch -vv | rg ': gone]' | awk '{print $1}' | xargs -r $git_cmd branch -D
@@ -396,8 +368,7 @@ gdbr() {
 }
 
 # Enhanced git branch view
-gbr() {
-  local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
+gbr(){ local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
   $git_cmd branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
 }
 
@@ -406,8 +377,7 @@ gbr() {
 # =============================================================================
 
 # Display installed package sizes
-pacsize() {
-  if command -v pacinfo &>/dev/null; then
+pacsize(){ if command -v pacinfo &>/dev/null; then
     pacman -Qqt | pacinfo --removable-size \
       | awk '/^Name:/{name=$2}/^Installed Size:/{size=$3$4}/^$/{print size" "name}' \
       | sort -uk2 | sort -rh | bat --paging=always
@@ -418,8 +388,7 @@ pacsize() {
 }
 
 # Fuzzy package installer/uninstaller
-fuzzy_paru() {
-  local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
+fuzzy_paru(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   command -v $fuzzy &>/dev/null || { echo "❌ fuzzy finder required"; return 1; }
   
   local fzf_input
@@ -453,8 +422,7 @@ fuzzy_paru() {
 }
 
 # Search AUR packages (prefer jaq)
-search() {
-  local jq_cmd=$(command -v jaq &>/dev/null && echo "jaq" || echo "jq")
+search(){ local jq_cmd=$(command -v jaq &>/dev/null && echo "jaq" || echo "jq")
   curl -s "https://aur.archlinux.org/rpc/?v=5&type=search&arg=$1" \
     | $jq_cmd '.results[] | {Name,Description,Version,URL,NumVotes,Popularity,Maintainer}' \
     || echo "Cannot query database"
@@ -464,32 +432,27 @@ search() {
 # DOCKER FUNCTIONS
 # =============================================================================
 
-da() {
-  local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
+da(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   local cid=$(docker ps -a | tail -n +2 | $fuzzy -1 -q "$1" | awk '{print $1}')
   [[ -n $cid ]] && docker start "$cid" && docker attach "$cid"
 }
 
-ds() {
-  local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
+ds(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   local cid=$(docker ps | tail -n +2 | $fuzzy -q "$1" | awk '{print $1}')
   [[ -n $cid ]] && docker stop "$cid"
 }
 
-drm() {
-  local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
+drm(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   local cid=$(docker ps -a | tail -n +2 | $fuzzy -q "$1" | awk '{print $1}')
   [[ -n $cid ]] && docker rm "$cid"
 }
 
-drmm() {
-  local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
+drmm(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   docker ps -a | tail -n +2 | $fuzzy -q "$1" --no-sort -m --tac \
     | awk '{print $1}' | xargs -r docker rm
 }
 
-drmi() {
-  local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
+drmi(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   docker images | tail -n +2 | $fuzzy -q "$1" --no-sort -m --tac \
     | awk '{print $3}' | xargs -r docker rmi
 }
@@ -499,8 +462,7 @@ drmi() {
 # =============================================================================
 
 # Setup SSH keys and add to ssh-agent
-Setup-ssh() {
-  local email="${email:-ven0m0.wastaken@gmail.com}"
+Setup-ssh(){ local email="${email:-ven0m0.wastaken@gmail.com}"
   local key_path="${HOME}/.ssh/id_ed25519"
   
   [[ -f "$key_path" ]] || ssh-keygen -t ed25519 -C "$email" -f "$key_path"
@@ -521,8 +483,7 @@ Setup-ssh() {
 # =============================================================================
 
 # Video to GIF converter (prefer ffzap)
-vid2gif() {
-  local video_path="$1"
+vid2gif(){ local video_path="$1"
   [[ -z "$video_path" ]] && { echo "Usage: vid2gif <video_file>"; return 1; }
   
   if command -v ffzap &>/dev/null; then
@@ -533,20 +494,15 @@ vid2gif() {
 }
 
 # List opened applications
-list_opened_apps() {
-  ps axc | awk 'NR > 1 {print substr($0,index($0,$5))}' | sort -u
-}
+list_opened_apps(){ ps axc | awk 'NR > 1 {print substr($0,index($0,$5))}' | sort -u; }
 
 # Shell script linter combo
-shlint() {
-  shellcheck -a -x -s bash --source-path=SCRIPTDIR -f diff "$1" | patch -p1
+shlint(){ shellcheck -a -x -s bash --source-path=SCRIPTDIR -f diff "$1" | patch -p1
   shellharden --replace "$1"
-  shfmt -w -ln bash -bn -i 2 -s "$1"
-}
+  shfmt -w -ln bash -bn -i 2 -s "$1"; }
 
 # Delete empty subdirectories (prefer fd/fdf)
-prune_empty() {
-  local reply
+prune_empty(){ local reply
   [[ -n "$1" ]] && read -rp "Prune empty directories: are you sure? [y] " reply || reply=y
   
   if [[ "$reply" == y ]]; then

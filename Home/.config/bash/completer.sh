@@ -3,8 +3,7 @@
 
 #=============================== [Completions] ================================
 # Lazy-load completion function
-load_completion(){
-  local name="$1" cmd="$2" kind="$3" src="$4"
+load_completion(){ local name="$1" cmd="$2" kind="$3" src="$4"
   has "$cmd" || return
   declare -F "$name" &>/dev/null && return
   case "$kind" in
@@ -28,8 +27,7 @@ fi
 
 # --- Editor FZF Completion
 if has fzf; then
-  _editor_completion(){
-    bind '"\e[0n": redraw-current-line' &>/dev/null
+  _editor_completion(){ bind '"\e[0n": redraw-current-line' &>/dev/null
     local selected
     if selected=$(compgen -f -- "${COMP_WORDS[COMP_CWORD]}" | fzf --prompt='❯ ' \
       --height=~100% --tiebreak=begin,index -1 -0 --exact \
