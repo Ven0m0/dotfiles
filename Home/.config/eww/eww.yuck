@@ -1,0 +1,129 @@
+;; Eww Configuration
+;; Variables for system monitoring
+
+;; Polls
+(defpoll time :interval "10s"
+  "date '+%H:%M'")
+
+(defpoll date :interval "1m"
+  "date '+%a %d %b'")
+
+(defpoll volume :interval "1s"
+  "pactl get-sink-volume @DEFAULT_SINK@ | grep -Po '[0-9]+(?=%)' | head -1")
+
+(defpoll battery :interval "15s"
+  "cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || echo '100'")
+
+(defpoll battery_status :interval "15s"
+  "cat /sys/class/power_supply/BAT0/status 2>/dev/null || echo 'Unknown'")
+
+(defpoll cpu_usage :interval "2s"
+  "top -bn1 | grep 'Cpu(s)' | sed 's/.*, *\\([0-9.]*\\)%* id.*/\\1/' | awk '{print 100 - $1}'")
+
+(defpoll memory_usage :interval "2s"
+  "free | grep Mem | awk '{printf \"%.0f\", ($3/$2) * 100.0}'")
+
+(defpoll disk_usage :interval "30s"
+  "df -h / | awk 'NR==2 {print $5}' | tr -d '%'")
+
+;; Widgets
+
+;; Clock widget
+(defwidget clock []
+  (box :class "clock"
+       :orientation "h"
+       :space-evenly false
+       :halign "center"
+    (label :class "time" :text time)
+    (label :class "date" :text "  ${date}")))
+
+;; Volume widget
+(defwidget volume_widget []
+  (box :class "volume"
+       :orientation "h"
+       :space-evenly false
+    (label :class "icon" :text "")
+    (label :class "value" :text "${volume}%")))
+
+;; Battery widget
+(defwidget battery_widget []
+  (box :class "battery"
+       :orientation "h"
+       :space-evenly false
+    (label :class "icon" :text {battery_status == "Charging" ? "" :
+                                battery >= 90 ? "" :
+                                battery >= 60 ? "" :
+                                battery >= 40 ? "" :
+                                battery >= 20 ? "" : ""})
+    (label :class "value" :text "${battery}%")))
+
+;; System stats widget
+(defwidget system_stats []
+  (box :class "system-stats"
+       :orientation "h"
+       :space-evenly false
+       :spacing 15
+    (box :class "stat cpu"
+         :orientation "h"
+         :space-evenly false
+      (label :class "icon" :text "")
+      (label :class "value" :text "${round(cpu_usage, 0)}%"))
+    (box :class "stat memory"
+         :orientation "h"
+         :space-evenly false
+      (label :class "icon" :text "")
+      (label :class "value" :text "${memory_usage}%"))
+    (box :class "stat disk"
+         :orientation "h"
+         :space-evenly false
+      (label :class "icon" :text "")
+      (label :class "value" :text "${disk_usage}%"))))
+
+;; Left side of bar
+(defwidget left []
+  (box :class "left"
+       :orientation "h"
+       :space-evenly false
+       :halign "start"
+    (clock)))
+
+;; Center of bar
+(defwidget center []
+  (box :class "center"
+       :orientation "h"
+       :space-evenly false
+       :halign "center"
+    (system_stats)))
+
+;; Right side of bar
+(defwidget right []
+  (box :class "right"
+       :orientation "h"
+       :space-evenly false
+       :halign "end"
+       :spacing 15
+    (volume_widget)
+    (battery_widget)))
+
+;; Main bar widget
+(defwidget bar []
+  (centerbox :class "bar"
+             :orientation "h"
+    (left)
+    (center)
+    (right)))
+
+;; Windows
+
+;; Main bar window
+(defwindow bar
+  :monitor 0
+  :geometry (geometry :x "0%"
+                      :y "0%"
+                      :width "100%"
+                      :height "30px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  :focusable false
+  (bar))
