@@ -11,6 +11,7 @@ $include /etc/inputrc
 set input-meta on
 set output-meta on
 set convert-meta off
+set meta-flag on
 
 # Misc
 set enable-keypad on
@@ -31,7 +32,8 @@ set completion-query-items 200
 set completion-prefix-display-length 2
 set mark-symlinked-directories on
 set mark-directories on
-set page-completions on
+set page-completions off
+set match-hidden-files off
 set colored-completion-prefix on
 set colored-stats on
 set visible-stats on
