@@ -41,6 +41,12 @@ bun = true
 [settings.node]
 compile = true
 
+[settings.aqua]
+baked_registry = true
+
+[settings.ruby]
+ruby_build_opts = "--enable-shared"
+
 [tools]
 #java = "oracle-graalvm"
 java = "temurin"
