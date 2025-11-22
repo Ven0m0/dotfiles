@@ -89,7 +89,6 @@ ${BLD}EXAMPLES${DEF}
   ${0##*/} P               Generate pkg lists
 EOF
 }
-
 _fzf(){
   local -a opts=(--ansi --cycle --no-mouse --reverse --inline-info)
   opts+=(--color='pointer:green,marker:green')
@@ -106,31 +105,26 @@ _fzf(){
   done
   "${FND}" "${opts[@]}"
 }
-
 _info(){
   [[ -n ${_CACHE_INFO[$1]:-} ]] && { printf '%s\n' "${_CACHE_INFO[$1]}"; return 0; }
   local r; r=$("${PAC}" --color=always --noconfirm -Si "$1" 2>/dev/null | grep --color=never -v '^ ')
   _CACHE_INFO[$1]="${r}"; printf '%s\n' "${r}"
 }
-
 _infoq(){
   [[ -n ${_CACHE_INFOQ[$1]:-} ]] && { printf '%s\n' "${_CACHE_INFOQ[$1]}"; return 0; }
   local r; r=$("${PAC}" -Qs --color=always "^$1$" && printf '\n' && "${PAC}" -Qi --list --color=always "$1" 2>/dev/null)
   _CACHE_INFOQ[$1]="${r}"; printf '%s\n' "${r}"
 }
-
 _getlist(){
   [[ -n ${_CACHE_LIST[$*]:-} ]] && { printf '%s\n' "${_CACHE_LIST[$*]}"; return 0; }
   local r; r=$("${PAC}" -Ss --quiet "$@" 2>/dev/null || :)
   _CACHE_LIST[$*]="${r}"; printf '%s\n' "${r}"
 }
-
 _getlocal(){
   [[ -n ${_CACHE_LOCALLIST[$*]:-} ]] && { printf '%s\n' "${_CACHE_LOCALLIST[$*]}"; return 0; }
   local r; r=$("${PAC}" -Qs --quiet "$@" 2>/dev/null || :)
   _CACHE_LOCALLIST[$*]="${r}"; printf '%s\n' "${r}"
 }
-
 # Sync AUR metadata
 _aur_sync(){
   local meta="${AUR_META}/packages-meta.txt"
@@ -145,7 +139,6 @@ _aur_sync(){
       zcat | has jq && jq -r '.[] | "\(.Name)\t\(.Description)"' > "${meta}" || :
   fi
 }
-
 # Preview with PKGBUILD support
 _preview_pkg(){
   local pkg="$1" mode="${2:-repo}"
@@ -158,7 +151,6 @@ _preview_pkg(){
     _info "${pkg}"
   fi
 }
-
 _search(){
   export -f _info _fzf _preview_pkg; export PAC FND; declare -gA _CACHE_INFO
   _getlist "$@" | _fzf -m \
@@ -172,7 +164,6 @@ _search(){
     -b "alt-k:preview-up,alt-j:preview-down" \
     -b "ctrl-n:next-selected,ctrl-b:prev-selected"
 }
-
 _local(){
   export -f _infoq _fzf; export PAC FND; declare -gA _CACHE_INFOQ
   _getlocal "$@" | _fzf -m \
@@ -185,7 +176,6 @@ _local(){
     -b "alt-k:preview-up,alt-j:preview-down" \
     -b "ctrl-n:next-selected,ctrl-b:prev-selected"
 }
-
 _orphans(){
   export -f _infoq _fzf; export PAC FND; declare -gA _CACHE_INFOQ
   "${PAC}" -Qdttq "$@" 2>/dev/null | _fzf -m \
@@ -215,12 +205,11 @@ _inst(){
   local -a pkgs=(); mapfile -t pkgs
   (( ${#pkgs[@]} == 0 )) && return 0
   if [[ ${PAC} == pacman ]]; then
-    sudo pacman -S "${pkgs[@]}"
+    sudo pacman --noconfirm -S "${pkgs[@]}"
   else
-    "${PAC}" -S "${pkgs[@]}"
+    "${PAC}" --noconfirm -S "${pkgs[@]}"
   fi
 }
-
 _download(){
   local -a pkgs=(); mapfile -t pkgs
   (( ${#pkgs[@]} == 0 )) && return 0
@@ -230,7 +219,6 @@ _download(){
     "${PAC}" -Syw "${pkgs[@]}"
   fi
 }
-
 _rmv(){
   local -a pkgs=(); mapfile -t pkgs
   (( ${#pkgs[@]} == 0 )) && return 0
@@ -249,7 +237,6 @@ _check_updates(){
   aur_up=0
   [[ ${PAC} != pacman ]] && aur_up=$("${PAC}" -Qua 2>/dev/null | wc -l)
   flat_up=0; has flatpak && flat_up=$(flatpak remote-ls --updates 2>/dev/null | wc -l)
-  snap_up=0; has snap && snap_up=$(snap refresh --list 2>/dev/null | grep -c '^[^Name]' || echo 0)
   printf '\n%bUpdate Summary:%b\n' "${BLD}" "${DEF}"
   printf '  Pacman:  %b%d%b\n' "${CYN}" "${pac_up}" "${DEF}"
   [[ ${aur_up} -gt 0 ]] && printf '  AUR:     %b%d%b\n' "${CYN}" "${aur_up}" "${DEF}"
@@ -263,19 +250,15 @@ _full_update(){
   msg "Starting full system update..."
   # Pacman/AUR
   if [[ ${PAC} == pacman ]]; then
-    sudo pacman -Syu
+    sudo pacman -Syu --noconfirm
   else
-    "${PAC}" -Syu
+    "${PAC}" -Syu --noconfirm
   fi
   # Flatpak
   if has flatpak; then
     msg "Updating flatpak packages..."
-    flatpak update -y
-  fi
-  # Snap
-  if has snap; then
-    msg "Updating snap packages..."
-    sudo snap refresh
+  flatpak update -y --noninteractive
+  sudo flatpak update -y --noninteractive
   fi
   msg "Update complete!"
 }
@@ -284,14 +267,8 @@ _full_update(){
 _update_flatpak(){
   has flatpak || { warn "Flatpak not installed"; return 1; }
   msg "Updating flatpak packages..."
-  flatpak update
-}
-
-# Update snap only
-_update_snap(){
-  has snap || { warn "Snap not installed"; return 1; }
-  msg "Updating snap packages..."
-  sudo snap refresh
+  flatpak update -y --noninteractive
+  sudo flatpak update -y --noninteractive
 }
 
 # Vulnerable packages (from cylon/pacui)
