@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # YADM Bootstrap Script for Subdirectory-Based Dotfiles
 # This script handles the deployment of dotfiles organized in Home/, etc/, usr/ subdirectories
-set -euo pipefail
-export LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob
+LC_ALL=C LANG=C
 
 # Helper functions
 has(){ command -v "$1" &>/dev/null; }
@@ -13,10 +13,7 @@ error(){ printf '\e[1;31m==> ERROR:\e[0m \e[1m%s\e[0m\n' "$*" >&2; }
 die(){ error "$*"; exit 1; }
 
 # Determine repository directory
-REPO_DIR="$(yadm rev-parse --show-toplevel 2>/dev/null)" || {
-  REPO_DIR="${HOME}/.local/share/yadm/repo.git"
-}
-
+REPO_DIR="$(yadm rev-parse --show-toplevel 2>/dev/null)" || REPO_DIR="${HOME}/.local/share/yadm/repo.git"
 [[ -d "$REPO_DIR" ]] || die "Repository directory not found: $REPO_DIR"
 
 info "YADM Bootstrap starting..."
@@ -25,23 +22,23 @@ info "Repository: $REPO_DIR"
 # ============================================================================
 # 1. Deploy User-Level Dotfiles (Home/ → ~/)
 # ============================================================================
+cd "$HOME" || exit
+echo "Init submodules"
+yadm submodule update --recursive --init
+
 deploy_home_dotfiles() {
   local home_dir="${REPO_DIR}/Home"
-
   if [[ ! -d "$home_dir" ]]; then
     warn "Home/ directory not found at: $home_dir"
     return 0
   fi
-
   info "Deploying user dotfiles from Home/ → ~/"
-
   if has rsync; then
     rsync -av --exclude='.git' --exclude='.gitignore' "${home_dir}/" "${HOME}/"
   else
     warn "rsync not available, using cp (install rsync for better deployment)"
     cp -a "${home_dir}/." "${HOME}/"
   fi
-
   success "User dotfiles deployed successfully"
 }
 
@@ -50,12 +47,10 @@ deploy_home_dotfiles() {
 # ============================================================================
 install_base_deps() {
   info "Installing base dependencies..."
-
   if has pacman; then
     local pac_cmd="sudo pacman"
     has paru && pac_cmd="paru"
     has yay && pac_cmd="yay"
-
     $pac_cmd -Sq --needed --noconfirm \
       git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf \
       stow tuckr rsync || warn "Some packages may have failed to install"
@@ -63,7 +58,6 @@ install_base_deps() {
     sudo apt-get update -y
     sudo apt-get install -y \
       git curl zsh fd-find ripgrep bat jq fzf stow rsync || warn "Some packages may have failed"
-
     # Install zoxide on Debian/Ubuntu
     if ! has zoxide; then
       curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash -s -- -y
@@ -78,26 +72,21 @@ install_base_deps() {
 # ============================================================================
 configure_shell() {
   info "Configuring shell environment..."
-
   mkdir -p "${HOME}/.config" "${HOME}/bin" "${HOME}/.local/bin"
-
   # Set Zsh as default shell if available
   if has zsh; then
     local zsh_path
     zsh_path="$(command -v zsh)"
-
     if [[ "$SHELL" != "$zsh_path" ]]; then
       info "Setting Zsh as default shell..."
       chsh -s "$zsh_path" "$USER" 2>/dev/null || warn "Could not change shell. Run: chsh -s $zsh_path"
     fi
   fi
-
   # Install starship preset if starship is available
   if has starship && [[ ! -f ~/.config/starship.toml ]]; then
     info "Installing Starship nerd-font preset..."
     starship preset nerd-font-symbols -o ~/.config/starship.toml
   fi
-
   # Add zoxide to .zshrc if needed
   if has zoxide; then
     local zshrc="${ZDOTDIR:-$HOME}/.zshrc"
@@ -121,9 +110,7 @@ deploy_system_configs() {
     warn "Install tuckr and run: sudo tuckr link -d $REPO_DIR -t / etc usr"
     return 0
   fi
-
   info "Deploying system configurations with tuckr..."
-
   for pkg in etc usr; do
     if [[ -d "${REPO_DIR}/${pkg}" ]]; then
       info "Linking $pkg/ → /"
@@ -132,7 +119,6 @@ deploy_system_configs() {
       warn "Directory not found: ${REPO_DIR}/${pkg}"
     fi
   done
-
   success "System configurations deployed"
 }
 
@@ -150,7 +136,6 @@ setup_alternates() {
 run_app_bootstraps() {
   # Run the Home/.config/yadm/bootstrap if it exists
   local home_bootstrap="${HOME}/.config/yadm/bootstrap"
-
   if [[ -x "$home_bootstrap" ]]; then
     info "Running application-specific bootstrap: $home_bootstrap"
     "$home_bootstrap" || warn "Application bootstrap returned non-zero exit code"
@@ -167,7 +152,6 @@ main() {
   deploy_system_configs
   setup_alternates
   run_app_bootstraps
-
   echo ""
   success "✓ YADM Bootstrap completed successfully!"
   echo ""
