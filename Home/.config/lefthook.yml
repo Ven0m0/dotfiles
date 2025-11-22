@@ -7,7 +7,7 @@ pre-commit:
   parallel: true
   commands:
     auto-stage:
-      run: gix add -A 2>/dev/null || git add -A
+      run: git add -A
     shell-format:
       glob: "*.{sh,bash,zsh}"
       run: |
@@ -170,16 +170,18 @@ post-merge:
           bun install --frozen-lockfile &>/dev/null || npm ci --prefer-offline &>/dev/null
         fi
         [[ -f Cargo.lock ]] && cargo fetch &>/dev/null
+        [[ -f go.sum ]] && go mod download &>/dev/null
         exit 0
     clean-artifacts:
       run: rm -rf node_modules/.cache target/debug .pytest_cache __pycache__ .next .turbo dist build || :
+
 post-checkout:
   commands:
     update-submodules:
-      run: git submodule update --init --recursive &>/dev/null || :
+      run: submod update --init --recursive &>/dev/null || git submodule update --init --recursive &>/dev/null || :
     notify-deps:
       run: |
-        changed=$(gix diff HEAD@{1} HEAD --name-only 2>/dev/null || git diff HEAD@{1} HEAD --name-only)
+        changed=$(git diff HEAD@{1} HEAD --name-only)
         rg -q '^(package\.json|bun\.lockb|.*lock\.json)$' <<< "$changed" && {
           printf "Dependencies changed. Run: bun install\n" >&2
         } || :
