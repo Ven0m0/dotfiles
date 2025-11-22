@@ -69,6 +69,7 @@
 [index]
 	threads = 0
 	version = 4
+	skipHash = true
 [rerere]
 	enabled = true
 	autoupdate = true
@@ -76,6 +77,7 @@
 	version = HTTP/2
 	postBuffer = 104857600
 	followRedirects = true
+  maxRequests = 10
 [transfer]
 	fsckobjects = true
 [help]
