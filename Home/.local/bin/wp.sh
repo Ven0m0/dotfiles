@@ -23,13 +23,13 @@ mkdir -p "$AUTOSTART_DIR" # create directory if it doesn't already exist
 
 ### define functions ###
 
-sendFeedback() {
+sendFeedback(){
         if [ -z "$QUIET" ]; then
                 printf '%s\n' "$1"; notify-send "$1"
         fi
 }
 
-setWallpaper() {
+setWallpaper(){
         if [ "$(printenv XDG_SESSION_TYPE)" = wayland ]; then
                 swaybg --image "$1" &
         elif [ "$(printenv XDG_SESSION_TYPE)" = x11 ]; then
@@ -37,7 +37,7 @@ setWallpaper() {
         fi
 }
 
-randomWallpaper() {
+randomWallpaper(){
         WALLPAPER="$(\
                 find "$WALLPAPERS_DIR" -type f -not -path '*/\.git/*' |
                 shuf -n 1
@@ -49,7 +49,7 @@ randomWallpaper() {
         fi
 }
 
-selectWallpaper() {
+selectWallpaper(){
         WALLPAPER="$(\
                 find "$WALLPAPERS_DIR" -type f -not -path '*/\.git/*' -exec basename {} \; |
                 sed "s/\.png$//;s/\.jpg$//;s/\.jpeg$//;" |

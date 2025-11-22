@@ -18,7 +18,7 @@ error(){ printf '%b==> ERROR:\e[0m %b%s%b\n' "${BLD}${RED}" "${BLD}" "$*" "${DEF
 die(){ error "$*"; exit 1; }
 
 # Determine repository directory
-get_repo_dir() {
+get_repo_dir(){
   if yadm rev-parse --show-toplevel &>/dev/null; then
     yadm rev-parse --show-toplevel
   elif [[ -d "${HOME}/.local/share/yadm/repo.git" ]]; then
@@ -29,7 +29,7 @@ get_repo_dir() {
 }
 
 # Show usage
-usage() {
+usage(){
   cat <<EOF
 ${BLD}yadm-sync${DEF} - Sync dotfiles between ~/ and repository
 
@@ -66,7 +66,7 @@ EOF
 }
 
 # Sync from repo to home (deploy)
-sync_pull() {
+sync_pull(){
   local repo_dir home_dir dry_run="${1:-0}"
 
   repo_dir="$(get_repo_dir)"
@@ -93,7 +93,7 @@ sync_pull() {
 }
 
 # Sync from home to repo (update repo)
-sync_push() {
+sync_push(){
   local repo_dir home_dir dry_run="${1:-0}"
 
   repo_dir="$(get_repo_dir)"
@@ -185,7 +185,7 @@ EXCLUDES
 }
 
 # Show sync status
-sync_status() {
+sync_status(){
   local repo_dir home_dir
 
   repo_dir="$(get_repo_dir)"
@@ -204,7 +204,7 @@ sync_status() {
 }
 
 # Show detailed diff
-sync_diff() {
+sync_diff(){
   local repo_dir home_dir
 
   repo_dir="$(get_repo_dir)"
@@ -226,19 +226,19 @@ sync_diff() {
         echo ""
         echo "${BLD}${BLU}Differences in:${DEF} ${rel_path}"
         echo "${BLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${DEF}"
-        diff -u --color=always "$file" "$source_file" 2>/dev/null || true
+        diff -u --color=always "$file" "$source_file" 2>/dev/null || :
       fi
     fi
   done < <(find "$home_dir" -type f -print0 2>/dev/null)
 }
 
 # Main
-main() {
+main(){
   local command="${1:-}"
   local dry_run=0
 
   # Parse options
-  shift || true
+  shift || :
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -h|--help) usage; exit 0 ;;

@@ -32,8 +32,8 @@ format-drive(){ if [[ $# -ne 2 ]]; then
       sudo parted -s "$1" mkpart primary 1MiB 100%
 
       partition="$([[ $1 == *"nvme"* ]] && echo "${1}p1" || echo "${1}1")"
-      sudo partprobe "$1" || true
-      sudo udevadm settle || true
+      sudo partprobe "$1" || :
+      sudo udevadm settle || :
 
       sudo mkfs.exfat -n "$2" "$partition"
 
