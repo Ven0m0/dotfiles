@@ -1,3 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-env GSK_RENDERER=ngl anyrun
+exec env GSK_RENDERER=ngl anyrun
