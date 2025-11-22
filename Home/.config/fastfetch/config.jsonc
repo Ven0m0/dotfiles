@@ -15,6 +15,7 @@
     "memory",
     "swap",
     "disk",
-    "localip"
+    "localip",
+    "break"
   ]
 }
