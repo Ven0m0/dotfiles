@@ -1,14 +1,13 @@
 default_profile = "default"
 cache_path = "~/cache"
 db_path = "~/db"
-bin_path = "~/bin"
+bin_path = "~/.local/bin"
 repositories_path = "~/repos"
 portable_dirs = "~/portable-dirs"
 parallel = true
 parallel_limit = 8
 ghcr_concurrency = 12
-search_limit = 50
-# Allows packages to be updated across different repositories, not yet implemented
+search_limit = 25
 cross_repo_updates = false
 install_patterns = ["!*.log", "!SBUILD", "!*.json", "!*.version"]
 
@@ -17,46 +16,51 @@ root_path = "~"
 packages_path = "~/packages"
 
 [[repositories]]
-name = "bincache"
-url = "https://meta.pkgforge.dev/bincache/x86_64-Linux.sdb.zstd"
-desktop_integration = false
-pubkey = "https://meta.pkgforge.dev/bincache/minisign.pub"
-enabled = true
-signature_verification = false
-sync_interval = "3h"
-
-[[repositories]]
 name = "pkgcache"
 url = "https://meta.pkgforge.dev/pkgcache/x86_64-Linux.sdb.zstd"
 desktop_integration = true
 pubkey = "https://meta.pkgforge.dev/pkgcache/minisign.pub"
 enabled = true
-signature_verification = false
+signature_verification = true
+sync_interval = "6h"
 
 [[repositories]]
-name = "pkgforge-cargo"
-url = "https://meta.pkgforge.dev/external/pkgforge-cargo/x86_64-Linux.sdb.zstd"
+name = "bincache"
+url = "https://meta.pkgforge.dev/bincache/x86_64-Linux.sdb.zstd"
 desktop_integration = false
+pubkey = "https://meta.pkgforge.dev/bincache/minisign.pub"
 enabled = true
-signature_verification = false
-
-[[repositories]]
-name = "pkgforge-go"
-url = "https://meta.pkgforge.dev/external/pkgforge-go/x86_64-Linux.sdb.zstd"
-desktop_integration = false
-enabled = true
-signature_verification = false
+signature_verification = true
+sync_interval = "6h"
 
 [[repositories]]
 name = "ivan-hc-am"
 url = "https://meta.pkgforge.dev/external/am/x86_64-Linux.sdb.zstd"
 desktop_integration = true
 enabled = true
-signature_verification = false
+signature_verification = true
+sync_interval = "12h"
 
 [[repositories]]
 name = "appimage-github-io"
 url = "https://meta.pkgforge.dev/external/appimage.github.io/x86_64-Linux.sdb.zstd"
 desktop_integration = true
 enabled = true
-signature_verification = false
+signature_verification = true
+sync_interval = "12h"
+
+[[repositories]]
+name = "pkgforge-cargo"
+url = "https://meta.pkgforge.dev/external/pkgforge-cargo/x86_64-Linux.sdb.zstd"
+desktop_integration = false
+enabled = false
+signature_verification = true
+sync_interval = "24h"
+
+[[repositories]]
+name = "pkgforge-go"
+url = "https://meta.pkgforge.dev/external/pkgforge-go/x86_64-Linux.sdb.zstd"
+desktop_integration = false
+enabled = false
+signature_verification = true
+sync_interval = "24h"
