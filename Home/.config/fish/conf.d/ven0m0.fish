@@ -6,10 +6,6 @@ set -U __fish_git_prompt_showupstream none
 set -U fish_term24bit 1
 set -U fish_autosuggestion_enabled 1
 
-function fish_title
-  echo $argv[1] (prompt_pwd)
-end
-
 # ─── Keybinds ─────────────────────────
 functions -q toggle_sudo; and bind \cs 'toggle_sudo'
 
@@ -40,17 +36,7 @@ switch "$stealth"
     		functions -e __disable_mommy
 		end
 	case 0
-
 	case '*'
-
-end
-
-function fish_greeting
-	if type -q hyfetch
-		LC_ALL C hyfetch 2>/dev/null
-    else if type -q fastfetch
-		fastfetch
-	end
 end
 
 # Ghostty integration
@@ -80,17 +66,7 @@ function qcd
 end
 abbr -a qcd --position command --regex 'q+' --function qcd
 
-alias cat='command bat -pp'
-
 alias sudo='sudo '; alias doas='doas '; alias sudo-rs='sudo-rs '
 alias mkdir='mkdir -pv '; alias ed='$EDITOR '
 alias ping='ping -c 4'
 alias cls='clear'
-
-# ─── Functions ───────────────────────
-function mkdircd
-	command mkdir -p -- $argv; and command cd $argv[-1]
-end
-function ip
-	command ip --color=auto -- $argv
-end
