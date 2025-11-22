@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 LC_ALL=C LANG=C
 
 # https://codeberg.org/TotallyLeGIT/doasedit/
