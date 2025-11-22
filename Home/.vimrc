@@ -1,152 +1,42 @@
-" ------------------------
-" some settings
-" ------------------------
-set nocompatible
+set nocompatible encoding=utf-8 background=dark t_Co=256 termguicolors ttyfast
+set number relativenumber mouse=a smartcase ignorecase spell incsearch hlsearch nowrap linebreak
+set smartindent autoindent expandtab shiftwidth=2 softtabstop=2 tabstop=2 smarttab
+set showcmd showmode gcr=a:blinkon0 visualbell autoread ruler autochdir showmatch hidden
+set scrolloff=8 sidescrolloff=15 sidescroll=1 lazyredraw clipboard=unnamed
+set noswapfile nobackup nowb foldmethod=indent foldnestmax=3 nofoldenable
+set wildmode=list:longest wildmenu ttimeout ttimeoutlen=1
+set wildignore=*.o,*.obj,*~,*vim/backups*,*sass-cache*,*DS_Store*,vendor/cache/**,*.gem,log/**,tmp/**,*.png,*.jpg,*.gif
+set listchars=tab:>-,trail:~,extends:>,precedes:<,space:.
 filetype plugin indent on
 syntax on
-set encoding=utf-8
-set background=dark
-set t_Co=256
-set termguicolors       " enable true colors support
-set nowrap              "Don't wrap lines
-set linebreak           "Wrap lines at convenient points
-set ttyfast
-set number
-set relativenumber
-set mouse=a
-set smartcase           " Enable smart-case search
-set ignorecase          " Always case-insensitive
-set spell
-set incsearch           " Searches for strings incrementally
-set hlsearch
 
-set smartindent         " Enable smart-indent
-set autoindent          " Auto-indent new lines
-set expandtab           " Use spaces instead of tabs
-set shiftwidth=2        " Number of auto-indent spaces
-set softtabstop=2       " Number of spaces per Tab
-set tabstop	=2
+autocmd BufWritePre *.{py,f90,f95,for} :%s/\s\+$//e
+autocmd FileType make setlocal noexpandtab
+if $TERM == 'alacritty' | set ttymouse=sgr | endif
+if has('gui_running')
+  set guifont=Roboto\ Mono\ 11 guioptions-=m guioptions-=T guioptions-=r guioptions-=L
+  colorscheme tender
+endif
 
-set smarttab            " Enable smart-tabs
-set showcmd                     "Show incomplete cmds down the bottom
-set showmode                    "Show current mode down the bottom
-set gcr=a:blinkon0              "Disable cursor blink
-set visualbell                  "No sounds
-set autoread                    "Reload files changed outside vim
-set ruler                       "Add the current line and column"
-" This makes vim act like all other editors, buffers can
-" exist in the background without being in a window.
-" http://items.sjbach.com/319/configuring-vim-right
-set autochdir
-set showmatch
-set hidden
-set scrolloff=8         "Start scrolling when we're 8 lines away from margins
-set sidescrolloff=15
-set sidescroll=1
-set lazyredraw          " Don't redraw while executing macros (good performance config)
-" Use system clipboard for yanking and pasting
-set clipboard=unnamed
-" ================ Turn Off Swap Files ==============
-set noswapfile
-set nobackup
-set nowb
-
-" remove trailing whitespace from Python and Fortran files "
-autocmd BufWritePre *.py :%s/\s\+$//e
-autocmd BufWritePre *.f90 :%s/\s\+$//e
-autocmd BufWritePre *.f95 :%s/\s\+$//e
-autocmd BufWritePre *.for :%s/\s\+$//e
-
-" Auto indent pasted text
 nnoremap p p=`]<C-o>
 nnoremap P P=`]<C-o>
-
-" ================ Folds ============================
-
-set foldmethod=indent   "fold based on indent
-set foldnestmax=3       "deepest fold is 3 levels
-set nofoldenable        "dont fold by default
-" ================ Completion =======================
-
-set wildmode=list:longest
-set wildmenu                "enable ctrl-n and ctrl-p to scroll thru matches
-set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
-set wildignore+=*vim/backups*
-set wildignore+=*sass-cache*
-set wildignore+=*DS_Store*
-set wildignore+=vendor/cache/**
-set wildignore+=*.gem
-set wildignore+=log/**
-set wildignore+=tmp/**
-set wildignore+=*.png,*.jpg,*.gif
-" ------------------------
-" keys
-" ------------------------
-" File ops
 nnoremap <leader>f :FZF<CR>
 nnoremap <leader>s :w<CR>
 nnoremap <leader>wq :wq<CR>
-" buffers
 nnoremap <leader>n :bnext<CR>
 nnoremap <leader>p :bprev<CR>
-" quit
 nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :qa!<CR>
-"  numbers
 nnoremap <leader>l :set number!<CR>
 nnoremap <leader>r :set relativenumber!<CR>
-" window nav
 nnoremap <leader>h <C-w>h
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
 
-" Don't expand tabs for Makefile
-autocmd FileType make setlocal noexpandtab
-
-if has('gui_running')
-  set t_Co=256
-  set guifont=Roboto\ Mono\ 11
-  set guioptions-=m
-  set guioptions-=T
-  set guioptions-=r
-  set guioptions-=L
-  colorscheme tender
-endif
-
-if $TERM == 'alacritty'
-  set ttymouse=sgr
-endif
-
-" ╔═╗┬  ┬ ┬┌─┐┬┌┐┌  ╔╦╗┌─┐┌┐┌┌─┐┌─┐┌─┐┬─┐
-" ╠═╝│  │ ││ ┬││││  ║║║├─┤│││├─┤│ ┬├┤ ├┬┘
-" ╩  ┴─┘└─┘└─┘┴┘└┘  ╩ ╩┴ ┴┘└┘┴ ┴└─┘└─┘┴└─
-
 call plug#begin()
 Plug 'junegunn/fzf'
 call plug#end()
 
-" Use a line cursor within insert mode and a block cursor everywhere else.
-" Reference chart of values:
-"   Ps = 0  -> blinking block.
-"   Ps = 1  -> blinking block (default).
-"   Ps = 2  -> steady block.
-"   Ps = 3  -> blinking underline.
-"   Ps = 4  -> steady underline.
-"   Ps = 5  -> blinking bar (xterm).
-"   Ps = 6  -> steady bar (xterm).
 let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
-
-" Fix the cursor change timeout between insert and normal mode
-set ttimeout
-set ttimeoutlen=1
-set listchars=tab:>-,trail:~,extends:>,precedes:<,space:.
-set ttyfast
-
-" https://github.com/mantoni/eslint_d.js
-" Requires "pacman -S eslint-language-server"
-" Autofix entire buffer with eslint_d:
-nnoremap <leader>f mF:%!eslint_d --stdin --fix-to-stdout --stdin-filename %<CR>`F
-" Autofix visual selection with eslint_d:
-vnoremap <leader>f :!eslint_d --stdin --fix-to-stdout<CR>gv

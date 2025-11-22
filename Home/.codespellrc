@@ -1,5 +1,0 @@
-# https://github.com/codespell-project/codespell
-[codespell]
-skip = *.po,*.ts,*.pyc
-count =
-quiet-level = 3
