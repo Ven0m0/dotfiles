@@ -5,6 +5,11 @@
 	# Exclude files that shouldn't be tracked
 	excludesfile = ~/.config/yadm/ignore
 	compression = 9
+	multiPackIndex = true
+	fsyncMethod = batch
+	fileMode = true
+  preferSymlinkRefs = true
+  symlinks = true
 [yadm]
 	# Use the Home/ subdirectory for user dotfiles
 	# Note: This is managed via bootstrap script deployment
