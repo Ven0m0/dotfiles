@@ -1,39 +1,55 @@
 # YADM Repository Configuration
-# This repository uses a subdirectory-based structure (Home/, etc/, usr/)
-
 [user]
 	# User-specific git config will be inherited from system/user git config
-
 [core]
 	# Exclude files that shouldn't be tracked
 	excludesfile = ~/.config/yadm/ignore
-
+	compression = 9
 [yadm]
 	# Use the Home/ subdirectory for user dotfiles
 	# Note: This is managed via bootstrap script deployment
-
 	# Automatically manage git alternates
 	auto-alt = true
-
 	# Auto-exclude specific patterns
 	auto-exclude = true
-
 	# Enable yadm's private file permissions handling
 	auto-private-dirs = true
-
 [alias]
 	# Helpful aliases for this repository structure
 	sync-pull = "!bash -c 'yadm-sync pull'"
 	sync-push = "!bash -c 'yadm-sync push'"
 	sync-status = "!bash -c 'yadm-sync status'"
 	deploy = "!bash -c 'yadm bootstrap'"
-
+	submod = "!bash -c 'yadm submodule update --recursive --init'"
 [push]
 	default = simple
 	autoSetupRemote = true
-
+	recurseSubmodules = on-demand
 [pull]
 	rebase = false
-
+[fetch]
+	prune = true
+	pruneTags = true
+  parallel = 0
+  fsckobjects = true
+	negotiationAlgorithm = skipping
+[pack]
+	threads = 0
+	allowPackReuse = true
+	compression = 9
+[rebase]
+	autoSquash = true
+	autoStash = true
+	updateRefs = true
 [init]
 	defaultBranch = main
+[gc]
+	packRefs = true
+	aggressive = true
+[index]
+	threads = 0
+	version = 4
+[http]
+	version = HTTP/2
+[protocol]
+  version = 2
