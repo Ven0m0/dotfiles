@@ -16,8 +16,9 @@ jobs = 12
 legacy_version_file = false
 verbose = false
 not_found_auto_install = true
-
 system_config_file = "~/.config/mise/config.toml"
+vfox = true
+asdf = true
 
 [settings.python]
 compile = true
