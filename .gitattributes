@@ -15,6 +15,10 @@
 .zprofile text eol=lf
 .zshenv text eol=lf
 .profile text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
 
 # =============================================================================
 # Programming Languages
@@ -38,13 +42,15 @@
 *.xml diff=xml
 *.html diff=html
 *.css diff=css
-*.md diff=markdown linguist-detectable linguist-documentation
-*.txt linguist-documentation
+*.md text diff=markdown linguist-detectable linguist-documentation
+*.mdx text diff=markdown linguist-detectable linguist-documentation
+*.txt text linguist-documentation
 *.ini text
 *.cfg text
 *.conf text
 *.service text
 *.rules text
+*.csv text eol=crlf
 
 # =============================================================================
 # Binary Files
@@ -56,6 +62,13 @@
 *.avif binary diff=exif
 *.svg text
 
+# Archives
+*.7z       binary
+*.gz       binary
+*.tar      binary
+*.tgz      binary
+*.zip      binary
+
 # Fonts
 *.ttf binary
 
@@ -66,9 +79,10 @@
 Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
 
 # Patches
-*.patch diff=patch
+*.patch -text diff=patch
 
 # Git files
 .gitignore export-ignore
 .gitattributes export-ignore
+.gitkeep export-ignore
 .editorconfig text
