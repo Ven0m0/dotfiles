@@ -109,9 +109,10 @@
 [feature]
 	manyFiles = true
 [status]
-	short = true
+	short = false
 	submoduleSummary = true
 	showUntrackedFiles = true
+	renames = false
 [commit]
 	verbose = true
 [branch]
@@ -128,5 +129,25 @@
 	sort = version:refname
 [include]
 	path = ~/.gitconfig.local
+[protocol]
+  version = 2
 [protocol "file"]
   allow = always
+[maintenance]
+  strategy = incremental
+[maintenance "prefetch"]
+  enabled = true
+[maintenance "gc"]
+  enabled = true
+[maintenance "loose-objects"]
+  enabled = true
+[maintenance "incremental-repack"]
+  enabled = true
+[maintenance "pack-refs"]
+  enabled = true
+[maintenance "reflog-expire"]
+  enabled = true
+[maintenance "rerere-gc"]
+  enabled = true
+[maintenance "worktree-prune"]
+  enabled = true
