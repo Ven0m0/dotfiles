@@ -19,20 +19,11 @@ cargo_binstall = true
 pipx_uvx = true
 npm.bun = true
 
-[settings.npm]
-bun = true
-
 [settings.python]
 compile = true
 precompiled_os = "x86_64_v3"
 venv_create_args = ["--system-site-packages"]
 uv_venv_auto = true
-
-[settings.pipx]
-uvx = true
-
-[settings.cargo]
-binstall = true
 
 [settings.node]
 compile = true
