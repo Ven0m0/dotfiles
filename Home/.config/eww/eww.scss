@@ -1,0 +1,135 @@
+// Eww Stylesheet
+// Color scheme inspired by Catppuccin Mocha
+
+* {
+  all: unset;
+  font-family: "JetBrains Mono", "monospace";
+  font-size: 13px;
+}
+
+// Color variables
+$bg: #1e1e2e;
+$bg-alt: #313244;
+$fg: #cdd6f4;
+$fg-alt: #a6adc8;
+$blue: #89b4fa;
+$green: #a6e3a1;
+$red: #f38ba8;
+$yellow: #f9e2af;
+$orange: #fab387;
+$pink: #f5c2e7;
+$mauve: #cba6f7;
+
+// Main bar container
+.bar {
+  background-color: $bg;
+  color: $fg;
+  padding: 0 15px;
+  border-bottom: 2px solid $bg-alt;
+}
+
+// Left section
+.left {
+  padding: 5px 10px;
+}
+
+// Center section
+.center {
+  padding: 5px 10px;
+}
+
+// Right section
+.right {
+  padding: 5px 10px;
+}
+
+// Clock widget
+.clock {
+  padding: 5px 10px;
+  background-color: $bg-alt;
+  border-radius: 8px;
+
+  .time {
+    color: $blue;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .date {
+    color: $fg-alt;
+    font-size: 12px;
+    margin-left: 8px;
+  }
+}
+
+// Volume widget
+.volume {
+  padding: 5px 10px;
+  background-color: $bg-alt;
+  border-radius: 8px;
+
+  .icon {
+    color: $green;
+    margin-right: 6px;
+  }
+
+  .value {
+    color: $fg;
+  }
+}
+
+// Battery widget
+.battery {
+  padding: 5px 10px;
+  background-color: $bg-alt;
+  border-radius: 8px;
+
+  .icon {
+    color: $yellow;
+    margin-right: 6px;
+  }
+
+  .value {
+    color: $fg;
+  }
+}
+
+// System stats
+.system-stats {
+  padding: 5px 10px;
+  background-color: $bg-alt;
+  border-radius: 8px;
+
+  .stat {
+    padding: 0 8px;
+
+    .icon {
+      margin-right: 6px;
+    }
+
+    .value {
+      color: $fg;
+    }
+
+    &.cpu .icon {
+      color: $blue;
+    }
+
+    &.memory .icon {
+      color: $mauve;
+    }
+
+    &.disk .icon {
+      color: $pink;
+    }
+  }
+}
+
+// Hover effects
+.clock:hover,
+.volume:hover,
+.battery:hover,
+.system-stats:hover {
+  background-color: lighten($bg-alt, 5%);
+  transition: background-color 200ms ease;
+}
