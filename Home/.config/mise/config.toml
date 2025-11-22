@@ -29,7 +29,8 @@ uv_venv_auto = true
 compile = true
 
 [tools]
-java = "oracle-graalvm"
+#java = "oracle-graalvm"
+java = "temurin"
 "github:zeroBzeroT/ChunkCleaner" = "latest"
 # Cargo Tools
 cpz = "latest"
@@ -87,6 +88,5 @@ RUSTC_WRAPPER = "sccache"
 RUSTC_LINKER = "clang"
 RUSTFLAGS = "-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Clto=fat -Cstrip=symbols -Cllvm-args=-enable-dfa-jump-thread -Clink-arg=-fuse-ld=mold"
 SCCACHE_DIRECT = "true"
-SCCACHE_RECACHE = "true"
 CMAKE_BUILD_TYPE = "Release"
 GITOXIDE_CORE_MULTIPACKINDEX = "true"
