@@ -1,3 +1,13 @@
+[Added Associations]
+application/toml=org.kde.kate.desktop;
+application/x-font-tex-tfm=org.kde.kate.desktop;
+application/x-shellscript=org.kde.kate.desktop;
+application/x-trash=org.kde.kate.desktop;
+application/x-zerosize=org.kde.kate.desktop;
+application/xml=org.kde.kate.desktop;org.kde.kwrite.desktop;helium-browser.desktop;micro.desktop;vscodium.desktop;vscodium-uri-handler.desktop;firefox.desktop;vim.desktop;code.desktop;
+text/plain=org.kde.kate.desktop;
+text/html=org.kde.kate.desktop;
+
 [Default Applications]
 application/toml=org.kde.kate.desktop;
 application/x-extension-htm=firefox.desktop;
@@ -38,12 +48,3 @@ x-scheme-handler/https=firefox.desktop;
 x-scheme-handler/podman-desktop=Podman Desktop.desktop
 x-scheme-handler/x-github-client=github-desktop.desktop;
 x-scheme-handler/x-github-desktop-auth=github-desktop.desktop;
-
-[Added Associations]
-application/toml=org.kde.kate.desktop;
-application/x-font-tex-tfm=org.kde.kate.desktop;
-application/x-shellscript=org.kde.kate.desktop;
-application/x-trash=org.kde.kate.desktop;
-application/x-zerosize=org.kde.kate.desktop;
-application/xml=org.kde.kate.desktop;org.kde.kwrite.desktop;helium-browser.desktop;micro.desktop;vscodium.desktop;vscodium-uri-handler.desktop;firefox.desktop;vim.desktop;code.desktop;
-text/plain=org.kde.kate.desktop;
