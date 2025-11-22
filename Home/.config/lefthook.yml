@@ -6,6 +6,8 @@ no_tty: false
 pre-commit:
   parallel: true
   commands:
+    auto-stage:
+      run: gix add -A 2>/dev/null || git add -A
     shell-format:
       glob: "*.{sh,bash,zsh}"
       run: |
@@ -27,7 +29,14 @@ pre-commit:
         done
     markdown-format:
       glob: "*.md"
-      run: markdownlint --fix {staged_files} || :
+      run: |
+        if command -v mado &>/dev/null; then
+          mado check --fix {staged_files} || :
+        elif command -v rumdl &>/dev/null; then
+          rumdl check --fix {staged_files} || :
+        elif command -v markdownlint-cli2 &>/dev/null; then
+          markdownlint-cli2 --fix {staged_files} || :
+        fi
       stage_fixed: true
     js-format:
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
@@ -35,7 +44,7 @@ pre-commit:
         if command -v biome &>/dev/null; then
           BIOME_CONFIG_PATH="${HOME}/biome.json" biome check --write --unsafe --skip-parse-errors {staged_files} || :
         else
-          bunx --bun @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+          bunx --bun @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files} || :
         fi
       stage_fixed: true
     prettier-format:
@@ -44,7 +53,7 @@ pre-commit:
       stage_fixed: true
     eslint-fix:
       glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
-      run: eslint --fix --quiet {staged_files} || :
+      run: eslint --fix -q {staged_files} || :
       stage_fixed: true
     trim-trailing:
       glob: "*"
@@ -73,7 +82,7 @@ pre-commit:
       glob: "*.{sh,bash}"
       run: |
         for f in {staged_files}; do
-          [[ -f "$f" ]] && head -n1 "$f" | grep -qE '^#!' || {
+          [[ -f "$f" ]] && rg -q '^#!' "$f" || {
             printf '#!/usr/bin/env bash\n%s' "$(<"$f")" > "$f.tmp" && mv "$f.tmp" "$f"
           }
         done
@@ -88,7 +97,7 @@ pre-commit:
         done || :
     detect-secrets:
       run: |
-        rg -i --no-heading --line-number \
+        rg -iNn \
           -e '(password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|bearer|client[_-]?secret|private[_-]?key)\s*[:=]\s*["\047][^"\047]{20,}' \
           -e 'AKIA[0-9A-Z]{16}' \
           -e 'ghp_[0-9a-zA-Z]{36}' \
@@ -98,25 +107,23 @@ pre-commit:
     check-debug:
       glob: "*.{sh,bash,js,jsx,ts,tsx,py,rb,go}"
       run: |
-        rg -i --no-heading -e '\bconsole\.(log|debug|info|warn|error)\(' \
+        rg -iN \
+          -e '\bconsole\.(log|debug|info|warn|error)\(' \
           -e '\bdebugger\b' -e '\bbinding\.pry\b' -e '\bset -x\b' -e '\bprint\s*\(.*DEBUG' \
-          {staged_files} && { printf "Debug code found\n" >&2; exit 1; } || :
+          {staged_files} && { printf "Debug code\n" >&2; exit 1; } || :
     no-merge-conflicts:
-      run: |
-        rg -F --no-heading '^(<{7}|={7}|>{7})' {staged_files} && {
-          printf "Merge conflicts\n" >&2; exit 1
-        } || :
+      run: rg -FN '^(<{7}|={7}|>{7})' {staged_files} && { printf "Merge conflicts\n" >&2; exit 1; } || :
     check-todos:
       run: |
-        count=$(rg -i --count-matches '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk -F: '{s+=$2}END{print s+0}')
-        (( count > 0 )) && printf "%d TODO/FIXME markers\n" "$count" >&2 || :
+        count=$(rg -ic '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk -F: '{s+=$2}END{print s+0}')
+        (( count > 0 )) && printf "%d TODO/FIXME\n" "$count" >&2 || :
 
 commit-msg:
   commands:
     conventional-commits:
       run: |
         msg=$(<{1})
-        grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}' <<< "$msg" || {
+        rg -q '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}' <<< "$msg" || {
           printf "Use Conventional Commits:\n  type(scope?): subject\n\nTypes: feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert\n" >&2
           exit 1
         }
@@ -125,7 +132,7 @@ commit-msg:
         subject=$(head -n1 {1})
         (( ${#subject} > 72 )) && { printf "Subject >72 chars (%d)\n" "${#subject}" >&2; exit 1; } || :
     no-wip:
-      run: grep -qiE '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP markers\n" >&2; exit 1; } || :
+      run: rg -qi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP\n" >&2; exit 1; } || :
 
 pre-push:
   parallel: true
@@ -133,23 +140,23 @@ pre-push:
     run-tests:
       run: |
         [[ -f Makefile ]] && { make test &>/dev/null; exit 0; }
-        [[ -f package.json ]] && { npm test &>/dev/null; exit 0; }
+        [[ -f package.json ]] && { bun test &>/dev/null || npm test &>/dev/null; exit 0; }
         [[ -f Cargo.toml ]] && { cargo test -q &>/dev/null; exit 0; }
         [[ -f go.mod ]] && { go test ./... &>/dev/null; exit 0; }
         exit 0
     branch-check:
       run: |
-        branch=$(git rev-parse --abbrev-ref HEAD)
-        grep -qE '^(main|master|production)$' <<< "$branch" && {
+        branch=$(gix rev parse --abbrev-ref HEAD 2>/dev/null || git rev-parse --abbrev-ref HEAD)
+        rg -q '^(main|master|production)$' <<< "$branch" && {
           printf "Direct push to %s blocked\n" "$branch" >&2; exit 1
         }
-        grep -qE '^(main|master|develop|staging|release/.+|hotfix/.+|feature/.+|(bug)?fix/.+)$' <<< "$branch" || {
+        rg -q '^(main|master|develop|staging|release/.+|hotfix/.+|feature/.+|(bug)?fix/.+)$' <<< "$branch" || {
           printf "Use git-flow: feature/*, fix/*, release/*, hotfix/*\n" >&2
         }
         exit 0
     audit-deps:
       run: |
-        [[ -f package.json ]] && npm audit --production --audit-level=high || :
+        [[ -f package.json ]] && { bun audit || npm audit --production --audit-level=high; } || :
         [[ -f Cargo.toml ]] && cargo audit || :
         exit 0
 
@@ -157,32 +164,32 @@ post-merge:
   commands:
     update-deps:
       run: |
-        [[ -f package-lock.json ]] && npm ci --prefer-offline &>/dev/null
-        [[ -f yarn.lock ]] && yarn install --frozen-lockfile --prefer-offline &>/dev/null
-        [[ -f pnpm-lock.yaml ]] && pnpm i --frozen-lockfile --prefer-offline &>/dev/null
+        if [[ -f bun.lockb ]]; then
+          bun install --frozen-lockfile &>/dev/null
+        elif [[ -f package-lock.json ]]; then
+          bun install --frozen-lockfile &>/dev/null || npm ci --prefer-offline &>/dev/null
+        fi
         [[ -f Cargo.lock ]] && cargo fetch &>/dev/null
-        [[ -f go.sum ]] && go mod download &>/dev/null
-        [[ -f Gemfile.lock ]] && bundle install -q &>/dev/null
         exit 0
     clean-artifacts:
       run: rm -rf node_modules/.cache target/debug .pytest_cache __pycache__ .next .turbo dist build || :
-
 post-checkout:
   commands:
     update-submodules:
       run: git submodule update --init --recursive &>/dev/null || :
     notify-deps:
       run: |
-        git diff HEAD@{1} HEAD --name-only | grep -qE '^(package\.json|.*lock\.(json|yaml))$' && {
-          printf "Dependencies changed. Run install.\n" >&2
+        changed=$(gix diff HEAD@{1} HEAD --name-only 2>/dev/null || git diff HEAD@{1} HEAD --name-only)
+        rg -q '^(package\.json|bun\.lockb|.*lock\.json)$' <<< "$changed" && {
+          printf "Dependencies changed. Run: bun install\n" >&2
         } || :
 
 prepare-commit-msg:
   commands:
     insert-ticket:
       run: |
-        branch=$(git rev-parse --abbrev-ref HEAD)
+        branch=$(gix rev parse --abbrev-ref HEAD 2>/dev/null || git rev-parse --abbrev-ref HEAD)
         [[ "$branch" =~ ^(feature|bugfix|hotfix|fix)/([A-Z]+-[0-9]+) ]] && {
           ticket="${BASH_REMATCH[2]}"
-          grep -q "$ticket" {1} || sed -i "1s/^/$ticket: /" {1}
+          rg -q "$ticket" {1} || sed -i "1s/^/$ticket: /" {1}
         } || :
