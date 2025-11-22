@@ -1,3 +1,14 @@
+[env]
+RUSTC_BOOTSTRAP = "1"
+RUST_PANIC_STRATEGY = "abort"
+RUST_MIN_STACK = "16777216"
+CARGO_CACHE_RUSTC_INFO = "1"
+CARGO_INCREMENTAL = "0"
+OPT_LEVEL = "3"
+RUSTC_LINKER = "clang"
+RUSTC_WRAPPER = "sccache"
+RUSTFLAGS = "-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Clto=fat -Cstrip=symbols -Cllvm-args=-enable-dfa-jump-thread -Clink-arg=-fuse-ld=mold"
+
 # Use cargo binstall
 [tasks.cbin]
 description = 'Mise cargo-binstall use'
