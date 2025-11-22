@@ -16,7 +16,7 @@
 	untrackedCache = true
 	preferSymlinkRefs = true
 	symlinks = true
-  sparseCheckout = true
+	sparseCheckout = true
 [init]
 	defaultBranch = main
 [alias]
