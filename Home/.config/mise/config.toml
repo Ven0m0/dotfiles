@@ -16,7 +16,6 @@ jobs = 12
 legacy_version_file = false
 verbose = false
 not_found_auto_install = true
-disable_default_shorthands = false
 
 system_config_file = "~/.config/mise/config.toml"
 
@@ -89,16 +88,27 @@ rmz = "latest"
 "cargo:submod" = "latest"
 
 [env]
-_.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
+_.python.venv = { path = ".venv" }
+UV_LINK_MODE = "hardlink"
+UV_COMPILE_BYTECODE = "1"
+UV_CONCURRENT_DOWNLOADS = "16"
 DO_NOT_TRACK = "1"
 MISE_NODE_NINJA = "true"
 MISE_NODE_CONCURRENCY = "12"
-MISE_CARGO_BINSTALL = "true"
 CARGO_NET_GIT_FETCH_WITH_CLI = "true"
 CARGO_HTTP_MULTIPLEXING = "true"
 RUSTC_WRAPPER = "sccache"
 RUSTC_LINKER = "clang"
 RUSTFLAGS = "-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Clto=fat -Cstrip=symbols -Cllvm-args=-enable-dfa-jump-thread -Clink-arg=-fuse-ld=mold"
+RUSTC_BOOTSTRAP = "1"
 SCCACHE_DIRECT = "true"
 CMAKE_BUILD_TYPE = "Release"
 GITOXIDE_CORE_MULTIPACKINDEX = "true"
+
+[tasks.clean]
+depends = ['cleancache']
+run = "cargo cache -efg; cargo clean"
+
+[tasks.cleancache]
+run = "rm -rf ~/.cache/*"
+hide = true
