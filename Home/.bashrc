@@ -20,7 +20,8 @@ shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob \
          hostcomplete no_empty_cmd_completion histappend cmdhist
 bind -r '\C-s' 2>/dev/null
 stty -ixon -ixoff -ixany 2>/dev/null
-export IGNOREEOF=10
+export IGNOREEOF=10 
+export GIT_PS1_SHOWUNTRACKEDFILES=1 GIT_PS1_SHOWDIRTYSTATUS=1 GIT_PS1_SHOWCOLORHINTS=1
 
 # === XDG Base Directories ===
 XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-${HOME}/.config}
