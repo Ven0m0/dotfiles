@@ -1,7 +1,7 @@
 function fish_greeting
-	if type -q hyfetch
+	if command -q hyfetch
 		hyfetch
-  else if type -q fastfetch
+  else if command -q fastfetch
 		fastfetch
 	end
 end
