@@ -9,6 +9,15 @@ lockfile = true
 python_venv_auto_create = true
 gix = true
 go_skip_checksum = true
+legacy_version_file = true 
+always_keep_download = false
+always_keep_install = false
+verbose = false
+not_found_auto_install = true
+disable_default_shorthands = false
+cargo_binstall = true
+pipx_uvx = true
+npm.bun = true
 
 [settings.npm]
 bun = true
@@ -30,6 +39,10 @@ compile = true
 
 [tools]
 java = "oracle-graalvm"
+"github:zeroBzeroT/ChunkCleaner" = "latest"
+# Cargo Tools
+cpz = "latest"
+rmz = "latest"
 "cargo:cargo-alias-exec" = "latest"
 "cargo:cargo-syu" = "latest"
 "cargo:cargo-list" = "latest"
@@ -61,16 +74,15 @@ java = "oracle-graalvm"
 "cargo:shell-mommy" = "latest"
 "cargo:cargo-mommy" = "latest"
 "cargo:etchdns" = "latest"
-"github:zeroBzeroT/ChunkCleaner" = "latest"
 "cargo:xcp" = "latest"
-cpz = "latest"
-rmz = "latest"
 "cargo:bssh" = "latest"
 "cargo:dupe-krill" = "latest"
 "cargo:terminal_tools" = "latest"
 "cargo:dui-cli" = "latest"
 "cargo:vicut" = "latest"
 "cargo:bgone" = "latest"
+"cargo:kanata" = "latest"
+"cargo:youtube-tui" = "latest"
 
 [env]
 _.python.venv = { path = "{{env.HOME}}/.venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
