@@ -115,20 +115,7 @@ SCCACHE_IDLE_TIMEOUT = "10800"
 CMAKE_BUILD_TYPE = "Release"
 GITOXIDE_CORE_MULTIPACKINDEX = "true"
 
-[tasks.clean]
-depends = ['cleancache']
-run = "cargo cache -efg; cargo clean"
-
-[tasks.cleancache]
-run = "rm -rf ~/.cache/*"
-hide = true
-
 [tasks.bunx]
 description = 'Bunx'
 run = "bunx --bun"
 alias = 'bx'
-
-[tasks.cbin]
-description = 'Mise cargo-binstall use'
-run = "env MISE_CARGO_BINSTALL=true mise use -gy"
-
