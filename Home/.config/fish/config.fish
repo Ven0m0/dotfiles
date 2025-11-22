@@ -24,5 +24,11 @@ init_tool zellij "zellij setup --generate-auto-start fish | string collect"
 init_tool intelli-shell "intelli-shell init fish"
 init_tool cod "cod init $fish_pid fish"
 
-# TODO: Potential path dedupe
-# set PATH (printf "%s" "$PATH" | awk -O -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')
+# Deduplicate PATH entries while preserving order
+set -l unique_path
+for path_entry in $PATH
+    if not contains $path_entry $unique_path
+        set -a unique_path $path_entry
+    end
+end
+set -gx PATH $unique_path
