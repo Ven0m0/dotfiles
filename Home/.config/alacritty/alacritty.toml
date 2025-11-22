@@ -73,13 +73,12 @@ mouse = "Middle"
 action = "PasteSelection"
 
 [keyboard]
-[[keyboard.bindings]]
-key = "Paste"
-action = "Paste"
-
-[[keyboard.bindings]]
-key = "Copy"
-action = "Copy"
+bindings = [
+{ key = "Insert", mods = "Shift", action = "Paste" },
+{ key = "Insert", mods = "Control", action = "Copy" }
+{ key = "Paste", action = "Paste" }
+{ key = "Copy", action = "Copy" }
+]
 
 [[keyboard.bindings]]
 key = "L"

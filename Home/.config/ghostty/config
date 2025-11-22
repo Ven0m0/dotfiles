@@ -21,19 +21,8 @@ working-directory = home
 background-opacity = 0.85
 theme = TokyoNight Night
 
-mouse-hide-while-typing = true
-mouse-scroll-multiplier = 4
-scrollback-limit = 10000
-confirm-close-surface = true
-
-clipboard-read = allow
-clipboard-write = allow
-clipboard-paste-protection = false
-clipboard-trim-trailing-spaces = true
-copy-on-select = clipboard
-
 shell-integration = detect
-shell-integration-features = cursor,no-sudo,title,ssh-env,no-ssh-terminfo
+shell-integration-features = no-cursor,no-sudo,ssh-env,no-ssh-terminfo
 
 custom-shader-animation = false
 app-notifications = config-reload,no-clipboard-copy
@@ -47,8 +36,25 @@ quit-after-last-window-closed = true
 quit-after-last-window-closed-delay = 5
 grapheme-width-method = unicode
 
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = 0.95
+scrollback-limit = 10000
+confirm-close-surface = false
+
+clipboard-read = allow
+clipboard-write = allow
+clipboard-paste-protection = false
+clipboard-trim-trailing-spaces = true
+copy-on-select = clipboard
+
 keybind = alt+k=new_tab
 keybind = alt+z=reload_config
 keybind = shift+enter=text:\x1b\r
 keybind = home=scroll_to_top
 keybind = end=scroll_to_bottom
+keybind = shift+insert=paste_from_clipboard
+keybind = control+insert=copy_to_clipboard
+keybind = super+control+shift+alt+arrow_down=resize_split:down,100
+keybind = super+control+shift+alt+arrow_up=resize_split:up,100
+keybind = super+control+shift+alt+arrow_left=resize_split:left,100
+keybind = super+control+shift+alt+arrow_right=resize_split:right,100
