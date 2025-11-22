@@ -117,7 +117,6 @@ pre-commit:
       run: |
         count=$(rg -ic '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk -F: '{s+=$2}END{print s+0}')
         (( count > 0 )) && printf "%d TODO/FIXME\n" "$count" >&2 || :
-
 commit-msg:
   commands:
     conventional-commits:
@@ -133,7 +132,6 @@ commit-msg:
         (( ${#subject} > 72 )) && { printf "Subject >72 chars (%d)\n" "${#subject}" >&2; exit 1; } || :
     no-wip:
       run: rg -qi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP\n" >&2; exit 1; } || :
-
 pre-push:
   parallel: true
   commands:
@@ -159,7 +157,6 @@ pre-push:
         [[ -f package.json ]] && { bun audit || npm audit --production --audit-level=high; } || :
         [[ -f Cargo.toml ]] && cargo audit || :
         exit 0
-
 post-merge:
   commands:
     update-deps:
@@ -170,11 +167,9 @@ post-merge:
           bun install --frozen-lockfile &>/dev/null || npm ci --prefer-offline &>/dev/null
         fi
         [[ -f Cargo.lock ]] && cargo fetch &>/dev/null
-        [[ -f go.sum ]] && go mod download &>/dev/null
         exit 0
     clean-artifacts:
       run: rm -rf node_modules/.cache target/debug .pytest_cache __pycache__ .next .turbo dist build || :
-
 post-checkout:
   commands:
     update-submodules:
@@ -185,7 +180,6 @@ post-checkout:
         rg -q '^(package\.json|bun\.lockb|.*lock\.json)$' <<< "$changed" && {
           printf "Dependencies changed. Run: bun install\n" >&2
         } || :
-
 prepare-commit-msg:
   commands:
     insert-ticket:
