@@ -8,15 +8,22 @@ pre-commit:
   commands:
     shellcheck:
       glob: "*.{sh,bash,zsh}"
-      run: shellcheck -x -s bash -e SC1091,SC2312 -f gcc {staged_files} || :
+      run: shellcheck -x -a -s bash -e -f diff {staged_files} || :
       stage_fixed: true
     shfmt:
       glob: "*.{sh,bash,zsh}"
-      run: shfmt -i 2 -ci -sr -bn -w {staged_files}
+      run: shfmt -ln bash -i 2 -s -bn -w {staged_files} || :
+      stage_fixed: true
+    shellharden:
+      glob: "*.{sh,bash,zsh}"
+      run: shellharden --replace {staged_files} || :
       stage_fixed: true
     yamllint:
       glob: "*.{yml,yaml}"
       run: yamllint -f parsable {staged_files} || :
+    yamlfmt:
+      glob: "*.{yml,yaml}"
+      run: yamlfmt {staged_files} || :
     json-validate:
       glob: "*.{json,jsonc,json5}"
       run: |
@@ -26,6 +33,10 @@ pre-commit:
     markdownlint:
       glob: "*.md"
       run: markdownlint --fix {staged_files} || :
+      stage_fixed: true
+    biome:
+      glob: "*.{js,jsx,ts,tsx,json,json5,css}"
+      run: biome format --indent-style=space --line-width=88 --use-editorconfig=true --vcs-enabled=true --json-formatter-enabled=true --json-formatter-indent-style=space --json-formatter-line-width=88 --fix {staged_files} || :
       stage_fixed: true
     prettier:
       glob: "*.{js,jsx,ts,tsx,mjs,cjs,json,css,scss,md,yml,yaml}"
