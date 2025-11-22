@@ -85,37 +85,17 @@ rmz = "latest"
 "cargo:youtube-tui" = "latest"
 
 [env]
-_.python.venv = { path = "{{env.HOME}}/.venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
+_.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
 DO_NOT_TRACK = "1"
 MISE_NODE_NINJA = "true"
 MISE_NODE_CONCURRENCY = "12"
 MISE_CARGO_BINSTALL = "true"
-UV_LINK_MODE = "hardlink"
-UV_COMPILE_BYTECODE = "1"
-UV_CONCURRENT_DOWNLOADS = "16"
-GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
-PATH = "${GRAALVM_HOME}/bin:${PATH}"
-RUSTC_BOOTSTRAP = "1"
-RUST_PANIC_STRATEGY = "abort"
-RUST_MIN_STACK = "16777216"
-CARGO_CACHE_RUSTC_INFO = "1"
-CARGO_INCREMENTAL = "0"
-CARGO_PROFILE_RELEASE_LTO = "true"
 CARGO_NET_GIT_FETCH_WITH_CLI = "true"
 CARGO_HTTP_MULTIPLEXING = "true"
-OPT_LEVEL = "3"
 RUSTC_WRAPPER = "sccache"
 RUSTC_LINKER = "clang"
-RUSTFLAGS = "-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Clto=fat -Cstrip=symbols -Cllvm-args=-enable-dfa-jump-thread -Clink-arg=-fuse-ld=mold -Zunstable-options -Ztune-cpu=native -Zgit -Zgitoxide"
-CC = "sccache clang"
-CXX = "sccache clang++"
+RUSTFLAGS = "-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Clto=fat -Cstrip=symbols -Cllvm-args=-enable-dfa-jump-thread -Clink-arg=-fuse-ld=mold"
 SCCACHE_DIRECT = "true"
 SCCACHE_RECACHE = "true"
-SCCACHE_IDLE_TIMEOUT = "10800"
 CMAKE_BUILD_TYPE = "Release"
 GITOXIDE_CORE_MULTIPACKINDEX = "true"
-
-[tasks.bunx]
-description = 'Bunx'
-run = "bunx --bun"
-alias = 'bx'
