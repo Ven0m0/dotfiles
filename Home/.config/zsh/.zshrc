@@ -86,6 +86,13 @@ has vivid && LS_COLORS="$(vivid generate molokai)" || has dircolors && eval "$(d
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:'}
 zstyle ':completion:*' verbose true
 
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;38;5;74m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[38;33;246m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[04;38;5;146m'
 
 [[ -z $SSH_AUTH_SOCK ]] && has ssh-agent && eval "$(ssh-agent -s -a "$XDG_RUNTIME_DIR/ssh-agent.socket" 2>/dev/null)" >/dev/null
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
