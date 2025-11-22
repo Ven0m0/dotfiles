@@ -23,12 +23,6 @@ stty -ixon -ixoff -ixany 2>/dev/null
 export IGNOREEOF=10 
 export GIT_PS1_SHOWUNTRACKEDFILES=1 GIT_PS1_SHOWDIRTYSTATUS=1 GIT_PS1_SHOWCOLORHINTS=1
 
-# Ensure command hashing is off for mise
-set +h
-
-# https://github.com/pkgforge-dev/Citron-AppImage/issues/50
-export QT_QPA_PLATFORM=xcb
-
 # === XDG Base Directories ===
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
