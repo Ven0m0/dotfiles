@@ -2,7 +2,8 @@
 # ---------------------
 # Source control
 # ---------------------
-.git/
+.git
+.gitignore
 
 # ---------------------
 # Temp / backup / rejects
@@ -68,3 +69,26 @@ $RECYCLE.BIN/
 Desktop.ini
 Thumbs.db
 ehthumbs.db
+**/*.app/*
+**/*.pxd/*
+Juegos/**
+*INFO*
+LICENSE
+.editorconfig
+package.json
+.prettierrc
+.eslintrc
+.eslintrc.json
+package-lock.json
+versions.json
+manifest.json
+tsconfig.json
+jsconfig.json
+esbuild.config.mjs
+biome.json
+node_modules/*
+__init__.py
+pyproject.toml
+requirements.txt
+stylua.toml
+.vscode
