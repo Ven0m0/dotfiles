@@ -3,6 +3,7 @@
 
 # Configure prompt (starship or fallback)
 if has starship; then
+  export STARSHIP_LOG=error
   eval "$(starship init bash 2>/dev/null)" || :
 else
   # Fallback prompt with exit status
