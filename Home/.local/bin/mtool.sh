@@ -1,44 +1,36 @@
 #!/usr/bin/env bash
 set -euo pipefail; shopt -s nullglob globstar extglob
 IFS=$'\n\t'; export LC_ALL=C LANG=C
-
 #══════════════════════════════════════════════════════════════
 #  mtool - Unified Media Tool
 #  Combines image/video/audio optimization with display & utilities
 #══════════════════════════════════════════════════════════════
-
 #──────────── Colors ────────────
 RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' BLU=$'\e[34m' DEF=$'\e[0m'
-
 #──────────── Global Config (for optimize) ────────────
 declare -gi QUALITY=85 VID_CRF=27 AUD_BR=128 ZOPFLI_ITER=60
 declare -gi LOSSLESS=0 DRY=0 BACKUP=0 KEEP=0 JOBS=0 FFZAP_T=2 INTERACTIVE=0
 declare -g OUTDIR="" BACKUP_DIR="" TYPE="all" SUFFIX="_opt"
 declare -g IMG_FMT="webp" VID_CODEC="av1"
 declare -gi TOTAL=0 OK=0 SKIP=0 FAIL=0
-
 #──────────── Helpers ────────────
 has(){ command -v "$1" &>/dev/null; }
 die(){ printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2; exit 1; }
 warn(){ printf '%b%s%b\n' "$YLW" "$*" "$DEF"; }
 log(){ printf '%s\n' "$*"; }
-
 #──────────── Cleanup ────────────
 TMPDIR=$(mktemp -d)
 cleanup(){ rm -rf "$TMPDIR"; }
 trap cleanup EXIT
-
 #──────────── Tool Resolution (cached) ────────────
 MAGICK="${MAGICK:-}"; [[ -z "$MAGICK" ]] && has magick && MAGICK=magick || :
 CWEBP="${CWEBP:-}"; [[ -z "$CWEBP" ]] && has cwebp && CWEBP=cwebp || :
 AVIFENC="${AVIFENC:-}"; [[ -z "$AVIFENC" ]] && has avifenc && AVIFENC=avifenc || :
 FFTHUMB="${FFTHUMB:-}"; [[ -z "$FFTHUMB" ]] && has ffmpegthumbnailer && FFTHUMB=ffmpegthumbnailer || :
 CHAFACMD="${CHAFACMD:-}"; [[ -z "$CHAFACMD" ]] && has chafa && CHAFACMD=chafa || :
-
 #──────────── Type Detection ────────────
 is_image(){ local m; m=$(file --mime-type -b -- "$1" 2>/dev/null || :); [[ "$m" == image/* ]]; }
 is_video(){ local m; m=$(file --mime-type -b -- "$1" 2>/dev/null || :); [[ "$m" == video/* ]]; }
-
 #══════════════════════════════════════════════════════════════
 #  DISPLAY COMMAND (from imgtool)
 #══════════════════════════════════════════════════════════════
@@ -47,7 +39,6 @@ term_dim(){
   read -r lines cols < <(stty size </dev/tty 2>/dev/null || printf '40 120\n')
   printf '%sx%s' "$cols" "$lines"
 }
-
 display_one(){
   local p="$1" dim; dim="$(term_dim)"
   if [[ -n "${KITTY_WINDOW_ID:-}" || -n "${GHOSTTY_RESOURCES_DIR:-}" ]] && has kitten; then
@@ -58,7 +49,6 @@ display_one(){
     file --brief --dereference --mime -- "$p"
   fi
 }
-
 cmd_display(){
   (( $# )) || { printf 'Usage: mtool display FILE|DIR...\n' >&2; return 2; }
   local p
