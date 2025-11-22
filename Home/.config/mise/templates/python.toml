@@ -1,6 +1,9 @@
 [env]
 # Automatic virtualenv activation
-_.python.venv = { path = ".venv", create = true }
+_.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
+UV_LINK_MODE = "hardlink"
+UV_COMPILE_BYTECODE = "1"
+UV_CONCURRENT_DOWNLOADS = "16"
 
 [tools]
 # Installs the specified Python version
