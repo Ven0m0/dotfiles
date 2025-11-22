@@ -6,6 +6,7 @@ aesni_intel
 asus_wmi
 bridge
 cdc_acm
+cdrom
 cec
 coretemp
 crc8
@@ -48,6 +49,7 @@ ip_set
 ip_tables
 ipt_REJECT
 irqbypass
+isofs
 joydev
 kvm
 kvm_intel
@@ -154,6 +156,7 @@ sparse_keymap
 spi_intel
 spi_intel_pci
 spi_nor
+sr_mod
 stp
 tcp_bbr
 tcp_dctcp
@@ -162,6 +165,7 @@ tcp_htcp
 thunderbolt
 tls
 ttm
+tun
 typec
 typec_ucsi
 uas
@@ -183,9 +187,11 @@ xfrm_user
 xt_LOG
 xt_MASQUERADE
 xt_addrtype
+xt_comment
 xt_conntrack
 xt_hl
 xt_limit
+xt_mark
 xt_nat
 xt_set
 xt_tcpudp
