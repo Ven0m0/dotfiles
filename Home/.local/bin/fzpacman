@@ -2,32 +2,26 @@
 #
 # summary: a simple posix script for fuzzy package management
 # github: https://github.com/hollowillow/scripts
-#
 # usage: fzpacman [arg]
-#
 # dependencies: fzf, pacman
 
 if [ "$1" = "-h" ]; then
-        sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"; exit 0
+  sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"; exit 0
 fi
-
 if command -v pacman > /dev/null 2>&1; then
-        LIST='pacman -Sl'
-        INSTALL='sudo pacman -Sy {+2}'
-        DOWNLOAD='sudo pacman -Syw {+2}'
-        REMOVE='sudo pacman -Rns {+2}'
-        PREVIEW='pacman -Si {2}'
+  LIST='pacman -Sl'
+  INSTALL='sudo pacman -Sy {+2}'
+  DOWNLOAD='sudo pacman -Syw {+2}'
+  REMOVE='sudo pacman -Rns {+2}'
+  PREVIEW='pacman -Si {2}'
 else
-        printf '%s\n' "No supported package manager found"; exit 2
+  printf '%s\n' "No supported package manager found"; exit 2
 fi
 
-
-$LIST | fzf \
-        --prompt='package: ' \
-        --header="$(printf '%s\n' 'enter:install  ctrl-o:download  ctrl-r:remove' "$FZF_DEFAULT_HEADER")" \
-        --preview="$PREVIEW" --preview-label="[package info]" \
-        --multi \
-        --bind "enter:become:$INSTALL" \
-        --bind "ctrl-o:become:$DOWNLOAD" \
-        --bind "ctrl-r:become:$REMOVE" \
-        --query="$*"
+$LIST | fzf -m --prompt='package: ' 
+  --header="$(printf '%s\n' 'enter:install  ctrl-o:download  ctrl-r:remove' "$FZF_DEFAULT_HEADER")" \
+  --preview="$PREVIEW" --preview-label="[package info]" \
+  --bind "enter:become:$INSTALL" \
+  --bind "ctrl-o:become:$DOWNLOAD" \
+  --bind "ctrl-r:become:$REMOVE" \
+  --query="$*"
