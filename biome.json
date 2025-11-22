@@ -1,13 +1,7 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.7/schema.json",
-  "vcs": {
-    "enabled": true,
-    "clientKind": "git",
-    "useIgnoreFile": true
-  },
-  "files": {
-    "ignoreUnknown": false
-  },
+  "vcs": {"enabled": true, "clientKind": "git", "useIgnoreFile": true},
+  "files": {"ignoreUnknown": false},
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
@@ -20,10 +14,33 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "warn",
+        "noForEach": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "error",
+        "useHookAtTopLevel": "error"
+      },
       "nursery": {
-        "noDuplicateDependencies": "error"
-        }
+        "noDuplicateDependencies": "error",
+        "useSortedClasses": "warn"
+      },
+      "performance": {
+        "noAccumulatingSpread": "warn",
+        "noDelete": "warn"
+      },
+      "style": {
+        "noNegationElse": "off",
+        "useConsistentArrayType": "error",
+        "useFilenamingConvention": "off",
+        "useNodejsImportProtocol": "error"
+      },
+      "suspicious": {
+        "noConsoleLog": "warn",
+        "noDoubleEquals": "error"
+      }
     }
   },
   "javascript": {
@@ -36,38 +53,21 @@
       "bracketSpacing": true,
       "bracketSameLine": false,
       "quoteStyle": "single",
-      "attributePosition": "auto",
-      "lineEnding": "lf",
-      "lineWidth": 120,
-      "indentStyle": "space",
-      "indentWidth": 2
+      "attributePosition": "auto"
     }
   },
   "json": {
-    "formatter": {
-      "enabled": true,
-      "indentStyle": "space",
-      "indentWidth": 2,
-      "lineEnding": "lf",
-      "lineWidth": 120,
-      "trailingCommas": "none"
-    },
-    "parser": {
-      "allowComments": true,
-      "allowTrailingCommas": false
-    }
+    "formatter": {"trailingCommas": "none"},
+    "parser": {"allowComments": true, "allowTrailingCommas": false}
   },
   "css": {
-    "formatter": {
-      "enabled": true,
-      "indentStyle": "space",
-      "indentWidth": 2,
-      "lineEnding": "lf",
-      "lineWidth": 120,
-      "quoteStyle": "double"
-    },
-    "linter": {
-      "enabled": true
+    "formatter": {"quoteStyle": "double"},
+    "linter": {"enabled": true}
+  },
+  "overrides": [
+    {
+      "include": ["*.config.js", "*.config.ts", ".*.js"],
+      "linter": {"rules": {"suspicious": {"noConsoleLog": "off"}}}
     }
-  }
+  ]
 }
