@@ -1,10 +1,10 @@
-status -i || return
+status -i >/dev/null 2>&1 || return
 
-test -r /usr/share/cachyos-fish-config/cachyos-config.fish && source /usr/share/cachyos-fish-config/cachyos-config.fish 2>/dev/null
+test -r /usr/share/cachyos-fish-config/cachyos-config.fish >/dev/null 2>&1 && source /usr/share/cachyos-fish-config/cachyos-config.fish >/dev/null 2>&1
 
 function init_tool
 	type -qf $argv[1] || return
-	type -q _evalcache && _evalcache "$argv[2]" 2>/dev/null || eval "$argv[2]" 2>/dev/null
+	type -q _evalcache && _evalcache "$argv[2]" >/dev/null 2>&1 || eval "$argv[2]" >/dev/null 2>&1
 end
 
 set -U __done_notification_urgency_level low
@@ -27,3 +27,6 @@ init_tool cod "cod init $fish_pid fish"
 function fish_greeting
 	type -q hyfetch && LC_ALL=C hyfetch 2>/dev/null || type -q fastfetch && LC_ALL=C fastfetch 2>/dev/null
 end
+
+# TODO: Potential path dedupe
+# set PATH (printf "%s" "$PATH" | awk -O -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')
