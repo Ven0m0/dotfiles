@@ -21,17 +21,6 @@ working-directory = home
 background-opacity = 0.85
 theme = TokyoNight Night
 
-mouse-hide-while-typing = true
-mouse-scroll-multiplier = 4
-scrollback-limit = 10000
-confirm-close-surface = false
-
-clipboard-read = allow
-clipboard-write = allow
-clipboard-paste-protection = false
-clipboard-trim-trailing-spaces = true
-copy-on-select = clipboard
-
 shell-integration = detect
 shell-integration-features = no-cursor,no-sudo,ssh-env,no-ssh-terminfo
 
@@ -47,7 +36,17 @@ quit-after-last-window-closed = true
 quit-after-last-window-closed-delay = 5
 grapheme-width-method = unicode
 
+mouse-hide-while-typing = true
 mouse-scroll-multiplier = 0.95
+scrollback-limit = 10000
+confirm-close-surface = false
+
+clipboard-read = allow
+clipboard-write = allow
+clipboard-paste-protection = false
+clipboard-trim-trailing-spaces = true
+copy-on-select = clipboard
+
 keybind = alt+k=new_tab
 keybind = alt+z=reload_config
 keybind = shift+enter=text:\x1b\r
