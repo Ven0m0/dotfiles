@@ -24,9 +24,5 @@ init_tool zellij "zellij setup --generate-auto-start fish | string collect"
 init_tool intelli-shell "intelli-shell init fish"
 init_tool cod "cod init $fish_pid fish"
 
-function fish_greeting
-	type -q hyfetch && LC_ALL=C hyfetch 2>/dev/null || type -q fastfetch && LC_ALL=C fastfetch 2>/dev/null
-end
-
 # TODO: Potential path dedupe
 # set PATH (printf "%s" "$PATH" | awk -O -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')
