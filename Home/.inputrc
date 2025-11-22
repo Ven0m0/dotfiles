@@ -1,45 +1,86 @@
+# /etc/inputrc - global inputrc for libreadline
+# See readline(3readline) and 'info rluserman' for more information.
+# Credit to:
+# https://github.com/dotphiles/dotphiles/blob/master/input/inputrc
+# https://github.com/Rudxain/dotfiles
+# https://www.gnu.org/software/bash/manual/html_node/Command-Line-Editing.html
+
 $include /etc/inputrc
 
-set input-meta on output-meta on convert-meta off meta-flag on
-set enable-keypad on enable-bracketed-paste on echo-control-characters off bind-tty-special-chars off
-set menu-complete-display-prefix on show-all-if-ambiguous on show-all-if-unmodified on
-set skip-completed-text on completion-map-case on completion-ignore-case on
-set completion-query-items 200 completion-prefix-display-length 2
-set mark-symlinked-directories on mark-directories on page-completions off match-hidden-files off
-set colored-completion-prefix on colored-stats on visible-stats on bell-style none keyseq-timeout 100
+# UTF-8 support
+set input-meta on
+set output-meta on
+set convert-meta off
+set meta-flag on
 
+# Misc settings
+set enable-keypad on
+set enable-bracketed-paste on
+set echo-control-characters off
+set bind-tty-special-chars off
+
+# Tab completion behavior
+set menu-complete-display-prefix on
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set skip-completed-text on
+set completion-map-case on
+set completion-ignore-case on
+set completion-query-items 200
+set completion-prefix-display-length 2
+set mark-symlinked-directories on
+set mark-directories on
+set page-completions off
+set match-hidden-files off
+set colored-completion-prefix on
+set colored-stats on
+set visible-stats on
+set bell-style none
+set keyseq-timeout 100
+
+# Home/End keys (multiple variants for compatibility)
 "\e[1~": beginning-of-line
 "\e[4~": end-of-line
-"\e[2~": quoted-insert
-"\e[3~": delete-char
-"\e[5~": beginning-of-history
-"\e[6~": end-of-history
 "\e[7~": beginning-of-line
 "\e[8~": end-of-line
 "\eOH": beginning-of-line
 "\eOF": end-of-line
 "\e[H": beginning-of-line
 "\e[F": end-of-line
+
+# Insert/Delete keys
+"\e[2~": quoted-insert
+"\e[3~": delete-char
+
+# Page Up/Down for history navigation
+"\e[5~": beginning-of-history
+"\e[6~": end-of-history
+
+# Smart history search with Up/Down arrows
 "\e[A": history-search-backward
 "\e[B": history-search-forward
+
+# Ctrl+Left/Right for word movement
 "\e[5C": forward-word
 "\e[5D": backward-word
 "\e\e[C": forward-word
 "\e\e[D": backward-word
 "\e[1;5C": forward-word
 "\e[1;5D": backward-word
+
+# Tab/Shift+Tab for menu completion
 "\t": menu-complete
 "\e[Z": menu-complete
 
 $if Bash
-	Space: magic-space
-	"\e\C-l": "\C-e | less\C-m"
-	"\es": "\C-a su -c '\C-e'\C-m"
-	"\C-xq": "\eb\"\ef\""
-	"\C-xr": redraw-current-line
-	"\M-\C-v": "\C-a\C-k$\C-y\M-\C-e\C-a\C-y="
-	"\e\C-b": "\C-e > /dev/null 2>&1 &\C-m"
+  Space: magic-space
+  "\e\C-l": "\C-e | less\C-m"
+  "\es": "\C-a su -c '\C-e'\C-m"
+  "\C-xq": "\eb\"\ef\""
+  "\C-xr": redraw-current-line
+  "\M-\C-v": "\C-a\C-k$\C-y\M-\C-e\C-a\C-y="
+  "\e\C-b": "\C-e > /dev/null 2>&1 &\C-m"
 $else
-	$include function rl_custom_complete /usr/lib/librl_custom_complete.so
-	"\C-i": rl_custom_complete
+  $include function rl_custom_complete /usr/lib/librl_custom_complete.so
+  "\C-i": rl_custom_complete
 $endif
