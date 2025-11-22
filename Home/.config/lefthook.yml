@@ -2,32 +2,43 @@ skip_output: [meta, execution]
 output: [summary, skips]
 colors: true
 no_tty: false
+min_version: 1.5.0
 
 pre-commit:
   parallel: true
+  piped: true
   commands:
     auto-stage:
+      priority: 1
       run: git add -A
+      skip: [{run: "git diff --cached --quiet", stage_fixed: false}]
     shell-format:
+      priority: 2
       glob: "*.{sh,bash,zsh}"
       run: |
         shellcheck -x -a -s bash -f diff {staged_files} | patch -Np1 || :
         shellharden --replace {staged_files} || :
         shfmt -w -ln bash -i 2 -s -bn {staged_files} || :
       stage_fixed: true
+      fail_text: "Shell formatting failed"
     yaml-format:
+      priority: 3
       glob: "*.{yml,yaml}"
       run: |
         yamlfmt {staged_files} || :
         yamllint -f parsable {staged_files} || :
       stage_fixed: true
+      fail_text: "YAML formatting/linting failed"
     json-validate:
+      priority: 4
       glob: "*.{json,jsonc,json5}"
       run: |
         for f in {staged_files}; do
           jaq -e . "$f" &>/dev/null || jq -e . "$f" || { printf "Invalid: %s\n" "$f" >&2; exit 1; }
         done
+      fail_text: "JSON validation failed"
     markdown-format:
+      priority: 5
       glob: "*.md"
       run: |
         if command -v mado &>/dev/null; then
@@ -38,7 +49,9 @@ pre-commit:
           markdownlint-cli2 --fix {staged_files} || :
         fi
       stage_fixed: true
+      fail_text: "Markdown formatting failed"
     js-format:
+      priority: 6
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       run: |
         if command -v biome &>/dev/null; then
@@ -47,15 +60,21 @@ pre-commit:
           bunx --bun @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files} || :
         fi
       stage_fixed: true
+      fail_text: "JavaScript/TypeScript formatting failed"
     prettier-format:
+      priority: 7
       glob: "*.{mjs,cjs,scss,html}"
       run: prettier -w --ignore-unknown {staged_files} || :
       stage_fixed: true
+      fail_text: "Prettier formatting failed"
     eslint-fix:
+      priority: 8
       glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
       run: eslint --fix -q {staged_files} || :
       stage_fixed: true
+      fail_text: "ESLint fixes failed"
     trim-trailing:
+      priority: 9
       glob: "*"
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
@@ -63,7 +82,9 @@ pre-commit:
           [[ -f "$f" ]] && sed -i 's/[ \t]*$//' "$f"
         done
       stage_fixed: true
+      fail_text: "Trailing whitespace removal failed"
     strip-unicode:
+      priority: 10
       glob: "*"
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
@@ -71,14 +92,18 @@ pre-commit:
           [[ -f "$f" ]] && sed -i 's/\xE2\x80\x8B\|\xE2\x80\x8C\|\xE2\x80\x8D\|\xE2\x80\xAF\|\xC2\xAD\|\xEF\xBB\xBF//g' "$f"
         done
       stage_fixed: true
+      fail_text: "Unicode character stripping failed"
     normalize-eol:
+      priority: 11
       glob: "*.{sh,bash,zsh,yml,yaml,json,md,txt,toml,ini,conf,cfg,js,ts,tsx,jsx,css,html}"
       run: |
         for f in {staged_files}; do
           [[ -f "$f" ]] && { dos2unix -q "$f" 2>/dev/null || sed -i 's/\r$//' "$f"; }
         done
       stage_fixed: true
+      fail_text: "Line ending normalization failed"
     ensure-shebang:
+      priority: 12
       glob: "*.{sh,bash}"
       run: |
         for f in {staged_files}; do
@@ -87,7 +112,9 @@ pre-commit:
           }
         done
       stage_fixed: true
+      fail_text: "Shebang insertion failed"
     check-filesize:
+      priority: 13
       run: |
         max_kb=5120
         for f in {staged_files}; do
@@ -95,7 +122,9 @@ pre-commit:
           size=$(stat -c%s "$f" 2>/dev/null || stat -f%z "$f" 2>/dev/null || echo 0)
           (( size > max_kb * 1024 )) && printf "Large: %s (%dKB)\n" "$f" "$((size/1024))" >&2
         done || :
+      fail_text: "File size check warning"
     detect-secrets:
+      priority: 14
       run: |
         rg -iNn \
           -e '(password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|bearer|client[_-]?secret|private[_-]?key)\s*[:=]\s*["\047][^"\047]{20,}' \
@@ -104,45 +133,61 @@ pre-commit:
           -e 'glpat-[0-9a-zA-Z_-]{20,}' \
           -e 'xox[baprs]-\d{10,13}-\d{10,13}-[0-9a-zA-Z]{24,}' \
           {staged_files} && { printf "Secrets detected\n" >&2; exit 1; } || :
+      fail_text: "Potential secrets detected in staged files!"
     check-debug:
+      priority: 15
       glob: "*.{sh,bash,js,jsx,ts,tsx,py,rb,go}"
       run: |
         rg -iN \
           -e '\bconsole\.(log|debug|info|warn|error)\(' \
           -e '\bdebugger\b' -e '\bbinding\.pry\b' -e '\bset -x\b' -e '\bprint\s*\(.*DEBUG' \
           {staged_files} && { printf "Debug code\n" >&2; exit 1; } || :
+      fail_text: "Debug code found in staged files!"
     no-merge-conflicts:
+      priority: 16
       run: rg -FN '^(<{7}|={7}|>{7})' {staged_files} && { printf "Merge conflicts\n" >&2; exit 1; } || :
+      fail_text: "Merge conflict markers found!"
     check-todos:
+      priority: 17
       run: |
         count=$(rg -ic '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk -F: '{s+=$2}END{print s+0}')
         (( count > 0 )) && printf "%d TODO/FIXME\n" "$count" >&2 || :
+      fail_text: "TODOs/FIXMEs found (informational)"
 commit-msg:
   commands:
     conventional-commits:
+      priority: 1
       run: |
         msg=$(<{1})
         rg -q '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}' <<< "$msg" || {
           printf "Use Conventional Commits:\n  type(scope?): subject\n\nTypes: feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert\n" >&2
           exit 1
         }
+      fail_text: "Commit message must follow Conventional Commits format"
     msg-length:
+      priority: 2
       run: |
         subject=$(head -n1 {1})
         (( ${#subject} > 72 )) && { printf "Subject >72 chars (%d)\n" "${#subject}" >&2; exit 1; } || :
+      fail_text: "Commit subject line too long (max 72 chars)"
     no-wip:
+      priority: 3
       run: rg -qi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP\n" >&2; exit 1; } || :
+      fail_text: "WIP/TODO/FIXME/HACK found in commit message"
 pre-push:
   parallel: true
   commands:
     run-tests:
+      priority: 1
       run: |
         [[ -f Makefile ]] && { make test &>/dev/null; exit 0; }
         [[ -f package.json ]] && { bun test &>/dev/null || npm test &>/dev/null; exit 0; }
         [[ -f Cargo.toml ]] && { cargo test -q &>/dev/null; exit 0; }
         [[ -f go.mod ]] && { go test ./... &>/dev/null; exit 0; }
         exit 0
+      fail_text: "Test suite failed"
     branch-check:
+      priority: 2
       run: |
         branch=$(gix rev parse --abbrev-ref HEAD 2>/dev/null || git rev-parse --abbrev-ref HEAD)
         rg -q '^(main|master|production)$' <<< "$branch" && {
@@ -152,14 +197,18 @@ pre-push:
           printf "Use git-flow: feature/*, fix/*, release/*, hotfix/*\n" >&2
         }
         exit 0
+      fail_text: "Branch naming violation or protected branch push attempt"
     audit-deps:
+      priority: 3
       run: |
         [[ -f package.json ]] && { bun audit || npm audit --production --audit-level=high; } || :
         [[ -f Cargo.toml ]] && cargo audit || :
         exit 0
+      fail_text: "Dependency audit failed"
 post-merge:
   commands:
     update-deps:
+      priority: 1
       run: |
         if [[ -f bun.lockb ]]; then
           bun install --frozen-lockfile &>/dev/null
@@ -168,24 +217,33 @@ post-merge:
         fi
         [[ -f Cargo.lock ]] && cargo fetch &>/dev/null
         exit 0
+      fail_text: "Dependency update failed"
     clean-artifacts:
+      priority: 2
       run: rm -rf node_modules/.cache target/debug .pytest_cache __pycache__ .next .turbo dist build || :
+      fail_text: "Artifact cleanup failed"
 post-checkout:
   commands:
     update-submodules:
+      priority: 1
       run: submod update --init --recursive &>/dev/null || git submodule update --init --recursive &>/dev/null || :
+      fail_text: "Submodule update failed"
     notify-deps:
+      priority: 2
       run: |
         changed=$(git diff HEAD@{1} HEAD --name-only)
         rg -q '^(package\.json|bun\.lockb|.*lock\.json)$' <<< "$changed" && {
           printf "Dependencies changed. Run: bun install\n" >&2
         } || :
+      fail_text: "Dependency check notification failed"
 prepare-commit-msg:
   commands:
     insert-ticket:
+      priority: 1
       run: |
         branch=$(gix rev parse --abbrev-ref HEAD 2>/dev/null || git rev-parse --abbrev-ref HEAD)
         [[ "$branch" =~ ^(feature|bugfix|hotfix|fix)/([A-Z]+-[0-9]+) ]] && {
           ticket="${BASH_REMATCH[2]}"
           rg -q "$ticket" {1} || sed -i "1s/^/$ticket: /" {1}
         } || :
+      fail_text: "Ticket insertion failed"

@@ -1,24 +1,74 @@
+# Bun Configuration - Optimized for Performance
+# https://bun.sh/docs/runtime/bunfig
+
+# Global settings
 telemetry = false
 smol = false
 logLevel = "error"
+trimWildcards = true
 
+# Install configuration
 [install]
+# Package resolution
 auto = "fallback"
 production = true
 optional = false
 peer = false
 dev = false
+exact = false
+frozenLockfile = false
+
+# Linking and caching
 linkWorkspacePackages = true
 linker = "hoisted"
+cacheHardLinks = true
 preferOffline = true
 preferLatest = false
-cacheHardLinks = true
 
+# Performance
+concurrency = 16
+globalBinDir = "~/.local/bin"
+globalDir = "~/.bun/install/global"
+cache = "~/.bun/install/cache"
+
+# Registry configuration
+[install.scopes]
+# Add custom scopes here if needed
+# "@myorg" = { url = "https://registry.myorg.com/", token = "$NPM_TOKEN" }
+
+# Lockfile settings
+[install.lockfile]
+save = true
+print = "yarn"
+
+# Package manager settings
+[install.registry]
+url = "https://registry.npmjs.org/"
+# token = "$NPM_TOKEN"  # Uncomment and set if using private packages
+
+# Run configuration
 [run]
 silent = true
 bun = true
 hot = false
+shell = "bash"
 
+# Test configuration
 [test]
 coverageSkipTestFiles = true
 bail = true
+timeout = 5000
+preload = []
+coverage = false
+
+# Macros
+[macros]
+# react = ["@babel/plugin-transform-react-jsx"]
+
+# Loader configuration
+[loader]
+# ".custom" = "text"
+
+# Define configuration (like webpack's DefinePlugin)
+[define]
+# "process.env.NODE_ENV" = "\"production\""
