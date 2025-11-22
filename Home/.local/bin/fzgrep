@@ -35,7 +35,7 @@ RELOAD='reload:rg --vimgrep --color=always --smart-case {q} || :'
 OPEN='if [ $FZF_SELECT_COUNT -eq 0 ]; then "$EDITOR" "+call cursor({2},{3})" {1}; else "$EDITOR" +cw -q {+f}; fi'
 
 fzf \
-        --disabled --multi --delimiter=":" \
+        --disabled -m --delimiter=":" \
         --ansi --color=16 \
         --bind "start:$RELOAD" --bind "change:$RELOAD" \
         --bind "enter:become:$OPEN" --bind "ctrl-o:execute:$OPEN" \
