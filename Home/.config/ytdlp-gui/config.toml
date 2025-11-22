@@ -1,0 +1,12 @@
+download_folder = "$HOME/Videos"
+save_window_position = false
+
+[window_position]
+x = 0.0
+y = 0.0
+
+[options]
+video_resolution = "FullHD"
+video_format = "Mkv"
+audio_quality = "Best"
+audio_format = "Opus"
