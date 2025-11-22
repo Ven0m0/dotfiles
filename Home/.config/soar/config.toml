@@ -5,14 +5,22 @@ bin_path = "~/.local/bin"
 repositories_path = "~/repos"
 portable_dirs = "~/portable-dirs"
 parallel = true
-parallel_limit = 16
-ghcr_concurrency = 12
-search_limit = 25
+parallel_limit = 24
+ghcr_concurrency = 16
+search_limit = 50
 cross_repo_updates = false
+timeout = 300
+retry_attempts = 3
+retry_delay = 2
+use_cache = true
+compress_cache = true
+verify_checksums = true
 install_patterns = [
-  "!*.log", "!*.txt", "!*.md",
-  "!SBUILD", "!*.json", "!*.version",
-  "!LICENSE*", "!README*", "!CHANGELOG*"
+  "!*.log", "!*.txt", "!*.md", "!*.rst",
+  "!SBUILD", "!*.json", "!*.version", "!*.yml", "!*.yaml",
+  "!LICENSE*", "!README*", "!CHANGELOG*", "!CONTRIBUTING*",
+  "!*.example", "!*.sample", "!*.test", "!*.spec",
+  "!docs/**", "!examples/**", "!tests/**"
 ]
 
 [profile.default]
@@ -26,7 +34,8 @@ desktop_integration = true
 pubkey = "https://meta.pkgforge.dev/pkgcache/minisign.pub"
 enabled = true
 signature_verification = true
-sync_interval = "6h"
+sync_interval = "4h"
+priority = 10
 
 [[repositories]]
 name = "bincache"
@@ -35,7 +44,8 @@ desktop_integration = false
 pubkey = "https://meta.pkgforge.dev/bincache/minisign.pub"
 enabled = true
 signature_verification = true
-sync_interval = "6h"
+sync_interval = "4h"
+priority = 9
 
 [[repositories]]
 name = "ivan-hc-am"
@@ -43,7 +53,8 @@ url = "https://meta.pkgforge.dev/external/am/x86_64-Linux.sdb.zstd"
 desktop_integration = true
 enabled = true
 signature_verification = true
-sync_interval = "12h"
+sync_interval = "8h"
+priority = 8
 
 [[repositories]]
 name = "appimage-github-io"
@@ -51,7 +62,8 @@ url = "https://meta.pkgforge.dev/external/appimage.github.io/x86_64-Linux.sdb.zs
 desktop_integration = true
 enabled = true
 signature_verification = true
-sync_interval = "12h"
+sync_interval = "8h"
+priority = 7
 
 [[repositories]]
 name = "pkgforge-cargo"
@@ -60,6 +72,7 @@ desktop_integration = false
 enabled = false
 signature_verification = true
 sync_interval = "24h"
+priority = 5
 
 [[repositories]]
 name = "pkgforge-go"
@@ -68,3 +81,4 @@ desktop_integration = false
 enabled = false
 signature_verification = true
 sync_interval = "24h"
+priority = 5

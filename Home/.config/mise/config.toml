@@ -1,26 +1,50 @@
+# Mise Configuration - Optimized for Performance
+# https://mise.jdx.dev/configuration.html
+
 [settings]
+# Core settings
 experimental = true
 color = true
+yes = true
+verbose = false
+quiet = false
+
+# Auto-installation
 auto_install = true
 task_run_auto_install = true
+not_found_auto_install = true
+
+# Performance optimizations
+jobs = 16
 lockfile = true
-yes = true
+activate_aggressive = true
+raw = false
+shorthands_file = "~/.config/mise/shorthands.toml"
+disable_default_shorthands = false
+
+# Version managers compatibility
+asdf = true
+vfox = true
+legacy_version_file = false
+
+# Git settings
 gix = true
+
+# Storage optimization
+always_keep_download = false
+always_keep_install = false
+cache_prune_age = "30d"
+
+# Language-specific
+go_skip_checksum = true
+cargo_binstall = true
 pipx_uvx = true
 python.uv_venv_auto = true
 python_venv_auto_create = true
-cargo_binstall = true
-activate_aggressive = true
-go_skip_checksum = true
-jobs = 12
-legacy_version_file = false
-verbose = false
-not_found_auto_install = true
+
+# System
 system_config_file = "~/.config/mise/config.toml"
-vfox = true
-asdf = true
-always_keep_download = false
-always_keep_install = false
+config_dir = "~/.config/mise"
 
 [settings.python]
 compile = true
@@ -47,76 +71,138 @@ baked_registry = true
 [settings.ruby]
 ruby_build_opts = "--enable-shared"
 
+# Tools Configuration
 [tools]
+# Java
 java = ["oracle-graalvm", "temurin"]
+
+# GitHub tools
 "github:zeroBzeroT/ChunkCleaner" = "latest"
+
+# Core utilities
 cpz = "latest"
 rmz = "latest"
+
+# Cargo utilities
 "cargo:cargo-alias-exec" = "latest"
 "cargo:cargo-syu" = "latest"
 "cargo:cargo-list" = "latest"
 "cargo:cargo-fresh" = "latest"
-"cargo:image-find" = "latest"
 "cargo:cargo-minify" = "latest"
 "cargo:cargo-diet" = "latest"
+"cargo:cargo-mommy" = "latest"
+
+# Image optimization tools
+"cargo:image-find" = "latest"
 "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
 "cargo:https://github.com/Blobfolio/flaca" = "latest"
 "cargo:image-optimizer" = "latest"
 "cargo:pixelsqueeze" = "latest"
 "cargo:imagineer" = "latest"
 "cargo:imgc" = "latest"
-"cargo:icu_tool" = "latest"
+
+# Compression tools
 "cargo:compresscli" = "latest"
+"cargo:ripunzip" = "latest"
+
+# Video tools
 "cargo:ffzap" = "latest"
 "cargo:ab-av1" = "latest"
+"cargo:vicut" = "latest"
+"cargo:bgone" = "latest"
+"cargo:youtube-tui" = "latest"
+
+# Text/HTML processing
 "cargo:minhtml" = "latest"
+"cargo:rumdl" = "latest"
+
+# File utilities
 "cargo:mpatch" = "latest"
 "cargo:fdf" = "latest"
 "cargo:frep" = "latest"
-"cargo:ripunzip" = "latest"
 "cargo:ripuniq" = "latest"
+"cargo:dedup" = "latest"
+"cargo:dupe-krill" = "latest"
+"cargo:xcp" = "latest"
+
+# System utilities
+"cargo:icu_tool" = "latest"
 "cargo:https://github.com/fthomys/update-alternatives" = "latest"
 "cargo:caligula" = "latest"
 "cargo:roxide" = "latest"
-"cargo:dedup" = "latest"
 "cargo:nvidia_oc" = "latest"
 "cargo:shell-mommy" = "latest"
-"cargo:cargo-mommy" = "latest"
 "cargo:etchdns" = "latest"
-"cargo:xcp" = "latest"
 "cargo:bssh" = "latest"
-"cargo:dupe-krill" = "latest"
 "cargo:terminal_tools" = "latest"
 "cargo:dui-cli" = "latest"
-"cargo:vicut" = "latest"
-"cargo:bgone" = "latest"
 "cargo:kanata" = "latest"
-"cargo:youtube-tui" = "latest"
-"cargo:rumdl" = "latest"
 "cargo:submod" = "latest"
 
+# Environment Variables
 [env]
+# Python virtual environment
 _.python.venv = { path = ".venv" }
+
+# UV (Python package manager) optimizations
 UV_LINK_MODE = "hardlink"
 UV_COMPILE_BYTECODE = "1"
-UV_CONCURRENT_DOWNLOADS = "16"
+UV_CONCURRENT_DOWNLOADS = "24"
+UV_CONCURRENT_INSTALLS = "16"
+UV_NO_SYNC = "0"
+
+# Privacy
 DO_NOT_TRACK = "1"
+
+# Node.js optimizations
 MISE_NODE_NINJA = "true"
-MISE_NODE_CONCURRENCY = "12"
+MISE_NODE_CONCURRENCY = "16"
+NODE_OPTIONS = "--max-old-space-size=8192"
+
+# Rust/Cargo optimizations
 CARGO_NET_GIT_FETCH_WITH_CLI = "true"
 CARGO_HTTP_MULTIPLEXING = "true"
+CARGO_REGISTRIES_CRATES_IO_PROTOCOL = "sparse"
+CARGO_TERM_PROGRESS_WHEN = "always"
+CARGO_INCREMENTAL = "1"
 RUSTC_WRAPPER = "sccache"
 RUSTC_LINKER = "clang"
-RUSTFLAGS = "-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Clto=fat -Cstrip=symbols -Cllvm-args=-enable-dfa-jump-thread -Clink-arg=-fuse-ld=mold"
+RUSTFLAGS = "-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Clto=fat -Cstrip=symbols -Clink-arg=-fuse-ld=mold -Cforce-frame-pointers=yes"
 RUSTC_BOOTSTRAP = "1"
-SCCACHE_DIRECT = "true"
-CMAKE_BUILD_TYPE = "Release"
-GITOXIDE_CORE_MULTIPACKINDEX = "true"
 
+# Sccache optimizations
+SCCACHE_DIRECT = "true"
+SCCACHE_CACHE_SIZE = "10G"
+SCCACHE_IDLE_TIMEOUT = "0"
+
+# Build optimizations
+CMAKE_BUILD_TYPE = "Release"
+CMAKE_GENERATOR = "Ninja"
+MAKEFLAGS = "-j16"
+
+# Git optimizations
+GITOXIDE_CORE_MULTIPACKINDEX = "true"
+GIT_PROTOCOL = "version 2"
+
+# Task definitions
 [tasks.clean]
+description = "Clean cargo and cache directories"
 depends = ['cleancache']
 run = "cargo cache -efg; cargo clean"
 
 [tasks.cleancache]
+description = "Clean system cache"
 run = "rm -rf ~/.cache/*"
 hide = true
+
+[tasks.update]
+description = "Update all mise tools"
+run = "mise upgrade && mise prune -y"
+
+[tasks.outdated]
+description = "Check for outdated tools"
+run = "mise outdated"
+
+[tasks.doctor]
+description = "Run mise doctor to check configuration"
+run = "mise doctor"
