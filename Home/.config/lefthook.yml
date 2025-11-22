@@ -30,9 +30,13 @@ pre-commit:
       run: markdownlint --fix {staged_files} || :
       stage_fixed: true
     js-format:
-      glob: "*.{js,jsx,ts,tsx,json,json5,css}"
+      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       run: |
-        BIOME_CONFIG_PATH="${HOME}/biome.json" biome check --write --unsafe --skip-parse-errors {staged_files} || :
+        if command -v biome &>/dev/null; then
+          BIOME_CONFIG_PATH="${HOME}/biome.json" biome check --write --unsafe --skip-parse-errors {staged_files} || :
+        else
+          bunx --bun @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+        fi
       stage_fixed: true
     prettier-format:
       glob: "*.{mjs,cjs,scss,html}"
