@@ -8,7 +8,7 @@
 if [ "$1" = "-h" ]; then
   sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"; exit 0
 fi
-if command -v pacman > /dev/null 2>&1; then
+if command -v pacman &>/dev/null; then
   LIST='pacman -Sl'
   INSTALL='sudo pacman -Sy {+2}'
   DOWNLOAD='sudo pacman -Syw {+2}'

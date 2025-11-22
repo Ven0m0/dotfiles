@@ -93,7 +93,7 @@ while [ $# -gt 0 ]; do
 
   # skip already-processed files
   if [ "$FORCE" = 'n' ]; then
-    command -v pdfinfo > /dev/null
+    command -v pdfinfo &>/dev/null
     if [ $? -eq 0 ]; then
       TMPPDF0=$(tempname opt-pdf_$$) || exit 99
       pdfinfo "$1" > $TMPPDF0

@@ -57,12 +57,12 @@ for editor_cmd in "${DOAS_EDITOR}" "${VISUAL}" "${EDITOR}"; do
 done
 # shellcheck disable=SC2086
 if [ -z "${editor_cmd}" ]; then
-	if command -v vi > /dev/null 2>&1; then
+	if command -v vi &>/dev/null; then
 		editor_cmd='vi'
 	else
 		error 'no editor specified'; exit 1
 	fi
-elif ! command -v ${editor_cmd} > /dev/null 2>&1; then
+elif ! command -v ${editor_cmd} &>/dev/null; then
 	error "invalid editor command: '${editor_cmd}'"; exit 1
 fi
 exit_code=1

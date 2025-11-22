@@ -49,7 +49,7 @@ for FILE in $FILES; do
         if [ -f "$AUTOSTART_DIR/$FILE" ]; then
                 while IFS= read -r PROGRAM; do
                         # spawn detached program
-                        nohup "$PROGRAM" >/dev/null 2>&1 &
+                        nohup "$PROGRAM" &>/dev/null &
                 done < "$AUTOSTART_DIR/$FILE"
         else
                 printf '%s\n' "Warning: File '$FILE' does not exist."
