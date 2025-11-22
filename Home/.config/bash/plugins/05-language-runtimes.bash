@@ -3,6 +3,8 @@
 
 # --- Multi-language Manager
 if has mise; then
+  # Ensure command hashing is off for mise
+  set +h
   eval "$(mise activate -yq bash)" || :
   alias mx="mise x --"
 fi
@@ -46,3 +48,8 @@ export NODE_OPTIONS="--no-warnings --max-old-space-size=4096"
 # --- SDKMAN (Java/JVM)
 export SDKMAN_DIR="${SDKMAN_DIR:-$HOME/.sdkman}"
 ifsource "${SDKMAN_DIR}/bin/sdkman-init.sh"
+
+# AppImages
+export URUNTIME_PRELOAD=1
+# https://github.com/pkgforge-dev/Citron-AppImage/issues/50
+export QT_QPA_PLATFORM=xcb
