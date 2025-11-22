@@ -26,3 +26,8 @@ fi
 has thefuck && eval "$(thefuck --alias)" || :
 has pay-respects && eval "$(pay-respects bash)" || :
 has ast-grep && eval "$(ast-grep completions bash)" || :
+
+alias startintent="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell am start $1"
+alias apkinstall="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X install -r $1"
+alias rmapp="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X uninstall $1"
+alias clearapp="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell pm clear $1"
