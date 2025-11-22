@@ -47,7 +47,7 @@ _fzf(){
   [[ ${FND} == sk ]] && opts+=(--no-hscroll) || opts+=(--no-scrollbar)
   while (($#)); do
     case "$1" in
-      -m) opts+=(--multi); shift ;;
+      -m) opts+=(-m); shift ;;
       -h) opts+=(--header "$2"); shift 2 ;;
       -p) opts+=(--preview "$2" --preview-window=wrap); shift 2 ;;
       -b) opts+=(--bind "$2"); shift 2 ;;
@@ -162,3 +162,21 @@ case "$1" in
   -v|v|--version) _ver;;
   *) die "Invalid command: $1";;
 esac
+
+# TODO: add "https://github.com/basecamp/omarchy/blob/master/bin/omarchy-pkg-install" functionality
+fzf_args=(
+  -m --color 'pointer:green,marker:green'
+  --preview 'pacman -Sii {1}'
+  --preview-label='alt-p: toggle description, alt-j/k: scroll, tab: multi-select'
+  --preview-label-pos='bottom' --preview-window 'down:65%:wrap'
+  --bind 'alt-p:toggle-preview'
+  --bind 'alt-d:preview-half-page-down,alt-u:preview-half-page-up'
+  --bind 'alt-k:preview-up,alt-j:preview-down'
+)
+
+pkg_names=$(pacman -Slq | fzf "${fzf_args[@]}")
+
+if [[ -n "$pkg_names" ]]; then
+  # Convert newline-separated selections to space-separated for paru
+  echo "$pkg_names" | tr '\n' ' ' | xargs sudo pacman -S --noconfirm
+fi
