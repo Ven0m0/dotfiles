@@ -67,6 +67,7 @@ zstyle ':completion:*:default' menu select=1 list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' use-cache on cache-path $XDG_CACHE_HOME/zsh/zcompcache insert-unambiguous true \
   matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*' completer _complete _match _approximate \
   squeeze-slashes false special-dirs true
+zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*:approximate:*' max-errors 1 numeric
 zstyle ':completion:*:match:*' original only
 zstyle ':completion:*:matches' group yes
@@ -83,6 +84,8 @@ zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -T -L2 --color=always $realpath'
 has vivid && LS_COLORS="$(vivid generate molokai)" || has dircolors && eval "$(dircolors -b)" 2>/dev/null
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:'}
+zstyle ':completion:*' verbose true
+
 
 [[ -z $SSH_AUTH_SOCK ]] && has ssh-agent && eval "$(ssh-agent -s -a "$XDG_RUNTIME_DIR/ssh-agent.socket" 2>/dev/null)" >/dev/null
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
