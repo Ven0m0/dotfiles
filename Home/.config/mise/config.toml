@@ -75,6 +75,7 @@ rmz = "latest"
 "cargo:bgone" = "latest"
 "cargo:kanata" = "latest"
 "cargo:youtube-tui" = "latest"
+"cargo:rumdl" = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
