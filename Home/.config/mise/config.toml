@@ -6,6 +6,7 @@ yes = true
 activate_aggressive = true
 jobs = 12
 lockfile = true
+python.uv_venv_auto = true
 python_venv_auto_create = true
 gix = true
 go_skip_checksum = true
@@ -23,7 +24,6 @@ npm.bun = true
 compile = true
 precompiled_os = "x86_64_v3"
 venv_create_args = ["--system-site-packages"]
-uv_venv_auto = true
 
 [settings.node]
 compile = true
