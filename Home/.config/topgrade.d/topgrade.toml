@@ -3,16 +3,20 @@
 # paths = ["/etc/topgrade.toml"]
 [misc]
 pre_sudo = true
-sudo_command = "sudo"
-disable = ["config_update", "micro", "uv", "pipx", "yazi", "bun", "mise", "yadm", "node", "sheldon"]
-ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise", "yadm", "node", "sheldon", "shell"]
+#sudo_command = "sudo"
+disable = ["config_update", "micro", "uv", "pipx", "yazi", "bun", "mise", "yadm", "node", "vim", "containers"]
+ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise", "yadm", "node", "shell"]
 assume_yes = true
 no_retry = true
 cleanup = true
 skip_notify = true
+notify_each_step = false
 no_self_update = true
+run_in_tmux = false
 # bashit_branch = "stable"
 # only = ["system", "emacs"]
+# remote_topgrades = ["pi3", "pi4", "Laptop"]
+remote_topgrade_path = ".cargo/bin/topgrade"
 
 [pre_commands]
 "pacfree" = "rm -f /var/lib/pacman/db.lck"
@@ -61,10 +65,10 @@ winget_silent_install = true
 self_rename = true
 
 [npm]
-#use_sudo = true
+use_sudo = true
 
 [yarn]
-#use_sudo = true
+use_sudo = true
 
 [deno]
 # Upgrade deno executable to the given version.
@@ -84,10 +88,10 @@ upgrade = true
 
 [flatpak]
 # Use sudo for updating the system-wide installation
-#use_sudo = true
+use_sudo = true
 
 [distrobox]
-#use_root = true
+use_root = true
 # containers = ["archlinux-latest"]
 
 [containers]
@@ -97,7 +101,7 @@ upgrade = true
 runtime = "podman"
 
 [lensfun]
-#use_sudo = true
+use_sudo = true
 
 [zigup]
 cleanup = true
