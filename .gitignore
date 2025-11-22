@@ -82,6 +82,7 @@ Videos/
 *.log.*
 log/
 logs/
+log.txt
 *.old
 *.tmp
 tmp/
@@ -102,7 +103,7 @@ pids
 *.pid.lock
 
 # ---------------------
-# Linux system / editor files
+# OS files
 # ---------------------
 .directory
 .Trash-*
@@ -110,6 +111,12 @@ pids
 .fuse_hidden*
 *~
 .nfs*
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
 
 # ---------------------
 # Binary / compiled files
@@ -122,31 +129,30 @@ pids
 __pycache__/
 .pytest_cache/
 *.py[cod]
+*.pyc
 *$py.class
 node_modules/
+vendor/
 go/
 jspm_packages/
 dependencies/composer/vendor
 target/
 build/
+dist/
 .cargo/
 **/*.rs.bk
+**/*.rl.bk
 *.mutants.out*/
 .npm
 .eslintcache
 *.tgz
-dist
 result
 result-*
 *.rdb
-
-# ---------------------
-# Windows system files
-# ---------------------
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
+*.msi
+*.iso
+*.dmg
+*.deb
 
 # ---------------------
 # Linter
@@ -168,9 +174,18 @@ mega-linter.report
 .ruff_cache/
 .eslintcache
 /package-lock.json
+*.sqlite
 
 # GitHub Actions leftovers
 github_conf
+
+# Sensitive files
+*.key
+*.pem
+*.credentials
+*.password
+*.secret
+
 # ---------------------
 # VS Code
 # ---------------------
