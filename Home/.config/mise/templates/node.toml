@@ -7,20 +7,20 @@ BIN_PATH = "{{ cwd }}/node_modules/.bin"
 # node = "{{ env['NODE_VERSION'] | default(value='lts') }}" # LTS Version
 # node = "{{ get_env(name='NODE_VERSION', default='18.2') }}" # Specific version
 node = "latest"
-pnpm = "latest"
+bun = "latest"
 
 # Install npm dependencies
 [tasks.install]
-run = "pnpm install"
+run = "bun i"
 
 # Add a new dependency
 [tasks.add]
-run = "pnpm add"
+run = "bun add"
 
 # Run the development server
 [tasks.dev]
 alias = "d"
-run = "pnpm run dev"
+run = "bun -b run dev"
 
 # Run linting
 [tasks.lint]
@@ -30,10 +30,11 @@ run = "eslint src/"
 [tasks.format]
 run = "prettierd src/"
 
-# Run tests
-[tasks.test]
-run = "jest"
-
 # Build the project
 [tasks.build]
-run = "pnpm run build"
+run = "bun -b run build"
+
+[tasks.bunx]
+description = 'Bunx'
+run = "bunx --bun"
+alias = 'bx'
