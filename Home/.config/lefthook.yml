@@ -32,7 +32,7 @@ pre-commit:
     js-format:
       glob: "*.{js,jsx,ts,tsx,json,json5,css}"
       run: |
-        biome check --write --unsafe --skip-parse-errors {staged_files} || :
+        BIOME_CONFIG_PATH="${HOME}/biome.json" biome check --write --unsafe --skip-parse-errors {staged_files} || :
       stage_fixed: true
     prettier-format:
       glob: "*.{mjs,cjs,scss,html}"
