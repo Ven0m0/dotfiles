@@ -27,7 +27,6 @@ compile = true
 precompiled_os = "x86_64_v3"
 uv_venv_auto = true
 uv_venv_create_args = ["--system-site-packages"]
-
 venv_create_args = ["--system-site-packages"]
 
 [settings.pipx]
