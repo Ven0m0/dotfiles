@@ -19,12 +19,16 @@ not_found_auto_install = true
 system_config_file = "~/.config/mise/config.toml"
 vfox = true
 asdf = true
+always_keep_download = false
+always_keep_install = false
 
 [settings.python]
 compile = true
 precompiled_os = "x86_64_v3"
 uv_venv_auto = true
 uv_venv_create_args = ["--system-site-packages"]
+
+venv_create_args = ["--system-site-packages"]
 
 [settings.pipx]
 uvx = true
