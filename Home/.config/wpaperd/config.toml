@@ -1,5 +1,6 @@
 [default]
-duration = "30m"
-mode = "center"
-sorting = "ascending"
 path = "/home/lucy/.local/share/wallpapers"
+duration = "30m"
+mode = "fit-border-color"
+sorting = "random"
+recursive = false
