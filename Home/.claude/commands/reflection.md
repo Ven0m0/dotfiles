@@ -18,10 +18,10 @@ Analyze the chat history and instructions to identify areas that could be improv
 - Areas where Claude could provide more detailed or accurate information
 - Opportunities to enhance Claude's ability to handle specific types of queries or tasks
 
-2. Analysis Documentation:
+1. Analysis Documentation:
    Document your findings using the TodoWrite tool to track each identified improvement area and create a structured approach.
 
-3. Interaction Phase:
+2. Interaction Phase:
    Present your findings and improvement ideas to the human. For each suggestion:
    a) Explain the current issue you've identified
    b) Propose a specific change or addition to the instructions
@@ -29,14 +29,14 @@ Analyze the chat history and instructions to identify areas that could be improv
 
 Wait for feedback from the human on each suggestion before proceeding. If the human approves a change, move it to the implementation phase. If not, refine your suggestion or move on to the next idea.
 
-4. Implementation Phase:
+1. Implementation Phase:
    For each approved change:
    a) Use the Edit tool to modify the CLAUDE.md file
    b) Clearly state the section of the instructions you're modifying
    c) Present the new or modified text for that section
    d) Explain how this change addresses the issue identified in the analysis phase
 
-5. Output Format:
+2. Output Format:
    Present your final output in the following structure:
 
 <analysis>

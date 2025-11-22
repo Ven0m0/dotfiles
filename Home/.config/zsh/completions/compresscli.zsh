@@ -31,7 +31,7 @@ _compresscli() {
 && ret=0
     case $state in
     (compresscli)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:compresscli-command-$line[1]:"
         case $line[1] in
@@ -158,7 +158,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (presets)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:compresscli-presets-command-$line[1]:"
         case $line[1] in
@@ -225,7 +225,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:compresscli-presets-help-command-$line[1]:"
         case $line[1] in
@@ -292,7 +292,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:compresscli-help-command-$line[1]:"
         case $line[1] in
@@ -316,7 +316,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (presets)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:compresscli-help-presets-command-$line[1]:"
         case $line[1] in

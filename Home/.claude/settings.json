@@ -11,14 +11,7 @@
     "DISABLE_AUTOUPDATER": "1"
   },
   "permissions": {
-    "allow": [
-      "Bash(ls:*)",
-      "Bash(cat:*)",
-      "Bash(sed:*)",
-      "Bash(git:*)",
-      "mcp__serena",
-      "WebFetch"
-    ]
+    "allow": ["Bash(ls:*)", "Bash(cat:*)", "Bash(sed:*)", "Bash(git:*)", "mcp__serena", "WebFetch"],
     "deny": []
   },
   "statusLine": {

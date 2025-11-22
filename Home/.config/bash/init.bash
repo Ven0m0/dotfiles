@@ -7,7 +7,7 @@ export BASH_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/bash"
 export BASH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/bash"
 
 # Ensure core directories exist
-mkdir -p "${BASH_CONFIG_DIR}"/{lib,plugins,functions} "$BASH_CACHE_DIR"
+mkdir -p "$BASH_CONFIG_DIR"/{lib,plugins,functions} "$BASH_CACHE_DIR"
 
 # Load core libraries
 . "${BASH_CONFIG_DIR}/lib/helpers.bash"

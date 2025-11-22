@@ -7,7 +7,7 @@ avoid-dev-deps = true
 no-embed-metadata = true
 profile-rustflags = true
 trim-paths = true
-parallel-tests = true 
+parallel-tests = true
 mtime-on-use = true
 checksum-freshness = true
 feature-unification = true
@@ -32,7 +32,7 @@ rustflags = ["-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread
 [env]
 RUSTC_BOOTSTRAP = "1"
 RUST_PANIC_STRATEGY = "abort"
-RUST_MIN_STACK= "16777216"
+RUST_MIN_STACK = "16777216"
 RUST_LIB_BACKTRACE = "0"
 CARGO_CACHE_RUSTC_INFO = "1"
 RUSTC_ICE = "0"

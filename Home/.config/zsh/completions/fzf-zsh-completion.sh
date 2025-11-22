@@ -66,7 +66,7 @@ _fzf_completion() {
         if [[ "$functions[_approximate]" == 'builtin autoload'* ]]; then
             _approximate() {
                 unfunction _approximate
-                printf %s\\n "builtin autoload +XUz _approximate" >&"${__evaled}"
+                printf %s\\n "builtin autoload +XUz _approximate" >&"$__evaled"
                 builtin autoload +XUz _approximate
                 __override_approximate
                 _approximate "$@"
@@ -120,9 +120,9 @@ _fzf_completion() {
                 __stderr="$(
                     _fzf_completion_preexit() {
                         trap -
-                        functions + | "$_fzf_bash_completion_grep"  -F -vx -e "$(functions -u +)" -e "$__full_functions" | while read -r f; do which -- "$f"; done >&"${__evaled}"
+                        functions + | "$_fzf_bash_completion_grep"  -F -vx -e "$(functions -u +)" -e "$__full_functions" | while read -r f; do which -- "$f"; done >&"$__evaled"
                         # skip local and autoload vars
-                        { typeset -p -- $(typeset + | "$_fzf_bash_completion_grep" -vF -e 'local ' -e 'undefined ' | "$_fzf_bash_completion_awk" '{print $NF}' | "$_fzf_bash_completion_grep" -vFx -e "$__autoload_variables") | "$_fzf_bash_completion_grep" -xvFf <(printf %s "$__full_variables") >&"${__evaled}" } 2>/dev/null
+                        { typeset -p -- "$(typeset + | "$_fzf_bash_completion_grep" -vF -e 'local ' -e 'undefined ' | "$_fzf_bash_completion_awk" '{print $NF}' | "$_fzf_bash_completion_grep" -vFx -e "$__autoload_variables")" | "$_fzf_bash_completion_grep" -xvFf <(printf %s "$__full_variables") >&"$__evaled" } 2>/dev/null
                     }
                     trap _fzf_completion_preexit EXIT TERM
 
@@ -138,7 +138,7 @@ _fzf_completion() {
                     fi
 
                 )"
-                printf "__stderr='%s'\\n" "${__stderr//'/'\''}" >&"${__evaled}"
+                printf "__stderr='%s'\\n" "${__stderr//'/'\''}" >&"$__evaled"
                 # if a process forks and it holds onto the stdout handles, we may end up blocking waiting for it to close it
                 # instead, the sed q below will quit as soon as it gets a blank line without waiting
                 printf '%s\n' "$_FZF_COMPLETION_SEP$_fzf_sentinel1$_fzf_sentinel2"
@@ -147,13 +147,13 @@ _fzf_completion() {
               | "$_fzf_bash_completion_awk" -W interactive -F"$_FZF_COMPLETION_SEP" '/^$/{exit}; $1!="" && !x[$1]++ { print $0; system("") }' 2>/dev/null
         )
         coproc_pid="$!"
-        __value="$(_fzf_completion_selector "$__code" <&p)"
+        __value=""$(_fzf_completion_selector "$__code" <&p)
         __code="$?"
-        kill -- -"$coproc_pid" 2>/dev/null && wait "$coproc_pid"
+        kill -- -""$coproc_pid 2>/dev/null && wait ""$coproc_pid
 
         printf "__code='%s'; __value='%s'\\n" "${__code//'/'\''}" "${__value//'/'\''}"
-        printf '%s\n' ": $_fzf_sentinel1$_fzf_sentinel2"
-    ) | sed -un "/$_fzf_sentinel1$_fzf_sentinel2/q; p"
+        printf '%s\n' ": "$_fzf_sentinel1$_fzf_sentinel2
+    ) | sed -un "/"$_fzf_sentinel1$_fzf_sentinel2"/q; p"
     )" 2>/dev/null
 
     compstate[insert]=unambiguous
@@ -167,7 +167,7 @@ _fzf_completion() {
                 fi
             fi
             ;|
-        0|$_FZF_COMPLETION_KEYBINDINGS)
+        0|"$_FZF_COMPLETION_KEYBINDINGS")
             local opts= index= value
             while IFS="$_FZF_COMPLETION_SEP" read -r -A value; do
                 if (( !__code && ${#value[@]} >= 3 )); then
@@ -201,7 +201,7 @@ _fzf_completion() {
 
 _fzf_completion_post() {
     local stderr="$1" code="$2"
-    if [ -n "$stderr" ]; then
+    if [ "$stderr" != "" ]; then
         zle -M -- "$stderr"
     elif (( code == 1 )); then
         zle -R ' '
@@ -272,7 +272,7 @@ _fzf_completion_selector() {
 
 _fzf_completion_zstyle() {
     if [[ "$1" != -* ]]; then
-        { printf 'zstyle %q ' "$@"; printf \\n } >&"${__evaled}"
+        { printf 'zstyle %q ' "$@"; printf \\n } >&"$__evaled"
     fi
     builtin zstyle "$@"
 }
@@ -287,7 +287,7 @@ _fzf_completion_compadd() {
     local __is_param="${__flags[(r)-e]}"
     local __no_matching="${__flags[(r)-U]}"
 
-    if [ -n "${__optskv[(i)-A]}${__optskv[(i)-O]}${__optskv[(i)-D]}" ]; then
+    if [ "${__optskv[(i)-A]}${__optskv[(i)-O]}${__optskv[(i)-D]}" != "" ]; then
         # handle -O -A -D
         builtin compadd "${__flags[@]}" "${__opts[@]}" "${__ipre[@]}" "${__hpre[@]}" -- "$@"
         return "$?"
@@ -301,17 +301,17 @@ _fzf_completion_compadd() {
 
     builtin compadd -Q -A __hits -D __disp "${__flags[@]}" "${__opts[@]}" "${__ipre[@]}" "${__apre[@]}" "${__hpre[@]}" "${__hsuf[@]}" "${__asuf[@]}" "${__isuf[@]}" -- "$@"
     # have to run it for real as some completion functions check compstate[nmatches]
-    builtin compadd $__no_matching -a __hits
+    builtin compadd "$__no_matching" -a __hits
     local __code="$?"
     __flags="${(j..)__flags//[ak-]}"
-    if [ -z "${__optskv[(i)-U]}" ]; then
+    if [ "${__optskv[(i)-U]}" = "" ]; then
         # -U ignores $IPREFIX so add it to -i
         __ipre[2]="${IPREFIX}${__ipre[2]}"
         __ipre=( -i "${__ipre[2]}" )
         IPREFIX=
     fi
-    local compadd_args="$(printf '%q ' PREFIX="$PREFIX" IPREFIX="$IPREFIX" SUFFIX="$SUFFIX" ISUFFIX="$ISUFFIX" compadd ${__flags:+-$__flags} "${__opts[@]}" "${__ipre[@]}" "${__apre[@]}" "${__hpre[@]}" "${__hsuf[@]}" "${__asuf[@]}" "${__isuf[@]}" -U)"
-    printf "__compadd_args+=( '%s' )\n" "${compadd_args//'/'\\''}" >&"${__evaled}"
+    local compadd_args="$(printf '%q ' PREFIX="$PREFIX" IPREFIX="$IPREFIX" SUFFIX="$SUFFIX" ISUFFIX="$ISUFFIX" compadd "${__flags:+-$__flags}" "${__opts[@]}" "${__ipre[@]}" "${__apre[@]}" "${__hpre[@]}" "${__hsuf[@]}" "${__asuf[@]}" "${__isuf[@]}" -U)"
+    printf "__compadd_args+=( '%s' )\n" "${compadd_args//'/'\\''}" >&"$__evaled"
     (( __comp_index++ ))
 
     local file_prefix="${__optskv[-W]:-.}"
@@ -319,7 +319,7 @@ _fzf_completion_compadd() {
 
     local prefix="${IPREFIX}${__ipre[2]}${__apre[2]}${__hpre[2]}"
     local suffix="${__hsuf[2]}${__asuf[2]}${__isuf[2]}"
-    if [ -n "$__is_param" -a "$prefix" = '${' -a -z "$suffix" ]; then
+    if [ "$__is_param" != "" -a "$prefix" = '${' -a -z "$suffix" ]; then
         suffix+=}
     fi
 
@@ -332,12 +332,12 @@ _fzf_completion_compadd() {
         __suffix="$suffix"
 
         # part of display string containing match
-        if [ -n "$__noquote" ]; then
+        if [ "$__noquote" != "" ]; then
             __show_str="${(Q)__hit_str}"
         else
-            __show_str="${__hit_str}"
+            __show_str="$__hit_str"
         fi
-        __real_str="${__show_str}"
+        __real_str="$__show_str"
 
         if [[ -n "$__filenames" && -n "$__show_str" && -d "${file_prefix}/${__show_str}" ]]; then
             __show_str+=/
@@ -369,11 +369,11 @@ _fzf_completion_compadd() {
         if [[ "$__show_str" == "$PREFIX"* ]]; then
             __show_str="${__show_str:${#PREFIX}}${_FZF_COMPLETION_SPACE_SEP}${_FZF_COMPLETION_SECONDARY_COLOR}${PREFIX}"$'\x1b[0m'
         else
-            __show_str+="${_FZF_COMPLETION_SEP}"
+            __show_str+="$_FZF_COMPLETION_SEP"
         fi
 
         # fullvalue, value, index, display, show, prefix
-        printf %s\\n "${(q)prefix}${(q)__real_str}${(q)__suffix}${_FZF_COMPLETION_SEP}${(q)__hit_str}${_FZF_COMPLETION_SEP}${__comp_index}${_FZF_COMPLETION_SEP}${__disp_str}${_FZF_COMPLETION_SEP}${__show_str}${_FZF_COMPLETION_SPACE_SEP}" >&"${__stdout}"
+        printf %s\\n "${(q)prefix}${(q)__real_str}${(q)__suffix}${_FZF_COMPLETION_SEP}${(q)__hit_str}${_FZF_COMPLETION_SEP}${__comp_index}${_FZF_COMPLETION_SEP}${__disp_str}${_FZF_COMPLETION_SEP}${__show_str}${_FZF_COMPLETION_SPACE_SEP}" >&"$__stdout"
     done
     return "$__code"
 }

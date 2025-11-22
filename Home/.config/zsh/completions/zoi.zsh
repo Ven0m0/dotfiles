@@ -26,7 +26,7 @@ _zoi() {
 && ret=0
     case $state in
     (zoi)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-command-$line[1]:"
         case $line[1] in
@@ -96,7 +96,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (sync)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-sync-command-$line[1]:"
         case $line[1] in
@@ -143,7 +143,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-sync-help-command-$line[1]:"
         case $line[1] in
@@ -385,7 +385,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (repo)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-repo-command-$line[1]:"
         case $line[1] in
@@ -419,7 +419,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (list)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-repo-list-command-$line[1]:"
         case $line[1] in
@@ -439,7 +439,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-repo-list-help-command-$line[1]:"
         case $line[1] in
@@ -471,7 +471,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (git)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-repo-git-command-$line[1]:"
         case $line[1] in
@@ -500,7 +500,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-repo-git-help-command-$line[1]:"
         case $line[1] in
@@ -532,7 +532,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-repo-help-command-$line[1]:"
         case $line[1] in
@@ -552,7 +552,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (list)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-repo-help-list-command-$line[1]:"
         case $line[1] in
@@ -572,7 +572,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (git)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-repo-help-git-command-$line[1]:"
         case $line[1] in
@@ -631,7 +631,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (extension)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-extension-command-$line[1]:"
         case $line[1] in
@@ -661,7 +661,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-extension-help-command-$line[1]:"
         case $line[1] in
@@ -718,7 +718,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (package)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-package-command-$line[1]:"
         case $line[1] in
@@ -752,7 +752,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-package-help-command-$line[1]:"
         case $line[1] in
@@ -788,7 +788,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (pgp)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-pgp-command-$line[1]:"
         case $line[1] in
@@ -859,7 +859,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-pgp-help-command-$line[1]:"
         case $line[1] in
@@ -911,7 +911,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (helper)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-helper-command-$line[1]:"
         case $line[1] in
@@ -933,7 +933,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-helper-help-command-$line[1]:"
         case $line[1] in
@@ -961,7 +961,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (help)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-help-command-$line[1]:"
         case $line[1] in
@@ -997,7 +997,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (sync)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-help-sync-command-$line[1]:"
         case $line[1] in
@@ -1105,7 +1105,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (repo)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-help-repo-command-$line[1]:"
         case $line[1] in
@@ -1125,7 +1125,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (list)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-help-repo-list-command-$line[1]:"
         case $line[1] in
@@ -1145,7 +1145,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (git)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-help-repo-git-command-$line[1]:"
         case $line[1] in
@@ -1181,7 +1181,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (extension)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-help-extension-command-$line[1]:"
         case $line[1] in
@@ -1213,7 +1213,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (package)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-help-package-command-$line[1]:"
         case $line[1] in
@@ -1237,7 +1237,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (pgp)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-help-pgp-command-$line[1]:"
         case $line[1] in
@@ -1277,7 +1277,7 @@ _arguments "${_arguments_options[@]}" : \
 
     case $state in
     (helper)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:zoi-help-helper-command-$line[1]:"
         case $line[1] in

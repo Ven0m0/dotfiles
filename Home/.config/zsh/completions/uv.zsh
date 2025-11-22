@@ -62,7 +62,7 @@ never\:"Disables colored output"))' \
 && ret=0
     case $state in
     (uv)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:uv-command-$line[1]:"
         case $line[1] in
@@ -114,7 +114,7 @@ never\:"Disables colored output"))' \
 
     case $state in
     (auth)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:uv-auth-command-$line[1]:"
         case $line[1] in
@@ -1615,7 +1615,7 @@ never\:"Disables colored output"))' \
 
     case $state in
     (tool)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:uv-tool-command-$line[1]:"
         case $line[1] in
@@ -2488,7 +2488,7 @@ never\:"Disables colored output"))' \
 
     case $state in
     (python)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:uv-python-command-$line[1]:"
         case $line[1] in
@@ -2946,7 +2946,7 @@ never\:"Disables colored output"))' \
 
     case $state in
     (pip)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:uv-pip-command-$line[1]:"
         case $line[1] in
@@ -4343,7 +4343,7 @@ never\:"Disables colored output"))' \
 
     case $state in
     (build-backend)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:uv-build-backend-command-$line[1]:"
         case $line[1] in
@@ -4758,7 +4758,7 @@ never\:"Disables colored output"))' \
 
     case $state in
     (cache)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:uv-cache-command-$line[1]:"
         case $line[1] in
@@ -4950,7 +4950,7 @@ never\:"Disables colored output"))' \
 
     case $state in
     (self)
-        words=($line[1] "${words[@]}")
+        words=("$line"[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:uv-self-command-$line[1]:"
         case $line[1] in

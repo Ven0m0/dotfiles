@@ -9,10 +9,7 @@ prefetch_threshold = 5
 log_level = "warn"
 listen_addresses = ["0.0.0.0:53"]
 dns_packet_len_max = 4096
-upstream_servers = [
-  "1.1.1.2:53",
-  "1.0.0.2:53"
-]
+upstream_servers = ["1.1.1.2:53", "1.0.0.2:53"]
 load_balancing_strategy = "fastest"
 server_timeout = 3
 probe_interval = 60
@@ -51,8 +48,8 @@ block_private_ips = false
 block_loopback_ips = false
 min_client_port = 1024
 blocked_ip_ranges = [
-    # Example: Block a specific range
-    # "203.0.113.0/24"   # TEST-NET-3 (Documentation)
+  # Example: Block a specific range
+  # "203.0.113.0/24"   # TEST-NET-3 (Documentation)
 ]
 # Username to drop privileges to after binding to sockets
 # If not set, privileges will not be dropped

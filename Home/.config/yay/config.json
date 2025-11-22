@@ -1,13 +1,13 @@
 {
-    "sudoloop": true,
-    "cleanAfter": true,
-    "removemake": "true",
-    "devel": true,
-    "batchinstall": true,
-    "editor": "false",
-    "sortby": "votes",
-    "bottomup": true,
-    "combinedupgrade": true,
-    "git": "gix clone --depth 1 --no-tags'",
-    "doublelineresults": true
+  "sudoloop": true,
+  "cleanAfter": true,
+  "removemake": "true",
+  "devel": true,
+  "batchinstall": true,
+  "editor": "false",
+  "sortby": "votes",
+  "bottomup": true,
+  "combinedupgrade": true,
+  "git": "gix clone --depth 1 --no-tags'",
+  "doublelineresults": true
 }

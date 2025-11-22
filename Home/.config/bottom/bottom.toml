@@ -212,20 +212,20 @@ whole_word = false
 #    default=true
 
 [[row]]
-  ratio=30
-  [[row.child]]
-  type="cpu"
+ratio = 30
+[[row.child]]
+type = "cpu"
 [[row]]
-    ratio=40
-    [[row.child]]
-      ratio=3
-      [[row.child.child]]
-        type="temp"
-    [[row.child]]
-      ratio=4
-      type="mem"
+ratio = 40
+[[row.child]]
+ratio = 3
+[[row.child.child]]
+type = "temp"
+[[row.child]]
+ratio = 4
+type = "mem"
 [[row]]
-  ratio=30
-  [[row.child]]
-    type="proc"
-    default=true
+ratio = 30
+[[row.child]]
+type = "proc"
+default = true

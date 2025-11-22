@@ -62,6 +62,7 @@ When invoked, immediately create a structured markdown file documenting the brea
 ## 🔗 Related Resources
 
 - [Links to relevant docs, issues, or discussions]
+
 ```
 
 ## File Management
@@ -73,7 +74,7 @@ When invoked, immediately create a structured markdown file documenting the brea
    - **[Date]**: [Title] - [One-line summary] ([link to file])
    ```
 
-3. **Tag appropriately**: Use consistent tags for future searchability
+1. **Tag appropriately**: Use consistent tags for future searchability
 
 ## Interaction Flow
 

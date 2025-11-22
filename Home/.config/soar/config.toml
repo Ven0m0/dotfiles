@@ -10,12 +10,7 @@ ghcr_concurrency = 12
 search_limit = 50
 # Allows packages to be updated across different repositories, not yet implemented
 cross_repo_updates = false
-install_patterns = [
-    "!*.log",
-    "!SBUILD",
-    "!*.json",
-    "!*.version",
-]
+install_patterns = ["!*.log", "!SBUILD", "!*.json", "!*.version"]
 
 [profile.default]
 root_path = "~"

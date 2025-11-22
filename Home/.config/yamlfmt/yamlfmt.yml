@@ -27,6 +27,6 @@ formatter:
   retain_line_breaks: false
   retain_line_breaks_single: false
   scan_folded_as_literal: false
-  strip_directives: true
+  strip_directives: false
   trim_trailing_whitespace: true
   type: basic

@@ -8,11 +8,11 @@ allowed-tools: Write, Read, LS, Bash(mkdir:*), Bash(ls:*), WebSearch(*)
 
 Create a new Claude Code custom command with proper structure and best practices.
 
-## Usage:
+## Usage
 
 `/create-command [command-name] [description]`
 
-## Process:
+## Process
 
 ### 1. Command Analysis
 
@@ -41,7 +41,7 @@ Create a new Claude Code custom command with proper structure and best practices
 - Ensure proper tool permissions
 - Review against best practices
 
-## Template Structure:
+## Template Structure
 
 ```markdown
 ---
@@ -75,7 +75,7 @@ Detailed description of what this command does and when to use it.
 - Limitations or requirements
 ```
 
-## Best Practices:
+## Best Practices
 
 - Keep commands focused and single-purpose
 - Use descriptive names and clear documentation
@@ -85,7 +85,7 @@ Detailed description of what this command does and when to use it.
 - Follow existing command conventions
 - Test thoroughly before deployment
 
-## Your Task:
+## Your Task
 
 Create a new command named "$ARGUMENTS" following these guidelines:
 

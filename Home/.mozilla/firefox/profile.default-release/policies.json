@@ -29,9 +29,7 @@
       "Locked": true
     },
     "Extensions": {
-      "Install": [
-        "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"
-      ],
+      "Install": ["https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"],
       "Uninstall": [
         "amazondotcom@search.mozilla.org",
         "bing@search.mozilla.org",

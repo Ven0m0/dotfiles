@@ -15,9 +15,7 @@
     "files.trimTrailingWhitespace": false,
     "editor.formatOnSave": true
   },
-  "editor.rulers": [
-    100
-  ],
+  "editor.rulers": [100],
   "files.associations": {
     "*.chatmode.md": "markdown",
     "*.instructions.md": "markdown",

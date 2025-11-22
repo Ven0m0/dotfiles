@@ -1,4 +1,4 @@
-# `Dotfiles` 
+# `Dotfiles`
 
 <details>
 <summary><b>Features</b></summary>
@@ -15,17 +15,17 @@
 <details>
 <summary><b>Dotfile managers</b></summary>
   
-- https://github.com/Shemnei/punktf
-- https://github.com/woterr/dotpush
-- https://github.com/joel-porquet/dotlink
-- https://github.com/dotphiles/dotsync
-- https://github.com/ellipsis/ellipsis
-- https://github.com/SuperCuber/dotter
-- https://github.com/alichtman/shallow-backup
-- https://github.com/rossmacarthur/sheldon
-- https://github.com/bevry/dorothy
-- https://github.com/yadm-dev/yadm
-- https://codeberg.org/IamPyu/huismanager
+- <https://github.com/Shemnei/punktf>
+- <https://github.com/woterr/dotpush>
+- <https://github.com/joel-porquet/dotlink>
+- <https://github.com/dotphiles/dotsync>
+- <https://github.com/ellipsis/ellipsis>
+- <https://github.com/SuperCuber/dotter>
+- <https://github.com/alichtman/shallow-backup>
+- <https://github.com/rossmacarthur/sheldon>
+- <https://github.com/bevry/dorothy>
+- <https://github.com/yadm-dev/yadm>
+- <https://codeberg.org/IamPyu/huismanager>
 
 </details>
 <details>
@@ -34,21 +34,24 @@
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash
 ```
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash
 ```
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
 ```
+
 </details>
 
 <details>
 <summary><b>Useful Stuff</b></summary>
 
-- https://dotfiles.github.io/
-- https://terminal.sexy/
-- https://wiki.archlinux.org/title/Git
-- 
+- <https://dotfiles.github.io/>
+- <https://terminal.sexy/>
+- <https://wiki.archlinux.org/title/Git>
+-
 
 </details>
 
@@ -69,12 +72,16 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
   ```bash
   eval "$(curl https://get.x-cmd.com)"
   ```
+
   fish
+
   ```sh
   curl https://get.x-cmd.com | sh
   chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$HOME/.x-cmd.root/bin/x-cmd fish --setup
   ```
+
   </details>
+
 </details>
 
 <details>
@@ -105,4 +112,3 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 - [Searchxng](https://searx.dresden.network/) &nbsp; [Instances:](https://searx.space)
 
 - [Brave search](https://search.brave.com)
-

@@ -21,6 +21,7 @@ When invoked with a breakthrough description:
 ### 1. Gather Information
 
 Ask clarifying questions if needed:
+
 - "What specific problem did this solve?"
 - "What was the key insight that unlocked the solution?"
 - "What metrics or performance improved?"
@@ -74,6 +75,7 @@ Use this template structure:
 ## 🔗 Related Resources
 
 - [Links to relevant docs, issues, or discussions]
+
 ```
 
 ### 3. Update Index
@@ -98,6 +100,7 @@ Help abstract the specific solution into general principles that can be applied 
 ## Output Format
 
 When documenting a breakthrough:
+
 1. Create the breakthrough file with full documentation
 2. Update the index file
 3. Summarize the key insight and its potential applications

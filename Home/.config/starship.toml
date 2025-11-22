@@ -172,9 +172,9 @@ format = '[ $symbol ]($style)'
 [aws]
 disabled = true
 [cmake]
-disabled=true
+disabled = true
 [cobol]
-disabled=true
+disabled = true
 [dart]
 disabled = true
 [docker_context]
@@ -186,7 +186,7 @@ disabled = true
 [golang]
 disabled = true
 [haskell]
-disabled=true
+disabled = true
 [hg_branch]
 disabled = true
 [java]

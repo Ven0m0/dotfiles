@@ -105,643 +105,643 @@ _compresscli() {
         esac
     done
 
-    case "${cmd}" in
+    case "$cmd" in
         compresscli)
             opts="-v -o -h -V --verbose --dry-run --overwrite --output-dir --config --help --version video image batch presets info completions help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --config)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__batch)
             opts="-p -r -j -v -o -h --pattern --videos --images --recursive --video-preset --image-quality --jobs --verbose --dry-run --overwrite --output-dir --config --help <DIRECTORY>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --pattern)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -p)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --video-preset)
-                    COMPREPLY=($(compgen -W "fast medium slow ultrafast veryslow custom" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "fast medium slow ultrafast veryslow custom" -- "$cur")")
                     return 0
                     ;;
                 --image-quality)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --jobs)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -j)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --config)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__completions)
             opts="-v -o -h --verbose --dry-run --overwrite --output-dir --config --help bash elvish fish powershell zsh"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --config)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help)
             opts="video image batch presets info completions help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__batch)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__completions)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__image)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__info)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__presets)
             opts="list show create delete"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__presets__create)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__presets__delete)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__presets__list)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__presets__show)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__help__video)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__image)
             opts="-q -f -p -v -o -h --quality --format --resize --max-width --max-height --optimize --progressive --lossless --preset --verbose --dry-run --overwrite --output-dir --config --help <INPUT> [OUTPUT]"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --quality)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -q)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --format)
-                    COMPREPLY=($(compgen -W "jpeg png webp avif" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "jpeg png webp avif" -- "$cur")")
                     return 0
                     ;;
                 -f)
-                    COMPREPLY=($(compgen -W "jpeg png webp avif" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "jpeg png webp avif" -- "$cur")")
                     return 0
                     ;;
                 --resize)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --max-width)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --max-height)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --preset)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -p)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --config)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__info)
             opts="-v -o -h --verbose --dry-run --overwrite --output-dir --config --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --config)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets)
             opts="-v -o -h --verbose --dry-run --overwrite --output-dir --config --help list show create delete help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --config)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets__create)
             opts="-v -o -h --verbose --dry-run --overwrite --output-dir --help <NAME> <CONFIG>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets__delete)
             opts="-v -o -h --verbose --dry-run --overwrite --output-dir --config --help <NAME>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --config)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets__help)
             opts="list show create delete help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets__help__create)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets__help__delete)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets__help__help)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets__help__list)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets__help__show)
             opts=""
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 4 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets__list)
             opts="-v -o -h --verbose --dry-run --overwrite --output-dir --config --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --config)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__presets__show)
             opts="-v -o -h --verbose --dry-run --overwrite --output-dir --config --help <NAME>"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --config)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
         compresscli__video)
             opts="-p -v -o -h --preset --codec --crf --bitrate --resolution --fps --audio-codec --audio-bitrate --no-audio --start --end --two-pass --verbose --dry-run --overwrite --output-dir --config --help <INPUT> [OUTPUT]"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
                 return 0
             fi
-            case "${prev}" in
+            case "$prev" in
                 --preset)
-                    COMPREPLY=($(compgen -W "fast medium slow ultrafast veryslow custom" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "fast medium slow ultrafast veryslow custom" -- "$cur")")
                     return 0
                     ;;
                 -p)
-                    COMPREPLY=($(compgen -W "fast medium slow ultrafast veryslow custom" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "fast medium slow ultrafast veryslow custom" -- "$cur")")
                     return 0
                     ;;
                 --codec)
-                    COMPREPLY=($(compgen -W "h264 h265 vp9 av1" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "h264 h265 vp9 av1" -- "$cur")")
                     return 0
                     ;;
                 --crf)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --bitrate)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --resolution)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --fps)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --audio-codec)
-                    COMPREPLY=($(compgen -W "aac mp3 opus copy" -- "${cur}"))
+                    COMPREPLY=("$(compgen -W "aac mp3 opus copy" -- "$cur")")
                     return 0
                     ;;
                 --audio-bitrate)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --start)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --end)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --output-dir)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 -o)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 --config)
-                    COMPREPLY=($(compgen -f "${cur}"))
+                    COMPREPLY=("$(compgen -f "$cur")")
                     return 0
                     ;;
                 *)
                     COMPREPLY=()
                     ;;
             esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
             return 0
             ;;
     esac

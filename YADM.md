@@ -38,6 +38,7 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/dotfiles/main/setup.sh | bas
 ```
 
 The bootstrap process will:
+
 1. ✅ Deploy dotfiles from `Home/` to `~/`
 2. ✅ Install base dependencies (git, zsh, starship, etc.)
 3. ✅ Configure shell environment
@@ -375,10 +376,10 @@ sudo tuckr link -d "$PWD" -t / usr
 
 ## 📚 Further Reading
 
-- **yadm Documentation**: https://yadm.io/docs
-- **yadm Alternate Files**: https://yadm.io/docs/alternates
-- **yadm Encryption**: https://yadm.io/docs/encryption
-- **tuckr Documentation**: https://github.com/RaphGL/tuckr
+- **yadm Documentation**: <https://yadm.io/docs>
+- **yadm Alternate Files**: <https://yadm.io/docs/alternates>
+- **yadm Encryption**: <https://yadm.io/docs/encryption>
+- **tuckr Documentation**: <https://github.com/RaphGL/tuckr>
 
 ---
 
