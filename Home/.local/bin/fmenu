@@ -28,7 +28,7 @@ done | sort -u |
 fzf \
         --prompt='run: ' \
         --header="$(printf '%s\n' 'enter:run' "$FZF_DEFAULT_HEADER")" \
-        --multi \
+        -m \
         --query="$*" |
 
 # spawn detached program
