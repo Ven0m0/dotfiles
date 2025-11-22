@@ -6,9 +6,7 @@ export LC_ALL=C LANG=C
 # Author: Bert Van Vreckem <bert.vanvreckem@gmail.com>
 
 die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
-
-usage(){
-  cat <<'EOF'
+usage(){ cat <<'EOF'
 img2cd - Burn audio CD image to disk
 
 USAGE:
@@ -33,7 +31,6 @@ REQUIREMENTS:
   - sudo (for device access)
 EOF
 }
-
 main(){
   # Check for help flag
   if [[ ${#} -ne 1 ]]; then

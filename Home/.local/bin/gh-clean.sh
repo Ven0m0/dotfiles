@@ -14,14 +14,13 @@ VERBOSE=false
 DELETED_BRANCHES=0
 DELETED_REMOTE_BRANCHES=0
 
-die() { printf '%s\n' "$1" >&2; exit 1; }
-msg() { printf '\033[0;96m==> %s\033[0m\n' "$1"; }
-warn() { printf '\033[0;93mWARN: %s\033[0m\n' "$1"; }
-ok() { printf '\033[0;92m%s\033[0m\n' "$1"; }
-err() { printf '\033[0;31mERROR: %s\033[0m\n' "$1" >&2; }
-verbose() { [[ $VERBOSE == true ]] && printf '\033[0;90m%s\033[0m\n' "$1" || :; }
-
-usage() {
+die(){ printf '%s\n' "$1" >&2; exit 1; }
+msg(){ printf '\033[0;96m==> %s\033[0m\n' "$1"; }
+warn(){ printf '\033[0;93mWARN: %s\033[0m\n' "$1"; }
+ok(){ printf '\033[0;92m%s\033[0m\n' "$1"; }
+err(){ printf '\033[0;31mERROR: %s\033[0m\n' "$1" >&2; }
+verbose(){ [[ $VERBOSE == true ]] && printf '\033[0;90m%s\033[0m\n' "$1" || :; }
+usage(){
   cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
 

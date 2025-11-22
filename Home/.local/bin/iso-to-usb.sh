@@ -11,8 +11,7 @@ die(){ printf '\e[0;31mERROR: %s\e[0m\n' "$*" >&2; exit 1; }
 log(){ printf '\e[0;33m>>> %s\e[0m\n' "$*"; }
 info(){ printf '\e[0;36m### %s\e[0m\n' "$*"; }
 
-usage(){
-  cat <<'EOF'
+usage(){ cat <<'EOF'
 iso-to-usb - Copy ISO/IMG file to USB device with progress
 
 USAGE:
@@ -40,15 +39,12 @@ WARNING:
 EOF
 }
 
-check_dependencies(){
-  local -a deps=(dd pv stat)
+check_dependencies(){ local -a deps=(dd pv stat)
   for cmd in "${deps[@]}"; do
     command -v "$cmd" &>/dev/null || die "Required command '$cmd' not found"
-  done
-}
+  done; }
 
-check_args(){
-  case ${#} in
+check_args(){ case ${#} in
     1)
       if [[ $1 == -h || $1 == --help ]]; then
         usage
@@ -72,8 +68,7 @@ check_args(){
   [[ -b $2 ]] || die "Destination should be a block device (e.g., /dev/sdc): $2"
 }
 
-check_mounts(){
-  local device="$1"
+check_mounts(){ local device="$1"
   log "Checking if $device is currently mounted..."
 
   if grep -q "$device" /proc/mounts; then
@@ -81,8 +76,7 @@ check_mounts(){
   fi
 }
 
-confirm_copy(){
-  log "⚠️  WARNING: This will DESTROY all data on $1!"
+confirm_copy(){ log "⚠️  WARNING: This will DESTROY all data on $1!"
   log "Are you sure you want to continue? [y/N]"
   read -r confirm
   if [[ $confirm != y && $confirm != Y ]]; then
@@ -91,8 +85,7 @@ confirm_copy(){
   fi
 }
 
-copy_iso_to_usb(){
-  local iso="$1" destination="$2" iso_size
+copy_iso_to_usb(){ local iso="$1" destination="$2" iso_size
 
   iso_size=$(stat -c '%s' "$iso")
   log "Copying $iso (${iso_size} bytes) to $destination..."
@@ -106,8 +99,7 @@ copy_iso_to_usb(){
   log "✓ Copy completed successfully!"
 }
 
-main(){
-  check_dependencies
+main(){ check_dependencies
   check_args "$@"
 
   local iso="$1" destination="$2"

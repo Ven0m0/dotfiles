@@ -18,8 +18,7 @@ fail(){ printf '%b[FAIL]%b\n' "$RED" "$RESET"; }
 readonly LOG_FILE=$(mktemp)
 trap 'rm -f "$LOG_FILE"' EXIT
 
-usage(){
-  cat <<'EOF'
+usage(){ cat <<'EOF'
 git-rm-submodule - Completely remove Git submodules
 
 USAGE:
@@ -53,18 +52,10 @@ NOTE:
 EOF
 }
 
-check_args(){
-  if [[ ${#} -lt 1 ]]; then
-    die "Expected at least 1 argument, got ${#}"
-  fi
+check_args(){ [[ ${#} -ge 1 ]] || die "Expected at least 1 argument, got ${#}"
+  [[ -d ${PWD}/.git ]] || die "Not a Git repository. Run from repository root."; }
 
-  if [[ ! -d ${PWD}/.git ]]; then
-    die "Not a Git repository. Run from repository root."
-  fi
-}
-
-remove_git_submodule(){
-  local submodule="$1"
+remove_git_submodule(){ local submodule="$1"
 
   printf '  Deinitializing submodule                  '
   if git submodule deinit "$submodule" >> "$LOG_FILE" 2>&1; then
@@ -94,15 +85,13 @@ remove_git_submodule(){
   fi
 }
 
-remove_git_submodules(){
-  for module in "$@"; do
+remove_git_submodules(){ for module in "$@"; do
     printf '%b--- Removing module: %s ---%b\n' "$YELLOW" "$module" "$RESET"
     remove_git_submodule "$module"
   done
 }
 
-main(){
-  # Check for help
+main(){ # Check for help
   for arg in "$@"; do
     if [[ $arg == -h || $arg == --help ]]; then
       usage

@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # Compression
-compress() { tar -czf "${1%/}.tar.gz" "${1%/}"; }
+compress(){ tar -czf "${1%/}.tar.gz" "${1%/}"; }
 alias decompress="tar -xzf"
 
 # Write iso file to sd card
-iso2sd() {
-  if [ $# -ne 2 ]; then
+iso2sd(){ if [[ $# -ne 2 ]]; then
     echo "Usage: iso2sd <input_file> <output_device>"
     echo "Example: iso2sd ~/Downloads/ubuntu-25.04-desktop-amd64.iso /dev/sda"
     echo -e "\nAvailable SD cards:"
@@ -17,8 +16,7 @@ iso2sd() {
 }
 
 # Format an entire drive for a single partition using exFAT
-format-drive() {
-  if [ $# -ne 2 ]; then
+format-drive(){ if [[ $# -ne 2 ]]; then
     echo "Usage: format-drive <device> <name>"
     echo "Example: format-drive /dev/sda 'My Stuff'"
     echo -e "\nAvailable drives:"
@@ -45,39 +43,23 @@ format-drive() {
 }
 
 # Transcode a video to a good-balance 1080p that's great for sharing online
-transcode-video-1080p() {
-  ffmpeg -i "$1" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${1%.*}"-1080p.mp4
-}
+transcode-video-1080p(){ ffmpeg -i "$1" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${1%.*}"-1080p.mp4; }
 
 # Transcode a video to a good-balance 4K that's great for sharing online
-transcode-video-4K() {
-  ffmpeg -i "$1" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${1%.*}"-optimized.mp4
-}
+transcode-video-4K(){ ffmpeg -i "$1" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${1%.*}"-optimized.mp4; }
 
 # Transcode any image to JPG image that's great for shrinking wallpapers
-img2jpg() {
-  img="$1"
-  shift
-
-  magick "$img" "$@" -quality 95 -strip "${img%.*}"-optimized.jpg
-}
+img2jpg(){ local img="$1"; shift
+  magick "$img" "$@" -quality 95 -strip "${img%.*}"-optimized.jpg; }
 
 # Transcode any image to JPG image that's great for sharing online without being too big
-img2jpg-small() {
-  img="$1"
-  shift
-
-  magick "$img" "$@" -resize 1080x\> -quality 95 -strip "${img%.*}"-optimized.jpg
-}
+img2jpg-small(){ local img="$1"; shift
+  magick "$img" "$@" -resize 1080x\> -quality 95 -strip "${img%.*}"-optimized.jpg; }
 
 # Transcode any image to compressed-but-lossless PNG
-img2png() {
-  img="$1"
-  shift
-
+img2png(){ local img="$1"; shift
   magick "$img" "$@" -strip -define png:compression-filter=5 \
     -define png:compression-level=9 \
     -define png:compression-strategy=1 \
     -define png:exclude-chunk=all \
-    "${img%.*}-optimized.png"
-}
+    "${img%.*}-optimized.png"; }

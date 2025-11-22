@@ -12,8 +12,7 @@ output_opt=(-O)
 curl_args=(-fsSL)
 die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 
-usage(){
-  cat <<'EOF'
+usage(){ cat <<'EOF'
 gh-get-asset - Download GitHub release assets
 
 USAGE:
@@ -47,8 +46,7 @@ AUTHOR:
 EOF
 }
 
-gh_get_release(){
-  local repo="$1" substring="$2"
+gh_get_release(){ local repo="$1" substring="$2"
 
   curl -fsSL -o "$TMP" "https://api.github.com/repos/${repo}/releases"
 
@@ -60,8 +58,7 @@ gh_get_release(){
   jq -rM "${selector}.assets[]|select(.name| contains(\"${substring}\"))? | .browser_download_url" < "$TMP"
 }
 
-main(){
-  # Parse options
+main(){ # Parse options
   while getopts "r:so:h" opt; do
     case "$opt" in
       r) release="$OPTARG" ;;

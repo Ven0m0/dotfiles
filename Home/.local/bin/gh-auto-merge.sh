@@ -2,13 +2,11 @@
 set -euo pipefail; shopt -s nullglob
 IFS=$'\n\t'; export LC_ALL=C LANG=C
 
-usage(){
-  printf 'Usage: %s <PR_URL|REPO PR_NUM> [strategy]\n' "${0##*/}"
+usage(){ printf 'Usage: %s <PR_URL|REPO PR_NUM> [strategy]\n' "${0##*/}"
   printf 'Strategies: theirs (default), ours, auto\n'
   printf '  theirs: accept base branch changes\n'
   printf '  ours:   keep PR branch changes\n'
-  printf '  auto:   theirs for deps/lock files, ours for code\n'; exit 1
-}
+  printf '  auto:   theirs for deps/lock files, ours for code\n'; exit 1; }
 
 (( $# >= 1 )) || usage
 strategy=${2:-theirs}
