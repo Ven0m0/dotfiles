@@ -48,8 +48,7 @@ baked_registry = true
 ruby_build_opts = "--enable-shared"
 
 [tools]
-#java = "oracle-graalvm"
-java = "temurin"
+java = ["oracle-graalvm", "temurin"]
 "github:zeroBzeroT/ChunkCleaner" = "latest"
 # Cargo Tools
 cpz = "latest"
