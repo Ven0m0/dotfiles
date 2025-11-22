@@ -1,0 +1,14 @@
+--bind="tab:toggle-out,btab:toggle-all"
+--bind="ctrl-a:select-all,ctrl-d:deselect-all"
+--bind="ctrl-l:preview-down,ctrl-h:preview-up"
+--bind="ctrl-t:toggle-preview"
+--bind="ctrl-space:clear-query"
+--style=full --no-scrollbar --border=rounded
+--color border:235,list-border:235,input-border:235,header-border:235,preview-border:235
+--color=preview-border:12:bold,preview-label:12:bold --preview-window=right --preview-label-pos=bottom
+--color=fg:-1,list-fg:-1,selected-fg:11,preview-fg:-1
+--color=hl:3,selected-hl:3:bold
+--color=current-fg:11:bold,current-bg:,current-hl:9:bold
+--color=marker:9:bold,pointer:9
+--color=prompt:12:bold,info:12:bold
+--color=header:5:italic
