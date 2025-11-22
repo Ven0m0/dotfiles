@@ -1,15 +1,19 @@
 default_profile = "default"
-cache_path = "~/cache"
-db_path = "~/db"
+cache_path = "~/.cache/soar"
+db_path = "~/.local/share/soar/db"
 bin_path = "~/.local/bin"
 repositories_path = "~/repos"
 portable_dirs = "~/portable-dirs"
 parallel = true
-parallel_limit = 8
+parallel_limit = 16
 ghcr_concurrency = 12
 search_limit = 25
 cross_repo_updates = false
-install_patterns = ["!*.log", "!SBUILD", "!*.json", "!*.version"]
+install_patterns = [
+  "!*.log", "!*.txt", "!*.md",
+  "!SBUILD", "!*.json", "!*.version",
+  "!LICENSE*", "!README*", "!CHANGELOG*"
+]
 
 [profile.default]
 root_path = "~"
