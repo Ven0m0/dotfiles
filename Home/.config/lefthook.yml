@@ -6,70 +6,71 @@ no_tty: false
 pre-commit:
   parallel: true
   commands:
-    shellcheck:
+    shell-format:
       glob: "*.{sh,bash,zsh}"
-      run: shellcheck -x -a -s bash -e -f diff {staged_files} || :
+      run: |
+        shellcheck -x -a -s bash -f diff {staged_files} | patch -Np1 || :
+        shellharden --replace {staged_files} || :
+        shfmt -w -ln bash -i 2 -s -bn {staged_files} || :
       stage_fixed: true
-    shfmt:
-      glob: "*.{sh,bash,zsh}"
-      run: shfmt -ln bash -i 2 -s -bn -w {staged_files} || :
-      stage_fixed: true
-    shellharden:
-      glob: "*.{sh,bash,zsh}"
-      run: shellharden --replace {staged_files} || :
-      stage_fixed: true
-    yamllint:
+    yaml-format:
       glob: "*.{yml,yaml}"
-      run: yamllint -f parsable {staged_files} || :
-    yamlfmt:
-      glob: "*.{yml,yaml}"
-      run: yamlfmt {staged_files} || :
+      run: |
+        yamlfmt {staged_files} || :
+        yamllint -f parsable {staged_files} || :
+      stage_fixed: true
     json-validate:
       glob: "*.{json,jsonc,json5}"
       run: |
         for f in {staged_files}; do
-          jaq -e . "$f" &>/dev/null || jq -e . "$f" || { printf "Invalid JSON: %s\n" "$f" >&2; exit 1; }
+          jaq -e . "$f" &>/dev/null || jq -e . "$f" || { printf "Invalid: %s\n" "$f" >&2; exit 1; }
         done
-    markdownlint:
+    markdown-format:
       glob: "*.md"
       run: markdownlint --fix {staged_files} || :
       stage_fixed: true
-    biome:
+    js-format:
       glob: "*.{js,jsx,ts,tsx,json,json5,css}"
-      run: biome format --indent-style=space --line-width=88 --use-editorconfig=true --vcs-enabled=true --json-formatter-enabled=true --json-formatter-indent-style=space --json-formatter-line-width=88 --fix {staged_files} || :
+      run: |
+        biome check --write --unsafe --skip-parse-errors {staged_files} || :
       stage_fixed: true
-    prettier:
-      glob: "*.{js,jsx,ts,tsx,mjs,cjs,json,css,scss,md,yml,yaml}"
-      run: prettier --write --ignore-unknown {staged_files}
+    prettier-format:
+      glob: "*.{mjs,cjs,scss,html}"
+      run: prettier -w --ignore-unknown {staged_files} || :
       stage_fixed: true
-    eslint:
+    eslint-fix:
       glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
-      run: eslint --fix {staged_files} || :
+      run: eslint --fix --quiet {staged_files} || :
       stage_fixed: true
-    trim-whitespace:
+    trim-trailing:
       glob: "*"
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
-      run: sd '[ \t]+$' '' {staged_files}
+      run: |
+        for f in {staged_files}; do
+          [[ -f "$f" ]] && sed -i 's/[ \t]*$//' "$f"
+        done
       stage_fixed: true
     strip-unicode:
       glob: "*"
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
-      run: sd '[\u200B\u200C\u200D\u202F\u00AD\uFEFF]' '' {staged_files}
+      run: |
+        for f in {staged_files}; do
+          [[ -f "$f" ]] && sed -i 's/\xE2\x80\x8B\|\xE2\x80\x8C\|\xE2\x80\x8D\|\xE2\x80\xAF\|\xC2\xAD\|\xEF\xBB\xBF//g' "$f"
+        done
       stage_fixed: true
     normalize-eol:
       glob: "*.{sh,bash,zsh,yml,yaml,json,md,txt,toml,ini,conf,cfg,js,ts,tsx,jsx,css,html}"
       run: |
         for f in {staged_files}; do
-          [[ -f "$f" ]] && { dos2unix -q "$f" 2>/dev/null || sd '\r$' '' "$f"; }
+          [[ -f "$f" ]] && { dos2unix -q "$f" 2>/dev/null || sed -i 's/\r$//' "$f"; }
         done
       stage_fixed: true
-    fix-shebang:
+    ensure-shebang:
       glob: "*.{sh,bash}"
       run: |
         for f in {staged_files}; do
-          [[ -f "$f" ]] || continue
-          head -n1 "$f" | grep -qE '^#!' || {
-            { printf '#!/usr/bin/env bash\n'; cat "$f"; } > "$f.tmp" && mv "$f.tmp" "$f"
+          [[ -f "$f" ]] && head -n1 "$f" | grep -qE '^#!' || {
+            printf '#!/usr/bin/env bash\n%s' "$(<"$f")" > "$f.tmp" && mv "$f.tmp" "$f"
           }
         done
       stage_fixed: true
@@ -78,91 +79,74 @@ pre-commit:
         max_kb=5120
         for f in {staged_files}; do
           [[ -f "$f" ]] || continue
-          size=$(stat -f%z "$f" 2>/dev/null || stat -c%s "$f" 2>/dev/null || echo 0)
-          (( size > max_kb * 1024 )) && printf "Large file: %s (%d KB)\n" "$f" "$((size/1024))" >&2
+          size=$(stat -c%s "$f" 2>/dev/null || stat -f%z "$f" 2>/dev/null || echo 0)
+          (( size > max_kb * 1024 )) && printf "Large: %s (%dKB)\n" "$f" "$((size/1024))" >&2
         done || :
     detect-secrets:
       run: |
         rg -i --no-heading --line-number \
-          -e '(password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|bearer[_-]?token|client[_-]?secret|private[_-]?key)\s*[:=]\s*["\047][^"\047]{20,}["\047]' \
+          -e '(password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|bearer|client[_-]?secret|private[_-]?key)\s*[:=]\s*["\047][^"\047]{20,}' \
           -e 'AKIA[0-9A-Z]{16}' \
           -e 'ghp_[0-9a-zA-Z]{36}' \
           -e 'glpat-[0-9a-zA-Z_-]{20,}' \
-          -e 'xox[baprs]-[0-9]{10,13}-[0-9]{10,13}-[0-9a-zA-Z]{24,}' \
-          {staged_files} && { printf "Potential secrets detected\n" >&2; exit 1; } || :
+          -e 'xox[baprs]-\d{10,13}-\d{10,13}-[0-9a-zA-Z]{24,}' \
+          {staged_files} && { printf "Secrets detected\n" >&2; exit 1; } || :
     check-debug:
       glob: "*.{sh,bash,js,jsx,ts,tsx,py,rb,go}"
       run: |
-        rg -i --no-heading --line-number \
-          -e '\bconsole\.(log|debug|info|warn|error)\(' \
-          -e '\bdebugger\b' \
-          -e '\bbinding\.pry\b' \
-          -e '\bset -x\b' \
-          -e '\bprint\s*\(.*DEBUG' \
-          {staged_files} && { printf "Debug statements found\n" >&2; exit 1; } || :
+        rg -i --no-heading -e '\bconsole\.(log|debug|info|warn|error)\(' \
+          -e '\bdebugger\b' -e '\bbinding\.pry\b' -e '\bset -x\b' -e '\bprint\s*\(.*DEBUG' \
+          {staged_files} && { printf "Debug code found\n" >&2; exit 1; } || :
     no-merge-conflicts:
       run: |
-        rg -F --no-heading --line-number '^(<{7}|={7}|>{7})' {staged_files} && {
-          printf "Unresolved merge conflicts detected\n" >&2
-          exit 1
+        rg -F --no-heading '^(<{7}|={7}|>{7})' {staged_files} && {
+          printf "Merge conflicts\n" >&2; exit 1
         } || :
     check-todos:
       run: |
-        count=$(rg -i --count-matches '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk -F: '{sum+=$2} END{print sum+0}')
-        [[ $count -gt 0 ]] && printf "Found %d TODO/FIXME markers\n" "$count" >&2 || :
+        count=$(rg -i --count-matches '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk -F: '{s+=$2}END{print s+0}')
+        (( count > 0 )) && printf "%d TODO/FIXME markers\n" "$count" >&2 || :
 
 commit-msg:
   commands:
-    commitlint:
+    conventional-commits:
       run: |
-        msg=$(cat {1})
+        msg=$(<{1})
         grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}' <<< "$msg" || {
-          printf "Commit message must follow Conventional Commits:\n  type(scope?): subject\n\nTypes: feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert\n" >&2
+          printf "Use Conventional Commits:\n  type(scope?): subject\n\nTypes: feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert\n" >&2
           exit 1
         }
     msg-length:
       run: |
-        msg=$(cat {1})
-        subject=$(head -n1 <<< "$msg")
-        [[ ${#subject} -gt 72 ]] && {
-          printf "Subject line exceeds 72 chars (%d)\n" "${#subject}" >&2
-          exit 1
-        }
+        subject=$(head -n1 {1})
+        (( ${#subject} > 72 )) && { printf "Subject >72 chars (%d)\n" "${#subject}" >&2; exit 1; } || :
     no-wip:
-      run: |
-        msg=$(cat {1})
-        grep -qiE '\b(wip|todo|fixme|hack)\b' <<< "$msg" && {
-          printf "Remove WIP/TODO/FIXME/HACK from commit message\n" >&2
-          exit 1
-        } || :
+      run: grep -qiE '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP markers\n" >&2; exit 1; } || :
 
 pre-push:
   parallel: true
   commands:
-    test:
+    run-tests:
       run: |
         [[ -f Makefile ]] && { make test &>/dev/null; exit 0; }
         [[ -f package.json ]] && { npm test &>/dev/null; exit 0; }
-        [[ -f Cargo.toml ]] && { cargo test --quiet &>/dev/null; exit 0; }
-        [[ -f go.mod ]] && { go test -v ./... &>/dev/null; exit 0; }
+        [[ -f Cargo.toml ]] && { cargo test -q &>/dev/null; exit 0; }
+        [[ -f go.mod ]] && { go test ./... &>/dev/null; exit 0; }
         exit 0
-    branch-name:
-      run: |
-        branch=$(git rev-parse --abbrev-ref HEAD)
-        grep -qE '^(main|master|develop|staging|release/.+|hotfix/.+|feature/.+|bugfix/.+|fix/.+)$' <<< "$branch" || {
-          printf "Branch name should follow git-flow: feature/*, bugfix/*, fix/*, release/*, hotfix/*\n" >&2
-        }
-    protect-branches:
+    branch-check:
       run: |
         branch=$(git rev-parse --abbrev-ref HEAD)
         grep -qE '^(main|master|production)$' <<< "$branch" && {
-          printf "Direct push to %s prohibited\n" "$branch" >&2
-          exit 1
-        } || :
+          printf "Direct push to %s blocked\n" "$branch" >&2; exit 1
+        }
+        grep -qE '^(main|master|develop|staging|release/.+|hotfix/.+|feature/.+|(bug)?fix/.+)$' <<< "$branch" || {
+          printf "Use git-flow: feature/*, fix/*, release/*, hotfix/*\n" >&2
+        }
+        exit 0
     audit-deps:
       run: |
-        [[ -f package.json ]] && { npm audit --production --audit-level=high || :; }
-        [[ -f Cargo.toml ]] && { cargo audit || :; }
+        [[ -f package.json ]] && npm audit --production --audit-level=high || :
+        [[ -f Cargo.toml ]] && cargo audit || :
         exit 0
 
 post-merge:
@@ -171,32 +155,30 @@ post-merge:
       run: |
         [[ -f package-lock.json ]] && npm ci --prefer-offline &>/dev/null
         [[ -f yarn.lock ]] && yarn install --frozen-lockfile --prefer-offline &>/dev/null
-        [[ -f pnpm-lock.yaml ]] && pnpm install --frozen-lockfile --prefer-offline &>/dev/null
+        [[ -f pnpm-lock.yaml ]] && pnpm i --frozen-lockfile --prefer-offline &>/dev/null
         [[ -f Cargo.lock ]] && cargo fetch &>/dev/null
         [[ -f go.sum ]] && go mod download &>/dev/null
-        [[ -f Gemfile.lock ]] && bundle install --quiet &>/dev/null
+        [[ -f Gemfile.lock ]] && bundle install -q &>/dev/null
         exit 0
-    clean-build:
-      run: |
-        rm -rf node_modules/.cache target/debug .pytest_cache __pycache__ .next .turbo dist build || :
+    clean-artifacts:
+      run: rm -rf node_modules/.cache target/debug .pytest_cache __pycache__ .next .turbo dist build || :
 
 post-checkout:
   commands:
-    submodules:
+    update-submodules:
       run: git submodule update --init --recursive &>/dev/null || :
     notify-deps:
       run: |
-        [[ -f package.json ]] && git diff HEAD@{1} HEAD --name-only | grep -qE '^(package\.json|package-lock\.json|yarn\.lock|pnpm-lock\.yaml)$' && {
-          printf "Dependencies changed. Run: npm ci\n" >&2
+        git diff HEAD@{1} HEAD --name-only | grep -qE '^(package\.json|.*lock\.(json|yaml))$' && {
+          printf "Dependencies changed. Run install.\n" >&2
         } || :
 
 prepare-commit-msg:
   commands:
-    branch-ticket:
+    insert-ticket:
       run: |
         branch=$(git rev-parse --abbrev-ref HEAD)
         [[ "$branch" =~ ^(feature|bugfix|hotfix|fix)/([A-Z]+-[0-9]+) ]] && {
           ticket="${BASH_REMATCH[2]}"
-          msg=$(cat {1})
-          grep -q "$ticket" <<< "$msg" || sed -i "1s/^/$ticket: /" {1}
+          grep -q "$ticket" {1} || sed -i "1s/^/$ticket: /" {1}
         } || :
