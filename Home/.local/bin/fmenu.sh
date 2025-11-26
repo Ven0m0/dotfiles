@@ -14,10 +14,8 @@ set -euo pipefail
 
 # create help message from comment block at the head of file
 if [[ "${1:-}" == "-h" ]]; then
-    sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"
-    exit 0
+    sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"; exit 0
 fi
-
 # print all files within path
 {
     IFS=:
@@ -25,11 +23,8 @@ fi
         [[ -d "$dir" ]] && command ls "$dir" 2>/dev/null || :
     done
 } | sort -u |
-fzf \
-    --prompt='run: ' \
-    --header="$(printf '%s\n' 'enter:run' "${FZF_DEFAULT_HEADER:-}")" \
-    -m \
-    --query="$*" |
+fzf -m --prompt='run: ' \
+    --header="$(printf '%s\n' 'enter:run' "${FZF_DEFAULT_HEADER:-}")" --query="$*" |
 while IFS= read -r cmd; do
     nohup "$cmd" &>/dev/null &
 done
