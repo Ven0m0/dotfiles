@@ -1,51 +1,51 @@
 #!/usr/bin/env bash
-# cht - cheat.sh wrapper with fuzzy search
-set -euo pipefail; shopt -s lastpipe nullglob
-LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar
+IFS=$'\n\t'; export LC_ALL=C LANG=C
 
 has(){ command -v "$1" &>/dev/null; }
 die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
-# Find available tools
-for c in curl wget; do has "$c" && HTTP="$c" && break; done
-[[ -z ${HTTP:-} ]] && die "curl or wget is required"
+
+# Tool detection
+for c in curl wget2 wget; do has "$c" && HTTP="$c" && break; done
+[[ -z ${HTTP:-} ]] && die "curl/wget required"
 for f in sk fzf; do has "$f" && FZF="$f" && break; done
-[[ -z ${FZF:-} ]] && die "sk or fzf is required"
-for p in bat batcat less; do has "$p" && PAGER="$p" && break; done
-PAGER="${PAGER:-less}"
+[[ -z ${FZF:-} ]] && die "sk/fzf required"
 get(){
   case "${HTTP}" in
-    curl) curl -fsL -A curl "$@" ;;
-    wget) wget -qO- "$@" ;;
-    *) die "Invalid HTTP client: ${HTTP}" ;;
+    curl) curl -fsL "$@" ;;
+    wget*) "${HTTP}" -qO- "$@" ;;
   esac
 }
 readonly CHT_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/cht_list"
 readonly CHT_URL="cheat.sh"
-
-_cache(){
+cache(){
   [[ -f "${CHT_CACHE}" && -n "$(find "${CHT_CACHE}" -mtime -7 2>/dev/null)" ]] && return 0
   mkdir -p "${CHT_CACHE%/*}"
-  get "${CHT_URL}/:list" > "${CHT_CACHE}" 2>/dev/null || die "Failed to fetch sheet list"
+  get "${CHT_URL}/:list" > "${CHT_CACHE}" || die "Failed to fetch list"
 }
-_browse(){
-  local sel q url; _cache
-  sel=$("${FZF}" --ansi --cycle --reverse --no-mouse --prompt='cht> ' \
+browse(){
+  local sel q qlist url; cache
+  sel=$("${FZF}" --ansi --reverse --cycle --prompt='cht> ' \
     --preview="curl -fsL ${CHT_URL}/{} 2>/dev/null | head -50" \
-    --preview-window=right:60%:wrap < "${CHT_CACHE}") || return 1
-  read -rp "Query [${sel}] (empty=summary): " q
+    --preview-window=right:70% < "${CHT_CACHE}") || return 1
+  qlist=$(get "${CHT_URL}/${sel}/:list" 2>/dev/null || :)
+  if [[ -n "${qlist}" ]]; then
+    q=$(printf '%s' "${qlist}" | "${FZF}" --print-query --ansi --reverse \
+      --prompt="cht/${sel}> " \
+      --preview="curl -fsL ${CHT_URL}/${sel}/{1} 2>/dev/null || curl -fsL ${CHT_URL}/${sel}/{q} 2>/dev/null" \
+      --preview-window=right:70% | tail -1)
+  else
+    read -rp "Query [${sel}]: " q
+  fi
   q="${q// /+}"; url="${CHT_URL}/${sel}${q:+/${q}}"
   printf '\n→ %s\n\n' "${url}"
-  get "${url}" | "${PAGER}"
+  get "${url}"
 }
-_query(){
+query(){
   local lang="${1:-}" topic="${2:-}" flags="" url
   [[ -z "${lang}" ]] && die "Language/topic required"
   [[ ${search:-0} -eq 1 ]] && lang="~${lang}" && topic="~${topic}"
-  if [[ -n "${topic}" ]]; then
-    url="${CHT_URL}/${lang}/${topic}"
-  else
-    url="${CHT_URL}/${lang}"
-  fi
+  url="${CHT_URL}/${lang}${topic:+/${topic}}"
   [[ -n ${insens:-} ]] && flags+="i"
   [[ -n ${bound:-} ]] && flags+="b"
   [[ -n ${recur:-} ]] && flags+="r"
@@ -55,11 +55,11 @@ _query(){
 
 usage(){
   cat <<'EOF'
-cht - cheat.sh wrapper with fuzzy search
+cht - cheat.sh TUI with fuzzy search
 
 USAGE:
   cht [-sibr] [lang] [topic]
-  cht -l          Browse/list all sheets
+  cht             Interactive browser
   cht -u          Update cache
 
 FLAGS:
@@ -67,35 +67,27 @@ FLAGS:
   -i  Case insensitive
   -b  Word boundary
   -r  Recursive
-  -l  Browse/list mode
   -u  Update cache
-  -h  Show help
+  -h  Help
 
 EXAMPLES:
-  cht python          # Browse Python cheatsheets
-  cht -s bash array   # Search for bash array info
-  cht rust Vec        # Show Rust Vec documentation
+  cht               # Interactive mode
+  cht python        # Browse Python sheets
+  cht -s bash array # Search bash arrays
+  cht rust Vec      # Show Rust Vec docs
 EOF
 }
 
 search=0 insens="" bound="" recur=""
-while getopts "sibrluha" o; do
+while getopts "sibruha" o; do
   case "${o}" in
     s) search=1;;
     i) insens=1; search=1;;
     b) bound=1; search=1;;
     r) recur=1; search=1;;
-    l) _browse; exit 0;;
-    u) rm -f "${CHT_CACHE}"; _cache; printf '✓ Cache updated\n'; exit 0;;
+    u) rm -f "${CHT_CACHE}"; cache; printf '✓ Cache updated\n'; exit 0;;
     h|*) usage; exit 0;;
   esac
 done
 shift $((OPTIND - 1))
-
-if [[ $# -eq 0 ]]; then
-  _browse
-elif [[ $# -eq 1 ]]; then
-  _query "$1"
-else
-  _query "$1" "$2"
-fi
+[[ $# -eq 0 ]] && browse || query "$@"
