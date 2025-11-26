@@ -5,7 +5,7 @@
 export MOZ_DISABLE_ASAN_REPORTER=1;
 # Disable Mozilla's Crash Reporter
 ## https://firefox-source-docs.mozilla.org/toolkit/crashreporter/crashreporter/index.html#user-specified-environment-variables
-export MOZ_CRASHREPORTER="";
+export MOZ_CRASHREPORTER=0 MOZ_TELEMETRY_REPORTING=0 MOZ_SERVICES_HEALTHREPORT=0 MOZ_DATA_REPORTING=0;
 export MOZ_CRASHREPORTER_DISABLE=1;
 export MOZ_CRASHREPORTER_NO_REPORT=1;
 export MOZ_CRASHREPORTER_URL="data;";
@@ -17,5 +17,6 @@ export SSLKEYLOGFILE="";
 ## Credit to Rasmus: https://askubuntu.com/users/13884/rasmus
 ## https://askubuntu.com/questions/1456684/how-to-initialize-firefox-on-wayland-always-by-default
 if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-    export MOZ_ENABLE_WAYLAND=1
+    export MOZ_ENABLE_WAYLAND=1 MOZ_ENABLE_XINPUT2=1 MOZ_DBUS_REMOTE=1 MOZ_DISABLE_RDD_SANDBOX=1
 fi
+
