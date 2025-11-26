@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar
-IFS=$'\n\t' LC_ALL=C LANG=C
+set -uo pipefail; shopt -s nullglob globstar
+IFS=$'\n\t'; export LC_ALL=C LANG=C LANGUAGE=C
 
 # Git repository cleanup script with GitHub integration
 # Cleans merged branches, stale PRs, and performs maintenance
