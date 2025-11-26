@@ -26,6 +26,10 @@
 	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
 	df = diff
 	dc = diff --cached
+  addall = add --all
+  rbmain = pull --rebase origin main
+  pushf = push --force-with-lease
+  commitm = commit -m
 	amend = commit --amend --no-edit
 	undo = reset --soft HEAD~1
  	discard = checkout --
@@ -34,7 +38,7 @@
 [color]
 	ui = auto
 [push]
-	default = simple
+	default = current
 	autoSetupRemote = true
 	recurseSubmodules = on-demand
 	followTags = true
