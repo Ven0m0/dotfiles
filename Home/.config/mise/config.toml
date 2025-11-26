@@ -10,12 +10,7 @@ jobs = 12
 lockfile = true
 activate_aggressive = true
 raw = false
-asdf = true
-vfox = true
-legacy_version_file = false
 gix = true
-always_keep_download = false
-always_keep_install = false
 go_skip_checksum = true
 system_config_file = "~/.config/mise/config.toml"
 cache_prune_age = "7d"
@@ -104,13 +99,13 @@ rmz = "latest"
 _.python.venv = { path = ".venv" }
 UV_LINK_MODE = "hardlink"
 UV_COMPILE_BYTECODE = "1"
-UV_CONCURRENT_DOWNLOADS = "16"
-UV_CONCURRENT_INSTALLS = "16"
+UV_CONCURRENT_DOWNLOADS = "12"
+UV_CONCURRENT_INSTALLS = "8"
 DO_NOT_TRACK = "1"
 MISE_NODE_NINJA = "true"
 MISE_NODE_CONCURRENCY = "16"
 NODE_OPTIONS = "--max-old-space-size=8192"
-CURL_OPTS = "-fLSs --http2 --compressed --tlsv1.2 --proto '=https'"
+CURL_OPTS = "-fLSs --http2 --compressed --tlsv1.2"
 CARGO_NET_GIT_FETCH_WITH_CLI = "true"
 CARGO_HTTP_MULTIPLEXING = "true"
 RUSTC_WRAPPER = "sccache"
@@ -127,13 +122,13 @@ GIT_PROTOCOL = "version 2"
 [tasks.clean]
 description = "Clean cargo and cache directories"
 depends = ['cleancache']
-run = "cargo cache -efg; cargo clean"
+run = "cargo cache -efg || :; cargo clean || :"
 
 [tasks.cleancache]
 description = "Clean system cache"
-run = "rm -rf ~/.cache/*"
+run = "rm -rf ~/.cache/* || :"
 hide = true
 
 [tasks.update]
 description = "Update all mise tools"
-run = "mise up -y && mise prune -y"
+run = "mise up -y || :; mise prune -y || :"
