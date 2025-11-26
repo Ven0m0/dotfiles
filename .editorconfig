@@ -249,6 +249,10 @@ indent_size = 2
 indent_style = space
 indent_size = 2
 
+[*.{kt,kts}]
+ktlint_code_style = intellij_idea
+ktlint_standard_no-wildcard-imports = disabled
+
 # =============================================================================
 # Special Cases
 # =============================================================================
