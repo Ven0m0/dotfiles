@@ -79,9 +79,7 @@ target="${1:?No file/dir specified}"
 [[ ${#extensions[@]} -eq 0 ]] && extensions=(sh bash)
 [[ ${#variants[@]} -eq 0 ]] && variants=(bash zsh)
 #──────────── Deps ────────────
-for cmd in shfmt shellharden shellcheck awk; do
-  has "$cmd" || die "Missing: $cmd"
-done
+for cmd in shfmt shellharden shellcheck awk; do has "$cmd" || die "Missing: $cmd"; done
 readonly HAS_SD=$(has sd && echo 1 || echo 0)
 readonly HAS_PREPROCESS=$(has preprocess && echo 1 || echo 0)
 (( compile && !HAS_PREPROCESS )) && die "Compile mode needs 'preprocess' (pip install preprocess)"
@@ -110,21 +108,18 @@ NR==1 && /^#!/ { print; next }
 AWK
 #──────────── Preprocessor Prep ────────────
 prep_preprocess(){
-  local in="$1" out="$2"
-  : > "$out"
+  local in="$1" out="$2"; : > "$out"
   while IFS= read -r line; do
     [[ ! $line =~ ^[[:space:]]*#[[:space:]]*if[[:space:]]+ ]] && printf '%s\n' "$line" >> "$out"
   done < "$in"
 }
 #──────────── Enhanced Minifier ────────────
 minify_enhanced(){
-  local in="$1" out="$2"
-  : > "$out"
+  local in="$1" out="$2"; : > "$out"
   while IFS= read -r line; do
     # Keep preprocessor directives (# # define, # # ifdef, etc.)
     if [[ $line =~ ^#[[:space:]]*#[[:space:]]*(define|undef|ifdef|ifndef|if|elif|else|endif|error|include) ]]; then
-      printf '%s\n' "$line" >> "$out"
-      continue
+      printf '%s\n' "$line" >> "$out"; continue
     fi
     # Skip shebang (already handled)
     [[ $line =~ ^#! ]] && continue
@@ -140,9 +135,7 @@ minify_enhanced(){
 }
 #──────────── Concatenate Files ────────────
 concat_files(){
-  local base="$1" out="$2"
-  local -n exts=$3 wlist=$4
-  local rx="$5"
+  local base="$1" out="$2" rx="$5"; local -n exts=$3 wlist=$4
   : > "$out"
   for dirpath in "$base"/*/; do
     dirpath="${dirpath%/}"
@@ -214,8 +207,7 @@ optimize(){
   shellharden --replace "$tmp" &>/dev/null || :
   shellcheck -a -x -s bash -f diff "$tmp" 2>/dev/null | patch -Np1 "$tmp" &>/dev/null || :
   cat "$tmp" > "$out_target"
-  chmod "$perm" "$out_target"
-  log "✓ $out_target"
+  chmod "$perm" "$out_target"; log "✓ $out_target"
 }
 #──────────── Compiler (Multi-Variant Mode) ────────────
 compile_variants(){
@@ -235,9 +227,7 @@ compile_variants(){
     local var_lo="${var,,}"
     log "Compiling variant: $VAR"
     local tmp_prep tmp_proc tmp_mini
-    tmp_prep=$(mktemp)
-    tmp_proc=$(mktemp)
-    tmp_mini=$(mktemp)
+    tmp_prep=$(mktemp); tmp_proc=$(mktemp); tmp_mini=$(mktemp)
     trap "rm -f '$tmp_prep' '$tmp_proc' '$tmp_mini'" RETURN
     # Prepare for preprocessor
     prep_preprocess "$tmp_concat" "$tmp_prep"
@@ -253,13 +243,9 @@ compile_variants(){
     # Final output
     local final="${out_base}.${var_lo}"
     mv "$tmp_mini" "$final"
-    chmod "$perm" "$final"
-    log "✓ $final"
+    chmod "$perm" "$final"; log "✓ $final"
     # Debug output
-    (( debug )) && {
-      cp "$tmp_concat" "${final}.debug"
-      log "Debug: ${final}.debug"
-    }
+    (( debug )) && { cp "$tmp_concat" "${final}.debug"; log "Debug: ${final}.debug"; }
   done
 }
 #──────────── Main ────────────
@@ -269,8 +255,7 @@ elif (( concat )); then
   [[ -z $output ]] && die "Concat mode requires -o/--output"
   log "Concatenating files from $target"
   concat_files "$target" "$output" extensions whitelist "$regex"
-  chmod "$perm" "$output"
-  log "✓ $output"
+  chmod "$perm" "$output"; log "✓ $output"
 else
   for f in "${files[@]}"; do optimize "$f"; done
   [[ -z $output ]] && log "Done: ${#files[@]} file(s)"
