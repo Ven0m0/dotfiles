@@ -29,10 +29,6 @@
     "autoAccept": true
   },
   "mcpServers": {
-    "fetch": {
-      "command": "uvx",
-      "args": ["mcp-server-fetch"]
-    },
     "read-website-fast": {
       "command": "bunx",
       "args": ["@just-every/mcp-read-website-fast"]
@@ -43,7 +39,7 @@
     },
     "filesystem": {
       "command": "bunx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/ven0m0"]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"]
     },
     "fast-filesystem": {
       "command": "bunx",
@@ -65,10 +61,6 @@
       "command": "bunx",
       "args": ["-y", "mcp-tasks"]
     },
-    "playwright": {
-      "command": "bunx",
-      "args": ["@playwright/mcp@latest"]
-    },
     "Github": {
       "url": "https://api.githubcopilot.com/mcp/",
       "type": "http"
@@ -76,13 +68,6 @@
     "promptboost": {
       "url": "https://promptboost.dev/mcp",
       "type": "http"
-    },
-    "context7": {
-      "url": "https://mcp.context7.com/mcp",
-      "type": "http",
-      "headers": {
-        "CONTEXT7_API_KEY": "YOUR_ACTUAL_API_KEY_HERE"
-      }
     },
     "shell-readonly": {
       "command": "uvx",
