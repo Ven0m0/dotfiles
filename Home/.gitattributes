@@ -19,7 +19,6 @@
 *.cmd text eol=crlf
 *.ps1 text eol=crlf
 
-
 # =============================================================================
 # Programming Languages
 # =============================================================================
@@ -60,14 +59,17 @@
 *.jpeg binary diff=exif
 *.webp binary diff=exif
 *.avif binary diff=exif
+*.ico binary diff=exif
+*.bmp binary diff=exif
 *.svg text
 
 # Archives
-*.7z       binary
-*.gz       binary
-*.tar      binary
-*.tgz      binary
-*.zip      binary
+*.7z binary
+*.gz binary
+*.tar binary
+*.tgz binary
+*.zip binary
+*.zstd binary
 
 # Fonts
 *.ttf binary
@@ -86,3 +88,16 @@ Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab
 .gitattributes export-ignore
 .gitkeep export-ignore
 .editorconfig text
+
+# Visual Studio
+*.dsp text eol=crlf
+*.dsw text eol=crlf
+*.manifest text eol=crlf
+
+# Windows
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.hhp text eol=crlf
+*.inf text eol=crlf
+*.nsi text eol=crlf
+*.wxs text eol=crlf
