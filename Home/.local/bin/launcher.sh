@@ -16,12 +16,14 @@ run_menu(){
   # Pass array elements as newlines to menu
   # mapfile reads result back into 'choice' strictly
   choice=$(printf "%s\n" "${opts[@]}" | _menu "System:")
+  confirm(){ [[ "$(printf '%s\n' Yes No | fzf --prompt 'confirm: ')" == "Yes" ]]; }
   # Fast string matching
-  case "${choice,,}" in # ,, = lowercase
-    lock) loginctl lock-session ;;
-    logout) loginctl terminate-user "$USER" ;;
-    reboot) systemctl reboot ;;
-    poweroff) systemctl poweroff ;;
+  case "${choice,,}" in
+    lock) confirm && loginctl lock-session ;;
+    logout) confirm && loginctl terminate-user "$USER" ;;
+    suspend) confirm && systemctl suspend ;;
+    reboot) confirm && systemctl reboot ;;
+    poweroff) confirm && systemctl poweroff ;;
     *) : ;; # Ignore cancel/empty
   esac
 }
