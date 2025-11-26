@@ -135,7 +135,7 @@
 [protocol]
   version = 2
 [protocol "file"]
-  allow = always
+	allow = always
 [maintenance]
   strategy = incremental
 [maintenance "prefetch"]
