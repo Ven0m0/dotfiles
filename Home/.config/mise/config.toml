@@ -57,16 +57,10 @@ ruby_build_opts = "--enable-shared"
 
 # Tools Configuration
 [tools]
-# Java
 java = ["oracle-graalvm", "temurin"]
-
-# GitHub tools
 "github:zeroBzeroT/ChunkCleaner" = "latest"
-
-# Core utilities
 cpz = "latest"
 rmz = "latest"
-
 # Cargo utilities
 "cargo:cargo-alias-exec" = "latest"
 "cargo:cargo-syu" = "latest"
@@ -75,7 +69,6 @@ rmz = "latest"
 "cargo:cargo-minify" = "latest"
 "cargo:cargo-diet" = "latest"
 "cargo:cargo-mommy" = "latest"
-
 # Image optimization tools
 "cargo:image-find" = "latest"
 "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
