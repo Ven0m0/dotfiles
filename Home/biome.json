@@ -8,7 +8,6 @@
       "dist",
       "build",
       ".next",
-      ".turbo",
       ".cache",
       "coverage",
       ".venv",
@@ -31,18 +30,17 @@
   },
   "formatter": {
     "enabled": true,
+    "useEditorconfig": true,
     "formatWithErrors": false,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineEnding": "lf",
     "lineWidth": 120,
     "attributePosition": "auto",
+    "bracketSpacing": true
     "ignore": ["**/package-lock.json", "**/bun.lockb", "**/*.min.css"]
   },
-  "organizeImports": {
-    "enabled": true,
-    "ignore": ["**/node_modules/**", "**/dist/**", "**/build/**"]
-  },
+  "organizeImports": { "enabled": true },
   "linter": {
     "enabled": true,
     "ignore": ["**/node_modules/**", "**/dist/**", "**/build/**", "**/*.min.js"],
@@ -76,6 +74,7 @@
         "noNegationElse": "off",
         "noNonNullAssertion": "warn",
         "noParameterAssign": "warn",
+        "noUselessElse": "off",
         "useConsistentArrayType": "error",
         "useFilenamingConvention": "off",
         "useNodejsImportProtocol": "error",
