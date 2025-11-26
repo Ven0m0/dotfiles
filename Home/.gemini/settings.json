@@ -1,0 +1,103 @@
+{
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "general": {
+    "previewFeatures": true,
+    "sessionRetention": {
+      "enabled": true
+    }
+  },
+  "output": {
+    "format": "text"
+  },
+  "ui": {
+    "hideTips": true,
+    "hideBanner": true,
+    "footer": {
+      "hideSandboxStatus": true
+    },
+    "showMemoryUsage": true,
+    "hideFooter": true
+  },
+  "context": {
+    "loadMemoryFromIncludeDirectories": true
+  },
+  "tools": {
+    "autoAccept": true
+  },
+  "mcpServers": {
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
+    },
+    "read-website-fast": {
+      "command": "bunx",
+      "args": ["@just-every/mcp-read-website-fast"]
+    },
+    "sequential-thinking": {
+      "command": "bunx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "filesystem": {
+      "command": "bunx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/ven0m0"]
+    },
+    "fast-filesystem": {
+      "command": "bunx",
+      "args": ["-y", "fast-filesystem-mcp"]
+    },
+    "memory": {
+      "command": "bunx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "mcp-server-commands": {
+      "command": "bunx",
+      "args": ["-y", "mcp-server-commands"]
+    },
+    "think-tool": {
+      "command": "bunx",
+      "args": ["-y", "think-tool-mcp"]
+    },
+    "mcp-tasks": {
+      "command": "bunx",
+      "args": ["-y", "mcp-tasks"]
+    },
+    "playwright": {
+      "command": "bunx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "Github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "type": "http"
+    },
+    "promptboost": {
+      "url": "https://promptboost.dev/mcp",
+      "type": "http"
+    },
+    "context7": {
+      "url": "https://mcp.context7.com/mcp",
+      "type": "http",
+      "headers": {
+        "CONTEXT7_API_KEY": "YOUR_ACTUAL_API_KEY_HERE"
+      }
+    },
+    "shell-readonly": {
+      "command": "uvx",
+      "args": ["mcp-shell-server"],
+      "env": {
+        "ALLOW_COMMANDS": "ls,cat,pwd,grep,wc,awk,sed,find,df,free,top,ps,systemctl,journalctl,ip,ss,netstat,lsof,uname,which,whereis,file,stat,fd,rg,cd,command,git"
+      }
+    },
+    "json-processor": {
+      "command": "bunx",
+      "args": ["-y", "@gongrzhe/server-json-mcp@latest"]
+    },
+    "git": {
+      "command": "bunx",
+      "args": ["@cyanheads/git-mcp-server@latest"]
+    }
+  }
+}
