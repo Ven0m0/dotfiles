@@ -1,20 +1,13 @@
 {
-  "inputs": [
-    {
-      "id": "context7_api_key",
-      "type": "password",
-      "description": "Context7 API Key"
-    }
-  ],
   "servers": {
-    "fetch": {
-      "command": "uvx",
-      "args": ["mcp-server-fetch"]
-    },
     "read-website-fast": {
       "command": "bunx",
       "args": ["@just-every/mcp-read-website-fast"],
       "type": "stdio"
+    },
+    "fast-filesystem": {
+      "command": "bunx",
+      "args": ["-y", "fast-filesystem-mcp"]
     },
     "sequential-thinking": {
       "command": "bunx",
@@ -23,10 +16,6 @@
     "filesystem": {
       "command": "bunx",
       "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"]
-    },
-    "fast-filesystem": {
-      "command": "bunx",
-      "args": ["-y", "fast-filesystem-mcp"]
     },
     "memory": {
       "command": "bunx",
@@ -44,11 +33,6 @@
       "command": "bunx",
       "args": ["-y", "mcp-tasks"]
     },
-    "playwright": {
-      "command": "bunx",
-      "args": ["@playwright/mcp@latest"],
-      "type": "stdio"
-    },
     "Github": {
       "url": "https://api.githubcopilot.com/mcp/",
       "type": "http"
@@ -56,13 +40,6 @@
     "promptboost": {
       "url": "https://promptboost.dev/mcp",
       "type": "http"
-    },
-    "context7": {
-      "url": "https://mcp.context7.com/mcp",
-      "type": "http",
-      "headers": {
-        "CONTEXT7_API_KEY": "${input:context7_api_key}"
-      }
     },
     "shell-readonly": {
       "command": "uvx",
