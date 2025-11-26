@@ -1,0 +1,12 @@
+[app]
+web_search = false
+hide_icons = true
+activation_mode = { use_f_keys = false, disabled = false }
+
+[list]
+max_entries = 10
+always_show = true
+
+[search]
+placeholder = "Search..."
+
