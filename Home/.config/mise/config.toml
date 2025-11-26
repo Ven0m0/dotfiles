@@ -19,15 +19,11 @@ legacy_version_file = false
 gix = true
 always_keep_download = false
 always_keep_install = false
-cache_prune_age = "7d"
-# Language-specific
 go_skip_checksum = true
 cargo_binstall = true
 pipx_uvx = true
 python_venv_auto_create = true
-# System
 system_config_file = "~/.config/mise/config.toml"
-config_dir = "~/.config/mise"
 
 [settings.python]
 compile = true
