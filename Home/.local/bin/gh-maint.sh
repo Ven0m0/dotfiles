@@ -3,9 +3,9 @@ set -euo pipefail; shopt -s nullglob globstar
 IFS=$'\n\t'; export LC_ALL=C LANG=C LANGUAGE=C
 # Git maintenance: cleanup + update with submodule support
 DRY_RUN=false
-AUTO_YES=true
+AUTO_YES="${AUTO_YES:-true}"
 VERBOSE=false
-MODE=clean
+MODE="${MODE:-both}"
 DELETED_BRANCHES=0
 DELETED_REMOTE_BRANCHES=0
 die(){ printf '%s\n' "$1" >&2; exit 1; }
