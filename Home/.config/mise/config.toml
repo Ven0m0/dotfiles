@@ -9,7 +9,7 @@ quiet = false
 auto_install = true
 task_run_auto_install = true
 not_found_auto_install = true
-jobs = 16
+jobs = 12
 lockfile = true
 activate_aggressive = true
 raw = false
@@ -138,6 +138,7 @@ CMAKE_GENERATOR = "Ninja"
 MAKEFLAGS = "-j16"
 GITOXIDE_CORE_MULTIPACKINDEX = "true"
 GIT_PROTOCOL = "version 2"
+GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
 
 # Task definitions
 [tasks.clean]
