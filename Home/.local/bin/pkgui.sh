@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # pkgui - Unified package manager TUI (merged: pacui + yayfzf + fuzzy-pkg-finder)
 set -euo pipefail; shopt -s lastpipe nullglob globstar extglob
-export LC_ALL=C LANG=C SHELL="$(command -v bash)" HOME="/home/${SUDO_USER:-$USER}"
+LC_ALL=C; LANG=C; SHELL="$(command -v bash)"; export HOME="/home/${SUDO_USER:-$USER}"
 # Colors
 readonly R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' C=$'\e[36m' M=$'\e[35m'
 readonly BD=$'\e[1m' D=$'\e[0m' UL=$'\e[4m' IT=$'\e[3m'
@@ -16,8 +16,8 @@ die(){ printf '%b[ERR]%b %s\n' "$R" "$D" "$*" >&2; exit 1; }
 msg(){ printf '%b%s%b\n' "$G" "$*" "$D"; }
 warn(){ printf '%b[WARN]%b %s\n' "$Y" "$D" "$*"; }
 # Detect pkg mgr & fuzzy finder
-for p in ${PARUZ:-paru yay pacman}; do has "$p" && PAC="$p" && break; done
-[[ -z ${PAC:-} ]] && die "No pkg mgr (pacman/paru/yay)"
+for p in ${PARUZ:-paru pacman}; do has "$p" && PAC="$p" && break; done
+[[ -z ${PAC:-} ]] && die "No pkg mgr (pacman/paru)"
 for f in ${FINDER:-sk fzf}; do has "$f" && FND="$f" && break; done
 [[ -z ${FND:-} ]] && die "No fuzzy finder (sk/fzf)"
 # FZF theme
@@ -35,7 +35,6 @@ PACKAGE OPS
   R   Remove packages           A   Remove orphans
   O   Remove optional deps      U   Check updates
   u   System update (full)      F   Update flatpak
-  N   Update snap
 
 SYSTEM MAINT
   M   Maintenance scan          C   Clean cache
@@ -163,16 +162,14 @@ _rm(){
 }
 _upd_check(){
   msg "Checking updates..."
-  local pac aur flat snap
+  local pac aur flat
   pac=$(checkupdates 2>/dev/null | wc -l)
   aur=0; [[ $PAC != pacman ]] && aur=$("$PAC" -Qua 2>/dev/null | wc -l)
   flat=0; has flatpak && flat=$(flatpak remote-ls --updates 2>/dev/null | wc -l)
-  snap=0; has snap && snap=$(snap refresh --list 2>/dev/null | tail -n +2 | wc -l)
   printf '\n%bUpdate Summary:%b\n' "$BD" "$D"
   printf '  Pacman:  %b%d%b\n' "$C" "$pac" "$D"
   (( aur > 0 )) && printf '  AUR:     %b%d%b\n' "$C" "$aur" "$D"
   (( flat > 0 )) && printf '  Flatpak: %b%d%b\n' "$C" "$flat" "$D"
-  (( snap > 0 )) && printf '  Snap:    %b%d%b\n' "$C" "$snap" "$D"
   printf '\n'
 }
 _upd_full(){
@@ -183,20 +180,12 @@ _upd_full(){
     flatpak update -y --noninteractive &>/dev/null
     sudo flatpak update -y --noninteractive &>/dev/null
   fi
-  if has snap; then
-    msg "Updating snap..."
-    sudo snap refresh &>/dev/null
-  fi
   msg "Update complete!"
 }
 _upd_flat(){ has flatpak || { warn "Flatpak not installed"; return 1; }
   msg "Updating flatpak..."
   flatpak update -y --noninteractive
   sudo flatpak update -y --noninteractive
-}
-_upd_snap(){ has snap || { warn "Snap not installed"; return 1; }
-  msg "Updating snap..."
-  sudo snap refresh
 }
 _vulns(){ has arch-audit || { warn "Install: sudo pacman -S arch-audit"; return 1; }
   msg "Checking vulnerabilities (CVE)..."
@@ -288,7 +277,6 @@ _gen_lists(){
   expac -H M '%m\t%n' | sort -h > "$d/by-size.txt"
   expac --timefmt='%Y-%m-%d %T' '%l\t%n' | sort > "$d/by-install.txt"
   has flatpak && flatpak list > "$d/flatpak.txt"
-  has snap && snap list > "$d/snap.txt"
   msg "Generated: $d"
   ls -lh "$d"/*.txt 2>/dev/null | awk '{print $9, $5}'
 }
@@ -321,7 +309,6 @@ ${BD}Finder:${D}   $FND
 
 EOF
   has flatpak && printf '%bFlatpak:%b %d\n' "$BD" "$D" "$(flatpak list 2>/dev/null | wc -l)"
-  has snap && printf '%bSnap:%b    %d\n' "$BD" "$D" "$(snap list 2>/dev/null | wc -l)"
   printf '\n'
 }
 _notify(){ has notify-send || { warn "Install libnotify"; return 1; }
@@ -339,7 +326,7 @@ _edit_cfg(){
   local c="$CFG/config"
   [[ -f $c ]] || cat > "$c" <<'EOF'
 # pkgui config
-PARUZ="paru yay pacman"
+PARUZ="paru pacman"
 FINDER="sk fzf"
 FZF_THEME="hl:italic:#FFFF00,hl+:bold:underline:#FF0000,fg:#98A0C5,fg+:bold:#FFFFFF,bg:#13172A,bg+:#0F1222"
 EOF
@@ -391,7 +378,6 @@ case $1 in
   U) _upd_check;;
   u) _upd_full;;
   F) _upd_flat;;
-  N) _upd_snap;;
   M) _maint;;
   C) _clean;;
   V) _vulns;;
