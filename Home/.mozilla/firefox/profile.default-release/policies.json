@@ -12,18 +12,25 @@
     "DisablePocket": true,
     "DisableTelemetry": true,
     "DisableAppUpdate": true,
+    "DisableProfileRefresh": true,
     "NoDefaultBookmarks": true,
     "DontCheckDefaultBrowser": true,
     "DisableSetDesktopBackground": true,
     "NetworkPrediction": false,
     "EnableTrackingProtection": {
       "Value": true,
+      "BaselineExceptions": true,
       "Fingerprinting": true,
       "Cryptomining": true,
       "EmailTracking": true
     },
     "DNSOverHTTPS": {
       "Enabled": true
+    },
+    "LocalNetworkAccess": {
+      "BlockTrackers": true,
+      "Enabled": true
+      "EnablePrompting": true
     },
     "FirefoxHome": {
       "SponsoredPocket": false,
@@ -33,6 +40,12 @@
       "TopSites": false,
       "Search": false,
       "Locked": true
+    },
+    "GenerativeAI": {
+      "Chatbot": false,
+      "Enabled": false,
+      "LinkPreviews": false,
+      "TabGroups": false
     },
     "Extensions": {
       "Install": ["https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"],
