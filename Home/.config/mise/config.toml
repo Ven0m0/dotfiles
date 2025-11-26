@@ -24,7 +24,6 @@ cache_prune_age = "7d"
 go_skip_checksum = true
 cargo_binstall = true
 pipx_uvx = true
-python.uv_venv_auto = true
 python_venv_auto_create = true
 # System
 system_config_file = "~/.config/mise/config.toml"
