@@ -21,7 +21,7 @@ if has cargo || has rustup; then
 fi
 
 # --- Go
-has go && export GOOS=linux GOARCH=amd64 GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -gcflags=all=-c=4 -buildvcs=false"
+has go && export GOOS=linux GOARCH=amd64 GOFLAGS="-ldflags=-s -w -trimpath -modcacherw -gcflags=all=-c=4 -buildvcs=false" CGO_ENABLED=1
 
 # --- Python
 export PYTHONOPTIMIZE=2 PYTHONIOENCODING='UTF-8' PYTHON_JIT=1
