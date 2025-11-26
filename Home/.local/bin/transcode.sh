@@ -1,65 +1,127 @@
 #!/usr/bin/env bash
-# Compression
-compress(){ tar -czf "${1%/}.tar.gz" "${1%/}"; }
-alias decompress="tar -xzf"
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C LANG=C IFS=$'\n\t'
 
-# Write iso file to sd card
-iso2sd(){ if [[ $# -ne 2 ]]; then
-    echo "Usage: iso2sd <input_file> <output_device>"
-    echo "Example: iso2sd ~/Downloads/ubuntu-25.04-desktop-amd64.iso /dev/sda"
-    echo -e "\nAvailable SD cards:"
-    lsblk -d -o NAME | grep -E '^sd[a-z]' | awk '{print "/dev/"$1}'
-  else
-    sudo dd bs=4M status=progress oflag=sync if="$1" of="$2"
-    sudo eject "$2"
-  fi
+# Media toolkit: CD burning, USB creation, and transcoding utilities
+
+die(){ printf '\e[0;31mERROR: %s\e[0m\n' "$*" >&2; exit 1; }
+log(){ printf '\e[0;33m>>> %s\e[0m\n' "$*"; }
+info(){ printf '\e[0;36m### %s\e[0m\n' "$*"; }
+usage(){ cat <<'EOF'
+media - Media toolkit for CD burning, USB creation, and transcoding
+
+USAGE:
+  media COMMAND [ARGS...]
+
+COMMANDS:
+  cd          Burn audio CD image to disk
+  usb         Copy ISO/IMG to USB device with progress
+  compress    Compress directory to tar.gz
+  decompress  Extract tar.gz archive
+  iso2sd      Write ISO to SD card
+  format      Format drive as exFAT
+  vid1080     Transcode video to 1080p
+  vid4k       Transcode video to 4K
+  jpg         Convert image to optimized JPG
+  jpgsmall    Convert image to smaller JPG (1080px max)
+  png         Convert image to compressed PNG
+
+OPTIONS:
+  -h, --help  Show this help message
+
+EXAMPLES:
+  media cd audio.toc
+  media usb ubuntu.iso /dev/sdc
+  media jpg wallpaper.png
+  media vid1080 video.mp4
+EOF
 }
 
-# Format an entire drive for a single partition using exFAT
-format-drive(){ if [[ $# -ne 2 ]]; then
-    echo "Usage: format-drive <device> <name>"
-    echo "Example: format-drive /dev/sda 'My Stuff'"
-    echo -e "\nAvailable drives:"
-    lsblk -d -o NAME -n | awk '{print "/dev/"$1}'
-  else
-    echo "WARNING: This will completely erase all data on $1 and label it '$2'."
-    read -rp "Are you sure you want to continue? (y/N): " confirm
+cmd_cd(){ local toc="$1"
+  command -v cdrdao &>/dev/null || die "cdrdao not found. Install it first."
+  [[ -f $toc ]] || die "TOC file not found: $toc"
+  printf 'Burning CD from: %s\n' "$toc"
+  sudo cdrdao write --eject --driver generic-mmc-raw "$toc"
+  printf '✓ CD burned successfully\n'; }
 
-    if [[ "$confirm" =~ ^[Yy]$ ]]; then
-      sudo wipefs -a "$1"
-      sudo dd if=/dev/zero of="$1" bs=1M count=100 status=progress
-      sudo parted -s "$1" mklabel gpt
-      sudo parted -s "$1" mkpart primary 1MiB 100%
+cmd_usb(){ local iso="$1" dst="$2" size
+  for cmd in dd pv stat; do
+    command -v "$cmd" &>/dev/null || die "Required: $cmd"
+  done
+  [[ -f $iso ]] || die "File not found: $iso"
+  local ext="${iso##*.}"; ext="${ext,,}"
+  [[ $ext == iso || $ext == img ]] || die "Expected .iso or .img: $iso"
+  [[ -b $dst ]] || die "Not a block device: $dst"
+  grep -q "$dst" /proc/mounts && die "Device mounted. Unmount first: $dst"
+  log "⚠️  WARNING: This will DESTROY all data on $dst!"
+  read -rp "Continue? [y/N] " confirm
+  [[ $confirm == [yY] ]] || { info "Cancelled"; exit 0; }
+  size=$(stat -c '%s' "$iso")
+  log "Copying $iso (${size} bytes) to $dst..."
+  dd if="$iso" bs=4M status=none | pv --size "$size" -pterb | sudo dd of="$dst" bs=4M status=none conv=fsync
+  sync
+  log "✓ Copy completed!"; }
 
-      partition="$([[ $1 == *"nvme"* ]] && echo "${1}p1" || echo "${1}1")"
-      sudo partprobe "$1" || :
-      sudo udevadm settle || :
+cmd_compress(){ tar -czf "${1%/}.tar.gz" "${1%/}"; }
+cmd_decompress(){ tar -xzf "$1"; }
 
-      sudo mkfs.exfat -n "$2" "$partition"
+cmd_iso2sd(){ local iso="$1" dst="$2"
+  [[ -f $iso ]] || die "File not found: $iso"
+  [[ -b $dst ]] || die "Not a block device: $dst"
+  sudo dd bs=4M status=progress oflag=sync if="$iso" of="$dst"
+  sudo eject "$dst" || :; }
 
-      echo "Drive $1 formatted as exFAT and labeled '$2'."
-    fi
-  fi
-}
+cmd_format(){ local dev="$1" name="$2"
+  [[ -b $dev ]] || die "Not a block device: $dev"
+  log "⚠️  WARNING: Erasing all data on $dev, label '$name'"
+  read -rp "Continue? [y/N] " confirm
+  [[ $confirm == [yY] ]] || { info "Cancelled"; exit 0; }
+  sudo wipefs -a "$dev"
+  sudo dd if=/dev/zero of="$dev" bs=1M count=100 status=progress
+  sudo parted -s "$dev" mklabel gpt mkpart primary 1MiB 100%
+  local part="$([[ $dev == *nvme* ]] && echo "${dev}p1" || echo "${dev}1")"
+  sudo partprobe "$dev" || :
+  sudo udevadm settle || :
+  sudo mkfs.exfat -n "$name" "$part"
+  info "Drive $dev formatted as exFAT, labeled '$name'"; }
 
-# Transcode a video to a good-balance 1080p that's great for sharing online
-transcode-video-1080p(){ ffmpeg -i "$1" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${1%.*}"-1080p.mp4; }
+cmd_vid1080(){ local vid="$1"
+  command -v ffmpeg &>/dev/null || die "ffmpeg not found"
+  ffmpeg -i "$vid" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${vid%.*}"-1080p.mp4; }
 
-# Transcode a video to a good-balance 4K that's great for sharing online
-transcode-video-4K(){ ffmpeg -i "$1" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${1%.*}"-optimized.mp4; }
+cmd_vid4k(){ local vid="$1"
+  command -v ffmpeg &>/dev/null || die "ffmpeg not found"
+  ffmpeg -i "$vid" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${vid%.*}"-optimized.mp4; }
 
-# Transcode any image to JPG image that's great for shrinking wallpapers
-img2jpg(){ local img="$1"; shift
+cmd_jpg(){ local img="$1"; shift
+  command -v magick &>/dev/null || die "imagemagick not found"
   magick "$img" "$@" -quality 95 -strip "${img%.*}"-optimized.jpg; }
 
-# Transcode any image to JPG image that's great for sharing online without being too big
-img2jpg-small(){ local img="$1"; shift
+cmd_jpgsmall(){ local img="$1"; shift
+  command -v magick &>/dev/null || die "imagemagick not found"
   magick "$img" "$@" -resize 1080x\> -quality 95 -strip "${img%.*}"-optimized.jpg; }
 
-# Transcode any image to compressed-but-lossless PNG
-img2png(){ local img="$1"; shift
+cmd_png(){ local img="$1"; shift
+  command -v magick &>/dev/null || die "imagemagick not found"
   magick "$img" "$@" -strip -define png:compression-filter=5 \
-    -define png:compression-level=9 \
-    -define png:compression-strategy=1 \
-    -define png:exclude-chunk=all \
-    "${img%.*}-optimized.png"; }
+    -define png:compression-level=9 -define png:compression-strategy=1 \
+    -define png:exclude-chunk=all "${img%.*}"-optimized.png; }
+
+main(){ [[ ${#} -eq 0 || $1 == -h || $1 == --help ]] && { usage; exit 0; }
+  local cmd="$1"; shift
+  case $cmd in
+    cd) [[ ${#} -eq 1 ]] || die "Usage: media cd TOCFILE"; cmd_cd "$@" ;;
+    usb) [[ ${#} -eq 2 ]] || die "Usage: media usb ISO DEVICE"; cmd_usb "$@" ;;
+    compress) [[ ${#} -eq 1 ]] || die "Usage: media compress DIR"; cmd_compress "$@" ;;
+    decompress) [[ ${#} -eq 1 ]] || die "Usage: media decompress FILE"; cmd_decompress "$@" ;;
+    iso2sd) [[ ${#} -eq 2 ]] || die "Usage: media iso2sd ISO DEVICE"; cmd_iso2sd "$@" ;;
+    format) [[ ${#} -eq 2 ]] || die "Usage: media format DEVICE NAME"; cmd_format "$@" ;;
+    vid1080) [[ ${#} -eq 1 ]] || die "Usage: media vid1080 VIDEO"; cmd_vid1080 "$@" ;;
+    vid4k) [[ ${#} -eq 1 ]] || die "Usage: media vid4k VIDEO"; cmd_vid4k "$@" ;;
+    jpg) [[ ${#} -ge 1 ]] || die "Usage: media jpg IMAGE [MAGICK_OPTS...]"; cmd_jpg "$@" ;;
+    jpgsmall) [[ ${#} -ge 1 ]] || die "Usage: media jpgsmall IMAGE [MAGICK_OPTS...]"; cmd_jpgsmall "$@" ;;
+    png) [[ ${#} -ge 1 ]] || die "Usage: media png IMAGE [MAGICK_OPTS...]"; cmd_png "$@" ;;
+    *) die "Unknown command: $cmd (run 'media --help')" ;;
+  esac; }
+
+main "$@"
