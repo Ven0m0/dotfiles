@@ -165,7 +165,7 @@ hide = true
 
 [tasks.update]
 description = "Update all mise tools"
-run = "mise upgrade && mise prune -y"
+run = "mise up -y && mise prune -y"
 
 [tasks.outdated]
 description = "Check for outdated tools"
