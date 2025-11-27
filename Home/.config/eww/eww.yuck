@@ -8,22 +8,25 @@
 (defpoll date :interval "1m"
   "date '+%a %d %b'")
 
-(defpoll volume :interval "1s"
-  "pactl get-sink-volume @DEFAULT_SINK@ | grep -Po '[0-9]+(?=%)' | head -1")
+;; Optimized: Using wpctl for pipewire/wireplumber
+(defpoll volume :interval "3s"
+  "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}'")
 
-(defpoll battery :interval "15s"
+;; Optimized: Reduced poll frequency for battery
+(defpoll battery :interval "2m"
   "cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || echo '100'")
 
-(defpoll battery_status :interval "15s"
+(defpoll battery_status :interval "2m"
   "cat /sys/class/power_supply/BAT0/status 2>/dev/null || echo 'Unknown'")
 
-(defpoll cpu_usage :interval "2s"
+;; Optimized: Reduced CPU poll frequency
+(defpoll cpu_usage :interval "5s"
   "top -bn1 | grep 'Cpu(s)' | sed 's/.*, *\\([0-9.]*\\)%* id.*/\\1/' | awk '{print 100 - $1}'")
 
-(defpoll memory_usage :interval "2s"
+(defpoll memory_usage :interval "5s"
   "free | grep Mem | awk '{printf \"%.0f\", ($3/$2) * 100.0}'")
 
-(defpoll disk_usage :interval "30s"
+(defpoll disk_usage :interval "1m"
   "df -h / | awk 'NR==2 {print $5}' | tr -d '%'")
 
 ;; Widgets
