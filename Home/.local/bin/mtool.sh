@@ -340,6 +340,7 @@ opt_video(){
   backup_file "$src"
   local enc=$(ffmpeg -hide_banner -encoders 2>/dev/null)
   local vc="libx264"
+  # TODO: compare av1an with ffzap for av1 speed and implement it if it is faster/more useful
   case $VID_CODEC in
     av1)
       [[ $enc == *libsvtav1* ]] && vc="libsvtav1" || \
