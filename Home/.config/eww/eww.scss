@@ -28,17 +28,9 @@ $mauve: #cba6f7;
   border-bottom: 2px solid $bg-alt;
 }
 
-// Left section
-.left {
-  padding: 5px 10px;
-}
-
-// Center section
-.center {
-  padding: 5px 10px;
-}
-
-// Right section
+// Sections
+.left,
+.center,
 .right {
   padding: 5px 10px;
 }
@@ -114,11 +106,9 @@ $mauve: #cba6f7;
     &.cpu .icon {
       color: $blue;
     }
-
     &.memory .icon {
       color: $mauve;
     }
-
     &.disk .icon {
       color: $pink;
     }
