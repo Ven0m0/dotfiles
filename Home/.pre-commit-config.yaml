@@ -1,4 +1,9 @@
 ---
+# DEPRECATED: This configuration has been migrated to lefthook.
+# See Home/.config/lefthook.yml for the current git hooks configuration.
+# All functionality from this file is now available in lefthook with additional features.
+# To use lefthook, install it and run: lefthook install
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -36,4 +41,3 @@ repos:
     hooks:
       - id: zizmor
         files: ^\.github/workflows/.*\.ya?ml$
-# TODO: fixup and merge into lefthook instead

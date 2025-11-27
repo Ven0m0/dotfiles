@@ -1,11 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
+# This hook is deprecated in favor of lefthook.
+# See Home/.config/lefthook.yml for comprehensive pre-commit automation.
+# To use lefthook, install it and run: lefthook install
+
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
-git gc --prune=now --aggressive
+# Auto-stage all changes (lefthook handles this automatically)
 git add -A
 
-# TODO: useful pre-commit stuff and cleanup
-# merge into lefthook afterwards
 exit 0
