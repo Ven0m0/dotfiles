@@ -1,46 +1,71 @@
 (
-  general: (
-    default_timeout: 5.0,  // seconds
-    margin: (10.0, 10.0),
-    spacing: 8.0,
-    border_radius: 4.0,
-    background_color: "#282c34",
-    foreground_color: "#abb2bf",
-    font: "Iosevka Nerd Font 10",
+  max_notifications: 10,
+  timeout: 5000,
+  poll_interval: 16, // 60fps
+  history_length: 20,
+  replacing_enabled: true,
+  min_window_width: 300,
+  min_window_height: 0,
+
+  layout: (
+    padding: (left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+    spacing: 10.0,
+    background_color: Color(hex: "#1e1e2e"), // Catppuccin Base
+    border_color: Color(hex: "#89b4fa"),     // Catppuccin Blue
+    border_width: 2.0,
+    border_radius: 8.0,
   ),
 
-  layout: [
-    // app icon
-    block: Icon {
-      size: 24.0,
-    },
-    block: VStack {
-      spacing: 2.0,
-      block: Text {
-        text: &"{summary}",
-        style: Bold,
-        size: 11.0,
-      },
-      block: Text {
-        text: &"{body}",
-        size: 9.0,
-      },
-    },
-    block: Timestamp {
-      format: "%H:%M",
-      size: 8.0,
-      color: "#5c6370",
-    },
-  ],
+  shortcuts: (
+    notification_interact: 1,
+    notification_close: 2,
+    notification_action1: 3,
+  ),
 
-  filter_rules: [
+  blocks: [
     (
-      criteria: (app_name: "firefox", urgency: Normal),
-      timeout: 3.0,
+      name: "summary",
+      type: Text,
+      data: (
+        text: "%s",
+        font: "JetBrains Mono Bold 11",
+        color: Color(hex: "#cdd6f4"), // Text
+        padding: (left: 0.0, right: 0.0, top: 0.0, bottom: 5.0),
+        dimensions: (width: (min: 50, max: 300), height: (min: 0, max: 0)),
+      ),
     ),
     (
-      criteria: (urgency: Critical),
-      timeout: 0.0,  // stay until dismissed
+      name: "body",
+      type: Text,
+      data: (
+        text: "%b",
+        font: "JetBrains Mono 10",
+        color: Color(hex: "#a6adc8"), // Subtext
+        padding: (left: 0.0, right: 0.0, top: 0.0, bottom: 10.0),
+        dimensions: (width: (min: 50, max: 300), height: (min: 0, max: 0)),
+      ),
+    ),
+    (
+      name: "image",
+      type: Image,
+      data: (
+        image_path: "%i",
+        dimensions: (width: (min: 40, max: 40), height: (min: 40, max: 40)),
+        padding: (left: 0.0, right: 10.0, top: 0.0, bottom: 0.0),
+        rounding: 4.0,
+      ),
+    ),
+    (
+      name: "progress",
+      type: Progress,
+      data: (
+        value: "%p",
+        width: 280.0,
+        height: 4.0,
+        background_color: Color(hex: "#313244"), // Surface0
+        fill_color: Color(hex: "#89b4fa"),       // Blue
+        padding: (left: 0.0, right: 0.0, top: 5.0, bottom: 0.0),
+      ),
     ),
   ],
 )
