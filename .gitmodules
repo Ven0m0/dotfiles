@@ -1,0 +1,4 @@
+[submodule "vendor/auto-boost-essential"]
+	path = vendor/auto-boost-essential
+	url = https://github.com/nekotrix/auto-boost-algorithm.git
+	branch = main
