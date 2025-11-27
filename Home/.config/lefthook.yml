@@ -93,6 +93,16 @@ pre-commit:
         done
       stage_fixed: true
       fail_text: "Unicode character stripping failed"
+    fix-bom:
+      priority: 10
+      glob: "*"
+      exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
+      run: |
+        for f in {staged_files}; do
+          [[ -f "$f" ]] && sed -i '1s/^\xEF\xBB\xBF//' "$f"
+        done
+      stage_fixed: true
+      fail_text: "BOM removal failed"
     normalize-eol:
       priority: 11
       glob: "*.{sh,bash,zsh,yml,yaml,json,md,txt,toml,ini,conf,cfg,js,ts,tsx,jsx,css,html}"
@@ -113,6 +123,16 @@ pre-commit:
         done
       stage_fixed: true
       fail_text: "Shebang insertion failed"
+    check-executable-shebangs:
+      priority: 12
+      run: |
+        for f in {staged_files}; do
+          [[ -f "$f" && -x "$f" ]] && ! rg -q '^#!' "$f" && {
+            printf "Executable missing shebang: %s\n" "$f" >&2
+            exit 1
+          }
+        done || :
+      fail_text: "Executable files must have shebangs"
     check-filesize:
       priority: 13
       run: |
@@ -153,6 +173,25 @@ pre-commit:
         count=$(rg -ic '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk -F: '{s+=$2}END{print s+0}')
         (( count > 0 )) && printf "%d TODO/FIXME\n" "$count" >&2 || :
       fail_text: "TODOs/FIXMEs found (informational)"
+    actionlint:
+      priority: 18
+      glob: ".github/workflows/*.{yml,yaml}"
+      run: actionlint {staged_files} || :
+      fail_text: "GitHub Actions workflow linting failed"
+    zizmor:
+      priority: 19
+      glob: ".github/workflows/*.{yml,yaml}"
+      run: zizmor --format plain {staged_files} || :
+      fail_text: "GitHub Actions security check failed"
+    no-commit-to-branch:
+      priority: 20
+      run: |
+        branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        if [[ "$branch" =~ ^(main|master)$ ]]; then
+          printf "Direct commits to %s are not allowed\n" "$branch" >&2
+          exit 1
+        fi
+      fail_text: "Cannot commit directly to protected branches (main/master)"
 commit-msg:
   commands:
     conventional-commits:

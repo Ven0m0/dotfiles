@@ -1,12 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-current_branch=$(git symbolic-ref HEAD 2>/dev/null | sed -e 's,.*/\(.*\),\1,') || {
-    echo "⚠️  Warning: Could not determine current branch"
-    # Continue anyway since we're checking the remote ref in the loop
-}
+# This hook is deprecated in favor of lefthook.
+# See Home/.config/lefthook.yml for comprehensive pre-push automation including:
+# - Test suite execution
+# - Branch naming validation
+# - Protected branch checks
+# - Dependency auditing
+# To use lefthook, install it and run: lefthook install
 
-# TODO: useful pre-push stuff
-# merge into lefthook afterwards
 exit 0

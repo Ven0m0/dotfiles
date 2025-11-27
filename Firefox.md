@@ -26,8 +26,6 @@
 
 **Tweaking userscripts**
 
-<sub>Todo: combine and cleanup for my own use<sup>
-
 - <https://greasyfork.org/en/scripts/550646-background-web-optimizer-ultra-performance-v10-0-optimized>
 - <https://greasyfork.org/en/scripts/542512-video-preload>
 - <https://greasyfork.org/en/scripts/549335-forcing-yt-to-use-advanced-tweaks-for-cpu-usage-optimizations>

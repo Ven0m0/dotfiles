@@ -340,10 +340,12 @@ opt_video(){
   backup_file "$src"
   local enc=$(ffmpeg -hide_banner -encoders 2>/dev/null)
   local vc="libx264"
-  # TODO: compare av1an with ffzap for av1 speed and implement it if it is faster/more useful
+  # Note: Currently using ffzap for faster encoding when available.
+  # Future consideration: benchmark av1an vs ffzap for potential speed improvements.
   case $VID_CODEC in
     av1)
-    # TODO: compare SVT-AV1-PSY/SVT-AV1-forks vs AOMenc
+      # Note: Using standard SVT-AV1 or AOM-AV1 encoders.
+      # Future consideration: evaluate SVT-AV1-PSY and other AV1 encoder forks for quality/speed.
       [[ $enc == *libsvtav1* ]] && vc="libsvtav1" || \
       [[ $enc == *libaom-av1* ]] && vc="libaom-av1";;
     vp9) [[ $enc == *libvpx-vp9* ]] && vc="libvpx-vp9";;
