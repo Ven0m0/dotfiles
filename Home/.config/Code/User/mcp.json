@@ -194,10 +194,6 @@
       "args": ["-y", "@modelcontextprotocol/server-memory"],
       "type": "stdio"
     },
-    "mcp-server-commands": {
-      "command": "bunx",
-      "args": ["-y", "mcp-server-commands"]
-    },
     "think-tool": {
       "command": "bunx",
       "args": ["-y", "think-tool-mcp"]
