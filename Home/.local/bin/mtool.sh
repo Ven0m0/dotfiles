@@ -343,7 +343,7 @@ opt_video(){
   # TODO: compare av1an with ffzap for av1 speed and implement it if it is faster/more useful
   case $VID_CODEC in
     av1)
-    # TODO: compare rav1e vs SVT-AV1-PSY/SVT-AV1-forks vs aom
+    # TODO: compare SVT-AV1-PSY/SVT-AV1-forks vs AOMenc
       [[ $enc == *libsvtav1* ]] && vc="libsvtav1" || \
       [[ $enc == *libaom-av1* ]] && vc="libaom-av1";;
     vp9) [[ $enc == *libvpx-vp9* ]] && vc="libvpx-vp9";;
