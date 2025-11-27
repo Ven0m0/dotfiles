@@ -169,15 +169,6 @@
     }
   ],
   "servers": {
-    "fetch": {
-      "command": "uvx",
-      "args": ["mcp-server-fetch"],
-      "type": "stdio"
-    },
-    "filesystem": {
-      "command": "bunx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"]
-    },
     "fast-filesystem-mcp": {
       "command": "bunx",
       "args": ["-y", "fast-filesystem-mcp"],
@@ -198,28 +189,9 @@
       "command": "bunx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
-    "mcp-sequentialthinking-tools": {
-      "command": "bunx",
-      "args": ["-y", "mcp-sequentialthinking-tools"],
-      "env": {
-        "MAX_HISTORY_SIZE": "1000"
-      },
-      "type": "stdio"
-    },
     "memory": {
       "command": "bunx",
       "args": ["-y", "@modelcontextprotocol/server-memory"],
-      "type": "stdio"
-    },
-    "basic-memory": {
-      "command": "uvx",
-      "args": ["basic-memory", "mcp"],
-      "env": {},
-      "type": "stdio"
-    },
-    "mcp-tasks": {
-      "command": "bunx",
-      "args": ["-y", "mcp-tasks"],
       "type": "stdio"
     },
     "mcp-server-commands": {
@@ -238,26 +210,6 @@
       },
       "type": "stdio"
     },
-    "json-processor": {
-      "command": "bunx",
-      "args": ["-y", "@gongrzhe/server-json-mcp@latest"],
-      "type": "stdio"
-    },
-    "git": {
-      "command": "uvx",
-      "args": ["mcp-server-git", "--repository", "."],
-      "env": {},
-      "type": "stdio"
-    },
-    "@cyanheads/git-mcp-server": {
-      "command": "bunx",
-      "args": ["@cyanheads/git-mcp-server@latest"],
-      "env": {
-        "MCP_LOG_LEVEL": "info",
-        "GIT_BASE_DIR": "${input:GIT_BASE_DIR}"
-      },
-      "type": "stdio"
-    },
     "@mettamatt/code-reasoning": {
       "command": "bunx",
       "args": ["-y", "@mettamatt/code-reasoning"],
@@ -267,18 +219,6 @@
     "@just-every/mcp-read-website-fast": {
       "command": "bunx",
       "args": ["-y", "@just-every/mcp-read-website-fast"],
-      "env": {},
-      "type": "stdio"
-    },
-    "@just-every/mcp-screenshot-website-fast": {
-      "command": "bunx",
-      "args": ["-y", "@just-every/mcp-screenshot-website-fast"],
-      "env": {},
-      "type": "stdio"
-    },
-    "fastmcp": {
-      "command": "bunx",
-      "args": ["fastmcp", "dev", "${input:serverPath}"],
       "env": {},
       "type": "stdio"
     },
@@ -303,20 +243,9 @@
       "env": {},
       "type": "stdio"
     },
-    "@vscode-mcp/vscode-mcp-server": {
-      "command": "bunx",
-      "args": ["-y", "@vscode-mcp/vscode-mcp-server@latest"],
-      "env": {},
-      "type": "stdio"
-    },
     "betterprompt-mcp": {
       "command": "bunx",
       "args": ["betterprompt-mcp@0.2.1"],
-      "type": "stdio"
-    },
-    "mcp-server-mcp-registry": {
-      "command": "bunx",
-      "args": ["mcp-server-mcp-registry@0.1.0"],
       "type": "stdio"
     },
     "Github": {
@@ -330,11 +259,6 @@
     "code-checker": {
       "command": "uvx",
       "args": ["mcp-code-checker"],
-      "disabled": true
-    },
-    "eslint": {
-      "command": "bunx",
-      "args": ["-y", "@eslint/mcp@latest"],
       "disabled": true
     }
   }

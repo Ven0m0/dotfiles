@@ -1,0 +1,24 @@
+{
+	"servers": {
+		"@cyanheads/git-mcp-server": {
+			"command": "bun",
+			"args": [
+				"run",
+				"start:stdio"
+			],
+			"env": {
+				"MCP_LOG_LEVEL": "info",
+				"GIT_BASE_DIR": "${input:GIT_BASE_DIR}"
+			},
+			"type": "stdio"
+		}
+	},
+	"inputs": [
+		{
+			"type": "promptString",
+			"id": "GIT_BASE_DIR",
+			"description": "Optional absolute path to restrict all git operations to a specific directory tree. Provides security sandboxing for multi-tenant or shared environments.",
+			"password": false
+		}
+	]
+}
