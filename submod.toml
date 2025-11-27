@@ -3,9 +3,16 @@ ignore = "dirty"
 update = "rebase"
 branch = "main"
 
-[vendor-utils]
-path = "vendor/utils"
-url = "https://github.com/example/utils.git"
-sparse_paths = ["src/", "include/", "*.md"]
-ignore = "untracked"
-active = false
+# [vendor-utils]
+# path = "vendor/utils"
+# url = "https://github.com/example/utils.git"
+# sparse_paths = ["src/", "include/", "*.md"]
+# ignore = "untracked"
+# active = false
+
+[auto-boost-essential]
+path = "vendor/auto-boost-essential"
+url = "https://github.com/nekotrix/auto-boost-algorithm.git"
+sparse_paths = ["Auto-Boost-Essential.py"]
+shallow = true
+active = true
