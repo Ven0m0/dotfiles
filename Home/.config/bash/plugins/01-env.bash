@@ -8,12 +8,12 @@ unset LC_ALL
 
 # --- Editors
 has micro && export EDITOR='micro' MICRO_TRUECOLOR=1
-export EDITOR="${EDITOR:-nano}" GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR"
+export EDITOR="${EDITOR:-nano}" GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR" FCEDIT="$EDITOR"
 
 if has code; then export VISUAL="code -w"
 elif has vscode; then export VISUAL="vscode -w"
 elif has kate; then export VISUAL="kate"
-else export VISUAL="$EDITOR"
+else export VISUAL="${EDITOR:-nano}"
 fi
 
 # --- Browser
