@@ -8,7 +8,6 @@ _cht_complete(){
   if [[ ${COMP_CWORD} = 1 ]]; then
 	  COMPREPLY=( "$(compgen -W "$opts" -- "$cur")" )
 	  __ltrim_colon_completions "$cur"
-  fi
-  return 0
+  fi; return 0
 }
 complete -F _cht_complete cht.sh
