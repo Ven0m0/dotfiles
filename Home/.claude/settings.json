@@ -9,15 +9,59 @@
     "DISABLE_TELEMETRY": "1",
     "USE_BUILTIN_RIPGREP": "0",
     "DISABLE_AUTOUPDATER": "1"
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "8192",
+    "BASH_DEFAULT_TIMEOUT_MS": "31000",
+    "BASH_MAX_TIMEOUT_MS": "600000",
+    "BASH_MAX_OUTPUT_LENGTH": "50000",
+    "DISABLE_COST_WARNINGS": "1",
+    "DISABLE_BUG_COMMAND": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_TELEMETRY": "1",
+    "MCP_TIMEOUT": "30000",
+    "MCP_TOOL_TIMEOUT": "60000",
+    "MAX_MCP_OUTPUT_TOKENS": "40000",
+    "MAX_THINKING_TOKENS": "121393"
   },
+  "includeCoAuthoredBy": false,
+  "alwaysThinkingEnabled": true,
   "permissions": {
-    "allow": ["Bash(ls:*)", "Bash(cat:*)", "Bash(sed:*)", "Bash(git:*)", "mcp__serena", "WebFetch"],
-    "deny": []
+    "allow": [
+      "LS",
+      "Read",
+      "Write",
+      "Edit",
+      "MultiEdit",
+      "Glob",
+      "Grep",
+      "NotebookRead",
+      "NotebookEdit",
+      "Task",
+      "TodoWrite",
+      "WebFetch(domain:*)",
+      "WebSearch",
+      "Bash(source:*)",
+      "Bash(cd:*)",
+      "Bash(claude config --help)",
+      "Bash(claude config get:*)",
+      "Bash(claude config list:*)",
+      "Bash(check-mcp-logs:*)",
+      "Bash(python:*)",
+      "Bash(git:*)",
+      "Bash(gh:*)",
+      "Bash(ls:*)",
+      "mcp__playwright"
+    ],
+    "deny": [],
+    "defaultMode": "bypassPermissions",
+    "additionalDirectories": [
+      "//"
+    ],
   },
   "statusLine": {
     "type": "command",
     "command": "printf '[%s@%s %s]' \"$USER\" \"$(hostname -s)\" \"$(basename \"$PWD\")\""
   },
+  "forceLoginMethod": "claudeai",
   "enabledPlugins": {
     "code-review-ai@claude-code-workflows": true,
     "full-stack-orchestration@claude-code-workflows": true,
@@ -30,6 +74,7 @@
     "codebase-cleanup@claude-code-workflows": true,
     "git-pr-workflows@claude-code-workflows": true,
     "team-collaboration@claude-code-workflows": true,
-    "dependency-management@claude-code-workflows": true
+    "dependency-management@claude-code-workflows": true,
+    "dotfiles-commands@dotfiles-marketplace": true
   }
 }
