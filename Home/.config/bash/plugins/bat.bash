@@ -11,7 +11,11 @@ if command -v bat &>/dev/null; then
   else
     export MANPAGER="sh -c 'col -bx | bat -plman'"
   fi
-  has batpipe && { export LESSOPEN="|/usr/bin/batpipe %s" BATPIPE=color; unset LESSCLOSE; }
+  if has batpipe; then 
+    export LESSOPEN="|/usr/bin/batpipe %s" BATPIPE=color; unset LESSCLOSE
+  elif has lesspipe; then
+    export LESSOPEN="|/usr/bin/lesspipe.sh %s"
+  fi
   eval "$(bat --completion bash)"
   alias cat='bat -pp'
 fi
