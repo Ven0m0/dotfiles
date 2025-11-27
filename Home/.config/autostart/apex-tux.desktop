@@ -1,0 +1,6 @@
+[Desktop Entry]
+Exec=/path/to/apex-tux/apex-tux
+Name=apex-tux
+Path=/path/to/apex-tux
+Terminal=true
+Type=Application
