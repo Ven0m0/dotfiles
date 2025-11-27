@@ -1,78 +1,63 @@
-# Copilot Master Instructions
+# Copilot — Instructions (condensed, actionable)
 
-## 1. Core Principles
+## Summary
+Act autonomously, prefer edits over new files, verify automatically, remove debt, and optimize for long-term throughput. Be blunt, concise, and token-efficient.
 
-- **Autonomous Execution**: Execute tasks immediately. Edit existing code and configurations without hesitation. Confirm only for large-scale or potentially destructive changes.
-- **Quality & Verification**: Automatically run formatters, linters, and other checks. Verify facts and avoid speculation.
-- **Efficiency**: Prioritize token efficiency and concise communication.
-- **Rethink Before Acting**: If there are multiple viable approaches, list pros and cons before proceeding. Prefer editing existing files over creating new ones.
-- **Debt Elimination**: Aggressively remove unused code, dependencies, and complexity. Less code is less debt.
-- **Snowball**: accumulate/compound context; each session feeds the next via OTel metrics/history.
-- **Subtraction**: remove complexity to free cognitive buffer; less inventory, clearer reviews.
-- **Transparency**: expose planning/reasoning, decisions, alternatives; use full paths; shared visibility = shared learning.
-- **Selective Optimization**: optimize only high-leverage work that increases long-term throughput; finish near-done tasks.
-- **Invent & Simplify**: find core insights; simplify hard; borrow/reinvent freely; accept misunderstanding; build utilitarian, low-token, malleable solutions.
+## Core rules
+- **Execute:** act immediately; confirm only for destructive/large changes.  
+- **Verify:** run formatters/linters/tests automatically.  
+- **Prefer edit > create:** modify existing files when possible.  
+- **Debt first:** remove unused code/deps; minimize surface area.  
+- **Compound context:** build on prior work (Snowball).  
+- **Subtract:** remove complexity for clarity.  
+- **Transparency:** surface plan, decisions, alternatives; use full paths.
 
-## 2. Communication Style
+## Communication
+- Technical English; concise; minimize tokens; prefer short syntax.
 
-- **Language**: English (Technical)
-- **Style**: Professional, concise, advanced, and blunt.
-- **Token Efficiency**: Use the symbol and abbreviation system defined in `prompts/token-efficiency.prompt.md`.
+## Workflow & commits
+- **TDD:** Red → Green → Refactor.  
+- **Separate concerns:** format vs logic in separate commits.  
+- **Atomic commits:** small, self-contained; tests pass; no lint warnings.  
+- **Fail fast:** guard clauses; early returns.
 
-## 3. Development Practices
+## Code quality
+- Single responsibility; loose coupling; DRY.  
+- Composable abstractions; write tests for behavior; refactor after green.
 
-### Change & Commit Hygiene
-- **TDD Workflow**: Follow a Red → Green → Refactor cycle.
-- **Separate Concerns**: Strictly separate structural changes (formatting) from behavioral changes (logic). Never mix them in the same commit.
-- **Atomic Commits**: Commits must be small, frequent, and independent. A commit is ready only when:
-    1. All tests pass.
-    2. Linters produce zero warnings.
-    3. It represents a single, logical unit of work.
-    4. The commit message is clear and concise.
+## Language/tooling
 
-### Code Quality
-- **Single Responsibility**: Functions and modules should do one thing well.
-- **Loose Coupling**: Use interfaces and abstractions to reduce dependencies.
-- **Fail Fast**: Use early returns and guard clauses.
-- **DRY**: Eliminate duplicate logic and code immediately.
+### Bash
+- `set -euo pipefail`; `shopt -s nullglob globstar`; `IFS=$'\n\t'`.  
+- Prefer `[[ ]]`, arrays, `mapfile -t`; avoid `eval` and `ls` parsing.  
+- Lint: `shfmt`, `shellcheck -a -x`.  
+- Prefer: `fd`, `rg`, `sd`, `bat`, `fzf` (fallback: find/grep/sed/cut).
 
-## 4. Language-Specific Guidelines
+### JavaScript
+- Use **ESM** (`type: module`) unless project dictates otherwise.  
+- Format: `prettier`; Lint: `eslint --max-warnings=0`.  
+- Prefer pure functions, immutability, small modules.  
+- Avoid implicit `any`; use JSDoc types or TS when available.  
+- Use async/await; avoid callback pyramids; handle errors explicitly.  
+- Keep dependencies minimal; remove unused deps; prefer stdlib.
 
-### **Bash**
-- **Strict Mode**: `set -euo pipefail`, `shopt -s nullglob globstar`, `IFS=$'\n\t'`, `export LC_ALL=C LANG=C`.
-- **Idioms**: Prefer native bashisms: arrays, `mapfile -t`, `[[...]]`, parameter expansion. Avoid parsing `ls`, `eval`, and backticks.
-- **Tooling**: Prefer modern Rust-based tools (`fd->find`, `rg->grep`, `bat->cat`, `sd->sed`, `zoxide`, `choose->cut`, `jaq->jq`, `bun->pnpm->npm`, `uv->pip`, `mawk->awk/gawk`, `sk->fzf`, `rust-parallel->parallel->xargs`) with fallbacks to traditional counterparts.
-- **Structure**: Use the canonical template in `prompts/bash-script.prompt.md`.
-- **Linting**: `shfmt -i 2 -bn -ln bash -s`, `shellcheck -a -x` (zero warnings), `shellharden`.
+### Python
+- Format: `black`; lint: `ruff`; type hints encouraged.  
+- Prefer small functions/modules; explicit error handling; no unused imports.
 
-### **Rust**
-- **Error Handling**: Use `Result<T, E>` and the `?` operator. Use `thiserror` or `anyhow` for rich errors. Avoid `unwrap()`/`expect()` in library code.
-- **Style**: Format with `rustfmt`. Lint with `cargo clippy -- -D warnings`.
-- **Patterns**: Use the builder pattern for complex objects, `serde` for serialization, `rayon` for parallelism. Prefer iterators and borrowing over indexing and `clone()`.
-- **API Design**: Implement common traits (`Debug`, `Clone`, `Default`, etc.). Use newtypes for type safety. Public APIs must be documented.
+### Markdown
+- Use `##`/`###`; fenced code blocks; soft wrap ~80–100 columns.
 
-### **Python**
-- **Style**: Follow PEP 8. Format with `black` or `ruff format`. Lint with `ruff` or `flake8`.
-- **Typing**: Use type hints (`typing` module) for all functions and variables.
-- **Docstrings**: Follow PEP 257.
-- **Structure**: Break complex functions into smaller, single-purpose units.
+## Performance & ops
+- Measure first; optimize hot paths only.  
+- Batch I/O; cache appropriately; leverage async/worker pools.  
+- DB: proper indexing; verify via `EXPLAIN`.  
+- CI: cache deps/build artifacts; parallelize via matrices.
 
-### **Markdown**
-- **Structure**: Use `##` for H2 and `###` for H3. Limit nesting.
-- **Code Blocks**: Use fenced code blocks with language identifiers.
-- **Line Length**: Soft wrap at 80-100 characters for readability.
-
-## 5. Performance Optimization
-- **Measure First**: Profile and benchmark before optimizing.
-- **Focus on Hot Paths**: Optimize the most frequently executed code.
-- **Caching**: Use in-memory (Redis), DB, and frontend caching where appropriate. Invalidate correctly.
-- **Concurrency**: Use async I/O, thread/worker pools, and batch processing.
-- **Database**: Use indexes, analyze query plans (`EXPLAIN`), and avoid N+1 queries.
-
-## 6. GitHub Actions
-- **Security**: Use OIDC for cloud auth, set least-privilege `permissions` for `GITHUB_TOKEN`, and scan for secrets.
-- **Performance**: Use caching for dependencies and build outputs. Use matrix strategies for parallel jobs.
-- **Structure**: Maintain clean, modular workflows. Use composite actions or reusable workflows to reduce duplication.
-- **Testing**: Integrate unit, integration, and E2E tests. Report results clearly.
+## GitHub Actions
+- Use OIDC; minimal `permissions`.  
+- Cache deps; use reusable workflows/composites.  
+- Run unit/integration/E2E tests; surface results clearly.
 
 ---
+Keep outputs compact, actionable, and change-focused.
