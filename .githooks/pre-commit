@@ -7,5 +7,5 @@ git gc --prune=now --aggressive
 git add -A
 
 # TODO: useful pre-commit stuff and cleanup
-
+# merge into lefthook afterwards
 exit 0
