@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+current_branch=$(git symbolic-ref HEAD 2>/dev/null | sed -e 's,.*/\(.*\),\1,') || {
+    echo "⚠️  Warning: Could not determine current branch"
+    # Continue anyway since we're checking the remote ref in the loop
+}
+
+# TODO: useful pre-push stuff
+
+exit 0
