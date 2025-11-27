@@ -15,6 +15,12 @@ gctl(){
   fi
   LC_ALL=C git status; LC_ALL=C git branch -vv
 }
+# Export GitHub token for MCP if gh is available
+if command -v gh &>/dev/null; then
+  TOKEN=$(gh auth token 2>/dev/null)
+  # Configure Git to use GitHub CLI for authentication
+  [[ -n "$TOKEN" ]] && { export GITHUB_TOKEN="$TOKEN" && gh auth setup-git; }
+fi
 
 # Display git repository file structure as a tree
 alias git-tree="git ls-tree -r HEAD --name-only | tree --fromfile"
