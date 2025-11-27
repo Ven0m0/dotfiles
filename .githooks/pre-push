@@ -8,5 +8,5 @@ current_branch=$(git symbolic-ref HEAD 2>/dev/null | sed -e 's,.*/\(.*\),\1,') |
 }
 
 # TODO: useful pre-push stuff
-
+# merge into lefthook afterwards
 exit 0
