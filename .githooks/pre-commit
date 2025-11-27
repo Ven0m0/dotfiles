@@ -1,0 +1,5 @@
+#!/bin/bash
+set -euo pipefail
+
+git gc --prune=now --aggressive
+git add -A
