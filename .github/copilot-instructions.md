@@ -1,63 +1,88 @@
-# Copilot — Instructions (condensed, actionable)
+# Unified Instructions for Copilot & Claude (Optimized)
 
-## Summary
-Act autonomously, prefer edits over new files, verify automatically, remove debt, and optimize for long-term throughput. Be blunt, concise, and token-efficient.
-
-## Core rules
-- **Execute:** act immediately; confirm only for destructive/large changes.  
-- **Verify:** run formatters/linters/tests automatically.  
-- **Prefer edit > create:** modify existing files when possible.  
-- **Debt first:** remove unused code/deps; minimize surface area.  
-- **Compound context:** build on prior work (Snowball).  
-- **Subtract:** remove complexity for clarity.  
-- **Transparency:** surface plan, decisions, alternatives; use full paths.
+## Core Principles
+- **Autonomous execution:** Act immediately, minimal confirmations.  
+- **Edit > create:** Modify existing files first.  
+- **Debt-first:** Remove unused code, deps, complexity.  
+- **Snowball:** Accumulate/compound context; each change improves future changes.  
+- **Subtraction:** Remove clutter → clarity, speed, lower cognitive load.  
+- **Transparency:** Show plans, reasoning, alternatives, full paths.  
+- **Selective optimization:** Improve only what raises long-term throughput.  
+- **Invent & simplify:** Find core insight; simplify aggressively; keep solutions malleable and low-token.
 
 ## Communication
-- Technical English; concise; minimize tokens; prefer short syntax.
+- Technical English; blunt, concise, precise.  
+- Minimize tokens; compact reasoning; avoid fluff.  
+- Surface decisions, tradeoffs, and alternatives directly.
 
-## Workflow & commits
+## Workflow
 - **TDD:** Red → Green → Refactor.  
-- **Separate concerns:** format vs logic in separate commits.  
-- **Atomic commits:** small, self-contained; tests pass; no lint warnings.  
-- **Fail fast:** guard clauses; early returns.
+- **Atomic commits:** One logical change; tests pass; no lint errors.  
+- **Separate concerns:** Format vs logic.  
+- **Fail fast:** Early returns, guard clauses.
 
-## Code quality
-- Single responsibility; loose coupling; DRY.  
-- Composable abstractions; write tests for behavior; refactor after green.
+## Code Quality
+- Single responsibility; DRY; composable.  
+- Explicit error handling; explicit deps; small focused functions.  
+- Remove duplication instantly.  
+- Write behavior tests first; refactor after green.
 
-## Language/tooling
+## Language/Tool Rules
 
 ### Bash
 - `set -euo pipefail`; `shopt -s nullglob globstar`; `IFS=$'\n\t'`.  
 - Prefer `[[ ]]`, arrays, `mapfile -t`; avoid `eval` and `ls` parsing.  
-- Lint: `shfmt`, `shellcheck -a -x`.  
-- Prefer: `fd`, `rg`, `sd`, `bat`, `fzf` (fallback: find/grep/sed/cut).
+- Prefer: `fd`, `rg`, `sd`, `bat`, `fzf` (fallback: find/grep/sed/cut).  
+- Lint/format: `shfmt`, `shellcheck`.
 
 ### JavaScript
-- Use **ESM** (`type: module`) unless project dictates otherwise.  
+- Prefer **ESM**; minimal deps.  
 - Format: `prettier`; Lint: `eslint --max-warnings=0`.  
-- Prefer pure functions, immutability, small modules.  
-- Avoid implicit `any`; use JSDoc types or TS when available.  
-- Use async/await; avoid callback pyramids; handle errors explicitly.  
-- Keep dependencies minimal; remove unused deps; prefer stdlib.
+- Prefer pure functions; immutability; small modules.  
+- Async/await; explicit error handling.  
+- Avoid implicit `any`; use JSDoc or TS where applicable.
 
 ### Python
-- Format: `black`; lint: `ruff`; type hints encouraged.  
-- Prefer small functions/modules; explicit error handling; no unused imports.
+- Format: `black`; Lint: `ruff`; use type hints.  
+- Keep modules/functions small; explicit exceptions; zero unused imports.
 
 ### Markdown
-- Use `##`/`###`; fenced code blocks; soft wrap ~80–100 columns.
+- Use `##`/`###`; fenced blocks; soft-wrap ~80–100 columns.
 
-## Performance & ops
-- Measure first; optimize hot paths only.  
-- Batch I/O; cache appropriately; leverage async/worker pools.  
-- DB: proper indexing; verify via `EXPLAIN`.  
-- CI: cache deps/build artifacts; parallelize via matrices.
+## Performance / Ops
+- Measure before optimizing; profile hot paths only.  
+- Batch I/O; minimize subprocess spawning.  
+- Use caching; async/worker pools.  
+- DB: index + verify via `EXPLAIN`.  
+- CI: cache deps; parallelize jobs.
 
 ## GitHub Actions
 - Use OIDC; minimal `permissions`.  
-- Cache deps; use reusable workflows/composites.  
-- Run unit/integration/E2E tests; surface results clearly.
+- Cache everything possible; prefer reusable workflows.  
+- Run unit/integration/E2E tests; surface results cleanly.
 
----
-Keep outputs compact, actionable, and change-focused.
+## Claude-Specific
+- Works autonomously: edits files directly when safe.  
+- Multi-approach reasoning: compare solutions when ambiguity exists.  
+- Quality-driven: validate facts; lint/format/apply tests automatically.  
+- Use repo structure knowledge: follow conventions; avoid modifying protected files unless explicitly asked.
+
+## Copilot-Specific
+- Keep suggestions small, clean, and production-ready.  
+- Always align with repo conventions, shell standards, and performance guidelines.  
+- Avoid speculative code; prefer verified, minimal diffs.
+
+## Repository Safety Rules
+- **Protected files:** Only modify if requested (e.g., pacman.conf, makepkg.conf, sysctl.d/, zshrc, gitconfig).  
+- **Safe zones:** Shell scripts, `.config/`, docs, workflows.  
+- Follow naming conventions, security rules, and fallback chains.
+
+## Tool Preferences (Global)
+- Modern tools first: `fd → find`, `rg → grep`, `sd → sed`, `bat → cat`, `aria2 → curl → wget`.  
+- Parallel: `rust-parallel → parallel → xargs`.  
+- JSON: `jaq → jq`.  
+- Avoid unnecessary forks; batch operations.
+
+## Summary
+Operate autonomously, minimally, transparently.  
+Remove complexity, compound context, finish high-leverage work, and keep outputs crisp, correct, and production-grade.
