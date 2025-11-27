@@ -1,25 +1,226 @@
 {
+  "inputs": [
+    {
+      "id": "context7_api_key",
+      "type": "password",
+      "description": "Context7 API Key"
+    },
+    {
+      "type": "promptString",
+      "id": "pages",
+      "description": "Maximum number of pages to crawl (default: 1, max: 100)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "cacheDir",
+      "description": "Cache directory path (default: .cache)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "arg_allowed_directories",
+      "description": "Comma-separated list of allowed directories for file operations",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "mcpTransport",
+      "description": "MCP transport to use (stdio|http|streamable-http)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "localMode",
+      "description": "Enable local deterministic mode (true or false)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "openrouterApiKey",
+      "description": "OpenRouter API Key (optional)",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "openaiApiKey",
+      "description": "OpenAI API Key (optional)",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "anthropicApiKey",
+      "description": "Anthropic API Key (optional)",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "port",
+      "description": "Port for HTTP transport (when MCP_TRANSPORT=http)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "maxHistorySize",
+      "description": "Maximum number of thoughts to retain (MAX_HISTORY_SIZE)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "serverPath",
+      "description": "Path to your FastMCP server file (e.g., server.js or server.ts)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "apiKey",
+      "description": "CodeAlive API Key",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "createBackupFiles",
+      "description": "Create backup files (true/false)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "mcpLogFile",
+      "description": "Optional path for MCP_LOG_FILE (leave empty to log to stderr)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "debugMcp",
+      "description": "Enable debug logging (true/false)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "silentErrors",
+      "description": "Suppress error messages in responses (true/false)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "workspacePath",
+      "description": "Path to local workspace to mount into the container (e.g. /home/user or C:\\Users\\username)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "githubPat",
+      "description": "GitHub Personal Access Token (optional — used for PAT auth)",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "githubAppId",
+      "description": "GitHub App ID (optional — used for GitHub App auth)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "githubAppPrivateKey",
+      "description": "GitHub App private key content in PEM format (optional — use either this or private key path)",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "githubAppPrivateKeyPath",
+      "description": "Path inside the workspace to the GitHub App private key file (optional — prefer file-based key)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "githubInstallationId",
+      "description": "GitHub App Installation ID (optional)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "enabledTools",
+      "description": "Comma-separated list of tools to enable (VSCODE_MCP_ENABLED_TOOLS)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "disabledTools",
+      "description": "Comma-separated list of tools to disable (VSCODE_MCP_DISABLED_TOOLS)",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "arg_api_key",
+      "description": "API key for the search provider",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "arg_base_url",
+      "description": "Base URL for the search provider",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "GIT_BASE_DIR",
+      "description": "Optional absolute path to restrict all git operations to a specific directory tree. Provides security sandboxing for multi-tenant or shared environments.",
+      "password": false
+    }
+  ],
   "servers": {
-    "read-website-fast": {
-      "command": "bunx",
-      "args": ["@just-every/mcp-read-website-fast"],
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"],
       "type": "stdio"
-    },
-    "fast-filesystem": {
-      "command": "bunx",
-      "args": ["-y", "fast-filesystem-mcp"]
-    },
-    "sequential-thinking": {
-      "command": "bunx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "filesystem": {
       "command": "bunx",
       "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"]
     },
+    "fast-filesystem-mcp": {
+      "command": "bunx",
+      "args": ["-y", "fast-filesystem-mcp"],
+      "env": {
+        "CREATE_BACKUP_FILES": "${input:createBackupFiles}",
+        "MCP_LOG_FILE": "${input:mcpLogFile}",
+        "DEBUG_MCP": "${input:debugMcp}",
+        "MCP_SILENT_ERRORS": "${input:silentErrors}"
+      },
+      "type": "stdio"
+    },
+    "read-website-fast": {
+      "command": "bunx",
+      "args": ["@just-every/mcp-read-website-fast"],
+      "type": "stdio"
+    },
+    "sequential-thinking": {
+      "command": "bunx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "mcp-sequentialthinking-tools": {
+      "command": "bunx",
+      "args": ["-y", "mcp-sequentialthinking-tools"],
+      "env": {
+        "MAX_HISTORY_SIZE": "1000"
+      },
+      "type": "stdio"
+    },
     "memory": {
       "command": "bunx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"]
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "type": "stdio"
+    },
+    "basic-memory": {
+      "command": "uvx",
+      "args": ["basic-memory", "mcp"],
+      "env": {},
+      "type": "stdio"
+    },
+    "mcp-tasks": {
+      "command": "bunx",
+      "args": ["-y", "mcp-tasks"],
+      "type": "stdio"
     },
     "mcp-server-commands": {
       "command": "bunx",
@@ -29,9 +230,94 @@
       "command": "bunx",
       "args": ["-y", "think-tool-mcp"]
     },
-    "mcp-tasks": {
+    "shell-readonly": {
+      "command": "uvx",
+      "args": ["mcp-shell-server"],
+      "env": {
+        "ALLOW_COMMANDS": "ls,cat,pwd,grep,wc,awk,sed,find,df,free,top,ps,systemctl,journalctl,ip,ss,netstat,lsof,uname,which,whereis,file,stat,fd,rg,cd,command,git"
+      },
+      "type": "stdio"
+    },
+    "json-processor": {
       "command": "bunx",
-      "args": ["-y", "mcp-tasks"]
+      "args": ["-y", "@gongrzhe/server-json-mcp@latest"],
+      "type": "stdio"
+    },
+    "git": {
+      "command": "uvx",
+      "args": ["mcp-server-git", "--repository", "."],
+      "env": {},
+      "type": "stdio"
+    },
+    "@cyanheads/git-mcp-server": {
+      "command": "bunx",
+      "args": ["@cyanheads/git-mcp-server@latest"],
+      "env": {
+        "MCP_LOG_LEVEL": "info",
+        "GIT_BASE_DIR": "${input:GIT_BASE_DIR}"
+      },
+      "type": "stdio"
+    },
+    "@mettamatt/code-reasoning": {
+      "command": "bunx",
+      "args": ["-y", "@mettamatt/code-reasoning"],
+      "env": {},
+      "type": "stdio"
+    },
+    "@just-every/mcp-read-website-fast": {
+      "command": "bunx",
+      "args": ["-y", "@just-every/mcp-read-website-fast"],
+      "env": {},
+      "type": "stdio"
+    },
+    "@just-every/mcp-screenshot-website-fast": {
+      "command": "bunx",
+      "args": ["-y", "@just-every/mcp-screenshot-website-fast"],
+      "env": {},
+      "type": "stdio"
+    },
+    "fastmcp": {
+      "command": "bunx",
+      "args": ["fastmcp", "dev", "${input:serverPath}"],
+      "env": {},
+      "type": "stdio"
+    },
+    "codealive-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "CODEALIVE_API_KEY",
+        "ghcr.io/codealive-ai/codealive-mcp:v0.3.0"
+      ],
+      "env": {
+        "CODEALIVE_API_KEY": "${input:apiKey}"
+      },
+      "type": "stdio"
+    },
+    "@tontoko/fast-playwright-mcp": {
+      "command": "bunx",
+      "args": ["@tontoko/fast-playwright-mcp@latest"],
+      "env": {},
+      "type": "stdio"
+    },
+    "@vscode-mcp/vscode-mcp-server": {
+      "command": "bunx",
+      "args": ["-y", "@vscode-mcp/vscode-mcp-server@latest"],
+      "env": {},
+      "type": "stdio"
+    },
+    "betterprompt-mcp": {
+      "command": "bunx",
+      "args": ["betterprompt-mcp@0.2.1"],
+      "type": "stdio"
+    },
+    "mcp-server-mcp-registry": {
+      "command": "bunx",
+      "args": ["mcp-server-mcp-registry@0.1.0"],
+      "type": "stdio"
     },
     "Github": {
       "url": "https://api.githubcopilot.com/mcp/",
@@ -40,21 +326,6 @@
     "promptboost": {
       "url": "https://promptboost.dev/mcp",
       "type": "http"
-    },
-    "shell-readonly": {
-      "command": "uvx",
-      "args": ["mcp-shell-server"],
-      "env": {
-        "ALLOW_COMMANDS": "ls,cat,pwd,grep,wc,awk,sed,find,df,free,top,ps,systemctl,journalctl,ip,ss,netstat,lsof,uname,which,whereis,file,stat,fd,rg,cd,command,git"
-      }
-    },
-    "json-processor": {
-      "command": "bunx",
-      "args": ["-y", "@gongrzhe/server-json-mcp@latest"]
-    },
-    "git": {
-      "command": "bunx",
-      "args": ["@cyanheads/git-mcp-server@latest"]
     },
     "code-checker": {
       "command": "uvx",
