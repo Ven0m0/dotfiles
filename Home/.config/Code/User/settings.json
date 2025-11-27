@@ -4,22 +4,26 @@
   // --------------------------------------------------------------------
   "workbench.colorTheme": "Catppuccin Mocha",
   "workbench.iconTheme": "Monokai Pro Icons",
-  "editor.fontFamily": "'JetBrains Mono', 'monospace', monospace",
+  "editor.fontFamily": "'JetBrainsMono Nerd Font Mono', 'JetBrains Mono', 'monospace', monospace",
   "editor.fontSize": 12,
   "editor.fontLigatures": true,
   "editor.inlineSuggest.fontFamily": "'Monaspace Neon Var', 'monospace', monospace",
   "editor.minimap.autohide": "mouseover",
+  "editor.minimap.size": "fit",
   "editor.stickyScroll.enabled": false,
   "breadcrumbs.enabled": false,
   "window.density.editorTabHeight": "compact",
+  "window.menuBarVisibility": "compact",
   "workbench.editor.highlightModifiedTabs": true,
+  "workbench.startupEditor": "none",
+  "workbench.list.smoothScrolling": true,
+  "workbench.reduceMotion": "on",
   "catppuccin.accentColor": "pink",
   "catppuccin.extraBordersEnabled": true,
   "VirtualRepos.UseRepoOwnerAvatar": true,
   "update.mode": "none",
   "update.channel": "none",
   "update.showReleaseNotes": false,
-  "npm.fetchOnlinePackageInfo": false,
 
   // --------------------------------------------------------------------
   // Editor Behavior
@@ -35,9 +39,15 @@
   "editor.unicodeHighlight.nonBasicASCII": false,
   "editor.unusualLineTerminators": "auto",
   "editor.wordWrap": "wordWrapColumn",
+  "editor.accessibilitySupport": "auto",
+  "editor.experimentalWhitespaceRendering": "font",
+  "editor.smoothScrolling": false,
+  "editor.language.brackets": [],
   "diffEditor.experimental.showEmptyDecorations": false,
   "diffEditor.hideUnchangedRegions.enabled": true,
   "diffEditor.codeLens": true,
+  "explorer.incrementalNaming": "smart",
+  "explorer.confirmDelete": false,
 
   // --------------------------------------------------------------------
   // File Handling & Formatting
@@ -47,7 +57,6 @@
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "files.autoGuessEncoding": true,
-  "explorer.incrementalNaming": "smart",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
@@ -65,24 +74,9 @@
       "runIn": "terminal"
     }
   ],
-
-  // --------------------------------------------------------------------
-  // Performance & Telemetry
-  // --------------------------------------------------------------------
-  "telemetry.telemetryLevel": "off",
-  "telemetry.enableTelemetry": false,
-  "telemetry.enableCrashReporter": false,
-  "telemetry.editStats.enabled": false,
-  "telemetry.feedback.enabled": false,
-  "geminicodeassist.enableTelemetry": false,
-  "fynix.telemetry.disable": true,
-  "editor.accessibilitySupport": "auto",
-  "editor.experimentalWhitespaceRendering": "font",
-  "editor.smoothScrolling": false,
-  "extensions.experimental.deferredStartupFinishedActivation": true,
-  "terminal.integrated.gpuAcceleration": "on",
-  "workbench.list.smoothScrolling": true,
-  "workbench.reduceMotion": "on",
+  "quickclone.alwaysOpen": true,
+  "mise.configureExtensionsAutomatically": true,
+  "mise.updateOpenTerminalsEnvAutomatically": true,
 
   // --------------------------------------------------------------------
   // Git Integration
@@ -95,18 +89,31 @@
   "git.pullBeforeCheckout": true,
   "git.rebaseWhenSync": true,
   "git.allowNoVerifyCommit": false,
-  "git.autofetch": false,
+  "git.autofetch": true,
+  "git.autoStash": true,
+  "git.blame.editorDecoration.enabled": true,
+  "github.showAvatar": false,
+  "remoteHub.commitDirectlyWarning": "off",
 
   // --------------------------------------------------------------------
-  // Security
+  // Performance, Security & Telemetry
   // --------------------------------------------------------------------
+  "telemetry.telemetryLevel": "off",
+  "telemetry.enableTelemetry": false,
+  "telemetry.enableCrashReporter": false,
+  "telemetry.editStats.enabled": false,
+  "telemetry.feedback.enabled": false,
+  "geminicodeassist.enableTelemetry": false,
+  "fynix.telemetry.disable": true,
+  "extensions.experimental.deferredStartupFinishedActivation": true,
+  "extensions.verifySignature": true,
+  "extensions.autoUpdate": "onlyEnabledExtensions",
+  "extensions.showRecommendationsOnlyOnDemand": true,
   "security.promptForLocalFileProtocolHandling": true,
   "security.promptForRemoteFileProtocolHandling": true,
   "security.workspace.trust.banner": "never",
   "security.workspace.trust.startupPrompt": "never",
   "security.workspace.trust.untrustedFiles": "open",
-  "extensions.verifySignature": true,
-  "extensions.autoUpdate": "onlyEnabledExtensions",
 
   // --------------------------------------------------------------------
   // Integrated Terminal
@@ -122,80 +129,54 @@
   "terminal.integrated.useWslProfiles": false,
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.fontLigatures.enabled": true,
+  "terminal.integrated.gpuAcceleration": "on",
+  "bun.debugTerminal.enabled": false,
 
   // --------------------------------------------------------------------
-  // General Workbench
+  // AI Configuration (Gemini, Claude, Copilot, ChatGPT)
   // --------------------------------------------------------------------
-  "window.closeWhenEmpty": true,
-  "window.confirmBeforeClose": "keyboardOnly",
-  "window.newWindowProfile": "Default",
-  "workbench.commandPalette.preserveInput": true,
-  "workbench.editor.defaultBinaryEditor": "default",
-  "workbench.externalBrowser": "firefox",
-  "workbench.editor.enablePreview": false,
-  "workbench.editor.empty.hint": "hidden",
-
-  // --------------------------------------------------------------------
-  // Language-Specific Settings
-  // --------------------------------------------------------------------
-  "[shellscript]": {
-    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
-  },
-  "[github-actions-workflow]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-  "javascript.format.semicolons": "remove",
-  "typescript.disableAutomaticTypeAcquisition": true,
-  "css.lint.duplicateProperties": "warning",
-
-  // --------------------------------------------------------------------
-  // Extension Config: AI (Gemini, Copilot, Claude, ChatGPT)
-  // --------------------------------------------------------------------
+  // Gemini
   "geminicodeassist.geminiApiKey": "${env:GEMINI_API_KEY}",
   "geminicodeassist.inlineSuggestions.nextEditPredictions": true,
   "geminicodeassist.languages": ["*", "shellscript"],
   "geminicodeassist.rules": "Use bash-native idioms. 2-space indent. Short CLI args. Prefer arrays and here-strings. Use while read -r for input. Use nameref and ret=$(fn). Favor in-memory ops. Use expr/grep for =~. Use [[ ... ]] for tests. Silence with >/dev/null 2>&1 || true. Prefer Rust tools (fd, bat). Target Arch/Wayland and Debian (Pi). Allow experimental apps. Provide precise, optimized answers.",
   "geminicodeassist.updateChannel": "Default",
   "geminicodeassist.project": "vocal-triumph-ltj12",
+  "geminicodeassist.agentYoloMode": true,
+
+  // Copilot
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  },
   "github.copilot.nextEditSuggestions.enabled": true,
   "github.copilot.chat.codesearch.enabled": true,
   "github.copilot.chat.agent.thinkingTool": true,
-  "github.copilot.chat.completionsFetcher": "node-fetch",
+  "github.copilot.chat.anthropic.thinking.enabled": true,
+  "github.copilot.chat.anthropic.tools.websearch.enabled": true,
+  "github.copilot.chat.completionsFetcher": "electron-fetch",
   "github.copilot.chat.executePrompt.enabled": true,
   "github.copilot.chat.edits.temporalContext.enabled": true,
+  "github.copilot.selectedCompletionModel": "",
+
+  // Claude
   "claudeCode.environmentVariables": [
-    {
-      "name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
-      "value": "claude-sonnet-4.5"
-    },
-    {
-      "name": "ANTHROPIC_API_BASE_URL",
-      "value": "http://localhost:4000"
-    },
-    {
-      "name": "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
-      "value": "1"
-    },
-    {
-      "name": "DISABLE_NON_ESSENTIAL_MODEL_CALLS",
-      "value": "1"
-    },
-    {
-      "name": "DISABLE_ERROR_REPORTING",
-      "value": "1"
-    },
-    {
-      "name": "CLAUDE_CODE_ENABLE_TELEMETRY",
-      "value": "0"
-    },
-    {
-      "name": "DISABLE_TELEMETRY",
-      "value": "1"
-    }
+    { "name": "ANTHROPIC_DEFAULT_SONNET_MODEL", "value": "claude-sonnet-4.5" },
+    { "name": "ANTHROPIC_API_BASE_URL", "value": "http://localhost:4000" },
+    { "name": "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC", "value": "1" },
+    { "name": "DISABLE_NON_ESSENTIAL_MODEL_CALLS", "value": "1" },
+    { "name": "DISABLE_ERROR_REPORTING", "value": "1" },
+    { "name": "CLAUDE_CODE_ENABLE_TELEMETRY", "value": "0" },
+    { "name": "DISABLE_TELEMETRY", "value": "1" }
   ],
+  "claudeCode.useCtrlEnterToSend": true,
   "claude-config.autoSync": true,
   "claude-config.autoUseContext7": true,
   "claude-config.cloudSync.autoSync": true,
+
+  // ChatGPT
   "chatgpt.autoAddCurrentFile": true,
   "chatgpt.lang": "en",
   "chatgpt.promptBasedTools.enabled": true,
@@ -208,8 +189,37 @@
   "chatgpt.gpt3.responsesAPI.enabled": true,
 
   // --------------------------------------------------------------------
-  // Extension Config: Linters, Formatters, Tools
+  // Language Specifics & Formatters
   // --------------------------------------------------------------------
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "javascript.format.semicolons": "remove",
+  "typescript.disableAutomaticTypeAcquisition": false,
+  "css.lint.duplicateProperties": "warning",
+  "markdown.extension.completion.enabled": true,
+  "markdown.extension.tableFormatter.normalizeIndentation": true,
+  "markdown.updateLinksOnFileMove.enabled": "always",
+  "markdown.validate.enabled": true,
+  "markdown-checkboxes.label": true,
+  "markdown-preview-github-styles.colorTheme": "dark",
+  "json-compact-prettier.indentLength": 2,
+
+  // --------------------------------------------------------------------
+  // Tools, Linters & Package Managers
+  // --------------------------------------------------------------------
+  "npm.packageManager": "bun",
+  "npm.runSilent": true,
+  "npm.scriptRunner": "bun",
+  "npm.fetchOnlinePackageInfo": false,
+
+  // Shfmt & Shellcheck
+  "shfmt.executableArgs": ["-s", "-bn", "-i=2"],
+  "shfmt.executablePath": "/usr/bin/shfmt",
+  "shfmt.formatIgnored": false,
   "shellformat.useEditorConfig": true,
   "bashBeautify.tabSize": 2,
   "bashIde.enableSourceErrorDiagnostics": true,
@@ -218,21 +228,28 @@
   "bashIde.shfmt.simplifyCode": true,
   "bashIde.shfmt.languageDialect": "bash",
   "shellcheck.run": "onSave",
+
+  // Misc Tools
   "eslint.format.enable": true,
   "eslint.problems.shortenToSingleLine": true,
   "eslint.quiet": true,
   "prettier.bracketSameLine": true,
-  "npm.packageManager": "bun",
-  "npm.runSilent": true,
-  "markdown-checkboxes.label": true,
-  "markdown-preview-github-styles.colorTheme": "dark",
-  "markdown.extension.tableFormatter.normalizeIndentation": true,
-  "markdown.updateLinksOnFileMove.enabled": "always",
-  "markdown.validate.enabled": true,
   "markdownlint.run": "onSave",
   "evenBetterToml.formatter.alignComments": true,
   "evenBetterToml.formatter.arrayAutoExpand": true,
   "evenBetterToml.formatter.compactEntries": true,
+  "vscode-lua-minify.renameGlobals": true,
+  "vscode-lua-minify.renameVariables": true,
+  "vscode-lua-minify.solveMath": true,
+  "oxc.fixKind": "safe_fix_or_suggestion",
+  "oxc.typeAware": true,
+  "biome.configurationPath": ".config/biome.json",
+  "cSpell.enabled": false,
+  "cSpell.userWords": ["anyrun", "bemenu", "rofi"],
+  "trunk.addToolsToPath": true,
+  "linter.cache": true,
+  "textPowerTools.caseSensitiveFiltering": true,
+
   "MinifyAll.disableHexadecimalShortener": false,
   "MinifyAll.disableJavascriptReact": false,
   "MinifyAll.terserMinifyOptions": {
@@ -242,15 +259,440 @@
       "dead_code": true,
       "passes": 2
     },
-    "format": {
-      "wrap_func_args": true
-    },
+    "format": { "wrap_func_args": true },
     "keep_fnames": false,
     "keep_classnames": false,
     "ie8": true
   },
-  "linter.cache": true,
-  "textPowerTools.caseSensitiveFiltering": true,
-  "trunk.addToolsToPath": true,
-  "cSpell.enabled": false
+
+  // --------------------------------------------------------------------
+  // Universal Linter Configuration
+  // --------------------------------------------------------------------
+  "linter.linters": {
+    "brakeman": {
+      "capabilities": [],
+      "command": [
+        ["$isBundler", "bundle", "exec"],
+        "brakeman",
+        "--format",
+        "json",
+        "--no-progress",
+        "--quiet",
+        "--absolute-paths",
+        ["$config", "--config-file", "$config"],
+        "$rootDir"
+      ],
+      "configFiles": ["brakeman.yml", "config/brakeman.yml", ".brakeman/config.yml"],
+      "enabled": true,
+      "languages": ["ruby", "ruby-puma", "ruby-bundler", "ruby-test", "erb"],
+      "name": "brakeman",
+      "url": "https://brakemanscanner.org/",
+      "when": ["$isRails"]
+    },
+    "cargo-clippy": {
+      "capabilities": ["fix-inline", "ignore-file"],
+      "command": [
+        "cargo-clippy",
+        "$file",
+        "--no-deps",
+        "--message-format",
+        "json",
+        ["$config", "--config", "$config"]
+      ],
+      "configFiles": ["clippy.toml", ".clippy.toml"],
+      "enabled": true,
+      "languages": ["rust"],
+      "name": "cargo-clippy",
+      "url": "https://doc.rust-lang.org/clippy/"
+    },
+    "credo": {
+      "capabilities": ["ignore-line", "ignore-file"],
+      "command": [
+        "mix",
+        "credo",
+        "--format",
+        "json",
+        "--read-from-stdin",
+        "--all-priorities",
+        "$file"
+      ],
+      "configFiles": [],
+      "enabled": true,
+      "languages": ["elixir"],
+      "name": "credo",
+      "url": "https://hexdocs.pm/credo/"
+    },
+    "dart": {
+      "capabilities": [],
+      "command": ["dart", "analyze", "$file"],
+      "configFiles": [],
+      "enabled": true,
+      "languages": ["dart"],
+      "name": "dart",
+      "url": "https://dart.dev/tools/linter-rules"
+    },
+    "erb_lint": {
+      "capabilities": [],
+      "command": [
+        ["$isBundler", "bundle", "exec"],
+        "erblint",
+        ["$config", "--config", "$config"],
+        "--format",
+        "json",
+        "$file"
+      ],
+      "configFiles": [".erb-lint.yml"],
+      "enabled": true,
+      "languages": ["erb"],
+      "name": "erb_lint",
+      "url": "https://github.com/Shopify/erb-lint"
+    },
+    "eslint": {
+      "capabilities": [
+        "ignore-line",
+        "ignore-file",
+        "fix-one",
+        "fix-all",
+        "fix-inline"
+      ],
+      "command": [
+        "eslint",
+        "--format",
+        "json",
+        ["$config", "--config", "$config"],
+        ["$debug", "--loglevel", "debug", "--debug"],
+        ["$fixAll", "--fix-dry-run"],
+        ["$fixOne", "--fix-dry-run"],
+        "--stdin-filename",
+        "$file",
+        "--stdin"
+      ],
+      "configFiles": [
+        ".eslintrc.js",
+        ".eslintrc.cjs",
+        ".eslintrc.yaml",
+        ".eslintrc.yml",
+        ".eslintrc.json",
+        ".eslintrc"
+      ],
+      "enabled": true,
+      "languages": ["javascript", "jsx", "typescript", "typescriptreact"],
+      "name": "eslint",
+      "url": "https://eslint.org"
+    },
+    "gherkin-lint": {
+      "capabilities": [],
+      "command": [
+        "gherkin-lint",
+        ["$config", "--config", "$config"],
+        "--format",
+        "json",
+        "$file"
+      ],
+      "configFiles": [".gherkin-lintrc"],
+      "enabled": true,
+      "languages": ["cucumber"],
+      "name": "gherkin-lint",
+      "url": "https://github.com/vsiakka/gherkin-lint"
+    },
+    "hadolint": {
+      "capabilities": ["ignore-line"],
+      "command": [
+        "hadolint",
+        "--format",
+        "json",
+        ["$config", "--config", "$config"],
+        "-"
+      ],
+      "configFiles": [".hadolint.yml", ".hadolint.yaml"],
+      "enabled": true,
+      "languages": ["dockerfile"],
+      "name": "hadolint",
+      "url": "https://github.com/hadolint/hadolint"
+    },
+    "language-tool": {
+      "capabilities": [],
+      "command": ["languagetool", "--json", "--autoDetect"],
+      "configFiles": [],
+      "enabled": true,
+      "languages": ["markdown", "html", "plaintext"],
+      "name": "language-tool",
+      "url": "https://github.com/languagetool-org/languagetool"
+    },
+    "luacheck": {
+      "capabilities": [],
+      "command": [
+        "luacheck",
+        "--formatter",
+        "plain",
+        "--codes",
+        "--ranges",
+        ["$config", "--config", "$config"],
+        "-"
+      ],
+      "configFiles": [".luacheckrc"],
+      "enabled": true,
+      "languages": ["lua"],
+      "name": "luacheck",
+      "url": "https://luacheck.readthedocs.io/en/stable/"
+    },
+    "markdownlint": {
+      "capabilities": ["fix-inline"],
+      "command": [
+        "markdownlint",
+        "--json",
+        ["$fixAll", "--fix"],
+        ["$config", "--config", "$config"],
+        "--stdin"
+      ],
+      "configFiles": [
+        ".markdownlint.json",
+        ".markdownlint.yaml",
+        ".markdownlint.yml",
+        ".markdownlintrc"
+      ],
+      "enabled": true,
+      "languages": ["markdown"],
+      "name": "markdownlint",
+      "url": "https://github.com/DavidAnson/markdownlint"
+    },
+    "php-code-sniffer": {
+      "capabilities": [],
+      "command": [
+        "phpcs",
+        "--report",
+        "json",
+        ["$config", "--standard", "$config"],
+        ["!$config", "--standard", "PSR12"],
+        "--stdin-path",
+        "$file",
+        "-q",
+        "-"
+      ],
+      "configFiles": [".phpcs.xml", "phpcs.xml", ".phpcs.xml.dist", "phpcs.xml.dist"],
+      "enabled": true,
+      "languages": ["php"],
+      "name": "php-code-sniffer",
+      "url": "https://github.com/squizlabs/PHP_CodeSniffer"
+    },
+    "proselint": {
+      "capabilities": ["fix-inline"],
+      "command": ["proselint", "--json", ["$config", "--config", "$config"], "-"],
+      "configFiles": [".proselintrc"],
+      "enabled": true,
+      "languages": ["markdown", "html", "plaintext"],
+      "name": "proselint",
+      "url": "https://github.com/amperser/proselint/"
+    },
+    "pylint": {
+      "capabilities": ["ignore-file"],
+      "command": [
+        "pylint",
+        "--from-stdin",
+        "--output-format",
+        "json",
+        ["$config", "--rcfile", "$config"],
+        "$file"
+      ],
+      "configFiles": [".pylintrc"],
+      "enabled": true,
+      "languages": ["python"],
+      "name": "pylint",
+      "url": "https://www.pylint.org"
+    },
+    "reek": {
+      "capabilities": ["ignore-line"],
+      "command": [
+        "reek",
+        "--format",
+        "json",
+        "--no-progress",
+        ["$config", "--config", "$config"],
+        "--stdin-filename",
+        "$file"
+      ],
+      "configFiles": [".reek.yml"],
+      "enabled": true,
+      "languages": ["ruby", "ruby-test", "ruby-puma", "ruby-bundler"],
+      "name": "reek",
+      "url": "https://github.com/troessner/reek"
+    },
+    "rubocop": {
+      "capabilities": ["ignore-eol", "fix-category", "fix-all"],
+      "command": [
+        ["$isBundler", "bundle", "exec"],
+        "rubocop",
+        ["$lint", "--format", "json", "--extra-details"],
+        ["$config", "--config", "$config"],
+        ["$debug", "--debug"],
+        ["$fixAll", "--auto-correct-all", "--stderr"],
+        ["$fixCategory", "--auto-correct-all", "--only", "$code", "--stderr"],
+        "--stdin",
+        "$file"
+      ],
+      "configFiles": [".rubocop.yml"],
+      "enabled": true,
+      "languages": ["ruby", "ruby-test", "ruby-puma", "ruby-bundler"],
+      "name": "rubocop",
+      "url": "https://rubocop.org"
+    },
+    "ruby": {
+      "capabilities": [],
+      "command": ["ruby", "-c", "-w"],
+      "configFiles": [],
+      "enabled": true,
+      "languages": ["ruby", "ruby-test", "ruby-puma", "ruby-bundler"],
+      "name": "ruby",
+      "url": "https://www.ruby-lang.org"
+    },
+    "shellcheck": {
+      "args": {
+        "$zsh": {
+          "extensions": [".zsh"],
+          "shebangs": [
+            "/bin/zsh",
+            "/usr/bin/zsh",
+            "/usr/local/bin/zsh",
+            "/usr/bin/env zsh"
+          ]
+        }
+      },
+      "capabilities": [],
+      "command": ["shellcheck", "--format", "json", "--enable", "all", "-"],
+      "configFiles": [],
+      "enabled": true,
+      "languages": ["shellscript", "bash"],
+      "name": "shellcheck",
+      "url": "https://github.com/koalaman/shellcheck",
+      "when": ["!$zsh"]
+    },
+    "sqlfluff": {
+      "args": {
+        "$mysql": {
+          "languages": ["mysql"]
+        },
+        "$postgres": {
+          "languages": ["postgres"]
+        }
+      },
+      "capabilities": ["fix-all", "ignore-eol"],
+      "command": [
+        "sqlfluff",
+        ["$lint", "lint", "--format", "json"],
+        ["$fixAll", "fix"],
+        ["$postgres", "--dialect", "postgres"],
+        ["$mysql", "--dialect", "mysql"],
+        "-"
+      ],
+      "configFiles": [".sqlfluff"],
+      "enabled": true,
+      "languages": ["mysql", "postgres", "jinja-sql"],
+      "name": "sqlfluff",
+      "url": "https://docs.sqlfluff.com/en/stable/index.html"
+    },
+    "stylelint": {
+      "capabilities": ["fix-all"],
+      "command": [
+        "stylelint",
+        "--formatter",
+        "json",
+        ["$fixAll", "--fix"],
+        ["$config", "--config", "$config"],
+        "--stdin-filename",
+        "$file",
+        "--stdin"
+      ],
+      "configFiles": [
+        "stylelint.config.js",
+        ".stylelintrc.json",
+        ".stylelintrc.yml",
+        ".stylelintrc.yaml",
+        ".stylelintrc.js"
+      ],
+      "enabled": true,
+      "languages": [
+        "css",
+        "css-in-js",
+        "html",
+        "less",
+        "markdown",
+        "sass",
+        "scss",
+        "sugarss"
+      ],
+      "name": "stylelint",
+      "url": "https://stylelint.io"
+    },
+    "swiftlint": {
+      "capabilities": ["ignore-line", "ignore-file"],
+      "command": [
+        "swiftlint",
+        "--use-stdin",
+        "--reporter",
+        "json",
+        ["$fixAll", "--fix", "--format"],
+        ["$config", "--config", "$config"]
+      ],
+      "configFiles": [".swiftlint.yml", ".swiftlint.yaml"],
+      "enabled": true,
+      "languages": ["swift"],
+      "name": "swiftlint",
+      "url": "https://realm.github.io/SwiftLint/"
+    },
+    "textlint": {
+      "capabilities": ["fix-inline"],
+      "command": [
+        "textlint",
+        "--format",
+        "json",
+        ["$debug", "--debug"],
+        ["$config", "--config", "$config"],
+        "--stdin",
+        "--stdin-filename",
+        "$file"
+      ],
+      "configFiles": [
+        ".textlintrc",
+        ".textlintrc.js",
+        ".textlintrc.json",
+        ".textlintrc.yaml",
+        ".textlintrc.yml"
+      ],
+      "enabled": true,
+      "languages": ["markdown", "plaintext", "html"],
+      "name": "textlint",
+      "url": "https://textlint.github.io"
+    },
+    "vale": {
+      "capabilities": [],
+      "command": [
+        "vale",
+        "--output",
+        "JSON",
+        ["$config", "--config", "$config"],
+        "--ext",
+        "$extension"
+      ],
+      "configFiles": [".vale.ini"],
+      "enabled": true,
+      "languages": ["markdown", "plaintext", "html"],
+      "name": "vale",
+      "url": "https://github.com/errata-ai/vale"
+    },
+    "yamllint": {
+      "capabilities": ["ignore-line"],
+      "command": [
+        "yamllint",
+        "--format",
+        "parsable",
+        ["$config", "--config-file", "$config"],
+        "-"
+      ],
+      "configFiles": [".yamllint.yml", ".yamllint.yaml", ".yamllint"],
+      "enabled": true,
+      "languages": ["yaml"],
+      "name": "yamllint",
+      "url": "https://github.com/adrienverge/yamllint"
+    }
+  }
 }
