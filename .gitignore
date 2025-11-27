@@ -58,6 +58,11 @@ Videos/
 .ssh/
 .android/
 .config/gh/hosts.yml
+# Private SSH keys
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
 
 # ---------------------
 # Backups
@@ -153,6 +158,8 @@ result-*
 *.iso
 *.dmg
 *.deb
+venv/
+.venv/
 
 # ---------------------
 # Linter
@@ -175,6 +182,7 @@ mega-linter.report
 .eslintcache
 /package-lock.json
 *.sqlite
+claude-runs/
 
 # GitHub Actions leftovers
 github_conf
