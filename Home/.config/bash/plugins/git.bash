@@ -15,3 +15,6 @@ gctl(){
   fi
   LC_ALL=C git status; LC_ALL=C git branch -vv
 }
+
+# Display git repository file structure as a tree
+alias git-tree="git ls-tree -r HEAD --name-only | tree --fromfile"
