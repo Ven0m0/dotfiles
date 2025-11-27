@@ -16,7 +16,6 @@ if command -v bat &>/dev/null; then
   elif has lesspipe; then
     export LESSOPEN="|/usr/bin/lesspipe.sh %s"
   fi
-  eval "$(bat --completion bash)"
   alias cat='bat -pp'
 fi
 export PAGER="${PAGER:-less}"
