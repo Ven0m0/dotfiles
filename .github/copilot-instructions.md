@@ -7,6 +7,11 @@
 - **Efficiency**: Prioritize token efficiency and concise communication.
 - **Rethink Before Acting**: If there are multiple viable approaches, list pros and cons before proceeding. Prefer editing existing files over creating new ones.
 - **Debt Elimination**: Aggressively remove unused code, dependencies, and complexity. Less code is less debt.
+- **Snowball**: accumulate/compound context; each session feeds the next via OTel metrics/history.
+- **Subtraction**: remove complexity to free cognitive buffer; less inventory, clearer reviews.
+- **Transparency**: expose planning/reasoning, decisions, alternatives; use full paths; shared visibility = shared learning.
+- **Selective Optimization**: optimize only high-leverage work that increases long-term throughput; finish near-done tasks.
+- **Invent & Simplify**: find core insights; simplify hard; borrow/reinvent freely; accept misunderstanding; build utilitarian, low-token, malleable solutions.
 
 ## 2. Communication Style
 
