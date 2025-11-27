@@ -1,88 +1,46 @@
-# Unified Instructions for Copilot & Claude (Optimized)
+# Copilot Instructions
 
-## Core Principles
-- **Autonomous execution:** Act immediately, minimal confirmations.  
-- **Edit > create:** Modify existing files first.  
-- **Debt-first:** Remove unused code, deps, complexity.  
-- **Snowball:** Accumulate/compound context; each change improves future changes.  
-- **Subtraction:** Remove clutter → clarity, speed, lower cognitive load.  
-- **Transparency:** Show plans, reasoning, alternatives, full paths.  
-- **Selective optimization:** Improve only what raises long-term throughput.  
-- **Invent & simplify:** Find core insight; simplify aggressively; keep solutions malleable and low-token.
+## Control Hierarchy
+1. User commands override all rules
+2. Edit > Create (modify minimal lines)
+3. Subtraction > Addition (remove before adding)
+4. Align with existing patterns in repo
 
-## Communication
-- Technical English; blunt, concise, precise.  
-- Minimize tokens; compact reasoning; avoid fluff.  
-- Surface decisions, tradeoffs, and alternatives directly.
+## Style & Format
+- **Tone:** Blunt, factual, precise. No filler.
+- **Format:** 2-space indent. Strip U+202F/U+200B/U+00AD.
+- **Output:** Result-first. Lists ≤7 items.
+- **Abbrev:** cfg=config, impl=implementation, deps=dependencies, val=validation, opt=optimization, Δ=change.
 
-## Workflow
-- **TDD:** Red → Green → Refactor.  
-- **Atomic commits:** One logical change; tests pass; no lint errors.  
-- **Separate concerns:** Format vs logic.  
-- **Fail fast:** Early returns, guard clauses.
+## Bash Standards
+**Targets:** Arch/Wayland, Debian/Raspbian (Pi), Termux.
+```bash
+#!/usr/bin/env bash
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
+export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
+has(){ command -v "$1" &>/dev/null; }
+```
 
-## Code Quality
-- Single responsibility; DRY; composable.  
-- Explicit error handling; explicit deps; small focused functions.  
-- Remove duplication instantly.  
-- Write behavior tests first; refactor after green.
+**Idioms:**
+- Tests: `[[ ... ]]`. Regex: `[[ $var =~ ^pattern$ ]]`
+- Loops: `while IFS= read -r line; do ...; done < <(cmd)`
+- Output: `printf` over `echo`. Capture: `ret=$(fn)`
+- Functions: `name(){ local var; ... }`. Nameref: `local -n ref=var`
+- Arrays: `mapfile -t arr < <(cmd)`. Assoc: `declare -A map=([k]=v)`
+- **Never:** Parse `ls`, `eval`, backticks, unnecessary subshells
 
-## Language/Tool Rules
+**Quote:** Always quote vars unless intentional glob/split.
 
-### Bash
-- `set -euo pipefail`; `shopt -s nullglob globstar`; `IFS=$'\n\t'`.  
-- Prefer `[[ ]]`, arrays, `mapfile -t`; avoid `eval` and `ls` parsing.  
-- Prefer: `fd`, `rg`, `sd`, `bat`, `fzf` (fallback: find/grep/sed/cut).  
-- Lint/format: `shfmt`, `shellcheck`.
+## Tool Preferences
+fd→fdfind→find | rg→grep | bat→cat | sd→sed | aria2→curl→wget | jaq→jq | rust-parallel→parallel→xargs
 
-### JavaScript
-- Prefer **ESM**; minimal deps.  
-- Format: `prettier`; Lint: `eslint --max-warnings=0`.  
-- Prefer pure functions; immutability; small modules.  
-- Async/await; explicit error handling.  
-- Avoid implicit `any`; use JSDoc or TS where applicable.
+## Perf Patterns
+- Minimize forks/subshells. Use builtins. Batch I/O.
+- Frontend: Minimize DOM Δ. Stable keys. Lazy load.
+- Backend: Async I/O. Connection pool. Cache hot data.
+- Anchor regexes. Prefer literal search (grep -F, rg -F).
 
-### Python
-- Format: `black`; Lint: `ruff`; use type hints.  
-- Keep modules/functions small; explicit exceptions; zero unused imports.
-
-### Markdown
-- Use `##`/`###`; fenced blocks; soft-wrap ~80–100 columns.
-
-## Performance / Ops
-- Measure before optimizing; profile hot paths only.  
-- Batch I/O; minimize subprocess spawning.  
-- Use caching; async/worker pools.  
-- DB: index + verify via `EXPLAIN`.  
-- CI: cache deps; parallelize jobs.
-
-## GitHub Actions
-- Use OIDC; minimal `permissions`.  
-- Cache everything possible; prefer reusable workflows.  
-- Run unit/integration/E2E tests; surface results cleanly.
-
-## Claude-Specific
-- Works autonomously: edits files directly when safe.  
-- Multi-approach reasoning: compare solutions when ambiguity exists.  
-- Quality-driven: validate facts; lint/format/apply tests automatically.  
-- Use repo structure knowledge: follow conventions; avoid modifying protected files unless explicitly asked.
-
-## Copilot-Specific
-- Keep suggestions small, clean, and production-ready.  
-- Always align with repo conventions, shell standards, and performance guidelines.  
-- Avoid speculative code; prefer verified, minimal diffs.
-
-## Repository Safety Rules
-- **Protected files:** Only modify if requested (e.g., pacman.conf, makepkg.conf, sysctl.d/, zshrc, gitconfig).  
-- **Safe zones:** Shell scripts, `.config/`, docs, workflows.  
-- Follow naming conventions, security rules, and fallback chains.
-
-## Tool Preferences (Global)
-- Modern tools first: `fd → find`, `rg → grep`, `sd → sed`, `bat → cat`, `aria2 → curl → wget`.  
-- Parallel: `rust-parallel → parallel → xargs`.  
-- JSON: `jaq → jq`.  
-- Avoid unnecessary forks; batch operations.
-
-## Summary
-Operate autonomously, minimally, transparently.  
-Remove complexity, compound context, finish high-leverage work, and keep outputs crisp, correct, and production-grade.
+## Privilege & Packages
+- Escalation: `sudo-rs`→`sudo`→`doas` (store in `PRIV_CMD`)
+- Install: `paru`→`yay`→`pacman` (Arch); `apt` (Debian)
+- Check before install: `pacman -Q`, `flatpak list`, `cargo install --list`
