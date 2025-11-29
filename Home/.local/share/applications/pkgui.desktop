@@ -1,0 +1,13 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Package Manager UI
+GenericName=Arch Package Manager TUI
+Comment=Unified package manager with fuzzy search (pacman/paru/AUR)
+Exec=sh -c 'pkgui.sh -h || $HOME/.local/bin/pkgui.sh -h; read -p "Press ENTER to exit"'
+Icon=system-software-install
+Terminal=true
+Categories=System;PackageManager;Settings;
+Keywords=package;pacman;paru;aur;install;update;yay;
+StartupNotify=false
