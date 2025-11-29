@@ -7,4 +7,4 @@ permissions:
   pull-requests: write
 jobs:
   update:
-    uses: Ven0m0/.github/.github/workflows/submodules.yml@main
+    uses: Ven0m0/.github/.github/workflows/git-maintenance.yml@main
