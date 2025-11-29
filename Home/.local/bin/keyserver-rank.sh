@@ -86,7 +86,7 @@ EOF
 
 	local tmp
 	tmp=$(mktemp)
-	trap "rm -f '$tmp'" EXIT
+	trap 'rm -f "$tmp"' EXIT
 
 	[[ $show_fastest == no ]] && echo "Ranking ${#servers[@]} keyservers..." >&2
 

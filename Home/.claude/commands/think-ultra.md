@@ -1,7 +1,6 @@
----
-description: Ultra-comprehensive analytical thinking for the most complex problems
-argument-hint: [complex problem or question]
----
+______________________________________________________________________
+
+## description: Ultra-comprehensive analytical thinking for the most complex problems argument-hint: [complex problem or question]
 
 # Think Ultra Command
 
@@ -122,4 +121,6 @@ Present your comprehensive analysis using this detailed format:
 - **Remaining questions**: What still needs investigation?
 - **Learning opportunities**: What this analysis teaches about problem-solving
 
-**Note**: This ultra-analysis may require significant processing time and computational resources. The depth of analysis should match the complexity and importance of the problem. Consider using `/think-harder` for less complex issues that don't require the full 7-phase ultra-comprehensive framework.
+**Note**: This ultra-analysis may require significant processing time and computational resources. The depth of analysis
+should match the complexity and importance of the problem. Consider using `/think-harder` for less complex issues that
+don't require the full 7-phase ultra-comprehensive framework.

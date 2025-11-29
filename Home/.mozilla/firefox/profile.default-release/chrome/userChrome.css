@@ -38,13 +38,13 @@
 .tab-background {
   border-radius: var(--user-tab-rounding) !important;
 }
-.tabbrowser-tab:not([selected="true"]):not([multiselected="true"]):not([beforeselected-visible="true"])
+.tabbrowser-tab:not([selected='true']):not([multiselected='true']):not([beforeselected-visible='true'])
   .tab-background {
   border-right: 1px solid var(--lwt-background-tab-separator-color, rgba(0, 0, 0, 0.2)) !important;
   border-radius: 0 !important;
 }
-[brighttext="true"]
-  .tabbrowser-tab:not([selected="true"]):not([multiselected="true"]):not([beforeselected-visible="true"])
+[brighttext='true']
+  .tabbrowser-tab:not([selected='true']):not([multiselected='true']):not([beforeselected-visible='true'])
   .tab-background {
   border-right: 1px solid
     var(--lwt-background-tab-separator-color, var(--lwt-selected-tab-background-color, rgba(255, 255, 255, 0.2))) !important;
@@ -136,7 +136,7 @@ panelview .toolbarbutton-1,
 #appMenu-popup .PanelUI-subView .subviewbutton:not(#appMenu-fxa-status2) {
   padding: calc(var(--item_y_padding) + 1px) 4px !important;
 }
-menupopup[type="arrow"] > :is(menuitem, menu) {
+menupopup[type='arrow'] > :is(menuitem, menu) {
   padding-block: 0 !important;
   padding: var(--item_y_padding) 0 !important;
   padding-inline-start: 4px !important;
@@ -147,7 +147,7 @@ menupopup[type="arrow"] > :is(menuitem, menu) {
 menuseparator {
   padding-block: 0 !important;
 }
-:is(menupopup, panel)[type="arrow"] {
+:is(menupopup, panel)[type='arrow'] {
   --panel-padding: 0 !important;
 }
 #context-navigation :is(#context-back, #context-forward, #context-reload, #context-stop, #context-bookmarkpage) {
@@ -160,10 +160,10 @@ menuseparator {
   padding-inline-start: 4px !important;
   height: 16px !important;
 }
-:is(menupopup, panel)[type="arrow"] :is(.menu-accel, .menu-iconic-accel) {
+:is(menupopup, panel)[type='arrow'] :is(.menu-accel, .menu-iconic-accel) {
   margin-inline-end: 8px !important;
 }
-:is(menupopup, panel)[type="arrow"] .menu-right {
+:is(menupopup, panel)[type='arrow'] .menu-right {
   margin-inline-end: 4px !important;
 }
 .menu-iconic-icon {

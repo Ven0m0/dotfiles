@@ -1,13 +1,15 @@
----
-description: "Rust programming language coding conventions and best practices"
-applyTo: "**/*.rs"
----
+______________________________________________________________________
+
+## description: "Rust programming language coding conventions and best practices" applyTo: "\*\*/\*.rs"
 
 # Rust Coding Conventions and Best Practices
 
 Follow idiomatic Rust practices and community standards when writing Rust code.
 
-These instructions are based on [The Rust Book](https://doc.rust-lang.org/book/), [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/), [RFC 430 naming conventions](https://github.com/rust-lang/rfcs/blob/master/text/0430-finalizing-naming-conventions.md), and the broader Rust community at [users.rust-lang.org](https://users.rust-lang.org).
+These instructions are based on [The Rust Book](https://doc.rust-lang.org/book/),
+[Rust API Guidelines](https://rust-lang.github.io/api-guidelines/),
+[RFC 430 naming conventions](https://github.com/rust-lang/rfcs/blob/master/text/0430-finalizing-naming-conventions.md),
+and the broader Rust community at [users.rust-lang.org](https://users.rust-lang.org).
 
 ## General Instructions
 
@@ -18,7 +20,8 @@ These instructions are based on [The Rust Book](https://doc.rust-lang.org/book/)
 - Write code with good maintainability practices, including comments on why certain design decisions were made.
 - Handle errors gracefully using `Result<T, E>` and provide meaningful error messages.
 - For external dependencies, mention their usage and purpose in documentation.
-- Use consistent naming conventions following [RFC 430](https://github.com/rust-lang/rfcs/blob/master/text/0430-finalizing-naming-conventions.md).
+- Use consistent naming conventions following
+  [RFC 430](https://github.com/rust-lang/rfcs/blob/master/text/0430-finalizing-naming-conventions.md).
 - Write idiomatic, safe, and efficient Rust code that follows the borrow checker's rules.
 - Ensure code compiles without warnings.
 
@@ -43,7 +46,8 @@ These instructions are based on [The Rust Book](https://doc.rust-lang.org/book/)
 - Use `&mut T` when you need to modify borrowed data.
 - Explicitly annotate lifetimes when the compiler cannot infer them.
 - Use `Rc<T>` for single-threaded reference counting and `Arc<T>` for thread-safe reference counting.
-- Use `RefCell<T>` for interior mutability in single-threaded contexts and `Mutex<T>` or `RwLock<T>` for multi-threaded contexts.
+- Use `RefCell<T>` for interior mutability in single-threaded contexts and `Mutex<T>` or `RwLock<T>` for multi-threaded
+  contexts.
 
 ## Patterns to Avoid
 
@@ -83,7 +87,8 @@ Eagerly implement common traits where appropriate:
 - `Copy`, `Clone`, `Eq`, `PartialEq`, `Ord`, `PartialOrd`, `Hash`, `Debug`, `Display`, `Default`
 - Use standard conversion traits: `From`, `AsRef`, `AsMut`
 - Collections should implement `FromIterator` and `Extend`
-- Note: `Send` and `Sync` are auto-implemented by the compiler when safe; avoid manual implementation unless using `unsafe` code
+- Note: `Send` and `Sync` are auto-implemented by the compiler when safe; avoid manual implementation unless using
+  `unsafe` code
 
 ### Type Safety and Predictability
 
@@ -107,7 +112,8 @@ Eagerly implement common traits where appropriate:
 - Write integration tests in `tests/` directory with descriptive filenames.
 - Write clear and concise comments for each function, struct, enum, and complex logic.
 - Ensure functions have descriptive names and include comprehensive documentation.
-- Document all public APIs with rustdoc (`///` comments) following the [API Guidelines](https://rust-lang.github.io/api-guidelines/).
+- Document all public APIs with rustdoc (`///` comments) following the
+  [API Guidelines](https://rust-lang.github.io/api-guidelines/).
 - Use `#[doc(hidden)]` to hide implementation details from public documentation.
 - Document error conditions, panic scenarios, and safety considerations.
 - Examples should use `?` operator, not `unwrap()` or deprecated `try!` macro.

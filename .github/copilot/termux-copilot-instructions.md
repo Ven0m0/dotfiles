@@ -5,10 +5,10 @@
 When generating code for this repository:
 
 1. **Termux Optimization**: Always use Termux-specific patterns and paths
-2. **Single-File Design**: Create self-contained scripts with inline helpers
-3. **Modern Tool Preference**: Use Rust tools (fd, rg, bat) with fallbacks
-4. **Strict Safety**: Implement proper error handling and signal trapping
-5. **Performance Focus**: Optimize for speed and minimal resource usage
+1. **Single-File Design**: Create self-contained scripts with inline helpers
+1. **Modern Tool Preference**: Use Rust tools (fd, rg, bat) with fallbacks
+1. **Strict Safety**: Implement proper error handling and signal trapping
+1. **Performance Focus**: Optimize for speed and minimal resource usage
 
 ## Technology Version Detection
 
@@ -124,7 +124,7 @@ require_deps() {
 - Implement parallel processing for batch operations
 - Cache results of expensive operations
 - Prefer streaming over loading entire files into memory
-- Target <100ms startup time for utilities
+- Target \<100ms startup time for utilities
 
 ### Security
 
@@ -258,4 +258,5 @@ fi
 - Prioritize consistency with existing code over external conventions
 - Test thoroughly on Termux before considering the script complete
 
-When in doubt, examine the existing scripts in `bin/` directory for examples of proper implementation patterns, especially `img.sh`, `media.sh`, and `revanced-helper.sh` which demonstrate the preferred architecture and coding style.
+When in doubt, examine the existing scripts in `bin/` directory for examples of proper implementation patterns,
+especially `img.sh`, `media.sh`, and `revanced-helper.sh` which demonstrate the preferred architecture and coding style.

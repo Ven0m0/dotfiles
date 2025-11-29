@@ -10,8 +10,5 @@
   "printWidth": 120,
   "proseWrap": "preserve",
   "endOfLine": "lf",
-  "plugins": [
-    "@prettier/plugin-sh",
-    "@prettier/plugin-oxc"
-  ]
+  "plugins": []
 }

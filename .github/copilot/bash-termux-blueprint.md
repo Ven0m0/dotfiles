@@ -2,17 +2,20 @@
 
 ## Project Overview
 
-This repository contains a carefully curated Termux environment with production-grade Bash utilities optimized for Android environments. The codebase emphasizes performance, safety, and cross-platform compatibility while maintaining simplicity and single-file design principles.
+This repository contains a carefully curated Termux environment with production-grade Bash utilities optimized for
+Android environments. The codebase emphasizes performance, safety, and cross-platform compatibility while maintaining
+simplicity and single-file design principles.
 
 ## Priority Guidelines
 
 When generating code for this repository:
 
 1. **Termux-First Design**: Optimize primarily for Termux/Android, with Arch Linux and Debian as secondary targets
-2. **Single-File Architecture**: Keep utilities self-contained with inline helpers rather than external libraries
-3. **Performance Priority**: Favor in-memory operations, minimal external processes, and modern Rust tools when available
-4. **Safety Standards**: Implement strict error handling, proper quoting, and signal trapping
-5. **Cross-Platform Compatibility**: Provide graceful fallbacks and platform-specific optimizations
+1. **Single-File Architecture**: Keep utilities self-contained with inline helpers rather than external libraries
+1. **Performance Priority**: Favor in-memory operations, minimal external processes, and modern Rust tools when
+   available
+1. **Safety Standards**: Implement strict error handling, proper quoting, and signal trapping
+1. **Cross-Platform Compatibility**: Provide graceful fallbacks and platform-specific optimizations
 
 ## Technology Stack Detection
 
@@ -93,7 +96,7 @@ require_deps() {
 
 - No external library sourcing by default
 - Keep helper functions inline
-- Minimize startup time (<100ms target)
+- Minimize startup time (\<100ms target)
 - Self-documenting code with usage functions
 
 ### Preferred Constructs
@@ -418,9 +421,9 @@ check_sudo() {
 
 ### Startup Time Targets
 
-- Simple utilities: <50ms
-- Complex utilities: <100ms
-- Setup scripts: <500ms
+- Simple utilities: \<50ms
+- Complex utilities: \<100ms
+- Setup scripts: \<500ms
 
 ### Memory Usage Guidelines
 
@@ -495,6 +498,7 @@ update_script() {
 - Refresh dependency versions
 - Review and update documentation
 
----
+______________________________________________________________________
 
-_This blueprint should be consulted before creating or modifying any Bash scripts in this repository. It represents the accumulated best practices and patterns observed in the existing codebase._
+_This blueprint should be consulted before creating or modifying any Bash scripts in this repository. It represents the
+accumulated best practices and patterns observed in the existing codebase._

@@ -1,14 +1,15 @@
----
-description: "Technology-agnostic blueprint generator for creating comprehensive copilot-instructions.md files that guide GitHub Copilot to produce code consistent with project standards, architecture patterns, and exact technology versions by analyzing existing codebase patterns and avoiding assumptions."
-mode: "agent"
----
+______________________________________________________________________
+
+## description: "Technology-agnostic blueprint generator for creating comprehensive copilot-instructions.md files that guide GitHub Copilot to produce code consistent with project standards, architecture patterns, and exact technology versions by analyzing existing codebase patterns and avoiding assumptions." mode: "agent"
 
 # Copilot Instructions Blueprint Generator
 
 ## Configuration Variables
 
-${PROJECT_TYPE="Auto-detect|.NET|Java|JavaScript|TypeScript|React|Angular|Python|Multiple|Other"} <!-- Primary technology -->
-${ARCHITECTURE_STYLE="Layered|Microservices|Monolithic|Domain-Driven|Event-Driven|Serverless|Mixed"} <!-- Architectural approach -->
+${PROJECT_TYPE="Auto-detect|.NET|Java|JavaScript|TypeScript|React|Angular|Python|Multiple|Other"}
+    <!-- Primary technology -->
+${ARCHITECTURE_STYLE="Layered|Microservices|Monolithic|Domain-Driven|Event-Driven|Serverless|Mixed"}
+    <!-- Architectural approach -->
 ${CODE_QUALITY_FOCUS="Maintainability|Performance|Security|Accessibility|Testability|All"} <!-- Quality priorities -->
 ${DOCUMENTATION_LEVEL="Minimal|Standard|Comprehensive"} <!-- Documentation requirements -->
 ${TESTING_REQUIREMENTS="Unit|Integration|E2E|TDD|BDD|All"} <!-- Testing approach -->
@@ -16,7 +17,9 @@ ${VERSIONING="Semantic|CalVer|Custom"} <!-- Versioning approach -->
 
 ## Generated Prompt
 
-"Generate a comprehensive copilot-instructions.md file that will guide GitHub Copilot to produce code consistent with our project's standards, architecture, and technology versions. The instructions must be strictly based on actual code patterns in our codebase and avoid making any assumptions. Follow this approach:
+"Generate a comprehensive copilot-instructions.md file that will guide GitHub Copilot to produce code consistent with
+our project's standards, architecture, and technology versions. The instructions must be strictly based on actual code
+patterns in our codebase and avoid making any assumptions. Follow this approach:
 
 ### 1. Core Instruction Structure
 
@@ -278,22 +281,27 @@ ${VERSIONING == "Custom" ?
 To create the copilot-instructions.md file, first analyze the codebase to:
 
 1. **Identify Exact Technology Versions**:
-   - ${PROJECT_TYPE == "Auto-detect" ? "Detect all programming languages, frameworks, and libraries by scanning file extensions and configuration files" : `Focus on ${PROJECT_TYPE} technologies`}
+
+   - ${PROJECT_TYPE == "Auto-detect" ? "Detect all programming languages, frameworks, and libraries by scanning file
+     extensions and configuration files" : `Focus on ${PROJECT_TYPE} technologies`}
    - Extract precise version information from project files, package.json, .csproj, etc.
    - Document version constraints and compatibility requirements
 
-2. **Understand Architecture**:
+1. **Understand Architecture**:
+
    - Analyze folder structure and module organization
    - Identify clear layer boundaries and component relationships
    - Document communication patterns between components
 
-3. **Document Code Patterns**:
+1. **Document Code Patterns**:
+
    - Catalog naming conventions for different code elements
    - Note documentation styles and completeness
    - Document error handling patterns
    - Map testing approaches and coverage
 
-4. **Note Quality Standards**:
+1. **Note Quality Standards**:
+
    - Identify performance optimization techniques actually used
    - Document security practices implemented in the code
    - Note accessibility features present (if applicable)
@@ -310,9 +318,10 @@ The final copilot-instructions.md should:
 - Provide concrete examples from the codebase
 - Be comprehensive yet concise enough for Copilot to effectively use
 
-Important: Only include guidance based on patterns actually observed in the codebase. Explicitly instruct Copilot to prioritize consistency with existing code over external best practices or newer language features.
-"
+Important: Only include guidance based on patterns actually observed in the codebase. Explicitly instruct Copilot to
+prioritize consistency with existing code over external best practices or newer language features. "
 
 ## Expected Output
 
-A comprehensive copilot-instructions.md file that will guide GitHub Copilot to produce code that is perfectly compatible with your existing technology versions and follows your established patterns and architecture.
+A comprehensive copilot-instructions.md file that will guide GitHub Copilot to produce code that is perfectly compatible
+with your existing technology versions and follows your established patterns and architecture.

@@ -1,7 +1,6 @@
----
-mode: agent
-description: "Comprehensive optimization prompt for ReVanced APK building repository with focus on aapt2 integration, privacy patches, and multi-stage patching workflows"
----
+______________________________________________________________________
+
+## mode: agent description: "Comprehensive optimization prompt for ReVanced APK building repository with focus on aapt2 integration, privacy patches, and multi-stage patching workflows"
 
 # ReVanced Building Repository Optimization
 
@@ -10,10 +9,10 @@ description: "Comprehensive optimization prompt for ReVanced APK building reposi
 Optimize the rvx-apks ReVanced building repository by:
 
 1. **Enhanced aapt2 integration and optimization**
-2. **Privacy patches integration from jkennethcarino/privacy-revanced-patches**
-3. **Multi-stage patching workflows** (privacy patches first, then main patches)
-4. **Build process improvements** and performance optimizations
-5. **Comprehensive testing and validation**
+1. **Privacy patches integration from jkennethcarino/privacy-revanced-patches**
+1. **Multi-stage patching workflows** (privacy patches first, then main patches)
+1. **Build process improvements** and performance optimizations
+1. **Comprehensive testing and validation**
 
 ## Current Repository Analysis
 
@@ -433,4 +432,5 @@ validate_privacy_features() {
 - **User Disruption**: Maintain backward compatibility throughout implementation
 - **Maintenance Burden**: Automate as much of the process as possible
 
-This optimization plan provides a comprehensive approach to enhancing your ReVanced building repository with advanced privacy protection, improved AAPT2 integration, and sophisticated multi-stage patching capabilities.
+This optimization plan provides a comprehensive approach to enhancing your ReVanced building repository with advanced
+privacy protection, improved AAPT2 integration, and sophisticated multi-stage patching capabilities.

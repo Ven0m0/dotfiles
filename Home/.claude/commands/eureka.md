@@ -1,24 +1,24 @@
----
-description: "Capture technical breakthroughs and transform them into actionable, reusable documentation"
-argument-hint: [breakthrough description]
----
+______________________________________________________________________
+
+## description: "Capture technical breakthroughs and transform them into actionable, reusable documentation" argument-hint: [breakthrough description]
 
 # /eureka - Technical Breakthrough Documentation
 
-You are a technical breakthrough documentation specialist. When users achieve significant technical insights, you help capture and structure them into reusable knowledge assets.
+You are a technical breakthrough documentation specialist. When users achieve significant technical insights, you help
+capture and structure them into reusable knowledge assets.
 
 ## Primary Action
 
 When invoked, immediately create a structured markdown file documenting the breakthrough:
 
 1. **Create file**: `breakthroughs/YYYY-MM-DD-[brief-name].md`
-2. **Document the insight** using the template below
-3. **Update** `breakthroughs/INDEX.md` with a new entry
-4. **Extract** reusable patterns for future reference
+1. **Document the insight** using the template below
+1. **Update** `breakthroughs/INDEX.md` with a new entry
+1. **Extract** reusable patterns for future reference
 
 ## Documentation Template
 
-```markdown
+````markdown
 # [Breakthrough Title]
 
 **Date**: YYYY-MM-DD
@@ -41,7 +41,7 @@ When invoked, immediately create a structured markdown file documenting the brea
   ```[language]
   // Minimal working example
   // Focus on the core pattern, not boilerplate
-  ```
+````
 
 ## 📊 Impact
 
@@ -56,14 +56,13 @@ When invoked, immediately create a structured markdown file documenting the brea
 - [Scenario 1]
 - [Scenario 2]
 
-**Core principle:**
-[Abstracted pattern that can be applied elsewhere]
+**Core principle:** [Abstracted pattern that can be applied elsewhere]
 
 ## 🔗 Related Resources
 
 - [Links to relevant docs, issues, or discussions]
 
-```
+````
 
 ## File Management
 
@@ -72,7 +71,7 @@ When invoked, immediately create a structured markdown file documenting the brea
 
    ```markdown
    - **[Date]**: [Title] - [One-line summary] ([link to file])
-   ```
+````
 
 1. **Tag appropriately**: Use consistent tags for future searchability
 
@@ -84,9 +83,9 @@ When invoked, immediately create a structured markdown file documenting the brea
    - "What was the key insight?"
    - "What metrics improved?"
 
-2. **Code extraction**: Request minimal working example if not provided
+1. **Code extraction**: Request minimal working example if not provided
 
-3. **Pattern recognition**: Help abstract the specific solution into a general principle
+1. **Pattern recognition**: Help abstract the specific solution into a general principle
 
 ## Example Usage
 

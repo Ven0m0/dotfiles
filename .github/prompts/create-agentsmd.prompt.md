@@ -1,17 +1,20 @@
----
-description: "Prompt for generating an AGENTS.md file for a repository"
-mode: "agent"
----
+______________________________________________________________________
+
+## description: "Prompt for generating an AGENTS.md file for a repository" mode: "agent"
 
 # Create high‑quality AGENTS.md file
 
-You are a code agent. Your task is to create a complete, accurate AGENTS.md at the root of this repository that follows the public guidance at <https://agents.md/>.
+You are a code agent. Your task is to create a complete, accurate AGENTS.md at the root of this repository that follows
+the public guidance at <https://agents.md/>.
 
-AGENTS.md is an open format designed to provide coding agents with the context and instructions they need to work effectively on a project.
+AGENTS.md is an open format designed to provide coding agents with the context and instructions they need to work
+effectively on a project.
 
 ## What is AGENTS.md?
 
-AGENTS.md is a Markdown file that serves as a "README for agents" - a dedicated, predictable place to provide context and instructions to help AI coding agents work on your project. It complements README.md by containing detailed technical context that coding agents need but might clutter a human-focused README.
+AGENTS.md is a Markdown file that serves as a "README for agents" - a dedicated, predictable place to provide context
+and instructions to help AI coding agents work on your project. It complements README.md by containing detailed
+technical context that coding agents need but might clutter a human-focused README.
 
 ## Key Principles
 
@@ -195,28 +198,31 @@ Here's a real example from the agents.md website:
 ## Implementation Steps
 
 1. **Analyze the project structure** to understand:
+
    - Programming languages and frameworks used
    - Package managers and build tools
    - Testing frameworks
    - Project architecture (monorepo, single package, etc.)
 
-2. **Identify key workflows** by examining:
+1. **Identify key workflows** by examining:
+
    - package.json scripts
    - Makefile or other build files
    - CI/CD configuration files
    - Documentation files
 
-3. **Create comprehensive sections** covering:
+1. **Create comprehensive sections** covering:
+
    - All essential setup and development commands
    - Testing strategies and commands
    - Code style and conventions
    - Build and deployment processes
 
-4. **Include specific, actionable commands** that agents can execute directly
+1. **Include specific, actionable commands** that agents can execute directly
 
-5. **Test the instructions** by ensuring all commands work as documented
+1. **Test the instructions** by ensuring all commands work as documented
 
-6. **Keep it focused** on what agents need to know, not general project information
+1. **Keep it focused** on what agents need to know, not general project information
 
 ## Best Practices
 
@@ -243,4 +249,5 @@ For large monorepos:
 - Focus on actionable instructions that help agents understand and work with your codebase
 - This is living documentation - update it as your project evolves
 
-When creating the AGENTS.md file, prioritize clarity, completeness, and actionability. The goal is to give any coding agent enough context to effectively contribute to the project without requiring additional human guidance.
+When creating the AGENTS.md file, prioritize clarity, completeness, and actionability. The goal is to give any coding
+agent enough context to effectively contribute to the project without requiring additional human guidance.

@@ -14,7 +14,7 @@
 </details>
 <details>
 <summary><b>Dotfile managers</b></summary>
-  
+
 - <https://github.com/Shemnei/punktf>
 - <https://github.com/woterr/dotpush>
 - <https://github.com/joel-porquet/dotlink>
@@ -59,13 +59,21 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 <summary><b>Packages:</b></summary>
 
 - [Arch PKG](https://archlinux.org/packages)
+
 - [AUR PKG](https://aur.archlinux.org)
+
 - [Crates.io](https://crates.io)
+
 - [FlatHub](https://flathub.org)
+
 - [Lure.sh](https://lure.sh)
+
 - [Basher](https://www.basher.it/package)
+
 - [bpkg](https://bpkg.sh)
+
 - [x-cmd](https://www.x-cmd.com)
+
   <details>
   <summary><b>Install x-cmd</b></summary>
 
@@ -97,10 +105,13 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 </details>
 
 - [Libredirect](https://libredirect.github.io)
+
 - [alternative-front-ends](https://github.com/mendel5/alternative-front-ends)
+
 - [Privacy-tools](https://www.privacytools.io)
 
 - [Redlib instance list](https://github.com/redlib-org/redlib-instances/blob/main/instances.md)
+
 - [Redlib reddit](https://lr.ptr.moe)
 
 - [Imgur](https://rimgo.lunar.icu)
@@ -109,6 +120,6 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 
 - [DuckduckGo](https://duckduckgo.com)
 
-- [Searchxng](https://searx.dresden.network/) &nbsp; [Instances:](https://searx.space)
+- [Searchxng](https://searx.dresden.network/)   [Instances:](https://searx.space)
 
 - [Brave search](https://search.brave.com)
