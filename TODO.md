@@ -1,5 +1,4 @@
 TODO:
-integrate "https://github.com/x-cmd/x-cmd" somewhere
 
 **Quick web server serving current dir**
 ```bash
