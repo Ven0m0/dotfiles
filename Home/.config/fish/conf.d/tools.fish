@@ -28,6 +28,10 @@ type -q ast-grep && ast-grep completions fish | source
 command -q cod && _evalcache cod init $fish_pid fish >/dev/null 2>&1
 command -q fixit && _evalcache fixit init fish
 
+# x-cmd (command-line toolkit)
+# https://github.com/x-cmd/x-cmd
+test -r "$HOME/.x-cmd.root/X.fish" && source "$HOME/.x-cmd.root/X.fish"
+
 if command -q starship
 	starship init fish | source >/dev/null 2>&1
 end
