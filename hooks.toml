@@ -1,0 +1,42 @@
+# Tuckr Hooks Configuration
+# This file defines hooks for deploying system-wide configurations
+# Documentation: https://github.com/RaphGL/Tuckr
+
+# Hooks for the 'etc' package (system configuration files)
+[etc]
+# Pre-link hook: Run before linking etc/ to /etc
+# Useful for backing up existing configs or validating permissions
+# pre = """
+# echo "Preparing to link etc/ configurations..."
+# """
+
+# Post-link hook: Run after successfully linking etc/ to /etc
+# Useful for reloading services or validating deployments
+post = """
+echo "✓ System configurations (etc/) linked successfully"
+echo "  Some services may need to be restarted to apply changes"
+"""
+
+# Hooks for the 'usr' package (system libraries and binaries)
+[usr]
+# Post-link hook: Run after successfully linking usr/ to /usr
+post = """
+echo "✓ System libraries (usr/) linked successfully"
+# Reload systemd if systemd configs were modified
+if systemctl --version &>/dev/null; then
+  echo "  Reloading systemd daemon..."
+  systemctl daemon-reload 2>/dev/null || true
+fi
+"""
+
+# Global hooks (run for all packages)
+[hooks]
+# Pre-link: Runs before any package is linked
+# pre = """
+# echo "Starting tuckr deployment..."
+# """
+
+# Post-link: Runs after all packages are linked
+# post = """
+# echo "✓ All packages deployed successfully"
+# """
