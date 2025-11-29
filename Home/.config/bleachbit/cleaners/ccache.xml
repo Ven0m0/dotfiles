@@ -23,7 +23,7 @@
 
 -->
 <cleaner id="ccache" os="linux">
-	<!-- FIXME: Does it work under Windows? -->
+	<!-- Linux-specific: ccache uses different paths on Windows (~/.ccache/ vs %LOCALAPPDATA%\ccache) -->
 	<label>ccache</label>
 	<description>Cache result of files compiled by C/C++ compilers</description>
 	<option id="ccache">
