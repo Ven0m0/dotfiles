@@ -142,12 +142,9 @@ body input:not([value=''])[type] * {
   cursor: unset !important;
   content: none !important;
 }
-body input:not([value=''])[type]::before,
-body input:not([value=''])[type]:focus ~ *::before,
-body input:not([value=''])[type] *::before,
-body input:not([value=''])[type]::after,
-body input:not([value=''])[type]:focus ~ *::after,
-body input:not([value=''])[type] *::after {
+body input:not([value=''])[type]:is(::before, ::after),
+body input:not([value=''])[type]:focus ~ *:is(::before, ::after),
+body input:not([value=''])[type] *:is(::before, ::after) {
   content: none !important;
 }
 
@@ -157,16 +154,12 @@ A:link[HREF*='click'] IMG,
 A:link[HREF*='banner'] IMG,
 A:link[HREF*='doubleclick'] IMG,
 A:link[HREF*='adserve'] IMG,
-A:link[HREF*='sponsor'] IMG {
-  display: none !important;
-}
+A:link[HREF*='sponsor'] IMG,
 IFRAME[SRC*='ad'],
 IFRAME[SRC*='click'],
 IFRAME[SRC*='banner'],
 IFRAME[SRC*='doubleclick'],
-IFRAME[SRC*='adserve'] {
-  display: none !important;
-}
+IFRAME[SRC*='adserve'],
 *[class*='ad-'],
 *[class*='sponsor'],
 *[ID*='ad'],

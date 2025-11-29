@@ -1,18 +1,17 @@
 {
-	"policies": {
-		"DisableFeedbackCommands": true,
-		"DisableFirefoxStudies": true,
-		"DisableFirefoxScreenshots": true,
+  "policies": {
+    "DisableFeedbackCommands": true,
+    "DisableFirefoxStudies": true,
+    "DisableFirefoxScreenshots": true,
     "DisableDeveloperTools": false,
     "DisableAppUpdate": true,
-		"DisablePocket": true,
-		"DisableTelemetry": true,
-		"DisableAppUpdate": true,
+    "DisablePocket": true,
+    "DisableTelemetry": true,
     "DisableProfileImport": false,
-		"NoDefaultBookmarks": true,
-		"DontCheckDefaultBrowser": true,
-		"DisableSetDesktopBackground": true,
-		"NetworkPrediction": false,
+    "NoDefaultBookmarks": true,
+    "DontCheckDefaultBrowser": true,
+    "DisableSetDesktopBackground": true,
+    "NetworkPrediction": false,
     "OverridePostUpdatePage": "",
 		"EnableTrackingProtection": {
 			"Value": true,
