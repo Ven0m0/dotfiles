@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 jobs:
   megalinter:
-    uses: Ven0m0/.github/.github/workflows/mega-linter.yml@main
+    uses: Ven0m0/.github/.github/workflows/unified-linters.yml@main
     with:
       exclude_dirs: ".github,.git,.cache,go,node_modules,.var,.rustup,.wine,.zim,.void-editor,.vscode,.claude"
     secrets: inherit
