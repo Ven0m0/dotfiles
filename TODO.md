@@ -1,20 +1,13 @@
-```mk
-https://github.com/gavinlyonsrepo/backupmenu
-
-
-git submodule sync --recursive
-git submodule update --init --recursive
-```
+TODO:
+integrate "https://github.com/x-cmd/x-cmd" somewhere
 
 **Quick web server serving current dir**
-
 ```bash
 # https://catonmat.net/top-ten-one-liners-from-commandlinefu-explained
 alias pyserver='python3 -m SimpleHTTPServer 8000'
 ```
 
 **Find files**
-
 ```bash
 #!/usr/bin/env bash
 # Usage:
@@ -53,14 +46,12 @@ done
 ```
 
 **Pacman modules**
-
 ```markdown
 /usr/share/libalpm/scripts/
 /etc/pacman.d/hooks
 ```
 
 **Misc**
-
 ```bash
 # Delete logs
 find -O3 . -type f -name "*.log" -delete
@@ -79,18 +70,15 @@ usepatch(){
     patch -Np1 < "$patch"
   done
 }
-
 systemctl list-units --type=service --state=running
 
 # ffmpeg encode:
 mkdir transcoded; for i in *.mp4; do ffmpeg -n -hwaccel cuda -i "$i" -vcodec mjpeg -q:v 2 -acodec pcm_s16be -q:a 0 -f mov "transcoded/${i%.*}.mov"; done
-
 ```
 
 <https://github.com/hollowillow/scripts/blob/main/fzman>
 
 # Claude
-
 ```sh
 claude plugin marketplace add wshobson/agents
 ```
