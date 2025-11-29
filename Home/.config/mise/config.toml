@@ -75,7 +75,6 @@ rmz = "latest"
 "cargo:youtube-tui" = "latest"
 "cargo:rumdl" = "latest"
 "cargo:mpatch" = "latest"
-#"cargo:fdf" = "latest"
 "cargo:frep" = "latest"
 "cargo:ripuniq" = "latest"
 "cargo:dedup" = "latest"
@@ -94,6 +93,8 @@ rmz = "latest"
 "cargo:terminal_tools" = "latest"
 "cargo:dui-cli" = "latest"
 "cargo:kanata" = "latest"
+"cargo:https://github.com/vishruth-thimmaiah/converse" = "latest"
+#oxlint = "latest"
 
 [env]
 _.python.venv = { path = ".venv" }
