@@ -111,10 +111,15 @@ deploy_system_configs() {
     return 0
   fi
   info "Deploying system configurations with tuckr..."
+  local hooks_file="${REPO_DIR}/hooks.toml"
   for pkg in etc usr; do
     if [[ -d "${REPO_DIR}/${pkg}" ]]; then
       info "Linking $pkg/ → /"
-      sudo tuckr link -d "$REPO_DIR" -t / "$pkg" || warn "Failed to link $pkg"
+      if [[ -f "$hooks_file" ]]; then
+        sudo tuckr link -d "$REPO_DIR" -t / -H "$hooks_file" "$pkg" || warn "Failed to link $pkg"
+      else
+        sudo tuckr link -d "$REPO_DIR" -t / "$pkg" || warn "Failed to link $pkg"
+      fi
     else
       warn "Directory not found: ${REPO_DIR}/${pkg}"
     fi

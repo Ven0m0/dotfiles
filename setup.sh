@@ -213,13 +213,20 @@ tuckr_system_configs() {
 	[[ -d "$TUCKR_DIR" ]] || die "Dotfiles directory not found at $TUCKR_DIR."
 
 	local tuckr_pkgs=(etc usr)
+	local hooks_file="${TUCKR_DIR}/hooks.toml"
+
 	for pkg in "${tuckr_pkgs[@]}"; do
 		if [[ -d "${TUCKR_DIR}/${pkg}" ]]; then
 			if [[ "$DRY_RUN" == true ]]; then
 				info "[DRY-RUN] Would link '${pkg}' to target '/'"
+				[[ -f "$hooks_file" ]] && info "[DRY-RUN] Would use hooks from: $hooks_file"
 			else
 				info "Linking '${pkg}' to target '/'..."
-				sudo tuckr link -d "$TUCKR_DIR" -t / "$pkg" || warn "Failed to link ${pkg}"
+				if [[ -f "$hooks_file" ]]; then
+					sudo tuckr link -d "$TUCKR_DIR" -t / -H "$hooks_file" "$pkg" || warn "Failed to link ${pkg}"
+				else
+					sudo tuckr link -d "$TUCKR_DIR" -t / "$pkg" || warn "Failed to link ${pkg}"
+				fi
 			fi
 		else
 			warn "tuckr package '${pkg}' not found in repo, skipping."
