@@ -1,5 +1,13 @@
 ### Quick prompts:
 
 ```markdown
-lint and format my files extensively. Use yamlfmt for yaml, biome for json, css and js, shellcheck, shellharden for bash and zsh, tombi or taplo-cli for toml, mado for markdown, black and ruff for python, . Also ensure my files are logically correct and adhere to the root editorconfig file. Also use eslint and prettier should you need to.
+Lint and format exhaustively per editorconfig:
+- YAML: yamlfmt
+- JSON/CSS/JS: biome, eslint, prettier
+- Bash/Zsh: shfmt, shellcheck, shellharden
+- TOML: taplo-cli
+- Markdown: mado, markdownlint, mdformat
+- Python: ruff, black, mypy
+- Actions: actionlint
+Enforce logic, syntax, types, security. Zero errors.
 ```
