@@ -98,14 +98,18 @@ fi
 (( ${#files[@]} == 0 && !compile && !concat )) && { log "No scripts found"; exit 0; }
 [[ ${#files[@]} -gt 1 && -n $output && $output != - && ! compile && ! concat ]] && \
   die "Multiple files with single output unsupported (use -c/--compile)"
-#──────────── Comment Strip AWK ────────────
+#──────────── Comment Strip AWK (Enhanced) ────────────
 read -r -d '' AWK_STRIP <<'AWK' || :
 NR==1 && /^#!/ { print; next }
-!hdr && /^#/ { next }
-!hdr { hdr=1 }
+!/^#/ { hdr=1 }
+!hdr { next }
 /^[[:space:]]*#/ { next }
-{ sub(/[[:space:]]+#.*/, ""); print }
+{ gsub(/[[:space:]]+#.*/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, ""); if(length) print }
 AWK
+#──────────── Function Normalizer ────────────
+normalize_functions(){
+  sed -E 's/^[[:space:]]*function[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\{/\1(){\n/g'
+}
 #──────────── Preprocessor Prep ────────────
 prep_preprocess(){
   local in="$1" out="$2"; : > "$out"
@@ -123,15 +127,20 @@ minify_enhanced(){
     fi
     # Skip shebang (already handled)
     [[ $line =~ ^#! ]] && continue
-    # Skip comment lines
-    [[ $line =~ ^[[:space:]]*# ]] && continue
-    # Remove inline comments (only if followed by alphanumeric to preserve ${#var})
+    # Skip comment-only lines (but preserve copyright if in first 10 lines)
+    if [[ $line =~ ^[[:space:]]*# ]]; then
+      (( NR <= 10 && line =~ Copyright|License )) && { printf '%s\n' "$line" >> "$out"; continue; }
+      continue
+    fi
+    # Normalize function declarations
+    line=$(sed -E 's/^[[:space:]]*function[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\{/\1(){/g' <<<"$line")
+    # Strip inline comments & whitespace
     local stripped
-    stripped=$(printf '%s' "$line" | sed -E 's/[[:space:]]+#[[:space:]]*[a-zA-Z0-9 ]*$//; s/^[[:space:]]*//; s/[[:space:]]+$//')
+    stripped=$(sed -E 's/[[:space:]]+#[[:space:]]*[a-zA-Z0-9 ]*$//; s/^[[:space:]]+//; s/[[:space:]]+$//' <<<"$line")
     [[ -n $stripped ]] && printf '%s\n' "$stripped" >> "$out"
   done < "$in"
-  # Remove multiline comments (: ' ... ')
-  sed -i '/^:[[:space:]]*'"'"'/,/^'"'"'/d' "$out" 2>/dev/null || :
+  # Remove multiline comments & separator lines
+  sed -i -e '/^:[[:space:]]*'"'"'/,/^'"'"'/d' -e '/^#[[:space:]]*[-─]{5,}/d' "$out" 2>/dev/null || :
 }
 #──────────── Concatenate Files ────────────
 concat_files(){
