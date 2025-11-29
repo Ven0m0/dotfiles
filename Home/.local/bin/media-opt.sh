@@ -91,7 +91,7 @@ optimize_file(){
               cmd=(jpegoptim "${args[@]}" "$file")
             elif has mozjpeg; then
               tool="mozjpeg"
-              cmd=(mozjpeg -quality "${QUALITY}" -progressive "$file")
+              cmd=(mozjpeg -quality "$QUALITY" -progressive "$file")
             fi
             ;;
           png)
@@ -211,7 +211,7 @@ optimize_file(){
 
       mv "$tmp_out" "$file"
       [[ "$KEEP_MTIME" -eq 1 ]] && touch -r "$file" "$file"
-      printf "${G}[OK]${X}  %-25s %-10s -%d%% (%s saved)\n" "$(basename "$file")" "[$tool]" "$percent" "$(numfmt --to=iec $diff)"
+      printf "${G}[OK]${X}  %-25s %-10s -%d%% (%s saved)\n" "$(basename "$file")" "[$tool]" "$percent" "$(numfmt --to=iec "$diff")"
     else
       rm -f "$tmp_out"
     fi
