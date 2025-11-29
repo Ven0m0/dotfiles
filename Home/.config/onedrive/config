@@ -1,11 +1,14 @@
 # Performance & sync behavior
 sync_dir = "~/OneDrive"
 check_nomount = "true"
+check_nosync = "true"
+sync_root_files = "true"
 skip_dotfiles = "true"
 skip_symlinks = "true"
-monitor_interval = "45"
-monitor_fullscan_frequency = "12"
+monitor_interval = "60"
+monitor_fullscan_frequency = "16"
 monitor_log_frequency = "12"
+inotify_delay = "10"
 min_notify_changes = "10"
 operation_timeout = "3600"
 download_only = "false"
@@ -13,8 +16,12 @@ upload_only = "false"
 no_remote_delete = "false"
 remove_source_files = "false"
 skip_dir_strict_match = "false"
+rate_limit = "1275922"
+display_manager_integration = "true"
+azure_tenant_id = ""
 
 # Optimizations
+threads = "4"
 classify_as_big_delete = "1000"
 user_agent = "ISV|abraunegg|OneDrive Client|v2.5.3"
 force_http_11 = "false"
@@ -34,7 +41,7 @@ sync_dir_permissions = "700"
 sync_file_permissions = "600"
 
 # Bandwidth (0=unlimited)
-rate_limit = "0"
+rate_limit = "1275922"
 
 # Exclusions - common build/cache artifacts
 skip_file = "~*|.~*|*.tmp|*.swp|*.partial|*.!sync|*.lrprev|*.crdownload|*.part|*.log|*.old|*.bak"
