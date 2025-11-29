@@ -44,6 +44,7 @@ if has bun; then
 	alias npx=bunx npm=bun
 	[[ -z "$BUN_INSTALL" ]] && export BUN_INSTALL="$HOME/.bun"
 	prependpath "$BUN_INSTALL/bin"
+	export ELECTRON_IS_DEV=0 ELECTRON_DISABLE_SECURITY_WARNINGS=true NODE_ENV=production
 fi
 export NODE_OPTIONS="--no-warnings --max-old-space-size=4096"
 
