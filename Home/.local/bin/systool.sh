@@ -71,12 +71,12 @@ swap_cmd() {
 		swap_usage
 		return 2
 	}
-	local a="$1" b="$2" tmp
-	if [[ -d "$a" ]]; then
+	local file_a="$1" file_b="$2" tmp
+	if [[ -d "$file_a" ]]; then
 		tmp="tmp.$$.dir"
 		mkdir -p "$tmp"
 	else tmp="$(mktemp)"; fi
-	mv -- "$a" "$tmp" && mv -- "$b" "$a" && mv -- "$tmp" "$b"
+	mv -- "$file_a" "$tmp" && mv -- "$file_b" "$file_a" && mv -- "$tmp" "$file_b"
 }
 
 # -------- symclean ----------
@@ -306,7 +306,7 @@ sysz_cmd() {
 			shift
 			;;
 		c)
-			CMD=cat
+			CMD='cat'
 			shift
 			;;
 		*)

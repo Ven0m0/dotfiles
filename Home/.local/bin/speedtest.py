@@ -180,6 +180,11 @@ except ImportError:
     import builtins
     from io import TextIOWrapper, FileIO
 
+    # Python 3 compatibility definitions
+    basestring = str
+    unicode = str
+    file = object
+
     class _Py3Utf8Output(TextIOWrapper):
         """UTF-8 encoded wrapper around stdout for py3, to override
         ASCII stdout

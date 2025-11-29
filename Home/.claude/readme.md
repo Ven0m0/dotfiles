@@ -1,6 +1,7 @@
 # Claude stuff
 
 ### Claude code environment variables:
+
 ```md
 DISABLE_PROMPT_CACHING=0
 DISABLE_TELEMETRY=1

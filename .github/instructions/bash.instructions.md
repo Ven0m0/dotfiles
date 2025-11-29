@@ -1,10 +1,11 @@
----
-applyTo: "**/*.{sh,bash}"
----
+______________________________________________________________________
+
+## applyTo: "\*\*/\*.{sh,bash}"
 
 # Bash guidelines
 
-These instructions define how GitHub Copilot should propose Bash and related shell content for this repo. Follow the patterns and templates here before inventing new ones.
+These instructions define how GitHub Copilot should propose Bash and related shell content for this repo. Follow the
+patterns and templates here before inventing new ones.
 
 Scope and targets
 
@@ -17,13 +18,14 @@ Formatting
 
 - Shebang: #!/usr/bin/env bash
 - Options (top of file): set -euo pipefail; shopt -s nullglob globstar
-- IFS: IFS=$'\n\t' when line-splitting needed
-- Indent: 2 spaces; no tabs; minimize blank lines; break long pipes with \
+- IFS: IFS=$'\\n\\t' when line-splitting needed
+- Indent: 2 spaces; no tabs; minimize blank lines; break long pipes with \\
 - No hidden Unicode (no U+202F, U+200B, U+00AD). No trailing whitespace.
 
 Bash idioms (must)
 
-- Prefer Bash-native over external: arrays, assoc arrays, mapfile -t, here-strings <<<, process substitution < <(), parameter expansion, [[...]] and regex with =~, printf over echo.
+- Prefer Bash-native over external: arrays, assoc arrays, mapfile -t, here-strings \<<\<, process substitution < \<(),
+  parameter expansion, \[[...]\] and regex with =~, printf over echo.
 - Capture output: ret=$(fn)
 - Line loops: while IFS= read -r line; do ...; done
 - Nameref: local -n ref=name
@@ -35,7 +37,8 @@ Bash idioms (must)
 Tooling preferences
 
 - Prefer Rust tools with graceful fallbacks:
-  - fd (fallback: find; on Debian, fdfind), rg (fallback: grep -E), bat (fallback: cat), sd (fallback: sed -E), zoxide (fallback: cd)
+  - fd (fallback: find; on Debian, fdfind), rg (fallback: grep -E), bat (fallback: cat), sd (fallback: sed -E), zoxide
+    (fallback: cd)
 - Short CLI flags by default; add long aliases only for UX parity.
 - Avoid unnecessary external calls; batch I/O; cache computed values.
 
@@ -55,7 +58,7 @@ Privilege and package managers
 
 Wayland and OS detection
 
-- Wayland: [[${XDG_SESSION_TYPE:-} == wayland || -n ${WAYLAND_DISPLAY:-}]]
+- Wayland: \[[${XDG_SESSION_TYPE:-} == wayland || -n ${WAYLAND_DISPLAY:-}]\]
 - Arch: have pacman; Debian: have apt; Pi specifics guarded by uname -m.
 
 Logging and UX
@@ -85,8 +88,7 @@ Do not
 - Do not add hidden Unicode; do not introduce trailing whitespace.
 - Do not make unnecessary network/API calls.
 
-Canonical script template
-Use this as the baseline. Adapt minimally per task.
+Canonical script template Use this as the baseline. Adapt minimally per task.
 
 ```bash
 #!/usr/bin/env bash
@@ -247,8 +249,7 @@ main(){
 main "$@"
 ```
 
-Arch build environment (CachyOS-style)
-Use when compiling toolchains locally.
+Arch build environment (CachyOS-style) Use when compiling toolchains locally.
 
 ```bash
 export CFLAGS="-march=native -mtune=native -O3 -pipe"
@@ -259,8 +260,7 @@ export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Cstrip=sy
 command -v ld.lld &>/dev/null && export RUSTFLAGS="${RUSTFLAGS} -Clink-arg=-fuse-ld=lld"
 ```
 
-AUR helper flags
-Use minimal, non-interactive flags.
+AUR helper flags Use minimal, non-interactive flags.
 
 ```bash
 AUR_FLAGS=(--needed --noconfirm --removemake --cleanafter --sudoloop --skipreview --batchinstall)
@@ -275,7 +275,7 @@ Network operations
 
 Device and file operations (Pi and imaging)
 
-- Derive partition suffix: [[$dev == *@(nvme|mmcblk|loop)*]] && p="${dev}p1" || p="${dev}1"
+- Derive partition suffix: \[\[$dev == *@(nvme|mmcblk|loop)*\]\] && p="${dev}p1" || p="${dev}1"
 - Wait for device nodes with retry loop; use udevadm settle when needed.
 - Always umount recursively in cleanup; detach loop devices; ignore errors but log.
 
@@ -286,9 +286,9 @@ Interactive mode
 
 Data collection and processing
 
-- mapfile -t arr < <(cmd)
+- mapfile -t arr < \<(cmd)
 - Filter config/package lists:
-  - mapfile -t arr < <(grep -v '^\s\*#' file.txt | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//' | grep -v '^$')
+  - mapfile -t arr < \<(grep -v '^\\s\*#' file.txt | sed -E 's/^\[[:space:]\]+//;s/\[[:space:]\]+$//' | grep -v '^$')
 
 Testing and validation
 
@@ -307,10 +307,10 @@ Style guide highlights
 
 Common helpers (reuse from Shell-book.md)
 
-- sleepy: read -rt "${1:-1}" -- <> <(:) &>/dev/null || :
-- fcat: printf '%s\n' "$(<${1})"
-- regex extraction: [[$s =~ re]] && printf '%s\n' "${BASH_REMATCH[1]}"
-- split: IFS=$'\n' read -d "" -ra arr <<< "${1//$2/$'\n'}"
+- sleepy: read -rt "${1:-1}" -- \<> \<(:) &>/dev/null || :
+- fcat: printf '%s\\n' "$(\<${1})"
+- regex extraction: \[[$s =~ re]\] && printf '%s\\n' "${BASH_REMATCH[1]}"
+- split: IFS=$'\\n' read -d "" -ra arr \<<< "${1//$2/$'\\n'}"
 - bname/dname: parameter-expansion implementations; avoid spawning coreutils when hot.
 
 Modern tools with fallbacks
@@ -323,7 +323,8 @@ Commit and quality discipline
 - TDD flow: Red → Green → Refactor
 - Change types: Structural (format/org, no behavior delta) vs Behavioral (fn add/mod/del). Never mix both in one commit.
 - Commit only when tests pass, zero warnings, single unit, clear message; prefer small, independent commits.
-- Design: single responsibility, loose coupling, early returns, avoid over-abstraction, eliminate duplication, clear intent.
+- Design: single responsibility, loose coupling, early returns, avoid over-abstraction, eliminate duplication, clear
+  intent.
 
 Token efficiency (for logs/comments)
 
@@ -335,7 +336,7 @@ Token efficiency (for logs/comments)
 Review checklist for Copilot
 
 - Starts with #!/usr/bin/env bash, set -Eeuo pipefail, shopt flags.
-- Uses arrays/mapfile/[[...]] and parameter expansion; avoids parsing ls/using eval/backticks.
+- Uses arrays/mapfile/\[[...]\] and parameter expansion; avoids parsing ls/using eval/backticks.
 - Logging helpers present; traps for cleanup and ERR with line numbers.
 - Privilege via run_priv(); pkg manager detection; Arch/Debian paths handled.
 - Rust tools preferred with fallbacks; Wayland checks when relevant.

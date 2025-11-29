@@ -37,7 +37,9 @@ EOF
 # WRAPPERS
 # ==============================================================================
 opt_img() {
-	local f="$1" out="$2" ext="${f##*.}" l_ext="${ext,,}"
+	local f="$1" out="$2"
+	local ext="${f##*.}"
+	local l_ext="${ext,,}"
 	# 1. rimage (Best general purpose)
 	if has rimage; then
 		tool="rimage"
@@ -153,9 +155,13 @@ optimize_file() {
 
 	# Size Guard & Replace
 	if [[ $ok -eq 1 ]] && [[ -f "$tmp" ]]; then
-		local old_sz=$(stat -c%s "$f") new_sz=$(stat -c%s "$tmp")
+		local old_sz
+		local new_sz
+		old_sz=$(stat -c%s "$f")
+		new_sz=$(stat -c%s "$tmp")
 		if [[ $new_sz -gt 0 ]] && [[ $new_sz -lt $old_sz ]]; then
-			local diff=$((old_sz - new_sz)) pct=$((diff * 100 / old_sz))
+			local diff=$((old_sz - new_sz))
+			local pct=$((diff * 100 / old_sz))
 			if [[ "$BACKUP" -eq 1 ]]; then
 				local bp="${BACKUP_DIR}/${f#.}"
 				mkdir -p "$(dirname "$bp")"
@@ -228,10 +234,10 @@ log "Starting ($JOBS jobs, $VIDEO_CODEC)..."
 EXTS="jpg,jpeg,mjpg,png,webp,svg,gif,avif,jxl,bmp,mp4,mkv,mov,webm,avi"
 
 if has fd; then
-	FIND="fd -t f -H -E .git $(printf -- "-e %s " "${EXTS//,/ }") . \"$@\""
+	FIND="fd -t f -H -E .git $(printf -- "-e %s " "${EXTS//,/ }") . \"$*\""
 elif has fdfind; then
-	FIND="fdfind -t f -H -E .git $(printf -- "-e %s " "${EXTS//,/ }") . \"$@\""
-else FIND="find \"$@\" -type f -iregex \".*\.\(${EXTS//,/\|}\)$\" -not -path '*/.*'"; fi
+	FIND="fdfind -t f -H -E .git $(printf -- "-e %s " "${EXTS//,/ }") . \"$*\""
+else FIND="find \"$*\" -type f -iregex \".*\.\(${EXTS//,/\|}\)$\" -not -path '*/.*'"; fi
 
 if has rust-parallel; then
 	eval "$FIND" | rust-parallel -j "$JOBS" -- 'optimize_file {}'

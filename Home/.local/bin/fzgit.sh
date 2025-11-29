@@ -193,7 +193,7 @@ _pager() {
 
 # Extract hash from fzf selection
 _extract_hash() {
-	grep -Eo '[a-f0-9]{7,40}' <<<"$1" | head -1
+	grep -Eo '[a-f0-9]{7,40}' | head -1
 }
 
 # Interactive git add

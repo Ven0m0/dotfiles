@@ -1,8 +1,6 @@
----
-description: Create a new Claude Code custom command
-argument-hint: [command-name] [description]
-allowed-tools: Write, Read, LS, Bash(mkdir:*), Bash(ls:*), WebSearch(*)
----
+______________________________________________________________________
+
+## description: Create a new Claude Code custom command argument-hint: [command-name] [description] allowed-tools: Write, Read, LS, Bash(mkdir:*), Bash(ls:*), WebSearch(\*)
 
 # Create Command
 
@@ -90,7 +88,7 @@ Detailed description of what this command does and when to use it.
 Create a new command named "$ARGUMENTS" following these guidelines:
 
 1. Ask for clarification on command purpose if description is unclear
-2. Determine appropriate location (project vs user-level) and category (e.g. gh, cc or ask user for others)
-3. Create command file with proper structure
-4. Include comprehensive documentation and examples
-5. Validate command syntax and functionality
+1. Determine appropriate location (project vs user-level) and category (e.g. gh, cc or ask user for others)
+1. Create command file with proper structure
+1. Include comprehensive documentation and examples
+1. Validate command syntax and functionality

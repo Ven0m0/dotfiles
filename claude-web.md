@@ -1,4 +1,4 @@
-### Quick prompts:
+### Quick prompts
 
 **Lint / Format:**
 

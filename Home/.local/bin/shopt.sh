@@ -180,7 +180,8 @@ concat_files(){
 }
 #──────────── Optimizer (Standard Mode) ────────────
 optimize(){
-  local f="$1" content out_target="$f"
+  local f="$1" content
+  local out_target="$f"
   # Handle output
   if [[ -n $output ]]; then
     [[ $output == - ]] && out_target="" || out_target="$output"
@@ -237,7 +238,7 @@ compile_variants(){
     log "Compiling variant: $VAR"
     local tmp_prep tmp_proc tmp_mini
     tmp_prep=$(mktemp); tmp_proc=$(mktemp); tmp_mini=$(mktemp)
-    trap "rm -f '$tmp_prep' '$tmp_proc' '$tmp_mini'" RETURN
+    trap 'rm -f "$tmp_prep" "$tmp_proc" "$tmp_mini"' RETURN
     # Prepare for preprocessor
     prep_preprocess "$tmp_concat" "$tmp_prep"
     # Run preprocessor

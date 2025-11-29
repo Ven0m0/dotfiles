@@ -220,14 +220,7 @@
     },
     "codealive-mcp": {
       "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-i",
-        "-e",
-        "CODEALIVE_API_KEY",
-        "ghcr.io/codealive-ai/codealive-mcp:v0.3.0"
-      ],
+      "args": ["run", "--rm", "-i", "-e", "CODEALIVE_API_KEY", "ghcr.io/codealive-ai/codealive-mcp:v0.3.0"],
       "env": {
         "CODEALIVE_API_KEY": "${input:apiKey}"
       },

@@ -291,14 +291,7 @@
     },
     "cargo-clippy": {
       "capabilities": ["fix-inline", "ignore-file"],
-      "command": [
-        "cargo-clippy",
-        "$file",
-        "--no-deps",
-        "--message-format",
-        "json",
-        ["$config", "--config", "$config"]
-      ],
+      "command": ["cargo-clippy", "$file", "--no-deps", "--message-format", "json", ["$config", "--config", "$config"]],
       "configFiles": ["clippy.toml", ".clippy.toml"],
       "enabled": true,
       "languages": ["rust"],
@@ -307,15 +300,7 @@
     },
     "credo": {
       "capabilities": ["ignore-line", "ignore-file"],
-      "command": [
-        "mix",
-        "credo",
-        "--format",
-        "json",
-        "--read-from-stdin",
-        "--all-priorities",
-        "$file"
-      ],
+      "command": ["mix", "credo", "--format", "json", "--read-from-stdin", "--all-priorities", "$file"],
       "configFiles": [],
       "enabled": true,
       "languages": ["elixir"],
@@ -348,13 +333,7 @@
       "url": "https://github.com/Shopify/erb-lint"
     },
     "eslint": {
-      "capabilities": [
-        "ignore-line",
-        "ignore-file",
-        "fix-one",
-        "fix-all",
-        "fix-inline"
-      ],
+      "capabilities": ["ignore-line", "ignore-file", "fix-one", "fix-all", "fix-inline"],
       "command": [
         "eslint",
         "--format",
@@ -382,13 +361,7 @@
     },
     "gherkin-lint": {
       "capabilities": [],
-      "command": [
-        "gherkin-lint",
-        ["$config", "--config", "$config"],
-        "--format",
-        "json",
-        "$file"
-      ],
+      "command": ["gherkin-lint", ["$config", "--config", "$config"], "--format", "json", "$file"],
       "configFiles": [".gherkin-lintrc"],
       "enabled": true,
       "languages": ["cucumber"],
@@ -397,13 +370,7 @@
     },
     "hadolint": {
       "capabilities": ["ignore-line"],
-      "command": [
-        "hadolint",
-        "--format",
-        "json",
-        ["$config", "--config", "$config"],
-        "-"
-      ],
+      "command": ["hadolint", "--format", "json", ["$config", "--config", "$config"], "-"],
       "configFiles": [".hadolint.yml", ".hadolint.yaml"],
       "enabled": true,
       "languages": ["dockerfile"],
@@ -421,15 +388,7 @@
     },
     "luacheck": {
       "capabilities": [],
-      "command": [
-        "luacheck",
-        "--formatter",
-        "plain",
-        "--codes",
-        "--ranges",
-        ["$config", "--config", "$config"],
-        "-"
-      ],
+      "command": ["luacheck", "--formatter", "plain", "--codes", "--ranges", ["$config", "--config", "$config"], "-"],
       "configFiles": [".luacheckrc"],
       "enabled": true,
       "languages": ["lua"],
@@ -438,19 +397,8 @@
     },
     "markdownlint": {
       "capabilities": ["fix-inline"],
-      "command": [
-        "markdownlint",
-        "--json",
-        ["$fixAll", "--fix"],
-        ["$config", "--config", "$config"],
-        "--stdin"
-      ],
-      "configFiles": [
-        ".markdownlint.json",
-        ".markdownlint.yaml",
-        ".markdownlint.yml",
-        ".markdownlintrc"
-      ],
+      "command": ["markdownlint", "--json", ["$fixAll", "--fix"], ["$config", "--config", "$config"], "--stdin"],
+      "configFiles": [".markdownlint.json", ".markdownlint.yaml", ".markdownlint.yml", ".markdownlintrc"],
       "enabled": true,
       "languages": ["markdown"],
       "name": "markdownlint",
@@ -486,14 +434,7 @@
     },
     "pylint": {
       "capabilities": ["ignore-file"],
-      "command": [
-        "pylint",
-        "--from-stdin",
-        "--output-format",
-        "json",
-        ["$config", "--rcfile", "$config"],
-        "$file"
-      ],
+      "command": ["pylint", "--from-stdin", "--output-format", "json", ["$config", "--rcfile", "$config"], "$file"],
       "configFiles": [".pylintrc"],
       "enabled": true,
       "languages": ["python"],
@@ -549,12 +490,7 @@
       "args": {
         "$zsh": {
           "extensions": [".zsh"],
-          "shebangs": [
-            "/bin/zsh",
-            "/usr/bin/zsh",
-            "/usr/local/bin/zsh",
-            "/usr/bin/env zsh"
-          ]
+          "shebangs": ["/bin/zsh", "/usr/bin/zsh", "/usr/local/bin/zsh", "/usr/bin/env zsh"]
         }
       },
       "capabilities": [],
@@ -610,16 +546,7 @@
         ".stylelintrc.js"
       ],
       "enabled": true,
-      "languages": [
-        "css",
-        "css-in-js",
-        "html",
-        "less",
-        "markdown",
-        "sass",
-        "scss",
-        "sugarss"
-      ],
+      "languages": ["css", "css-in-js", "html", "less", "markdown", "sass", "scss", "sugarss"],
       "name": "stylelint",
       "url": "https://stylelint.io"
     },
@@ -651,13 +578,7 @@
         "--stdin-filename",
         "$file"
       ],
-      "configFiles": [
-        ".textlintrc",
-        ".textlintrc.js",
-        ".textlintrc.json",
-        ".textlintrc.yaml",
-        ".textlintrc.yml"
-      ],
+      "configFiles": [".textlintrc", ".textlintrc.js", ".textlintrc.json", ".textlintrc.yaml", ".textlintrc.yml"],
       "enabled": true,
       "languages": ["markdown", "plaintext", "html"],
       "name": "textlint",
@@ -665,14 +586,7 @@
     },
     "vale": {
       "capabilities": [],
-      "command": [
-        "vale",
-        "--output",
-        "JSON",
-        ["$config", "--config", "$config"],
-        "--ext",
-        "$extension"
-      ],
+      "command": ["vale", "--output", "JSON", ["$config", "--config", "$config"], "--ext", "$extension"],
       "configFiles": [".vale.ini"],
       "enabled": true,
       "languages": ["markdown", "plaintext", "html"],
@@ -681,13 +595,7 @@
     },
     "yamllint": {
       "capabilities": ["ignore-line"],
-      "command": [
-        "yamllint",
-        "--format",
-        "parsable",
-        ["$config", "--config-file", "$config"],
-        "-"
-      ],
+      "command": ["yamllint", "--format", "parsable", ["$config", "--config-file", "$config"], "-"],
       "configFiles": [".yamllint.yml", ".yamllint.yaml", ".yamllint"],
       "enabled": true,
       "languages": ["yaml"],
