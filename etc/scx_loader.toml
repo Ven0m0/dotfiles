@@ -26,7 +26,18 @@ server_mode = []
 auto_mode = []
 gaming_mode = ["-m", "all"]
 lowlatency_mode = ["-m", "performance", "-w", "-C", "0"]
-powersave_mode = ["-m", "powersave", "-I", "10000", "-t", "10000", "-s", "10000", "-S", "1000"]
+powersave_mode = [
+  "-m",
+  "powersave",
+  "-I",
+  "10000",
+  "-t",
+  "10000",
+  "-s",
+  "10000",
+  "-S",
+  "1000",
+]
 server_mode = ["-m", "all", "-s", "20000", "-S", "1000", "-I", "-1", "-D", "-L"]
 
 [scheds.scx_rustland]

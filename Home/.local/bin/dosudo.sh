@@ -51,13 +51,13 @@ done
 if [ "$flag_i" ] && [ "$flag_s" ]; then
 	echo "sudo: you may not specify both the '-i' and '-s' options" >&2; exit 1
 fi
-_doas() { exec doas $flag_n ${user:+-u "$user"} "$@"; }
+_doas() { exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
 }
 user_shell() {
 	if command -v getent >/dev/null 2>&1; then
 		getent passwd "${user:-root}" | awk -F: 'END {print $NF ? $NF : "sh"}'
 	else
-		awk -F: '$1 == "'${user:-root}'" {print $NF; m=1} END {if (!m) print "sh"}' /etc/passwd
+		awk -F: '$1 == "'"${user:-root}"'" {print $NF; m=1} END {if (!m) print "sh"}' /etc/passwd
 	fi
 }
 export SUDO_GID=$(id -g)
@@ -68,16 +68,16 @@ if [ $# -eq 0 ]; then
 	if [ "$flag_i" ]; then
 		_doas -- "$(user_shell)" -c 'cd "$HOME"; exec "$0" -l'
 	elif [ "$flag_k" ]; then
-		exec doas $flag_k ${user:+-u "$user"}
+		exec doas "$flag_k" "${user:+-u "$user"}"
 	else
-		_doas $flag_s
+		_doas "$flag_s"
 	fi
 elif [ "$flag_i" ]; then
 	_doas -- "$(user_shell)" -l -c 'cd "$HOME"; "$0" "$@"' "$@"
 elif [ "$flag_s" ]; then
 	_doas -- "${SHELL:-$(user_shell)}" -c '"$0" "$@"' "$@"
 elif [ "$flag_k" ]; then
-	doas $flag_k ${user:+-u "$user"}
+	doas "$flag_k" "${user:+-u "$user"}"
 	_doas -- "$@"
 else
 	_doas -- "$@"

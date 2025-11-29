@@ -18,10 +18,10 @@ download:
   multithreaded: true
   multithreaded_client: aria2
 gems:
-- web
-- arch
-- flatpak
-- appimage
+  - web
+  - arch
+  - flatpak
+  - appimage
 locale: en
 memory_cache:
   data_expiration: 3600

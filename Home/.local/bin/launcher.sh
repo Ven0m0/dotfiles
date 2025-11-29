@@ -40,7 +40,7 @@ mode_app(){
   local cmd dir file; local -A paths
   # Iterate PATH to find executables (bash-native, avoids parsing ls)
   # Uses an associative array to deduplicate entries efficiently
-  for dir in ${PATH//:/ }; do
+  for dir in "${PATH//:/ }"; do
     [[ -d "$dir" && -r "$dir" ]] || continue
     for file in "$dir"/*; do
       [[ -x "$file" && ! -d "$file" ]] || continue

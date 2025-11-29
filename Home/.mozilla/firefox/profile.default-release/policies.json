@@ -29,7 +29,7 @@
     },
     "LocalNetworkAccess": {
       "BlockTrackers": true,
-      "Enabled": true
+      "Enabled": true,
       "EnablePrompting": true
     },
     "FirefoxHome": {
@@ -119,7 +119,7 @@
           "SuggestURLTemplate": "https://eu.startpage.com/osuggestions?query={searchTerms}",
           "URLTemplate": "https://eu.startpage.com/sp/search?query={searchTerms}"
         }
-      ],
+      ]
     }
   }
 }

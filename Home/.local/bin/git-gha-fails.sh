@@ -40,7 +40,7 @@ fi
 # Log the run ID
 echo "Latest workflow run ID: $run_id"
 # Get the run conclusion (e.g., "success", "failure") and redirect stderr to stdout
-conclusion=$(gh run view $run_id --json conclusion -R "$repo_owner/$repo_name" 2>/dev/null | jq -r '.conclusion')
+conclusion=$(gh run view "$run_id" --json conclusion -R "$repo_owner/$repo_name" 2>/dev/null | jq -r '.conclusion')
 # Check if the gh command failed
 if [[ -z "$conclusion" ]]; then
   echo "Error: Failed to get workflow run details."
@@ -52,7 +52,7 @@ echo "Workflow run conclusion: $conclusion"
 if [[ "$conclusion" == "failure" ]]; then
   # Log the failure and view the failed logs
   echo "Workflow run failed. Viewing failed logs..."
-  gh run view $run_id --log-failed -R "$repo_owner/$repo_name"
+  gh run view "$run_id" --log-failed -R "$repo_owner/$repo_name"
 else
   echo "The latest workflow run was successful."
 fi

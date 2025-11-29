@@ -23,7 +23,7 @@ Formatting
 
 Bash idioms (must)
 
-- Prefer Bash-native over external: arrays, assoc arrays, mapfile -t, here-strings <<<, process substitution < <(), parameter expansion, [[ ... ]] and regex with =~, printf over echo.
+- Prefer Bash-native over external: arrays, assoc arrays, mapfile -t, here-strings <<<, process substitution < <(), parameter expansion, [[...]] and regex with =~, printf over echo.
 - Capture output: ret=$(fn)
 - Line loops: while IFS= read -r line; do ...; done
 - Nameref: local -n ref=name
@@ -55,7 +55,7 @@ Privilege and package managers
 
 Wayland and OS detection
 
-- Wayland: [[ ${XDG_SESSION_TYPE:-} == wayland || -n ${WAYLAND_DISPLAY:-} ]]
+- Wayland: [[${XDG_SESSION_TYPE:-} == wayland || -n ${WAYLAND_DISPLAY:-}]]
 - Arch: have pacman; Debian: have apt; Pi specifics guarded by uname -m.
 
 Logging and UX
@@ -275,7 +275,7 @@ Network operations
 
 Device and file operations (Pi and imaging)
 
-- Derive partition suffix: [[ $dev == *@(nvme|mmcblk|loop)* ]] && p="${dev}p1" || p="${dev}1"
+- Derive partition suffix: [[$dev == *@(nvme|mmcblk|loop)*]] && p="${dev}p1" || p="${dev}1"
 - Wait for device nodes with retry loop; use udevadm settle when needed.
 - Always umount recursively in cleanup; detach loop devices; ignore errors but log.
 
@@ -288,7 +288,7 @@ Data collection and processing
 
 - mapfile -t arr < <(cmd)
 - Filter config/package lists:
-  - mapfile -t arr < <(grep -v '^\s*#' file.txt | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//' | grep -v '^$')
+  - mapfile -t arr < <(grep -v '^\s\*#' file.txt | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//' | grep -v '^$')
 
 Testing and validation
 
@@ -309,7 +309,7 @@ Common helpers (reuse from Shell-book.md)
 
 - sleepy: read -rt "${1:-1}" -- <> <(:) &>/dev/null || :
 - fcat: printf '%s\n' "$(<${1})"
-- regex extraction: [[ $s =~ re ]] && printf '%s\n' "${BASH_REMATCH[1]}"
+- regex extraction: [[$s =~ re]] && printf '%s\n' "${BASH_REMATCH[1]}"
 - split: IFS=$'\n' read -d "" -ra arr <<< "${1//$2/$'\n'}"
 - bname/dname: parameter-expansion implementations; avoid spawning coreutils when hot.
 
@@ -335,7 +335,7 @@ Token efficiency (for logs/comments)
 Review checklist for Copilot
 
 - Starts with #!/usr/bin/env bash, set -Eeuo pipefail, shopt flags.
-- Uses arrays/mapfile/[[ ... ]] and parameter expansion; avoids parsing ls/using eval/backticks.
+- Uses arrays/mapfile/[[...]] and parameter expansion; avoids parsing ls/using eval/backticks.
 - Logging helpers present; traps for cleanup and ERR with line numbers.
 - Privilege via run_priv(); pkg manager detection; Arch/Debian paths handled.
 - Rust tools preferred with fallbacks; Wayland checks when relevant.

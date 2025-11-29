@@ -1,7 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/rule.json
-
 severity: warning
-
 utils:
   is-console:
     kind: member_expression
@@ -28,7 +26,6 @@ utils:
       - pattern: insertAdjacentHTML($POS, $VAL)
       - pattern: document.write($VAL)
       - pattern: document.writeln($VAL)
-
 rules:
   - id: no-console
     language: typescript

@@ -11,10 +11,10 @@ readonly BLU=$'\e[34m' DEF=$'\e[0m'
 
 # Helper functions
 has(){ command -v "$1" &>/dev/null; }
-info(){ printf '%b==>\e[0m %b%s%b\n' "${BLD}${BLU}" "${BLD}" "$*" "${DEF}"; }
-success(){ printf '%b==>\e[0m %b%s%b\n' "${BLD}${GRN}" "${BLD}" "$*" "${DEF}"; }
-warn(){ printf '%b==> WARNING:\e[0m %b%s%b\n' "${BLD}${YLW}" "${BLD}" "$*" "${DEF}"; }
-error(){ printf '%b==> ERROR:\e[0m %b%s%b\n' "${BLD}${RED}" "${BLD}" "$*" "${DEF}" >&2; }
+info(){ printf '%b==>\e[0m %b%s%b\n' "${BLD}${BLU}" "$BLD" "$*" "$DEF"; }
+success(){ printf '%b==>\e[0m %b%s%b\n' "${BLD}${GRN}" "$BLD" "$*" "$DEF"; }
+warn(){ printf '%b==> WARNING:\e[0m %b%s%b\n' "${BLD}${YLW}" "$BLD" "$*" "$DEF"; }
+error(){ printf '%b==> ERROR:\e[0m %b%s%b\n' "${BLD}${RED}" "$BLD" "$*" "$DEF" >&2; }
 die(){ error "$*"; exit 1; }
 
 # Determine repository directory

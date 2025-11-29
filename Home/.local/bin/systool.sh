@@ -85,7 +85,7 @@ usb_cmd(){
   done
   printf '  q) quit\n'
   local pick=""
-  if have fzf; then pick="$(printf '%s\n' $(seq 1 "${#lines[@]}") q | fzf --prompt='Choose: ' --height=15 --no-info || :)"; fi
+  if have fzf; then pick="$(printf '%s\n' "$(seq 1 "${#lines[@]}")" q | fzf --prompt='Choose: ' --height=15 --no-info || :)"; fi
   [[ -z "$pick" ]] && { read -r -p "Choose [1-${#lines[@]}/q]: " pick || :; }
   [[ "$pick" =~ ^[Qq]$ ]] && { log exit; return 0; }
   [[ "$pick" =~ ^[0-9]+$ ]] || { warn invalid; return 1; }
@@ -101,11 +101,11 @@ usb_cmd(){
       (( used==0 )) && { free="$candidate"; break; }
     done
     [[ -z "$free" ]] && die "increase -n"
-    $SUDO mkdir -p "$free" || :
-    $SUDO mount -o gid=users,fmask=113,dmask=002 -U "$uuid" "$free"
+    "$SUDO" mkdir -p "$free" || :
+    "$SUDO" mount -o gid=users,fmask=113,dmask=002 -U "$uuid" "$free"
     log "mounted $uuid at $free"
   else
-    $SUDO umount -- "$mp"
+    "$SUDO" umount -- "$mp"
     log "unmounted $uuid [$mp]"
   fi
 }
@@ -217,7 +217,7 @@ sysz_cmd(){
   if [[ -n "$CMD" ]]; then
     CMDS=("$CMD")
   else
-    CMDS=($(sysz_pick_commands "${UNITS[@]}" "${EXTRA[@]}"))
+    CMDS=("$(sysz_pick_commands "${UNITS[@]}" "${EXTRA[@]}")")
     (( ${#CMDS[@]} )) || return 1
   fi
 
@@ -349,10 +349,10 @@ sysz_exec(){
     status) SYSTEMD_COLORS=1 "${run[@]}" status --no-pager "${args[@]}" -- "$UNIT"; return ;;
     cat|show|edit) "${run[@]}" "$base" "${args[@]}" -- "$UNIT"; return ;;
     mask|unmask|start|stop|restart|reload|enable|disable)
-      "${run[@]}" $CMD "${args[@]}" -- "$UNIT" || return $?
+      "${run[@]}" "$CMD" "${args[@]}" -- "$UNIT" || return $?
       SYSTEMD_COLORS=1 "${run[@]}" status --no-pager -- "$UNIT"
       return ;;
-    *) "${run[@]}" $CMD "${args[@]}" -- "$UNIT"; return ;;
+    *) "${run[@]}" "$CMD" "${args[@]}" -- "$UNIT"; return ;;
   esac
 }
 

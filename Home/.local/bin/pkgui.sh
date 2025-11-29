@@ -16,9 +16,9 @@ die(){ printf '%b[ERR]%b %s\n' "$R" "$D" "$*" >&2; exit 1; }
 msg(){ printf '%b%s%b\n' "$G" "$*" "$D"; }
 warn(){ printf '%b[WARN]%b %s\n' "$Y" "$D" "$*"; }
 # Detect pkg mgr & fuzzy finder
-for p in ${PARUZ:-paru pacman}; do has "$p" && PAC="$p" && break; done
+for p in "${PARUZ:-paru pacman}"; do has "$p" && PAC="$p" && break; done
 [[ -z ${PAC:-} ]] && die "No pkg mgr (pacman/paru)"
-for f in ${FINDER:-sk fzf}; do has "$f" && FND="$f" && break; done
+for f in "${FINDER:-sk fzf}"; do has "$f" && FND="$f" && break; done
 [[ -z ${FND:-} ]] && die "No fuzzy finder (sk/fzf)"
 # FZF theme
 FZF_THEME="${FZF_THEME:-hl:italic:#FFFF00,hl+:bold:underline:#FF0000,fg:#98A0C5,fg+:bold:#FFFFFF,bg:#13172A,bg+:#0F1222,border:#75A2F7,label:bold:#75A2F7,preview-fg:#C0CAF5,preview-bg:#0F1222,marker:#00FF00,pointer:#FF0000,query:#FF0000,info:italic:#98A0C5}"
@@ -342,8 +342,8 @@ _edit_sys(){
     [/etc/fstab]="Fstab"
     [/etc/locale.conf]="Locale"
     [/etc/vconsole.conf]="Console"
-    [$HOME/.bashrc]="Bash"
-    [$HOME/.zshrc]="Zsh"
+    ["$HOME/.bashrc]=Bash"
+    ["$HOME/.zshrc]=Zsh"
   )
   local f desc choice=()
   for f in "${!files[@]}"; do

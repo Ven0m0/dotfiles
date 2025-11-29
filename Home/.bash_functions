@@ -19,7 +19,7 @@ up(){ local d="" limit=$1
 
 # Display file/directory sizes (prefer dust)
 fs(){ if command -v dust &>/dev/null; then
-    dust -r ${1:-.}
+    dust -r "${1:-.}"
   elif [[ $# -gt 0 ]]; then
     du -sbh -- "$@"
   else
@@ -105,11 +105,11 @@ fiximg(){ local GM_CMD GM_IDENTIFY
   local -a exts=(png jpg jpeg webp avif jxl)
   
   strip_file(){ local f="$1" tmp
-    if [[ -n $($GM_IDENTIFY -format "%[EXIF:*]" "$f" 2>/dev/null) ]] \
-      || [[ -n $($GM_IDENTIFY -format "%[IPTC:*]" "$f" 2>/dev/null) ]] \
-      || [[ -n $($GM_IDENTIFY -format "%[Comment]" "$f" 2>/dev/null) ]]; then
+    if [[ -n $("$GM_IDENTIFY" -format "%[EXIF:*]" "$f" 2>/dev/null) ]] \
+      || [[ -n $("$GM_IDENTIFY" -format "%[IPTC:*]" "$f" 2>/dev/null) ]] \
+      || [[ -n $("$GM_IDENTIFY" -format "%[Comment]" "$f" 2>/dev/null) ]]; then
       tmp="${f}.strip.$$"
-      $GM_CMD "$f" -strip "$tmp" && mv "$tmp" "$f"
+      "$GM_CMD" "$f" -strip "$tmp" && mv "$tmp" "$f"
     fi
   }
   
@@ -117,11 +117,11 @@ fiximg(){ local GM_CMD GM_IDENTIFY
   export GM_CMD GM_IDENTIFY
   
   if command -v fdf &>/dev/null; then
-    fdf . -t f $(printf -- '-e %s ' "${exts[@]}") -x bash -c 'strip_file "$1"' _
+    fdf . -t f "$(printf -- '-e %s ' "${exts[@]}")" -x bash -c 'strip_file "$1"' _
   elif command -v fd &>/dev/null; then
-    fd -t f $(printf -- '-e %s ' "${exts[@]}") -x bash -c 'strip_file "$1"' _
+    fd -t f "$(printf -- '-e %s ' "${exts[@]}")" -x bash -c 'strip_file "$1"' _
   else
-    find . -type f \( $(printf -- '-iname "*.%s" -o ' "${exts[@]}") -false \) \
+    find . -type f \( "$(printf -- '-iname "*.%s" -o ' "${exts[@]}")" -false \) \
       -exec bash -c 'strip_file "$1"' _ {} \;
   fi
   
@@ -159,8 +159,8 @@ fkill(){ local pid fuzzy
   # Use sk for large datasets, fzf for small ones
   fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   
-  [[ $UID != 0 ]] && pid=$(ps -f -u "$UID" | tail -n +2 | $fuzzy -m | awk '{print $2}') \
-    || pid=$(ps -ef | tail -n +2 | $fuzzy -m | awk '{print $2}')
+  [[ $UID != 0 ]] && pid=$(ps -f -u "$UID" | tail -n +2 | "$fuzzy" -m | awk '{print $2}') \
+    || pid=$(ps -ef | tail -n +2 | "$fuzzy" -m | awk '{print $2}')
   [[ -n $pid ]] && xargs kill -"${1:-9}" <<<"$pid"
 }
 
@@ -177,11 +177,11 @@ fman(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   [[ $# -gt 0 ]] && { man "$@"; return; }
   
   if command -v sd &>/dev/null; then
-    man -k . | $fuzzy --reverse \
+    man -k . | "$fuzzy" --reverse \
       --preview="echo {1,2} | sd ' \\(' '.' | sd '\\)\\s*\$' '' | xargs man" \
       | awk '{print $1"."$2}' | tr -d '()' | xargs -r man
   else
-    man -k . | $fuzzy --reverse \
+    man -k . | "$fuzzy" --reverse \
       --preview="echo {1,2} | sed 's/ (/./' | sed -E 's/\)\s*$//' | xargs man" \
       | awk '{print $1"."$2}' | tr -d '()' | xargs -r man
   fi
@@ -231,15 +231,15 @@ fz(){ local mode="dir" search_path="${1:-.}" fuzzy
       local IFS=$'\n' files=()
       if command -v fdf &>/dev/null; then
         while IFS='' read -r line; do files+=("$line"); done < <(
-          fdf "$search_path" -t f | $fuzzy -m --preview 'bat --color=always {}'
+          fdf "$search_path" -t f | "$fuzzy" -m --preview 'bat --color=always {}'
         )
       elif command -v fd &>/dev/null; then
         while IFS='' read -r line; do files+=("$line"); done < <(
-          fd -t f . "$search_path" | $fuzzy -m --preview 'bat --color=always {}'
+          fd -t f . "$search_path" | "$fuzzy" -m --preview 'bat --color=always {}'
         )
       else
         while IFS='' read -r line; do files+=("$line"); done < <(
-          find "$search_path" -type f 2>/dev/null | $fuzzy -m --preview 'bat --color=always {}'
+          find "$search_path" -type f 2>/dev/null | "$fuzzy" -m --preview 'bat --color=always {}'
         )
       fi
       [[ -n ${files[0]} ]] && "${EDITOR:-nano}" "${files[@]}"
@@ -252,7 +252,7 @@ fz(){ local mode="dir" search_path="${1:-.}" fuzzy
         [[ -d $1 ]] && dirs+=("$1") || return
         [[ $1 == '/' ]] && printf '%s\n' "${dirs[@]}" || get_parent_dirs "$(dirname "$1")"
       }
-      local dir=$(get_parent_dirs "$(realpath "${search_path:-$PWD}")" | $fuzzy --tac)
+      local dir=$(get_parent_dirs "$(realpath "${search_path:-$PWD}")" | "$fuzzy" --tac)
       cd "$dir" && ls
       ;;
       
@@ -260,11 +260,11 @@ fz(){ local mode="dir" search_path="${1:-.}" fuzzy
       # Fuzzy directory change
       local dir
       if command -v fdf &>/dev/null; then
-        dir=$(fdf "$search_path" -t d 2>/dev/null | $fuzzy +m --preview 'ls -lah {}')
+        dir=$(fdf "$search_path" -t d 2>/dev/null | "$fuzzy" +m --preview 'ls -lah {}')
       elif command -v fd &>/dev/null; then
-        dir=$(fd -t d . "$search_path" 2>/dev/null | $fuzzy +m --preview 'ls -lah {}')
+        dir=$(fd -t d . "$search_path" 2>/dev/null | "$fuzzy" +m --preview 'ls -lah {}')
       else
-        dir=$(find "$search_path" -type d 2>/dev/null | $fuzzy +m --preview 'ls -lah {}')
+        dir=$(find "$search_path" -type d 2>/dev/null | "$fuzzy" +m --preview 'ls -lah {}')
       fi
       [[ -n "$dir" ]] && cd "$dir" || exit
       ;;
@@ -307,10 +307,10 @@ ghpatch(){ local url="${1:?usage: ghpatch <commit-url>}" patch
 ghf(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
   
-  $git_cmd rev-parse --is-inside-work-tree &>/dev/null || return
-  $git_cmd log --date=relative --format="%C(auto)%h%d %C(white)%s %C(cyan)%an %C(black)%C(bold)%cd%C(auto)" \
+  "$git_cmd" rev-parse --is-inside-work-tree &>/dev/null || return
+  "$git_cmd" log --date=relative --format="%C(auto)%h%d %C(white)%s %C(cyan)%an %C(black)%C(bold)%cd%C(auto)" \
     --graph --color=always \
-    | $fuzzy --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
+    | "$fuzzy" --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
       --header 'CTRL-S: toggle sort' \
       --preview="$(command -v rg &>/dev/null && echo 'rg' || echo 'grep') -o '[a-f0-9]\{7,\}' <<< {} | xargs $git_cmd show --color=always | delta" \
       --bind "enter:execute($(command -v rg &>/dev/null && echo 'rg' || echo 'grep') -o '[a-f0-9]\{7,\}' <<< {} | xargs $git_cmd show --color=always | delta | less -R)"
@@ -320,17 +320,17 @@ ghf(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
 fzf-git-status(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
   local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
   
-  $git_cmd rev-parse --git-dir &>/dev/null || { echo "❌ Not in git repo"; return; }
+  "$git_cmd" rev-parse --git-dir &>/dev/null || { echo "❌ Not in git repo"; return; }
   
   local selected
   if command -v sd &>/dev/null; then
-    selected=$($git_cmd -c color.status=always status --short \
-      | $fuzzy --height 50% "$@" --border -m --ansi --nth 2..,.. \
+    selected=$("$git_cmd" -c color.status=always status --short \
+      | "$fuzzy" --height 50% "$@" --border -m --ansi --nth 2..,.. \
         --preview "($git_cmd diff --color=always -- {-1} | tail -n +5; cat {-1}) | head -500" \
       | cut -c4- | sd '.* -> ' '')
   else
-    selected=$($git_cmd -c color.status=always status --short \
-      | $fuzzy --height 50% "$@" --border -m --ansi --nth 2..,.. \
+    selected=$("$git_cmd" -c color.status=always status --short \
+      | "$fuzzy" --height 50% "$@" --border -m --ansi --nth 2..,.. \
         --preview "($git_cmd diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500" \
       | cut -c4- | sed 's/.* -> //')
   fi
@@ -342,34 +342,34 @@ fzf-git-status(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "
 git_maintain_max(){ local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
   
   echo "🧹 Git gc"
-  $git_cmd gc --prune=now --aggressive --cruft
+  "$git_cmd" gc --prune=now --aggressive --cruft
   echo "📦 Git repack"
-  $git_cmd repack -adfbm --threads=0 --depth=250 --window=250
+  "$git_cmd" repack -adfbm --threads=0 --depth=250 --window=250
   echo "🔧 Git maintenance"
-  $git_cmd maintenance run --task=prefetch --task=gc --task=loose-objects \
+  "$git_cmd" maintenance run --task=prefetch --task=gc --task=loose-objects \
     --task=incremental-repack --task=pack-refs --task=reflog-expire \
     --task=rerere-gc --task=worktree-prune
 }
 
 # Update git repo with submodules
 update_git_pull(){ local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
-  command -v $git_cmd &>/dev/null || return
-  $git_cmd pull --rebase --autostash && $git_cmd submodule update --init --recursive
+  command -v "$git_cmd" &>/dev/null || return
+  "$git_cmd" pull --rebase --autostash && "$git_cmd" submodule update --init --recursive
 }
 
 # Delete merged/gone branches
 gdbr(){ local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
-  $git_cmd fetch --prune
+  "$git_cmd" fetch --prune
   if command -v rg &>/dev/null; then
-    $git_cmd branch -vv | rg ': gone]' | awk '{print $1}' | xargs -r $git_cmd branch -D
+    "$git_cmd" branch -vv | rg ': gone]' | awk '{print $1}' | xargs -r "$git_cmd" branch -D
   else
-    $git_cmd branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r $git_cmd branch -D
+    "$git_cmd" branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r "$git_cmd" branch -D
   fi
 }
 
 # Enhanced git branch view
 gbr(){ local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
-  $git_cmd branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+  "$git_cmd" branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
 }
 
 # =============================================================================
@@ -389,7 +389,7 @@ pacsize(){ if command -v pacinfo &>/dev/null; then
 
 # Fuzzy package installer/uninstaller
 fuzzy_paru(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
-  command -v $fuzzy &>/dev/null || { echo "❌ fuzzy finder required"; return 1; }
+  command -v "$fuzzy" &>/dev/null || { echo "❌ fuzzy finder required"; return 1; }
   
   local fzf_input
   fzf_input=$(awk '
@@ -402,7 +402,7 @@ fuzzy_paru(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf"
   
   local -a selections
   mapfile -t selections < <(
-    <<<"$fzf_input" $fuzzy --ansi -m --cycle --layout=reverse-list \
+    <<<"$fzf_input" "$fuzzy" --ansi -m --cycle --layout=reverse-list \
       --preview 'paru -Si {1} 2>/dev/null | bat -plini --color=always' \
       --expect=ctrl-u --header 'ENTER: install, CTRL-U: uninstall'
   )
@@ -424,7 +424,7 @@ fuzzy_paru(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf"
 # Search AUR packages (prefer jaq)
 search(){ local jq_cmd=$(command -v jaq &>/dev/null && echo "jaq" || echo "jq")
   curl -s "https://aur.archlinux.org/rpc/?v=5&type=search&arg=$1" \
-    | $jq_cmd '.results[] | {Name,Description,Version,URL,NumVotes,Popularity,Maintainer}' \
+    | "$jq_cmd" '.results[] | {Name,Description,Version,URL,NumVotes,Popularity,Maintainer}' \
     || echo "Cannot query database"
 }
 
@@ -433,27 +433,27 @@ search(){ local jq_cmd=$(command -v jaq &>/dev/null && echo "jaq" || echo "jq")
 # =============================================================================
 
 da(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
-  local cid=$(docker ps -a | tail -n +2 | $fuzzy -1 -q "$1" | awk '{print $1}')
+  local cid=$(docker ps -a | tail -n +2 | "$fuzzy" -1 -q "$1" | awk '{print $1}')
   [[ -n $cid ]] && docker start "$cid" && docker attach "$cid"
 }
 
 ds(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
-  local cid=$(docker ps | tail -n +2 | $fuzzy -q "$1" | awk '{print $1}')
+  local cid=$(docker ps | tail -n +2 | "$fuzzy" -q "$1" | awk '{print $1}')
   [[ -n $cid ]] && docker stop "$cid"
 }
 
 drm(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
-  local cid=$(docker ps -a | tail -n +2 | $fuzzy -q "$1" | awk '{print $1}')
+  local cid=$(docker ps -a | tail -n +2 | "$fuzzy" -q "$1" | awk '{print $1}')
   [[ -n $cid ]] && docker rm "$cid"
 }
 
 drmm(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
-  docker ps -a | tail -n +2 | $fuzzy -q "$1" --no-sort -m --tac \
+  docker ps -a | tail -n +2 | "$fuzzy" -q "$1" --no-sort -m --tac \
     | awk '{print $1}' | xargs -r docker rm
 }
 
 drmi(){ local fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
-  docker images | tail -n +2 | $fuzzy -q "$1" --no-sort -m --tac \
+  docker images | tail -n +2 | "$fuzzy" -q "$1" --no-sort -m --tac \
     | awk '{print $3}' | xargs -r docker rmi
 }
 

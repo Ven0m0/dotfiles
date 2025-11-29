@@ -87,7 +87,13 @@ format = 'via $version(208 bold)'
 [bun]
 disabled = true
 format = 'via [🍔 $version](bold green) '
-detect_files = ['bun.lock', 'bun.lockb', 'bunfig.toml', 'package.json', 'package-lock.json']
+detect_files = [
+  'bun.lock',
+  'bun.lockb',
+  'bunfig.toml',
+  'package.json',
+  'package-lock.json',
+]
 detect_folders = ['.bun']
 
 [mise]

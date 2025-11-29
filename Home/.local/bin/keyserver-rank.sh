@@ -76,7 +76,7 @@ EOF
   [[ $show_fastest == no ]] && echo "Ranking ${#servers[@]} keyservers..." >&2
 
   export -f rank_server
-  printf '%s\n' "${servers[@]}" | xargs -P$(nproc) -I{} bash -c 'rank_server "$@"' _ {} > "$tmp"
+  printf '%s\n' "${servers[@]}" | xargs -P"$(nproc)" -I{} bash -c 'rank_server "$@"' _ {} > "$tmp"
 
   local fastest; fastest=$(grep -v FAIL "$tmp" | sort -k3,3n | head -n1 | awk '{print $1}')
 

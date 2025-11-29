@@ -4,8 +4,32 @@
 [misc]
 pre_sudo = true
 #sudo_command = "sudo"
-disable = ["config_update", "micro", "uv", "pipx", "yazi", "bun", "mise", "yadm", "node", "vim", "containers"]
-ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise", "yadm", "node", "shell"]
+disable = [
+  "config_update",
+  "micro",
+  "uv",
+  "pipx",
+  "yazi",
+  "bun",
+  "mise",
+  "yadm",
+  "node",
+  "vim",
+  "containers",
+]
+ignore_failures = [
+  "system",
+  "micro",
+  "uv",
+  "pipx",
+  "shell",
+  "yazi",
+  "bun",
+  "mise",
+  "yadm",
+  "node",
+  "shell",
+]
 assume_yes = true
 no_retry = true
 cleanup = true

@@ -1,6 +1,6 @@
 ---
 mode: agent
-description: 'Comprehensive optimization prompt for ReVanced APK building repository with focus on aapt2 integration, privacy patches, and multi-stage patching workflows'
+description: "Comprehensive optimization prompt for ReVanced APK building repository with focus on aapt2 integration, privacy patches, and multi-stage patching workflows"
 ---
 
 # ReVanced Building Repository Optimization

@@ -16,11 +16,26 @@ use_cache = true
 compress_cache = true
 verify_checksums = true
 install_patterns = [
-  "!*.log", "!*.txt", "!*.md", "!*.rst",
-  "!SBUILD", "!*.json", "!*.version", "!*.yml", "!*.yaml",
-  "!LICENSE*", "!README*", "!CHANGELOG*", "!CONTRIBUTING*",
-  "!*.example", "!*.sample", "!*.test", "!*.spec",
-  "!docs/**", "!examples/**", "!tests/**"
+  "!*.log",
+  "!*.txt",
+  "!*.md",
+  "!*.rst",
+  "!SBUILD",
+  "!*.json",
+  "!*.version",
+  "!*.yml",
+  "!*.yaml",
+  "!LICENSE*",
+  "!README*",
+  "!CHANGELOG*",
+  "!CONTRIBUTING*",
+  "!*.example",
+  "!*.sample",
+  "!*.test",
+  "!*.spec",
+  "!docs/**",
+  "!examples/**",
+  "!tests/**",
 ]
 
 [profile.default]

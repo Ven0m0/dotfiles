@@ -1,32 +1,30 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.7/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
   "vcs": {"enabled": true, "clientKind": "git", "useIgnoreFile": true},
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "node_modules",
-      "dist",
-      "build",
-      ".next",
-      ".turbo",
-      ".cache",
-      "coverage",
-      ".venv",
-      "target",
-      "**/*.min.js",
-      "**/*.bundle.js",
-      ".git",
-      "vendor",
-      "public/assets"
-    ],
-    "include": [
+    "includes": [
       "**/*.js",
       "**/*.ts",
       "**/*.jsx",
       "**/*.tsx",
       "**/*.json",
       "**/*.jsonc",
-      "**/*.css"
+      "**/*.css",
+      "!!**/node_modules",
+      "!!**/dist",
+      "!!**/build",
+      "!!**/.next",
+      "!!**/.turbo",
+      "!!**/.cache",
+      "!!**/coverage",
+      "!!**/.venv",
+      "!!**/target",
+      "!!**/*.min.js",
+      "!!**/*.bundle.js",
+      "!!**/.git",
+      "!!**/vendor",
+      "!!**/public/assets"
     ]
   },
   "formatter": {
@@ -37,15 +35,11 @@
     "lineEnding": "lf",
     "lineWidth": 120,
     "attributePosition": "auto",
-    "ignore": ["**/package-lock.json", "**/bun.lockb", "**/*.min.css"]
-  },
-  "organizeImports": {
-    "enabled": true,
-    "ignore": ["**/node_modules/**", "**/dist/**", "**/build/**"]
+    "includes": ["**/package-lock.json", "**/bun.lockb", "**/*.min.css"]
   },
   "linter": {
     "enabled": true,
-    "ignore": ["**/node_modules/**", "**/dist/**", "**/build/**", "**/*.min.js"],
+    "includes": ["**/node_modules/**", "**/dist/**", "**/build/**", "**/*.min.js"],
     "rules": {
       "recommended": true,
       "complexity": {
@@ -61,8 +55,6 @@
       },
       "nursery": {
         "noDuplicateDependencies": "error",
-        "noEvolvingTypes": "warn",
-        "noMissingVarFunction": "warn",
         "useSortedClasses": "warn"
       },
       "performance": {
@@ -79,14 +71,14 @@
         "useConsistentArrayType": "error",
         "useFilenamingConvention": "off",
         "useNodejsImportProtocol": "error",
-        "useShorthandArrayType": "warn",
         "useSingleVarDeclarator": "warn"
       },
       "suspicious": {
-        "noConsoleLog": "warn",
+        "noConsole": "warn",
         "noDoubleEquals": "error",
         "noEmptyBlockStatements": "warn",
-        "noExplicitAny": "warn"
+        "noExplicitAny": "warn",
+        "noEvolvingTypes": "warn"
       }
     }
   },
@@ -112,16 +104,16 @@
   },
   "overrides": [
     {
-      "include": ["*.config.{js,ts,mjs,cjs}", ".*rc.{js,ts}", ".*.{js,ts}"],
+      "includes": ["*.config.{js,ts,mjs,cjs}", ".*rc.{js,ts}", ".*.{js,ts}"],
       "linter": {
         "rules": {
-          "suspicious": {"noConsoleLog": "off"},
+          "suspicious": {"noConsole": "off"},
           "style": {"noDefaultExport": "off"}
         }
       }
     },
     {
-      "include": ["**/__tests__/**", "**/*.test.{js,ts,jsx,tsx}", "**/*.spec.{js,ts,jsx,tsx}"],
+      "includes": ["**/__tests__/**", "**/*.test.{js,ts,jsx,tsx}", "**/*.spec.{js,ts,jsx,tsx}"],
       "linter": {
         "rules": {
           "suspicious": {"noExplicitAny": "off"},

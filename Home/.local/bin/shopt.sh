@@ -135,7 +135,7 @@ minify_enhanced(){
 }
 #──────────── Concatenate Files ────────────
 concat_files(){
-  local base="$1" out="$2" rx="$5"; local -n exts=$3 wlist=$4
+  local base="$1" out="$2" rx="$5"; local -n exts="$3" wlist="$4"
   : > "$out"
   for dirpath in "$base"/*/; do
     dirpath="${dirpath%/}"
@@ -165,7 +165,7 @@ concat_files(){
       while IFS= read -r -d '' lf; do
         [[ $lf == *__* || $lf == *_PLACEHOLDER* ]] && continue
         [[ $lf == *."$ext" ]] && cat "$lf" >> "$out"
-      done < <(eval find "$dirpath" -type f $excl -print0 2>/dev/null)
+      done < <(eval find "$dirpath" -type f "$excl" -print0 2>/dev/null)
     done
   done
 }
