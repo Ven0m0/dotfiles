@@ -1,1 +1,14 @@
-
+[Desktop Entry]
+Version=1.0
+Type=Application
+Actions=new-window;
+Name=Media Optimizer
+GenericName=Media AIO Tool
+Comment=Interactive media conversion and batch optimization
+Exec=sh -c 'media-opt.sh --interactive || $HOME/.local/bin/media-opt.sh --interactive'
+Icon=video-converter
+Terminal=true
+PrefersNonDefaultGPU=false
+DBusActivatable=true
+Categories=AudioVideo;Video;Audio;Graphics;Utility;
+Keywords=media;video;image;convert;optimize;ffmpeg;
