@@ -1,0 +1,24 @@
+{
+  "telemetry.enabled": false,
+  "preferences.appearance": "dark",
+  "editor.integrated.fontSize": 12,
+  "feedback.dialog": false,
+  "welcome.version": "initial",
+  "extensions.autoCheckUpdates": false,
+  "extensions.autoUpdate": false,
+  "window.bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 1050,
+    "height": 700
+  },
+  "telemetry.check": true,
+  "tasks.StatusBar": {},
+  "tasks.Manager": {},
+  "statusbarProviders.showProviders": {},
+  "titleBar.searchBar": {},
+  "dockerCompatibility.enabled": true,
+  "extensions.ignoreRecommendations": true,
+  "extensions.developmentMode": true,
+  "extensions.ignoreBannerRecommendations": true
+}
