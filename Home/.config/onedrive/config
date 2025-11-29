@@ -19,6 +19,7 @@ skip_dir_strict_match = "false"
 rate_limit = "1275922"
 display_manager_integration = "true"
 azure_tenant_id = ""
+disable_download_validation = "true"
 
 # Optimizations
 threads = "4"
