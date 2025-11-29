@@ -8,7 +8,9 @@
     "previewFeatures": true,
     "sessionRetention": {
       "enabled": true
-    }
+    },
+    "preferredEditor": "vscode",
+    "disableAutoUpdate": true
   },
   "output": {
     "format": "text"
@@ -31,35 +33,58 @@
   "mcpServers": {
     "read-website-fast": {
       "command": "bunx",
-      "args": ["@just-every/mcp-read-website-fast"]
+      "args": [
+        "@just-every/mcp-read-website-fast"
+      ]
     },
     "sequential-thinking": {
       "command": "bunx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     },
     "filesystem": {
       "command": "bunx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem"
+      ]
     },
     "fast-filesystem": {
       "command": "bunx",
-      "args": ["-y", "fast-filesystem-mcp"]
+      "args": [
+        "-y",
+        "fast-filesystem-mcp"
+      ]
     },
     "memory": {
       "command": "bunx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
     },
     "mcp-server-commands": {
       "command": "bunx",
-      "args": ["-y", "mcp-server-commands"]
+      "args": [
+        "-y",
+        "mcp-server-commands"
+      ]
     },
     "think-tool": {
       "command": "bunx",
-      "args": ["-y", "think-tool-mcp"]
+      "args": [
+        "-y",
+        "think-tool-mcp"
+      ]
     },
     "mcp-tasks": {
       "command": "bunx",
-      "args": ["-y", "mcp-tasks"]
+      "args": [
+        "-y",
+        "mcp-tasks"
+      ]
     },
     "Github": {
       "url": "https://api.githubcopilot.com/mcp/",
@@ -71,18 +96,26 @@
     },
     "shell-readonly": {
       "command": "uvx",
-      "args": ["mcp-shell-server"],
+      "args": [
+        "mcp-shell-server"
+      ],
       "env": {
         "ALLOW_COMMANDS": "ls,cat,pwd,grep,wc,awk,sed,find,df,free,top,ps,systemctl,journalctl,ip,ss,netstat,lsof,uname,which,whereis,file,stat,fd,rg,cd,command,git"
       }
     },
     "json-processor": {
       "command": "bunx",
-      "args": ["-y", "@gongrzhe/server-json-mcp@latest"]
+      "args": [
+        "-y",
+        "@gongrzhe/server-json-mcp@latest"
+      ]
     },
     "git": {
       "command": "bunx",
-      "args": ["@cyanheads/git-mcp-server@latest"]
+      "args": [
+        "-y",
+        "@cyanheads/git-mcp-server@latest"
+      ]
     }
   }
 }
