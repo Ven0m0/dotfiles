@@ -132,7 +132,7 @@ cmd_convert(){
     if [[ "$to" == "webp" ]]; then
       out="$(out_path "$outdir" "$f" webp)"
       if [[ -n "$CWEBP" ]]; then
-        "$CWEBP" ${q:+-q "$q"} -mt -m 6 -metadata all -- "$f" -o "$out"
+        "$CWEBP" "${q:+-q "$q"}" -mt -m 6 -metadata all -- "$f" -o "$out"
       elif [[ -n "$MAGICK" ]]; then
         "$MAGICK" convert "$f" -quality "${q:-82}" -define webp:method=6 -strip "$out"
       else
@@ -141,7 +141,7 @@ cmd_convert(){
     else
       out="$(out_path "$outdir" "$f" avif)"
       if [[ -n "$AVIFENC" ]]; then
-        "$AVIFENC" ${q:+--min "$q" --max "$q"} --speed 6 --jobs 0 -- "$f" "$out"
+        "$AVIFENC" "${q:+--min "$q" --max "$q"}" --speed 6 --jobs 0 -- "$f" "$out"
       elif [[ -n "$MAGICK" ]]; then
         "$MAGICK" convert "$f" -quality "${q:-32}" -define heic:speed=6 -strip "$out"
       else
@@ -215,7 +215,7 @@ find_files(){
     fd "${args[@]}" "$dir" 2>/dev/null | grep -v "$SUFFIX"
   else
     local patterns=$(printf -- "-o -iname *.%s " "${exts[@]}")
-    find "$dir" -type f ! -name "*${SUFFIX}*" -size +10k \( ${patterns#-o } \) 2>/dev/null
+    find "$dir" -type f ! -name "*${SUFFIX}*" -size +10k \( "${patterns#-o }" \) 2>/dev/null
   fi
 }
 
@@ -347,7 +347,7 @@ opt_video(){
       # Note: Using standard SVT-AV1 or AOM-AV1 encoders.
       # Future consideration: evaluate SVT-AV1-PSY and other AV1 encoder forks for quality/speed.
       [[ $enc == *libsvtav1* ]] && vc="libsvtav1" || \
-      [[ $enc == *libaom-av1* ]] && vc="libaom-av1";;
+      [[ "$enc" == *libaom-av1* ]] && vc="libaom-av1";;
     vp9) [[ $enc == *libvpx-vp9* ]] && vc="libvpx-vp9";;
     h265) [[ $enc == *libx265* ]] && vc="libx265";;
     h264) vc="libx264";;

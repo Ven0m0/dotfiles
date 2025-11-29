@@ -11,11 +11,11 @@ readonly DEF=$'\e[0m' BLD=$'\e[1m' UL=$'\e[4m'
 
 # Core helpers
 has(){ command -v "$1" &>/dev/null; }
-err(){ printf '%b[ERR]%b %s\n' "${RED}" "${DEF}" "$*" >&2; }
+err(){ printf '%b[ERR]%b %s\n' "$RED" "$DEF" "$*" >&2; }
 die(){ err "$@"; exit 1; }
 
 # Version
-_ver(){ printf '%b%s%b -- %bv1.0.0%b fuzzy git TUI (gix/gh/forgit)\n' "${BLD}" "${0##*/}" "${DEF}" "${UL}" "${DEF}"; }
+_ver(){ printf '%b%s%b -- %bv1.0.0%b fuzzy git TUI (gix/gh/forgit)\n' "$BLD" "${0##*/}" "$DEF" "$UL" "$DEF"; }
 
 # Help
 _help(){
@@ -81,9 +81,9 @@ EOF
 }
 
 # Tool detection
-for g in ${GIT_CMD:-gix git}; do has "${g}" && GIT="${g}" && break; done
+for g in "${GIT_CMD:-gix git}"; do has "$g" && GIT="$g" && break; done
 [[ -z ${GIT:-} ]] && die "No git/gix found"
-for f in ${FINDER:-sk fzf}; do has "${f}" && FZF="${f}" && break; done
+for f in "${FINDER:-sk fzf}"; do has "$f" && FZF="$f" && break; done
 [[ -z ${FZF:-} ]] && die "No fuzzy finder found (sk/fzf)"
 
 # Optional tools
@@ -146,13 +146,13 @@ _fzf(){
     esac
   done
   
-  "${FZF}" "${opts[@]}" "$@"
+  "$FZF" "${opts[@]}" "$@"
 }
 
 # Copy to clipboard
 _copy(){
   [[ -z ${CLIP} ]] && return 0
-  printf '%s' "$1" | ${CLIP}
+  printf '%s' "$1" | "$CLIP"
 }
 
 # Get pager (delta > bat > less > cat)
@@ -184,7 +184,7 @@ _add(){
     -b "ctrl-y:execute-silent(echo {} | tr '\n' ' ' | ${CLIP:-:})" \
     -b "alt-e:execute(${EDITOR:-vim} {})")
   [[ -z ${files} ]] && return 0
-  _git add $(xargs <<< "${files}")
+  _git add "$(xargs <<< "$files")"
 }
 
 # Interactive git diff
@@ -193,13 +193,13 @@ _diff(){
   local pager=$(_pager)
   local target=${1:-HEAD}
   local files
-  files=$(_git diff --name-only "${target}" | _fzf -m \
+  files=$(_git diff --name-only "$target" | _fzf -m \
     -h $'Tab:select  Enter:confirm  ?:preview\nCtrl-Y:copy filename' \
     -l '[git diff]' \
     -w 'down:70%:wrap' \
     -p "git diff --color=always ${target} {} | ${pager}" \
     -b "ctrl-y:execute-silent(echo {} | ${CLIP:-:})")
-  [[ -n ${files} ]] && printf '%s\n' "${files}"
+  [[ -n ${files} ]] && printf '%s\n' "$files"
 }
 
 # Interactive git log
@@ -209,11 +209,11 @@ _log(){
   local format='%C(auto)%h%d %s %C(black)%C(bold)%cr%Creset'
   local preview="git show --color=always {1} | ${pager}"
   
-  _git log --color=always --graph --format="${format}" "$@" | _fzf \
+  _git log --color=always --graph --format="$format" "$@" | _fzf \
     -h $'Enter:show  Ctrl-Y:copy hash  Alt-E:edit\n?:toggle preview  Ctrl-S:sort' \
     -l '[git log]' \
     -w 'down:70%:wrap' \
-    -p "${preview}" \
+    -p "$preview" \
     -b "ctrl-y:execute-silent(echo {1} | ${CLIP:-:})" \
     -b "alt-e:execute(git show {1} | ${EDITOR:-vim} -)" \
     -b "enter:execute(git show {1} | ${pager} | less -R)"
@@ -225,7 +225,7 @@ _show(){
   local pager=$(_pager)
   local format='%C(auto)%h%d %s %C(black)%C(bold)%cr%Creset'
   
-  _git log --color=always --format="${format}" "$@" | _fzf \
+  _git log --color=always --format="$format" "$@" | _fzf \
     -h $'Enter:confirm  Ctrl-Y:copy hash\n?:toggle preview' \
     -l '[git show]' \
     -w 'down:70%:wrap' \
@@ -276,7 +276,7 @@ _branch_delete(){
     -b "ctrl-y:execute-silent(echo {1} | ${CLIP:-:})" | \
     awk '{print $1}')
   [[ -z ${branches} ]] && return 0
-  _git branch -D $(xargs <<< "${branches}")
+  _git branch -D "$(xargs <<< "$branches")"
 }
 
 # Interactive tag checkout
@@ -290,7 +290,7 @@ _tag(){
     -p 'git show --color=always {}' \
     -b "ctrl-y:execute-silent(echo {} | ${CLIP:-:})")
   [[ -z ${tag} ]] && return 0
-  _git checkout "${tag}"
+  _git checkout "$tag"
 }
 
 # Interactive commit checkout
@@ -299,7 +299,7 @@ _commit(){
   local hash
   hash=$(_show "$@")
   [[ -z ${hash} ]] && return 0
-  _git checkout "${hash}"
+  _git checkout "$hash"
 }
 
 # Interactive revert
@@ -308,7 +308,7 @@ _revert(){
   local hash
   hash=$(_show "$@")
   [[ -z ${hash} ]] && return 0
-  _git revert "${hash}"
+  _git revert "$hash"
 }
 
 # Interactive reset HEAD
@@ -323,7 +323,7 @@ _reset(){
     -p "git diff --cached --color=always {} | ${pager}" \
     -b "ctrl-y:execute-silent(echo {} | ${CLIP:-:})")
   [[ -z ${files} ]] && return 0
-  _git reset HEAD $(xargs <<< "${files}")
+  _git reset HEAD "$(xargs <<< "$files")"
 }
 
 # Interactive file checkout
@@ -338,7 +338,7 @@ _file(){
     -p "git diff --color=always {} | ${pager}" \
     -b "ctrl-y:execute-silent(echo {} | ${CLIP:-:})")
   [[ -z ${files} ]] && return 0
-  _git checkout -- $(xargs <<< "${files}")
+  _git checkout -- "$(xargs <<< "$files")"
 }
 
 # Interactive stash viewer
@@ -355,7 +355,7 @@ _stash(){
     -b "ctrl-d:reload(git stash drop {1} && git stash list)" | \
     cut -d: -f1)
   [[ -z ${stash} ]] && return 0
-  _git stash apply "${stash}"
+  _git stash apply "$stash"
 }
 
 # Interactive stash push
@@ -369,7 +369,7 @@ _stash_push(){
     -w 'down:70%:wrap' \
     -p "git diff --color=always {} | ${pager}")
   [[ -z ${files} ]] && return 0
-  _git stash push -m "fzgit stash" -- $(xargs <<< "${files}")
+  _git stash push -m "fzgit stash" -- "$(xargs <<< "$files")"
 }
 
 # Interactive git clean
@@ -383,10 +383,10 @@ _clean(){
     -p "${TREE:-find} {}" \
     -b "ctrl-y:execute-silent(echo {} | ${CLIP:-:})")
   [[ -z ${files} ]] && return 0
-  printf '%bClean these files? [y/N]%b ' "${YLW}" "${DEF}"
+  printf '%bClean these files? [y/N]%b ' "$YLW" "$DEF"
   read -r ans
   [[ ${ans} =~ ^[Yy] ]] || return 0
-  _git clean -xdff $(xargs <<< "${files}")
+  _git clean -xdff "$(xargs <<< "$files")"
 }
 
 # Interactive cherry-pick
@@ -395,7 +395,7 @@ _cherry(){
   local hash
   hash=$(_show "$@")
   [[ -z ${hash} ]] && return 0
-  _git cherry-pick "${hash}"
+  _git cherry-pick "$hash"
 }
 
 # Interactive rebase
@@ -404,7 +404,7 @@ _rebase(){
   local hash
   hash=$(_show "$@")
   [[ -z ${hash} ]] && return 0
-  _git rebase -i "${hash}"
+  _git rebase -i "$hash"
 }
 
 # Interactive reflog
@@ -442,7 +442,7 @@ _fixup(){
   local hash
   hash=$(_show "$@")
   [[ -z ${hash} ]] && return 0
-  _git commit --fixup="${hash}"
+  _git commit --fixup="$hash"
   _git rebase -i --autosquash "${hash}~1"
 }
 
@@ -452,7 +452,7 @@ _squash(){
   local hash
   hash=$(_show "$@")
   [[ -z ${hash} ]] && return 0
-  _git commit --squash="${hash}"
+  _git commit --squash="$hash"
   _git rebase -i --autosquash "${hash}~1"
 }
 
@@ -462,7 +462,7 @@ _difftool(){
   local files
   files=$(_diff "$@")
   [[ -z ${files} ]] && return 0
-  _git difftool "${1:-HEAD}" -- $(xargs <<< "${files}")
+  _git difftool "${1:-HEAD}" -- "$(xargs <<< "$files")"
 }
 
 # GitHub PR viewer (requires gh)
@@ -532,7 +532,7 @@ _ignore(){
       -h 'Tab:select  Enter:generate' \
       -l '[.gitignore templates]')
     [[ -z ${list} ]] && return 0
-    set -- $(xargs <<< "${list}")
+    set -- "$(xargs <<< "$list")"
   fi
   
   curl -fsSL "${api}/$(IFS=,; printf '%s' "$*")"
@@ -551,7 +551,7 @@ _clone(){
     -b "ctrl-y:execute-silent(echo https://github.com/{1} | ${CLIP:-:})" | \
     awk '{print $1}')
   [[ -z ${repo} ]] && return 0
-  gh repo clone "${repo}"
+  gh repo clone "$repo"
 }
 
 # Main dispatcher

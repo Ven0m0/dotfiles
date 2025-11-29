@@ -497,4 +497,4 @@ update_script() {
 
 ---
 
-*This blueprint should be consulted before creating or modifying any Bash scripts in this repository. It represents the accumulated best practices and patterns observed in the existing codebase.*
+_This blueprint should be consulted before creating or modifying any Bash scripts in this repository. It represents the accumulated best practices and patterns observed in the existing codebase._

@@ -50,7 +50,7 @@ export NODE_OPTIONS="--no-warnings --max-old-space-size=4096"
 # --- SDKMAN (Java/JVM)
 export SDKMAN_DIR="${SDKMAN_DIR:-$HOME/.sdkman}"
 ifsource "${SDKMAN_DIR}/bin/sdkman-init.sh"
-export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which java))))" && prependpath "${JAVA_HOME}/bin"
+export JAVA_HOME="$(dirname "$(dirname "$(readlink -f "$(which java)")")")" && prependpath "${JAVA_HOME}/bin"
 
 # AppImages
 export URUNTIME_PRELOAD=1

@@ -533,7 +533,9 @@ if HTTPSConnection:
                             # Last resort: wrap without verification but warn
                             # Try to use a secure protocol (TLSv1.2) if possible
                             if hasattr(ssl_module, "PROTOCOL_TLSv1_2"):
-                                self.sock = ssl_module.wrap_socket(self.sock, ssl_version=ssl_module.PROTOCOL_TLSv1_2)
+                                self.sock = ssl_module.wrap_socket(
+                                    self.sock, ssl_version=ssl_module.PROTOCOL_TLSv1_2
+                                )
                             else:
                                 # Raise error if TLSv1.2 is not available
                                 raise SpeedtestException(
@@ -542,7 +544,9 @@ if HTTPSConnection:
                                 )
                     except (AttributeError, TypeError):
                         if hasattr(ssl, "PROTOCOL_TLSv1_2"):
-                            self.sock = ssl.wrap_socket(self.sock, ssl_version=ssl.PROTOCOL_TLSv1_2)
+                            self.sock = ssl.wrap_socket(
+                                self.sock, ssl_version=ssl.PROTOCOL_TLSv1_2
+                            )
                         else:
                             # Fallback: do not wrap with insecure protocol; raise error if TLSv1.2 is not available
                             raise SpeedtestException(
@@ -2154,6 +2158,7 @@ def shell():
     if args.share and not machine_format:
         printer("Share results: %s" % results.share())
 
+
 def main():
     try:
         shell()
@@ -2167,6 +2172,7 @@ def main():
             if not msg:
                 msg = "%r" % e
             raise SystemExit("ERROR: %s" % msg)
+
 
 if __name__ == "__main__":
     main()

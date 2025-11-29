@@ -72,7 +72,7 @@ find -O3 . -type f -empty -delete
 find -O3 . -xtype l -delete
 
 # Apply patches
-usepatch(){ 
+usepatch(){
   for patch in ../*.patch; do
     [[ -e "$patch" ]] || continue
     echo "Applying patch ${patch##*/}..."

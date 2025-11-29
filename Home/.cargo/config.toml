@@ -26,7 +26,12 @@ rr = "run -r"
 [build]
 rustc-wrapper = "sccache"
 incremental = false
-rustflags = ["-C", "target-cpu=native", "-C", "llvm-args=-enable-dfa-jump-thread"]
+rustflags = [
+  "-C",
+  "target-cpu=native",
+  "-C",
+  "llvm-args=-enable-dfa-jump-thread",
+]
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
@@ -100,11 +105,23 @@ incremental = true
 
 [target.x86_64-unknown-linux-gnu]
 linker = "clang"
-rustflags = ["-C", "target-cpu=native", "-C", "link-arg=-fuse-ld=mold", "-C", "llvm-args=-enable-dfa-jump-thread"]
+rustflags = [
+  "-C",
+  "target-cpu=native",
+  "-C",
+  "link-arg=-fuse-ld=mold",
+  "-C",
+  "llvm-args=-enable-dfa-jump-thread",
+]
 
 [target.aarch64-linux-android]
 linker = "clang"
-rustflags = ["-C", "link-arg=-fuse-ld=lld", "-C", "llvm-args=-enable-dfa-jump-thread"]
+rustflags = [
+  "-C",
+  "link-arg=-fuse-ld=lld",
+  "-C",
+  "llvm-args=-enable-dfa-jump-thread",
+]
 
 [term]
 quiet = false

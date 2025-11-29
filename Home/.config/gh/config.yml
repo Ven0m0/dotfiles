@@ -3,7 +3,7 @@ version: 1
 # What protocol to use when performing git operations. Supported values: ssh, https
 git_protocol: https
 # What editor gh should run when creating issues, pull requests, etc. If blank, will refer to environment.
-editor: 
+editor:
 # When to interactively prompt. This is a global config that cannot be overridden by hostname. Supported values: enabled, disabled
 prompt: enabled
 # Preference for editor-based interactive prompting. This is a global config that cannot be overridden by hostname. Supported values: enabled, disabled
@@ -12,11 +12,11 @@ prefer_editor_prompt: enabled
 pager: delta
 # Aliases allow you to create nicknames for gh commands
 aliases:
-    co: pr checkout
-    clone: repo clone
-    v: repo view --web
-    pr: pr create --web
-    pv: pr view --web
+  co: pr checkout
+  clone: repo clone
+  v: repo view --web
+  pr: pr create --web
+  pv: pr view --web
 # The path to a unix socket through which to send HTTP connections. If blank, HTTP traffic will be handled by net/http.DefaultTransport.
 http_unix_socket:
 # What web browser gh should use when opening URLs. If blank, will refer to environment.
@@ -29,4 +29,3 @@ accessible_colors: disabled
 accessible_prompter: disabled
 # Whether to use a animated spinner as a progress indicator. If disabled, a textual progress indicator is used instead. Supported values: enabled, disabled
 spinner: enabled
-
