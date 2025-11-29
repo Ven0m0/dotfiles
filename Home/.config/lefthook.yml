@@ -3,7 +3,6 @@ output: [summary, skips]
 colors: true
 no_tty: false
 min_version: 1.5.0
-
 pre-commit:
   parallel: true
   piped: true
@@ -64,13 +63,13 @@ pre-commit:
     prettier-format:
       priority: 7
       glob: "*.{mjs,cjs,scss,html}"
-      run: prettier -w --ignore-unknown {staged_files} || :
+      run: "prettier -w --ignore-unknown {staged_files} || :"
       stage_fixed: true
       fail_text: "Prettier formatting failed"
     eslint-fix:
       priority: 8
       glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
-      run: eslint --fix -q {staged_files} || :
+      run: "eslint --fix -q {staged_files} || :"
       stage_fixed: true
       fail_text: "ESLint fixes failed"
     trim-trailing:
@@ -165,7 +164,8 @@ pre-commit:
       fail_text: "Debug code found in staged files!"
     no-merge-conflicts:
       priority: 16
-      run: rg -FN '^(<{7}|={7}|>{7})' {staged_files} && { printf "Merge conflicts\n" >&2; exit 1; } || :
+      run: |
+        rg -FN '^(<{7}|={7}|>{7})' {staged_files} && { printf "Merge conflicts\n" >&2; exit 1; } || :
       fail_text: "Merge conflict markers found!"
     check-todos:
       priority: 17
@@ -176,12 +176,12 @@ pre-commit:
     actionlint:
       priority: 18
       glob: ".github/workflows/*.{yml,yaml}"
-      run: actionlint {staged_files} || :
+      run: "actionlint {staged_files} || :"
       fail_text: "GitHub Actions workflow linting failed"
     zizmor:
       priority: 19
       glob: ".github/workflows/*.{yml,yaml}"
-      run: zizmor --format plain {staged_files} || :
+      run: "zizmor --format plain {staged_files} || :"
       fail_text: "GitHub Actions security check failed"
     no-commit-to-branch:
       priority: 20
@@ -211,7 +211,8 @@ commit-msg:
       fail_text: "Commit subject line too long (max 72 chars)"
     no-wip:
       priority: 3
-      run: rg -qi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP\n" >&2; exit 1; } || :
+      run: |
+        rg -qi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP\n" >&2; exit 1; } || :
       fail_text: "WIP/TODO/FIXME/HACK found in commit message"
 pre-push:
   parallel: true
@@ -259,13 +260,13 @@ post-merge:
       fail_text: "Dependency update failed"
     clean-artifacts:
       priority: 2
-      run: rm -rf node_modules/.cache target/debug .pytest_cache __pycache__ .next .turbo dist build || :
+      run: "rm -rf node_modules/.cache target/debug .pytest_cache __pycache__ .next .turbo dist build || :"
       fail_text: "Artifact cleanup failed"
 post-checkout:
   commands:
     update-submodules:
       priority: 1
-      run: submod update --init --recursive &>/dev/null || git submodule update --init --recursive &>/dev/null || :
+      run: "submod update --init --recursive &>/dev/null || git submodule update --init --recursive &>/dev/null || :"
       fail_text: "Submodule update failed"
     notify-deps:
       priority: 2

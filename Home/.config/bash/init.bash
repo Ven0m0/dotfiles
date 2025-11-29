@@ -17,7 +17,7 @@ mkdir -p "$BASH_CONFIG_DIR"/{lib,plugins,functions} "$BASH_CACHE_DIR"
 # Load plugins (sourced in order by filename)
 shopt -s nullglob globstar
 for plugin in "${BASH_CONFIG_DIR}/plugins/"*.{bash,sh}; do
-  . "$plugin"
+	. "$plugin"
 done
 unset plugin
 

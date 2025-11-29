@@ -78,14 +78,20 @@ jobs:
           KNOWLEDGE=$(.github/scripts/aggregate-knowledge.sh)
 
           # Use EOF delimiter to handle multi-line content
-          echo "content<<EOF" >> $GITHUB_OUTPUT
-          echo "$KNOWLEDGE" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "content<<EOF"
+            echo "$KNOWLEDGE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
           # Log size for debugging
-          echo "Knowledge base size: $(echo "$KNOWLEDGE" | wc -c) characters"
+          echo "Knowledge base size: ${#KNOWLEDGE} characters"
       - name: Prepare implementation prompt
         id: prepare-prompt
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
           # Determine if this is an issue or PR
           IS_ISSUE="${{ github.event.issue && !github.event.issue.pull_request }}"
@@ -104,15 +110,11 @@ jobs:
 
             echo "$ISSUE_NUMBER" > /tmp/issue_number.txt
 
-            # SECURITY: Use heredoc to prevent command injection from issue title
-            cat <<'ISSUE_TITLE_EOF' > /tmp/issue_title.txt
-          ${{ github.event.issue.title }}
-          ISSUE_TITLE_EOF
+            # SECURITY: Use env var to prevent command injection
+            printf "%s\n" "$ISSUE_TITLE" > /tmp/issue_title.txt
 
-            # SECURITY: Use heredoc to prevent command injection from issue body
-            cat <<'ISSUE_BODY_EOF' > /tmp/issue_body.txt
-          ${{ github.event.issue.body }}
-          ISSUE_BODY_EOF
+            # SECURITY: Use env var to prevent command injection
+            printf "%s\n" "$ISSUE_BODY" > /tmp/issue_body.txt
 
             echo "${{ github.repository }}" > /tmp/repo.txt
 
@@ -155,10 +157,8 @@ jobs:
           ${{ steps.knowledge.outputs.content }}
           KNOWLEDGE_EOF
 
-            # SECURITY: Use heredoc to prevent command injection from PR comment
-            cat <<'COMMENT_BODY_EOF' > /tmp/comment_body.txt
-          ${{ github.event.comment.body }}
-          COMMENT_BODY_EOF
+            # SECURITY: Use env var to prevent command injection
+            printf "%s\n" "$COMMENT_BODY" > /tmp/comment_body.txt
 
             # Build the PR review prompt
             {

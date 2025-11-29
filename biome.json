@@ -1,6 +1,6 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
-  "vcs": {"enabled": true, "clientKind": "git", "useIgnoreFile": true},
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
     "ignoreUnknown": false,
     "includes": [
@@ -95,20 +95,20 @@
     }
   },
   "json": {
-    "formatter": {"trailingCommas": "none"},
-    "parser": {"allowComments": true, "allowTrailingCommas": false}
+    "formatter": { "trailingCommas": "none" },
+    "parser": { "allowComments": true, "allowTrailingCommas": false }
   },
   "css": {
-    "formatter": {"quoteStyle": "double"},
-    "linter": {"enabled": true}
+    "formatter": { "quoteStyle": "double" },
+    "linter": { "enabled": true }
   },
   "overrides": [
     {
       "includes": ["*.config.{js,ts,mjs,cjs}", ".*rc.{js,ts}", ".*.{js,ts}"],
       "linter": {
         "rules": {
-          "suspicious": {"noConsole": "off"},
-          "style": {"noDefaultExport": "off"}
+          "suspicious": { "noConsole": "off" },
+          "style": { "noDefaultExport": "off" }
         }
       }
     },
@@ -116,8 +116,8 @@
       "includes": ["**/__tests__/**", "**/*.test.{js,ts,jsx,tsx}", "**/*.spec.{js,ts,jsx,tsx}"],
       "linter": {
         "rules": {
-          "suspicious": {"noExplicitAny": "off"},
-          "style": {"noNonNullAssertion": "off"}
+          "suspicious": { "noExplicitAny": "off" },
+          "style": { "noNonNullAssertion": "off" }
         }
       }
     }

@@ -4,28 +4,30 @@ set -u
 
 help() {
 	cat <<-EOF
-	Usage:
-	 sudo (-i | -k | -v | -s) [-n] [-u <user>] [<command> [--] [<args>...]]
-	 sudo [-inskv] [-u <user>] <command> [--] [<args>...]
-	 sudo [-h]
+		Usage:
+		 sudo (-i | -k | -v | -s) [-n] [-u <user>] [<command> [--] [<args>...]]
+		 sudo [-inskv] [-u <user>] <command> [--] [<args>...]
+		 sudo [-h]
 
-	Execute a command as another user using doas(1).
+		Execute a command as another user using doas(1).
 
-	This is not the original sudo, but the doas shim for sudo. It supports only
-	a subset of the sudo options (both short and long) that have an equivalent in
-	doas, plus option -i (--login). Refer to sudo(1) for more information.
+		This is not the original sudo, but the doas shim for sudo. It supports only
+		a subset of the sudo options (both short and long) that have an equivalent in
+		doas, plus option -i (--login). Refer to sudo(1) for more information.
 
-	Please report bugs at <https://github.com/Enovale/doas-sudo-shim/issues>.
+		Please report bugs at <https://github.com/Enovale/doas-sudo-shim/issues>.
 	EOF
 }
 
 if [ $# -eq 0 ]; then
-	help >&2; exit 1
+	help >&2
+	exit 1
 fi
 
 # Note: "+" disables optional option parameters
 opts=$(getopt -n sudo -o +insu:kvh -l login,non-interactive,shell,user:,reset-timestamp,validate,help -- "$@") || {
-	help >&2; exit 1
+	help >&2
+	exit 1
 }
 eval set -- "$opts"
 
@@ -36,23 +38,32 @@ flag_k=
 user=
 while [ $# -gt 0 ]; do
 	case "$1" in
-		-i | --login) flag_i='-i';;
-		-n | --non-interactive) flag_n='-n';;
-		-s | --shell) flag_s='-s';;
-		-u | --user) user=${2#\#}; shift;;
-		-k | --reset-timestamp) flag_k='-L';;
-		-v | --validate) flag_s="true";;
-		-h | --help) help; exit 0;;
-		--) shift; break;;
+	-i | --login) flag_i='-i' ;;
+	-n | --non-interactive) flag_n='-n' ;;
+	-s | --shell) flag_s='-s' ;;
+	-u | --user)
+		user=${2#\#}
+		shift
+		;;
+	-k | --reset-timestamp) flag_k='-L' ;;
+	-v | --validate) flag_s="true" ;;
+	-h | --help)
+		help
+		exit 0
+		;;
+	--)
+		shift
+		break
+		;;
 	esac
 	shift
 done
 
 if [ "$flag_i" ] && [ "$flag_s" ]; then
-	echo "sudo: you may not specify both the '-i' and '-s' options" >&2; exit 1
+	echo "sudo: you may not specify both the '-i' and '-s' options" >&2
+	exit 1
 fi
 _doas() { exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
-}
 user_shell() {
 	if command -v getent >/dev/null 2>&1; then
 		getent passwd "${user:-root}" | awk -F: 'END {print $NF ? $NF : "sh"}'

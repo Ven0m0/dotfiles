@@ -3,21 +3,21 @@
 
 # --- Multi-language Manager
 if has mise; then
-  # Ensure command hashing is off for mise
-  set +h
-  eval "$(mise activate -yq bash)" || :
-  alias mx="mise x --"
+	# Ensure command hashing is off for mise
+	set +h
+	eval "$(mise activate -yq bash)" || :
+	alias mx="mise x --"
 fi
 
 # --- Rust/Cargo
 if has cargo || has rustup; then
-  exportif RUSTUP_HOME "$HOME/.rustup"
-  exportif CARGO_HOME "$HOME/.cargo"
-  ifsource "${CARGO_HOME:-$HOME/.cargo}/env"
-  prependpath "${CARGO_HOME:-$HOME/.cargo}/bin"
-  export CARGO_HTTP_MULTIPLEXING=true CARGO_NET_GIT_FETCH_WITH_CLI=true
-  export RUST_LOG=off BINSTALL_DISABLE_TELEMETRY=1 FIGNORE=Cargo.lock
-  has sccache && export RUSTC_WRAPPER=sccache
+	exportif RUSTUP_HOME "$HOME/.rustup"
+	exportif CARGO_HOME "$HOME/.cargo"
+	ifsource "${CARGO_HOME:-$HOME/.cargo}/env"
+	prependpath "${CARGO_HOME:-$HOME/.cargo}/bin"
+	export CARGO_HTTP_MULTIPLEXING=true CARGO_NET_GIT_FETCH_WITH_CLI=true
+	export RUST_LOG=off BINSTALL_DISABLE_TELEMETRY=1 FIGNORE=Cargo.lock
+	has sccache && export RUSTC_WRAPPER=sccache
 fi
 
 # --- Go
@@ -29,21 +29,21 @@ export PYTHON_DISABLE_REMOTE_DEBUG=1 PYTORCH_ENABLE_MPS_FALLBACK=1
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 # Use uv for pip operations when available
-pip(){
-  if has uv && [[ "install uninstall list show freeze check" =~ "$1" ]]; then
-    command uv pip "$@"
-  else
-    command python -m pip "$@"
-  fi
+pip() {
+	if has uv && [[ "install uninstall list show freeze check" =~ "$1" ]]; then
+		command uv pip "$@"
+	else
+		command python -m pip "$@"
+	fi
 }
 # Create and activate Python virtual environment using uv
 alias py-venv="[ -d .venv ] || uv venv .venv && source .venv/bin/activate"
 
 # --- Node/Bun
 if has bun; then
-  alias npx=bunx npm=bun
-  [[ -z "$BUN_INSTALL" ]] && export BUN_INSTALL="$HOME/.bun"
-  prependpath "$BUN_INSTALL/bin"
+	alias npx=bunx npm=bun
+	[[ -z "$BUN_INSTALL" ]] && export BUN_INSTALL="$HOME/.bun"
+	prependpath "$BUN_INSTALL/bin"
 fi
 export NODE_OPTIONS="--no-warnings --max-old-space-size=4096"
 

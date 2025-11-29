@@ -12,5 +12,5 @@ jobs:
   megalinter:
     uses: Ven0m0/.github/.github/workflows/mega-linter.yml@main
     with:
-      exclude_dirs: '.github,.git,.cache,go,node_modules,.var,.rustup,.wine,.zim,.void-editor,.vscode,.claude'
+      exclude_dirs: ".github,.git,.cache,go,node_modules,.var,.rustup,.wine,.zim,.void-editor,.vscode,.claude"
     secrets: inherit

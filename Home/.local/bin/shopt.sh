@@ -96,7 +96,7 @@ else
   die "Not found: $target"
 fi
 (( ${#files[@]} == 0 && !compile && !concat )) && { log "No scripts found"; exit 0; }
-[[ ${#files[@]} -gt 1 && -n $output && $output != - && ! compile && ! concat ]] && \
+[[ ${#files[@]} -gt 1 && -n $output && $output != - ]] && (( ! compile && ! concat )) && \
   die "Multiple files with single output unsupported (use -c/--compile)"
 #──────────── Comment Strip AWK (Enhanced) ────────────
 read -r -d '' AWK_STRIP <<'AWK' || :

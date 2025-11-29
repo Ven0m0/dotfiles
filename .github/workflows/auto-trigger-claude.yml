@@ -1,5 +1,5 @@
 name: Auto-Trigger Claude
-description: Automatically trigger Claude to implement labeled issues (Hybrid OSE)
+# description: Automatically trigger Claude to implement labeled issues (Hybrid OSE)
 on:
   issues:
     types: [labeled]

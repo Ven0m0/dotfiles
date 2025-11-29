@@ -3,23 +3,25 @@
 
 # --- Zoxide (smart cd)
 if has zoxide; then
-  export _ZO_EXCLUDE_DIRS="$HOME" _ZO_FZF_OPTS='--cycle --inline-info --no-multi'
-  eval "$(zoxide init --cmd cd bash)" || :
+	export _ZO_EXCLUDE_DIRS="$HOME" _ZO_FZF_OPTS='--cycle --inline-info --no-multi'
+	eval "$(zoxide init --cmd cd bash)" || :
 fi
 
 # --- Zellij (terminal multiplexer)
 if has zellij; then
-  eval "$(zellij setup --generate-auto-start bash 2>/dev/null)" || :
-  ifsource "$HOME/.config/bash/completions/zellij.bash"
+	eval "$(zellij setup --generate-auto-start bash 2>/dev/null)" || :
+	ifsource "$HOME/.config/bash/completions/zellij.bash"
 fi
 
 if has yazi; then
-  y(){ local cwd tmp_file="$(mktemp -t "yazi-cwd.XXXXXX")"
-    yazi "$@" --cwd-file="$tmp_file"
-    if IFS= read -r -d '' cwd < "$tmp_file" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
-      cd "$cwd" || return 1
-    fi; rm -f "$tmp_file"
-  }
+	y() {
+		local cwd tmp_file="$(mktemp -t "yazi-cwd.XXXXXX")"
+		yazi "$@" --cwd-file="$tmp_file"
+		if IFS= read -r -d '' cwd <"$tmp_file" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
+			cd "$cwd" || return 1
+		fi
+		rm -f "$tmp_file"
+	}
 fi
 
 # --- Command correction/enhancement
