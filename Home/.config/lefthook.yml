@@ -40,8 +40,8 @@ pre-commit:
       priority: 5
       glob: "*.md"
       run: |
-        if command -v mado &>/dev/null; then
-          mado check --fix {staged_files} || :
+        if command -v mdformat &>/dev/null; then
+          mdformat {staged_files} || :
         elif command -v rumdl &>/dev/null; then
           rumdl check --fix {staged_files} || :
         elif command -v markdownlint-cli2 &>/dev/null; then
