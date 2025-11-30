@@ -29,6 +29,7 @@ MODES:
   clean         Clean merged branches and optimize (default)
   update        Update from remote with submodules
   both          Run update then clean
+  merge         Auto-merge a PR. Expects PR URL and optional strategy.
 
 OPTIONS:
   -d, --dry-run     Show actions without executing
@@ -43,6 +44,15 @@ FEATURES:
   - Submodule sync and update
   - Git optimization (repack, gc, reflog, maintenance)
   - gitoxide (gix) support
+  - Check for failed GHA workflows
+  - Auto-merge PRs
+
+MODES:
+  clean         Clean merged branches and optimize (default)
+  update        Update from remote with submodules
+  both          Run update then clean
+  merge         Auto-merge a PR. Expects PR URL and optional strategy.
+
 EOF
 	exit 0
 }
@@ -51,6 +61,13 @@ while [[ $# -gt 0 ]]; do
 	clean | update | both)
 		MODE=$1
 		shift
+		;;
+	merge)
+		MODE=$1
+		shift
+		PR_URL=${1:-}
+		MERGE_STRATEGY=${2:-theirs}
+		shift 2 || shift 1 || :
 		;;
 	-d | --dry-run)
 		DRY_RUN=true
@@ -98,7 +115,10 @@ update_repo() {
 		git -c protocol.file.allow=always fetch --prune --no-tags --filter=blob:none origin ||
 			git -c protocol.file.allow=always fetch --prune --no-tags origin ||
 			die "Fetch failed"
-		git checkout "$trunk" || die "Checkout $trunk failed"
+		check_gha_failures
+		git checkout "$trunk" &>/dev/null
+		git-submodule-update &>/dev/null
+		git reset --hard "origin/$trunk" &>/dev/null
 		git -c protocol.file.allow=always pull --rebase --autostash --prune origin "$trunk" ||
 			{
 				git rebase --abort &>/dev/null || :
@@ -216,8 +236,118 @@ clean_repo() {
 	else
 		verbose "gh CLI not found, skipping PR checks"
 	fi
+	optimize_repo
+}
+check_gha_failures() {
+	if ! command -v gh &>/dev/null; then
+		warn "gh command not found, skipping GHA failure check."
+		return
+	fi
+	local remote_url
+	remote_url=$(git remote get-url origin)
+	local repo_owner
+	repo_owner=$(echo "$remote_url" | sed -E 's#.*github.com[:/]([^/]+)/.*#\1#')
+	local repo_name
+	repo_name=$(echo "$remote_url" | sed -E 's#.*github.com[:/].*/([^/]+).*#\1#' | sed 's/\.git$//')
+	local run_id
+	run_id=$(gh run list -L 1 --json databaseId -R "$repo_owner/$repo_name" 2>/dev/null | jq -r '.[0].databaseId')
+	if [[ -z "$run_id" ]]; then
+		verbose "No workflow runs found or failed to get run list."
+		return
+	fi
+	local conclusion
+	conclusion=$(gh run view "$run_id" --json conclusion -R "$repo_owner/$repo_name" 2>/dev/null | jq -r '.conclusion')
+	if [[ -z "$conclusion" ]]; then
+		err "Failed to get workflow run details."
+		return
+	fi
+	if [[ "$conclusion" == "failure" ]]; then
+		err "Latest workflow run failed. Please check the logs."
+		gh run view "$run_id" --log-failed -R "$repo_owner/$repo_name"
+	else
+		verbose "The latest workflow run was successful."
+	fi
+}
+auto_merge_pr() {
+	[[ -n "$PR_URL" ]] || die "PR URL required for merge mode."
+	local strategy="$MERGE_STRATEGY"
+	local owner repo pr
+	if [[ $PR_URL =~ github\.com/([^/]+)/([^/]+)/pull/([0-9]+) ]]; then
+		owner=${BASH_REMATCH[1]}
+		repo=${BASH_REMATCH[2]}
+		pr=${BASH_REMATCH[3]}
+	elif (($# >= 2)) && [[ $PR_URL =~ / ]] && [[ $MERGE_STRATEGY =~ ^[0-9]+$ ]]; then
+		IFS=/ read -r owner repo <<<"$PR_URL"
+		pr=$MERGE_STRATEGY
+		strategy=${3:-theirs}
+	else
+		die "Invalid PR URL or arguments."
+	fi
+	local work_dir
+	work_dir=$(mktemp -d)
+	trap 'rm -rf "$work_dir"' EXIT
+	cd "$work_dir"
+	msg "Fetching PR $owner/$repo#$pr..."
+	command -v gh &>/dev/null || die "gh CLI not installed"
+	local pr_info head_ref base_ref is_cross
+	pr_info=$(gh pr view "$pr" -R "$owner/$repo" --json headRefName,baseRefName,headRepository,isCrossRepository)
+	head_ref=$(jq -r .headRefName <<<"$pr_info")
+	base_ref=$(jq -r .baseRefName <<<"$pr_info")
+	is_cross=$(jq -r .isCrossRepository <<<"$pr_info")
+	local head_repo
+	if [[ $is_cross == true ]]; then
+		head_repo=$(jq -r .headRepository.nameWithOwner <<<"$pr_info")
+		[[ -n $head_repo && $head_repo != null ]] || die "Cannot access fork repo"
+	else
+		head_repo="$owner/$repo"
+	fi
+	git clone -q --depth 1 "https://github.com/$head_repo.git" repo && cd repo
+	git fetch -q --depth 1 origin "+$head_ref:refs/heads/$head_ref" "+$base_ref:refs/remotes/origin/$base_ref"
+	git checkout -q "$head_ref"
+	msg "Merging $base_ref into $head_ref (strategy: $strategy)..."
+	case $strategy in
+	theirs)
+		git merge "origin/$base_ref" -X theirs -m "Auto-merge: accept $base_ref" || {
+			git checkout --theirs .
+			git add -A
+			git -c core.editor=true merge --continue
+		}
+		;;
+	ours)
+		git merge "origin/$base_ref" -X ours -m "Auto-merge: keep $head_ref" || {
+			git checkout --ours .
+			git add -A
+			git -c core.editor=true merge --continue
+		}
+		;;
+	auto)
+		if git merge "origin/$base_ref" -m "Auto-merge: smart resolution"; then
+			:
+		else
+			while IFS= read -r file; do
+				case $file in
+				package-lock.json | yarn.lock | Cargo.lock | go.sum | composer.lock | Gemfile.lock | poetry.lock) git checkout --theirs "$file" ;;
+				.github/workflows/* | *.ya?ml | *.json | *.toml | *.ini | *.cfg) git checkout --theirs "$file" ;;
+				*) git checkout --ours "$file" ;;
+				esac
+			done < <(git diff --name-only --diff-filter=U)
+			git add -A
+			git -c core.editor=true merge --continue
+		fi
+		;;
+	*)
+		die "Invalid strategy: $strategy"
+		;;
+	esac
+	msg "Pushing changes..."
+	git push -q origin "$head_ref"
+	ok "Done. Conflicts resolved and pushed."
+}
+optimize_repo() {
 	msg "Optimizing repository..."
-	if [[ $DRY_RUN == false ]]; then
+	if [[ $DRY_RUN == true ]]; then
+		msg "Would optimize: repack, gc, reflog, worktrees, maintenance"
+	else
 		verbose "Repack..."
 		git repack -adbq --depth=250 --window=250 &>/dev/null || :
 		verbose "GC..."
@@ -240,24 +370,21 @@ clean_repo() {
       ' &>/dev/null || :
 		fi
 		ok "Optimization complete"
-	else
-		msg "Would optimize: repack, gc, reflog, worktrees, maintenance"
 	fi
 }
-case $MODE in
-update) update_repo ;;
-clean) clean_repo ;;
-both)
-	update_repo
-	clean_repo
-	;;
-esac
-echo
-msg "=== Summary ==="
-printf "  Mode: %s\n" "$MODE"
-[[ $MODE == clean || $MODE == both ]] && {
-	printf "  Deleted local: %d\n" "$DELETED_BRANCHES"
-	printf "  Pruned remote: %d\n" "$DELETED_REMOTE_BRANCHES"
+main() {
+	case $MODE in
+	clean) clean_repo ;;
+	update) update_repo ;;
+	both)
+		update_repo
+		clean_repo
+		;;
+	merge) auto_merge_pr "$@" ;;
+	esac
+	if [[ $MODE == "clean" || $MODE == "both" ]]; then
+		optimize_repo
+		ok "Deleted $DELETED_BRANCHES local and $DELETED_REMOTE_BRANCHES remote branches."
+	fi
 }
-[[ $DRY_RUN == true ]] && warn "DRY RUN - No changes made"
-ok "Complete"
+main "$@"
