@@ -5,21 +5,18 @@ updates:
     schedule:
       interval: "weekly"
       timezone: "Europe/Berlin"
-      time: "04:00"
     rebase-strategy: "auto"
   - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
       interval: "weekly"
       timezone: "Europe/Berlin"
-      time: "04:00"
     rebase-strategy: "auto"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
       timezone: "Europe/Berlin"
-      time: "04:00"
     ignore:
       - dependency-name: "pip"
     rebase-strategy: "auto"
@@ -28,8 +25,7 @@ updates:
     schedule:
       interval: "weekly"
       timezone: "Europe/Berlin"
-      time: "04:00"
-    open-pull-requests-limit: 99
+    open-pull-requests-limit: 10
     rebase-strategy: "auto"
     versioning-strategy: "increase"
   - package-ecosystem: "docker"
@@ -38,4 +34,10 @@ updates:
       interval: "weekly"
       timezone: "Europe/Berlin"
       time: "04:00"
+    rebase-strategy: "auto"
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      timezone: "Europe/Berlin"
     rebase-strategy: "auto"
