@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # fzgit - Fuzzy Git TUI (gix→git, gh integration, forgit-inspired)
-set -euo pipefail
-shopt -s lastpipe nullglob globstar
-export LC_ALL=C LANG=C SHELL="$(command -v bash)" HOME="/home/${SUDO_USER:-$USER}"
+set -euo pipefail; shopt -s lastpipe nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C SHELL="$(command -v bash)" HOME="/home/${SUDO_USER:-$USER}"
 
 # Colors (trans palette)
 readonly BLK=$'\e[30m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'

@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
 # onedrive_log - Colorized OneDrive sync log viewer
-set -euo pipefail
-shopt -s nullglob
-LC_ALL=C LANG=C
-has() { command -v "$1" &>/dev/null; }
-die() {
-	printf 'Error: %s\n' "$*" >&2
-	exit 1
-}
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 
 # Check dependencies
 has journalctl || die "journalctl is required"

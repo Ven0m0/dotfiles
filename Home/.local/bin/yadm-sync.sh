@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 # yadm-sync - Bidirectional sync helper for subdirectory-based dotfiles
 # Syncs changes between ~/ and ${REPO}/Home/
-
-set -euo pipefail
-export LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
 
 # Colors
 readonly BLD=$'\e[1m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'

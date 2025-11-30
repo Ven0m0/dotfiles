@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C LANGUAGE=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C LANGUAGE=C
 # Git maintenance: cleanup + update with submodule support
 DRY_RUN=false
 AUTO_YES="${AUTO_YES:-true}"

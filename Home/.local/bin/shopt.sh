@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar
-LC_ALL=C LANG=C IFS=$'\n\t'
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
 # Bash Script Optimizer, Minifier & Compiler
 # Formats, hardens, lints, minifies, and compiles shell scripts
 # Supports single files, directories, stdout output, and multi-variant compilation
 #──────────── Colors ────────────
 RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' DEF=$'\e[0m'
-#──────────── Helpers ────────────
 has(){ command -v "$1" &>/dev/null; }
 die(){ printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2; exit 1; }
 log(){ printf '%b%s%b\n' "$GRN" "$*" "$DEF"; }

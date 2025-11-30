@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob
-export LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob; IFS=$'\n\t'; export LC_ALL=C LANG=C
 
 # Keyserver ranking tool - tests and ranks GPG keyservers by response time
 

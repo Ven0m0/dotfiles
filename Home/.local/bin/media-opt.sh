@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 # ==============================================================================
 # CONFIGURATION
 # ==============================================================================
@@ -149,7 +146,9 @@ interactive_mode() {
 # BATCH OPTIMIZATION
 # ==============================================================================
 opt_img() {
-  local f="$1" out="$2" ext="${f##*.}" l_ext="${ext,,}"
+  local f="$1" out="$2" ext l_ext
+  ext="${f##*.}"
+  l_ext="${ext,,}"
   if has rimage; then
     tool="rimage"
     cp "$f" "$out"
@@ -220,7 +219,11 @@ opt_vid() {
 optimize_file() {
   local f="$1"
   [[ ! -f "$f" ]] && return 0
-  local ext="${f##*.}" tmp="${f}.opt.tmp.${ext}" tool="" cmd=()
+  local ext tmp tool cmd
+  ext="${f##*.}"
+  tmp="${f}.opt.tmp.${ext}"
+  tool=""
+  cmd=()
   case "${ext,,}" in
   jpg | jpeg | mjpg | png | webp | avif | jxl | bmp) opt_img "$f" "$tmp" ;;
   svg) opt_svg "$f" "$tmp" ;;
@@ -252,7 +255,9 @@ optimize_file() {
     old_sz=$(stat -c%s "$f")
     new_sz=$(stat -c%s "$tmp")
     if [[ $new_sz -gt 0 ]] && [[ $new_sz -lt $old_sz ]]; then
-      local diff=$((old_sz - new_sz)) pct=$((diff * 100 / old_sz))
+      local diff pct
+      diff=$((old_sz - new_sz))
+      pct=$((diff * 100 / old_sz))
       if [[ "$BACKUP" -eq 1 ]]; then
         local bp="${BACKUP_DIR}/${f#.}"
         mkdir -p "$(dirname "$bp")"

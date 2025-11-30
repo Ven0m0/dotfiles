@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
-#
 # summary: a simple posix script for launching multiple preset programs
 # repository: https://github.com/hollowillow/scripts
-#
 # usage: autostart [arg]
 # description:
-#
-#       launch sets of applications using files located in "$XDG_CONFIG_HOME/autostart".
-#       each file should only contain programs to be executed separated by newlines.
-#       not providing an argument launches a fzf window to select one or more files.
-#       providing arguments that are valid file names within the directory launches them directly.
-#
+#   launch sets of applications using files located in "$XDG_CONFIG_HOME/autostart".
+#   each file should only contain programs to be executed separated by newlines.
+#   not providing an argument launches a fzf window to select one or more files.
+#   providing arguments that are valid file names within the directory launches them directly.
 # dependencies: fzf
-set -euo pipefail
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
 
 # create help message from comment block at the head of file
 if [[ "${1:-}" == "-h" ]]; then

@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 # summary: Unified launcher for apps, files, and power management
 # targets: Arch/Wayland, Debian/Raspbian, Termux
 # dependencies: fzf (preferred), fd, bemenu/rofi (GUI fallbacks), systemctl/loginctl

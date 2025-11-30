@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-export LC_ALL=C LANG=C IFS=$'\n\t'
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
 
 # Media toolkit: CD burning, USB creation, transcoding, and image optimization
 

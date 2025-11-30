@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
-#
 # summary: a simple posix script for fuzzy searching man pages
 # repository: https://github.com/hollowillow/scripts
-#
 # usage: fzman
-#
 # dependencies: fzf
-set -euo pipefail
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
 
 if [[ "${1:-}" == "-h" ]]; then
 	sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"

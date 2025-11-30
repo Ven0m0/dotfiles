@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t' LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
 # fzf-tools preview: unified file previewer for fzf
 # Usage:
 #   fzf-tools preview <PATH or PATH:LINE>

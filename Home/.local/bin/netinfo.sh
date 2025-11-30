@@ -1,15 +1,9 @@
 #!/usr/bin/env bash
 # netinfo - Network information: IP, weather, speed test
-set -euo pipefail
-shopt -s nullglob globstar
-export LC_ALL=C LANG=C IFS=$'\n\t'
-
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
 readonly UA="netinfo/1.0"
-has() { command -v "$1" &>/dev/null; }
-die() {
-	printf 'Error: %s\n' "$*" >&2
-	exit 1
-}
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 
 # Check dependencies
 has curl || die "curl is required"
@@ -18,7 +12,6 @@ has awk || die "awk is required"
 # JSON getter with jq fallback
 jget() {
 	local json="$1" field="$2"
-
 	if has jq; then
 		jq -r "$field" <<<"$json"
 	else
