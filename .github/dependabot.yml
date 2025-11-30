@@ -33,7 +33,6 @@ updates:
     schedule:
       interval: "weekly"
       timezone: "Europe/Berlin"
-      time: "04:00"
     rebase-strategy: "auto"
   - package-ecosystem: "devcontainers"
     directory: "/"
