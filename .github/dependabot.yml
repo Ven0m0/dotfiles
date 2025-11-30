@@ -24,12 +24,12 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    versioning-strategy: "increase"
+    versioning-strategy: "increase-if-necessary"
   - package-ecosystem: "bun"
     directory: "/"
     schedule:
       interval: "weekly"
-    versioning-strategy: "increase"
+    versioning-strategy: "increase-if-necessary"
   - package-ecosystem: "cargo"
     directory: "/"
     schedule:
