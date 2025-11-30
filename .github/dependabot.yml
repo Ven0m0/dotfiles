@@ -4,39 +4,30 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
-    rebase-strategy: "auto"
   - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
-    rebase-strategy: "auto"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
     ignore:
       - dependency-name: "pip"
-    rebase-strategy: "auto"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
-    open-pull-requests-limit: 10
-    rebase-strategy: "auto"
     versioning-strategy: "increase"
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
-    rebase-strategy: "auto"
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
-    rebase-strategy: "auto"
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
