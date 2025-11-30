@@ -4,40 +4,57 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
-    rebase-strategy: "auto"
   - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
-    rebase-strategy: "auto"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
     ignore:
       - dependency-name: "pip"
-    rebase-strategy: "auto"
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "pip"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
-    open-pull-requests-limit: 10
-    rebase-strategy: "auto"
-    versioning-strategy: "increase"
+    versioning-strategy: "increase-if-necessary"
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "increase-if-necessary"
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "rust-toolchain"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
-      time: "04:00"
-    rebase-strategy: "auto"
+  - package-ecosystem: "docker-compose"
+    directory: "/"
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:
       interval: "weekly"
-      timezone: "Europe/Berlin"
-    rebase-strategy: "auto"
