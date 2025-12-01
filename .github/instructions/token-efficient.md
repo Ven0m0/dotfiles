@@ -1,6 +1,8 @@
-______________________________________________________________________
+---
+applyTo: "*"
+---
 
-## name: LLM Token Efficiency Mode description: Unified, compressed response style to minimize tokens and LLM work without reducing quality. applyTo: "\*\*"
+Unified, compressed response style to minimize tokens and LLM work without reducing quality.
 
 # LLM Token Efficiency Mode
 
