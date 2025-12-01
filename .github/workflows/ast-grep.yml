@@ -1,0 +1,160 @@
+name: ast-grep Lint
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - '**.sh'
+      - '**.bash'
+      - '.bashrc'
+      - '.bash_*'
+      - '**.ts'
+      - '**.tsx'
+      - '**.js'
+      - '**.jsx'
+      - 'Home/sgconfig.yml'
+      - '.github/workflows/ast-grep.yml'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - '**.sh'
+      - '**.bash'
+      - '.bashrc'
+      - '.bash_*'
+      - '**.ts'
+      - '**.tsx'
+      - '**.js'
+      - '**.jsx'
+      - 'Home/sgconfig.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  ast-grep-lint:
+    name: ast-grep Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install ast-grep
+        run: |
+          set -euo pipefail
+          curl -fsSL https://ast-grep.github.io/install.sh | sh -s -- --yes
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Validate Configuration
+        run: |
+          set -euo pipefail
+          echo "## ast-grep Configuration Validation" >> "$GITHUB_STEP_SUMMARY"
+          if sg check Home/sgconfig.yml; then
+            echo "✅ Configuration is valid" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error::Invalid sgconfig.yml syntax"
+            echo "❌ Configuration validation failed" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Run ast-grep Scan (Bash)
+        id: scan-bash
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+
+          # Find all bash files
+          mapfile -t BASH_FILES < <(find . -type f \( -name "*.sh" -o -name "*.bash" -o -name ".bashrc" -o -name ".bash_*" \) \
+            ! -path "./.git/*" ! -path "./node_modules/*" ! -path "./.cache/*" 2>/dev/null)
+
+          {
+            echo "## Bash Analysis Results"
+            if [[ ${#BASH_FILES[@]} -eq 0 ]]; then
+              echo "ℹ️ No bash files to analyze"
+              exit 0
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Run scan and capture output
+          RESULTS=$(sg scan --config Home/sgconfig.yml --json "${BASH_FILES[@]}" 2>&1 || echo "")
+
+          # Count issues by severity
+          ERRORS=$(echo "$RESULTS" | jq -r '.[] | select(.severity=="error") | .file' 2>/dev/null | wc -l || echo "0")
+          WARNINGS=$(echo "$RESULTS" | jq -r '.[] | select(.severity=="warning") | .file' 2>/dev/null | wc -l || echo "0")
+          HINTS=$(echo "$RESULTS" | jq -r '.[] | select(.severity=="hint" or .severity=="info") | .file' 2>/dev/null | wc -l || echo "0")
+
+          {
+            echo "- 🔴 Errors: $ERRORS"
+            echo "- 🟡 Warnings: $WARNINGS"
+            echo "- 🔵 Hints: $HINTS"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Generate annotations for GitHub UI (must go to stdout, not step summary)
+          if [[ -n "$RESULTS" ]]; then
+            echo "$RESULTS" | jq -r '.[] |
+              "::warning file=\(.file),line=\(.range.start.line),col=\(.range.start.column)::\(.message) [\(.id)]"' \
+              2>/dev/null || :
+          fi
+
+          # Fail on errors
+          if [[ "$ERRORS" -gt 0 ]]; then
+            echo "errors=$ERRORS" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+      - name: Run ast-grep Scan (TypeScript/JavaScript)
+        id: scan-ts
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+
+          # Find all TS/JS files
+          mapfile -t TS_FILES < <(find . -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" \) \
+            ! -path "./.git/*" ! -path "./node_modules/*" ! -path "./.cache/*" ! -path "./dist/*" 2>/dev/null)
+
+          {
+            echo "## TypeScript/JavaScript Analysis Results"
+            if [[ ${#TS_FILES[@]} -eq 0 ]]; then
+              echo "ℹ️ No TypeScript/JavaScript files to analyze"
+              exit 0
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Run scan
+          RESULTS=$(sg scan --config Home/sgconfig.yml --json "${TS_FILES[@]}" 2>&1 || echo "")
+
+          ERRORS=$(echo "$RESULTS" | jq -r '.[] | select(.severity=="error") | .file' 2>/dev/null | wc -l || echo "0")
+          WARNINGS=$(echo "$RESULTS" | jq -r '.[] | select(.severity=="warning") | .file' 2>/dev/null | wc -l || echo "0")
+
+          {
+            echo "- 🔴 Errors: $ERRORS"
+            echo "- 🟡 Warnings: $WARNINGS"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Generate annotations for GitHub UI (must go to stdout)
+          if [[ -n "$RESULTS" ]]; then
+            echo "$RESULTS" | jq -r '.[] |
+              "::error file=\(.file),line=\(.range.start.line),col=\(.range.start.column)::\(.message) [\(.id)]"' \
+              2>/dev/null || :
+          fi
+
+          if [[ "$ERRORS" -gt 0 ]]; then
+            exit 1
+          fi
+
+      - name: Generate Report
+        if: always()
+        run: |
+          {
+            echo "## 📊 ast-grep Scan Complete"
+            echo ""
+            echo "Configuration: \`Home/sgconfig.yml\`"
+            echo "Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          } >> "$GITHUB_STEP_SUMMARY"
