@@ -1,3 +1,0 @@
-[env]
-GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
-PATH = "${GRAALVM_HOME}/bin:${PATH}"
