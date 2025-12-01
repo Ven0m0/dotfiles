@@ -117,7 +117,7 @@ pre-commit:
       glob: "*.{sh,bash}"
       run: |
         for f in {staged_files}; do
-          [[ -f "$f" ]] && LC_ALL=C rg -q '^#!' "$f" || {
+          [[ -f "$f" ]] && { { command -v rg &>/dev/null && LC_ALL=C rg -q '^#!' "$f"; } || LC_ALL=C grep -qE '^#!' "$f"; } || {
             printf '#!/usr/bin/env bash\n%s' "$(<"$f")" > "$f.tmp" && mv -f "$f.tmp" "$f"
           }
         done
@@ -127,7 +127,13 @@ pre-commit:
       priority: 12
       run: |
         for f in {staged_files}; do
-          [[ -f "$f" && -x "$f" ]] && ! LC_ALL=C rg -q '^#!' "$f" && { printf "Executable missing shebang: %s\n" "$f" >&2; exit 1; }
+          if [[ -f "$f" && -x "$f" ]]; then
+            if command -v rg &>/dev/null; then
+              LC_ALL=C rg -q '^#!' "$f" || { printf "Executable missing shebang: %s\n" "$f" >&2; exit 1; }
+            else
+              LC_ALL=C grep -qE '^#!' "$f" || { printf "Executable missing shebang: %s\n" "$f" >&2; exit 1; }
+            fi
+          fi
         done || :
       fail_text: "Executable files must have shebangs"
     check-filesize:
@@ -137,47 +143,108 @@ pre-commit:
         for f in {staged_files}; do
           [[ -f "$f" ]] || continue
           size=$(stat -c%s "$f" 2>/dev/null || stat -f%z "$f" 2>/dev/null || echo 0)
-          (( size > max_kb * 1024 )) && printf "Large: %s (%dKB)\n" "$f" "$((size/1024))" >&2
+          (( size > max_kb * 1024 )) && { printf "File too large: %s (%dKB, max %dKB)\n" "$f" "$((size/1024))" "$max_kb" >&2; exit 1; }
         done || :
-      fail_text: "File size check warning"
-    detect-secrets:
+      fail_text: "Large files detected (>5MB)"
+    check-case-conflict:
       priority: 14
       run: |
-        LC_ALL=C rg -iNn -e 'AKIA[0-9A-Z]{16}' -e 'ghp_[0-9a-zA-Z]{36}' -e 'glpat-[0-9a-zA-Z_-]{20,}' -e 'xox[baprs]-\d{10,13}-\d{10,13}-[0-9a-zA-Z]{24,}' \
-          -e '(password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|bearer|client[_-]?secret|private[_-]?key)\s*[:=]\s*["\047][^"\047]{20,}' \
-          {staged_files} && { printf "Secrets detected\n" >&2; exit 1; } || :
+        declare -A seen
+        for f in {staged_files}; do
+          lower="${f,,}"
+          [[ -v seen[$lower] ]] && { printf "Case conflict: %s vs %s\n" "${seen[$lower]}" "$f" >&2; exit 1; }
+          seen[$lower]="$f"
+        done || :
+      fail_text: "Case-insensitive filename conflict detected"
+    check-symlinks:
+      priority: 15
+      run: |
+        for f in {staged_files}; do
+          [[ -L "$f" && ! -e "$f" ]] && { printf "Broken symlink: %s\n" "$f" >&2; exit 1; }
+        done || :
+      fail_text: "Broken symlinks detected"
+    end-of-file-fixer:
+      priority: 16
+      glob: "*"
+      exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
+      run: |
+        for f in {staged_files}; do
+          [[ -f "$f" && -s "$f" && -n $(tail -c1 "$f") ]] && printf '\n' >> "$f"
+        done
+      stage_fixed: true
+      fail_text: "End-of-file newline fix failed"
+    mixed-line-ending:
+      priority: 17
+      glob: "*"
+      exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
+      run: |
+        for f in {staged_files}; do
+          [[ -f "$f" ]] && {
+            has_crlf=$(cat "$f" | tr -cd '\r' | wc -c)
+            has_lf=$(cat "$f" | tr -cd '\n' | wc -c)
+            total_lines=$((has_crlf + has_lf))
+            (( has_crlf > 0 && has_lf > has_crlf && total_lines > 0 )) && { printf "Mixed line endings: %s\n" "$f" >&2; exit 1; }
+          }
+        done || :
+      fail_text: "Mixed line endings detected"
+    detect-secrets:
+      priority: 18
+      run: |
+        if command -v rg &>/dev/null; then
+          LC_ALL=C rg -iNn -e 'AKIA[0-9A-Z]{16}' -e 'ghp_[0-9a-zA-Z]{36}' -e 'glpat-[0-9a-zA-Z_-]{20,}' -e 'xox[baprs]-[0-9]{10,13}-[0-9]{10,13}-[0-9a-zA-Z]{24,}' \
+            -e '(password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|bearer|client[_-]?secret|private[_-]?key)[[:space:]]*[:=][[:space:]]*["\047][^"\047]{20,}' \
+            {staged_files} && { printf "Secrets detected\n" >&2; exit 1; }
+        else
+          LC_ALL=C grep -EiHn -e 'AKIA[0-9A-Z]{16}' -e 'ghp_[0-9a-zA-Z]{36}' -e 'glpat-[0-9a-zA-Z_-]{20,}' \
+            -e '(password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|bearer|client[_-]?secret|private[_-]?key)[[:space:]]*[:=][[:space:]]*["\047][^"\047]{20,}' \
+            {staged_files} && { printf "Secrets detected\n" >&2; exit 1; }
+        fi || :
       fail_text: "Potential secrets detected in staged files!"
     check-debug:
-      priority: 15
+      priority: 19
       glob: "*.{sh,bash,js,jsx,ts,tsx,py,rb,go}"
       run: |
-        LC_ALL=C rg -iN -e '\bconsole\.(log|debug|info|warn|error)\(' \
-          -e '\bdebugger\b' -e '\bbinding\.pry\b' -e '\bset -x\b' -e '\bprint\s*\(.*DEBUG' \
-          {staged_files} && { printf "Debug code\n" >&2; exit 1; } || :
+        if command -v rg &>/dev/null; then
+          LC_ALL=C rg -iNn -e '\bconsole\.(log|debug|info|warn|error)\(' \
+            -e '\bdebugger\b' -e '\bbinding\.pry\b' -e '\bset -x\b' -e '\bprint[[:space:]]*\(.*DEBUG' \
+            {staged_files} && { printf "Debug code\n" >&2; exit 1; }
+        else
+          LC_ALL=C grep -EiHn -e '\bconsole\.(log|debug|info|warn|error)\(' \
+            -e '\bdebugger\b' -e '\bbinding\.pry\b' -e '\bset -x\b' -e '\bprint[[:space:]]*\(.*DEBUG' \
+            {staged_files} && { printf "Debug code\n" >&2; exit 1; }
+        fi || :
       fail_text: "Debug code found in staged files!"
     no-merge-conflicts:
-      priority: 16
+      priority: 20
       run: |
-        LC_ALL=C rg -FN '^(<{7}|={7}|>{7})' {staged_files} && { printf "Merge conflicts\n" >&2; exit 1; } || :
+        if command -v rg &>/dev/null; then
+          LC_ALL=C rg -FN '^(<{7}|={7}|>{7})' {staged_files} && { printf "Merge conflicts\n" >&2; exit 1; }
+        else
+          LC_ALL=C grep -FHn -e '^<<<<<<<' -e '^=======' -e '^>>>>>>>' {staged_files} && { printf "Merge conflicts\n" >&2; exit 1; }
+        fi || :
       fail_text: "Merge conflict markers found!"
     check-todos:
-      priority: 17
+      priority: 21
       run: |
-        count=$(rg -ic '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk -F: '{s+=$2}END{print s+0}')
+        if command -v rg &>/dev/null; then
+          count=$(rg -ic '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk -F: '{s+=$2}END{print s+0}')
+        else
+          count=$(grep -Eihc '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk '{s+=$1}END{print s+0}')
+        fi
         (( count > 0 )) && printf "%d TODO/FIXME\n" "$count" >&2 || :
       fail_text: "TODOs/FIXMEs found (informational)"
     actionlint:
-      priority: 18
+      priority: 22
       glob: ".github/workflows/*.{yml,yaml}"
       run: "actionlint {staged_files} || :"
       fail_text: "GitHub Actions workflow linting failed"
     zizmor:
-      priority: 19
+      priority: 23
       glob: ".github/workflows/*.{yml,yaml}"
       run: "zizmor --format plain {staged_files} || :"
       fail_text: "GitHub Actions security check failed"
     no-commit-to-branch:
-      priority: 20
+      priority: 24
       run: |
         branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
         [[ "$branch" =~ ^(main|master)$ ]] && { printf "Direct commits to %s are not allowed\n" "$branch" >&2; exit 1; }
@@ -188,7 +255,11 @@ commit-msg:
       priority: 1
       run: |
         msg=$(<{1})
-        LC_ALL=C rg -q '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}' <<< "$msg" || {
+        if command -v rg &>/dev/null; then
+          LC_ALL=C rg -q '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}' <<< "$msg"
+        else
+          LC_ALL=C grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}' <<< "$msg"
+        fi || {
           printf "Use Conventional Commits:\n  type(scope?): subject\n\nTypes: feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert\n" >&2; exit 1
         }
       fail_text: "Commit message must follow Conventional Commits format"
@@ -201,7 +272,11 @@ commit-msg:
     no-wip:
       priority: 3
       run: |
-        LC_ALL=C rg -qi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP\n" >&2; exit 1; } || :
+        if command -v rg &>/dev/null; then
+          LC_ALL=C rg -qi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP\n" >&2; exit 1; }
+        else
+          LC_ALL=C grep -qEi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP\n" >&2; exit 1; }
+        fi || :
       fail_text: "WIP/TODO/FIXME/HACK found in commit message"
 pre-push:
   parallel: true
@@ -219,12 +294,21 @@ pre-push:
       priority: 2
       run: |
         branch=$(gix rev parse --abbrev-ref HEAD 2>/dev/null || git rev-parse --abbrev-ref HEAD)
-        LC_ALL=C rg -q '^(main|master|production)$' <<< "$branch" && {
-          printf "Direct push to %s blocked\n" "$branch" >&2; exit 1
-        }
-        LC_ALL=C rg -q '^(main|master|develop|staging|release/.+|hotfix/.+|feature/.+|(bug)?fix/.+)$' <<< "$branch" || {
-          printf "Use git-flow: feature/*, fix/*, release/*, hotfix/*\n" >&2
-        }; exit 0
+        if command -v rg &>/dev/null; then
+          LC_ALL=C rg -q '^(main|master|production)$' <<< "$branch" && {
+            printf "Direct push to %s blocked\n" "$branch" >&2; exit 1
+          }
+          LC_ALL=C rg -q '^(main|master|develop|staging|release/.+|hotfix/.+|feature/.+|(bug)?fix/.+)$' <<< "$branch" || {
+            printf "Use git-flow: feature/*, fix/*, release/*, hotfix/*\n" >&2
+          }
+        else
+          LC_ALL=C grep -qE '^(main|master|production)$' <<< "$branch" && {
+            printf "Direct push to %s blocked\n" "$branch" >&2; exit 1
+          }
+          LC_ALL=C grep -qE '^(main|master|develop|staging|release/.+|hotfix/.+|feature/.+|(bug)?fix/.+)$' <<< "$branch" || {
+            printf "Use git-flow: feature/*, fix/*, release/*, hotfix/*\n" >&2
+          }
+        fi; exit 0
       fail_text: "Branch naming violation or protected branch push attempt"
     audit-deps:
       priority: 3
@@ -260,9 +344,15 @@ post-checkout:
       priority: 2
       run: |
         changed=$(git diff HEAD@{1} HEAD --name-only)
-        LC_ALL=C rg -q '^(package\.json|bun\.lockb|.*lock\.json)$' <<< "$changed" && {
-          printf "Dependencies changed. Run: bun install\n" >&2
-        } || :
+        if command -v rg &>/dev/null; then
+          LC_ALL=C rg -q '^(package\.json|bun\.lockb|.*lock\.json)$' <<< "$changed" && {
+            printf "Dependencies changed. Run: bun install\n" >&2
+          }
+        else
+          LC_ALL=C grep -qE '^(package\.json|bun\.lockb|.*lock\.json)$' <<< "$changed" && {
+            printf "Dependencies changed. Run: bun install\n" >&2
+          }
+        fi || :
       fail_text: "Dependency check notification failed"
 prepare-commit-msg:
   commands:
@@ -272,6 +362,10 @@ prepare-commit-msg:
         branch=$(LC_ALL=C gix rev parse --abbrev-ref HEAD 2>/dev/null || LC_ALL=C git rev-parse --abbrev-ref HEAD)
         [[ "$branch" =~ ^(feature|bugfix|hotfix|fix)/([A-Z]+-[0-9]+) ]] && {
           ticket="${BASH_REMATCH[2]}"
-          LC_ALL=C rg -q "$ticket" {1} || sed -i "1s/^/$ticket: /" {1}
+          if command -v rg &>/dev/null; then
+            LC_ALL=C rg -q "$ticket" {1} || sed -i "1s/^/$ticket: /" {1}
+          else
+            LC_ALL=C grep -qF "$ticket" {1} || sed -i "1s/^/$ticket: /" {1}
+          fi
         } || :
       fail_text: "Ticket insertion failed"
