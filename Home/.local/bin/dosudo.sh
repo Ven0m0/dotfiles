@@ -65,7 +65,7 @@ if [ "$flag_i" ] && [ "$flag_s" ]; then
 fi
 _doas() { exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
 user_shell() {
-  if command -v getent >/dev/null 2>&1; then
+  if command -v getent &>/dev/null; then
     getent passwd "${user:-root}" | awk -F: 'END {print $NF ? $NF : "sh"}'
   else
     awk -F: '$1 == "'"${user:-root}"'" {print $NF; m=1} END {if (!m) print "sh"}' /etc/passwd

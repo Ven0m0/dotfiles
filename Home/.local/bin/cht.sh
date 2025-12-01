@@ -24,7 +24,7 @@ get() {
 readonly CHT_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/cht_list"
 readonly CHT_URL="cheat.sh"
 cache() {
-  [[ -f "$CHT_CACHE" && -n "$(find "$CHT_CACHE" -mtime -7 2>/dev/null)" ]] && return 0
+  [[ -f $CHT_CACHE && -n "$(find "$CHT_CACHE" -mtime -7 2>/dev/null)" ]] && return 0
   mkdir -p "${CHT_CACHE%/*}"
   get "${CHT_URL}/:list" >"$CHT_CACHE" || die "Failed to fetch list"
 }
@@ -35,7 +35,7 @@ browse() {
     --preview="curl -fsL ${CHT_URL}/{} 2>/dev/null | head -50" \
     --preview-window=right:70% <"$CHT_CACHE") || return 1
   qlist=$(get "${CHT_URL}/${sel}/:list" 2>/dev/null || :)
-  if [[ -n "$qlist" ]]; then
+  if [[ -n $qlist ]]; then
     q=$(printf '%s' "$qlist" | "$FZF" --print-query --ansi --reverse \
       --prompt="cht/${sel}> " \
       --preview="curl -fsL ${CHT_URL}/${sel}/{1} 2>/dev/null || curl -fsL ${CHT_URL}/${sel}/{q} 2>/dev/null" \
@@ -50,13 +50,13 @@ browse() {
 }
 query() {
   local lang="${1:-}" topic="${2:-}" flags="" url
-  [[ -z "$lang" ]] && die "Language/topic required"
+  [[ -z $lang ]] && die "Language/topic required"
   [[ ${search:-0} -eq 1 ]] && lang="~${lang}" && topic="~${topic}"
   url="${CHT_URL}/${lang}${topic:+/${topic}}"
   [[ -n ${insens:-} ]] && flags+="i"
   [[ -n ${bound:-} ]] && flags+="b"
   [[ -n ${recur:-} ]] && flags+="r"
-  [[ -n "$flags" ]] && url+="/${flags}"
+  [[ -n $flags ]] && url+="/${flags}"
   get "$url"
 }
 

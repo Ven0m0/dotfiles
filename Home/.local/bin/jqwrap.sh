@@ -22,4 +22,4 @@ jqwrap() {
 }
 
 # support direct script use
-[[ "${BASH_SOURCE[0]}" != "$0" ]] || jqwrap "$@"
+[[ ${BASH_SOURCE[0]} != "$0" ]] || jqwrap "$@"

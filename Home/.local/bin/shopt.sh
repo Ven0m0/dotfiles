@@ -260,7 +260,7 @@ optimize() {
     content=$(sd '>\/dev\/null 2>&1' '&>/dev/null' <<<"$content")
   else
     content=$(sed -e 's/|| true/|| :/g' -e 's/[[:space:]]*()[[:space:]]*{/(){/g' \
-      -e 's|>/dev/null 2>&1|&>/dev/null|g' <<<"$content")
+      -e 's|&>/dev/null|&>/dev/null|g' <<<"$content")
   fi
   # Format/Minify
   if ((format)); then

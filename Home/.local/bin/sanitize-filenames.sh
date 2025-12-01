@@ -22,13 +22,13 @@ fi
 if has fd; then finder=(fd -tf -td -H -I -0 .); else finder=(find . -print0); fi
 count=0
 "${finder[@]}" | sort -zr | while IFS= read -r -d '' f; do
-  [[ -e "$f" ]] || continue
+  [[ -e $f ]] || continue
   dir="${f%/*}"
   base="${f##*/}"
   new=$(printf '%s' "$base" | iconv -f utf8 -t ascii//translit 2>/dev/null | sanitize)
-  [[ "$base" != "$new" ]] || continue
+  [[ $base != "$new" ]] || continue
   target="$dir/$new"
-  [[ ! -e "$target" ]] || {
+  [[ ! -e $target ]] || {
     printf 'Collision: %s\n' "$f" >&2
     continue
   }

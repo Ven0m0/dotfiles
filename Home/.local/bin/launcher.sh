@@ -36,7 +36,7 @@ _menu() {
 _confirm() {
   local ans
   ans=$(printf "No\nYes" | _menu "Confirm execute?")
-  [[ "$ans" == "Yes" ]]
+  [[ $ans == "Yes" ]]
 }
 
 # --- Mode: App Launcher (merged fmenu.sh) ---
@@ -45,16 +45,16 @@ mode_app() {
   local -A paths
   # Iterate PATH to find executables (bash-native, avoids parsing ls)
   # Uses an associative array to deduplicate entries efficiently
-  for dir in ${PATH//:/ }; do
-    [[ -d "$dir" && -r "$dir" ]] || continue
+  for dir in "${PATH//:/ }"; do
+    [[ -d $dir && -r $dir ]] || continue
     for file in "$dir"/*; do
-      [[ -x "$file" && ! -d "$file" ]] || continue
+      [[ -x $file && ! -d $file ]] || continue
       paths["${file##*/}"]=1
     done
   done
   # Display sorted keys and execute selection
   cmd=$(printf '%s\n' "${!paths[@]}" | sort | _menu "Run: ") || return 0
-  if [[ -n "$cmd" ]]; then
+  if [[ -n $cmd ]]; then
     # Use setsid/nohup to detach process fully
     nohup "$cmd" &>/dev/null &
     disown
@@ -82,14 +82,14 @@ mode_file() {
   local target
   # fd: fast, ignores .git, hidden files excluded by default
   target=$(fd --type f . "$HOME" 2>/dev/null | _menu "Open File: ") || return 0
-  [[ -n "$target" ]] && xdg-open "$target" &>/dev/null &
+  [[ -n $target ]] && xdg-open "$target" &>/dev/null &
   disown
 }
 
 # --- Main Dispatch ---
 main() {
   local mode="${1:-}"
-  if [[ -z "$mode" ]]; then
+  if [[ -z $mode ]]; then
     # Main menu if no argument provided
     local -a modes=("App Launcher" "File Opener" "Power Menu")
     local selection

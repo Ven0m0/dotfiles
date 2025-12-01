@@ -86,9 +86,9 @@ EOF
 }
 
 # Tool detection
-for g in ${GIT_CMD:-gix git}; do has "$g" && GIT="$g" && break; done
+for g in "${GIT_CMD:-gix git}"; do has "$g" && GIT="$g" && break; done
 [[ -z ${GIT:-} ]] && die "No git/gix found"
-for f in ${FINDER:-sk fzf}; do has "$f" && FZF="$f" && break; done
+for f in "${FINDER:-sk fzf}"; do has "$f" && FZF="$f" && break; done
 [[ -z ${FZF:-} ]] && die "No fuzzy finder found (sk/fzf)"
 
 # Optional tools

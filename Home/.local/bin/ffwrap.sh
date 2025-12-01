@@ -20,4 +20,4 @@ ffwrap() {
   fi
 }
 
-[[ "${BASH_SOURCE[0]}" != "$0" ]] || ffwrap "$@"
+[[ ${BASH_SOURCE[0]} != "$0" ]] || ffwrap "$@"

@@ -167,7 +167,7 @@ pk() {
     pids=$(ps aux | grep "$1" | grep -v grep | awk '{print $2}')
   fi
 
-  [[ -z "$pids" ]] && {
+  [[ -z $pids ]] && {
     echo "❌ No processes found matching '$1'"
     return 1
   }
@@ -257,7 +257,7 @@ fz() {
   fuzzy=$(command -v sk &>/dev/null && echo "sk" || echo "fzf")
 
   # Parse flags
-  while [[ "$1" =~ ^- ]]; do
+  while [[ $1 =~ ^- ]]; do
     case "$1" in
       -f | --file)
         mode="file"
@@ -314,7 +314,7 @@ fz() {
       else
         dir=$(find "$search_path" -type d 2>/dev/null | "$fuzzy" +m --preview 'ls -lah {}')
       fi
-      [[ -n "$dir" ]] && cd "$dir" || exit
+      [[ -n $dir ]] && cd "$dir" || exit
       ;;
   esac
 }
@@ -478,7 +478,7 @@ fuzzy_paru() {
   }
 
   local -a packages=("${selections[@]%% *}")
-  if [[ "$key" == "ctrl-u" ]]; then
+  if [[ $key == "ctrl-u" ]]; then
     printf '\e[31mUninstalling:\e[0m %s\n' "${packages[*]}"
     sudo pacman -Rns --noconfirm "${packages[@]}"
   else
@@ -538,7 +538,7 @@ Setup-ssh() {
   local email="${email:-ven0m0.wastaken@gmail.com}"
   local key_path="${HOME}/.ssh/id_ed25519"
 
-  [[ -f "$key_path" ]] || ssh-keygen -t ed25519 -C "$email" -f "$key_path"
+  [[ -f $key_path ]] || ssh-keygen -t ed25519 -C "$email" -f "$key_path"
   eval "$(ssh-agent -s)"
   ssh-add "$key_path"
 
@@ -558,7 +558,7 @@ Setup-ssh() {
 # Video to GIF converter (prefer ffzap)
 vid2gif() {
   local video_path="$1"
-  [[ -z "$video_path" ]] && {
+  [[ -z $video_path ]] && {
     echo "Usage: vid2gif <video_file>"
     return 1
   }
@@ -583,9 +583,9 @@ shlint() {
 # Delete empty subdirectories (prefer fd/fdf)
 prune_empty() {
   local reply
-  [[ -n "$1" ]] && read -rp "Prune empty directories: are you sure? [y] " reply || reply=y
+  [[ -n $1 ]] && read -rp "Prune empty directories: are you sure? [y] " reply || reply=y
 
-  if [[ "$reply" == y ]]; then
+  if [[ $reply == y ]]; then
     if command -v fdf &>/dev/null; then
       fdf . -t d --prune | while read -r dir; do rmdir "$dir" 2>/dev/null; done
     elif command -v fd &>/dev/null; then

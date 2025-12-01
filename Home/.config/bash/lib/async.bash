@@ -16,7 +16,7 @@ welcome_fetch() {
   elif has fastfetch; then
     fetch_cmd='fastfetch'
   fi
-  [[ -n "$fetch_cmd" ]] && eval "$fetch_cmd"
+  [[ -n $fetch_cmd ]] && eval "$fetch_cmd"
 }
 
 path_dedupe() {
@@ -24,7 +24,7 @@ path_dedupe() {
   declare -A seen
   IFS=:
   for p in "${PATH[@]}"; do
-    [[ -z "$p" || -n "${seen[$p]}" ]] && continue
+    [[ -z $p || -n ${seen[$p]} ]] && continue
     seen[$p]=1
     new_path="${new_path:+$new_path:}$p"
   done

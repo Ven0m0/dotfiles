@@ -30,7 +30,7 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 # Use uv for pip operations when available
 pip() {
-  if has uv && [[ "install uninstall list show freeze check" =~ "$1" ]]; then
+  if has uv && [[ "install uninstall list show freeze check" =~ $1 ]]; then
     command uv pip "$@"
   else
     command python -m pip "$@"
@@ -42,7 +42,7 @@ alias py-venv="[ -d .venv ] || uv venv .venv && source .venv/bin/activate"
 # --- Node/Bun
 if has bun; then
   alias npx=bunx npm=bun
-  [[ -z "$BUN_INSTALL" ]] && export BUN_INSTALL="$HOME/.bun"
+  [[ -z $BUN_INSTALL ]] && export BUN_INSTALL="$HOME/.bun"
   prependpath "$BUN_INSTALL/bin"
   export ELECTRON_IS_DEV=0 ELECTRON_DISABLE_SECURITY_WARNINGS=true NODE_ENV=production
 fi

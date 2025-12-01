@@ -25,7 +25,7 @@ readonly BROWSER="${BROWSER:-firefox}"
 readonly SEARCH_HIST_FILE="${XDG_STATE_HOME:-$HOME/.local/share}/search_history"
 touch "$SEARCH_HIST_FILE"
 
-if [[ "${1:-}" == "-h" ]]; then
+if [[ ${1:-} == "-h" ]]; then
   sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"
   exit 0
 fi
@@ -92,7 +92,7 @@ case "$query" in
     ;;
 esac
 
-if [[ -n "$query" ]]; then
+if [[ -n $query ]]; then
   printf '%s\n' "$engine|$query|$(date "+%y/%m/%d-%H:%M:%S")" >>"$SEARCH_HIST_FILE"
   nohup "$BROWSER" "${engine}${query}" &>/dev/null &
 else

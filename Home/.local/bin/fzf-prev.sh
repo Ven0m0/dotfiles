@@ -27,11 +27,11 @@ dim_cols="${FZF_PREVIEW_COLUMNS:-}"
 dim_lines="${FZF_PREVIEW_LINES:-}"
 term_dim() {
   local cols="$dim_cols" lines="$dim_lines"
-  if [[ -z "$cols" || -z "$lines" ]]; then
+  if [[ -z $cols || -z $lines ]]; then
     read -r lines cols < <(stty size </dev/tty 2>/dev/null || printf '40 120\n')
   fi
   # avoid bottom-touch scroll issue
-  if [[ -n "${FZF_PREVIEW_TOP:-}" && -n "$dim_lines" ]]; then
+  if [[ -n ${FZF_PREVIEW_TOP:-} && -n $dim_lines ]]; then
     local t="${FZF_PREVIEW_TOP:-0}"
     local tty_lines
     tty_lines="$(stty size </dev/tty 2>/dev/null | awk '{print $1}')" || tty_lines="$lines"
@@ -55,7 +55,7 @@ preview_text() {
   esac
   local b
   b="$(batcmd)"
-  if [[ "$b" == "cat" ]]; then
+  if [[ $b == "cat" ]]; then
     sed -n '1,400p' -- "$file"
   else
     "$b" --style="${BAT_STYLE:-numbers}" --color=always --pager=never --highlight-line="${center:-0}" -- "$file"
@@ -65,7 +65,7 @@ preview_text() {
 preview_symlink() {
   local loc="$1" target
   target="$(readlink -- "$loc" || printf '')"
-  [[ -z "$target" ]] && {
+  [[ -z $target ]] && {
     printf 'symlink (unreadable)\n'
     return
   }
@@ -76,19 +76,19 @@ preview_image_backend() {
   local img="$1" dim
   dim="$(term_dim)"
   local handler="${FZF_PREVIEW_IMAGE_HANDLER:-auto}"
-  if [[ "$handler" == "kitty" ]] || { [[ "$handler" == "auto" && (-n "${KITTY_WINDOW_ID:-}" || -n "${GHOSTTY_RESOURCES_DIR:-}") ]] && have kitten; }; then
+  if [[ $handler == "kitty" ]] || { [[ $handler == "auto" && (-n ${KITTY_WINDOW_ID:-} || -n ${GHOSTTY_RESOURCES_DIR:-}) ]] && have kitten; }; then
     kitten icat --clear --transfer-mode=memory --unicode-placeholder --stdin=no --place="$dim@0x0" -- "$img" | sed '$d' | sed $'$s/$/\e[m/'
     have mediainfo && mediainfo -- "$img" || :
     return
   fi
-  if [[ "$handler" == "sixel" || "$handler" == "auto" ]]; then
+  if [[ $handler == "sixel" || $handler == "auto" ]]; then
     if have chafa; then
       chafa -f "${handler/auto/sixel}" -s "$dim" --animate false -- "$img"
       have mediainfo && mediainfo -- "$img" || :
       return
     fi
   fi
-  if [[ "$handler" == "symbols" ]] && have chafa; then
+  if [[ $handler == "symbols" ]] && have chafa; then
     chafa -f symbols -s "$dim" --animate false -- "$img"
     have mediainfo && mediainfo -- "$img" || :
     return
@@ -167,27 +167,27 @@ preview_file() {
       base="$(abspath "$loc")"
       hash="$(sha256_of "$base")"
       out="${cache_dir}/thumb-${hash}.jpg"
-      if ! [[ -s "$out" ]]; then have ffmpegthumbnailer && ffmpegthumbnailer -i "$loc" -o "$out" -s 1200 || :; fi
-      [[ -s "$out" ]] && preview_image_backend "$out" || file -- "$loc"
+      if ! [[ -s $out ]]; then have ffmpegthumbnailer && ffmpegthumbnailer -i "$loc" -o "$out" -s 1200 || :; fi
+      [[ -s $out ]] && preview_image_backend "$out" || file -- "$loc"
       ;;
     application/pdf)
       local base hash out
       base="$(abspath "$loc")"
       hash="$(sha256_of "$base")"
       out="${cache_dir}/pdf-${hash}.jpg"
-      if ! [[ -s "$out" ]]; then have pdftoppm && pdftoppm -jpeg -f 1 -singlefile -- "$loc" "${cache_dir}/pdf-${hash}" || :; fi
-      [[ -s "$out" ]] && preview_image_backend "$out" || file -- "$loc"
+      if ! [[ -s $out ]]; then have pdftoppm && pdftoppm -jpeg -f 1 -singlefile -- "$loc" "${cache_dir}/pdf-${hash}" || :; fi
+      [[ -s $out ]] && preview_image_backend "$out" || file -- "$loc"
       ;;
     *) preview_archive "$loc" || preview_misc_by_ext "$loc" ;;
   esac
 }
 parse_arg() {
   local in="$1" file="$1" center=0
-  if [[ ! -r "$file" ]]; then
-    if [[ "$file" =~ ^(.+):([0-9]+)\ *$ ]] && [[ -r "${BASH_REMATCH[1]}" ]]; then
+  if [[ ! -r $file ]]; then
+    if [[ $file =~ ^(.+):([0-9]+)\ *$ ]] && [[ -r ${BASH_REMATCH[1]} ]]; then
       file="${BASH_REMATCH[1]}"
       center="${BASH_REMATCH[2]}"
-    elif [[ "$file" =~ ^(.+):([0-9]+):[0-9]+\ *$ ]] && [[ -r "${BASH_REMATCH[1]}" ]]; then
+    elif [[ $file =~ ^(.+):([0-9]+):[0-9]+\ *$ ]] && [[ -r ${BASH_REMATCH[1]} ]]; then
       file="${BASH_REMATCH[1]}"
       center="${BASH_REMATCH[2]}"
     fi
@@ -202,7 +202,7 @@ cmd_preview() {
   }
   local file center
   read -r file center < <(parse_arg "$1")
-  [[ -r "$file" ]] || {
+  [[ -r $file ]] || {
     printf 'not readable: %s\n' "$file" >&2
     return 2
   }

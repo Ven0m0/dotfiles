@@ -20,11 +20,11 @@ lazy_build_cache() {
 lazy_init() {
   local dir="$1" cache_file="$BASH_CACHE_DIR/fn_cache.tsv"
   # Rebuild cache only if a source file is newer or the cache is missing.
-  if [[ ! -f "$cache_file" ]] || [[ -n "$(command fd -t f . "$dir" -N --changed-within 1d)" ]]; then
+  if [[ ! -f $cache_file ]] || [[ -n "$(command fd -t f . "$dir" -N --changed-within 1d)" ]]; then
     lazy_build_cache "$dir" "$cache_file"
   fi
   # Create stubs from the cache file.
   while IFS=$'\t' read -r fn_name src_file; do
-    [[ -n "$fn_name" && -n "$src_file" ]] && lazy_fn "$fn_name" "$src_file"
+    [[ -n $fn_name && -n $src_file ]] && lazy_fn "$fn_name" "$src_file"
   done <"$cache_file"
 }

@@ -76,7 +76,7 @@ sync_pull() {
   repo_dir="$(get_repo_dir)"
   home_dir="${repo_dir}/Home"
 
-  [[ -d "$home_dir" ]] || die "Home/ directory not found: $home_dir"
+  [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
 
   has rsync || die "rsync is required for syncing. Install it first."
 
@@ -85,11 +85,11 @@ sync_pull() {
   info "Target: $HOME/"
 
   local rsync_opts=(-av --exclude='.git' --exclude='.gitignore')
-  [[ "$dry_run" == "1" ]] && rsync_opts+=(--dry-run)
+  [[ $dry_run == "1" ]] && rsync_opts+=(--dry-run)
 
   rsync "${rsync_opts[@]}" "${home_dir}/" "${HOME}/"
 
-  if [[ "$dry_run" == "1" ]]; then
+  if [[ $dry_run == "1" ]]; then
     warn "DRY RUN - No files were actually modified"
   else
     success "Dotfiles deployed to home directory"
@@ -103,7 +103,7 @@ sync_push() {
   repo_dir="$(get_repo_dir)"
   home_dir="${repo_dir}/Home"
 
-  [[ -d "$home_dir" ]] || die "Home/ directory not found: $home_dir"
+  [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
 
   has rsync || die "rsync is required for syncing. Install it first."
 
@@ -153,11 +153,11 @@ EXCLUDES
     --filter='dir-merge,- .gitignore'
     --files-from=-
   )
-  [[ "$dry_run" == "1" ]] && rsync_opts+=(--dry-run)
+  [[ $dry_run == "1" ]] && rsync_opts+=(--dry-run)
 
   # Only sync files that exist in Home/ directory structure
   # This prevents syncing random files from ~/ to repo
-  if [[ "$dry_run" == "1" ]]; then
+  if [[ $dry_run == "1" ]]; then
     warn "DRY RUN - Showing what would be synced..."
   fi
 
@@ -166,7 +166,7 @@ EXCLUDES
   while IFS= read -r -d '' file; do
     local rel_path="${file#${home_dir}/}"
     local source_file="${HOME}/${rel_path}"
-    [[ -e "$source_file" ]] && files_to_sync+=("$rel_path")
+    [[ -e $source_file ]] && files_to_sync+=("$rel_path")
   done < <(find "$home_dir" -type f -print0)
 
   # Sync all files at once using --files-from
@@ -176,7 +176,7 @@ EXCLUDES
 
   rm -f "$exclude_file"
 
-  if [[ "$dry_run" == "1" ]]; then
+  if [[ $dry_run == "1" ]]; then
     warn "DRY RUN - No files were actually modified"
   else
     success "Repository updated with changes from home directory"
@@ -195,7 +195,7 @@ sync_status() {
   repo_dir="$(get_repo_dir)"
   home_dir="${repo_dir}/Home"
 
-  [[ -d "$home_dir" ]] || die "Home/ directory not found: $home_dir"
+  [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
 
   has rsync || die "rsync is required. Install it first."
 
@@ -214,7 +214,7 @@ sync_diff() {
   repo_dir="$(get_repo_dir)"
   home_dir="${repo_dir}/Home"
 
-  [[ -d "$home_dir" ]] || die "Home/ directory not found: $home_dir"
+  [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
 
   has diff || die "diff command not found"
 
@@ -225,7 +225,7 @@ sync_diff() {
     local rel_path="${file#"${home_dir}"/}"
     local source_file="${HOME}/${rel_path}"
 
-    if [[ -f "$source_file" && -f "$file" ]]; then
+    if [[ -f $source_file && -f $file ]]; then
       if ! diff -q "$source_file" "$file" &>/dev/null; then
         echo ""
         echo "${BLD}${BLU}Differences in:${DEF} ${rel_path}"

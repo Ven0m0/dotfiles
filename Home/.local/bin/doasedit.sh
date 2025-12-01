@@ -94,8 +94,8 @@ for file; do
   tmpfile_copy="${tmpdir}/copy-of-${file##*/}"
   printf '' | tee "$tmpfile" >"$tmpfile_copy"
   chmod 0600 "$tmpfile" "$tmpfile_copy"
-  if [[ -e "$file" ]]; then
-    if ! [[ -f "$file" ]]; then
+  if [[ -e $file ]]; then
+    if ! [[ -f $file ]]; then
       error "${file}: not a regular file"
       continue
     fi
@@ -124,16 +124,16 @@ for file; do
     fi
   fi
   # If this test is true, it's an existent regular file
-  if [[ -n "$exists" ]]; then
-    if [[ -w "$file" ]]; then
+  if [[ -n $exists ]]; then
+    if [[ -w $file ]]; then
       writable=1
     # Check in advance to make sure that it won't fail after editing.
     elif ! doas dd status=none count=0 of=/dev/null; then
       error "unable to run 'doas dd'"
       continue
     fi
-    if [[ -r "$file" ]]; then
-      if [[ -n "$writable" ]]; then
+    if [[ -r $file ]]; then
+      if [[ -n $writable ]]; then
         error "${file}: editing user-readable and -writable files is not permitted"
         continue
       fi
@@ -150,13 +150,13 @@ for file; do
   if cmp -s "$tmpfile" "$tmpfile_copy"; then
     printf 'doasedit: %s: unchanged\n' "$file"
   else
-    if [[ -n "$writable" ]]; then
+    if [[ -n $writable ]]; then
       dd status=none if="$tmpfile" of="$file"
     else
       for de_tries in 2 1 0; do
         if doas dd status=none if="$tmpfile" of="$file"; then
           break
-        elif [[ "$de_tries" -eq 0 ]]; then
+        elif [[ $de_tries -eq 0 ]]; then
           error '3 incorrect password attempts'
           exit 1
         fi

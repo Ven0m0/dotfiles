@@ -1,7 +1,7 @@
 _sk() {
   local i cur prev opts cmd
   COMPREPLY=()
-  if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
+  if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
     cur="$2"
   else
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -233,7 +233,7 @@ _sk() {
   esac
 }
 
-if [[ "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -ge 4 || "${BASH_VERSINFO[0]}" -gt 4 ]]; then
+if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -ge 4 || ${BASH_VERSINFO[0]} -gt 4 ]]; then
   complete -F _sk -o nosort -o bashdefault -o default sk
 else
   complete -F _sk -o bashdefault -o default sk

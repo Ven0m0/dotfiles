@@ -47,7 +47,7 @@ _reflector_complete_mirrors() {
     local -r timeout=30
     local -r url="https://archlinux.org/mirrorlist/?protocol=https&ip_version=4&use_mirror_status=on"
     local mirrors=$(curl --fail -Lsm "$timeout" "$url" | grep "^#Server = " | awk '{print $NF}')
-    [[ -n "$mirrors" ]] || exit 1
+    [[ -n $mirrors ]] || exit 1
     echo "$mirrors" >"$file"
   fi
   mirrors=$(fzf -m <"$file")

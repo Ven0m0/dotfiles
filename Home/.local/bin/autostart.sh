@@ -14,7 +14,7 @@ IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
 # create help message from comment block at the head of file
-if [[ "${1:-}" == "-h" ]]; then
+if [[ ${1:-} == "-h" ]]; then
   sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"
   exit 0
 fi
@@ -51,7 +51,7 @@ fi
 for file in "${files[@]}"; do
   if [[ -f "$AUTOSTART_DIR/$file" ]]; then
     while IFS= read -r program; do
-      [[ -n "$program" ]] && nohup "$program" &>/dev/null &
+      [[ -n $program ]] && nohup "$program" &>/dev/null &
     done <"$AUTOSTART_DIR/$file"
   else
     printf '%s\n' "Warning: File '$file' does not exist." >&2

@@ -41,7 +41,7 @@ speed_test() {
 
 weather() {
   local location="${1:-}"
-  [[ -z "$location" ]] && location="Bielefeld"
+  [[ -z $location ]] && location="Bielefeld"
 
   curl -sf "https://wttr.in/${location}?0" || {
     printf 'Weather lookup failed for: %s\n' "$location" >&2
@@ -56,8 +56,8 @@ ip_info() {
   ip=$(jget "$json" '.ip')
   loc=$(jget "$json" '.region')
 
-  [[ -z "$loc" ]] && loc="Bielefeld"
-  [[ -z "$ip" ]] && ip="unknown"
+  [[ -z $loc ]] && loc="Bielefeld"
+  [[ -z $ip ]] && ip="unknown"
 
   printf 'IP: %s\n' "$ip"
   weather "$loc"

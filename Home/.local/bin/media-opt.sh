@@ -47,11 +47,11 @@ interactive_mode() {
     clear
     log "Media Conversion Tool"
     read -r -p "Input file (or drag & drop, q to quit): " input_path
-    [[ "$input_path" == "q" ]] && break
+    [[ $input_path == "q" ]] && break
     input_path="${input_path//\'/}"                             # Remove single quotes
     input_path="${input_path#\'}" input_path="${input_path%\'}" # Trim quotes
     input_path="${input_path#\"}" input_path="${input_path%\"}"
-    [[ -f "$input_path" ]] || {
+    [[ -f $input_path ]] || {
       err "File not found"
       sleep 2
       continue
@@ -92,7 +92,7 @@ interactive_mode() {
           ;;
       esac
     done
-    [[ "$choice" == "Back" ]] && continue
+    [[ $choice == "Back" ]] && continue
 
     # Options menu
     local -a options=("True size" "50%" "75%" "Square (500px)" "HQ Lanczos" "Rotate 90° CW" "Rotate 90° CCW" "Vertical Flip" "Done")
@@ -127,19 +127,19 @@ interactive_mode() {
     log "Converting..."
     local -a cmd=(ffmpeg -y -hide_banner -i "$input_path")
 
-    if [[ "${ext,,}" == "gif" && "$convert_ext" != "gif" ]]; then
+    if [[ ${ext,,} == "gif" && $convert_ext != "gif" ]]; then
       local palette="${out_dir}/palette.png"
       ffmpeg -i "$input_path" -vf "palettegen" -y "$palette" &>/dev/null
       cmd+=(-i "$palette" -lavfi "${vf_flags:+$vf_flags,}paletteuse")
     else
-      [[ "$convert_ext" == "gif" ]] && vf_flags="fps=30${vf_flags:+,${vf_flags}}"
-      [[ -n "$vf_flags" ]] && cmd+=(-vf "$vf_flags")
+      [[ $convert_ext == "gif" ]] && vf_flags="fps=30${vf_flags:+,${vf_flags}}"
+      [[ -n $vf_flags ]] && cmd+=(-vf "$vf_flags")
     fi
 
     cmd+=("$out_file")
     "${cmd[@]}"
 
-    [[ -f "${palette:-}" ]] && rm -f "$palette"
+    [[ -f ${palette:-} ]] && rm -f "$palette"
     log "Done: $out_file"
     read -r -p "Press ENTER to continue..."
   done
@@ -156,7 +156,7 @@ opt_img() {
     tool="rimage"
     cp "$f" "$out"
     [[ $LOSSLESS -eq 1 ]] && cmd=(rimage "$out" -q 100) || cmd=(rimage "$out" -q "$QUALITY")
-  elif has image-optimizer && [[ "$l_ext" =~ ^(jpg|jpeg|png|webp)$ ]]; then
+  elif has image-optimizer && [[ $l_ext =~ ^(jpg|jpeg|png|webp)$ ]]; then
     tool="image-optimizer"
     cmd=(image-optimizer "$f" "$out")
   else
@@ -202,7 +202,7 @@ opt_svg() {
 opt_vid() {
   local f="$1" out="$2"
   local a_args=(-c:a "$AUDIO_CODEC" -b:a "$AUDIO_BR")
-  [[ "$AUDIO_CODEC" == "copy" ]] && a_args=(-c:a copy)
+  [[ $AUDIO_CODEC == "copy" ]] && a_args=(-c:a copy)
   if has ffzap; then
     tool="ffzap"
     cmd=(ffzap -i "$f" -o "$out")
@@ -221,7 +221,7 @@ opt_vid() {
 
 optimize_file() {
   local f="$1"
-  [[ ! -f "$f" ]] && return 0
+  [[ ! -f $f ]] && return 0
   local ext tmp tool cmd
   ext="${f##*.}"
   tmp="${f}.opt.tmp.${ext}"
@@ -238,22 +238,22 @@ optimize_file() {
     mp4 | mkv | mov | avi | webm) opt_vid "$f" "$tmp" ;;
     *) return 0 ;;
   esac
-  [[ -z "$tool" ]] && {
-    [[ -f "$tmp" ]] && rm -f "$tmp"
+  [[ -z $tool ]] && {
+    [[ -f $tmp ]] && rm -f "$tmp"
     return 0
   }
-  if [[ "$DRY_RUN" -eq 1 ]]; then
+  if [[ $DRY_RUN -eq 1 ]]; then
     printf "${B}[DRY]${X} %-10s %s\n" "$tool" "$f"
-    [[ -f "$tmp" ]] && rm -f "$tmp"
+    [[ -f $tmp ]] && rm -f "$tmp"
     return 0
   fi
   local ok=0
-  if [[ "$tool" =~ ^(oxipng|cwebp|svgo|jpegoptim)$ ]] && [[ "${cmd[*]}" =~ (--stdout|--out\ -|-o\ -) ]]; then
+  if [[ $tool =~ ^(oxipng|cwebp|svgo|jpegoptim)$ ]] && [[ ${cmd[*]} =~ (--stdout|--out\ -|-o\ -) ]]; then
     "${cmd[@]}" >"$tmp" 2>/dev/null && ok=1
   else
-    "${cmd[@]}" >/dev/null 2>&1 && ok=1
+    "${cmd[@]}" &>/dev/null && ok=1
   fi
-  if [[ $ok -eq 1 ]] && [[ -f "$tmp" ]]; then
+  if [[ $ok -eq 1 ]] && [[ -f $tmp ]]; then
     local old_sz new_sz
     old_sz=$(stat -c%s "$f")
     new_sz=$(stat -c%s "$tmp")
@@ -261,19 +261,19 @@ optimize_file() {
       local diff pct
       diff=$((old_sz - new_sz))
       pct=$((diff * 100 / old_sz))
-      if [[ "$BACKUP" -eq 1 ]]; then
+      if [[ $BACKUP -eq 1 ]]; then
         local bp="${BACKUP_DIR}/${f#.}"
         mkdir -p "$(dirname "$bp")"
         cp -p "$f" "$bp"
       fi
       mv "$tmp" "$f"
-      [[ "$KEEP_MTIME" -eq 1 ]] && touch -r "$f" "$f"
+      [[ $KEEP_MTIME -eq 1 ]] && touch -r "$f" "$f"
       printf "${G}[OK]${X} %-25s %-12s -%d%% (%s)\n" "$(basename "$f")" "[$tool]" "$pct" "$(numfmt --to=iec "$diff")"
     else
       rm -f "$tmp"
     fi
   else
-    [[ -f "$tmp" ]] && rm -f "$tmp"
+    [[ -f $tmp ]] && rm -f "$tmp"
   fi
 }
 export -f optimize_file opt_img opt_svg opt_vid has err log
@@ -338,7 +338,7 @@ main() {
     inputs=(".")
   fi
 
-  if [[ "$BACKUP" -eq 1 ]]; then
+  if [[ $BACKUP -eq 1 ]]; then
     mkdir -p "$BACKUP_DIR"
     log "Backups enabled: $BACKUP_DIR"
   fi

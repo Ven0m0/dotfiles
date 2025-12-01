@@ -96,7 +96,7 @@ parse_args "$@"
 
 [[ $EUID -eq 0 ]] && die "Run as a regular user, not root."
 
-if [[ "$DRY_RUN" == false ]]; then
+if [[ $DRY_RUN == false ]]; then
   sudo -v || die "sudo access required"
 fi
 
@@ -125,7 +125,7 @@ install_packages() {
   # paru is a hard dependency on CachyOS and should always be available
   has paru || die "paru not found. This script requires CachyOS or Arch with paru installed."
 
-  if [[ "$DRY_RUN" == true ]]; then
+  if [[ $DRY_RUN == true ]]; then
     info "[DRY-RUN] Would install packages: ${pkgs[*]}"
   else
     # Word splitting is intentional for PARU_OPTS
@@ -137,7 +137,7 @@ install_packages() {
 ensure_tuckr() {
   if ! has tuckr; then
     info "tuckr not found — installing via paru..."
-    if [[ "$DRY_RUN" == true ]]; then
+    if [[ $DRY_RUN == true ]]; then
       info "[DRY-RUN] Would install tuckr"
     else
       # shellcheck disable=SC2086
@@ -148,16 +148,16 @@ ensure_tuckr() {
 }
 setup_dotfiles() {
   has yadm || die "yadm command not found. Package installation failed."
-  if [[ ! -d "$DOTFILES_DIR" ]]; then
+  if [[ ! -d $DOTFILES_DIR ]]; then
     info "Cloning dotfiles with yadm..."
-    if [[ "$DRY_RUN" == true ]]; then
+    if [[ $DRY_RUN == true ]]; then
       info "[DRY-RUN] Would clone: $DOTFILES_REPO"
     else
       yadm clone --bootstrap "$DOTFILES_REPO" || die "Failed to clone dotfiles"
     fi
   else
     info "Dotfiles repo exists. Pulling latest changes & re-running bootstrap..."
-    if [[ "$DRY_RUN" == true ]]; then
+    if [[ $DRY_RUN == true ]]; then
       info "[DRY-RUN] Would pull and bootstrap"
     else
       yadm pull || warn "Failed to pull latest changes"
@@ -172,7 +172,7 @@ deploy_dotfiles() {
   local repo_dir
   if has yadm && yadm rev-parse --git-dir &>/dev/null; then
     repo_dir="$(yadm rev-parse --show-toplevel)"
-  elif [[ -d "$DOTFILES_DIR" ]]; then
+  elif [[ -d $DOTFILES_DIR ]]; then
     repo_dir="$DOTFILES_DIR"
   else
     warn "Cannot determine repository location for Home/ deployment, skipping."
@@ -181,12 +181,12 @@ deploy_dotfiles() {
 
   local home_dir="${repo_dir}/Home"
 
-  if [[ ! -d "$home_dir" ]]; then
+  if [[ ! -d $home_dir ]]; then
     warn "Home directory not found at: $home_dir, skipping deployment."
     return 0
   fi
 
-  if [[ "$DRY_RUN" == true ]]; then
+  if [[ $DRY_RUN == true ]]; then
     info "[DRY-RUN] Would deploy from: $home_dir to $HOME"
     if has rsync; then
       info "[DRY-RUN] Using rsync for deployment"
@@ -210,19 +210,19 @@ deploy_dotfiles() {
 tuckr_system_configs() {
   info "Linking system-wide configs for /etc and /usr with tuckr..."
   has tuckr || die "tuckr command not found. Cannot link system configs."
-  [[ -d "$TUCKR_DIR" ]] || die "Dotfiles directory not found at $TUCKR_DIR."
+  [[ -d $TUCKR_DIR ]] || die "Dotfiles directory not found at $TUCKR_DIR."
 
   local tuckr_pkgs=(etc usr)
   local hooks_file="${TUCKR_DIR}/hooks.toml"
 
   for pkg in "${tuckr_pkgs[@]}"; do
     if [[ -d "${TUCKR_DIR}/${pkg}" ]]; then
-      if [[ "$DRY_RUN" == true ]]; then
+      if [[ $DRY_RUN == true ]]; then
         info "[DRY-RUN] Would link '${pkg}' to target '/'"
-        [[ -f "$hooks_file" ]] && info "[DRY-RUN] Would use hooks from: $hooks_file"
+        [[ -f $hooks_file ]] && info "[DRY-RUN] Would use hooks from: $hooks_file"
       else
         info "Linking '${pkg}' to target '/'..."
-        if [[ -f "$hooks_file" ]]; then
+        if [[ -f $hooks_file ]]; then
           sudo tuckr link -d "$TUCKR_DIR" -t / -H "$hooks_file" "$pkg" || warn "Failed to link ${pkg}"
         else
           sudo tuckr link -d "$TUCKR_DIR" -t / "$pkg" || warn "Failed to link ${pkg}"
@@ -241,7 +241,7 @@ final_steps() {
     success "Setup complete!"
     info "Dotfiles have been cloned, deployed, and system configs linked."
     info "Some changes may require a reboot or new login session."
-    [[ "$SHELL" != "/bin/zsh" ]] && warn "Consider changing your shell to Zsh with: chsh -s /bin/zsh"
+    [[ $SHELL != "/bin/zsh" ]] && warn "Consider changing your shell to Zsh with: chsh -s /bin/zsh"
     info "Run 'yadm status' to check the state of your dotfiles."
     info "Run 'yadm encrypt' to encrypt sensitive files (configured in .yadm/encrypt)"
   fi

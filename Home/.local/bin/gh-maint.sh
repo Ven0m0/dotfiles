@@ -251,17 +251,17 @@ check_gha_failures() {
   repo_name=$(echo "$remote_url" | sed -E 's#.*github.com[:/].*/([^/]+).*#\1#' | sed 's/\.git$//')
   local run_id
   run_id=$(gh run list -L 1 --json databaseId -R "$repo_owner/$repo_name" 2>/dev/null | jq -r '.[0].databaseId')
-  if [[ -z "$run_id" ]]; then
+  if [[ -z $run_id ]]; then
     verbose "No workflow runs found or failed to get run list."
     return
   fi
   local conclusion
   conclusion=$(gh run view "$run_id" --json conclusion -R "$repo_owner/$repo_name" 2>/dev/null | jq -r '.conclusion')
-  if [[ -z "$conclusion" ]]; then
+  if [[ -z $conclusion ]]; then
     err "Failed to get workflow run details."
     return
   fi
-  if [[ "$conclusion" == "failure" ]]; then
+  if [[ $conclusion == "failure" ]]; then
     err "Latest workflow run failed. Please check the logs."
     gh run view "$run_id" --log-failed -R "$repo_owner/$repo_name"
   else
@@ -269,7 +269,7 @@ check_gha_failures() {
   fi
 }
 auto_merge_pr() {
-  [[ -n "$PR_URL" ]] || die "PR URL required for merge mode."
+  [[ -n $PR_URL ]] || die "PR URL required for merge mode."
   local strategy="$MERGE_STRATEGY"
   local owner repo pr
   if [[ $PR_URL =~ github\.com/([^/]+)/([^/]+)/pull/([0-9]+) ]]; then
@@ -363,10 +363,10 @@ optimize_repo() {
     if git config --get-regexp '^submodule\.' &>/dev/null; then
       verbose "Optimizing submodules..."
       git submodule foreach --recursive '
-        git repack -adbq --depth=100 --window=100 >/dev/null 2>&1 || :
-        git reflog expire --expire=now --all >/dev/null 2>&1 || :
-        git gc --auto --prune=now --quiet >/dev/null 2>&1 || :
-        git clean -fdXq >/dev/null 2>&1 || :
+        git repack -adbq --depth=100 --window=100 &>/dev/null || :
+        git reflog expire --expire=now --all &>/dev/null || :
+        git gc --auto --prune=now --quiet &>/dev/null || :
+        git clean -fdXq &>/dev/null || :
       ' &>/dev/null || :
     fi
     ok "Optimization complete"

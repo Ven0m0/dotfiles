@@ -14,7 +14,7 @@
 # ctrl-t: toggle preview window
 set -euo pipefail
 
-if [[ "${*:-}" == "-h" ]]; then
+if [[ ${*:-} == "-h" ]]; then
   cat <<'EOF'
 fzgrep is a simple, extensible, POSIX compliant fuzzy grep searching shell script
 Github: https://github.com/hollowillow/scripts

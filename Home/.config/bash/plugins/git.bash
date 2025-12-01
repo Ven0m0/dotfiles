@@ -10,18 +10,18 @@ gctl() {
     return 1
   }
   local url="$1" dir="$2"
-  [[ -n "$2" ]] || {
+  [[ -n $2 ]] || {
     dir="$(basename "${url%%/}")"
     dir="${dir%.git}"
   }
-  if [[ ! -d "$dir" ]]; then
+  if [[ ! -d $dir ]]; then
     if has gix; then
       LC_ALL=C gix clone --depth 1 --no-tags "$url" "$dir" || return 1
     else
       LC_ALL=C git clone --depth 1 --no-tags --filter='blob:none' -c protocol.version=2 -c http.version=HTTP/2 "$url" "$dir" || return 1
     fi
   else
-    [[ -d "$dir" ]] && {
+    [[ -d $dir ]] && {
       cd -- "$dir" || return
       LC_ALL=C git pull -c protocol.version=2 -c http.version=HTTP/2
       return 0
@@ -34,7 +34,7 @@ gctl() {
 if command -v gh &>/dev/null; then
   TOKEN=$(gh auth token 2>/dev/null)
   # Configure Git to use GitHub CLI for authentication
-  [[ -n "$TOKEN" ]] && { export GITHUB_TOKEN="$TOKEN" && gh auth setup-git; }
+  [[ -n $TOKEN ]] && { export GITHUB_TOKEN="$TOKEN" && gh auth setup-git; }
 fi
 
 # Display git repository file structure as a tree

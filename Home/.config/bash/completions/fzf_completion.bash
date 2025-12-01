@@ -31,7 +31,7 @@ if [[ $- =~ i ]]; then
   __fzf_exec_awk() {
     if [[ -z ${__fzf_awk-} ]]; then
       __fzf_awk=awk
-      if command -v mawk >/dev/null 2>&1; then
+      if command -v mawk &>/dev/null; then
         local n x y z d
         IFS=' .' read -r n x y z d <<<"$(command mawk -W version 2>/dev/null)"
         [[ $n == mawk ]] && ((d >= 20230302 && (x * 1000 + y) * 1000 + z >= 1003004)) && __fzf_awk=mawk
@@ -51,13 +51,13 @@ if [[ $- =~ i ]]; then
   }
 
   __fzfcmd() {
-    [[ -n "${TMUX_PANE-}" ]] && { [[ "${FZF_TMUX:-0}" != 0 ]] || [[ -n "${FZF_TMUX_OPTS-}" ]]; } \
+    [[ -n ${TMUX_PANE-} ]] && { [[ ${FZF_TMUX:-0} != 0 ]] || [[ -n ${FZF_TMUX_OPTS-} ]]; } \
       && echo "fzf-tmux ${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}} -- " || echo "fzf"
   }
 
   fzf-file-widget() {
     local selected="$(__fzf_select__ "$@")"
-    READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}$selected${READLINE_LINE:$READLINE_POINT}"
+    READLINE_LINE="${READLINE_LINE:0:READLINE_POINT}$selected${READLINE_LINE:READLINE_POINT}"
     READLINE_POINT=$((READLINE_POINT + ${#selected}))
   }
 
@@ -82,7 +82,7 @@ if [[ $- =~ i ]]; then
           FZF_DEFAULT_OPTS_FILE='' "$(__fzfcmd)" --query "$READLINE_LINE"
       ) || return
       READLINE_LINE=$(command perl -pe 's/^\d*\t//' <<<"$output")
-      if [[ -z "$READLINE_POINT" ]]; then
+      if [[ -z $READLINE_POINT ]]; then
         echo "$READLINE_LINE"
       else
         READLINE_POINT=0x7fffffff
@@ -109,7 +109,7 @@ if [[ $- =~ i ]]; then
           FZF_DEFAULT_OPTS_FILE='' "$(__fzfcmd)" --query "$READLINE_LINE"
       ) || return
       READLINE_LINE=${output#*$'\t'}
-      if [[ -z "$READLINE_POINT" ]]; then
+      if [[ -z $READLINE_POINT ]]; then
         echo "$READLINE_LINE"
       else
         READLINE_POINT=0x7fffffff
@@ -126,7 +126,7 @@ if [[ $- =~ i ]]; then
 
   if ((BASH_VERSINFO[0] < 4)); then
     # CTRL-T - Paste the selected file path into the command line
-    if [[ "${FZF_CTRL_T_COMMAND-x}" != "" ]]; then
+    if [[ ${FZF_CTRL_T_COMMAND-x} != "" ]]; then
       bind -m emacs-standard '"\C-t": " \C-b\C-k \C-u`__fzf_select__`\e\C-e\er\C-a\C-y\C-h\C-e\e \C-y\ey\C-x\C-x\C-f"'
       bind -m vi-command '"\C-t": "\C-z\C-t\C-z"'
       bind -m vi-insert '"\C-t": "\C-z\C-t\C-z"'
@@ -138,7 +138,7 @@ if [[ $- =~ i ]]; then
     bind -m vi-insert '"\C-r": "\C-z\C-r\C-z"'
   else
     # CTRL-T - Paste the selected file path into the command line
-    if [[ "${FZF_CTRL_T_COMMAND-x}" != "" ]]; then
+    if [[ ${FZF_CTRL_T_COMMAND-x} != "" ]]; then
       bind -m emacs-standard -x '"\C-t": fzf-file-widget'
       bind -m vi-command -x '"\C-t": fzf-file-widget'
       bind -m vi-insert -x '"\C-t": fzf-file-widget'
@@ -151,7 +151,7 @@ if [[ $- =~ i ]]; then
   fi
 
   # ALT-C - cd into the selected directory
-  if [[ "${FZF_ALT_C_COMMAND-x}" != "" ]]; then
+  if [[ ${FZF_ALT_C_COMMAND-x} != "" ]]; then
     bind -m emacs-standard '"\ec": " \C-b\C-k \C-u`__fzf_cd__`\e\C-e\er\C-m\C-y\C-h\e \C-y\ey\C-x\C-x\C-d"'
     bind -m vi-command '"\ec": "\C-z\ec\C-z"'
     bind -m vi-insert '"\ec": "\C-z\ec\C-z"'
@@ -208,7 +208,7 @@ if [[ $- =~ i ]]; then
       __fzf_awk=awk
       if [[ $OSTYPE == solaris* && -x /usr/xpg4/bin/awk ]]; then
         __fzf_awk=/usr/xpg4/bin/awk
-      elif command -v mawk >/dev/null 2>&1; then
+      elif command -v mawk &>/dev/null; then
         local n x y z d
         IFS=' .' read -r n x y z d <<<"$(command mawk -W version 2>/dev/null)"
         [[ $n == mawk ]] && ((d >= 20230302 && (x * 1000 + y) * 1000 + z >= 1003004)) && __fzf_awk=mawk
@@ -219,9 +219,9 @@ if [[ $- =~ i ]]; then
   #----END INCLUDE
 
   __fzf_comprun() {
-    if [[ "$(type -t _fzf_comprun 2>&1)" = function ]]; then
+    if [[ "$(type -t _fzf_comprun 2>&1)" == function ]]; then
       _fzf_comprun "$@"
-    elif [[ -n "${TMUX_PANE-}" ]] && { [[ "${FZF_TMUX:-0}" != 0 ]] || [[ -n "${FZF_TMUX_OPTS-}" ]]; }; then
+    elif [[ -n ${TMUX_PANE-} ]] && { [[ ${FZF_TMUX:-0} != 0 ]] || [[ -n ${FZF_TMUX_OPTS-} ]]; }; then
       shift
       fzf-tmux "${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}}" -- "$@"
     else
@@ -233,13 +233,13 @@ if [[ $- =~ i ]]; then
   __fzf_orig_completion() {
     local l comp f cmd
     while read -r l; do
-      if [[ "$l" =~ ^(.*\ -F)\ *([^ ]*).*\ ([^ ]*)$ ]]; then
+      if [[ $l =~ ^(.*\ -F)\ *([^ ]*).*\ ([^ ]*)$ ]]; then
         comp="${BASH_REMATCH[1]}"
         f="${BASH_REMATCH[2]}"
         cmd="${BASH_REMATCH[3]}"
-        [[ "$f" = _fzf_* ]] && continue
+        [[ $f == _fzf_* ]] && continue
         printf -v "_fzf_orig_completion_${cmd//[^A-Za-z0-9_]/_}" "%s" "${comp} %s ${cmd} #${f}"
-        if [[ "$l" = *" -o nospace "* ]] && [[ ! "${__fzf_nospace_commands-}" = *" $cmd "* ]]; then
+        if [[ $l == *" -o nospace "* ]] && [[ ! ${__fzf_nospace_commands-} == *" $cmd "* ]]; then
           __fzf_nospace_commands="${__fzf_nospace_commands-} $cmd "
         fi
       fi
@@ -418,7 +418,7 @@ if [[ $- =~ i ]]; then
         ;;
     esac
 
-    if [[ "$cur" =~ ^-|\+ ]]; then
+    if [[ $cur =~ ^-|\+ ]]; then
       COMPREPLY=("$(compgen -W "$opts" -- "$cur")")
       return 0
     fi
@@ -433,7 +433,7 @@ if [[ $- =~ i ]]; then
     orig_cmd="$1"
     if __fzf_orig_completion_get_orig_func "$cmd"; then
       "$REPLY" "$@"
-    elif [[ -n "${_fzf_completion_loader-}" ]]; then
+    elif [[ -n ${_fzf_completion_loader-} ]]; then
       orig_complete=$(complete -p "$orig_cmd" 2>/dev/null)
       "$_fzf_completion_loader" "$@"
       ret=$?
@@ -447,7 +447,7 @@ if [[ $- =~ i ]]; then
           && __fzf_orig_completion_instantiate "$cmd" "${BASH_REMATCH[1]}" \
           && orig_complete=$REPLY
 
-        if [[ "${__fzf_nospace_commands-}" = *" $orig_cmd "* ]]; then
+        if [[ ${__fzf_nospace_commands-} == *" $orig_cmd "* ]]; then
           eval "${orig_complete/ -F / -o nospace -F }"
         else
           eval "$orig_complete"
@@ -467,18 +467,18 @@ if [[ $- =~ i ]]; then
     COMPREPLY=()
     trigger=${FZF_COMPLETION_TRIGGER-'**'}
     [[ $COMP_CWORD -ge 0 ]] && cur="${COMP_WORDS[COMP_CWORD]}"
-    if [[ "$cur" == *"$trigger" ]] && [[ $cur != *'$('* ]] && [[ $cur != *':='* ]] && [[ $cur != *'`'* ]]; then
+    if [[ $cur == *"$trigger" ]] && [[ $cur != *'$('* ]] && [[ $cur != *':='* ]] && [[ $cur != *'`'* ]]; then
       base=${cur:0:${#cur}-${#trigger}}
       eval "base=$base" 2>/dev/null || return
 
       dir=
-      [[ $base = *"/"* ]] && dir="$base"
+      [[ $base == *"/"* ]] && dir="$base"
       while true; do
-        if [[ -z "$dir" ]] || [[ -d "$dir" ]]; then
+        if [[ -z $dir ]] || [[ -d $dir ]]; then
           leftover=${base/#"$dir"/}
           leftover=${leftover/#\//}
-          [[ -z "$dir" ]] && dir='.'
-          [[ "$dir" != "/" ]] && dir="${dir/%\//}"
+          [[ -z $dir ]] && dir='.'
+          [[ $dir != "/" ]] && dir="${dir/%\//}"
           matches=$(
             export FZF_DEFAULT_OPTS=$(__fzf_defaults "--reverse --scheme=path" "${FZF_COMPLETION_OPTS-} $2")
             unset FZF_DEFAULT_COMMAND FZF_DEFAULT_OPTS_FILE
@@ -498,8 +498,8 @@ if [[ $- =~ i ]]; then
             done
           )
           matches=${matches% }
-          [[ -z "$3" ]] && [[ "${__fzf_nospace_commands-}" = *" ${COMP_WORDS[0]} "* ]] && matches="$matches "
-          if [[ -n "$matches" ]]; then
+          [[ -z $3 ]] && [[ ${__fzf_nospace_commands-} == *" ${COMP_WORDS[0]} "* ]] && matches="$matches "
+          if [[ -n $matches ]]; then
             COMPREPLY=("$matches")
           else
             COMPREPLY=("$cur")
@@ -510,7 +510,7 @@ if [[ $- =~ i ]]; then
           return 0
         fi
         dir=$(command dirname "$dir")
-        [[ "$dir" =~ /$ ]] || dir="$dir"/
+        [[ $dir =~ /$ ]] || dir="$dir"/
       done
     else
       shift
@@ -526,15 +526,15 @@ if [[ $- =~ i ]]; then
     args=("$@")
     sep=
     for i in "${!args[@]}"; do
-      if [[ "${args[$i]}" = -- ]]; then
+      if [[ ${args[$i]} == -- ]]; then
         sep=$i
         break
       fi
     done
-    if [[ -n "$sep" ]]; then
+    if [[ -n $sep ]]; then
       str_arg=
       rest=("${args[@]:$((sep + 1)):${#args[@]}}")
-      args=("${args[@]:0:$sep}")
+      args=("${args[@]:0:sep}")
     else
       str_arg=$1
       args=()
@@ -544,12 +544,12 @@ if [[ $- =~ i ]]; then
 
     local cur selected trigger cmd post
     post="$(caller 0 | __fzf_exec_awk '{print $2}')_post"
-    type -t "$post" >/dev/null 2>&1 || post='command cat'
+    type -t "$post" &>/dev/null || post='command cat'
 
     trigger=${FZF_COMPLETION_TRIGGER-'**'}
     cmd="${COMP_WORDS[0]}"
     cur="${COMP_WORDS[COMP_CWORD]}"
-    if [[ "$cur" == *"$trigger" ]] && [[ $cur != *'$('* ]] && [[ $cur != *':='* ]] && [[ $cur != *'`'* ]]; then
+    if [[ $cur == *"$trigger" ]] && [[ $cur != *'$('* ]] && [[ $cur != *':='* ]] && [[ $cur != *'`'* ]]; then
       cur=${cur:0:${#cur}-${#trigger}}
 
       selected=$(
@@ -558,7 +558,7 @@ if [[ $- =~ i ]]; then
           __fzf_comprun "${rest[0]}" "${args[@]}" -q "$cur" | eval "$post" | command tr '\n' ' '
       )
       selected=${selected% } # Strip trailing space not to repeat "-o nospace"
-      if [[ -n "$selected" ]]; then
+      if [[ -n $selected ]]; then
         COMPREPLY=("$selected")
       else
         COMPREPLY=("$cur")
@@ -709,7 +709,7 @@ if [[ $- =~ i ]]; then
         ;;
       *)
         local user=
-        [[ "$2" =~ '@' ]] && user="${2%%@*}@"
+        [[ $2 =~ '@' ]] && user="${2%%@*}@"
         _fzf_complete +m -- "$@" < <(__fzf_list_hosts | __fzf_exec_awk -v user="$user" '{print user $0}')
         ;;
     esac
@@ -778,15 +778,15 @@ if [[ $- =~ i ]]; then
   # Preserve existing completion
   __fzf_orig_completion < <(complete -p "$d_cmds" "$a_cmds" "$v_cmds" unalias kill ssh 2>/dev/null)
 
-  if type _comp_load >/dev/null 2>&1; then
+  if type _comp_load &>/dev/null; then
     # _comp_load was added in bash-completion 2.12 to replace _completion_loader.
     # We use it without -D option so that it does not use _comp_complete_minimal as the fallback.
     _fzf_completion_loader=_comp_load
-  elif type __load_completion >/dev/null 2>&1; then
+  elif type __load_completion &>/dev/null; then
     # In bash-completion 2.11, _completion_loader internally calls __load_completion
     # and if it returns a non-zero status, it sets the default 'minimal' completion.
     _fzf_completion_loader=__load_completion
-  elif type _completion_loader >/dev/null 2>&1; then
+  elif type _completion_loader &>/dev/null; then
     _fzf_completion_loader=_completion_loader
   fi
 

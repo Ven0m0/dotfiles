@@ -4,4 +4,4 @@
 }
 ble-import -d integration/fzf-key-bindings
 ble-import -d integration/fzf-completion
-[[ ! -n ${BLE_VERSION-} ]] || ble-attach
+[[ -z ${BLE_VERSION-} ]] || ble-attach

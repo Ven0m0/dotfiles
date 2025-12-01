@@ -1,7 +1,7 @@
 _zoi() {
   local i cur prev opts cmd
   COMPREPLY=()
-  if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
+  if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
     cur="$2"
   else
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -2818,7 +2818,7 @@ _zoi() {
   esac
 }
 
-if [[ "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -ge 4 || "${BASH_VERSINFO[0]}" -gt 4 ]]; then
+if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -ge 4 || ${BASH_VERSINFO[0]} -gt 4 ]]; then
   complete -F _zoi -o nosort -o bashdefault -o default zoi
 else
   complete -F _zoi -o bashdefault -o default zoi

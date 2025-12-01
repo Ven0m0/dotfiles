@@ -25,7 +25,7 @@ QUIET=""
 
 send_feedback() {
   local msg="$1"
-  if [[ -z "$QUIET" ]]; then
+  if [[ -z $QUIET ]]; then
     printf '%s\n' "$msg"
     command -v notify-send &>/dev/null && notify-send "$msg" || :
   fi
@@ -55,7 +55,7 @@ random_wallpaper() {
     exit 1
   }
 
-  if [[ -n "$wallpaper" ]]; then
+  if [[ -n $wallpaper ]]; then
     set_wallpaper "$wallpaper"
     send_feedback "Set random wallpaper."
     exit 0
@@ -78,7 +78,7 @@ select_wallpaper() {
     exit 1
   }
 
-  if [[ -n "$wallpaper" ]]; then
+  if [[ -n $wallpaper ]]; then
     local full_path
     full_path=$(find "$WALLPAPERS_DIR" -type f -name "*${wallpaper}.*")
     set_wallpaper "$full_path"
@@ -93,7 +93,7 @@ select_wallpaper() {
 while getopts ":d:hqrs" opt; do
   case "$opt" in
     d)
-      if [[ -d "$OPTARG" ]]; then
+      if [[ -d $OPTARG ]]; then
         WALLPAPERS_DIR="$OPTARG"
       else
         send_feedback "Error: \"$OPTARG\" is not a directory" >&2
@@ -124,7 +124,7 @@ while getopts ":d:hqrs" opt; do
   esac
 done
 
-if [[ ! -d "$WALLPAPERS_DIR" ]]; then
+if [[ ! -d $WALLPAPERS_DIR ]]; then
   send_feedback "Error: no directory provided" >&2
   exit 2
 fi

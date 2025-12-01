@@ -37,7 +37,7 @@ do_export() {
 
 do_import() {
   # Native Import
-  if [[ -f "$FILE_NATIVE" ]]; then
+  if [[ -f $FILE_NATIVE ]]; then
     log "Installing missing native packages from ${FILE_NATIVE}..."
     # --needed: skips up-to-date packages
     # sudo is required for pacman operations
@@ -47,7 +47,7 @@ do_import() {
   fi
 
   # AUR Import
-  if [[ -f "$FILE_AUR" ]]; then
+  if [[ -f $FILE_AUR ]]; then
     log "Installing missing AUR packages from ${FILE_AUR}..."
     # paru handles sudo internally, usually shouldn't run paru as root directly
     paru -S --needed - <"$FILE_AUR" || log "AUR import had warnings/errors."

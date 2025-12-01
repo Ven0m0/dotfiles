@@ -42,7 +42,7 @@ ln2_cmd() {
   op=${a[-2]}
   op1=${a[-3]}
   a=("${a[@]:0:${#a[@]}-3}")
-  [[ "$op1" == -* ]] && {
+  [[ $op1 == -* ]] && {
     ln2_usage
     return 2
   }
@@ -72,7 +72,7 @@ swap_cmd() {
     return 2
   }
   local file_a="$1" file_b="$2" tmp
-  if [[ -d "$file_a" ]]; then
+  if [[ -d $file_a ]]; then
     tmp="tmp.$$.dir"
     mkdir -p "$tmp"
   else tmp="$(mktemp)"; fi
@@ -83,7 +83,7 @@ swap_cmd() {
 symclean_usage() { printf 'Usage: sysmaint symclean [DIR]\n'; }
 symclean_cmd() {
   local d="${1:-$PWD}"
-  [[ -d "$d" ]] || die "not dir: $d"
+  [[ -d $d ]] || die "not dir: $d"
   log "cleaning broken symlinks in $d"
   find "$d" -xtype l -print -delete 2>/dev/null || find -L "$d" -type l -print -delete 2>/dev/null || :
 }
@@ -144,12 +144,12 @@ usb_cmd() {
   printf '  q) quit\n'
   local pick=""
   if have fzf; then pick="$(printf '%s\n' "$(seq 1 "${#lines[@]}")" q | fzf --prompt='Choose: ' --height=15 --no-info || :)"; fi
-  [[ -z "$pick" ]] && { read -r -p "Choose [1-${#lines[@]}/q]: " pick || :; }
-  [[ "$pick" =~ ^[Qq]$ ]] && {
+  [[ -z $pick ]] && { read -r -p "Choose [1-${#lines[@]}/q]: " pick || :; }
+  [[ $pick =~ ^[Qq]$ ]] && {
     log exit
     return 0
   }
-  [[ "$pick" =~ ^[0-9]+$ ]] || {
+  [[ $pick =~ ^[0-9]+$ ]] || {
     warn invalid
     return 1
   }
@@ -159,12 +159,12 @@ usb_cmd() {
   }
   local idx=$((pick - 1))
   local uuid="${uuids[idx]}" mp="${mpts[idx]}"
-  if [[ -z "$mp" ]]; then
+  if [[ -z $mp ]]; then
     local k free=""
     for ((k = 1; k <= cnt; k++)); do
       local candidate="${base}${k}"
       local used=0
-      for mp in "${mpts[@]}"; do [[ "$mp" == "$candidate" ]] && {
+      for mp in "${mpts[@]}"; do [[ $mp == "$candidate" ]] && {
         used=1
         break
       }; done
@@ -173,7 +173,7 @@ usb_cmd() {
         break
       }
     done
-    [[ -z "$free" ]] && die "increase -n"
+    [[ -z $free ]] && die "increase -n"
     "$SUDO" mkdir -p "$free" || :
     "$SUDO" mount -o gid=users,fmask=113,dmask=002 -U "$uuid" "$free"
     log "mounted $uuid at $free"
@@ -323,7 +323,7 @@ sysz_cmd() {
   local ST
   for ST in "${STATES[@]}"; do
     ST="${ST##*=}"
-    [[ -n "$ST" ]] && systemctl --state=help | grep -Fx "$ST" &>/dev/null || die "bad state: $ST"
+    [[ -n $ST ]] && systemctl --state=help | grep -Fx "$ST" &>/dev/null || die "bad state: $ST"
   done
 
   # loop for unit selection
@@ -357,7 +357,7 @@ sysz_cmd() {
   done
 
   local -a CMDS
-  if [[ -n "$CMD" ]]; then
+  if [[ -n $CMD ]]; then
     CMDS=("$CMD")
   else
     CMDS=("$(sysz_pick_commands "${UNITS[@]}" "${EXTRA[@]}")")
@@ -385,7 +385,7 @@ sysz_cat() {
 sysz_preview() {
   local M=$(sysz_manager "$1")
   local U="${1##* }"
-  if [[ "$U" = *@.* ]]; then sysz_cat "$@"; else SYSTEMD_COLORS=1 systemctl "$M" status --no-pager -- "$U"; fi
+  if [[ $U == *@.* ]]; then sysz_cat "$@"; else SYSTEMD_COLORS=1 systemctl "$M" status --no-pager -- "$U"; fi
 }
 
 sysz_show() { systemctl "$1" show "$2" -p "$3" --value; }
@@ -398,14 +398,14 @@ sysz_sort() {
     uclean=${unit//$'\e'[\[(]*([0-9;])[@-n]/}
     if [[ $unit =~ \.service$ ]]; then
       n=0
-      [[ $mgr = "[system]" ]] && n=1
+      [[ $mgr == "[system]" ]] && n=1
     elif [[ $unit =~ \.timer$ ]]; then
       n=2
-      [[ $mgr = "[system]" ]] && n=3
+      [[ $mgr == "[system]" ]] && n=3
     elif [[ $unit =~ \.socket$ ]]; then
       n=4
-      [[ $mgr = "[system]" ]] && n=5
-    elif [[ $mgr = "[user]" ]]; then
+      [[ $mgr == "[system]" ]] && n=5
+    elif [[ $mgr == "[user]" ]]; then
       n=6
     else
       n=7
@@ -442,10 +442,10 @@ sysz_list_units() {
   states=()
   # separate states
   local x
-  for x in "${mgrs[@]}"; do [[ "$x" == --state=* ]] && states+=("$x"); done
+  for x in "${mgrs[@]}"; do [[ $x == --state=* ]] && states+=("$x"); done
   # filter out states from mgrs
   local -a mm
-  for x in "${mgrs[@]}"; do [[ "$x" != --state=* ]] && mm+=("${x#--}"); done
+  for x in "${mgrs[@]}"; do [[ $x != --state=* ]] && mm+=("${x#--}"); done
   local M
   for M in "${mm[@]}"; do sysz_list "--$M" "${states[@]}" | sed -E "s/^/[$M] /"; done | sysz_sort
 }
@@ -453,7 +453,7 @@ sysz_list_units() {
 sysz_daemon_reload() {
   local picks
   picks="$(printf '%s\n' '[system] daemon-reload' '[user] daemon-reload' | fzf --multi --no-info --prompt='Reload: ')" || return 1
-  [[ -z "$picks" ]] && return 1
+  [[ -z $picks ]] && return 1
   local line
   while IFS= read -r line; do
     case "$line" in '[user] daemon-reload') systemctl --user daemon-reload ;;
@@ -475,7 +475,7 @@ sysz_pick_states() {
 sysz_pick_commands() {
   local -a units
   units=()
-  while [[ "$1" != "" && "$1" != "--" ]]; do
+  while [[ $1 != "" && $1 != "--" ]]; do
     units+=("$1")
     shift
   done
@@ -489,7 +489,7 @@ sysz_pick_commands() {
     PREVIEW_CMD="echo -n '$PREVIEW'"
   else
     U="${units[0]}"
-    [[ "$U" = *@.* ]] && read -r -p "$U param: " PARAM && U="${U/@/@$PARAM}" && units[0]="$U"
+    [[ $U == *@.* ]] && read -r -p "$U param: " PARAM && U="${U/@/@$PARAM}" && units[0]="$U"
     ACTIVE=$(sysz_show "$(sysz_manager "$U")" "${U##* }" ActiveState)
     LOAD=$(sysz_show "$(sysz_manager "$U")" "${U##* }" LoadState)
     UF=$(sysz_show "$(sysz_manager "$U")" "${U##* }" UnitFileState)
@@ -561,7 +561,7 @@ sysz_exec() {
 sysz_journal() {
   local M="$1" UNIT="$2"
   shift 2
-  if [[ "$M" == --user ]]; then
+  if [[ $M == --user ]]; then
     journalctl --user-unit="$UNIT" "$@"
   else
     if ((EUID != 0)); then sudo journalctl --unit="$UNIT" "$@"; else journalctl --unit="$UNIT" "$@"; fi
@@ -576,11 +576,11 @@ prsync_cmd() {
     return 2
   }
   local par=""
-  if [[ "$1" == --parallel=* ]]; then
+  if [[ $1 == --parallel=* ]]; then
     par="${1##*=}"
     shift
   fi
-  [[ -n "$par" ]] || par="$(nproc 2>/dev/null || printf 10)"
+  [[ -n $par ]] || par="$(nproc 2>/dev/null || printf 10)"
   log "parallel=$par"
   local TMP
   TMP="$(mktemp -d)"

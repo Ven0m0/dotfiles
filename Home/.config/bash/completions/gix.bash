@@ -1,7 +1,7 @@
 _gix() {
   local i cur prev opts cmd
   COMPREPLY=()
-  if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
+  if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
     cur="$2"
   else
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -5677,7 +5677,7 @@ _gix() {
   esac
 }
 
-if [[ "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -ge 4 || "${BASH_VERSINFO[0]}" -gt 4 ]]; then
+if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -ge 4 || ${BASH_VERSINFO[0]} -gt 4 ]]; then
   complete -F _gix -o nosort -o bashdefault -o default gix
 else
   complete -F _gix -o bashdefault -o default gix

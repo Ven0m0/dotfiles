@@ -8,7 +8,7 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
-if [[ "${1:-}" == "-h" ]]; then
+if [[ ${1:-} == "-h" ]]; then
   sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"
   exit 0
 fi

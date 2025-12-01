@@ -30,7 +30,7 @@ fi
 
 # --- Terminal
 if has ghostty; then
-  [[ "$TERM" == "xterm-ghostty" ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-/usr/share/ghostty}/shell-integration/bash/ghostty.bash"
+  [[ $TERM == "xterm-ghostty" ]] && ifsource "${GHOSTTY_RESOURCES_DIR:-/usr/share/ghostty}/shell-integration/bash/ghostty.bash"
   export TERMINAL="ghostty +ssh-cache --wait-after-command"
 fi
 
@@ -52,7 +52,7 @@ export HOMEBREW_NO_ANALYTICS=1
 export PARALLEL_HOME="$XDG_CONFIG_HOME/parallel"
 
 # --- Wayland/Graphics
-if [[ "${XDG_SESSION_TYPE-}" == "wayland" ]]; then
+if [[ ${XDG_SESSION_TYPE-} == "wayland" ]]; then
   export GDK_BACKEND=wayland QT_QPA_PLATFORM=wayland SDL_VIDEODRIVER=wayland
   export QT_WAYLAND_DISABLE_WINDOWDECORATION=1 QT_ENABLE_HIGHDPI_SCALING=1
   export QT_AUTO_SCREEN_SCALE_FACTOR=1 QT_NO_SYNTHESIZED_BOLD=1

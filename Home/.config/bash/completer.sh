@@ -9,7 +9,7 @@ load_completion() {
   declare -F "$name" &>/dev/null && return
   case "$kind" in
     eval) eval "$src" &>/dev/null ;;
-    source | .) [[ -r "${src/#\~\//${HOME}/}" ]] && . "${src/#\~\//${HOME}/}" &>/dev/null ;;
+    source | .) [[ -r ${src/#\~\//${HOME}/} ]] && . "${src/#\~\//${HOME}/}" &>/dev/null ;;
   esac
 }
 
@@ -34,7 +34,7 @@ if has fzf; then
     if selected=$(compgen -f -- "${COMP_WORDS[COMP_CWORD]}" | fzf --prompt='❯ ' \
       --height=~100% --tiebreak=begin,index -1 -0 --exact \
       --layout=reverse-list --bind=tab:down,btab:up --cycle); then
-      [[ -d "$selected" ]] && selected="${selected}/" || selected="${selected} "
+      [[ -d $selected ]] && selected="${selected}/" || selected="${selected} "
       COMPREPLY=("$selected")
     fi
     printf '\e[5n'
