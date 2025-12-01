@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -u
 # from https://github.com/Enovale/doas-sudo-shim
 

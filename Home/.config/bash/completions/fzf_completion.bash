@@ -239,7 +239,7 @@ if [[ $- =~ i ]]; then
         cmd="${BASH_REMATCH[3]}"
         [[ $f == _fzf_* ]] && continue
         printf -v "_fzf_orig_completion_${cmd//[^A-Za-z0-9_]/_}" "%s" "${comp} %s ${cmd} #${f}"
-        if [[ $l == *" -o nospace "* ]] && [[ ! ${__fzf_nospace_commands-} == *" $cmd "* ]]; then
+        if [[ $l == *" -o nospace "* ]] && [[ ${__fzf_nospace_commands-} != *" $cmd "* ]]; then
           __fzf_nospace_commands="${__fzf_nospace_commands-} $cmd "
         fi
       fi
