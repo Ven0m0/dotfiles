@@ -5,22 +5,22 @@ See the above repository for updates as well as full license text. */
 
 /* allow scrolling */
 #PlacesToolbarItems {
-    overflow-x: auto !important;
+  overflow-x: auto !important;
 }
 
 /* restore visibility of hidden bookmarks */
 .bookmark-item {
-    visibility: initial !important
+  visibility: initial !important;
 }
 
 /* hide overflow menu */
 #PlacesToolbar #PlacesChevron {
-    visibility: collapse !important;
+  visibility: collapse !important;
 }
 
 /* force thin scrollbar */
 #PlacesToolbarItems {
-    scrollbar-width: thin !important;
+  scrollbar-width: thin !important;
 }
 
 /*

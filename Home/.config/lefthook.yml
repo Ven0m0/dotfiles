@@ -10,34 +10,34 @@ pre-commit:
     auto-stage:
       priority: 1
       run: git add -A
-      skip: [{run: "LC_ALL=C git diff --cached --quiet", stage_fixed: false}]
+      skip: [{ run: 'LC_ALL=C git diff --cached --quiet', stage_fixed: false }]
     shell-format:
       priority: 2
-      glob: "*.{sh,bash,zsh}"
+      glob: '*.{sh,bash,zsh}'
       run: |
         shellcheck -x -a -s bash -S style -P SCRIPTDIR --norc -o all -f diff {staged_files} | patch -Np1 || :
         shellharden --replace {staged_files} || :
       stage_fixed: true
-      fail_text: "Shell formatting failed"
+      fail_text: 'Shell formatting failed'
     yaml-format:
       priority: 3
-      glob: "*.{yml,yaml}"
+      glob: '*.{yml,yaml}'
       run: |
         yamlfmt {staged_files} || :
         yamllint -f parsable {staged_files} || :
       stage_fixed: true
-      fail_text: "YAML formatting/linting failed"
+      fail_text: 'YAML formatting/linting failed'
     json-validate:
       priority: 4
-      glob: "*.{json,jsonc,json5}"
+      glob: '*.{json,jsonc,json5}'
       run: |
         for f in {staged_files}; do
           LC_ALL=C jaq -e . "$f" &>/dev/null || LC_ALL=C jq -e . "$f" || { printf "Invalid: %s\n" "$f" >&2; exit 1; }
         done
-      fail_text: "JSON validation failed"
+      fail_text: 'JSON validation failed'
     markdown-format:
       priority: 5
-      glob: "*.md"
+      glob: '*.md'
       run: |
         if command -v mdformat &>/dev/null; then
           mdformat {staged_files} || :
@@ -47,10 +47,10 @@ pre-commit:
           markdownlint-cli2 --fix {staged_files} || :
         fi
       stage_fixed: true
-      fail_text: "Markdown formatting failed"
+      fail_text: 'Markdown formatting failed'
     js-format:
       priority: 6
-      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
+      glob: '*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}'
       run: |
         if command -v biome &>/dev/null && [[ -r ${HOME}/.config/biome.json ]]; then
           BIOME_CONFIG_PATH="${HOME}/.config/biome.json" biome check --write --unsafe --skip-parse-errors {staged_files} || :
@@ -60,61 +60,61 @@ pre-commit:
           bunx --bun @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files} || :
         fi
       stage_fixed: true
-      fail_text: "JavaScript/TypeScript formatting failed"
+      fail_text: 'JavaScript/TypeScript formatting failed'
     prettier-format:
       priority: 7
-      glob: "*.{mjs,cjs,scss,html}"
-      run: "prettier -w --ignore-unknown {staged_files} || :"
+      glob: '*.{mjs,cjs,scss,html}'
+      run: 'prettier -w --ignore-unknown {staged_files} || :'
       stage_fixed: true
-      fail_text: "Prettier formatting failed"
+      fail_text: 'Prettier formatting failed'
     eslint-fix:
       priority: 8
-      glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
-      run: "eslint --fix -q {staged_files} || :"
+      glob: '*.{js,jsx,ts,tsx,mjs,cjs}'
+      run: 'eslint --fix -q {staged_files} || :'
       stage_fixed: true
-      fail_text: "ESLint fixes failed"
+      fail_text: 'ESLint fixes failed'
     trim-trailing:
       priority: 9
-      glob: "*"
+      glob: '*'
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         for f in {staged_files}; do
           [[ -f "$f" ]] && LC_ALL=C sed -i 's/[ \t]*$//' "$f"
         done
       stage_fixed: true
-      fail_text: "Trailing whitespace removal failed"
+      fail_text: 'Trailing whitespace removal failed'
     strip-unicode:
       priority: 10
-      glob: "*"
+      glob: '*'
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         for f in {staged_files}; do
           [[ -f "$f" ]] && sed -i 's/\xE2\x80\x8B\|\xE2\x80\x8C\|\xE2\x80\x8D\|\xE2\x80\xAF\|\xC2\xAD\|\xEF\xBB\xBF//g' "$f"
         done
       stage_fixed: true
-      fail_text: "Unicode character stripping failed"
+      fail_text: 'Unicode character stripping failed'
     fix-bom:
       priority: 10
-      glob: "*"
+      glob: '*'
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         for f in {staged_files}; do
           [[ -f "$f" ]] && LC_ALL=C sed -i '1s/^\xEF\xBB\xBF//' "$f"
         done
       stage_fixed: true
-      fail_text: "BOM removal failed"
+      fail_text: 'BOM removal failed'
     normalize-eol:
       priority: 11
-      glob: "*.{sh,bash,zsh,yml,yaml,json,md,txt,toml,ini,conf,cfg,js,ts,tsx,jsx,css,html}"
+      glob: '*.{sh,bash,zsh,yml,yaml,json,md,txt,toml,ini,conf,cfg,js,ts,tsx,jsx,css,html}'
       run: |
         for f in {staged_files}; do
           [[ -f "$f" ]] && { dos2unix -q "$f" 2>/dev/null || LC_ALL=C sed -i 's/\r$//' "$f"; }
         done
       stage_fixed: true
-      fail_text: "Line ending normalization failed"
+      fail_text: 'Line ending normalization failed'
     ensure-shebang:
       priority: 12
-      glob: "*.{sh,bash}"
+      glob: '*.{sh,bash}'
       run: |
         for f in {staged_files}; do
           [[ -f "$f" ]] && { { command -v rg &>/dev/null && LC_ALL=C rg -q '^#!' "$f"; } || LC_ALL=C grep -qE '^#!' "$f"; } || {
@@ -122,7 +122,7 @@ pre-commit:
           }
         done
       stage_fixed: true
-      fail_text: "Shebang insertion failed"
+      fail_text: 'Shebang insertion failed'
     check-executable-shebangs:
       priority: 12
       run: |
@@ -135,7 +135,7 @@ pre-commit:
             fi
           fi
         done || :
-      fail_text: "Executable files must have shebangs"
+      fail_text: 'Executable files must have shebangs'
     check-filesize:
       priority: 13
       run: |
@@ -145,7 +145,7 @@ pre-commit:
           size=$(stat -c%s "$f" 2>/dev/null || stat -f%z "$f" 2>/dev/null || echo 0)
           (( size > max_kb * 1024 )) && { printf "File too large: %s (%dKB, max %dKB)\n" "$f" "$((size/1024))" "$max_kb" >&2; exit 1; }
         done || :
-      fail_text: "Large files detected (>5MB)"
+      fail_text: 'Large files detected (>5MB)'
     check-case-conflict:
       priority: 14
       run: |
@@ -155,27 +155,27 @@ pre-commit:
           [[ -v seen[$lower] ]] && { printf "Case conflict: %s vs %s\n" "${seen[$lower]}" "$f" >&2; exit 1; }
           seen[$lower]="$f"
         done || :
-      fail_text: "Case-insensitive filename conflict detected"
+      fail_text: 'Case-insensitive filename conflict detected'
     check-symlinks:
       priority: 15
       run: |
         for f in {staged_files}; do
           [[ -L "$f" && ! -e "$f" ]] && { printf "Broken symlink: %s\n" "$f" >&2; exit 1; }
         done || :
-      fail_text: "Broken symlinks detected"
+      fail_text: 'Broken symlinks detected'
     end-of-file-fixer:
       priority: 16
-      glob: "*"
+      glob: '*'
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         for f in {staged_files}; do
           [[ -f "$f" && -s "$f" && -n $(tail -c1 "$f") ]] && printf '\n' >> "$f"
         done
       stage_fixed: true
-      fail_text: "End-of-file newline fix failed"
+      fail_text: 'End-of-file newline fix failed'
     mixed-line-ending:
       priority: 17
-      glob: "*"
+      glob: '*'
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         for f in {staged_files}; do
@@ -186,7 +186,7 @@ pre-commit:
             (( has_crlf > 0 && has_lf > has_crlf && total_lines > 0 )) && { printf "Mixed line endings: %s\n" "$f" >&2; exit 1; }
           }
         done || :
-      fail_text: "Mixed line endings detected"
+      fail_text: 'Mixed line endings detected'
     detect-secrets:
       priority: 18
       run: |
@@ -199,10 +199,10 @@ pre-commit:
             -e '(password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|bearer|client[_-]?secret|private[_-]?key)[[:space:]]*[:=][[:space:]]*["\047][^"\047]{20,}' \
             {staged_files} && { printf "Secrets detected\n" >&2; exit 1; }
         fi || :
-      fail_text: "Potential secrets detected in staged files!"
+      fail_text: 'Potential secrets detected in staged files!'
     check-debug:
       priority: 19
-      glob: "*.{sh,bash,js,jsx,ts,tsx,py,rb,go}"
+      glob: '*.{sh,bash,js,jsx,ts,tsx,py,rb,go}'
       run: |
         if command -v rg &>/dev/null; then
           LC_ALL=C rg -iNn -e '\bconsole\.(log|debug|info|warn|error)\(' \
@@ -213,7 +213,7 @@ pre-commit:
             -e '\bdebugger\b' -e '\bbinding\.pry\b' -e '\bset -x\b' -e '\bprint[[:space:]]*\(.*DEBUG' \
             {staged_files} && { printf "Debug code\n" >&2; exit 1; }
         fi || :
-      fail_text: "Debug code found in staged files!"
+      fail_text: 'Debug code found in staged files!'
     no-merge-conflicts:
       priority: 20
       run: |
@@ -222,7 +222,7 @@ pre-commit:
         else
           LC_ALL=C grep -FHn -e '^<<<<<<<' -e '^=======' -e '^>>>>>>>' {staged_files} && { printf "Merge conflicts\n" >&2; exit 1; }
         fi || :
-      fail_text: "Merge conflict markers found!"
+      fail_text: 'Merge conflict markers found!'
     check-todos:
       priority: 21
       run: |
@@ -232,23 +232,23 @@ pre-commit:
           count=$(grep -Eihc '\b(TODO|FIXME|XXX|HACK)\b' {staged_files} 2>/dev/null | awk '{s+=$1}END{print s+0}')
         fi
         (( count > 0 )) && printf "%d TODO/FIXME\n" "$count" >&2 || :
-      fail_text: "TODOs/FIXMEs found (informational)"
+      fail_text: 'TODOs/FIXMEs found (informational)'
     actionlint:
       priority: 22
-      glob: ".github/workflows/*.{yml,yaml}"
-      run: "actionlint {staged_files} || :"
-      fail_text: "GitHub Actions workflow linting failed"
+      glob: '.github/workflows/*.{yml,yaml}'
+      run: 'actionlint {staged_files} || :'
+      fail_text: 'GitHub Actions workflow linting failed'
     zizmor:
       priority: 23
-      glob: ".github/workflows/*.{yml,yaml}"
-      run: "zizmor --format plain {staged_files} || :"
-      fail_text: "GitHub Actions security check failed"
+      glob: '.github/workflows/*.{yml,yaml}'
+      run: 'zizmor --format plain {staged_files} || :'
+      fail_text: 'GitHub Actions security check failed'
     no-commit-to-branch:
       priority: 24
       run: |
         branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
         [[ "$branch" =~ ^(main|master)$ ]] && { printf "Direct commits to %s are not allowed\n" "$branch" >&2; exit 1; }
-      fail_text: "Cannot commit directly to protected branches (main/master)"
+      fail_text: 'Cannot commit directly to protected branches (main/master)'
 commit-msg:
   commands:
     conventional-commits:
@@ -262,13 +262,13 @@ commit-msg:
         fi || {
           printf "Use Conventional Commits:\n  type(scope?): subject\n\nTypes: feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert\n" >&2; exit 1
         }
-      fail_text: "Commit message must follow Conventional Commits format"
+      fail_text: 'Commit message must follow Conventional Commits format'
     msg-length:
       priority: 2
       run: |
         subject=$(head -n1 {1})
         (( ${#subject} > 72 )) && { printf "Subject >72 chars (%d)\n" "${#subject}" >&2; exit 1; } || :
-      fail_text: "Commit subject line too long (max 72 chars)"
+      fail_text: 'Commit subject line too long (max 72 chars)'
     no-wip:
       priority: 3
       run: |
@@ -277,7 +277,7 @@ commit-msg:
         else
           LC_ALL=C grep -qEi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP\n" >&2; exit 1; }
         fi || :
-      fail_text: "WIP/TODO/FIXME/HACK found in commit message"
+      fail_text: 'WIP/TODO/FIXME/HACK found in commit message'
 pre-push:
   parallel: true
   commands:
@@ -289,7 +289,7 @@ pre-push:
         [[ -f Cargo.toml ]] && { cargo test -q &>/dev/null; exit 0; }
         [[ -f go.mod ]] && { go test ./... &>/dev/null; exit 0; }
         exit 0
-      fail_text: "Test suite failed"
+      fail_text: 'Test suite failed'
     branch-check:
       priority: 2
       run: |
@@ -309,14 +309,14 @@ pre-push:
             printf "Use git-flow: feature/*, fix/*, release/*, hotfix/*\n" >&2
           }
         fi; exit 0
-      fail_text: "Branch naming violation or protected branch push attempt"
+      fail_text: 'Branch naming violation or protected branch push attempt'
     audit-deps:
       priority: 3
       run: |
         [[ -f package.json ]] && { bun audit || npm audit --production --audit-level=high; } || :
         [[ -f Cargo.toml ]] && cargo audit --ignore RUSTSEC-2023-0071 || :
         exit 0
-      fail_text: "Dependency audit failed"
+      fail_text: 'Dependency audit failed'
 post-merge:
   commands:
     update-deps:
@@ -329,17 +329,17 @@ post-merge:
         fi
         [[ -f Cargo.lock ]] && cargo fetch &>/dev/null
         exit 0
-      fail_text: "Dependency update failed"
+      fail_text: 'Dependency update failed'
     clean-artifacts:
       priority: 2
-      run: "LC_ALL=C rm -rf node_modules/.cache target/debug .pytest_cache __pycache__ .next .turbo dist build || :"
-      fail_text: "Artifact cleanup failed"
+      run: 'LC_ALL=C rm -rf node_modules/.cache target/debug .pytest_cache __pycache__ .next .turbo dist build || :'
+      fail_text: 'Artifact cleanup failed'
 post-checkout:
   commands:
     update-submodules:
       priority: 1
-      run: "LC_ALL=C submod update --init --recursive &>/dev/null || LC_ALL=C git submodule update --init --recursive &>/dev/null || :"
-      fail_text: "Submodule update failed"
+      run: 'LC_ALL=C submod update --init --recursive &>/dev/null || LC_ALL=C git submodule update --init --recursive &>/dev/null || :'
+      fail_text: 'Submodule update failed'
     notify-deps:
       priority: 2
       run: |
@@ -353,7 +353,7 @@ post-checkout:
             printf "Dependencies changed. Run: bun install\n" >&2
           }
         fi || :
-      fail_text: "Dependency check notification failed"
+      fail_text: 'Dependency check notification failed'
 prepare-commit-msg:
   commands:
     insert-ticket:
@@ -368,4 +368,4 @@ prepare-commit-msg:
             LC_ALL=C grep -qF "$ticket" {1} || sed -i "1s/^/$ticket: /" {1}
           fi
         } || :
-      fail_text: "Ticket insertion failed"
+      fail_text: 'Ticket insertion failed'

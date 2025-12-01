@@ -1,21 +1,21 @@
 repos:
-- core
-- main
-- community
+  - core
+  - main
+  - community
 package_managers:
-- flatpak
-- nix
-- pacman
-- paru
-- yay
-- aur
-- bun
-- npm
-- uv
-- pip
-- cargo
-- cargo-binstall
-- go
+  - flatpak
+  - nix
+  - pacman
+  - paru
+  - yay
+  - aur
+  - bun
+  - npm
+  - uv
+  - pip
+  - cargo
+  - cargo-binstall
+  - go
 native_package_manager: native
 telemetry_enabled: false
 default_registry:

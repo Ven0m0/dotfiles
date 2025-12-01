@@ -4,12 +4,12 @@ See the above repository for updates as well as full license text. */
 /* Makes the urlbar dropdown scrollable */
 /* Modify the pref browser.urlbar.maxRichResults to set how many results should be shown */
 
-#urlbar-results{
+#urlbar-results {
   max-height: 400px; /* Maximum height for the list, modify as needed */
   overflow-y: auto;
-  scrollbar-color: var(--urlbar-separator-color,currentColor) transparent;
-  scrollbar-width: thin
+  scrollbar-color: var(--urlbar-separator-color, currentColor) transparent;
+  scrollbar-width: thin;
 }
-.urlbarView-no-wrap{
+.urlbarView-no-wrap {
   position: relative;
 }

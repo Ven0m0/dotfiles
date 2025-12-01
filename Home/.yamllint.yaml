@@ -38,9 +38,9 @@ rules:
     forbid-implicit-octal: true
   truthy:
     allowed-values:
-      - "true"
-      - "false"
-      - "on"
+      - 'true'
+      - 'false'
+      - 'on'
     check-keys: false
 ignore: |
   .git/

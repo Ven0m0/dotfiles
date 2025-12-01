@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: Comprehensive session analysis and learning capture argument-hint: none allowed-tools: Read, Write, TodoWrite, Bash(git:\*)
 

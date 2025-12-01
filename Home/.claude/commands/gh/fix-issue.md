@@ -1,6 +1,6 @@
-______________________________________________________________________
+---
 
-## description: Fix GitHub issue argument-hint: [issue-number] allowed-tools: Write, Read, LS, Glob, Grep, Bash(gh:*), Bash(git:*)
+## description: Fix GitHub issue argument-hint: [issue-number] allowed-tools: Write, Read, LS, Glob, Grep, Bash(gh:_), Bash(git:_)
 
 Please analyze and fix the Github issue $ARGUMENTS by following these steps:
 

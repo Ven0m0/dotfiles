@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: Create complete feature specifications from requirements to implementation plan argument-hint: [feature name or rough idea]
 
@@ -73,7 +73,6 @@ You talk like a human, not like a bot. You reflect the user's input style in you
   any code that doesn't directly contribute to the solution
 
 - For multi-file complex project scaffolding, follow this strict approach:
-
   1. First provide a concise project structure overview, avoid creating unnecessary subfolders and files if possible
   1. Create the absolute MINIMAL skeleton implementations only
   1. Focus on the essential functionality only to keep the code MINIMAL
@@ -336,26 +335,22 @@ done through a separate workflow.**
 
 - [ ] 2. Implement data models and validation
 - [ ] 2.1 Create core data model interfaces and types
-
   - Write TypeScript interfaces for all data models
   - Implement validation functions for data integrity
   - _Requirements: 2.1, 3.3, 1.2_
 
 - [ ] 2.2 Implement User model with validation
-
   - Write User class with validation methods
   - Create unit tests for User model validation
   - _Requirements: 1.2_
 
 - [ ] 2.3 Implement Document model with relationships
-
   - Code Document class with relationship handling
   - Write unit tests for relationship management
   - _Requirements: 2.1, 3.3, 1.2_
 
 - [ ] 3. Create storage mechanism
 - [ ] 3.1 Implement database connection utilities
-
   - Write connection management code
   - Create error handling utilities for database operations
   - _Requirements: 2.1, 3.3, 1.2_

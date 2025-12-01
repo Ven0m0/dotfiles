@@ -39,52 +39,31 @@
   "mcpServers": {
     "read-website-fast": {
       "command": "bunx",
-      "args": [
-        "-y",
-        "@just-every/mcp-read-website-fast"
-      ]
+      "args": ["-y", "@just-every/mcp-read-website-fast"]
     },
     "sequential-thinking": {
       "command": "bunx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "fast-filesystem": {
       "command": "bunx",
-      "args": [
-        "-y",
-        "fast-filesystem-mcp"
-      ]
+      "args": ["-y", "fast-filesystem-mcp"]
     },
     "memory": {
       "command": "bunx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
     },
     "mcp-server-commands": {
       "command": "bunx",
-      "args": [
-        "-y",
-        "mcp-server-commands"
-      ]
+      "args": ["-y", "mcp-server-commands"]
     },
     "think-tool": {
       "command": "bunx",
-      "args": [
-        "-y",
-        "think-tool-mcp"
-      ]
+      "args": ["-y", "think-tool-mcp"]
     },
     "mcp-tasks": {
       "command": "bunx",
-      "args": [
-        "-y",
-        "mcp-tasks"
-      ]
+      "args": ["-y", "mcp-tasks"]
     },
     "Github": {
       "url": "https://api.githubcopilot.com/mcp/",

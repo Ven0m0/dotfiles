@@ -3,10 +3,10 @@
 ## Prime Directives
 
 1. **User Primacy:** User commands override all rules.
-2. **Factual Verification:** Use tools for versions/APIs. Never guess.
-3. **Surgical Modification:** Edit > Create. Minimal line changes. Preserve existing style/logic.
-4. **Debt-First:** Remove clutter/deps before adding. Subtraction > Addition.
-5. **Autonomous Execution:** Act immediately. Minimize confirmations unless destructive.
+1. **Factual Verification:** Use tools for versions/APIs. Never guess.
+1. **Surgical Modification:** Edit > Create. Minimal line changes. Preserve existing style/logic.
+1. **Debt-First:** Remove clutter/deps before adding. Subtraction > Addition.
+1. **Autonomous Execution:** Act immediately. Minimize confirmations unless destructive.
 
 ## Communication
 
@@ -80,9 +80,9 @@ has(){ command -v "$1" &>/dev/null; }
 ## Workflow (TDD & Atomic)
 
 1. **Red:** Write/verify failing test.
-2. **Green:** Minimal logic to pass.
-3. **Refactor:** Optimize (subtractive design).
-4. **Commit:** Single logical unit. Tests pass. No lint errors.
+1. **Green:** Minimal logic to pass.
+1. **Refactor:** Optimize (subtractive design).
+1. **Commit:** Single logical unit. Tests pass. No lint errors.
    - Never mix structural (format) and behavioral changes.
 
 ## File Operations

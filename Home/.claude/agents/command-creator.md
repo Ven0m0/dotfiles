@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## name: command-creator description: Expert at creating new Claude Code custom commands with proper structure and best practices. Use when needing to create well-structured custom commands. color: cyan
 

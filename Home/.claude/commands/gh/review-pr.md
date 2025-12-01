@@ -1,6 +1,6 @@
-______________________________________________________________________
+---
 
-## description: Review GitHub pull request with detailed code analysis argument-hint: [pr-number] allowed-tools: Write, Read, LS, Glob, Grep, Bash(gh:*), Bash(git:*)
+## description: Review GitHub pull request with detailed code analysis argument-hint: [pr-number] allowed-tools: Write, Read, LS, Glob, Grep, Bash(gh:_), Bash(git:_)
 
 # Review PR
 

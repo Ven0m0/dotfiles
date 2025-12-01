@@ -15,7 +15,7 @@ module.exports = [
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
     ...eslint.configs.recommended,
-    languageOptions: { globals: globals.browser }
+    languageOptions: { globals: globals.browser },
   },
   { files: ['**/*.js'], languageOptions: { sourceType: 'commonjs' } },
 
@@ -40,8 +40,8 @@ module.exports = [
       languageOptions: {
         parserOptions: {
           projectService: true,
-          tsconfigRootDir: __dirname
-        }
+          tsconfigRootDir: __dirname,
+        },
       },
       rules: {
         '@typescript-eslint/array-type': ['error', { default: 'generic' }],
@@ -57,14 +57,14 @@ module.exports = [
           { format: ['camelCase', 'UPPER_CASE'], modifiers: ['const', 'global'], selector: 'variable' },
           { format: ['camelCase', 'PascalCase'], selector: 'variable', types: ['function'] },
           { filter: { match: true, regex: '^_' }, format: [], selector: 'parameter' },
-          { format: ['camelCase', 'PascalCase'], selector: 'function' }
+          { format: ['camelCase', 'PascalCase'], selector: 'function' },
         ],
         '@typescript-eslint/no-confusing-void-expression': ['error', { ignoreArrowShorthand: true }],
         '@typescript-eslint/no-magic-numbers': 'off',
         '@typescript-eslint/no-unsafe-type-assertion': 'off',
         '@typescript-eslint/no-unused-vars': [
           'error',
-          { argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' }
+          { argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
         ],
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/prefer-destructuring': 'off',
@@ -82,8 +82,8 @@ module.exports = [
         'no-warning-comments': 'off',
         'one-var': 'off',
         'sort-imports': 'off',
-        'sort-keys': 'off'
-      }
+        'sort-keys': 'off',
+      },
     },
     // File overrides
     { files: ['**/*.tsx'], rules: { 'max-lines': ['warn', 150] } },
@@ -94,9 +94,9 @@ module.exports = [
   // Next.js
   ...compat.config({
     extends: ['next/core-web-vitals'],
-    rules: { '@next/next/no-img-element': 'off' }
+    rules: { '@next/next/no-img-element': 'off' },
   }),
 
   // Prettier MUST be last
-  prettierRecommended
+  prettierRecommended,
 ];

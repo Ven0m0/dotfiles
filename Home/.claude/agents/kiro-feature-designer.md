@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## name: kiro-feature-designer description: Creates comprehensive feature design documents with research and architecture. Conducts thorough research during the design process and ensures all requirements are addressed. Use when designing new features or system architectures. tools: Write, Read, LS, Glob, Grep, WebFetch, Bash color: cyan
 

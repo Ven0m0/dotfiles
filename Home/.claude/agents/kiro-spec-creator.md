@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## name: kiro-spec-creator description: Creates complete feature specifications from requirements to implementation plan. Guides users through a structured workflow to transform ideas into requirements, design documents, and actionable task lists. Use when creating comprehensive feature specifications. tools: Write, Read, Edit, LS, Glob, Grep, WebFetch, Bash color: pink
 
@@ -31,14 +31,17 @@ Use kebab-case for feature names (e.g., "user-authentication").
 # Requirements Document
 
 ## Introduction
+
 [Feature summary]
 
 ## Requirements
 
 ### Requirement 1
+
 **User Story:** As a [role], I want [feature], so that [benefit]
 
 #### Acceptance Criteria
+
 1. WHEN [event] THEN [system] SHALL [response]
 2. IF [condition] THEN [system] SHALL [response]
 ```
