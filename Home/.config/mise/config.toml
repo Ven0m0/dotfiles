@@ -9,18 +9,27 @@ auto_install = true
 jobs = 12
 lockfile = true
 activate_aggressive = true
+paranoid = false
 raw = false
 gix = true
 go_skip_checksum = true
 system_config_file = "~/.config/mise/config.toml"
 cache_prune_age = "7d"
+http_timeout = "30s"
+trusted_config_paths = ['~']
+task_output = "prefix"
+disable_default_shorthands = false
+# configure messages displayed when entering directories with config files
+status = { missing_tools = "if_other_versions_installed", show_env = false, show_tools = false }
+
+[settings.task]
+monorepo_depth = 3
 
 [settings.python]
-compile = true
 precompiled_os = "x86_64_v3"
+precompiled_flavor = "pgo+lto" # https://gregoryszorc.com/docs/python-build-standalone/main/running.html
 uv_venv_auto = true
 uv_venv_create_args = ["--system-site-packages"]
-venv_create_args = ["--system-site-packages"]
 
 [settings.pipx]
 uvx = true
@@ -31,9 +40,6 @@ binstall = true
 [settings.npm]
 bun = true
 
-[settings.node]
-compile = true
-
 [settings.aqua]
 baked_registry = true
 
@@ -42,7 +48,7 @@ ruby_build_opts = "--enable-shared"
 
 # Tools Configuration
 [tools]
-java = ["oracle-graalvm", "temurin"]
+java = "oracle-graalvm"
 "ubi:zeroBzeroT/ChunkCleaner" = "latest"
 "ubi:qltysh/qlty" = "latest"
 cpz = "latest"
@@ -99,6 +105,7 @@ rmz = "latest"
 
 [env]
 _.python.venv = { path = ".venv" }
+_.java.GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
 UV_LINK_MODE = "hardlink"
 UV_COMPILE_BYTECODE = "1"
 UV_CONCURRENT_DOWNLOADS = "12"
@@ -124,6 +131,7 @@ GITOXIDE_CORE_MULTIPACKINDEX = "true"
 GIT_PROTOCOL = "version 2"
 PYTHONOPTIMIZE = "2"
 PYTHON_JIT = "1"
+
 # Task definitions
 [tasks.clean]
 description = "Clean cargo and cache directories"
