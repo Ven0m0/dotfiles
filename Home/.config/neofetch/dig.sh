@@ -11,4 +11,4 @@ if [[ ! -f "$PATCH_PATH" ]]; then
   }
 fi
 NEOFETCH_PATH="$(command -v neofetch 2>/dev/null)"
-cat "$NEOFETCH_PATH" | patch -Np1 <"$PATCH_PATH"
+patch -Np1 <"$PATCH_PATH" "$NEOFETCH_PATH"

@@ -73,6 +73,10 @@ jobs:
           echo "## ShellCheck Analysis" >> "$GITHUB_STEP_SUMMARY"
           ERRORS=0
           while IFS= read -r -d '' file; do
+            # Skip zsh-specific files
+            if [[ "$file" == *"zsh"* ]] || head -1 "$file" 2>/dev/null | grep -q "zsh"; then
+              continue
+            fi
             if ! shellcheck --severity=warning -x "$file" 2>/dev/null; then
               echo "- ⚠️ \`$file\` - has shellcheck warnings" >> "$GITHUB_STEP_SUMMARY"
               ERRORS=$((ERRORS + 1))
