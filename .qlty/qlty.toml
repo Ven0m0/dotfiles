@@ -13,8 +13,8 @@ name = "ripgrep"
 [[plugin]]
 name = "shellcheck"
 
-[[plugin]]
-name = "shfmt"
+#[[plugin]]
+#name = "shfmt"
 
 [[plugin]]
 name = "actionlint"
@@ -24,9 +24,6 @@ name = "black"
 
 [[plugin]]
 name = "prettier"
-
-[[plugin]]
-name = "stylelint"
 
 [[plugin]]
 name = "yamllint"
