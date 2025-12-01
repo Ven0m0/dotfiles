@@ -6,7 +6,7 @@ IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
 # Usage: jqwrap [jq_args...]
-jqwrap() {
+jqwrap(){
   local jqbin
   if command -v jaq &>/dev/null; then
     jqbin=jaq

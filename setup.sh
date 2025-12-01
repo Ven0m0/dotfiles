@@ -23,7 +23,7 @@ DEF=$'\e[0m' BLD=$'\e[1m'
 # Basic utility functions (duplicated here as common lib may not exist yet)
 has() { command -v "$1" &>/dev/null; }
 warn() { printf '%b\n' "${BLD}${YLW}==> WARNING:${BWHT} $1${DEF}"; }
-die() {
+die(){
   printf '%b\n' "${BLD}${RED}==> ERROR:${BWHT} $1${DEF}" >&2
   exit 1
 }
@@ -31,7 +31,7 @@ info() { printf '%b\n' "${BLD}${BLU}==>${BWHT} $1${DEF}"; }
 success() { printf '%b\n' "${BLD}${GRN}==>${BWHT} $1${DEF}"; }
 
 # Dry-run execution wrapper
-run_cmd() {
+run_cmd(){
   if [[ $DRY_RUN == true ]]; then
     printf '%b\n' "${BLD}${CYN}[DRY-RUN]${BWHT} $*${DEF}"
     return 0
@@ -39,7 +39,7 @@ run_cmd() {
   "$@"
 }
 #--- Argument Parsing ---#
-parse_args() {
+parse_args(){
   while [[ $# -gt 0 ]]; do
     case "$1" in
     --dry-run | -n)
@@ -64,7 +64,7 @@ parse_args() {
   done
 }
 
-show_help() {
+show_help(){
   cat <<EOF
 ${BLD}Dotfiles Setup Script${DEF}
 
@@ -107,7 +107,7 @@ readonly DOTFILES_DIR="${HOME}/.local/share/yadm/repo.git" # yadm's default git 
 readonly TUCKR_DIR="$DOTFILES_DIR"                         # Source for tuckr packages
 readonly PARU_OPTS="--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade"
 #--- Main Logic ---#
-main() {
+main(){
   install_packages
   setup_dotfiles
   deploy_dotfiles
@@ -115,7 +115,7 @@ main() {
   final_steps
 }
 #--- Functions ---#
-install_packages() {
+install_packages(){
   info "Installing packages from official and AUR repositories..."
   local pkgs=(
     git gitoxide aria2 curl zsh fd sd ripgrep bat jq
@@ -134,7 +134,7 @@ install_packages() {
   fi
   ensure_tuckr
 }
-ensure_tuckr() {
+ensure_tuckr(){
   if ! has tuckr; then
     info "tuckr not found — installing via paru..."
     if [[ $DRY_RUN == true ]]; then
@@ -146,7 +146,7 @@ ensure_tuckr() {
   fi
   success "tuckr is ready."
 }
-setup_dotfiles() {
+setup_dotfiles(){
   has yadm || die "yadm command not found. Package installation failed."
   if [[ ! -d $DOTFILES_DIR ]]; then
     info "Cloning dotfiles with yadm..."
@@ -165,7 +165,7 @@ setup_dotfiles() {
     fi
   fi
 }
-deploy_dotfiles() {
+deploy_dotfiles(){
   info "Deploying dotfiles from Home/ subdirectory..."
 
   # Determine the repository location
@@ -207,7 +207,7 @@ deploy_dotfiles() {
 
   success "Dotfiles from Home/ deployed successfully!"
 }
-tuckr_system_configs() {
+tuckr_system_configs(){
   info "Linking system-wide configs for /etc and /usr with tuckr..."
   has tuckr || die "tuckr command not found. Cannot link system configs."
   [[ -d $TUCKR_DIR ]] || die "Dotfiles directory not found at $TUCKR_DIR."
@@ -233,7 +233,7 @@ tuckr_system_configs() {
     fi
   done
 }
-final_steps() {
+final_steps(){
   if [[ $DRY_RUN == true ]]; then
     success "Dry-run complete! No changes were made."
     info "To apply changes, run without --dry-run flag"

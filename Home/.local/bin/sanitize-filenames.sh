@@ -6,7 +6,7 @@ IFS=$'\n\t'
 export LC_ALL=C LANG=C
 # repo-std: perf, idioms, quoting
 has() { command -v "$1" &>/dev/null; }
-die() {
+die(){
   printf 'Error: %s\n' "$*" >&2
   exit 1
 }

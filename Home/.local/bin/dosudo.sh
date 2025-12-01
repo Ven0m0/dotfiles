@@ -2,7 +2,7 @@
 set -u
 # from https://github.com/Enovale/doas-sudo-shim
 
-help() {
+help(){
   cat <<-EOF
 		Usage:
 		 sudo (-i | -k | -v | -s) [-n] [-u <user>] [<command> [--] [<args>...]]
@@ -63,8 +63,8 @@ if [ "$flag_i" ] && [ "$flag_s" ]; then
   echo "sudo: you may not specify both the '-i' and '-s' options" >&2
   exit 1
 fi
-_doas() { exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
-user_shell() {
+_doas(){ exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
+user_shell(){
   if command -v getent &>/dev/null; then
     getent passwd "${user:-root}" | awk -F: 'END {print $NF ? $NF : "sh"}'
   else

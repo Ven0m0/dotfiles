@@ -9,13 +9,13 @@ export LC_ALL=C LANG=C
 #──────────── Colors ────────────
 RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' DEF=$'\e[0m'
 has() { command -v "$1" &>/dev/null; }
-die() {
+die(){
   printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2
   exit 1
 }
 log() { printf '%b%s%b\n' "$GRN" "$*" "$DEF"; }
 warn() { printf '%b%s%b\n' "$YLW" "$*" "$DEF"; }
-usage() {
+usage(){
   cat <<'EOF'
 Usage: shopt [-rfmscCvh] [-o FILE] [-p PERM] [-e EXT] [-V VARIANT] <file_or_dir>
 
@@ -157,11 +157,11 @@ NR==1 && /^#!/ { print; next }
 { gsub(/[[:space:]]+#.*/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, ""); if(length) print }
 AWK
 #──────────── Function Normalizer ────────────
-normalize_functions() {
+normalize_functions(){
   sed -E 's/^[[:space:]]*function[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\{/\1(){\n/g'
 }
 #──────────── Preprocessor Prep ────────────
-prep_preprocess() {
+prep_preprocess(){
   local in="$1" out="$2"
   : >"$out"
   while IFS= read -r line; do
@@ -169,7 +169,7 @@ prep_preprocess() {
   done <"$in"
 }
 #──────────── Enhanced Minifier ────────────
-minify_enhanced() {
+minify_enhanced(){
   local in="$1" out="$2"
   : >"$out"
   while IFS= read -r line; do
@@ -199,7 +199,7 @@ minify_enhanced() {
   sed -i -e '/^:[[:space:]]*'"'"'/,/^'"'"'/d' -e '/^#[[:space:]]*[-─]{5,}/d' "$out" 2>/dev/null || :
 }
 #──────────── Concatenate Files ────────────
-concat_files() {
+concat_files(){
   local base="$1" out="$2" rx="$5"
   local -n exts="$3" wlist="$4"
   : >"$out"
@@ -239,7 +239,7 @@ concat_files() {
   done
 }
 #──────────── Optimizer (Standard Mode) ────────────
-optimize() {
+optimize(){
   local f="$1" content
   local out_target="$f"
   # Handle output
@@ -285,7 +285,7 @@ optimize() {
   log "✓ $out_target"
 }
 #──────────── Compiler (Multi-Variant Mode) ────────────
-compile_variants() {
+compile_variants(){
   local base="$target"
   [[ -z $output ]] && die "Compile mode requires -o/--output"
   # Remove extension from output base

@@ -1,4 +1,4 @@
-_uv() {
+_uv(){
   local i cur prev opts cmd
   COMPREPLY=()
   if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then

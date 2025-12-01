@@ -12,18 +12,18 @@ FILE_AUR="pkglist_aur.txt"
 
 # Helpers
 log() { printf -- ":: %s\n" "$*"; }
-err() {
+err(){
   printf -- "!! %s\n" "$*" >&2
   exit 1
 }
 
-check_deps() {
+check_deps(){
   command -v pacman &>/dev/null || err "pacman not found."
   command -v paru &>/dev/null || err "paru not found."
 }
 
 # Core Functions
-do_export() {
+do_export(){
   log "Exporting native packages (explicit) to ${FILE_NATIVE}..."
   # -Q: Query, -q: quiet (names only), -n: native, -e: explicit
   pacman -Qqne >"$FILE_NATIVE"
@@ -35,7 +35,7 @@ do_export() {
   log "Export complete."
 }
 
-do_import() {
+do_import(){
   # Native Import
   if [[ -f $FILE_NATIVE ]]; then
     log "Installing missing native packages from ${FILE_NATIVE}..."

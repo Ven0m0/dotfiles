@@ -15,7 +15,7 @@ R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' X=$'\e[0m'
 log() { printf "${B}[%(%H:%M:%S)T]${X} %s\n" -1 "$*"; }
 err() { printf "${R}[ERR]${X} %s\n" "$*" >&2; }
 has() { command -v "$1" &>/dev/null; }
-usage() {
+usage(){
   cat <<EOF
 Usage: $(basename "$0") [OPTIONS] [PATH...]
 Batch Mode:
@@ -37,7 +37,7 @@ EOF
 # ==============================================================================
 # INTERACTIVE MODE (yor-mc-lite integration)
 # ==============================================================================
-interactive_mode() {
+interactive_mode(){
   has ffmpeg || {
     err "ffmpeg required for interactive mode"
     exit 1
@@ -148,7 +148,7 @@ interactive_mode() {
 # ==============================================================================
 # BATCH OPTIMIZATION
 # ==============================================================================
-opt_img() {
+opt_img(){
   local f="$1" out="$2" ext l_ext
   ext="${f##*.}"
   l_ext="${ext,,}"
@@ -179,7 +179,7 @@ opt_img() {
   fi
 }
 
-opt_svg() {
+opt_svg(){
   local f="$1" out="$2"
   if has image-optimizer; then
     tool="image-optimizer"
@@ -199,7 +199,7 @@ opt_svg() {
   fi
 }
 
-opt_vid() {
+opt_vid(){
   local f="$1" out="$2"
   local a_args=(-c:a "$AUDIO_CODEC" -b:a "$AUDIO_BR")
   [[ $AUDIO_CODEC == "copy" ]] && a_args=(-c:a copy)
@@ -219,7 +219,7 @@ opt_vid() {
   fi
 }
 
-optimize_file() {
+optimize_file(){
   local f="$1"
   [[ ! -f $f ]] && return 0
   local ext tmp tool cmd
@@ -282,7 +282,7 @@ export JOBS QUALITY LOSSLESS VIDEO_CODEC VIDEO_CRF AUDIO_CODEC AUDIO_BR DRY_RUN 
 # ==============================================================================
 # MAIN
 # ==============================================================================
-main() {
+main(){
   local -a inputs=()
   while [[ $# -gt 0 ]]; do
     case "$1" in
