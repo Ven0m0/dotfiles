@@ -36,7 +36,6 @@ fishd.*
 .zsh_history
 *.local.zsh
 *.zwc
-*.zwc.old
 
 # ---------------------
 # XDG user dirs
@@ -84,6 +83,7 @@ id_ed25519
 # ---------------------
 *.log
 *.log.*
+log.*
 log/
 logs/
 log.txt
@@ -144,8 +144,8 @@ target/
 build/
 dist/
 .cargo/
-**/*.rs.bk
-**/*.rl.bk
+**/*.bk
+*.bk
 *.mutants.out*/
 .npm
 .eslintcache
@@ -163,10 +163,6 @@ venv/
 # ---------------------
 # Linter
 # ---------------------
-super-linter.report
-super-linter-output/
-custom-super-linter-output-directory-name/
-super-linter-github-actions-step-summary-output*
 github-step-summary.md
 megalinter-reports/
 **/megalinter-reports/*
@@ -179,7 +175,6 @@ mega-linter.report
 .idea
 .ruff_cache/
 .eslintcache
-/package-lock.json
 *.sqlite
 claude-runs/
 
@@ -192,6 +187,7 @@ github_conf
 *.credentials
 *.password
 *.secret
+apikeys.txt
 
 # ---------------------
 # VS Code
