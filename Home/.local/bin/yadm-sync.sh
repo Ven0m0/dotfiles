@@ -219,7 +219,7 @@ sync_diff() {
 
 	# Find common files and compare
 	while IFS= read -r -d '' file; do
-		local rel_path="${file#${home_dir}/}"
+		local rel_path="${file#"${home_dir}"/}"
 		local source_file="${HOME}/${rel_path}"
 
 		if [[ -f "$source_file" && -f "$file" ]]; then
