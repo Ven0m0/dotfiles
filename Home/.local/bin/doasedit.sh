@@ -2,7 +2,7 @@
 LC_ALL=C LANG=C
 
 # https://codeberg.org/TotallyLeGIT/doasedit/
-help(){
+help() {
   cat - >&2 <<EOF
 doasedit - edit files as root using an unprivileged editor
 
@@ -17,7 +17,7 @@ EOF
 # Checks for syntax errors in doas' config
 # check_doas_conf <target> <tmp_target>
 
-check_doas_conf(){
+check_doas_conf() {
   if printf '%s' "${1}" | grep -q '^/etc/doas\(\.d/.*\)\?\.conf$'; then
     while ! doas -C "${2}"; do
       printf "doasedit: Replacing '%s' would " "$file"
@@ -25,23 +25,17 @@ check_doas_conf(){
       printf '(E)dit again, (O)verwrite anyway, (A)bort: [E/o/a]? '
       read -r choice
       case "$choice" in
-      o | O) return 0 ;;
-      a | A) return 1 ;;
-      e | E | *) "$editor_cmd" "$tmpfile" ;;
+        o | O) return 0 ;;
+        a | A) return 1 ;;
+        e | E | *) "$editor_cmd" "$tmpfile" ;;
       esac
     done
   fi
   return 0
 }
 error() { printf 'doasedit: %s\n' "${@}" 1>&2; }
-<<<<<<< Updated upstream
-_exit(){
-||||||| Stash base
-_exit() {
-=======
 has() { command -v "$1" &>/dev/null; }
 _exit() {
->>>>>>> Stashed changes
   rm -rf "$tmpdir"
   trap - EXIT HUP QUIT TERM INT ABRT
   exit "${1:-0}"
@@ -50,24 +44,24 @@ _exit() {
 [ "${#}" -eq 0 ] && help && exit 1
 while [ "${#}" -ne 0 ]; do
   case "${1}" in
-  --)
-    shift
-    break
-    ;;
-  --help | -h)
-    help
-    exit 0
-    ;;
-  --version | -V)
-    printf 'doasedit version 1.0.8\n'
-    exit 0
-    ;;
-  -*)
-    printf "doasedit: invalid option: '%s'\n" "${1}"
-    help
-    exit 1
-    ;;
-  *) break ;;
+    --)
+      shift
+      break
+      ;;
+    --help | -h)
+      help
+      exit 0
+      ;;
+    --version | -V)
+      printf 'doasedit version 1.0.8\n'
+      exit 0
+      ;;
+    -*)
+      printf "doasedit: invalid option: '%s'\n" "${1}"
+      help
+      exit 1
+      ;;
+    *) break ;;
   esac
 done
 user_id="$(LC_ALL=C id -u)"

@@ -6,21 +6,15 @@ export LC_ALL=C LANG=C
 
 # Media toolkit: CD burning, USB creation, transcoding, and image optimization
 
-<<<<<<< Updated upstream
-die(){
-||||||| Stash base
-die() {
-=======
 has() { command -v "$1" &>/dev/null; }
 need() { has "$1" || die "Required: $1"; }
 die() {
->>>>>>> Stashed changes
   printf '\e[0;31mERROR: %s\e[0m\n' "$*" >&2
   exit 1
 }
-log(){ printf '\e[0;33m>>> %s\e[0m\n' "$*"; }
-info(){ printf '\e[0;36m### %s\e[0m\n' "$*"; }
-usage(){
+log() { printf '\e[0;33m>>> %s\e[0m\n' "$*"; }
+info() { printf '\e[0;36m### %s\e[0m\n' "$*"; }
+usage() {
   cat <<'EOF'
 media - Media toolkit for CD burning, USB creation, and transcoding
 
@@ -61,7 +55,7 @@ PNGZIP OPTIONS:
 EOF
 }
 
-cmd_cd(){
+cmd_cd() {
   local toc="$1"
   need cdrdao
   [[ -f $toc ]] || die "TOC file not found: $toc"
@@ -70,7 +64,7 @@ cmd_cd(){
   printf '✓ CD burned successfully\n'
 }
 
-cmd_usb(){
+cmd_usb() {
   local iso="$1" dst="$2" size
   for cmd in dd pv stat; do need "$cmd"; done
   [[ -f $iso ]] || die "File not found: $iso"
@@ -92,10 +86,10 @@ cmd_usb(){
   log "✓ Copy completed!"
 }
 
-cmd_compress(){ tar -czf "${1%/}.tar.gz" "${1%/}"; }
-cmd_decompress(){ tar -xzf "$1"; }
+cmd_compress() { tar -czf "${1%/}.tar.gz" "${1%/}"; }
+cmd_decompress() { tar -xzf "$1"; }
 
-cmd_iso2sd(){
+cmd_iso2sd() {
   local iso="$1" dst="$2"
   [[ -f $iso ]] || die "File not found: $iso"
   [[ -b $dst ]] || die "Not a block device: $dst"
@@ -103,7 +97,7 @@ cmd_iso2sd(){
   sudo eject "$dst" || :
 }
 
-cmd_format(){
+cmd_format() {
   local dev="$1" name="$2"
   [[ -b $dev ]] || die "Not a block device: $dev"
   log "⚠️  WARNING: Erasing all data on $dev, label '$name'"
@@ -122,7 +116,7 @@ cmd_format(){
   info "Drive $dev formatted as exFAT, labeled '$name'"
 }
 
-cmd_ripdvd(){
+cmd_ripdvd() {
   local iso="$1" dvd="/dev/sr0"
   for cmd in isoinfo dd pv sha1sum; do need "$cmd"; done
   [[ -b $dvd ]] || die "DVD device not found: $dvd"
@@ -146,19 +140,19 @@ cmd_ripdvd(){
   log "✓ DVD ripped successfully!"
 }
 
-cmd_pngzip(){
+cmd_pngzip() {
   local GRAYSCALE=0 TOUCH=0 VERBOSE=1 DPI=0 OPTIND
   while getopts ":gqtr:h" o; do
     case $o in
-    g) GRAYSCALE=1 ;;
-    q) VERBOSE=0 ;;
-    t) TOUCH=1 ;;
-    r) DPI=${OPTARG//[^0-9]/} ;;
-    h)
-      usage
-      exit 0
-      ;;
-    *) die "Invalid option: -$OPTARG" ;;
+      g) GRAYSCALE=1 ;;
+      q) VERBOSE=0 ;;
+      t) TOUCH=1 ;;
+      r) DPI=${OPTARG//[^0-9]/} ;;
+      h)
+        usage
+        exit 0
+        ;;
+      *) die "Invalid option: -$OPTARG" ;;
     esac
   done
   shift $((OPTIND - 1))
@@ -208,33 +202,33 @@ cmd_pngzip(){
   done
 }
 
-cmd_vid1080(){
+cmd_vid1080() {
   local vid="$1"
   need ffmpeg
   ffmpeg -i "$vid" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${vid%.*}"-1080p.mp4
 }
 
-cmd_vid4k(){
+cmd_vid4k() {
   local vid="$1"
   need ffmpeg
   ffmpeg -i "$vid" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${vid%.*}"-optimized.mp4
 }
 
-cmd_jpg(){
+cmd_jpg() {
   local img="$1"
   shift
   need magick
   magick "$img" "$@" -quality 95 -strip "${img%.*}"-optimized.jpg
 }
 
-cmd_jpgsmall(){
+cmd_jpgsmall() {
   local img="$1"
   shift
   need magick
   magick "$img" "$@" -resize 1080x\> -quality 95 -strip "${img%.*}"-optimized.jpg
 }
 
-cmd_png(){
+cmd_png() {
   local img="$1"
   shift
   need magick
@@ -243,7 +237,7 @@ cmd_png(){
     -define png:exclude-chunk=all "${img%.*}"-optimized.png
 }
 
-main(){
+main() {
   [[ ${#} -eq 0 || $1 == -h || $1 == --help ]] && {
     usage
     exit 0
@@ -251,56 +245,56 @@ main(){
   local cmd="$1"
   shift
   case $cmd in
-  cd)
-    [[ ${#} -eq 1 ]] || die "Usage: media cd TOCFILE"
-    cmd_cd "$@"
-    ;;
-  usb)
-    [[ ${#} -eq 2 ]] || die "Usage: media usb ISO DEVICE"
-    cmd_usb "$@"
-    ;;
-  compress)
-    [[ ${#} -eq 1 ]] || die "Usage: media compress DIR"
-    cmd_compress "$@"
-    ;;
-  decompress)
-    [[ ${#} -eq 1 ]] || die "Usage: media decompress FILE"
-    cmd_decompress "$@"
-    ;;
-  iso2sd)
-    [[ ${#} -eq 2 ]] || die "Usage: media iso2sd ISO DEVICE"
-    cmd_iso2sd "$@"
-    ;;
-  format)
-    [[ ${#} -eq 2 ]] || die "Usage: media format DEVICE NAME"
-    cmd_format "$@"
-    ;;
-  ripdvd)
-    [[ ${#} -eq 1 ]] || die "Usage: media ripdvd OUTPUT.iso"
-    cmd_ripdvd "$@"
-    ;;
-  pngzip) cmd_pngzip "$@" ;;
-  vid1080)
-    [[ ${#} -eq 1 ]] || die "Usage: media vid1080 VIDEO"
-    cmd_vid1080 "$@"
-    ;;
-  vid4k)
-    [[ ${#} -eq 1 ]] || die "Usage: media vid4k VIDEO"
-    cmd_vid4k "$@"
-    ;;
-  jpg)
-    [[ ${#} -ge 1 ]] || die "Usage: media jpg IMAGE [MAGICK_OPTS...]"
-    cmd_jpg "$@"
-    ;;
-  jpgsmall)
-    [[ ${#} -ge 1 ]] || die "Usage: media jpgsmall IMAGE [MAGICK_OPTS...]"
-    cmd_jpgsmall "$@"
-    ;;
-  png)
-    [[ ${#} -ge 1 ]] || die "Usage: media png IMAGE [MAGICK_OPTS...]"
-    cmd_png "$@"
-    ;;
-  *) die "Unknown command: $cmd (run 'media --help')" ;;
+    cd)
+      [[ ${#} -eq 1 ]] || die "Usage: media cd TOCFILE"
+      cmd_cd "$@"
+      ;;
+    usb)
+      [[ ${#} -eq 2 ]] || die "Usage: media usb ISO DEVICE"
+      cmd_usb "$@"
+      ;;
+    compress)
+      [[ ${#} -eq 1 ]] || die "Usage: media compress DIR"
+      cmd_compress "$@"
+      ;;
+    decompress)
+      [[ ${#} -eq 1 ]] || die "Usage: media decompress FILE"
+      cmd_decompress "$@"
+      ;;
+    iso2sd)
+      [[ ${#} -eq 2 ]] || die "Usage: media iso2sd ISO DEVICE"
+      cmd_iso2sd "$@"
+      ;;
+    format)
+      [[ ${#} -eq 2 ]] || die "Usage: media format DEVICE NAME"
+      cmd_format "$@"
+      ;;
+    ripdvd)
+      [[ ${#} -eq 1 ]] || die "Usage: media ripdvd OUTPUT.iso"
+      cmd_ripdvd "$@"
+      ;;
+    pngzip) cmd_pngzip "$@" ;;
+    vid1080)
+      [[ ${#} -eq 1 ]] || die "Usage: media vid1080 VIDEO"
+      cmd_vid1080 "$@"
+      ;;
+    vid4k)
+      [[ ${#} -eq 1 ]] || die "Usage: media vid4k VIDEO"
+      cmd_vid4k "$@"
+      ;;
+    jpg)
+      [[ ${#} -ge 1 ]] || die "Usage: media jpg IMAGE [MAGICK_OPTS...]"
+      cmd_jpg "$@"
+      ;;
+    jpgsmall)
+      [[ ${#} -ge 1 ]] || die "Usage: media jpgsmall IMAGE [MAGICK_OPTS...]"
+      cmd_jpgsmall "$@"
+      ;;
+    png)
+      [[ ${#} -ge 1 ]] || die "Usage: media png IMAGE [MAGICK_OPTS...]"
+      cmd_png "$@"
+      ;;
+    *) die "Unknown command: $cmd (run 'media --help')" ;;
   esac
 }
 main "$@"

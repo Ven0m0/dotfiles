@@ -1,4 +1,4 @@
-_rg(){
+_rg() {
   local i cur prev opts cmds
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"

@@ -8,7 +8,7 @@ export LC_ALL=C LANG=C
 has() { command -v "$1" &>/dev/null; }
 
 # Usage: ffwrap [ffmpeg_args...]
-ffwrap(){
+ffwrap() {
   local ffbin
   if has ffzap; then
     ffbin=ffzap

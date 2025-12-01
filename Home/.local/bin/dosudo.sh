@@ -2,7 +2,7 @@
 set -u
 # from https://github.com/Enovale/doas-sudo-shim
 
-help(){
+help() {
   cat <<-EOF
 		Usage:
 		 sudo (-i | -k | -v | -s) [-n] [-u <user>] [<command> [--] [<args>...]]
@@ -38,23 +38,23 @@ flag_k=
 user=
 while [ $# -gt 0 ]; do
   case "$1" in
-  -i | --login) flag_i='-i' ;;
-  -n | --non-interactive) flag_n='-n' ;;
-  -s | --shell) flag_s='-s' ;;
-  -u | --user)
-    user=${2#\#}
-    shift
-    ;;
-  -k | --reset-timestamp) flag_k='-L' ;;
-  -v | --validate) flag_s="true" ;;
-  -h | --help)
-    help
-    exit 0
-    ;;
-  --)
-    shift
-    break
-    ;;
+    -i | --login) flag_i='-i' ;;
+    -n | --non-interactive) flag_n='-n' ;;
+    -s | --shell) flag_s='-s' ;;
+    -u | --user)
+      user=${2#\#}
+      shift
+      ;;
+    -k | --reset-timestamp) flag_k='-L' ;;
+    -v | --validate) flag_s="true" ;;
+    -h | --help)
+      help
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
   esac
   shift
 done
@@ -63,20 +63,10 @@ if [ "$flag_i" ] && [ "$flag_s" ]; then
   echo "sudo: you may not specify both the '-i' and '-s' options" >&2
   exit 1
 fi
-<<<<<<< Updated upstream
-_doas(){ exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
-user_shell(){
-  if command -v getent &>/dev/null; then
-||||||| Stash base
-_doas() { exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
-user_shell() {
-  if command -v getent &>/dev/null; then
-=======
 has() { command -v "$1" &>/dev/null; }
 _doas() { exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
 user_shell() {
   if has getent; then
->>>>>>> Stashed changes
     getent passwd "${user:-root}" | awk -F: 'END {print $NF ? $NF : "sh"}'
   else
     awk -F: '$1 == "'"${user:-root}"'" {print $NF; m=1} END {if (!m) print "sh"}' /etc/passwd
