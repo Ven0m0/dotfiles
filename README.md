@@ -89,7 +89,8 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 <details>
 <summary><b>Supported Linux Distributions</b></summary>
 
-- [CachyOS](https://cachyos.org) specifically, but really any arch based distro is good
+- [CachyOS](https://cachyos.org) specifically, but really any arch based distro
+  is good
 - [DietPi](https://dietpi.com)
 - [Raspberry Pi OS](https://www.raspberrypi.com/software)
 

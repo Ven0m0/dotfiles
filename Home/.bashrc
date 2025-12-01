@@ -3,11 +3,14 @@
 [[ $- != *i* ]] && return
 
 #================================ [Helpers] ===================================
-has(){ command -v -- "$1" &>/dev/null; }
-ifsource(){ [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}"; }
-exportif(){ [[ -e "$2" ]] && export "$1=$2"; }
-prepend_var(){ local -n p="$1"; [[ -d "$2" && ":$p:" != *":$2:"* ]] && p="$2${p:+:$p}"; }
-prependpath(){ prepend_var PATH "$1"; }
+has() { command -v -- "$1" &>/dev/null; }
+ifsource() { [[ -r "${1/#\~\//${HOME}/}" ]] && . "${1/#\~\//${HOME}/}"; }
+exportif() { [[ -e "$2" ]] && export "$1=$2"; }
+prepend_var() {
+  local -n p="$1"
+  [[ -d "$2" && ":$p:" != *":$2:"* ]] && p="$2${p:+:$p}"
+}
+prependpath() { prepend_var PATH "$1"; }
 
 #============================ [Core Configuration] ============================
 # === History ===
@@ -17,10 +20,10 @@ HISTTIMEFORMAT="%F %T " HISTFILE="${HOME}/.bash_history"
 
 # === Shell Behavior ===
 shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob \
-         hostcomplete no_empty_cmd_completion histappend cmdhist
+  hostcomplete no_empty_cmd_completion histappend cmdhist
 bind -r '\C-s' 2>/dev/null
 stty -ixon -ixoff -ixany 2>/dev/null
-export IGNOREEOF=10 
+export IGNOREEOF=10
 export GIT_PS1_SHOWUNTRACKEDFILES=1 GIT_PS1_SHOWDIRTYSTATUS=1 GIT_PS1_SHOWCOLORHINTS=1
 
 # === XDG Base Directories ===
