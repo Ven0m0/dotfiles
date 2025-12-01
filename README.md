@@ -121,6 +121,7 @@ Lint and format exhaustively per editorconfig:
 - Actions: actionlint, yamlfmt, yamllint
 - Python: ruff, black
 - Javascript: uglify-js, biome, eslint, prettier
+- Lua: selene, stylua
 - All extensions: ast-grep, ripgrep, find
   Enforce logic, syntax, types, security. Zero errors. Prefer 2 space indentation
 ```
