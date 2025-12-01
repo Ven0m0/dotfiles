@@ -15,16 +15,16 @@ pre-commit:
       priority: 2
       glob: '*.{sh,bash,zsh}'
       run: |
-        shellcheck -x -a -s bash -S style -P SCRIPTDIR --norc -o all -f diff {staged_files} | patch -Np1 || :
         shellharden --replace {staged_files} || :
+        git add {staged_files}
       stage_fixed: true
       fail_text: 'Shell formatting failed'
     yaml-format:
       priority: 3
       glob: '*.{yml,yaml}'
       run: |
-        yamlfmt {staged_files} || :
-        yamllint -f parsable {staged_files} || :
+        yamlfmt {staged_files} && yamllint -s {staged_files}
+        git add {staged_files}
       stage_fixed: true
       fail_text: 'YAML formatting/linting failed'
     json-validate:
@@ -46,21 +46,23 @@ pre-commit:
         elif command -v markdownlint-cli2 &>/dev/null; then
           markdownlint-cli2 --fix {staged_files} || :
         fi
+        git add {staged_files}
       stage_fixed: true
       fail_text: 'Markdown formatting failed'
-    js-format:
+    Biome:
       priority: 6
       glob: '*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}'
       run: |
         if command -v biome &>/dev/null && [[ -r ${HOME}/.config/biome.json ]]; then
-          BIOME_CONFIG_PATH="${HOME}/.config/biome.json" biome check --write --unsafe --skip-parse-errors {staged_files} || :
+          BIOME_CONFIG_PATH="${HOME}/.config/biome.json" biome check --write --skip-parse-errors --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files} || :
         elif command -v biome &>/dev/null; then
-          BIOME_CONFIG_PATH="${HOME}/biome.json" biome check --write --unsafe --skip-parse-errors {staged_files} || :
+          BIOME_CONFIG_PATH="${HOME}/biome.json" biome check --write --skip-parse-errors --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files} || :
         else
-          bunx --bun @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files} || :
+          bunx --bun @biomejs/biome check --write --skip-parse-errors --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files} || :
         fi
+        git add {staged_files}
       stage_fixed: true
-      fail_text: 'JavaScript/TypeScript formatting failed'
+      fail_text: 'Biome failed'
     prettier-format:
       priority: 7
       glob: '*.{mjs,cjs,scss,html}'
