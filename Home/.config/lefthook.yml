@@ -13,6 +13,7 @@ pre-commit:
       run: |
         shfmt -w -i 2 -bn -ci -sr {staged_files} || :
         shellcheck -S style {staged_files} || :
+        shellharden --replace {staged_files} || :
         git add {staged_files}
       stage_fixed: true
       fail_text: 'Shell formatting failed'
