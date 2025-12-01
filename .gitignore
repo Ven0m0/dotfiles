@@ -54,7 +54,6 @@ Videos/
 # Security
 # ---------------------
 .gnupg/
-.gitconfig.local
 .ssh/
 .android/
 .config/gh/hosts.yml
