@@ -4,11 +4,8 @@
 <summary><b>Features</b></summary>
 
 - [Auto optimized media](.github/workflows/image-optimizer.yml)
-
 - [Auto validated config files](.github/workflows/config-validate.yml)
-
 - [Auto shell check](.github/workflows/shellcheck.yml)
-
 - [Auto updated submodules](.github/workflows/update-git-submodules.yml)
 
 </details>
@@ -34,27 +31,22 @@
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash
 ```
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash
 ```
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
 ```
 
 </details>
-
 <details>
 <summary><b>Useful Stuff</b></summary>
 
 - <https://dotfiles.github.io/>
 - <https://terminal.sexy/>
 - <https://wiki.archlinux.org/title/Git>
--
 
 </details>
-
 <details>
 <summary><b>Packages:</b></summary>
 
@@ -73,25 +65,20 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 - [bpkg](https://bpkg.sh)
 
 - [x-cmd](https://www.x-cmd.com)
-
   <details>
   <summary><b>Install x-cmd</b></summary>
 
+  bash:
   ```bash
-  eval "$(curl https://get.x-cmd.com)"
+  eval "$(curl -s https://get.x-cmd.com)"
   ```
-
-  fish
-
+  fish:
   ```sh
-  curl https://get.x-cmd.com | sh
-  chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$HOME/.x-cmd.root/bin/x-cmd fish --setup
+  curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$HOME/.x-cmd.root/bin/x-cmd fish --setup
   ```
 
-  </details>
-
+    </details>
 </details>
-
 <details>
 <summary><b>Supported Linux Distributions</b></summary>
 
@@ -105,21 +92,40 @@ For debian see: [Debian dotfiles](https://github.com/Ven0m0/dotfiles-pi)
 </details>
 
 - [Libredirect](https://libredirect.github.io)
-
 - [alternative-front-ends](https://github.com/mendel5/alternative-front-ends)
-
 - [Privacy-tools](https://www.privacytools.io)
-
 - [Redlib instance list](https://github.com/redlib-org/redlib-instances/blob/main/instances.md)
-
 - [Redlib reddit](https://lr.ptr.moe)
-
 - [Imgur](https://rimgo.lunar.icu)
 
 ### `Search engines`
 
 - [DuckduckGo](https://duckduckgo.com)
-
-- [Searchxng](https://searx.dresden.network/)   [Instances:](https://searx.space)
-
+- [Searchxng](https://searx.dresden.network/) &nbsp;[Instances](https://searx.space)
 - [Brave search](https://search.brave.com)
+
+
+### ***Quick prompts***
+
+**Lint / Format:**
+```markdown
+Lint and format exhaustively per editorconfig:
+- YAML: yamlfmt, yamllint
+- JSON/CSS/JS: biome, eslint, prettier, minify
+- HTML: biome, minify
+- XML: minify
+- Bash/Zsh: shfmt, shellcheck, shellharden
+- Fish: fish_indent
+- TOML: taplo-cli, tombi
+- Markdown: mado, markdownlint, mdformat
+- Actions: actionlint, yamlfmt, yamllint
+- Python: ruff, black
+- Javascript: uglify-js, biome, eslint, prettier
+- All extensions: ast-grep, ripgrep, find
+  Enforce logic, syntax, types, security. Zero errors. Prefer 2 space indentation
+```
+
+**TODO:**
+```markdown
+Fix a small todo, search for a TODO comment or file and fix and/or integrate it.
+```
