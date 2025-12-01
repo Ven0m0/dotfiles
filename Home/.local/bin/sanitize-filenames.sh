@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 # sanitize-filenames - Recursively rename files to be Linux-safe
-set -euo pipefail; shopt -s globstar nullglob; IFS=$'\n\t'; export LC_ALL=C LANG=C
+set -euo pipefail
+shopt -s globstar nullglob
+IFS=$'\n\t'
+export LC_ALL=C LANG=C
 # repo-std: perf, idioms, quoting
-has(){ command -v "$1" &>/dev/null; }
-die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
+has() { command -v "$1" &>/dev/null; }
+die() {
+  printf 'Error: %s\n' "$*" >&2
+  exit 1
+}
 
 has iconv || die "iconv required"
 if has sd; then
@@ -24,8 +30,8 @@ count=0
   target="$dir/$new"
   [[ ! -e "$target" ]] || {
     printf 'Collision: %s\n' "$f" >&2
-		continue
-	}
-	mv -f -- "$f" "$target" && printf '%s → %s\n' "$base" "$new" && ((count++)) || :
+    continue
+  }
+  mv -f -- "$f" "$target" && printf '%s → %s\n' "$base" "$new" && ((count++)) || :
 done
 printf 'Renamed %d item(s)\n' "$count"
