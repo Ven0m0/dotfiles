@@ -1,16 +1,6 @@
-# ShellCheck configuration
-# https://www.shellcheck.net/wiki/
-
-# Shell to assume
 shell=bash
-
-# Allow sourcing files from other locations
 external-sources=true
-
-# Enable all optional checks
 enable=all
-
-# Source path for external scripts
 source-path=SCRIPTDIR
 
 # Disable specific checks
