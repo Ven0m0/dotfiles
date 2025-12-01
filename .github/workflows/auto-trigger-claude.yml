@@ -23,7 +23,7 @@ jobs:
       - name: Auto-trigger Claude implementation
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.CLAUDE_TRIGGER_PAT }}
+          github-token: ${{ secrets.CLAUDE_TRIGGER_PAT || secrets.PAT || github.token }}
           script: |-
             await github.rest.issues.createComment({
               owner: context.repo.owner,
