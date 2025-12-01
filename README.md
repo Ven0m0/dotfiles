@@ -169,94 +169,43 @@ Exit criteria:
 <summary><b>LLM files</b></summary>
   
 ```markdown
-Goal
-- Create or update CLAUDE.MD, GEMINI.MD, copilot-instructions.md — clear, minimal, machine- and human-readable; keep content consistent across files; fail CI on missing or invalid file.
-Discovery
-- locate: fd --hidden --no-ignore -E .git -e md || find . -type f -name '*.md' -print
-- search: rg --no-ignore -nS 'CLAUDE|GEMINI|copilot' || :
-Strategy
-1. read existing files; if missing -> create from template.
-2. merge: prefer explicit sections, preserve user custom lines, prune duplicates.
-3. normalize: 2-space indent; remove invisible/unicode; line-length 80.
-4. validate: markdownlint, rg for banned patterns.
-5. commit: branch claude|gemini|copilot/{short} -> git commit -m "chore(docs): update <file>"
-Tools (prefer → fallback)
-- fd → find ; rg → grep ; sd → sed ; shfmt for code blocks; markdownlint
-Templates (minimal; fill placeholders)
-CLAUDE.MD
+Goal: ensure CLAUDE.MD, GEMINI.MD, copilot-instructions.md exist, stay minimal/consistent, pass lint; fail CI on missing/invalid.
+Discovery: fd -H -I -E .git -e md || find . -name '*.md'; rg -nS 'CLAUDE|GEMINI|copilot' || :
+Strategy: read→create-if-missing→merge sections→prune dupes→normalize (2-space, no invisibles, <=80 cols)→markdownlint→commit docs/{claude|gemini|copilot}/<short>.
+Tools: fd→find; rg→grep; sd→sed; shfmt (code blocks); markdownlint.
+Templates:
 ---
-# Claude — Usage & Instructions
-Purpose: concise prompt patterns & safety constraints for Claude-style assistants.
-Format:
-- Model: claude-*(version)
-- Tone: blunt, factual, precise.
-- Max tokens / context: <n>
-- Safety: do not produce hallucinated facts; cite sources when claimed.
-Prompts:
-- System: "You are a concise Claude-style assistant. Follow user's tone preferences (blunt, factual)."
-- Examples: | 
-  - "Task: <one-line objective>"
-  - "Constraints: <list>"
-  - "Output: <format>"
-Rules:
-- prefer short answers; if ambiguous, implement best-effort and note uncertainty.
-- when code: provide runnable snippets, shell-first, quote vars.
+# CLAUDE.MD
+Purpose: concise patterns & constraints.
+- model: claude-*
+- tone: blunt/precise
+- safety: no hallucinations; cite claims
+Prompts: system+task/constraints/output
+Rules: short answers; best-effort on ambiguity; runnable code w/ quoted vars
 ---
-GEMINI.MD
 ---
-# Gemini — Usage & Instructions
-Purpose: prompt patterns & capabilities for Gemini-style assistants.
-Format:
-- Model: gemini-*(version)
-- Tone & style: same as CLAUDE.MD (explicit).
-- Images/vision: allowed? yes/no (specify).
-Prompts:
-- System: "You are a Gemini-style assistant. Concise, precise, forward-looking."
-- Example tasks & expected response format (json + human summary).
-Rules:
-- Use web.run only when freshness needed (document when used).
-- For persona/model differences: note special tokens or behavior.
+# GEMINI.MD
+Purpose: patterns for Gemini.
+- model: gemini-*
+- tone: same as Claude
+- vision: yes/no
+Prompts: system+json/human examples
+Rules: web.run only for freshness; note model quirks
 ---
-copilot-instructions.md
 ---
-# Copilot — Dev Instructions
-Purpose: configure Copilot suggestions & guardrails for code completion.
-Defaults:
-- Shell: bash-native; prefer arrays for flags; shfmt & shellcheck clean.
-- Style: 2-space indent; short args; avoid eval/backticks; quote vars.
-- Tools ordering: fd → rg → sd → sed → awk → xargs.
-- Perf: minimize forks; batch IO; early returns.
-Prompts:
-- System: "Provide compact, optimal, secure code. Prefer POSIX-bash. Minimize external forks; prefer builtin ops."
-- Examples: one-liners, small refactors, tests, benchmark hints.
-CI checks:
-- markdownlint, shellcheck, shfmt -w, golangci-lint (if relevant).
-- Validate presence of CLAUDE.MD & GEMINI.MD.
-Commit/branch
-- branch: docs/{claude|gemini|copilot}/<short>
-- commit: chore(docs): update <file> —short
-- push & open PR.
-Validation commands
-- find . -type f -name 'CLAUDE.MD' -o -name 'GEMINI.MD' -o -name 'copilot-instructions.md'
-- markdownlint **/*.md || :
-- rg --hidden --no-ignore -nS '\p{Cf}' && sd $'\u200B' '' -r . || :
-Merge policy
-- small changes: direct PR -> squash.
-- conflicting or large edits: open issue + propose delta patch.
-- always include TL;DR one-line summary at top of file for quick scan.
-Output (on run)
-- patched file(s), git diff, short changelog (1 line per file), validation report.
-- if unable to auto-fix: create ISSUE.md with diagnostics + suggested patch.
-Example run (repro)
-- fd -e md . || find . -name '*.md'
-- for f in CLAUDE.MD GEMINI.MD copilot-instructions.md; do [[ -f $f ]] || printf '%s\n' "creating $f"; done
-- markdownlint **/*.md || :
-- git checkout -b docs/update-guides && git add -A && git commit -m "chore(docs): sync assistant guides" && git push --set-upstream origin HEAD
-Exit criteria
-- All three files present + lint pass → success (print diff & changelog).
-- Partial → create ISSUE.md and exit non-zero.
-Risk notes
-- Do not change behavioral/operational prompts without explicit user signoff.
-- Keep templates minimal; prefer examples over long prose.
+# copilot-instructions.md
+Purpose: dev guardrails.
+- bash-native; arrays; shfmt/shellcheck clean
+- 2-space; short args; no eval/backticks
+- tools: fd→rg→sd→sed→awk→xargs
+- perf: low forks; batch IO
+Prompts: compact/optimal/secure code; prefer builtins
+CI: markdownlint; shellcheck; shfmt; ensure CLAUDE.MD+GEMINI.MD exist
+---
+Validation: find required files; markdownlint; rg for invisibles; sd to strip.  
+Merge: small→direct PR; big→issue.  
+Output: patched files + diff + changelog; else ISSUE.md.  
+Exit: all files + lint pass → ok; else fail.  
+Risk: no behavioral prompt changes without approval; templates stay minimal.
 ```
 </details>
