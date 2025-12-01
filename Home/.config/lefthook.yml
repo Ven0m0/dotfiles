@@ -10,14 +10,13 @@ pre-commit:
     auto-stage:
       priority: 1
       run: git add -A
-      skip: [{run: "git diff --cached --quiet", stage_fixed: false}]
+      skip: [{run: "LC_ALL=C git diff --cached --quiet", stage_fixed: false}]
     shell-format:
       priority: 2
       glob: "*.{sh,bash,zsh}"
       run: |
-        shellcheck -x -a -s bash -f diff {staged_files} | patch -Np1 || :
+        shellcheck -x -a -s bash -S style -P SCRIPTDIR --norc -o all -f diff {staged_files} | patch -Np1 || :
         shellharden --replace {staged_files} || :
-        shfmt -w -ln bash -i 2 -s -bn {staged_files} || :
       stage_fixed: true
       fail_text: "Shell formatting failed"
     yaml-format:
@@ -33,7 +32,7 @@ pre-commit:
       glob: "*.{json,jsonc,json5}"
       run: |
         for f in {staged_files}; do
-          jaq -e . "$f" &>/dev/null || jq -e . "$f" || { printf "Invalid: %s\n" "$f" >&2; exit 1; }
+          LC_ALL=C jaq -e . "$f" &>/dev/null || LC_ALL=C jq -e . "$f" || { printf "Invalid: %s\n" "$f" >&2; exit 1; }
         done
       fail_text: "JSON validation failed"
     markdown-format:
@@ -118,8 +117,8 @@ pre-commit:
       glob: "*.{sh,bash}"
       run: |
         for f in {staged_files}; do
-          [[ -f "$f" ]] && rg -q '^#!' "$f" || {
-            printf '#!/usr/bin/env bash\n%s' "$(<"$f")" > "$f.tmp" && mv "$f.tmp" "$f"
+          [[ -f "$f" ]] && LC_ALL=C rg -q '^#!' "$f" || {
+            printf '#!/usr/bin/env bash\n%s' "$(<"$f")" > "$f.tmp" && mv -f "$f.tmp" "$f"
           }
         done
       stage_fixed: true
@@ -128,7 +127,7 @@ pre-commit:
       priority: 12
       run: |
         for f in {staged_files}; do
-          [[ -f "$f" && -x "$f" ]] && ! rg -q '^#!' "$f" && { printf "Executable missing shebang: %s\n" "$f" >&2; exit 1; }
+          [[ -f "$f" && -x "$f" ]] && ! LC_ALL=C rg -q '^#!' "$f" && { printf "Executable missing shebang: %s\n" "$f" >&2; exit 1; }
         done || :
       fail_text: "Executable files must have shebangs"
     check-filesize:
