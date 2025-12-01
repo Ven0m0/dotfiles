@@ -90,7 +90,7 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 
 ## **Quick prompts**
 <details>
-<summary><b>Lint/Format:</b></summary>
+<summary><b>Lint/Format</b></summary>
   
 ```markdown
 Objective: Exhaustive lint+format per .editorconfig. Enforce 2-space indent. Zero remaining errors. Fail CI on non-zero.
@@ -124,7 +124,7 @@ Constraints:
 ```
 </details>
 <details>
-<summary><b>TODO:</b></summary>
+<summary><b>TODO</b></summary>
   
 ```markdown
 Objective: locate + fix a small TODO (code comment or TODO-file), remove obvious duplicated code, and suggest/implement targeted improvements for hotspots. Minimal, behavior-preserving edits. Produce reproducible patch + tests or an issue when fix is non-trivial.
