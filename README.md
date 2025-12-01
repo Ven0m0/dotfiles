@@ -97,7 +97,7 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 
 ```markdown
 Objective: Exhaustive lint+format per .editorconfig. Enforce 2-space indent. Zero remaining errors. Fail CI on non-zero.
-Discovery: fd --type f --hidden --no-ignore --exclude .git --exclude node_modules --extension <exts>
+Discovery: fd -tf -u -E .git -E node_modules -e <exts>
 Fallbacks: fd→find; rg→grep; sd→sed; zstd→gzip→xz.
 Policy:
   - Run formatters before linters.
