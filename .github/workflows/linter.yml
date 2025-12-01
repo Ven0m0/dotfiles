@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PAT || github.token }}
       - name: Format Code
-        uses: qltysh/qlty-action/fmt@v1
+        uses: qltysh/qlty-action/fmt@v2
         with:
           commit: true
       - name: Megalinter
