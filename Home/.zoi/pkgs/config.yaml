@@ -1,0 +1,28 @@
+repos:
+- core
+- main
+- community
+package_managers:
+- flatpak
+- nix
+- pacman
+- paru
+- yay
+- aur
+- bun
+- npm
+- uv
+- pip
+- cargo
+- cargo-binstall
+- go
+native_package_manager: native
+telemetry_enabled: false
+default_registry:
+handle: zoidberg
+url: https://gitlab.com/Zillowe/Zillwen/Zusty/Zoidberg.git
+added_registries: []
+git_repos: []
+rollback_enabled: false
+policy: {}
+parallel_jobs: 16
