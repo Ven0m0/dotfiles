@@ -137,3 +137,24 @@ rules:
         - pattern: $A != $B
     fix: $A === $B
     severity: error
+transform:
+  bash-true:      # new variable name
+    replace:         # transform operation
+      source: $ARGS
+      replace: '|| true'
+      by: '|| :'
+  bash-function:
+    replace:
+      source: $ARGS
+      replace: '() {'
+      by: '(){'
+  bash-redir:
+    replace:
+      source: $ARGS
+      replace: '> /dev/null'
+      by: '>/dev/null'
+  bash-null:
+    replace:
+      source: $ARGS
+      replace: '>/dev/null 2&>1'
+      by: '&>/dev/null'
