@@ -127,6 +127,41 @@ Constraints:
 <summary><b>TODO:</b></summary>
   
 ```markdown
-Fix a small todo, search for a TODO comment or file and fix and/or integrate it.
+Objective: locate + fix a small TODO (code comment or TODO-file), remove obvious duplicated code, and suggest/implement targeted improvements for hotspots. Minimal, behavior-preserving edits. Produce reproducible patch + tests or an issue when fix is non-trivial.
+Scope:
+  - Small TODOs only (one-liner / single-responsibility). If TODO affects multiple modules or requires design changes, file an issue and link.
+  - Languages: detect per-file; prefer AST-aware tools when available.
+  - Do not change public behavior/ABI without explicit note and tests.
+Discovery (fast, precise):
+  - TODOs: `rg --hidden --no-ignore -nS '\bTODO\b'` (or `fd -0 . -e <ext> | xargs -0 rg ...`).
+  - Duplicate code: `jscpd --min-tokens 50` + `ast-grep` rules.
+  - Slow/inefficient patterns: language heuristics + `rg` for known anti-patterns (e.g. nested loops, O(n²) regex/concat, sync I/O in hot paths).
+Pipeline (detect → classify → fix → verify):
+  1. Find TODOs; classify: trivial (implementable), risky (needs design), external (deps/docs).
+  2. For trivial: implement inline, prefer small helper extraction, use existing utils.
+  3. For duplicates: extract common function/module; replace occurrences with call; keep diff minimal.
+  4. For perf: micro-benchmark candidate area (hyperfine or builtin profiler). If measurable (>5% improvement), apply targeted optimization (algorithmic change, batching, caching). Avoid micro-optimizations unless measurable.
+  5. Add/extend unit test(s) covering the change; run test suite.
+  6. Run linter/format pipeline; `git add -p` commit on a short branch `todo/<short>`
+Constraints / Safety:
+  - Preserve API/behavior; add tests for any behavior change.
+  - Prefer single-file small patches; refuse large refactors — create issue instead.
+  - Fail-fast on missing tests; if test coverage absent, add regression test demonstrating original bug then fix.
+Tools (prefer → fallback): `rg` → `grep`; `fd` → `find`; `jscpd`; `ast-grep`; `semgrep`; `hyperfine`/`time`/`perf`; `python -m cProfile` / `node --prof` / `go test -bench`; `git`.
+Output (structured):
+  - Patch (git diff/PR) with branch.
+  - One-line changelog entry.
+  - Tests added/modified.
+  - Benchmark before/after (numbers).
+  - Short rationale (2–4 lines) and risk level.
+  - If not fixed: created issue with reproduction + suggested plan.
+Repro commands (example):
+  - `rg --hidden --no-ignore -nS '\bTODO\b'`
+  - `jscpd --reporters console --min-tokens 50`
+  - `hyperfine 'cargo run --release --example foo'`
+  - `git checkout -b todo/short && git add -A && git commit -m 'fix: TODO — short' && git push`
+Exit criteria:
+  - Trivial TODO implemented + tests pass + CI local lint clean → return patch.
+  - Non-trivial → open issue with code pointers, suggested patch sketch, & benchmarks.
 ```
 </details>
