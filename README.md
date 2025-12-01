@@ -1,4 +1,5 @@
 # `Dotfiles`
+
 <details>
 <summary><b>Features</b></summary>
 
@@ -6,6 +7,7 @@
 - [Auto validated config files](.github/workflows/config-validate.yml)
 - [Auto shell check](.github/workflows/shellcheck.yml)
 - [Auto updated submodules](.github/workflows/update-git-submodules.yml)
+
 </details>
 <details>
 <summary><b>Dotfile managers</b></summary>
@@ -29,12 +31,15 @@
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash
 ```
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash
 ```
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
 ```
+
 </details>
 <details>
 <summary><b>Useful Stuff</b></summary>
@@ -46,38 +51,52 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 </details>
 <details>
 <summary><b>Packages:</b></summary>
-  
+
 - [Arch PKG](https://archlinux.org/packages)
+
 - [AUR PKG](https://aur.archlinux.org)
+
 - [Crates.io](https://crates.io)
+
 - [FlatHub](https://flathub.org)
+
 - [Lure.sh](https://lure.sh)
+
 - [Basher](https://www.basher.it/package)
+
 - [bpkg](https://bpkg.sh)
+
 - [x-cmd](https://www.x-cmd.com)
+
   <details>
   <summary><b>Install x-cmd</b></summary>
-    
+
   bash:
+
   ```bash
   eval "$(curl -s https://get.x-cmd.com)"
   ```
+
   fish:
+
   ```sh
   curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$HOME/.x-cmd.root/bin/x-cmd fish --setup
   ```
+
   </details>
+
 </details>
 <details>
 <summary><b>Supported Linux Distributions</b></summary>
-  
+
 - [CachyOS](https://cachyos.org) specifically, but really any arch based distro is good
 - [DietPi](https://dietpi.com)
 - [Raspberry Pi OS](https://www.raspberrypi.com/software)
+
 </details>
 <details>
 <summary><b>Alternative frontends</b></summary>
-  
+
 - [Libredirect](https://libredirect.github.io)
 - [alternative-front-ends](https://github.com/mendel5/alternative-front-ends)
 - [Privacy-tools](https://www.privacytools.io)
@@ -86,12 +105,15 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 - [Imgur](https://rimgo.lunar.icu)
 
 **Search engines**
+
 - [DuckduckGo](https://duckduckgo.com)
-- [Searchxng](https://searx.dresden.network/) &nbsp;[Instances](https://searx.space)
+- [Searchxng](https://searx.dresden.network/)  [Instances](https://searx.space)
 - [Brave search](https://search.brave.com)
+
 </details>
 
 ## **Quick prompts**
+
 <details>
 <summary><b>Lint/Format</b></summary>
 
@@ -126,10 +148,11 @@ Constraints:
   - Respect project config files (.editorconfig, .prettierrc, pyproject.toml).
 Also clean them up and enhance/improve the configs
 ```
+
 </details>
 <details>
 <summary><b>TODO</b></summary>
-  
+
 ```markdown
 Objective: fix one small TODO, remove obvious dupes, and apply targeted perf improvements. Minimal, behavior-preserving edits. Output: patch + tests, or issue if non-trivial.
 Scope: trivial TODOs only; multi-module/design → issue. Detect langs per file; prefer AST tools. No public API changes without tests.
@@ -164,10 +187,11 @@ Exit:
 - else → issue w/ pointers + benchmark notes
 
 ```
+
 </details>
 <details>
 <summary><b>LLM files</b></summary>
-  
+
 ```markdown
 Goal: ensure CLAUDE.MD, GEMINI.MD, copilot-instructions.md exist, stay minimal/consistent, pass lint; fail CI on missing/invalid.
 Discovery: fd -H -I -E .git -e md || find . -name '*.md'; rg -nS 'CLAUDE|GEMINI|copilot' || :
@@ -206,4 +230,5 @@ Output: patched files + diff + changelog; else ISSUE.md.
 Exit: all files + lint pass → ok; else fail.  
 Risk: no behavioral prompt changes without approval; templates stay minimal.
 ```
+
 </details>
