@@ -1,4 +1,4 @@
----
+______________________________________________________________________
 
 ## name: instruction-reflector description: Analyzes and improves Claude Code instructions in CLAUDE.md. Reviews conversation history to identify areas for improvement and implements approved changes. Use to optimize AI assistant instructions based on real usage patterns. color: yellow
 

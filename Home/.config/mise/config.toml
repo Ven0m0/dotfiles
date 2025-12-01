@@ -27,7 +27,7 @@ monorepo_depth = 3
 
 [settings.python]
 precompiled_os = "x86_64_v3"
-precompiled_flavor = "pgo+lto" # https://gregoryszorc.com/docs/python-build-standalone/main/running.html
+precompiled_flavor = "pgo+lto"                   # https://gregoryszorc.com/docs/python-build-standalone/main/running.html
 uv_venv_auto = true
 uv_venv_create_args = ["--system-site-packages"]
 

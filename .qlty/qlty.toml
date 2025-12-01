@@ -77,9 +77,7 @@ mode = "comment"
 
 [[plugin]]
 name = "ruff"
-drivers = [
-  "lint",
-]
+drivers = ["lint"]
 
 [[plugin]]
 name = "black"
@@ -89,9 +87,7 @@ name = "shellcheck"
 
 [[plugin]]
 name = "trivy"
-drivers = [
-  "config",
-]
+drivers = ["config"]
 
 [[plugin]]
 name = "trufflehog"

@@ -12,28 +12,28 @@ portable_dirs = "~/portable-dirs"
 
 # Performance tuning
 parallel = true
-parallel_limit = 32  # Increased for better CPU utilization
-ghcr_concurrency = 24  # Bumped for faster GitHub Container Registry ops
-search_limit = 100  # More results for better discoverability
+parallel_limit = 32   # Increased for better CPU utilization
+ghcr_concurrency = 24 # Bumped for faster GitHub Container Registry ops
+search_limit = 100    # More results for better discoverability
 
 # Network & reliability
-timeout = 600  # 10min for large downloads
-retry_attempts = 5  # More resilient
-retry_delay = 3  # Slightly longer backoff
-connection_timeout = 30  # Per-connection timeout
+timeout = 600           # 10min for large downloads
+retry_attempts = 5      # More resilient
+retry_delay = 3         # Slightly longer backoff
+connection_timeout = 30 # Per-connection timeout
 max_redirects = 10
 
 # Caching strategy
 use_cache = true
 compress_cache = true
-cache_ttl = 14400  # 4h cache validity
+cache_ttl = 14400       # 4h cache validity
 verify_checksums = true
 strict_checksum = true  # Fail on mismatch
 
 # Repository behavior
-cross_repo_updates = true  # Enable cross-repo package updates
-auto_sync = true  # Auto-sync repos on install/update
-sync_on_startup = false  # Manual control
+cross_repo_updates = true # Enable cross-repo package updates
+auto_sync = true          # Auto-sync repos on install/update
+sync_on_startup = false   # Manual control
 
 # Installation filters (exclude docs/tests/metadata)
 install_patterns = [
@@ -75,10 +75,10 @@ install_patterns = [
 ]
 
 # Logging
-log_level = "info"  # Options: trace, debug, info, warn, error
+log_level = "info"                        # Options: trace, debug, info, warn, error
 log_file = "~/.local/share/soar/soar.log"
 log_rotation = true
-max_log_size = 10485760  # 10MB
+max_log_size = 10485760                   # 10MB
 
 [profile.default]
 root_path = "~"
@@ -92,7 +92,7 @@ desktop_integration = true
 pubkey = "https://meta.pkgforge.dev/pkgcache/minisign.pub"
 enabled = true
 signature_verification = true
-sync_interval = "2h"  # More frequent updates for main repo
+sync_interval = "2h"                                             # More frequent updates for main repo
 priority = 100
 metadata_cache = true
 
@@ -133,7 +133,7 @@ metadata_cache = true
 name = "pkgforge-cargo"
 url = "https://meta.pkgforge.dev/external/pkgforge-cargo/x86_64-Linux.sdb.zstd"
 desktop_integration = false
-enabled = false  # Enable only if needed
+enabled = false                                                                 # Enable only if needed
 signature_verification = true
 sync_interval = "12h"
 priority = 50
@@ -143,7 +143,7 @@ metadata_cache = false
 name = "pkgforge-go"
 url = "https://meta.pkgforge.dev/external/pkgforge-go/x86_64-Linux.sdb.zstd"
 desktop_integration = false
-enabled = false  # Enable only if needed
+enabled = false                                                              # Enable only if needed
 signature_verification = true
 sync_interval = "12h"
 priority = 50
@@ -159,7 +159,7 @@ icon_theme = "hicolor"
 
 # Update behavior
 [updates]
-auto_update = false  # Manual control recommended
+auto_update = false         # Manual control recommended
 check_interval = "24h"
 parallel_updates = true
 backup_before_update = true
@@ -168,7 +168,7 @@ keep_old_versions = 1
 # Download optimization
 [download]
 max_concurrent_downloads = 8
-chunk_size = 8388608  # 8MB chunks
+chunk_size = 8388608         # 8MB chunks
 resume_downloads = true
 prefer_mirrors = true
 
@@ -181,7 +181,7 @@ remove_orphaned_deps = true
 
 # Security
 [security]
-allow_unsigned = false  # Strict signature enforcement
+allow_unsigned = false     # Strict signature enforcement
 gpg_verify = true
 minisign_verify = true
 trust_on_first_use = false
@@ -190,5 +190,5 @@ trust_on_first_use = false
 [experimental]
 zstd_compression = true
 parallel_extraction = true
-delta_updates = false  # Not widely supported yet
+delta_updates = false      # Not widely supported yet
 lazy_extraction = false

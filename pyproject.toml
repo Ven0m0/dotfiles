@@ -5,8 +5,38 @@ target-version = "py311"
 indent-width = 2
 
 [tool.ruff.lint]
+<<<<<<< Updated upstream
 select = ["E", "W", "F", "I", "N", "UP", "B", "C4", "SIM", "RUF"]
 ignore = ["E501"] # Line length handled by formatter
+||||||| Stash base
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "N",   # pep8-naming
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "SIM", # flake8-simplify
+  "RUF"  # ruff-specific
+]
+ignore = ["E501"]  # line too long (handled by formatter)
+=======
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "N",   # pep8-naming
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "SIM", # flake8-simplify
+  "RUF", # ruff-specific
+]
+ignore = ["E501"] # line too long (handled by formatter)
+>>>>>>> Stashed changes
 
 [tool.ruff.format]
 quote-style = "double"

@@ -2,7 +2,8 @@ function toggle_sudo --description 'Toggles sudo-rs (fallback sudo) on the comma
     set -l buf (commandline)
     set -l pos (commandline -C)
     if test -z "$buf"
-        set buf $history[1]; set pos (string length -- "$buf")
+        set buf $history[1]
+        set pos (string length -- "$buf")
     end
     set -l ws (string match -r '^\s*' -- "$buf")
     set -l rest (string replace -r '^\s*' '' -- "$buf")

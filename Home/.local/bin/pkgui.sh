@@ -38,9 +38,9 @@ _pkgui_msg() { printf '%b%s%b
 _pkgui_warn() { printf '%b[WARN]%b %s
 ' "$Y" "$D" "$*" >&2; }
 # Detect pkg mgr & fuzzy finder
-for p in "${PARUZ:-paru pacman}"; do _pkgui_has "$p" && PAC="$p" && break; done
+for p in ${PARUZ:-paru pacman}; do _pkgui_has "$p" && PAC="$p" && break; done
 [[ -z ${PAC:-} ]] && _pkgui_die "No pkg mgr (pacman/paru)"
-for f in "${FINDER:-sk fzf}"; do _pkgui_has "$f" && FND="$f" && break; done
+for f in ${FINDER:-sk fzf}; do _pkgui_has "$f" && FND="$f" && break; done
 [[ -z ${FND:-} ]] && _pkgui_die "No fuzzy finder (sk/fzf)"
 # FZF theme
 FZF_THEME="${FZF_THEME:-hl:italic:#FFFF00,hl+:bold:underline:#FF0000,fg:#98A0C5,fg+:bold:#FFFFFF,bg:#13172A,bg+:#0F1222,border:#75A2F7,label:bold:#75A2F7,preview-fg:#C0CAF5,preview-bg:#0F1222,marker:#00FF00,pointer:#FF0000,query:#FF0000,info:italic:#98A0C5}"
@@ -97,27 +97,27 @@ _pkgui_fzf() {
   if [[ $FND == sk ]]; then o+=(--no-hscroll); fi
   while (($#)); do
     case $1 in
-      -m)
-        o+=(-m)
-        shift
-        ;;
-      -h)
-        o+=(--header "$2")
-        shift 2
-        ;;
-      -p)
-        o+=(--preview "$2" --preview-window='down:60%:wrap')
-        shift 2
-        ;;
-      -l)
-        o+=(--preview-label "$2")
-        shift 2
-        ;;
-      -b)
-        o+=(--bind "$2")
-        shift 2
-        ;;
-      *) shift ;;
+    -m)
+      o+=(-m)
+      shift
+      ;;
+    -h)
+      o+=(--header "$2")
+      shift 2
+      ;;
+    -p)
+      o+=(--preview "$2" --preview-window='down:60%:wrap')
+      shift 2
+      ;;
+    -l)
+      o+=(--preview-label "$2")
+      shift 2
+      ;;
+    -b)
+      o+=(--bind "$2")
+      shift 2
+      ;;
+    *) shift ;;
     esac
   done
   "$FND" "${o[@]}"
@@ -184,9 +184,9 @@ _pkgui_prev_pkg() {
 === Source Tree ===
 "
     if _pkgui_has curl; then
-      curl -fsSL "https://aur.archlinux.org/cgit/aur.git/tree/?h=$pkg" 2>/dev/null \
-        | grep 'tree/' | sed -n 's/.*tree\/\([^?"]*\).*/\1/p' | sort -u \
-        | while read -r f; do printf 'https://aur.archlinux.org/cgit/aur.git/plain/%s?h=%s
+      curl -fsSL "https://aur.archlinux.org/cgit/aur.git/tree/?h=$pkg" 2>/dev/null |
+        grep 'tree/' | sed -n 's/.*tree\/\([^?"]*\).*/\1/p' | sort -u |
+        while read -r f; do printf 'https://aur.archlinux.org/cgit/aur.git/plain/%s?h=%s
 ' "$f" "$pkg"; done || :
     fi
   else
@@ -395,9 +395,9 @@ AWK
 ", $1, $2, $3
 }
 AWK
-  curl -fsSL 'https://archlinux.org/feeds/news/' 2>/dev/null \
-    | grep -E '<title>|<pubDate>|<link>' | sed -e 's/<[^>]*>//g' -e 's/^[[:space:]]*//' \
-    | paste - - - | head -n 5 | awk -F'	' "$awk_script_news"
+  curl -fsSL 'https://archlinux.org/feeds/news/' 2>/dev/null |
+    grep -E '<title>|<pubDate>|<link>' | sed -e 's/<[^>]*>//g' -e 's/^[[:space:]]*//' |
+    paste - - - | head -n 5 | awk -F'	' "$awk_script_news"
 }
 _pkgui_status() {
   _pkgui_msg "Server status check..."
@@ -556,13 +556,13 @@ _pkgui_sync_list() {
 }
 _pkgui_history() {
   _pkgui_msg "Install history (last 200)..."
-  grep -h '^\[.*\] \[ALPM\] \(installed\|removed\) ' /var/log/pacman.log* 2>/dev/null \
-    | tail -1000 | sort \
-    | sed -E 's/^\[([^T]+)T([^-]+)-[0-9:+]+].* (installed|removed) ([^ ]+) \(([^)]+)\).*/\1 \2 \3 \4 (\5)/' \
-    | awk -v g="$G" -v r="$R" -v d="$D" '{cmd="date -d ""$2"" +"%I:%M %p" 2>/dev/null";cmd|getline t;close(cmd);if(t=="")t=substr($2,1,5);split(t,a,":");hour=a[1];minute=a[2];ampm=tolower(a[3]);if(hour=="00")hour="12";indicator=($3=="installed")?g"[+]"d:r"[-]"d;printf"[%s %02d:%s%s] %s %s
-",$1,hour+0,minute,ampm,indicator,$4" "$5}' \
-    | grep -Fwf <(pacman -Qei | awk '/^Name/{name=$3}/^Install Reason/{if($4=="Explicitly")print name}') \
-    | tail -200 | less -R
+  grep -h '^\[.*\] \[ALPM\] \(installed\|removed\) ' /var/log/pacman.log* 2>/dev/null |
+    tail -1000 | sort |
+    sed -E 's/^\[([^T]+)T([^-]+)-[0-9:+]+].* (installed|removed) ([^ ]+) \(([^)]+)\).*/\1 \2 \3 \4 (\5)/' |
+    awk -v g="$G" -v r="$R" -v d="$D" '{cmd="date -d ""$2"" +"%I:%M %p" 2>/dev/null";cmd|getline t;close(cmd);if(t=="")t=substr($2,1,5);split(t,a,":");hour=a[1];minute=a[2];ampm=tolower(a[3]);if(hour=="00")hour="12";indicator=($3=="installed")?g"[+]"d:r"[-]"d;printf"[%s %02d:%s%s] %s %s
+",$1,hour+0,minute,ampm,indicator,$4" "$5}' |
+    grep -Fwf <(pacman -Qei | awk '/^Name/{name=$3}/^Install Reason/{if($4=="Explicitly")print name}') |
+    tail -200 | less -R
 }
 _pkgui_info_sys() {
   cat <<EOF
@@ -628,8 +628,8 @@ _pkgui_edit_sys() {
     if [[ -f $f ]]; then choice+=("$f|${files[$f]}"); fi
   done
   f=$(printf '%s
-' "${choice[@]}" | column -ts'|' \
-    | _pkgui_fzf -h "Select config to edit" | awk '{print $1}')
+' "${choice[@]}" | column -ts'|' |
+    _pkgui_fzf -h "Select config to edit" | awk '{print $1}')
   if [[ -z $f ]]; then return 0; fi
   if [[ $f =~ ^/home/ ]]; then
     "${EDITOR:-nano}" "$f"
@@ -650,87 +650,87 @@ main() {
     exit 0
   fi
   case "$1" in
-    -s)
-      shift
-      _pkgui_search "$@"
-      exit 0
-      ;;
-    -S)
-      shift
-      _pkgui_search "$@" | _pkgui_inst
-      exit 0
-      ;;
-    -l)
-      shift
-      _pkgui_local "$@"
-      exit 0
-      ;;
-    -R)
-      shift
-      _pkgui_local "$@" | _pkgui_rm
-      exit 0
-      ;;
-    -u)
-      _pkgui_upd_full
-      exit 0
-      ;;
-    -i)
-      _pkgui_info_sys
-      exit 0
-      ;;
-    -h | --help)
-      _pkgui_help
-      exit 0
-      ;;
-    -v | --version)
-      _pkgui_ver
-      exit 0
-      ;;
-    s)
-      shift
-      _pkgui_search "$@"
-      ;;
-    l)
-      shift
-      _pkgui_local "$@"
-      ;;
-    S)
-      shift
-      _pkgui_search "$@" | _pkgui_inst
-      ;;
-    D)
-      shift
-      _pkgui_search "$@" | _pkgui_dl
-      ;;
-    R)
-      shift
-      _pkgui_local "$@" | _pkgui_rm
-      ;;
-    A) _pkgui_orphans | _pkgui_rm ;;
-    O) _pkgui_opt_deps | _pkgui_rm ;;
-    U) _pkgui_upd_check ;;
-    u) _pkgui_upd_full ;;
-    F) _pkgui_upd_flat ;;
-    M) _pkgui_maint ;;
-    C) _pkgui_clean ;;
-    V) _pkgui_vulns ;;
-    W) _pkgui_news ;;
-    N) _pkgui_status ;;
-    m) _pkgui_mirrors ;;
-    p) _pkgui_pacdiff ;;
-    f) _pkgui_fw ;;
-    k) _pkgui_svc ;;
-    P) _pkgui_gen_lists ;;
-    B) _pkgui_backup ;;
-    T) _pkgui_restore ;;
-    L) _pkgui_sync_list ;;
-    H) _pkgui_history ;;
-    b) _pkgui_browse_aur ;;
-    i) _pkgui_info_sys ;;
-    n) _pkgui_notify ;;
-    c) _pkgui_edit_cfg ;;
-    e) _pkgui_edit_sys ;;
-    *) _pkgui_die "Invalid: $1" ;;
+  -s)
+    shift
+    _pkgui_search "$@"
+    exit 0
+    ;;
+  -S)
+    shift
+    _pkgui_search "$@" | _pkgui_inst
+    exit 0
+    ;;
+  -l)
+    shift
+    _pkgui_local "$@"
+    exit 0
+    ;;
+  -R)
+    shift
+    _pkgui_local "$@" | _pkgui_rm
+    exit 0
+    ;;
+  -u)
+    _pkgui_upd_full
+    exit 0
+    ;;
+  -i)
+    _pkgui_info_sys
+    exit 0
+    ;;
+  -h | --help)
+    _pkgui_help
+    exit 0
+    ;;
+  -v | --version)
+    _pkgui_ver
+    exit 0
+    ;;
+  s)
+    shift
+    _pkgui_search "$@"
+    ;;
+  l)
+    shift
+    _pkgui_local "$@"
+    ;;
+  S)
+    shift
+    _pkgui_search "$@" | _pkgui_inst
+    ;;
+  D)
+    shift
+    _pkgui_search "$@" | _pkgui_dl
+    ;;
+  R)
+    shift
+    _pkgui_local "$@" | _pkgui_rm
+    ;;
+  A) _pkgui_orphans | _pkgui_rm ;;
+  O) _pkgui_opt_deps | _pkgui_rm ;;
+  U) _pkgui_upd_check ;;
+  u) _pkgui_upd_full ;;
+  F) _pkgui_upd_flat ;;
+  M) _pkgui_maint ;;
+  C) _pkgui_clean ;;
+  V) _pkgui_vulns ;;
+  W) _pkgui_news ;;
+  N) _pkgui_status ;;
+  m) _pkgui_mirrors ;;
+  p) _pkgui_pacdiff ;;
+  f) _pkgui_fw ;;
+  k) _pkgui_svc ;;
+  P) _pkgui_gen_lists ;;
+  B) _pkgui_backup ;;
+  T) _pkgui_restore ;;
+  L) _pkgui_sync_list ;;
+  H) _pkgui_history ;;
+  b) _pkgui_browse_aur ;;
+  i) _pkgui_info_sys ;;
+  n) _pkgui_notify ;;
+  c) _pkgui_edit_cfg ;;
+  e) _pkgui_edit_sys ;;
+  *) _pkgui_die "Invalid: $1" ;;
   esac
 }
 main "$@"

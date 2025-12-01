@@ -1,4 +1,4 @@
----
+______________________________________________________________________
 
 ## name: kiro-task-planner description: Generates implementation task lists from approved feature designs. Creates actionable, test-driven coding tasks that build incrementally. Use when converting design documents into executable implementation plans. tools: Write, Read, Edit, LS, Glob, Grep color: green
 

@@ -62,7 +62,7 @@ do_import() {
 check_deps
 
 case "${1:-}" in
-  export) do_export ;;
-  import) do_import ;;
-  *) err "Usage: $0 [export|import]" ;;
+export) do_export ;;
+import) do_import ;;
+*) err "Usage: $0 [export|import]" ;;
 esac

@@ -33,8 +33,8 @@ if [[ $# -gt 0 ]]; then
   files=("$@")
 else
   mapfile -t files < <(
-    find "$AUTOSTART_DIR" -type f -exec basename {} \; \
-      | fzf \
+    find "$AUTOSTART_DIR" -type f -exec basename {} \; |
+      fzf \
         --prompt='autostart: ' \
         --header="$(printf '%s\n' 'enter:confirm' "${FZF_DEFAULT_HEADER:-}")" \
         --preview='cat {}' \

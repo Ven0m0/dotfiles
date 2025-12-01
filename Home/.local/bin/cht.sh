@@ -17,8 +17,8 @@ for f in sk fzf; do has "$f" && FZF="$f" && break; done
 [[ -z ${FZF:-} ]] && die "sk/fzf required"
 get() {
   case "$HTTP" in
-    curl) curl -fsL "$@" ;;
-    wget*) "$HTTP" -qO- "$@" ;;
+  curl) curl -fsL "$@" ;;
+  wget*) "$HTTP" -qO- "$@" ;;
   esac
 }
 readonly CHT_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/cht_list"
@@ -88,29 +88,29 @@ EOF
 search=0 insens="" bound="" recur=""
 while getopts "sibruha" o; do
   case "$o" in
-    s) search=1 ;;
-    i)
-      insens=1
-      search=1
-      ;;
-    b)
-      bound=1
-      search=1
-      ;;
-    r)
-      recur=1
-      search=1
-      ;;
-    u)
-      rm -f "$CHT_CACHE"
-      cache
-      printf '✓ Cache updated\n'
-      exit 0
-      ;;
-    h | *)
-      usage
-      exit 0
-      ;;
+  s) search=1 ;;
+  i)
+    insens=1
+    search=1
+    ;;
+  b)
+    bound=1
+    search=1
+    ;;
+  r)
+    recur=1
+    search=1
+    ;;
+  u)
+    rm -f "$CHT_CACHE"
+    cache
+    printf '✓ Cache updated\n'
+    exit 0
+    ;;
+  h | *)
+    usage
+    exit 0
+    ;;
   esac
 done
 shift $((OPTIND - 1))

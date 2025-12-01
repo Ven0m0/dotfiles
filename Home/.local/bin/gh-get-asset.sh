@@ -67,14 +67,14 @@ gh_get_release() {
 main() { # Parse options
   while getopts "r:so:h" opt; do
     case "$opt" in
-      r) release="$OPTARG" ;;
-      s) curl_args+=(-s) ;;
-      o) output_opt=(-o "$OPTARG") ;;
-      h)
-        usage
-        exit 0
-        ;;
-      *) die "Invalid option. Use -h for help." ;;
+    r) release="$OPTARG" ;;
+    s) curl_args+=(-s) ;;
+    o) output_opt=(-o "$OPTARG") ;;
+    h)
+      usage
+      exit 0
+      ;;
+    *) die "Invalid option. Use -h for help." ;;
     esac
   done
   shift $((OPTIND - 1))

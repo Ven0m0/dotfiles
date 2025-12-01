@@ -1,12 +1,14 @@
----
+______________________________________________________________________
+
 # Fill in the fields below to create a basic custom agent for your repository.
+
 # The Copilot CLI can be used for local testing: https://gh.io/customagents/cli
+
 # To make this agent available, merge this file into the default repository branch.
+
 # For format details, see: https://gh.io/customagents/config
 
-name: optimizer
-description: Repository agent to maintain, lint, format all codefiles present in the current repository. 
----
+## name: optimizer description: Repository agent to maintain, lint, format all codefiles present in the current repository.
 
 # My Agent
 

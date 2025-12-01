@@ -29,7 +29,7 @@ function gitctl
         git clone $url $dir
     end
 
-    or return 1  # Abort if clone failed
+    or return 1 # Abort if clone failed
 
     cd $dir
 end

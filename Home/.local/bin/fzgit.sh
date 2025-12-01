@@ -86,9 +86,9 @@ EOF
 }
 
 # Tool detection
-for g in "${GIT_CMD:-gix git}"; do has "$g" && GIT="$g" && break; done
+for g in ${GIT_CMD:-gix git}; do has "$g" && GIT="$g" && break; done
 [[ -z ${GIT:-} ]] && die "No git/gix found"
-for f in "${FINDER:-sk fzf}"; do has "$f" && FZF="$f" && break; done
+for f in ${FINDER:-sk fzf}; do has "$f" && FZF="$f" && break; done
 [[ -z ${FZF:-} ]] && die "No fuzzy finder found (sk/fzf)"
 
 # Optional tools
@@ -111,10 +111,10 @@ fi
 _git() {
   if [[ ${GIT##*/} == gix ]]; then
     case "$1" in
-      log) gix log "$@" ;;
-      diff) gix diff "$@" ;;
-      status) gix status "$@" ;;
-      *) git "$@" ;;
+    log) gix log "$@" ;;
+    diff) gix diff "$@" ;;
+    status) gix status "$@" ;;
+    *) git "$@" ;;
     esac
   else
     git "$@"
@@ -140,35 +140,35 @@ _fzf() {
 
   while (($#)); do
     case "$1" in
-      -m)
-        opts+=(-m)
-        shift
-        ;;
-      -h)
-        opts+=(--header "$2")
-        shift 2
-        ;;
-      -p)
-        opts+=(--preview "$2")
-        shift 2
-        ;;
-      -w)
-        opts+=(--preview-window "$2")
-        shift 2
-        ;;
-      -l)
-        opts+=(--preview-label "$2")
-        shift 2
-        ;;
-      -b)
-        opts+=(--bind "$2")
-        shift 2
-        ;;
-      --)
-        shift
-        break
-        ;;
-      *) shift ;;
+    -m)
+      opts+=(-m)
+      shift
+      ;;
+    -h)
+      opts+=(--header "$2")
+      shift 2
+      ;;
+    -p)
+      opts+=(--preview "$2")
+      shift 2
+      ;;
+    -w)
+      opts+=(--preview-window "$2")
+      shift 2
+      ;;
+    -l)
+      opts+=(--preview-label "$2")
+      shift 2
+      ;;
+    -b)
+      opts+=(--bind "$2")
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *) shift ;;
     esac
   done
 
@@ -277,14 +277,14 @@ _status() {
 _branch() {
   _check_repo
   local branch
-  branch=$(_git branch --all --color=always --sort=-committerdate "$@" \
-    | grep -v HEAD | _fzf \
+  branch=$(_git branch --all --color=always --sort=-committerdate "$@" |
+    grep -v HEAD | _fzf \
     -h $'Enter:checkout  Ctrl-Y:copy name\n?:toggle preview' \
     -l '[git branch]' \
     -w 'down:70%:wrap' \
     -p 'git log --oneline --graph --color=always {1}' \
-    -b "ctrl-y:execute-silent(echo {1} | ${CLIP:-:})" \
-    | sed 's/^[* ]*//' | awk '{print $1}')
+    -b "ctrl-y:execute-silent(echo {1} | ${CLIP:-:})" |
+    sed 's/^[* ]*//' | awk '{print $1}')
   [[ -z ${branch} ]] && return 0
   _git checkout "${branch#remotes/origin/}"
 }
@@ -293,14 +293,14 @@ _branch() {
 _branch_delete() {
   _check_repo
   local branches
-  branches=$(_git branch --color=always --sort=-committerdate "$@" \
-    | grep -v '^\*' | _fzf -m \
+  branches=$(_git branch --color=always --sort=-committerdate "$@" |
+    grep -v '^\*' | _fzf -m \
     -h $'Tab:select  Enter:delete  Ctrl-Y:copy\n?:toggle preview' \
     -l '[git branch -D]' \
     -w 'down:70%:wrap' \
     -p 'git log --oneline --graph --color=always {1}' \
-    -b "ctrl-y:execute-silent(echo {1} | ${CLIP:-:})" \
-    | awk '{print $1}')
+    -b "ctrl-y:execute-silent(echo {1} | ${CLIP:-:})" |
+    awk '{print $1}')
   [[ -z ${branches} ]] && return 0
   _git branch -D "$(xargs <<<"$branches")"
 }
@@ -378,8 +378,8 @@ _stash() {
     -w 'down:70%:wrap' \
     -p "git stash show -p {1} | ${pager}" \
     -b "ctrl-y:execute-silent(echo {1} | cut -d: -f1 | ${CLIP:-:})" \
-    -b "ctrl-d:reload(git stash drop {1} && git stash list)" \
-    | cut -d: -f1)
+    -b "ctrl-d:reload(git stash drop {1} && git stash list)" |
+    cut -d: -f1)
   [[ -z ${stash} ]] && return 0
   _git stash apply "$stash"
 }
@@ -577,8 +577,8 @@ _clone() {
     -l '[GitHub Clone]' \
     -w 'down:70%:wrap' \
     -p 'gh repo view {1}' \
-    -b "ctrl-y:execute-silent(echo https://github.com/{1} | ${CLIP:-:})" \
-    | awk '{print $1}')
+    -b "ctrl-y:execute-silent(echo https://github.com/{1} | ${CLIP:-:})" |
+    awk '{print $1}')
   [[ -z ${repo} ]] && return 0
   gh repo clone "$repo"
 }
@@ -589,119 +589,119 @@ _clone() {
   exit 1
 }
 case "${1,,}" in
-  a | add)
-    shift
-    _add "$@"
-    ;;
-  d | diff)
-    shift
-    _diff "$@"
-    ;;
-  D | difftool)
-    shift
-    _difftool "$@"
-    ;;
-  l | log)
-    shift
-    _log "$@"
-    ;;
-  s | show)
-    shift
-    _show "$@"
-    ;;
-  S | status)
-    shift
-    _status "$@"
-    ;;
-  b | branch)
-    shift
-    _branch "$@"
-    ;;
-  B | branches)
-    shift
-    _branch_delete "$@"
-    ;;
-  t | tag)
-    shift
-    _tag "$@"
-    ;;
-  c | commit)
-    shift
-    _commit "$@"
-    ;;
-  r | revert)
-    shift
-    _revert "$@"
-    ;;
-  R | reset)
-    shift
-    _reset "$@"
-    ;;
-  f | file)
-    shift
-    _file "$@"
-    ;;
-  st | stash)
-    shift
-    _stash "$@"
-    ;;
-  sp | stashpush)
-    shift
-    _stash_push "$@"
-    ;;
-  clean)
-    shift
-    _clean "$@"
-    ;;
-  cp | cherry)
-    shift
-    _cherry "$@"
-    ;;
-  rb | rebase)
-    shift
-    _rebase "$@"
-    ;;
-  rl | reflog)
-    shift
-    _reflog "$@"
-    ;;
-  bl | blame)
-    shift
-    _blame "$@"
-    ;;
-  fx | fixup)
-    shift
-    _fixup "$@"
-    ;;
-  sq | squash)
-    shift
-    _squash "$@"
-    ;;
-  pr)
-    shift
-    _pr "$@"
-    ;;
-  issue)
-    shift
-    _issue "$@"
-    ;;
-  run)
-    shift
-    _run "$@"
-    ;;
-  repo)
-    shift
-    _repo "$@"
-    ;;
-  ig | ignore)
-    shift
-    _ignore "$@"
-    ;;
-  clone)
-    shift
-    _clone "$@"
-    ;;
-  -h | h | --help) _help ;;
-  -v | v | --version) _ver ;;
-  *) die "Invalid command: $1" ;;
+a | add)
+  shift
+  _add "$@"
+  ;;
+d | diff)
+  shift
+  _diff "$@"
+  ;;
+D | difftool)
+  shift
+  _difftool "$@"
+  ;;
+l | log)
+  shift
+  _log "$@"
+  ;;
+s | show)
+  shift
+  _show "$@"
+  ;;
+S | status)
+  shift
+  _status "$@"
+  ;;
+b | branch)
+  shift
+  _branch "$@"
+  ;;
+B | branches)
+  shift
+  _branch_delete "$@"
+  ;;
+t | tag)
+  shift
+  _tag "$@"
+  ;;
+c | commit)
+  shift
+  _commit "$@"
+  ;;
+r | revert)
+  shift
+  _revert "$@"
+  ;;
+R | reset)
+  shift
+  _reset "$@"
+  ;;
+f | file)
+  shift
+  _file "$@"
+  ;;
+st | stash)
+  shift
+  _stash "$@"
+  ;;
+sp | stashpush)
+  shift
+  _stash_push "$@"
+  ;;
+clean)
+  shift
+  _clean "$@"
+  ;;
+cp | cherry)
+  shift
+  _cherry "$@"
+  ;;
+rb | rebase)
+  shift
+  _rebase "$@"
+  ;;
+rl | reflog)
+  shift
+  _reflog "$@"
+  ;;
+bl | blame)
+  shift
+  _blame "$@"
+  ;;
+fx | fixup)
+  shift
+  _fixup "$@"
+  ;;
+sq | squash)
+  shift
+  _squash "$@"
+  ;;
+pr)
+  shift
+  _pr "$@"
+  ;;
+issue)
+  shift
+  _issue "$@"
+  ;;
+run)
+  shift
+  _run "$@"
+  ;;
+repo)
+  shift
+  _repo "$@"
+  ;;
+ig | ignore)
+  shift
+  _ignore "$@"
+  ;;
+clone)
+  shift
+  _clone "$@"
+  ;;
+-h | h | --help) _help ;;
+-v | v | --version) _ver ;;
+*) die "Invalid command: $1" ;;
 esac

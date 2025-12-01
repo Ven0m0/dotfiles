@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright 2012 Matt Martz
 # All Rights Reserved.
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -36,7 +35,7 @@ except ImportError:
 __version__ = "2.1.4b1"
 
 
-class FakeShutdownEvent(object):
+class FakeShutdownEvent:
     """Class to fake a threading.Event.isSet so that users of this module
     are not required to register their own threading.Event()
     """
@@ -81,35 +80,35 @@ except ImportError:
 
 try:
     from urllib2 import (
-        urlopen,
-        Request,
-        HTTPError,
-        URLError,
         AbstractHTTPHandler,
-        ProxyHandler,
         HTTPDefaultErrorHandler,
-        HTTPRedirectHandler,
+        HTTPError,
         HTTPErrorProcessor,
+        HTTPRedirectHandler,
         OpenerDirector,
+        ProxyHandler,
+        Request,
+        URLError,
+        urlopen,
     )
 except ImportError:
     from urllib.request import (
-        urlopen,
-        Request,
-        HTTPError,
-        URLError,
         AbstractHTTPHandler,
-        ProxyHandler,
         HTTPDefaultErrorHandler,
-        HTTPRedirectHandler,
+        HTTPError,
         HTTPErrorProcessor,
+        HTTPRedirectHandler,
         OpenerDirector,
+        ProxyHandler,
+        Request,
+        URLError,
+        urlopen,
     )
 
 try:
-    from httplib import HTTPConnection, BadStatusLine
+    from httplib import BadStatusLine, HTTPConnection
 except ImportError:
-    from http.client import HTTPConnection, BadStatusLine
+    from http.client import BadStatusLine, HTTPConnection
 
 try:
     from httplib import HTTPSConnection
@@ -148,15 +147,15 @@ except ImportError:
     from md5 import md5
 
 try:
-    from argparse import ArgumentParser as ArgParser
     from argparse import SUPPRESS as ARG_SUPPRESS
+    from argparse import ArgumentParser as ArgParser
 
     PARSER_TYPE_INT = int
     PARSER_TYPE_STR = str
     PARSER_TYPE_FLOAT = float
 except ImportError:
-    from optparse import OptionParser as ArgParser
     from optparse import SUPPRESS_HELP as ARG_SUPPRESS
+    from optparse import OptionParser as ArgParser
 
     PARSER_TYPE_INT = "int"
     PARSER_TYPE_STR = "string"
@@ -172,13 +171,13 @@ except ImportError:
 
         BytesIO = None
     except ImportError:
-        from io import StringIO, BytesIO
+        from io import BytesIO, StringIO
 
 try:
     import __builtin__
 except ImportError:
     import builtins
-    from io import TextIOWrapper, FileIO
+    from io import FileIO, TextIOWrapper
 
     # Python 3 compatibility definitions
     basestring = str
@@ -198,7 +197,7 @@ except ImportError:
             super(_Py3Utf8Output, self).write(s)
             self.flush()
 
-    _py3_print = getattr(builtins, "print")
+    _py3_print = builtins.print
     try:
         _py3_utf8_stdout = _Py3Utf8Output(sys.stdout)
         _py3_utf8_stderr = _Py3Utf8Output(sys.stderr)
@@ -432,7 +431,7 @@ def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT, source_address=N
             sock.connect(sa)
             return sock
 
-        except socket.error:
+        except OSError:
             err = get_exception()
             if sock is not None:
                 sock.close()
@@ -440,7 +439,7 @@ def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT, source_address=N
     if err is not None:
         raise err
     else:
-        raise socket.error("getaddrinfo returns an empty list")
+        raise OSError("getaddrinfo returns an empty list")
 
 
 class SpeedtestHTTPConnection(HTTPConnection):
@@ -902,13 +901,13 @@ class HTTPDownloader(threading.Thread):
                     if self.result[-1] == 0:
                         break
                 f.close()
-        except IOError:
+        except OSError:
             pass
         except HTTP_ERRORS:
             pass
 
 
-class HTTPUploaderData(object):
+class HTTPUploaderData:
     """File like object to improve cutting off the upload once the timeout
     has been reached
     """
@@ -1008,13 +1007,13 @@ class HTTPUploader(threading.Thread):
                 self.result = sum(self.request.data.total)
             else:
                 self.result = 0
-        except (IOError, SpeedtestUploadTimeout):
+        except (OSError, SpeedtestUploadTimeout):
             self.result = sum(self.request.data.total)
         except HTTP_ERRORS:
             self.result = 0
 
 
-class SpeedtestResults(object):
+class SpeedtestResults:
     """Class for holding the results of a speedtest, including:
 
     Download speed
@@ -1194,7 +1193,7 @@ class SpeedtestResults(object):
         return json.dumps(self.dict(), **kwargs)
 
 
-class Speedtest(object):
+class Speedtest:
     """Class for performing standard speedtest.net testing operations"""
 
     def __init__(
@@ -1271,7 +1270,7 @@ class Speedtest(object):
         if int(uh.code) != 200:
             return None
 
-        configxml = "".encode().join(configxml_list)
+        configxml = b"".join(configxml_list)
 
         printer("Config XML:\n%s" % configxml, debug=True)
 
@@ -1415,7 +1414,7 @@ class Speedtest(object):
                 if int(uh.code) != 200:
                     raise ServersRetrievalError()
 
-                serversxml = "".encode().join(serversxml_list)
+                serversxml = b"".join(serversxml_list)
 
                 printer("Servers XML:\n%s" % serversxml, debug=True)
 
@@ -1605,7 +1604,7 @@ class Speedtest(object):
                     continue
 
                 text = r.read(9)
-                if int(r.status) == 200 and text == "test=test".encode():
+                if int(r.status) == 200 and text == b"test=test":
                     cum.append(total)
                 else:
                     cum.append(3600)
@@ -2080,7 +2079,7 @@ def shell():
                 )
                 try:
                     printer(line)
-                except IOError:
+                except OSError:
                     e = get_exception()
                     if e.errno != errno.EPIPE:
                         raise

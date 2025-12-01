@@ -338,7 +338,9 @@ post-checkout:
   commands:
     update-submodules:
       priority: 1
-      run: 'LC_ALL=C submod update --init --recursive &>/dev/null || LC_ALL=C git submodule update --init --recursive &>/dev/null || :'
+      run:
+        'LC_ALL=C submod update --init --recursive &>/dev/null || LC_ALL=C git submodule update --init --recursive &>/dev/null
+        || :'
       fail_text: 'Submodule update failed'
     notify-deps:
       priority: 2

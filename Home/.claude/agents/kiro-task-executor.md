@@ -1,4 +1,4 @@
----
+______________________________________________________________________
 
 ## name: kiro-task-executor description: Executes specific tasks from feature specs with focused implementation. Reads requirements, design, and task documents to implement one task at a time. Use when implementing specific tasks from a structured specification. tools: Write, Read, Edit, MultiEdit, LS, Glob, Grep, Bash color: blue
 

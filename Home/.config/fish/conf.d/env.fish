@@ -9,7 +9,7 @@ set -gx XDG_STATE_HOME "$HOME/.local/state"
 # Fzf
 set -Ux FZF_LEGACY_KEYBINDINGS 0
 
-if [ $XDG_SESSION_TYPE = "wayland" ]
+if [ $XDG_SESSION_TYPE = wayland ]
     set -x SDL_VIDEODRIVER wayland
     set -x QT_QPA_PLATFORM wayland
     set -x GDK_BACKEND wayland

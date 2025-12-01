@@ -1,4 +1,4 @@
----
+______________________________________________________________________
 
 ## description: Analyze and improve Claude Code instructions argument-hint: none allowed-tools: Read, Edit, TodoWrite, Bash(git:\*)
 

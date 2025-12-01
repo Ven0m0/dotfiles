@@ -1,43 +1,43 @@
 # Print an optspec for argparse to handle cmd's options that are independent of any subcommand.
 function __fish_compresscli_global_optspecs
-	string join \n v/verbose dry-run overwrite o/output-dir= config= h/help V/version
+    string join \n v/verbose dry-run overwrite o/output-dir= config= h/help V/version
 end
 
 function __fish_compresscli_needs_command
-	# Figure out if the current invocation already has a command.
-	set -l cmd (commandline -opc)
-	set -e cmd[1]
-	argparse -s (__fish_compresscli_global_optspecs) -- $cmd 2>/dev/null
-	or return
-	if set -q argv[1]
-		# Also print the command, so this can be used to figure out what it is.
-		echo $argv[1]
-		return 1
-	end
-	return 0
+    # Figure out if the current invocation already has a command.
+    set -l cmd (commandline -opc)
+    set -e cmd[1]
+    argparse -s (__fish_compresscli_global_optspecs) -- $cmd 2>/dev/null
+    or return
+    if set -q argv[1]
+        # Also print the command, so this can be used to figure out what it is.
+        echo $argv[1]
+        return 1
+    end
+    return 0
 end
 
 function __fish_compresscli_using_subcommand
-	set -l cmd (__fish_compresscli_needs_command)
-	test -z "$cmd"
-	and return 1
-	contains -- $cmd[1] $argv
+    set -l cmd (__fish_compresscli_needs_command)
+    test -z "$cmd"
+    and return 1
+    contains -- $cmd[1] $argv
 end
 
-complete -c compresscli -n "__fish_compresscli_needs_command" -s o -l output-dir -d 'Output directory' -r -F
-complete -c compresscli -n "__fish_compresscli_needs_command" -l config -d 'Custom config file' -r -F
-complete -c compresscli -n "__fish_compresscli_needs_command" -s v -l verbose -d 'Enable verbose output'
-complete -c compresscli -n "__fish_compresscli_needs_command" -l dry-run -d 'Dry run - show what would be done without executing'
-complete -c compresscli -n "__fish_compresscli_needs_command" -l overwrite -d 'Overwrite existing files'
-complete -c compresscli -n "__fish_compresscli_needs_command" -s h -l help -d 'Print help'
-complete -c compresscli -n "__fish_compresscli_needs_command" -s V -l version -d 'Print version'
-complete -c compresscli -n "__fish_compresscli_needs_command" -f -a "video" -d 'Compress video files'
-complete -c compresscli -n "__fish_compresscli_needs_command" -f -a "image" -d 'Compress image files'
-complete -c compresscli -n "__fish_compresscli_needs_command" -f -a "batch" -d 'Batch process files in a directory'
-complete -c compresscli -n "__fish_compresscli_needs_command" -f -a "presets" -d 'Manage compression presets'
-complete -c compresscli -n "__fish_compresscli_needs_command" -f -a "info" -d 'Show system information and dependencies'
-complete -c compresscli -n "__fish_compresscli_needs_command" -f -a "completions" -d 'Generate shell completion scripts'
-complete -c compresscli -n "__fish_compresscli_needs_command" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c compresscli -n __fish_compresscli_needs_command -s o -l output-dir -d 'Output directory' -r -F
+complete -c compresscli -n __fish_compresscli_needs_command -l config -d 'Custom config file' -r -F
+complete -c compresscli -n __fish_compresscli_needs_command -s v -l verbose -d 'Enable verbose output'
+complete -c compresscli -n __fish_compresscli_needs_command -l dry-run -d 'Dry run - show what would be done without executing'
+complete -c compresscli -n __fish_compresscli_needs_command -l overwrite -d 'Overwrite existing files'
+complete -c compresscli -n __fish_compresscli_needs_command -s h -l help -d 'Print help'
+complete -c compresscli -n __fish_compresscli_needs_command -s V -l version -d 'Print version'
+complete -c compresscli -n __fish_compresscli_needs_command -f -a video -d 'Compress video files'
+complete -c compresscli -n __fish_compresscli_needs_command -f -a image -d 'Compress image files'
+complete -c compresscli -n __fish_compresscli_needs_command -f -a batch -d 'Batch process files in a directory'
+complete -c compresscli -n __fish_compresscli_needs_command -f -a presets -d 'Manage compression presets'
+complete -c compresscli -n __fish_compresscli_needs_command -f -a info -d 'Show system information and dependencies'
+complete -c compresscli -n __fish_compresscli_needs_command -f -a completions -d 'Generate shell completion scripts'
+complete -c compresscli -n __fish_compresscli_needs_command -f -a help -d 'Print this message or the help of the given subcommand(s)'
 complete -c compresscli -n "__fish_compresscli_using_subcommand video" -s p -l preset -d 'Compression preset' -r -f -a "fast\t'Fast compression, larger file size'
 medium\t'Balanced compression and quality'
 slow\t'Slow compression, smaller file size'
@@ -109,11 +109,11 @@ complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not
 complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -l dry-run -d 'Dry run - show what would be done without executing'
 complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -l overwrite -d 'Overwrite existing files'
 complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -s h -l help -d 'Print help'
-complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -f -a "list" -d 'List all available presets'
-complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -f -a "show" -d 'Show details of a specific preset'
-complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -f -a "create" -d 'Create a custom preset'
-complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -f -a "delete" -d 'Delete a custom preset'
-complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -f -a list -d 'List all available presets'
+complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -f -a show -d 'Show details of a specific preset'
+complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -f -a create -d 'Create a custom preset'
+complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -f -a delete -d 'Delete a custom preset'
+complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and not __fish_seen_subcommand_from list show create delete help" -f -a help -d 'Print this message or the help of the given subcommand(s)'
 complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from list" -s o -l output-dir -d 'Output directory' -r -F
 complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from list" -l config -d 'Custom config file' -r -F
 complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from list" -s v -l verbose -d 'Enable verbose output'
@@ -137,11 +137,11 @@ complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __f
 complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from delete" -l dry-run -d 'Dry run - show what would be done without executing'
 complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from delete" -l overwrite -d 'Overwrite existing files'
 complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from delete" -s h -l help -d 'Print help'
-complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from help" -f -a "list" -d 'List all available presets'
-complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from help" -f -a "show" -d 'Show details of a specific preset'
-complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from help" -f -a "create" -d 'Create a custom preset'
-complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from help" -f -a "delete" -d 'Delete a custom preset'
-complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from help" -f -a list -d 'List all available presets'
+complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from help" -f -a show -d 'Show details of a specific preset'
+complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from help" -f -a create -d 'Create a custom preset'
+complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from help" -f -a delete -d 'Delete a custom preset'
+complete -c compresscli -n "__fish_compresscli_using_subcommand presets; and __fish_seen_subcommand_from help" -f -a help -d 'Print this message or the help of the given subcommand(s)'
 complete -c compresscli -n "__fish_compresscli_using_subcommand info" -s o -l output-dir -d 'Output directory' -r -F
 complete -c compresscli -n "__fish_compresscli_using_subcommand info" -l config -d 'Custom config file' -r -F
 complete -c compresscli -n "__fish_compresscli_using_subcommand info" -s v -l verbose -d 'Enable verbose output'
@@ -154,14 +154,14 @@ complete -c compresscli -n "__fish_compresscli_using_subcommand completions" -s 
 complete -c compresscli -n "__fish_compresscli_using_subcommand completions" -l dry-run -d 'Dry run - show what would be done without executing'
 complete -c compresscli -n "__fish_compresscli_using_subcommand completions" -l overwrite -d 'Overwrite existing files'
 complete -c compresscli -n "__fish_compresscli_using_subcommand completions" -s h -l help -d 'Print help'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a "video" -d 'Compress video files'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a "image" -d 'Compress image files'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a "batch" -d 'Batch process files in a directory'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a "presets" -d 'Manage compression presets'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a "info" -d 'Show system information and dependencies'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a "completions" -d 'Generate shell completion scripts'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and __fish_seen_subcommand_from presets" -f -a "list" -d 'List all available presets'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and __fish_seen_subcommand_from presets" -f -a "show" -d 'Show details of a specific preset'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and __fish_seen_subcommand_from presets" -f -a "create" -d 'Create a custom preset'
-complete -c compresscli -n "__fish_compresscli_using_subcommand help; and __fish_seen_subcommand_from presets" -f -a "delete" -d 'Delete a custom preset'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a video -d 'Compress video files'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a image -d 'Compress image files'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a batch -d 'Batch process files in a directory'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a presets -d 'Manage compression presets'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a info -d 'Show system information and dependencies'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a completions -d 'Generate shell completion scripts'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and not __fish_seen_subcommand_from video image batch presets info completions help" -f -a help -d 'Print this message or the help of the given subcommand(s)'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and __fish_seen_subcommand_from presets" -f -a list -d 'List all available presets'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and __fish_seen_subcommand_from presets" -f -a show -d 'Show details of a specific preset'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and __fish_seen_subcommand_from presets" -f -a create -d 'Create a custom preset'
+complete -c compresscli -n "__fish_compresscli_using_subcommand help; and __fish_seen_subcommand_from presets" -f -a delete -d 'Delete a custom preset'

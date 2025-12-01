@@ -1,4 +1,4 @@
----
+______________________________________________________________________
 
 ## description: "Capture technical breakthroughs and transform them into actionable, reusable documentation" argument-hint: [breakthrough description]
 
@@ -79,6 +79,7 @@ When invoked, immediately create a structured markdown file documenting the brea
 ## Interaction Flow
 
 1. **Initial capture**: Ask clarifying questions if needed:
+
    - "What specific problem did this solve?"
    - "What was the key insight?"
    - "What metrics improved?"

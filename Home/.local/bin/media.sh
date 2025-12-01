@@ -129,9 +129,9 @@ cmd_ripdvd() {
   volume_size=$(grep "^Volume size" <<<"$dvd_info" | awk '{print $4}')
   total_size=$((block_size * volume_size))
   log "Creating ISO: $iso (${total_size} bytes)..."
-  dd if="$dvd" bs="$block_size" count="$volume_size" 2>/dev/null \
-    | pv -pterb --size "$total_size" \
-    | dd of="$iso" bs="$block_size" 2>/dev/null
+  dd if="$dvd" bs="$block_size" count="$volume_size" 2>/dev/null |
+    pv -pterb --size "$total_size" |
+    dd of="$iso" bs="$block_size" 2>/dev/null
   log "Verifying checksums..."
   local orig_check copy_check
   orig_check=$(sha1sum "$dvd" | awk '{print $1}')
@@ -146,15 +146,15 @@ cmd_pngzip() {
   local GRAYSCALE=0 TOUCH=0 VERBOSE=1 DPI=0 OPTIND
   while getopts ":gqtr:h" o; do
     case $o in
-      g) GRAYSCALE=1 ;;
-      q) VERBOSE=0 ;;
-      t) TOUCH=1 ;;
-      r) DPI=${OPTARG//[^0-9]/} ;;
-      h)
-        usage
-        exit 0
-        ;;
-      *) die "Invalid option: -$OPTARG" ;;
+    g) GRAYSCALE=1 ;;
+    q) VERBOSE=0 ;;
+    t) TOUCH=1 ;;
+    r) DPI=${OPTARG//[^0-9]/} ;;
+    h)
+      usage
+      exit 0
+      ;;
+    *) die "Invalid option: -$OPTARG" ;;
     esac
   done
   shift $((OPTIND - 1))
@@ -196,10 +196,10 @@ cmd_pngzip() {
     local osize=$(stat -c %s "$f")
     if ((DPI > 0)); then
       local tmpc="${f}.cr.$$"
-      pngcrush -brute -l 9 -res "$DPI" -s "$f" "$tmpc" &>/dev/null \
-        && [[ -s $tmpc && $(stat -c %s "$tmpc") -lt $osize ]] \
-        && cp "${preserve[@]}" "$tmpc" "$f" \
-        && ((VERBOSE)) && printf 'pngcrush: %s DPI=%s %s → %s\n' "$f" "$DPI" "$osize" "$(stat -c %s "$f")"
+      pngcrush -brute -l 9 -res "$DPI" -s "$f" "$tmpc" &>/dev/null &&
+        [[ -s $tmpc && $(stat -c %s "$tmpc") -lt $osize ]] &&
+        cp "${preserve[@]}" "$tmpc" "$f" &&
+        ((VERBOSE)) && printf 'pngcrush: %s DPI=%s %s → %s\n' "$f" "$DPI" "$osize" "$(stat -c %s "$f")"
       rm -f "$tmpc"
     fi
     ((VERBOSE)) && printf "%s: %s → %s bytes\n" "$f" "$orig_size" "$(stat -c %s "$f")"
@@ -249,56 +249,56 @@ main() {
   local cmd="$1"
   shift
   case $cmd in
-    cd)
-      [[ ${#} -eq 1 ]] || die "Usage: media cd TOCFILE"
-      cmd_cd "$@"
-      ;;
-    usb)
-      [[ ${#} -eq 2 ]] || die "Usage: media usb ISO DEVICE"
-      cmd_usb "$@"
-      ;;
-    compress)
-      [[ ${#} -eq 1 ]] || die "Usage: media compress DIR"
-      cmd_compress "$@"
-      ;;
-    decompress)
-      [[ ${#} -eq 1 ]] || die "Usage: media decompress FILE"
-      cmd_decompress "$@"
-      ;;
-    iso2sd)
-      [[ ${#} -eq 2 ]] || die "Usage: media iso2sd ISO DEVICE"
-      cmd_iso2sd "$@"
-      ;;
-    format)
-      [[ ${#} -eq 2 ]] || die "Usage: media format DEVICE NAME"
-      cmd_format "$@"
-      ;;
-    ripdvd)
-      [[ ${#} -eq 1 ]] || die "Usage: media ripdvd OUTPUT.iso"
-      cmd_ripdvd "$@"
-      ;;
-    pngzip) cmd_pngzip "$@" ;;
-    vid1080)
-      [[ ${#} -eq 1 ]] || die "Usage: media vid1080 VIDEO"
-      cmd_vid1080 "$@"
-      ;;
-    vid4k)
-      [[ ${#} -eq 1 ]] || die "Usage: media vid4k VIDEO"
-      cmd_vid4k "$@"
-      ;;
-    jpg)
-      [[ ${#} -ge 1 ]] || die "Usage: media jpg IMAGE [MAGICK_OPTS...]"
-      cmd_jpg "$@"
-      ;;
-    jpgsmall)
-      [[ ${#} -ge 1 ]] || die "Usage: media jpgsmall IMAGE [MAGICK_OPTS...]"
-      cmd_jpgsmall "$@"
-      ;;
-    png)
-      [[ ${#} -ge 1 ]] || die "Usage: media png IMAGE [MAGICK_OPTS...]"
-      cmd_png "$@"
-      ;;
-    *) die "Unknown command: $cmd (run 'media --help')" ;;
+  cd)
+    [[ ${#} -eq 1 ]] || die "Usage: media cd TOCFILE"
+    cmd_cd "$@"
+    ;;
+  usb)
+    [[ ${#} -eq 2 ]] || die "Usage: media usb ISO DEVICE"
+    cmd_usb "$@"
+    ;;
+  compress)
+    [[ ${#} -eq 1 ]] || die "Usage: media compress DIR"
+    cmd_compress "$@"
+    ;;
+  decompress)
+    [[ ${#} -eq 1 ]] || die "Usage: media decompress FILE"
+    cmd_decompress "$@"
+    ;;
+  iso2sd)
+    [[ ${#} -eq 2 ]] || die "Usage: media iso2sd ISO DEVICE"
+    cmd_iso2sd "$@"
+    ;;
+  format)
+    [[ ${#} -eq 2 ]] || die "Usage: media format DEVICE NAME"
+    cmd_format "$@"
+    ;;
+  ripdvd)
+    [[ ${#} -eq 1 ]] || die "Usage: media ripdvd OUTPUT.iso"
+    cmd_ripdvd "$@"
+    ;;
+  pngzip) cmd_pngzip "$@" ;;
+  vid1080)
+    [[ ${#} -eq 1 ]] || die "Usage: media vid1080 VIDEO"
+    cmd_vid1080 "$@"
+    ;;
+  vid4k)
+    [[ ${#} -eq 1 ]] || die "Usage: media vid4k VIDEO"
+    cmd_vid4k "$@"
+    ;;
+  jpg)
+    [[ ${#} -ge 1 ]] || die "Usage: media jpg IMAGE [MAGICK_OPTS...]"
+    cmd_jpg "$@"
+    ;;
+  jpgsmall)
+    [[ ${#} -ge 1 ]] || die "Usage: media jpgsmall IMAGE [MAGICK_OPTS...]"
+    cmd_jpgsmall "$@"
+    ;;
+  png)
+    [[ ${#} -ge 1 ]] || die "Usage: media png IMAGE [MAGICK_OPTS...]"
+    cmd_png "$@"
+    ;;
+  *) die "Unknown command: $cmd (run 'media --help')" ;;
   esac
 }
 main "$@"

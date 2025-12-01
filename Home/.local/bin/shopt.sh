@@ -59,66 +59,66 @@ output="" perm="u+x" regex=""
 [[ $# -eq 0 ]] && usage
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -r | --recursive)
-      recursive=1
-      shift
-      ;;
-    -f | --format)
-      format=1
-      shift
-      ;;
-    -m | --minify)
-      minify=1
-      format=1
-      shift
-      ;;
-    -s | --strip)
-      strip=1
-      shift
-      ;;
-    -c | --compile)
-      compile=1
-      shift
-      ;;
-    -C | --concat)
-      concat=1
-      shift
-      ;;
-    -d | --debug)
-      debug=1
-      shift
-      ;;
-    -F | --force)
-      force=1
-      shift
-      ;;
-    -o | --output)
-      output="${2:?output requires arg}"
-      shift 2
-      ;;
-    -p | --permission)
-      perm="${2:?perm requires arg}"
-      shift 2
-      ;;
-    -e | --extensions)
-      IFS=',' read -ra extensions <<<"${2:?extensions requires arg}"
-      shift 2
-      ;;
-    -w | --whitelist)
-      IFS=',' read -ra whitelist <<<"${2:?whitelist requires arg}"
-      shift 2
-      ;;
-    -x | --regex)
-      regex="${2:?regex requires arg}"
-      shift 2
-      ;;
-    -v | --variants)
-      IFS=',' read -ra variants <<<"${2:?variants requires arg}"
-      shift 2
-      ;;
-    -h | --help) usage ;;
-    -*) die "Unknown option: $1" ;;
-    *) break ;;
+  -r | --recursive)
+    recursive=1
+    shift
+    ;;
+  -f | --format)
+    format=1
+    shift
+    ;;
+  -m | --minify)
+    minify=1
+    format=1
+    shift
+    ;;
+  -s | --strip)
+    strip=1
+    shift
+    ;;
+  -c | --compile)
+    compile=1
+    shift
+    ;;
+  -C | --concat)
+    concat=1
+    shift
+    ;;
+  -d | --debug)
+    debug=1
+    shift
+    ;;
+  -F | --force)
+    force=1
+    shift
+    ;;
+  -o | --output)
+    output="${2:?output requires arg}"
+    shift 2
+    ;;
+  -p | --permission)
+    perm="${2:?perm requires arg}"
+    shift 2
+    ;;
+  -e | --extensions)
+    IFS=',' read -ra extensions <<<"${2:?extensions requires arg}"
+    shift 2
+    ;;
+  -w | --whitelist)
+    IFS=',' read -ra whitelist <<<"${2:?whitelist requires arg}"
+    shift 2
+    ;;
+  -x | --regex)
+    regex="${2:?regex requires arg}"
+    shift 2
+    ;;
+  -v | --variants)
+    IFS=',' read -ra variants <<<"${2:?variants requires arg}"
+    shift 2
+    ;;
+  -h | --help) usage ;;
+  -*) die "Unknown option: $1" ;;
+  *) break ;;
   esac
 done
 target="${1:?No file/dir specified}"
@@ -146,8 +146,8 @@ fi
   log "No scripts found"
   exit 0
 }
-[[ ${#files[@]} -gt 1 && -n $output && $output != - ]] && ((!compile && !concat)) \
-  && die "Multiple files with single output unsupported (use -c/--compile)"
+[[ ${#files[@]} -gt 1 && -n $output && $output != - ]] && ((!compile && !concat)) &&
+  die "Multiple files with single output unsupported (use -c/--compile)"
 #──────────── Comment Strip AWK (Enhanced) ────────────
 read -r -d '' AWK_STRIP <<'AWK' || :
 NR==1 && /^#!/ { print; next }
@@ -311,8 +311,8 @@ compile_variants() {
     prep_preprocess "$tmp_concat" "$tmp_prep"
     # Run preprocessor
     if ((HAS_PREPROCESS)); then
-      preprocess -D "SHELL_IS_${VAR}=true" -f -o "$tmp_proc" "$tmp_prep" \
-        || die "Preprocessor failed for $VAR"
+      preprocess -D "SHELL_IS_${VAR}=true" -f -o "$tmp_proc" "$tmp_prep" ||
+        die "Preprocessor failed for $VAR"
     else
       cp "$tmp_prep" "$tmp_proc"
     fi

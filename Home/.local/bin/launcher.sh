@@ -45,7 +45,8 @@ mode_app() {
   local -A paths
   # Iterate PATH to find executables (bash-native, avoids parsing ls)
   # Uses an associative array to deduplicate entries efficiently
-  for dir in "${PATH//:/ }"; do
+  IFS=: read -ra path_dirs <<<"$PATH"
+  for dir in "${path_dirs[@]}"; do
     [[ -d $dir && -r $dir ]] || continue
     for file in "$dir"/*; do
       [[ -x $file && ! -d $file ]] || continue
@@ -67,13 +68,13 @@ mode_power() {
   local action
   action=$(printf '%s\n' "${opts[@]}" | _menu "Power: ") || return 0
   case "$action" in
-    "Lock") loginctl lock-session ;;
-    "Suspend") _confirm && systemctl suspend ;;
-    "Logout") _confirm && loginctl terminate-user "$USER" ;;
-    "Reboot") _confirm && systemctl reboot ;;
-    "Power Off") _confirm && systemctl poweroff ;;
-    "Firmware Setup") _confirm && systemctl reboot --firmware-setup ;;
-    *) : ;;
+  "Lock") loginctl lock-session ;;
+  "Suspend") _confirm && systemctl suspend ;;
+  "Logout") _confirm && loginctl terminate-user "$USER" ;;
+  "Reboot") _confirm && systemctl reboot ;;
+  "Power Off") _confirm && systemctl poweroff ;;
+  "Firmware Setup") _confirm && systemctl reboot --firmware-setup ;;
+  *) : ;;
   esac
 }
 
@@ -95,19 +96,19 @@ main() {
     local selection
     selection=$(printf '%s\n' "${modes[@]}" | _menu "Launcher: ") || exit 0
     case "$selection" in
-      "App Launcher") mode="app" ;;
-      "File Opener") mode="file" ;;
-      "Power Menu") mode="power" ;;
+    "App Launcher") mode="app" ;;
+    "File Opener") mode="file" ;;
+    "Power Menu") mode="power" ;;
     esac
   fi
   case "${mode,,}" in
-    app | run) mode_app ;;
-    power) mode_power ;;
-    file | open) mode_file ;;
-    *)
-      printf "Usage: %s [app|power|file]\n" "$0"
-      exit 1
-      ;;
+  app | run) mode_app ;;
+  power) mode_power ;;
+  file | open) mode_file ;;
+  *)
+    printf "Usage: %s [app|power|file]\n" "$0"
+    exit 1
+    ;;
   esac
 }
 

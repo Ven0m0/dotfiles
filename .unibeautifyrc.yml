@@ -1,7 +1,6 @@
----
 PHP: # Language
   beautifiers: # Enable beautifiers
-  - PHP-CS-Fixer
+    - PHP-CS-Fixer
   PHP-CS-Fixer: # Beautifier options
     prefer_beautifier_config: true
 TypeScript:

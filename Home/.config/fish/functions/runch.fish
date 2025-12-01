@@ -16,7 +16,9 @@ function runch -d "make a script executable and run it"
 
     # Exec: if there’s a slash, run as-is; otherwise prefix "./"
     switch "$s"
-        case '*/'*; exec "$s"
-        case '*';     exec "./$s"
+        case '*/'*
+            exec "$s"
+        case '*'
+            exec "./$s"
     end
 end

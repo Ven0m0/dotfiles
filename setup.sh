@@ -42,24 +42,24 @@ run_cmd() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --dry-run | -n)
-        DRY_RUN=true
-        info "Dry-run mode enabled - no changes will be made"
-        shift
-        ;;
-      --verbose | -v)
-        VERBOSE=true
-        shift
-        ;;
-      --help | -h)
-        show_help
-        exit 0
-        ;;
-      *)
-        warn "Unknown option: $1"
-        show_help
-        exit 1
-        ;;
+    --dry-run | -n)
+      DRY_RUN=true
+      info "Dry-run mode enabled - no changes will be made"
+      shift
+      ;;
+    --verbose | -v)
+      VERBOSE=true
+      shift
+      ;;
+    --help | -h)
+      show_help
+      exit 0
+      ;;
+    *)
+      warn "Unknown option: $1"
+      show_help
+      exit 1
+      ;;
     esac
   done
 }

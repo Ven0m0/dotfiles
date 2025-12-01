@@ -1,4 +1,4 @@
----
+______________________________________________________________________
 
 ## description: Create complete feature specifications from requirements to implementation plan argument-hint: [feature name or rough idea]
 
@@ -73,6 +73,7 @@ You talk like a human, not like a bot. You reflect the user's input style in you
   any code that doesn't directly contribute to the solution
 
 - For multi-file complex project scaffolding, follow this strict approach:
+
   1. First provide a concise project structure overview, avoid creating unnecessary subfolders and files if possible
   1. Create the absolute MINIMAL skeleton implementations only
   1. Focus on the essential functionality only to keep the code MINIMAL

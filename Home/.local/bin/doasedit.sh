@@ -25,9 +25,9 @@ check_doas_conf() {
       printf '(E)dit again, (O)verwrite anyway, (A)bort: [E/o/a]? '
       read -r choice
       case "$choice" in
-        o | O) return 0 ;;
-        a | A) return 1 ;;
-        e | E | *) "$editor_cmd" "$tmpfile" ;;
+      o | O) return 0 ;;
+      a | A) return 1 ;;
+      e | E | *) "$editor_cmd" "$tmpfile" ;;
       esac
     done
   fi
@@ -43,24 +43,24 @@ _exit() {
 [ "${#}" -eq 0 ] && help && exit 1
 while [ "${#}" -ne 0 ]; do
   case "${1}" in
-    --)
-      shift
-      break
-      ;;
-    --help | -h)
-      help
-      exit 0
-      ;;
-    --version | -V)
-      printf 'doasedit version 1.0.8\n'
-      exit 0
-      ;;
-    -*)
-      printf "doasedit: invalid option: '%s'\n" "${1}"
-      help
-      exit 1
-      ;;
-    *) break ;;
+  --)
+    shift
+    break
+    ;;
+  --help | -h)
+    help
+    exit 0
+    ;;
+  --version | -V)
+    printf 'doasedit version 1.0.8\n'
+    exit 0
+    ;;
+  -*)
+    printf "doasedit: invalid option: '%s'\n" "${1}"
+    help
+    exit 1
+    ;;
+  *) break ;;
   esac
 done
 user_id="$(LC_ALL=C id -u)"

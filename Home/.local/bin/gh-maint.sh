@@ -58,31 +58,31 @@ EOF
 }
 while [[ $# -gt 0 ]]; do
   case $1 in
-    clean | update | both)
-      MODE=$1
-      shift
-      ;;
-    merge)
-      MODE=$1
-      shift
-      PR_URL=${1:-}
-      MERGE_STRATEGY=${2:-theirs}
-      shift 2 || shift 1 || :
-      ;;
-    -d | --dry-run)
-      DRY_RUN=true
-      shift
-      ;;
-    -y | --yes)
-      AUTO_YES=true
-      shift
-      ;;
-    -v | --verbose)
-      VERBOSE=true
-      shift
-      ;;
-    -h | --help) usage ;;
-    *) die "Unknown option: $1" ;;
+  clean | update | both)
+    MODE=$1
+    shift
+    ;;
+  merge)
+    MODE=$1
+    shift
+    PR_URL=${1:-}
+    MERGE_STRATEGY=${2:-theirs}
+    shift 2 || shift 1 || :
+    ;;
+  -d | --dry-run)
+    DRY_RUN=true
+    shift
+    ;;
+  -y | --yes)
+    AUTO_YES=true
+    shift
+    ;;
+  -v | --verbose)
+    VERBOSE=true
+    shift
+    ;;
+  -h | --help) usage ;;
+  *) die "Unknown option: $1" ;;
   esac
 done
 [[ $DRY_RUN == true ]] && msg "DRY RUN MODE"
@@ -112,25 +112,25 @@ update_repo() {
   verbose "Trunk: $trunk"
   if [[ $DRY_RUN == false ]]; then
     git remote prune origin &>/dev/null || :
-    git -c protocol.file.allow=always fetch --prune --no-tags --filter=blob:none origin \
-      || git -c protocol.file.allow=always fetch --prune --no-tags origin \
-      || die "Fetch failed"
+    git -c protocol.file.allow=always fetch --prune --no-tags --filter=blob:none origin ||
+      git -c protocol.file.allow=always fetch --prune --no-tags origin ||
+      die "Fetch failed"
     check_gha_failures
     git checkout "$trunk" &>/dev/null
     git-submodule-update &>/dev/null
     git reset --hard "origin/$trunk" &>/dev/null
-    git -c protocol.file.allow=always pull --rebase --autostash --prune origin "$trunk" \
-      || {
+    git -c protocol.file.allow=always pull --rebase --autostash --prune origin "$trunk" ||
+      {
         git rebase --abort &>/dev/null || :
         warn "Pull failed, continuing"
       }
     if git config --get-regexp '^submodule\.' &>/dev/null; then
       msg "Syncing submodules..."
       git -c protocol.file.allow=always submodule sync --recursive &>/dev/null || :
-      git -c protocol.file.allow=always submodule update --init --recursive --remote --filter=blob:none --depth 1 --single-branch --jobs 8 \
-        || git -c protocol.file.allow=always submodule update --init --recursive --remote --depth 1 --jobs 8 \
-        || git -c protocol.file.allow=always submodule update --init --recursive --remote --jobs 8 \
-        || warn "Submodule update partial/failed"
+      git -c protocol.file.allow=always submodule update --init --recursive --remote --filter=blob:none --depth 1 --single-branch --jobs 8 ||
+        git -c protocol.file.allow=always submodule update --init --recursive --remote --depth 1 --jobs 8 ||
+        git -c protocol.file.allow=always submodule update --init --recursive --remote --jobs 8 ||
+        warn "Submodule update partial/failed"
     fi
     ok "Update complete"
   else
@@ -306,38 +306,38 @@ auto_merge_pr() {
   git checkout -q "$head_ref"
   msg "Merging $base_ref into $head_ref (strategy: $strategy)..."
   case $strategy in
-    theirs)
-      git merge "origin/$base_ref" -X theirs -m "Auto-merge: accept $base_ref" || {
-        git checkout --theirs .
-        git add -A
-        git -c core.editor=true merge --continue
-      }
-      ;;
-    ours)
-      git merge "origin/$base_ref" -X ours -m "Auto-merge: keep $head_ref" || {
-        git checkout --ours .
-        git add -A
-        git -c core.editor=true merge --continue
-      }
-      ;;
-    auto)
-      if git merge "origin/$base_ref" -m "Auto-merge: smart resolution"; then
-        :
-      else
-        while IFS= read -r file; do
-          case $file in
-            package-lock.json | yarn.lock | Cargo.lock | go.sum | composer.lock | Gemfile.lock | poetry.lock) git checkout --theirs "$file" ;;
-            .github/workflows/* | *.ya?ml | *.json | *.toml | *.ini | *.cfg) git checkout --theirs "$file" ;;
-            *) git checkout --ours "$file" ;;
-          esac
-        done < <(git diff --name-only --diff-filter=U)
-        git add -A
-        git -c core.editor=true merge --continue
-      fi
-      ;;
-    *)
-      die "Invalid strategy: $strategy"
-      ;;
+  theirs)
+    git merge "origin/$base_ref" -X theirs -m "Auto-merge: accept $base_ref" || {
+      git checkout --theirs .
+      git add -A
+      git -c core.editor=true merge --continue
+    }
+    ;;
+  ours)
+    git merge "origin/$base_ref" -X ours -m "Auto-merge: keep $head_ref" || {
+      git checkout --ours .
+      git add -A
+      git -c core.editor=true merge --continue
+    }
+    ;;
+  auto)
+    if git merge "origin/$base_ref" -m "Auto-merge: smart resolution"; then
+      :
+    else
+      while IFS= read -r file; do
+        case $file in
+        package-lock.json | yarn.lock | Cargo.lock | go.sum | composer.lock | Gemfile.lock | poetry.lock) git checkout --theirs "$file" ;;
+        .github/workflows/* | *.ya?ml | *.json | *.toml | *.ini | *.cfg) git checkout --theirs "$file" ;;
+        *) git checkout --ours "$file" ;;
+        esac
+      done < <(git diff --name-only --diff-filter=U)
+      git add -A
+      git -c core.editor=true merge --continue
+    fi
+    ;;
+  *)
+    die "Invalid strategy: $strategy"
+    ;;
   esac
   msg "Pushing changes..."
   git push -q origin "$head_ref"
@@ -374,13 +374,13 @@ optimize_repo() {
 }
 main() {
   case $MODE in
-    clean) clean_repo ;;
-    update) update_repo ;;
-    both)
-      update_repo
-      clean_repo
-      ;;
-    merge) auto_merge_pr "$@" ;;
+  clean) clean_repo ;;
+  update) update_repo ;;
+  both)
+    update_repo
+    clean_repo
+    ;;
+  merge) auto_merge_pr "$@" ;;
   esac
   if [[ $MODE == "clean" || $MODE == "both" ]]; then
     optimize_repo

@@ -7,7 +7,7 @@ set -U fish_term24bit 1
 set -U fish_autosuggestion_enabled 1
 
 # ─── Keybinds ─────────────────────────
-functions -q toggle_sudo; and bind \cs 'toggle_sudo'
+functions -q toggle_sudo; and bind \cs toggle_sudo
 
 # ─── Environment ──────────────────────
 set -gx EDITOR micro
@@ -16,7 +16,7 @@ set -gx VIEWER $EDITOR
 set -gx GIT_EDITOR $EDITOR
 set -gx SYSTEMD_EDITOR $EDITOR
 set -gx PAGER bat
-set -gx LESSHISTFILE '-'
+set -gx LESSHISTFILE -
 set -gx BATPIPE color
 
 # ─── Fuzzy Finders ───────────────────
@@ -28,20 +28,24 @@ _evalcache fzf --fish 2>/dev/null
 
 # ─── Fetch Command ────────────────────
 switch "$stealth"
-	case 1
-		# disable mommy plugin
-		if functions -q __call_mommy; functions -e __call_mommy; end
-			function __disable_mommy --on-event fish_postexec
-		if functions -q __call_mommy; functions -e __call_mommy; end
-    		functions -e __disable_mommy
-		end
-	case 0
-	case '*'
+    case 1
+        # disable mommy plugin
+        if functions -q __call_mommy
+            functions -e __call_mommy
+        end
+        function __disable_mommy --on-event fish_postexec
+            if functions -q __call_mommy
+                functions -e __call_mommy
+            end
+            functions -e __disable_mommy
+        end
+    case 0
+    case '*'
 end
 
 # Ghostty integration
-if test "$TERM" = "xterm-ghostty" -a -e "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
-	source "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
+if test "$TERM" = xterm-ghostty -a -e "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
+    source "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
 end
 
 # Async prompt
@@ -62,11 +66,14 @@ abbr -a e $EDITOR
 
 # https://www.reddit.com/r/fishshell/comments/1g3nh1u/any_way_to_create_functions_with_dynamic_names/
 function qcd
-	echo cd (string repeat -n (string length $argv) ../)
+    echo cd (string repeat -n (string length $argv) ../)
 end
 abbr -a qcd --position command --regex 'q+' --function qcd
 
-alias sudo='sudo '; alias doas='doas '; alias sudo-rs='sudo-rs '
-alias mkdir='mkdir -pv '; alias ed='$EDITOR '
+alias sudo='sudo '
+alias doas='doas '
+alias sudo-rs='sudo-rs '
+alias mkdir='mkdir -pv '
+alias ed='$EDITOR '
 alias ping='ping -c 4'
 alias cls='clear'

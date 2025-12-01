@@ -25,15 +25,15 @@ readonly normal=$(tput sgr0 2>/dev/null || echo '')
 
 unit="${1:-onedrive}"
 # Stream journal output with colorization
-journalctl -o cat --user-unit "$unit" -f 2>/dev/null \
-  | (has ag && ag -v 'Remaining free space' || grep -v 'Remaining free space') \
-  | sed -u "s/Uploading/${blue}Uploading${normal}/;
+journalctl -o cat --user-unit "$unit" -f 2>/dev/null |
+  (has ag && ag -v 'Remaining free space' || grep -v 'Remaining free space') |
+  sed -u "s/Uploading/${blue}Uploading${normal}/;
           s/Successfully created/${blue}Successfully created${normal}/;
           s/Downloading/${magenta}Downloading${normal}/;
           s/Moving/${magenta}Moving${normal}/;
           s/Deleting/${yellow}Deleting${normal}/;
-          s/deleted/${yellow}deleted${normal}/gI;" \
-  | if ((use_ccze)); then
+          s/deleted/${yellow}deleted${normal}/gI;" |
+  if ((use_ccze)); then
     ccze -A -c default=white
   else
     cat

@@ -3,8 +3,8 @@ status -i >/dev/null 2>&1 || return
 test -r /usr/share/cachyos-fish-config/cachyos-config.fish >/dev/null 2>&1 && source /usr/share/cachyos-fish-config/cachyos-config.fish >/dev/null 2>&1
 
 function init_tool
-	type -qf $argv[1] || return
-	type -q _evalcache && _evalcache "$argv[2]" >/dev/null 2>&1 || eval "$argv[2]" >/dev/null 2>&1
+    type -qf $argv[1] || return
+    type -q _evalcache && _evalcache "$argv[2]" >/dev/null 2>&1 || eval "$argv[2]" >/dev/null 2>&1
 end
 
 set -U __done_notification_urgency_level low

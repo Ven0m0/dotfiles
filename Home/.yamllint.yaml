@@ -1,4 +1,3 @@
----
 extends: default
 rules:
   indentation:
@@ -42,7 +41,7 @@ rules:
       - 'false'
       - 'on'
     check-keys: false
-ignore: |
+ignore: |-
   .git/
   .svn/
   .hg/

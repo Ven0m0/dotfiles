@@ -245,45 +245,45 @@ main() {
   shift || :
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -h | --help)
-        usage
-        exit 0
-        ;;
-      -n | --dry-run)
-        dry_run=1
-        shift
-        ;;
-      -v | --verbose)
-        set -x
-        shift
-        ;;
-      *)
-        error "Unknown option: $1"
-        usage
-        exit 1
-        ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -n | --dry-run)
+      dry_run=1
+      shift
+      ;;
+    -v | --verbose)
+      set -x
+      shift
+      ;;
+    *)
+      error "Unknown option: $1"
+      usage
+      exit 1
+      ;;
     esac
   done
 
   case "$command" in
-    pull) sync_pull "$dry_run" ;;
-    push) sync_push "$dry_run" ;;
-    status) sync_status ;;
-    diff) sync_diff ;;
-    -h | --help | help)
-      usage
-      exit 0
-      ;;
-    "")
-      error "No command specified"
-      usage
-      exit 1
-      ;;
-    *)
-      error "Unknown command: $command"
-      usage
-      exit 1
-      ;;
+  pull) sync_pull "$dry_run" ;;
+  push) sync_push "$dry_run" ;;
+  status) sync_status ;;
+  diff) sync_diff ;;
+  -h | --help | help)
+    usage
+    exit 0
+    ;;
+  "")
+    error "No command specified"
+    usage
+    exit 1
+    ;;
+  *)
+    error "Unknown command: $command"
+    usage
+    exit 1
+    ;;
   esac
 }
 

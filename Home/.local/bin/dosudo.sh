@@ -38,23 +38,23 @@ flag_k=
 user=
 while [ $# -gt 0 ]; do
   case "$1" in
-    -i | --login) flag_i='-i' ;;
-    -n | --non-interactive) flag_n='-n' ;;
-    -s | --shell) flag_s='-s' ;;
-    -u | --user)
-      user=${2#\#}
-      shift
-      ;;
-    -k | --reset-timestamp) flag_k='-L' ;;
-    -v | --validate) flag_s="true" ;;
-    -h | --help)
-      help
-      exit 0
-      ;;
-    --)
-      shift
-      break
-      ;;
+  -i | --login) flag_i='-i' ;;
+  -n | --non-interactive) flag_n='-n' ;;
+  -s | --shell) flag_s='-s' ;;
+  -u | --user)
+    user=${2#\#}
+    shift
+    ;;
+  -k | --reset-timestamp) flag_k='-L' ;;
+  -v | --validate) flag_s="true" ;;
+  -h | --help)
+    help
+    exit 0
+    ;;
+  --)
+    shift
+    break
+    ;;
   esac
   shift
 done

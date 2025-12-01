@@ -34,8 +34,8 @@ speed_test() {
   awk -v s="$raw" 'BEGIN{printf "Down: %.2f Mbps\n",(s*8)/(1024*1024)}'
 
   printf 'Testing upload speed...\n' >&2
-  up=$(dd if=/dev/zero bs=1M count=10 2>/dev/null \
-    | curl -sS -o /dev/null -w "%{speed_upload}" --data-binary @- https://speed.cloudflare.com/__up 2>/dev/null || printf '0')
+  up=$(dd if=/dev/zero bs=1M count=10 2>/dev/null |
+    curl -sS -o /dev/null -w "%{speed_upload}" --data-binary @- https://speed.cloudflare.com/__up 2>/dev/null || printf '0')
   awk -v s="$up" 'BEGIN{printf "Up:   %.2f Mbps\n",(s*8)/(1024*1024)}'
 }
 
@@ -94,33 +94,33 @@ main() {
   shift || :
 
   case "$cmd" in
-    ip)
-      ip_info
-      ;;
-    weather)
-      weather "${1:-Bielefeld}"
-      ;;
-    speed)
-      # Use speedtest.py if available, otherwise fallback
-      if has python && [[ -f "$(dirname "$0")/speedtest.py" ]]; then
-        python "$(dirname "$0")/speedtest.py" --simple 2>/dev/null || speed_test
-      else
-        speed_test
-      fi
-      ;;
-    all)
-      ip_info
-      printf '\n'
+  ip)
+    ip_info
+    ;;
+  weather)
+    weather "${1:-Bielefeld}"
+    ;;
+  speed)
+    # Use speedtest.py if available, otherwise fallback
+    if has python && [[ -f "$(dirname "$0")/speedtest.py" ]]; then
+      python "$(dirname "$0")/speedtest.py" --simple 2>/dev/null || speed_test
+    else
       speed_test
-      ;;
-    -h | --help | help)
-      usage
-      ;;
-    *)
-      printf 'Unknown command: %s\n' "$cmd" >&2
-      usage
-      exit 1
-      ;;
+    fi
+    ;;
+  all)
+    ip_info
+    printf '\n'
+    speed_test
+    ;;
+  -h | --help | help)
+    usage
+    ;;
+  *)
+    printf 'Unknown command: %s\n' "$cmd" >&2
+    usage
+    exit 1
+    ;;
   esac
 }
 
