@@ -1,2 +1,35 @@
-[tool.ruff]
-extend-exclude = ["Home/.local/bin/speedtest.py"]
+[tool. ruff]
+line-length = 88
+target-version = "py311"
+extend-exclude = [
+  "Home/.local/bin/speedtest.py",
+  "__pycache__",
+  ". venv",
+  "vendor",
+  "node_modules"
+]
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "N",   # pep8-naming
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "SIM", # flake8-simplify
+  "RUF"  # ruff-specific
+]
+ignore = ["E501"]  # line too long (handled by formatter)
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+extend-exclude = "Home/.local/bin/speedtest.py"
