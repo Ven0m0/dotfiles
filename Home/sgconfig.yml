@@ -1,6 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/rule.json
 severity: warning
-
 utils:
   is-console:
     kind: member_expression
@@ -27,7 +26,6 @@ utils:
       - pattern: insertAdjacentHTML($POS, $VAL)
       - pattern: document.write($VAL)
       - pattern: document.writeln($VAL)
-
 rules:
   # ----------------------------------------------------------------------------
   # TYPESCRIPT / JAVASCRIPT RULES
@@ -125,7 +123,6 @@ rules:
   # ----------------------------------------------------------------------------
   # BASH RULES & TRANSFORMS
   # ----------------------------------------------------------------------------
-  
   # Safety: Prevent word splitting on variables
   - id: bash-unquoted-var
     language: bash
@@ -145,7 +142,6 @@ rules:
     severity: error
     # Note: No auto-fix provided for this one as context matters (e.g. arguments)
     # If you want to force it: fix: '"$MATCH"' (where $MATCH is the expansion)
-
   # Optimization: Use input redirection instead of cat | cmd
   - id: bash-useless-cat
     language: bash
@@ -155,7 +151,6 @@ rules:
       pattern: cat $FILE | $CMD
     fix: $CMD < $FILE
     severity: warning
-
   # Performance: Use mapfile/readarray for arrays
   - id: bash-prefer-mapfile
     language: bash
@@ -168,7 +163,6 @@ rules:
         done
     fix: mapfile -t $ARRAY
     severity: info
-
   # Idiom: Use ':' (no-op) instead of 'true'
   # Replaces your 'bash-true' transform
   - id: bash-idiom-true
@@ -196,7 +190,6 @@ rules:
     rule:
       pattern: while true; do $$$BODY; done
     fix: while :; do $$$BODY; done
-
   # Style: Compact redirection (> /dev/null -> >/dev/null)
   # Replaces your 'bash-redir' transform
   - id: bash-style-compact-redirect
@@ -206,7 +199,6 @@ rules:
       kind: redirect
       regex: '> \/dev\/null' # Match strictly > space /dev/null
     fix: '>/dev/null'
-
   # Optimization: Compact silence (&>/dev/null)
   # Replaces your 'bash-null' transform
   # Handles: >/dev/null 2>&1  AND  > /dev/null 2>&1
@@ -218,7 +210,6 @@ rules:
       # Pattern matching allows us to capture the command ignoring the specific redirect syntax first
       pattern: $CMD > /dev/null 2>&1
     fix: $CMD &>/dev/null
-
   # Style: Function definitions without space
   # Replaces your 'bash-function' transform
   # Target: function name() { -> name(){
