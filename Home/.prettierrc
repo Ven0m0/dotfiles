@@ -3,12 +3,20 @@
   "useTabs": false,
   "singleQuote": true,
   "semi": true,
-  "jsxSingleQuote": true,
-  "trailingComma": "none",
-  "arrowParens": "avoid",
+  "jsxSingleQuote": false,
+  "trailingComma": "es5",
+  "arrowParens": "always",
   "bracketSpacing": true,
   "printWidth": 120,
   "proseWrap": "preserve",
   "endOfLine": "lf",
-  "plugins": []
+  "plugins": [],
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "trailingComma": "none"
+      }
+    }
+  ]
 }
