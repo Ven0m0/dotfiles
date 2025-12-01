@@ -127,42 +127,38 @@ Constraints:
 <summary><b>TODO</b></summary>
   
 ```markdown
-Objective: locate + fix a small TODO (code comment or TODO-file), remove obvious duplicated code, and suggest/implement targeted improvements for hotspots. Minimal, behavior-preserving edits. Produce reproducible patch + tests or an issue when fix is non-trivial.
-Scope:
-  - Small TODOs only (one-liner / single-responsibility). If TODO affects multiple modules or requires design changes, file an issue and link.
-  - Languages: detect per-file; prefer AST-aware tools when available.
-  - Do not change public behavior/ABI without explicit note and tests.
-Discovery (fast, precise):
-  - TODOs: `rg --hidden --no-ignore -nS '\bTODO\b'` (or `fd -0 . -e <ext> | xargs -0 rg ...`).
-  - Duplicate code: `jscpd --min-tokens 50` + `ast-grep` rules.
-  - Slow/inefficient patterns: language heuristics + `rg` for known anti-patterns (e.g. nested loops, O(n²) regex/concat, sync I/O in hot paths).
-Pipeline (detect → classify → fix → verify):
-  1. Find TODOs; classify: trivial (implementable), risky (needs design), external (deps/docs).
-  2. For trivial: implement inline, prefer small helper extraction, use existing utils.
-  3. For duplicates: extract common function/module; replace occurrences with call; keep diff minimal.
-  4. For perf: micro-benchmark candidate area (hyperfine or builtin profiler). If measurable (>5% improvement), apply targeted optimization (algorithmic change, batching, caching). Avoid micro-optimizations unless measurable.
-  5. Add/extend unit test(s) covering the change; run test suite.
-  6. Run linter/format pipeline; `git add -p` commit on a short branch `todo/<short>`
-Constraints / Safety:
-  - Preserve API/behavior; add tests for any behavior change.
-  - Prefer single-file small patches; refuse large refactors — create issue instead.
-  - Fail-fast on missing tests; if test coverage absent, add regression test demonstrating original bug then fix.
-Tools (prefer → fallback): `rg` → `grep`; `fd` → `find`; `jscpd`; `ast-grep`; `semgrep`; `hyperfine`/`time`/`perf`; `python -m cProfile` / `node --prof` / `go test -bench`; `git`.
-Output (structured):
-  - Patch (git diff/PR) with branch.
-  - One-line changelog entry.
-  - Tests added/modified.
-  - Benchmark before/after (numbers).
-  - Short rationale (2–4 lines) and risk level.
-  - If not fixed: created issue with reproduction + suggested plan.
-Repro commands (example):
-  - `rg --hidden --no-ignore -nS '\bTODO\b'`
-  - `jscpd --reporters console --min-tokens 50`
-  - `hyperfine 'cargo run --release --example foo'`
-  - `git checkout -b todo/short && git add -A && git commit -m 'fix: TODO — short' && git push`
-Exit criteria:
-  - Trivial TODO implemented + tests pass + CI local lint clean → return patch.
-  - Non-trivial → open issue with code pointers, suggested patch sketch, & benchmarks.
+Objective: fix one small TODO, remove obvious dupes, and apply targeted perf improvements. Minimal, behavior-preserving edits. Output: patch + tests, or issue if non-trivial.
+Scope: trivial TODOs only; multi-module/design → issue. Detect langs per file; prefer AST tools. No public API changes without tests.
+Discovery:
+- TODOs: rg -H -I -nS '\bTODO\b'
+- Dupes: jscpd --min-tokens 50 + ast-grep
+- Perf smells: heuristics + rg (nested loops, O(n²) regex/concat, sync I/O)
+Pipeline:
+1. classify TODO: trivial / risky / external
+2. trivial → implement inline; extract helper if needed
+3. dupes → extract common fn/module; minimal diff
+4. perf → microbench; if >5% win, apply (algo/batching/caching)
+5. add/extend tests; run suite
+6. lint/format; commit on branch todo/<short>
+Safety:
+- preserve API/behavior; add tests for changes
+- small single-file patches only; big → issue
+- no tests → add regression test then fix
+Tools: rg→grep; fd→find; jscpd; ast-grep; semgrep; hyperfine/time/perf; cProfile/node --prof/go bench; git.
+Output:
+- git diff patch; 1-line changelog
+- tests added/updated, benchmarks before/after
+- short rationale + risk
+- non-trivial → issue w/ reproduction + plan
+Repro:
+- rg -H -I -nS '\bTODO\b'
+- jscpd --min-tokens 50
+- hyperfine 'cargo run --release --example foo'
+- git checkout -b todo/short && git add -A && git commit -m 'fix: TODO' && git push
+Exit:
+- trivial fixed + tests + lint clean → patch
+- else → issue w/ pointers + benchmark notes
+
 ```
 </details>
 <details>
@@ -183,7 +179,6 @@ Purpose: concise patterns & constraints.
 Prompts: system+task/constraints/output
 Rules: short answers; best-effort on ambiguity; runnable code w/ quoted vars
 ---
----
 # GEMINI.MD
 Purpose: patterns for Gemini.
 - model: gemini-*
@@ -191,7 +186,6 @@ Purpose: patterns for Gemini.
 - vision: yes/no
 Prompts: system+json/human examples
 Rules: web.run only for freshness; note model quirks
----
 ---
 # copilot-instructions.md
 Purpose: dev guardrails.
