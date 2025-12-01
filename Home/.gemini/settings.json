@@ -34,6 +34,7 @@
     "read-website-fast": {
       "command": "bunx",
       "args": [
+        "-y",
         "@just-every/mcp-read-website-fast"
       ]
     },
@@ -42,13 +43,6 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-sequential-thinking"
-      ]
-    },
-    "filesystem": {
-      "command": "bunx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem"
       ]
     },
     "fast-filesystem": {
@@ -94,28 +88,21 @@
       "url": "https://promptboost.dev/mcp",
       "type": "http"
     },
-    "shell-readonly": {
-      "command": "uvx",
-      "args": [
-        "mcp-shell-server"
-      ],
-      "env": {
-        "ALLOW_COMMANDS": "ls,cat,pwd,grep,wc,awk,sed,find,df,free,top,ps,systemctl,journalctl,ip,ss,netstat,lsof,uname,which,whereis,file,stat,fd,rg,cd,command,git"
-      }
+    "fetch": {
+      "url": "https://remote.mcpservers.org/fetch/mcp",
+      "type": "http"
     },
-    "json-processor": {
-      "command": "bunx",
-      "args": [
-        "-y",
-        "@gongrzhe/server-json-mcp@latest"
-      ]
+    "playwright": {
+      "url": "https://api.mcphub.com/mcp/executeautomation-mcp-playwright",
+      "type": "http"
     },
-    "git": {
-      "command": "bunx",
-      "args": [
-        "-y",
-        "@cyanheads/git-mcp-server@latest"
-      ]
+    "sequential": {
+      "url": "https://remote.mcpservers.org/sequentialthinking/mcp",
+      "type": "http"
+    },
+    "basic-memory": {
+      "url": "https://api.mcphub.com/mcp/basicmachines-co-basic-memory",
+      "type": "http"
     }
   }
 }
