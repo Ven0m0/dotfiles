@@ -1,0 +1,36 @@
+config_version = "0"
+
+exclude_patterns = ["**/node_modules/**"]
+test_patterns = ["**/test/**"]
+
+[[source]]
+name = "default"
+default = true
+
+[[plugin]]
+name = "ripgrep"
+
+[[plugin]]
+name = "shellcheck"
+
+[[plugin]]
+name = "shfmt"
+
+[[plugin]]
+name = "actionlint"
+
+[[plugin]]
+name = "black"
+
+[[plugin]]
+name = "prettier"
+
+[[plugin]]
+name = "stylelint"
+
+[[plugin]]
+name = "yamllint"
+
+[[plugin]]
+name = "markdownlint"
+
