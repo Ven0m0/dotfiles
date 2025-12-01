@@ -75,7 +75,9 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 - [DietPi](https://dietpi.com)
 - [Raspberry Pi OS](https://www.raspberrypi.com/software)
 </details>
-
+<details>
+<summary><b>Alternative frontends</b></summary>
+  
 - [Libredirect](https://libredirect.github.io)
 - [alternative-front-ends](https://github.com/mendel5/alternative-front-ends)
 - [Privacy-tools](https://www.privacytools.io)
@@ -83,15 +85,16 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 - [Redlib reddit](https://lr.ptr.moe)
 - [Imgur](https://rimgo.lunar.icu)
 
-## `Search engines`
+**Search engines**
 - [DuckduckGo](https://duckduckgo.com)
 - [Searchxng](https://searx.dresden.network/) &nbsp;[Instances](https://searx.space)
 - [Brave search](https://search.brave.com)
+</details>
 
 ## **Quick prompts**
 <details>
 <summary><b>Lint/Format</b></summary>
-  
+
 ```markdown
 Objective: Exhaustive lint+format per .editorconfig. Enforce 2-space indent. Zero remaining errors. Fail CI on non-zero.
 Discovery: fd --type f --hidden --no-ignore --exclude .git --exclude node_modules --extension <exts>
