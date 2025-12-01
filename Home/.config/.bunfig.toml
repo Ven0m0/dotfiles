@@ -9,7 +9,7 @@ trimWildcards = true
 # Install configuration
 [install]
 # Package resolution
-auto = "fallback"
+auto = "auto"
 production = true
 optional = false
 peer = false
