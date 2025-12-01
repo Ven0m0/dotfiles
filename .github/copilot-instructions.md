@@ -1,11 +1,17 @@
-# Copilot Instructions
+This is my archlinux dotfiles repo. It stores all my config files and some scripts for my optimal linux setup. Please follow these guidelines when contributing:
 
-## Control Hierarchy
+## LLM rules / Code Standards
 
 1. User commands override all rules
 1. Edit > Create (modify minimal lines)
 1. Subtraction > Addition (remove before adding)
 1. Align with existing patterns in repo
+
+## Repository Structure
+
+- `Home/`: User home directory ($HOME)
+- `etc/`: "/etc/" dir
+- `usr/`: "/usr/" dir
 
 ## Style & Format
 
