@@ -1,6 +1,8 @@
-______________________________________________________________________
+---
+applyTo: "\*\*"
+---
 
-## applyTo: "\*\*" description: "Prevent Copilot from wreaking havoc across your codebase, keeping it under control."
+Prevent Copilot from wreaking havoc across your codebase, keeping it under control.
 
 ## Core Directives & Hierarchy
 
