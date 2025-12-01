@@ -1,17 +1,25 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/rule.json
 severity: warning
+
+# ==============================================================================
+# UTILITIES (Reusable Sub-Rules)
+# ==============================================================================
 utils:
+  # --- TypeScript/JavaScript ---
   is-console:
     kind: member_expression
     pattern: console.$METHOD
     has:
       kind: property_identifier
       regex: ^(log|debug|info|warn|error)$
+
   is-debugger:
     kind: debugger_statement
+
   has-todo:
     kind: comment
     regex: \b(TODO|FIXME|XXX|HACK)\b
+
   unsafe-eval:
     any:
       - pattern: eval($EXPR)
@@ -19,6 +27,7 @@ utils:
       - pattern: setTimeout($STRING, $$$)
         has:
           kind: string
+
   dangerous-html:
     any:
       - pattern: innerHTML = $VAL
@@ -26,34 +35,60 @@ utils:
       - pattern: insertAdjacentHTML($POS, $VAL)
       - pattern: document.write($VAL)
       - pattern: document.writeln($VAL)
+
+  # --- Bash Utilities ---
+  # Glob pattern check for case inlining safety
+  has-glob-pattern:
+    kind: case_item
+    regex: '[\*\?\[]'
+
+  # Getopt/flag parsing detection
+  is-flag-case:
+    kind: case_item
+    regex: '^-[a-zA-Z]|--[a-z]'
+
+# ==============================================================================
+# RULES
+# ==============================================================================
 rules:
+  # ----------------------------------------------------------------------------
+  # TYPESCRIPT / JAVASCRIPT — Security & Style
+  # ----------------------------------------------------------------------------
   - id: no-console
     language: typescript
-    message: Remove console statements
+    message: Remove console statements (use logger/debug build)
+    note: "Production code should use structured logging"
     utils: is-console
     severity: error
     fix: ''
+
   - id: no-debugger
     language: typescript
     message: Remove debugger statement
     utils: is-debugger
     severity: error
     fix: ''
+
   - id: no-todo-comments
     languages: [typescript, javascript, bash]
     message: Resolve TODO/FIXME comment
+    note: "Convert to tracked issues or resolve inline"
     utils: has-todo
     severity: warning
+
   - id: no-unsafe-eval
     language: typescript
-    message: Avoid eval and Function constructor
+    message: Avoid eval and Function constructor (code injection risk)
     utils: unsafe-eval
     severity: error
+
   - id: no-dangerous-html
     language: typescript
     message: Avoid direct HTML manipulation (XSS risk)
+    note: "Use textContent, createElement, or DOMPurify"
     utils: dangerous-html
     severity: warning
+
   - id: prefer-const
     language: typescript
     message: Use const for variables that are never reassigned
@@ -70,6 +105,8 @@ rules:
                 field: left
                 pattern: $VAR
     fix: const $VAR = $INIT
+    severity: info
+
   - id: no-var
     language: typescript
     message: Use let or const instead of var
@@ -78,9 +115,10 @@ rules:
       pattern: var $VAR = $INIT
     fix: let $VAR = $INIT
     severity: error
+
   - id: prefer-arrow-function
     language: typescript
-    message: Prefer arrow functions for callbacks
+    message: Prefer arrow functions for callbacks (lexical this)
     rule:
       kind: function_expression
       inside:
@@ -88,18 +126,37 @@ rules:
           - kind: arguments
           - kind: array
     fix: ($PARAMS) => $BODY
+    severity: hint
+
   - id: no-empty-catch
     language: typescript
     message: Empty catch block - handle error or remove try-catch
+    note: "At minimum log error or add comment explaining silence"
     rule:
       kind: catch_clause
       has:
         kind: statement_block
         pattern: '{}'
     severity: warning
+
+  - id: prefer-strict-equality
+    language: typescript
+    message: Use === instead of == (avoid type coercion)
+    rule:
+      kind: binary_expression
+      any:
+        - pattern: $A == $B
+        - pattern: $A != $B
+    fix: $A === $B
+    severity: error
+
+  # ----------------------------------------------------------------------------
+  # BASH — Safety (Prevent Word Splitting & Injection)
+  # ----------------------------------------------------------------------------
   - id: bash-unquoted-var
     language: bash
-    message: Quote variable to prevent word splitting
+    message: Quote variable to prevent word splitting/globbing
+    note: "Exceptions: [[ ]], arithmetic, assignments, case items (already safe)"
     rule:
       kind: expansion
       regex: ^\$[A-Za-z_][A-Za-z0-9_]*$
@@ -109,31 +166,197 @@ rules:
             - kind: double_quoted_string
             - kind: single_quoted_string
             - kind: arithmetic_expansion
+            - kind: test_command
+            - kind: assignment
+            - kind: case_item
+            - kind: for_statement  # for x in $LIST → often intentional
     severity: error
+
+  # ----------------------------------------------------------------------------
+  # BASH — Performance (Avoid Forks, Use Bash Builtins)
+  # ----------------------------------------------------------------------------
   - id: bash-useless-cat
     language: bash
-    message: Useless cat - redirect directly
+    message: Useless cat - redirect directly (saves fork)
     rule:
       kind: pipeline
       pattern: cat $FILE | $CMD
     fix: $CMD < $FILE
+    severity: warning
+
   - id: bash-prefer-mapfile
     language: bash
-    message: Use mapfile instead of while read loop
+    message: Use mapfile instead of while read loop (10-100x faster)
+    note: "Requires bash 4.0+; use -t for trim, -d for delimiter"
     rule:
       kind: while_statement
       pattern: |
         while IFS= read -r $VAR; do
-          $ARRAY+=("$$VAR")
+          $ARRAY+=("$VAR")
         done
     fix: mapfile -t $ARRAY
-  - id: prefer-strict-equality
-    language: typescript
-    message: Use === instead of ==
+    severity: info
+
+  # ----------------------------------------------------------------------------
+  # BASH — Idioms (Token-Efficient, Fork-Efficient)
+  # ----------------------------------------------------------------------------
+  - id: bash-idiom-true-or
+    language: bash
+    message: "Prefer ':' over 'true' (builtin vs external, saves 1 fork)"
     rule:
-      kind: binary_expression
+      pattern: $CMD || true
+    fix: $CMD || :
+    severity: info
+
+  - id: bash-idiom-true-while
+    language: bash
+    message: "Prefer ':' over 'true' in while loops (1 char, builtin)"
+    rule:
+      pattern: while true; do $$$BODY; done
+    fix: while :; do $$$BODY; done
+    severity: info
+
+  # ----------------------------------------------------------------------------
+  # BASH — Style (Compact, Token-Efficient)
+  # ----------------------------------------------------------------------------
+  - id: bash-style-compact-redirect
+    language: bash
+    message: Remove space before /dev/null (saves 1 token)
+    rule:
+      kind: redirect
+      regex: '> \/dev\/null'
+    fix: '>/dev/null'
+    severity: info
+
+  - id: bash-opt-silence-all
+    language: bash
+    message: Use &>/dev/null instead of >/dev/null 2>&1 (bash shorthand)
+    note: "Supported bash 4.0+, zsh; not POSIX sh"
+    rule:
+      kind: command
+      pattern: $CMD > /dev/null 2>&1
+    fix: $CMD &>/dev/null
+    severity: info
+
+  - id: bash-style-function-brace
+    language: bash
+    message: Remove space before function brace (compact style)
+    rule:
+      kind: function_definition
+      regex: '\) \{'
+      pattern: |
+        $NAME() {
+          $$$BODY
+        }
+    fix: |
+      $NAME(){
+        $$$BODY
+      }
+    severity: info
+
+  # ----------------------------------------------------------------------------
+  # BASH — Case Inlining (Selective, Performance-Aware)
+  # ----------------------------------------------------------------------------
+  - id: bash-case-trivial-inline
+    language: bash
+    message: Inline trivial case to direct test (avoids case overhead)
+    note: "Single branch, no globs, not in loops → [[ ]] && faster"
+    rule:
+      kind: case_statement
+      all:
+        - pattern: |
+            case $VAR in
+              $PATTERN) $CMD ;;
+            esac
+        - not:
+            utils: has-glob-pattern
+        - not:
+            inside:
+              any:
+                - kind: while_statement
+                - kind: for_statement
+    fix: '[[ $VAR == $PATTERN ]] && $CMD'
+    severity: hint
+
+  - id: bash-case-two-to-if-else
+    language: bash
+    message: Consider if-else for two-branch case (clearer intent)
+    note: "Case shines at 4+ branches; if-else clearer for 2"
+    rule:
+      kind: case_statement
+      all:
+        - pattern: |
+            case $VAR in
+              $PATTERN1) $CMD1 ;;
+              *) $CMD2 ;;
+            esac
+        - not:
+            utils: is-flag-case
+        - not:
+            inside:
+              kind: while_statement
+    fix: if [[ $VAR == $PATTERN1 ]]; then $CMD1; else $CMD2; fi
+    severity: hint
+
+  # --- Keep getopt/flag case for readability ---
+  - id: bash-case-getopt-preserve
+    language: bash
+    message: Getopt/flag case detected - preserve for readability
+    note: "Flag parsing with case is idiomatic; don't inline"
+    rule:
+      kind: case_statement
+      has:
+        utils: is-flag-case
+    severity: off
+
+  # ----------------------------------------------------------------------------
+  # BASH — Additional Optimizations
+  # ----------------------------------------------------------------------------
+  - id: bash-prefer-parameter-expansion
+    language: bash
+    message: Use parameter expansion instead of sed/awk (no fork)
+    note: "${var#prefix}, ${var%suffix}, ${var//search/replace}"
+    rule:
       any:
-        - pattern: $A == $B
-        - pattern: $A != $B
-    fix: $A === $B
-    severity: error
+        - pattern: echo $VAR | sed 's/^$PREFIX//'
+        - pattern: echo $VAR | awk '{gsub(/^$PREFIX/,"")}1'
+    fix: echo "${VAR#$PREFIX}"
+    severity: hint
+
+  - id: bash-builtin-test-bracket
+    language: bash
+    message: Use [[ ]] instead of [ ] (bash builtin, safer)
+    note: "[[ ]] prevents word splitting, supports regex, no quoting needed"
+    rule:
+      kind: test_command
+      regex: '^\['
+      not:
+        regex: '^\[\['
+    severity: info
+    # No auto-fix due to syntax complexity; manual review safer
+
+  - id: bash-prefer-printf-over-echo
+    language: bash
+    message: Prefer printf over echo for portable/safe output
+    note: "echo behavior varies (BSD vs GNU); printf is POSIX-consistent"
+    rule:
+      kind: command
+      pattern: echo -n $$$
+    severity: hint
+    # No auto-fix; context-dependent
+# ==============================================================================
+# FILE FILTERS (Performance: Scope Scans)
+# ==============================================================================
+# Uncomment and customize if using via . ast-grep/rules/ structure:
+# files:
+#   - "**/*.sh"
+#   - "**/*. bash"
+#   - "**/*.ts"
+#   - "**/*. tsx"
+#   - "**/*. js"
+#   - "**/*.jsx"
+# ignores:
+#   - "**/node_modules/**"
+#   - "**/.git/**"
+#   - "**/dist/**"
+#   - "**/build/**"
