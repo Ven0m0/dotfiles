@@ -3,6 +3,9 @@ name: Auto-Trigger Claude
 on:
   issues:
     types: [labeled]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
+  cancel-in-progress: true
 jobs:
   auto-trigger-claude:
     # Gate: only run when Claude Code is explicitly enabled AND the 'claude' label is added
