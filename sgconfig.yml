@@ -1,4 +1,4 @@
 ruleDirs:
-  - /home/lucy/Projects/dotfiles/Home/.config/ast-grep/rules
+  - Home/.config/ast-grep/rules
 utilDirs:
-  - /home/lucy/Projects/dotfiles/Home/.config/ast-grep/utils
+  - Home/.config/ast-grep/utils
