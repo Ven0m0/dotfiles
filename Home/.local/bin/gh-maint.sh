@@ -10,7 +10,14 @@ VERBOSE=false
 MODE="${MODE:-both}"
 DELETED_BRANCHES=0
 DELETED_REMOTE_BRANCHES=0
+<<<<<<< Updated upstream
 die(){
+||||||| Stash base
+die() {
+=======
+has() { command -v "$1" &>/dev/null; }
+die() {
+>>>>>>> Stashed changes
   printf '%s\n' "$1" >&2
   exit 1
 }
@@ -86,11 +93,11 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 [[ $DRY_RUN == true ]] && msg "DRY RUN MODE"
-if command -v gix &>/dev/null; then
+if has gix; then
   verbose "Using gitoxide (gix)"
   GIT_CMD=gix
 else
-  command -v git &>/dev/null || die "git not found"
+  has git || die "git not found"
   GIT_CMD=git
   verbose "Using git"
 fi
@@ -198,7 +205,7 @@ clean_repo(){
   done < <(git branch --merged "$trunk" --format='%(refname:short)')
   [[ $merged_count -gt 0 ]] && ok "Deleted $merged_count merged branch(es)" || ok "No merged branches"
   DELETED_BRANCHES=$merged_count
-  if command -v gh &>/dev/null; then
+  if has gh; then
     msg "Checking PR-merged branches..."
     local pr_count=0
     while IFS= read -r branch; do
@@ -238,8 +245,16 @@ clean_repo(){
   fi
   optimize_repo
 }
+<<<<<<< Updated upstream
 check_gha_failures(){
   if ! command -v gh &>/dev/null; then
+||||||| Stash base
+check_gha_failures() {
+  if ! command -v gh &>/dev/null; then
+=======
+check_gha_failures() {
+  if ! has gh; then
+>>>>>>> Stashed changes
     warn "gh command not found, skipping GHA failure check."
     return
   fi
@@ -288,7 +303,7 @@ auto_merge_pr(){
   trap 'rm -rf "$work_dir"' EXIT
   cd "$work_dir"
   msg "Fetching PR $owner/$repo#$pr..."
-  command -v gh &>/dev/null || die "gh CLI not installed"
+  has gh || die "gh CLI not installed"
   local pr_info head_ref base_ref is_cross
   pr_info=$(gh pr view "$pr" -R "$owner/$repo" --json headRefName,baseRefName,headRepository,isCrossRepository)
   head_ref=$(jq -r .headRefName <<<"$pr_info")

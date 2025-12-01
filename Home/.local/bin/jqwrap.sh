@@ -5,14 +5,16 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
+has() { command -v "$1" &>/dev/null; }
+
 # Usage: jqwrap [jq_args...]
 jqwrap(){
   local jqbin
-  if command -v jaq &>/dev/null; then
+  if has jaq; then
     jqbin=jaq
     # --raw-input short: -R; --slurp: -s; --null-input: -n; all work the same in jaq, pass through
     "$jqbin" "$@"
-  elif command -v jq &>/dev/null; then
+  elif has jq; then
     jqbin=jq
     "$jqbin" "$@"
   else

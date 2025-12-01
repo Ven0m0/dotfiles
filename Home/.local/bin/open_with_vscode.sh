@@ -4,7 +4,14 @@ shopt -s nullglob
 LC_ALL=C LANG=C
 # Open files/URIs in VS Code
 # Source: https://github.com/AhmetCanArslan/linux-scripts
+<<<<<<< Updated upstream
 die(){
+||||||| Stash base
+die() {
+=======
+has() { command -v "$1" &>/dev/null; }
+die() {
+>>>>>>> Stashed changes
   printf 'Error: %s\n' "$*" >&2
   exit 1
 }
@@ -44,7 +51,7 @@ main(){
     fi
   done
   # Check for VS Code
-  command -v code &>/dev/null || die "VS Code (code) is not installed"
+  has code || die "VS Code (code) is not installed"
   # Open each file/URI
   for uri in "$@"; do
     # Decode file:// URIs and URL-encoded spaces

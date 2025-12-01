@@ -34,7 +34,14 @@ check_doas_conf(){
   return 0
 }
 error() { printf 'doasedit: %s\n' "${@}" 1>&2; }
+<<<<<<< Updated upstream
 _exit(){
+||||||| Stash base
+_exit() {
+=======
+has() { command -v "$1" &>/dev/null; }
+_exit() {
+>>>>>>> Stashed changes
   rm -rf "$tmpdir"
   trap - EXIT HUP QUIT TERM INT ABRT
   exit "${1:-0}"
@@ -73,13 +80,13 @@ for editor_cmd in "$DOAS_EDITOR" "$VISUAL" "$EDITOR"; do
 done
 # shellcheck disable=SC2086
 if [ "$editor_cmd" = "" ]; then
-  if command -v vi &>/dev/null; then
+  if has vi; then
     editor_cmd='vi'
   else
     error 'no editor specified'
     exit 1
   fi
-elif ! command -v "$editor_cmd" &>/dev/null; then
+elif ! has "$editor_cmd"; then
   error "invalid editor command: '${editor_cmd}'"
   exit 1
 fi

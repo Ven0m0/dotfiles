@@ -9,22 +9,23 @@ export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 #
 # usage: launcher.sh [app|power|file]
 #        If no argument is provided, opens a mode selection menu.
+has() { command -v "$1" &>/dev/null; }
 # --- Menu Abstraction ---
 # Detects context and available tools to select the best menu provider.
 _menu(){
   local prompt="${1:-select: }"
   # 1. Prefer fzf if running in a terminal
-  if [[ -t 0 ]] && command -v fzf &>/dev/null; then
+  if [[ -t 0 ]] && has fzf; then
     fzf --prompt="$prompt" --height=40% --layout=reverse --border
     return
   fi
   # 2. GUI Menu Fallbacks
-  if command -v bemenu &>/dev/null; then
+  if has bemenu; then
     # -i: insensitive, -l: lines, -p: prompt, --tf/hf: theme colors
     bemenu -i -l 10 -p "$prompt" --tf "#fab387" --hf "#89b4fa"
-  elif command -v rofi &>/dev/null; then
+  elif has rofi; then
     rofi -dmenu -i -p "$prompt"
-  elif command -v dmenu &>/dev/null; then
+  elif has dmenu; then
     dmenu -i -p "$prompt"
   else
     printf "Error: No menu tool (fzf, bemenu, rofi) found.\n" >&2

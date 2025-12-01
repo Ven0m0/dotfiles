@@ -19,6 +19,7 @@ set -euo pipefail
 # exit 1 - no selection
 # exit 2 - error
 
+has() { command -v "$1" &>/dev/null; }
 WALLPAPERS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/wallpapers"
 mkdir -p "$WALLPAPERS_DIR"
 QUIET=""
@@ -27,7 +28,7 @@ send_feedback(){
   local msg="$1"
   if [[ -z $QUIET ]]; then
     printf '%s\n' "$msg"
-    command -v notify-send &>/dev/null && notify-send "$msg" || :
+    has notify-send && notify-send "$msg" || :
   fi
 }
 

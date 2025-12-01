@@ -11,7 +11,14 @@ trap 'rm -f "$TMP"' EXIT
 release=""
 output_opt=(-O)
 curl_args=(-fsSL)
+<<<<<<< Updated upstream
 die(){
+||||||| Stash base
+die() {
+=======
+has() { command -v "$1" &>/dev/null; }
+die() {
+>>>>>>> Stashed changes
   printf 'Error: %s\n' "$*" >&2
   exit 1
 }
@@ -83,8 +90,8 @@ main() { # Parse options
   [[ $# -eq 2 ]] || die "Expected 2 arguments. Use -h for help."
 
   # Check dependencies
-  command -v curl &>/dev/null || die "curl is required"
-  command -v jq &>/dev/null || die "jq is required"
+  has curl || die "curl is required"
+  has jq || die "jq is required"
 
   local repo="$1" substring="$2"
 

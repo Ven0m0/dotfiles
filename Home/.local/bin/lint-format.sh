@@ -21,6 +21,7 @@ readonly TOOLS=(
 # Colors
 readonly R=$(tput setaf 1) G=$(tput setaf 2) Y=$(tput setaf 3) B=$(tput setaf 4) NC=$(tput sgr0)
 # --- Helpers ---
+has() { command -v "$1" &>/dev/null; }
 log() { printf "${B}[%s]${NC} %s\n" "$(date +%T)" "$1"; }
 err() { printf "${R}[ERR]${NC} %s\n" "$1" >&2; }
 ok()  { printf "${G}[OK]${NC} %s\n" "$1"; }
@@ -28,7 +29,7 @@ check_deps(){
   local missing=()
   for t in "${TOOLS[@]}"; do
     local bin="${t#*:}"
-    if ! command -v "$bin" &>/dev/null; then missing+=("$bin"); fi
+    if ! has "$bin"; then missing+=("$bin"); fi
   done
   # Fallbacks/Alternatives logic
   if [[ ${#missing[@]} -gt 0 ]]; then
@@ -41,7 +42,7 @@ check_deps(){
 find_files(){
   local ext="$1"
   # fd is preferred -> find fallback
-  if command -v fd &>/dev/null; then
+  if has fd; then
     fd -u -t f -H -E .git -E node_modules -E .venv -e "$ext" . "$PROJECT_ROOT"
   else
     find "$PROJECT_ROOT" -type f -name "*.$ext" -not -path "*/.git/*" -not -path "*/node_modules/*"
@@ -68,7 +69,7 @@ proc_web(){
   # Biome handles globbing efficiently itself
   biome format --write --config-path=biome.json .
   biome lint --apply --config-path=biome.json .
-  
+
   # ESLint (Fix)
   # mapfile -t files < <(fd -e js -e ts -e jsx -e tsx)
   # [[ ${#files[@]} -gt 0 ]] && eslint --fix "${files[@]}"
@@ -101,7 +102,7 @@ proc_fish(){
 
 proc_toml(){
   log "Processing TOML..."
-  if command -v taplo &>/dev/null; then
+  if has taplo; then
     taplo format --option "indent_string=  " # Force 2 spaces
     taplo lint
   fi
@@ -130,7 +131,7 @@ proc_markdown(){
   local files
   mapfile -t files < <(find_files "md")
   [[ ${#files[@]} -eq 0 ]] && return 0
-  
+
   # Fix common issues
   markdownlint-cli2 --fix "**/*.md"
 }

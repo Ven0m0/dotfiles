@@ -6,7 +6,15 @@ export LC_ALL=C LANG=C
 
 # Media toolkit: CD burning, USB creation, transcoding, and image optimization
 
+<<<<<<< Updated upstream
 die(){
+||||||| Stash base
+die() {
+=======
+has() { command -v "$1" &>/dev/null; }
+need() { has "$1" || die "Required: $1"; }
+die() {
+>>>>>>> Stashed changes
   printf '\e[0;31mERROR: %s\e[0m\n' "$*" >&2
   exit 1
 }
@@ -55,7 +63,7 @@ EOF
 
 cmd_cd(){
   local toc="$1"
-  command -v cdrdao &>/dev/null || die "cdrdao not found"
+  need cdrdao
   [[ -f $toc ]] || die "TOC file not found: $toc"
   printf 'Burning CD from: %s\n' "$toc"
   sudo cdrdao write --eject --driver generic-mmc-raw "$toc"
@@ -64,9 +72,7 @@ cmd_cd(){
 
 cmd_usb(){
   local iso="$1" dst="$2" size
-  for cmd in dd pv stat; do
-    command -v "$cmd" &>/dev/null || die "Required: $cmd"
-  done
+  for cmd in dd pv stat; do need "$cmd"; done
   [[ -f $iso ]] || die "File not found: $iso"
   local ext="${iso##*.}"
   ext="${ext,,}"
@@ -118,9 +124,7 @@ cmd_format(){
 
 cmd_ripdvd(){
   local iso="$1" dvd="/dev/sr0"
-  for cmd in isoinfo dd pv sha1sum; do
-    command -v "$cmd" &>/dev/null || die "Required: $cmd"
-  done
+  for cmd in isoinfo dd pv sha1sum; do need "$cmd"; done
   [[ -b $dvd ]] || die "DVD device not found: $dvd"
   log "Reading DVD info..."
   local dvd_info block_size volume_size total_size
@@ -158,14 +162,12 @@ cmd_pngzip(){
     esac
   done
   shift $((OPTIND - 1))
-  for cmd in pngquant oxipng; do
-    command -v "$cmd" &>/dev/null || die "Required: $cmd"
-  done
-  ((DPI > 0)) && { command -v pngcrush &>/dev/null || die "pngcrush required for -r"; }
+  for cmd in pngquant oxipng; do need "$cmd"; done
+  ((DPI > 0)) && need pngcrush
   local targets=()
   for x in "${@:-.}"; do
     if [[ -d $x ]]; then
-      if command -v fd &>/dev/null; then
+      if has fd; then
         mapfile -t files < <(fd -tf -e png --strip-cwd-prefix "$x")
       else
         mapfile -t files < <(find "$x" -type f -name "*.png")
@@ -208,34 +210,34 @@ cmd_pngzip(){
 
 cmd_vid1080(){
   local vid="$1"
-  command -v ffmpeg &>/dev/null || die "ffmpeg not found"
+  need ffmpeg
   ffmpeg -i "$vid" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${vid%.*}"-1080p.mp4
 }
 
 cmd_vid4k(){
   local vid="$1"
-  command -v ffmpeg &>/dev/null || die "ffmpeg not found"
+  need ffmpeg
   ffmpeg -i "$vid" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${vid%.*}"-optimized.mp4
 }
 
 cmd_jpg(){
   local img="$1"
   shift
-  command -v magick &>/dev/null || die "imagemagick not found"
+  need magick
   magick "$img" "$@" -quality 95 -strip "${img%.*}"-optimized.jpg
 }
 
 cmd_jpgsmall(){
   local img="$1"
   shift
-  command -v magick &>/dev/null || die "imagemagick not found"
+  need magick
   magick "$img" "$@" -resize 1080x\> -quality 95 -strip "${img%.*}"-optimized.jpg
 }
 
 cmd_png(){
   local img="$1"
   shift
-  command -v magick &>/dev/null || die "imagemagick not found"
+  need magick
   magick "$img" "$@" -strip -define png:compression-filter=5 \
     -define png:compression-level=9 -define png:compression-strategy=1 \
     -define png:exclude-chunk=all "${img%.*}"-optimized.png

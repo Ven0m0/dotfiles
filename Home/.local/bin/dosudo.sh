@@ -63,9 +63,20 @@ if [ "$flag_i" ] && [ "$flag_s" ]; then
   echo "sudo: you may not specify both the '-i' and '-s' options" >&2
   exit 1
 fi
+<<<<<<< Updated upstream
 _doas(){ exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
 user_shell(){
   if command -v getent &>/dev/null; then
+||||||| Stash base
+_doas() { exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
+user_shell() {
+  if command -v getent &>/dev/null; then
+=======
+has() { command -v "$1" &>/dev/null; }
+_doas() { exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
+user_shell() {
+  if has getent; then
+>>>>>>> Stashed changes
     getent passwd "${user:-root}" | awk -F: 'END {print $NF ? $NF : "sh"}'
   else
     awk -F: '$1 == "'"${user:-root}"'" {print $NF; m=1} END {if (!m) print "sh"}' /etc/passwd

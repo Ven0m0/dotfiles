@@ -5,13 +5,15 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
+has() { command -v "$1" &>/dev/null; }
+
 # Usage: ffwrap [ffmpeg_args...]
 ffwrap(){
   local ffbin
-  if command -v ffzap &>/dev/null; then
+  if has ffzap; then
     ffbin=ffzap
     "$ffbin" "$@"
-  elif command -v ffmpeg &>/dev/null; then
+  elif has ffmpeg; then
     ffbin=ffmpeg
     "$ffbin" -hide_banner "$@"
   else

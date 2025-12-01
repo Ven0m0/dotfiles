@@ -11,15 +11,26 @@ FILE_NATIVE="pkglist_native.txt"
 FILE_AUR="pkglist_aur.txt"
 
 # Helpers
+has() { command -v "$1" &>/dev/null; }
 log() { printf -- ":: %s\n" "$*"; }
 err(){
   printf -- "!! %s\n" "$*" >&2
   exit 1
 }
 
+<<<<<<< Updated upstream
 check_deps(){
   command -v pacman &>/dev/null || err "pacman not found."
   command -v paru &>/dev/null || err "paru not found."
+||||||| Stash base
+check_deps() {
+  command -v pacman &>/dev/null || err "pacman not found."
+  command -v paru &>/dev/null || err "paru not found."
+=======
+check_deps() {
+  has pacman || err "pacman not found."
+  has paru || err "paru not found."
+>>>>>>> Stashed changes
 }
 
 # Core Functions
