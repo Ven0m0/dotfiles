@@ -6,7 +6,7 @@ IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
 # Usage: ffwrap [ffmpeg_args...]
-ffwrap() {
+ffwrap(){
   local ffbin
   if command -v ffzap &>/dev/null; then
     ffbin=ffzap

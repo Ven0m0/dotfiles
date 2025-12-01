@@ -6,7 +6,7 @@ IFS=$'\n\t'
 export LC_ALL=C LANG=C
 readonly UA="netinfo/1.0"
 has() { command -v "$1" &>/dev/null; }
-die() {
+die(){
   printf 'Error: %s\n' "$*" >&2
   exit 1
 }
@@ -16,7 +16,7 @@ has curl || die "curl is required"
 has awk || die "awk is required"
 
 # JSON getter with jq fallback
-jget() {
+jget(){
   local json="$1" field="$2"
   if has jq; then
     jq -r "$field" <<<"$json"
@@ -26,7 +26,7 @@ jget() {
   fi
 }
 
-speed_test() {
+speed_test(){
   local raw up
 
   printf 'Testing download speed...\n' >&2
@@ -39,7 +39,7 @@ speed_test() {
   awk -v s="$up" 'BEGIN{printf "Up:   %.2f Mbps\n",(s*8)/(1024*1024)}'
 }
 
-weather() {
+weather(){
   local location="${1:-}"
   [[ -z $location ]] && location="Bielefeld"
 
@@ -49,7 +49,7 @@ weather() {
   }
 }
 
-ip_info() {
+ip_info(){
   local json ip loc
 
   json=$(curl -fsS -H "User-Agent: ${UA}" https://ipinfo.io/json 2>/dev/null || printf '{}')
@@ -63,7 +63,7 @@ ip_info() {
   weather "$loc"
 }
 
-usage() {
+usage(){
   cat <<'EOF'
 netinfo - Network information tool
 
@@ -89,7 +89,7 @@ DEPENDENCIES:
 EOF
 }
 
-main() {
+main(){
   local cmd="${1:-all}"
   shift || :
 

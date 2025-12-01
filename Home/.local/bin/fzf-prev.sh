@@ -15,7 +15,7 @@ batcmd() { if have batcat; then printf '%s' batcat; elif have bat; then printf '
 cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/fzf"
 mkdir -p "$cache_dir" || :
 mime_of() { file --mime-type -b -- "$1"; }
-ext_of() {
+ext_of(){
   local b="${1##*/}"
   b="${b##*.}"
   printf '%s' "${b,,}"
@@ -25,7 +25,7 @@ sha256_of() { sha256sum <<<"$1" | awk '{print $1}'; }
 
 dim_cols="${FZF_PREVIEW_COLUMNS:-}"
 dim_lines="${FZF_PREVIEW_LINES:-}"
-term_dim() {
+term_dim(){
   local cols="$dim_cols" lines="$dim_lines"
   if [[ -z $cols || -z $lines ]]; then
     read -r lines cols < <(stty size </dev/tty 2>/dev/null || printf '40 120\n')
@@ -40,7 +40,7 @@ term_dim() {
   printf '%sx%s' "$cols" "$lines"
 }
 
-preview_text() {
+preview_text(){
   local file="$1" center="${2:-0}" ext
   ext="$(ext_of "$file")"
   case "$ext" in
@@ -62,7 +62,7 @@ preview_text() {
   fi
 }
 
-preview_symlink() {
+preview_symlink(){
   local loc="$1" target
   target="$(readlink -- "$loc" || printf '')"
   [[ -z $target ]] && {
@@ -72,7 +72,7 @@ preview_symlink() {
   printf 'symlink → %s\n' "$target"
 }
 
-preview_image_backend() {
+preview_image_backend(){
   local img="$1" dim
   dim="$(term_dim)"
   local handler="${FZF_PREVIEW_IMAGE_HANDLER:-auto}"
@@ -96,7 +96,7 @@ preview_image_backend() {
   file --brief --dereference --mime -- "$img"
 }
 
-preview_archive() {
+preview_archive(){
   local f="$1" ext
   ext="$(ext_of "$f")"
   case "$ext" in
@@ -114,7 +114,7 @@ preview_archive() {
   file --brief --dereference --mime -- "$f"
 }
 
-preview_misc_by_ext() {
+preview_misc_by_ext(){
   local f="$1" ext
   ext="$(ext_of "$f")"
   case "$ext" in
@@ -150,7 +150,7 @@ preview_misc_by_ext() {
   file --brief --dereference --mime -- "$f"
 }
 
-preview_file() {
+preview_file(){
   local loc="$1" center="${2:-0}"
   local mime
   mime="$(mime_of "$loc" || printf '')"
@@ -181,7 +181,7 @@ preview_file() {
   *) preview_archive "$loc" || preview_misc_by_ext "$loc" ;;
   esac
 }
-parse_arg() {
+parse_arg(){
   local in="$1" file="$1" center=0
   if [[ ! -r $file ]]; then
     if [[ $file =~ ^(.+):([0-9]+)\ *$ ]] && [[ -r ${BASH_REMATCH[1]} ]]; then
@@ -195,7 +195,7 @@ parse_arg() {
   printf '%s\n%s\n' "${file/#\~\//$HOME/}" "$center"
 }
 usage() { printf 'usage: %s preview <PATH|PATH:LINE>\n' "${0##*/}"; }
-cmd_preview() {
+cmd_preview(){
   [[ $# -ge 1 ]] || {
     usage
     return 1
@@ -208,7 +208,7 @@ cmd_preview() {
   }
   preview_file "$file" "$center"
 }
-main() {
+main(){
   local cmd="${1:-}"
   shift || :
   case "${cmd:-}" in
