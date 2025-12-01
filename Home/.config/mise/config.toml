@@ -50,6 +50,7 @@ ruby_build_opts = "--enable-shared"
 [tools]
 java = "oracle-graalvm"
 "ubi:zeroBzeroT/ChunkCleaner" = "latest"
+"cargo:https://github.com/ComunidadAylas/PackSquash" = "latest"
 "ubi:qltysh/qlty" = "latest"
 cpz = "latest"
 rmz = "latest"
