@@ -97,9 +97,13 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           # Generate annotations for GitHub UI (must go to stdout, not step summary)
+          # Map ast-grep severity to GitHub annotation levels: error→error, warning→warning, info/hint→notice
           if [[ -n "$RESULTS" ]]; then
             echo "$RESULTS" | jq -r '.[] |
-              "::warning file=\(.file),line=\(.range.start.line),col=\(.range.start.column)::\(.message) [\(.id)]"' \
+              (if .severity == "error" then "error"
+               elif .severity == "warning" then "warning"
+               else "notice" end) as $level |
+              "::\($level) file=\(.file),line=\(.range.start.line),col=\(.range.start.column)::\(.message) [\(.id)]"' \
               2>/dev/null || :
           fi
 
@@ -132,16 +136,22 @@ jobs:
 
           ERRORS=$(echo "$RESULTS" | jq -r '.[] | select(.severity=="error") | .file' 2>/dev/null | wc -l || echo "0")
           WARNINGS=$(echo "$RESULTS" | jq -r '.[] | select(.severity=="warning") | .file' 2>/dev/null | wc -l || echo "0")
+          HINTS=$(echo "$RESULTS" | jq -r '.[] | select(.severity=="hint" or .severity=="info") | .file' 2>/dev/null | wc -l || echo "0")
 
           {
             echo "- 🔴 Errors: $ERRORS"
             echo "- 🟡 Warnings: $WARNINGS"
+            echo "- 🔵 Hints: $HINTS"
           } >> "$GITHUB_STEP_SUMMARY"
 
           # Generate annotations for GitHub UI (must go to stdout)
+          # Map ast-grep severity to GitHub annotation levels: error→error, warning→warning, info/hint→notice
           if [[ -n "$RESULTS" ]]; then
             echo "$RESULTS" | jq -r '.[] |
-              "::error file=\(.file),line=\(.range.start.line),col=\(.range.start.column)::\(.message) [\(.id)]"' \
+              (if .severity == "error" then "error"
+               elif .severity == "warning" then "warning"
+               else "notice" end) as $level |
+              "::\($level) file=\(.file),line=\(.range.start.line),col=\(.range.start.column)::\(.message) [\(.id)]"' \
               2>/dev/null || :
           fi
 
