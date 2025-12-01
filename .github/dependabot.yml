@@ -4,143 +4,71 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      github-actions-all:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      gitsubmodule-all:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
     ignore:
       - dependency-name: "pip"
+    groups:
+      pip-all:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "uv"
     directory: "/"
     schedule:
       interval: "weekly"
     ignore:
       - dependency-name: "pip"
+    groups:
+      uv-all:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
     versioning-strategy: "increase-if-necessary"
+    groups:
+      npm-all:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "bun"
     directory: "/"
     schedule:
       interval: "weekly"
     versioning-strategy: "increase-if-necessary"
-  - package-ecosystem: "cargo"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "rust-toolchain"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "gradle"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "gomod"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "docker-compose"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "devcontainers"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-
-groups:
-  github-actions:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "github-actions"
-  pip:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "pip"
-  uv:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "uv"
-  npm:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "npm"
-  bun:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "bun"
-  cargo:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "cargo"
-  rust-toolchain:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "rust-toolchain"
-  gradle:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "gradle"
-  gomod:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "gomod"
-  docker:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "docker"
-  docker-compose:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "docker-compose"
-  devcontainers:
-    patterns:
-      - "*"
-    update-types:
-      - "minor"
-      - "patch"
-    applies-to: "devcontainers"
+    groups:
+      bun-all:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
