@@ -169,7 +169,7 @@ pre-commit:
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         for f in {staged_files}; do
-          [[ -f "$f" && -s "$f" ]] && [[ -z $(tail -c1 "$f") ]] || printf '\n' >> "$f"
+          [[ -f "$f" && -s "$f" && -n $(tail -c1 "$f") ]] && printf '\n' >> "$f"
         done
       stage_fixed: true
       fail_text: "End-of-file newline fix failed"
@@ -180,9 +180,10 @@ pre-commit:
       run: |
         for f in {staged_files}; do
           [[ -f "$f" ]] && {
-            has_crlf=$(grep -cU $'\r$' "$f" 2>/dev/null || echo 0)
-            has_lf=$(grep -cv $'\r$' "$f" 2>/dev/null || echo 0)
-            (( has_crlf > 0 && has_lf > 0 )) && { printf "Mixed line endings: %s\n" "$f" >&2; exit 1; }
+            has_crlf=$(cat "$f" | tr -cd '\r' | wc -c)
+            has_lf=$(cat "$f" | tr -cd '\n' | wc -c)
+            total_lines=$((has_crlf + has_lf))
+            (( has_crlf > 0 && has_lf > has_crlf && total_lines > 0 )) && { printf "Mixed line endings: %s\n" "$f" >&2; exit 1; }
           }
         done || :
       fail_text: "Mixed line endings detected"
@@ -190,8 +191,8 @@ pre-commit:
       priority: 18
       run: |
         if command -v rg &>/dev/null; then
-          LC_ALL=C rg -iNn -e 'AKIA[0-9A-Z]{16}' -e 'ghp_[0-9a-zA-Z]{36}' -e 'glpat-[0-9a-zA-Z_-]{20,}' -e 'xox[baprs]-\d{10,13}-\d{10,13}-[0-9a-zA-Z]{24,}' \
-            -e '(password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|bearer|client[_-]?secret|private[_-]?key)\s*[:=]\s*["\047][^"\047]{20,}' \
+          LC_ALL=C rg -iNn -e 'AKIA[0-9A-Z]{16}' -e 'ghp_[0-9a-zA-Z]{36}' -e 'glpat-[0-9a-zA-Z_-]{20,}' -e 'xox[baprs]-[0-9]{10,13}-[0-9]{10,13}-[0-9a-zA-Z]{24,}' \
+            -e '(password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|bearer|client[_-]?secret|private[_-]?key)[[:space:]]*[:=][[:space:]]*["\047][^"\047]{20,}' \
             {staged_files} && { printf "Secrets detected\n" >&2; exit 1; }
         else
           LC_ALL=C grep -EiHn -e 'AKIA[0-9A-Z]{16}' -e 'ghp_[0-9a-zA-Z]{36}' -e 'glpat-[0-9a-zA-Z_-]{20,}' \
@@ -205,7 +206,7 @@ pre-commit:
       run: |
         if command -v rg &>/dev/null; then
           LC_ALL=C rg -iNn -e '\bconsole\.(log|debug|info|warn|error)\(' \
-            -e '\bdebugger\b' -e '\bbinding\.pry\b' -e '\bset -x\b' -e '\bprint\s*\(.*DEBUG' \
+            -e '\bdebugger\b' -e '\bbinding\.pry\b' -e '\bset -x\b' -e '\bprint[[:space:]]*\(.*DEBUG' \
             {staged_files} && { printf "Debug code\n" >&2; exit 1; }
         else
           LC_ALL=C grep -EiHn -e '\bconsole\.(log|debug|info|warn|error)\(' \
