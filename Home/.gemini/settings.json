@@ -4,6 +4,9 @@
       "selectedType": "oauth-personal"
     }
   },
+  "privacy": {
+    "usageStatisticsEnabled": false
+  },
   "general": {
     "previewFeatures": true,
     "sessionRetention": {
@@ -26,6 +29,9 @@
   },
   "context": {
     "loadMemoryFromIncludeDirectories": true
+  },
+  "model": {
+    "skipNextSpeakerCheck": true
   },
   "tools": {
     "autoAccept": true
