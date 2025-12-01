@@ -107,7 +107,6 @@ jobs:
             echo "❌ Biome check failed" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
-        continue-on-error: true
       - name: Check YAML (yamllint)
         id: yamllint
         run: |
@@ -173,6 +172,7 @@ jobs:
           fi
         continue-on-error: true
       - name: Summary
+        if: always()
         run: |
           {
             echo ""
@@ -195,3 +195,20 @@ jobs:
             echo "mdformat --wrap 80 <file>"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Check Results
+        if: always()
+        run: |
+          # Critical checks that must pass
+          if [[ "${{ steps.shfmt.outcome }}" == "failure" ]]; then
+            echo "::error::Shell formatting check failed"
+            exit 1
+          fi
+          if [[ "${{ steps.biome.outcome }}" == "failure" ]]; then
+            echo "::error::Biome check failed"
+            exit 1
+          fi
+          if [[ "${{ steps.actionlint.outcome }}" == "failure" ]]; then
+            echo "::error::Actionlint check failed"
+            exit 1
+          fi
+          echo "✅ All critical checks passed"
