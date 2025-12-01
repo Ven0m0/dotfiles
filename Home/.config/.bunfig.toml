@@ -1,4 +1,3 @@
-# Bun Configuration - Optimized for Performance
 # https://bun.sh/docs/runtime/bunfig
 
 # Global settings
@@ -60,6 +59,7 @@ bail = true
 timeout = 5000
 preload = []
 coverage = false
+smol = true
 
 # Macros
 [macros]
