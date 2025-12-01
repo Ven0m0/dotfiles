@@ -24,8 +24,8 @@ readonly R=$(tput setaf 1) G=$(tput setaf 2) Y=$(tput setaf 3) B=$(tput setaf 4)
 has() { command -v "$1" &>/dev/null; }
 log() { printf "${B}[%s]${NC} %s\n" "$(date +%T)" "$1"; }
 err() { printf "${R}[ERR]${NC} %s\n" "$1" >&2; }
-ok()  { printf "${G}[OK]${NC} %s\n" "$1"; }
-check_deps(){
+ok() { printf "${G}[OK]${NC} %s\n" "$1"; }
+check_deps() {
   local missing=()
   for t in "${TOOLS[@]}"; do
     local bin="${t#*:}"
@@ -39,7 +39,7 @@ check_deps(){
   fi
 }
 
-find_files(){
+find_files() {
   local ext="$1"
   # fd is preferred -> find fallback
   if has fd; then
@@ -51,7 +51,7 @@ find_files(){
 
 # --- Processors ---
 
-proc_yaml(){
+proc_yaml() {
   log "Processing YAML..."
   local files
   mapfile -t files < <(find_files "yaml" && find_files "yml")
@@ -64,7 +64,7 @@ proc_yaml(){
   printf "%s\n" "${files[@]}" | xargs -r -P"$PARALLEL_JOBS" yamllint -c .qlty/configs/.yamllint.yaml -f parsable
 }
 
-proc_web(){
+proc_web() {
   log "Processing JS/TS/JSON/CSS..."
   # Biome handles globbing efficiently itself
   biome format --write --config-path=biome.json .
@@ -75,7 +75,7 @@ proc_web(){
   # [[ ${#files[@]} -gt 0 ]] && eslint --fix "${files[@]}"
 }
 
-proc_shell(){
+proc_shell() {
   log "Processing Shell (Bash/Sh)..."
   local files
   mapfile -t files < <(find_files "sh" && find_files "bash" && find_files "zsh")
@@ -88,7 +88,7 @@ proc_shell(){
   shellcheck -x "${files[@]}"
 }
 
-proc_fish(){
+proc_fish() {
   log "Processing Fish..."
   local files
   mapfile -t files < <(find_files "fish")
@@ -100,7 +100,7 @@ proc_fish(){
   done
 }
 
-proc_toml(){
+proc_toml() {
   log "Processing TOML..."
   if has taplo; then
     taplo format --option "indent_string=  " # Force 2 spaces
@@ -108,14 +108,14 @@ proc_toml(){
   fi
 }
 
-proc_python(){
+proc_python() {
   log "Processing Python..."
   # Ruff handles both format and lint
   ruff format .
   ruff check --fix .
 }
 
-proc_lua(){
+proc_lua() {
   log "Processing Lua..."
   local files
   mapfile -t files < <(find_files "lua")
@@ -125,7 +125,7 @@ proc_lua(){
   selene "${files[@]}"
 }
 
-proc_markdown(){
+proc_markdown() {
   log "Processing Markdown..."
   # MarkdownLint
   local files
@@ -137,18 +137,18 @@ proc_markdown(){
 }
 
 # --- Main ---
-main(){
+main() {
   log "Starting Exhaustive Pipeline..."
   check_deps || true # Warn but try to proceed
   local errors=0
   # Run groups
-  proc_yaml     || ((errors++))
-  proc_web      || ((errors++))
-  proc_shell    || ((errors++))
-  proc_fish     || ((errors++))
-  proc_toml     || ((errors++))
-  proc_python   || ((errors++))
-  proc_lua      || ((errors++))
+  proc_yaml || ((errors++))
+  proc_web || ((errors++))
+  proc_shell || ((errors++))
+  proc_fish || ((errors++))
+  proc_toml || ((errors++))
+  proc_python || ((errors++))
+  proc_lua || ((errors++))
   proc_markdown || ((errors++))
   if [[ $errors -eq 0 ]]; then
     ok "All files processed. Zero errors."

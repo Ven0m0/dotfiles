@@ -40,6 +40,7 @@ jobs:
           # Go tools
           go install mvdan.cc/sh/v3/cmd/shfmt@latest
           go install github.com/rhysd/actionlint/cmd/actionlint@latest
+          go install github.com/google/yamlfmt/cmd/yamlfmt@latest
           # Node tools
           npm install -g @biomejs/biome prettier markdownlint-cli
           # Python tools
@@ -59,7 +60,9 @@ jobs:
               echo "- ❌ \`$file\` - needs formatting" >> "$GITHUB_STEP_SUMMARY"
               ERRORS=$((ERRORS + 1))
             fi
-          done < <(find . -type f \( -name "*.sh" -o -name "*.bash" -o -name ".bashrc" -o -name ".bash_*" -o -name ".profile" -o -name ".zprofile" -o -name ".zshenv" \) ! -path "./.git/*" ! -path "./vendor/*" -print0)
+          done < <(find . -type f \( -name "*.sh" -o -name "*.bash" -o -name ".bashrc" \
+            -o -name ".bash_*" -o -name ".profile" \) \
+            ! -path "./.git/*" ! -path "./vendor/*" -print0)
           if [[ $ERRORS -eq 0 ]]; then
             echo "✅ All shell scripts properly formatted" >> "$GITHUB_STEP_SUMMARY"
           else
@@ -74,14 +77,18 @@ jobs:
           ERRORS=0
           while IFS= read -r -d '' file; do
             # Skip zsh-specific files
-            if [[ "$file" == *"zsh"* ]] || head -1 "$file" 2>/dev/null | grep -q "zsh"; then
+            if [[ "$file" == *"zsh"* ]]; then
+              continue
+            fi
+            if head -1 "$file" 2>/dev/null | grep -q "zsh"; then
               continue
             fi
             if ! shellcheck --severity=warning -x "$file" 2>/dev/null; then
-              echo "- ⚠️ \`$file\` - has shellcheck warnings" >> "$GITHUB_STEP_SUMMARY"
+              echo "- ⚠️ \`$file\` - shellcheck warnings" >> "$GITHUB_STEP_SUMMARY"
               ERRORS=$((ERRORS + 1))
             fi
-          done < <(find . -type f \( -name "*.sh" -o -name "*.bash" \) ! -path "./.git/*" ! -path "./vendor/*" -print0)
+          done < <(find . -type f \( -name "*.sh" -o -name "*.bash" \) \
+            ! -path "./.git/*" ! -path "./vendor/*" -print0)
           if [[ $ERRORS -eq 0 ]]; then
             echo "✅ ShellCheck passed" >> "$GITHUB_STEP_SUMMARY"
           else
@@ -100,25 +107,20 @@ jobs:
             echo "❌ Biome check failed" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
-        continue-on-error: true
       - name: Check YAML (yamllint)
         id: yamllint
         run: |
           set -euo pipefail
           echo "## YAML Lint" >> "$GITHUB_STEP_SUMMARY"
-          CONFIG_ARGS=()
-          if [[ -f "Home/.yamllint.yaml" ]]; then
-            CONFIG_ARGS=(-c Home/.yamllint.yaml)
-          fi
+          CONFIG_ARGS=(-c .yamllint.yaml)
           ERRORS=0
           while IFS= read -r -d '' file; do
-            if ! yamllint "${CONFIG_ARGS[@]}" "$file" 2>/dev/null | grep -q "error"; then
-              :
-            else
-              echo "- ⚠️ \`$file\` - has yamllint errors" >> "$GITHUB_STEP_SUMMARY"
+            if yamllint "${CONFIG_ARGS[@]}" "$file" 2>/dev/null | grep -q "error"; then
+              echo "- ⚠️ \`$file\` - yamllint errors" >> "$GITHUB_STEP_SUMMARY"
               ERRORS=$((ERRORS + 1))
             fi
-          done < <(find . -type f \( -name "*.yml" -o -name "*.yaml" \) ! -path "./.git/*" ! -path "./vendor/*" -print0)
+          done < <(find . -type f \( -name "*.yml" -o -name "*.yaml" \) \
+            ! -path "./.git/*" ! -path "./vendor/*" -print0)
           if [[ $ERRORS -eq 0 ]]; then
             echo "✅ YAML lint passed" >> "$GITHUB_STEP_SUMMARY"
           else
@@ -143,7 +145,9 @@ jobs:
         run: |
           set -euo pipefail
           echo "## Python Lint (Ruff)" >> "$GITHUB_STEP_SUMMARY"
-          if find . -type f -name "*.py" ! -path "./.git/*" ! -path "./vendor/*" ! -path "./.venv/*" | head -1 | grep -q .; then
+          PY_FILES=$(find . -type f -name "*.py" \
+            ! -path "./.git/*" ! -path "./vendor/*" ! -path "./.venv/*")
+          if [[ -n "$PY_FILES" ]]; then
             if ruff check . --config pyproject.toml 2>/dev/null; then
               echo "✅ Ruff check passed" >> "$GITHUB_STEP_SUMMARY"
             else
@@ -159,11 +163,8 @@ jobs:
         run: |
           set -euo pipefail
           echo "## Markdown Lint" >> "$GITHUB_STEP_SUMMARY"
-          CONFIG_ARGS=()
-          if [[ -f ".markdownlintrc" ]]; then
-            CONFIG_ARGS=(-c .markdownlintrc)
-          fi
-          if markdownlint "${CONFIG_ARGS[@]}" "**/*.md" --ignore node_modules --ignore vendor 2>/dev/null; then
+          if markdownlint -c .markdownlintrc "**/*.md" \
+            --ignore node_modules --ignore vendor 2>/dev/null; then
             echo "✅ Markdownlint passed" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "::warning::Markdownlint found issues"
@@ -171,6 +172,7 @@ jobs:
           fi
         continue-on-error: true
       - name: Summary
+        if: always()
         run: |
           {
             echo ""
@@ -183,6 +185,9 @@ jobs:
             echo "# JSON/JS/CSS"
             echo "biome format --write ."
             echo ""
+            echo "# YAML"
+            echo "yamlfmt -conf .yamlfmt <file>"
+            echo ""
             echo "# Python"
             echo "ruff format . && ruff check --fix ."
             echo ""
@@ -190,3 +195,20 @@ jobs:
             echo "mdformat --wrap 80 <file>"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Check Results
+        if: always()
+        run: |
+          # Critical checks that must pass
+          if [[ "${{ steps.shfmt.outcome }}" == "failure" ]]; then
+            echo "::error::Shell formatting check failed"
+            exit 1
+          fi
+          if [[ "${{ steps.biome.outcome }}" == "failure" ]]; then
+            echo "::error::Biome check failed"
+            exit 1
+          fi
+          if [[ "${{ steps.actionlint.outcome }}" == "failure" ]]; then
+            echo "::error::Actionlint check failed"
+            exit 1
+          fi
+          echo "✅ All critical checks passed"

@@ -29,7 +29,7 @@ export PYTHON_DISABLE_REMOTE_DEBUG=1 PYTORCH_ENABLE_MPS_FALLBACK=1
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 # Use uv for pip operations when available
-pip(){
+pip() {
   if has uv && [[ "install uninstall list show freeze check" =~ $1 ]]; then
     command uv pip "$@"
   else

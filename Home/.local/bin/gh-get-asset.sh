@@ -11,19 +11,13 @@ trap 'rm -f "$TMP"' EXIT
 release=""
 output_opt=(-O)
 curl_args=(-fsSL)
-<<<<<<< Updated upstream
-die(){
-||||||| Stash base
-die() {
-=======
 has() { command -v "$1" &>/dev/null; }
 die() {
->>>>>>> Stashed changes
   printf 'Error: %s\n' "$*" >&2
   exit 1
 }
 
-usage(){
+usage() {
   cat <<'EOF'
 gh-get-asset - Download GitHub release assets
 
@@ -58,7 +52,7 @@ AUTHOR:
 EOF
 }
 
-gh_get_release(){
+gh_get_release() {
   local repo="$1" substring="$2"
 
   curl -fsSL -o "$TMP" "https://api.github.com/repos/${repo}/releases"
@@ -74,14 +68,14 @@ gh_get_release(){
 main() { # Parse options
   while getopts "r:so:h" opt; do
     case "$opt" in
-    r) release="$OPTARG" ;;
-    s) curl_args+=(-s) ;;
-    o) output_opt=(-o "$OPTARG") ;;
-    h)
-      usage
-      exit 0
-      ;;
-    *) die "Invalid option. Use -h for help." ;;
+      r) release="$OPTARG" ;;
+      s) curl_args+=(-s) ;;
+      o) output_opt=(-o "$OPTARG") ;;
+      h)
+        usage
+        exit 0
+        ;;
+      *) die "Invalid option. Use -h for help." ;;
     esac
   done
   shift $((OPTIND - 1))

@@ -14,16 +14,16 @@ readonly DEF=$'\e[0m' BLD=$'\e[1m' UL=$'\e[4m'
 # Core helpers
 has() { command -v "$1" &>/dev/null; }
 err() { printf '%b[ERR]%b %s\n' "$RED" "$DEF" "$*" >&2; }
-die(){
+die() {
   err "$@"
   exit 1
 }
 
 # Version
-_ver(){ printf '%b%s%b -- %bv1.0.0%b fuzzy git TUI (gix/gh/forgit)\n' "$BLD" "${0##*/}" "$DEF" "$UL" "$DEF"; }
+_ver() { printf '%b%s%b -- %bv1.0.0%b fuzzy git TUI (gix/gh/forgit)\n' "$BLD" "${0##*/}" "$DEF" "$UL" "$DEF"; }
 
 # Help
-_help(){
+_help() {
   cat <<EOF
 ${BLD}USAGE${DEF}  ${0##*/} ${UL}CMD${DEF} [${UL}ARGS${DEF}]
 
@@ -108,13 +108,13 @@ else
 fi
 
 # Git wrapper (prefers gix)
-_git(){
+_git() {
   if [[ ${GIT##*/} == gix ]]; then
     case "$1" in
-    log) gix log "$@" ;;
-    diff) gix diff "$@" ;;
-    status) gix status "$@" ;;
-    *) git "$@" ;;
+      log) gix log "$@" ;;
+      diff) gix diff "$@" ;;
+      status) gix status "$@" ;;
+      *) git "$@" ;;
     esac
   else
     git "$@"
@@ -122,12 +122,12 @@ _git(){
 }
 
 # Check if in git repo
-_check_repo(){
+_check_repo() {
   _git rev-parse --git-dir &>/dev/null || die "Not a git repository"
 }
 
 # FZF wrapper with defaults
-_fzf(){
+_fzf() {
   local -a opts=(
     --ansi --cycle --no-mouse --reverse --inline-info
     --color='pointer:green,marker:green'
@@ -140,35 +140,35 @@ _fzf(){
 
   while (($#)); do
     case "$1" in
-    -m)
-      opts+=(-m)
-      shift
-      ;;
-    -h)
-      opts+=(--header "$2")
-      shift 2
-      ;;
-    -p)
-      opts+=(--preview "$2")
-      shift 2
-      ;;
-    -w)
-      opts+=(--preview-window "$2")
-      shift 2
-      ;;
-    -l)
-      opts+=(--preview-label "$2")
-      shift 2
-      ;;
-    -b)
-      opts+=(--bind "$2")
-      shift 2
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *) shift ;;
+      -m)
+        opts+=(-m)
+        shift
+        ;;
+      -h)
+        opts+=(--header "$2")
+        shift 2
+        ;;
+      -p)
+        opts+=(--preview "$2")
+        shift 2
+        ;;
+      -w)
+        opts+=(--preview-window "$2")
+        shift 2
+        ;;
+      -l)
+        opts+=(--preview-label "$2")
+        shift 2
+        ;;
+      -b)
+        opts+=(--bind "$2")
+        shift 2
+        ;;
+      --)
+        shift
+        break
+        ;;
+      *) shift ;;
     esac
   done
 
@@ -176,13 +176,13 @@ _fzf(){
 }
 
 # Copy to clipboard
-_copy(){
+_copy() {
   [[ -z ${CLIP} ]] && return 0
   printf '%s' "$1" | "$CLIP"
 }
 
 # Get pager (delta > bat > less > cat)
-_pager(){
+_pager() {
   if [[ -n ${DELTA} ]]; then
     printf '%s' "${DELTA} --paging=never --side-by-side"
   elif [[ -n ${BAT} ]]; then
@@ -193,12 +193,12 @@ _pager(){
 }
 
 # Extract hash from fzf selection
-_extract_hash(){
+_extract_hash() {
   grep -Eo '[a-f0-9]{7,40}' | head -1
 }
 
 # Interactive git add
-_add(){
+_add() {
   _check_repo
   local pager=$(_pager)
   local files
@@ -214,7 +214,7 @@ _add(){
 }
 
 # Interactive git diff
-_diff(){
+_diff() {
   _check_repo
   local pager=$(_pager)
   local target=${1:-HEAD}
@@ -229,7 +229,7 @@ _diff(){
 }
 
 # Interactive git log
-_log(){
+_log() {
   _check_repo
   local pager=$(_pager)
   local format='%C(auto)%h%d %s %C(black)%C(bold)%cr%Creset'
@@ -246,7 +246,7 @@ _log(){
 }
 
 # Interactive git show
-_show(){
+_show() {
   _check_repo
   local pager=$(_pager)
   local format='%C(auto)%h%d %s %C(black)%C(bold)%cr%Creset'
@@ -260,7 +260,7 @@ _show(){
 }
 
 # Interactive git status
-_status(){
+_status() {
   _check_repo
   local pager=$(_pager)
 
@@ -274,7 +274,7 @@ _status(){
 }
 
 # Interactive branch checkout
-_branch(){
+_branch() {
   _check_repo
   local branch
   branch=$(_git branch --all --color=always --sort=-committerdate "$@" |
@@ -290,7 +290,7 @@ _branch(){
 }
 
 # Interactive branch delete
-_branch_delete(){
+_branch_delete() {
   _check_repo
   local branches
   branches=$(_git branch --color=always --sort=-committerdate "$@" |
@@ -306,7 +306,7 @@ _branch_delete(){
 }
 
 # Interactive tag checkout
-_tag(){
+_tag() {
   _check_repo
   local tag
   tag=$(_git tag --sort=-version:refname | _fzf \
@@ -320,7 +320,7 @@ _tag(){
 }
 
 # Interactive commit checkout
-_commit(){
+_commit() {
   _check_repo
   local hash
   hash=$(_show "$@")
@@ -329,7 +329,7 @@ _commit(){
 }
 
 # Interactive revert
-_revert(){
+_revert() {
   _check_repo
   local hash
   hash=$(_show "$@")
@@ -338,7 +338,7 @@ _revert(){
 }
 
 # Interactive reset HEAD
-_reset(){
+_reset() {
   _check_repo
   local pager=$(_pager)
   local files
@@ -353,7 +353,7 @@ _reset(){
 }
 
 # Interactive file checkout
-_file(){
+_file() {
   _check_repo
   local pager=$(_pager)
   local files
@@ -368,7 +368,7 @@ _file(){
 }
 
 # Interactive stash viewer
-_stash(){
+_stash() {
   _check_repo
   local pager=$(_pager)
   local stash
@@ -385,7 +385,7 @@ _stash(){
 }
 
 # Interactive stash push
-_stash_push(){
+_stash_push() {
   _check_repo
   local pager=$(_pager)
   local files
@@ -399,7 +399,7 @@ _stash_push(){
 }
 
 # Interactive git clean
-_clean(){
+_clean() {
   _check_repo
   local files
   files=$(_git clean -xdffn | sed 's/^Would remove //' | _fzf -m \
@@ -416,7 +416,7 @@ _clean(){
 }
 
 # Interactive cherry-pick
-_cherry(){
+_cherry() {
   _check_repo
   local hash
   hash=$(_show "$@")
@@ -425,7 +425,7 @@ _cherry(){
 }
 
 # Interactive rebase
-_rebase(){
+_rebase() {
   _check_repo
   local hash
   hash=$(_show "$@")
@@ -434,7 +434,7 @@ _rebase(){
 }
 
 # Interactive reflog
-_reflog(){
+_reflog() {
   _check_repo
   local pager=$(_pager)
 
@@ -448,7 +448,7 @@ _reflog(){
 }
 
 # Interactive blame
-_blame(){
+_blame() {
   _check_repo
   [[ -z $1 ]] && die "Usage: ${0##*/} blame <file>"
   local pager=$(_pager)
@@ -463,7 +463,7 @@ _blame(){
 }
 
 # Interactive fixup commit
-_fixup(){
+_fixup() {
   _check_repo
   local hash
   hash=$(_show "$@")
@@ -473,7 +473,7 @@ _fixup(){
 }
 
 # Interactive squash commit
-_squash(){
+_squash() {
   _check_repo
   local hash
   hash=$(_show "$@")
@@ -483,7 +483,7 @@ _squash(){
 }
 
 # Interactive difftool
-_difftool(){
+_difftool() {
   _check_repo
   local files
   files=$(_diff "$@")
@@ -492,7 +492,7 @@ _difftool(){
 }
 
 # GitHub PR viewer (requires gh)
-_pr(){
+_pr() {
   [[ -z ${GH} ]] && die "gh (GitHub CLI) not found"
   _check_repo
 
@@ -507,7 +507,7 @@ _pr(){
 }
 
 # GitHub issue viewer (requires gh)
-_issue(){
+_issue() {
   [[ -z ${GH} ]] && die "gh (GitHub CLI) not found"
   _check_repo
 
@@ -521,7 +521,7 @@ _issue(){
 }
 
 # GitHub workflow run viewer (requires gh)
-_run(){
+_run() {
   [[ -z ${GH} ]] && die "gh (GitHub CLI) not found"
   _check_repo
 
@@ -535,7 +535,7 @@ _run(){
 }
 
 # GitHub repo browser (requires gh)
-_repo(){
+_repo() {
   [[ -z ${GH} ]] && die "gh (GitHub CLI) not found"
 
   gh repo list --color=always | _fzf \
@@ -549,7 +549,7 @@ _repo(){
 }
 
 # Generate .gitignore (gitignore.io)
-_ignore(){
+_ignore() {
   local api="https://www.toptal.com/developers/gitignore/api"
   local list
 
@@ -568,7 +568,7 @@ _ignore(){
 }
 
 # Interactive clone from GitHub (requires gh)
-_clone(){
+_clone() {
   [[ -z ${GH} ]] && die "gh (GitHub CLI) not found"
 
   local repo
@@ -589,119 +589,119 @@ _clone(){
   exit 1
 }
 case "${1,,}" in
-a | add)
-  shift
-  _add "$@"
-  ;;
-d | diff)
-  shift
-  _diff "$@"
-  ;;
-D | difftool)
-  shift
-  _difftool "$@"
-  ;;
-l | log)
-  shift
-  _log "$@"
-  ;;
-s | show)
-  shift
-  _show "$@"
-  ;;
-S | status)
-  shift
-  _status "$@"
-  ;;
-b | branch)
-  shift
-  _branch "$@"
-  ;;
-B | branches)
-  shift
-  _branch_delete "$@"
-  ;;
-t | tag)
-  shift
-  _tag "$@"
-  ;;
-c | commit)
-  shift
-  _commit "$@"
-  ;;
-r | revert)
-  shift
-  _revert "$@"
-  ;;
-R | reset)
-  shift
-  _reset "$@"
-  ;;
-f | file)
-  shift
-  _file "$@"
-  ;;
-st | stash)
-  shift
-  _stash "$@"
-  ;;
-sp | stashpush)
-  shift
-  _stash_push "$@"
-  ;;
-clean)
-  shift
-  _clean "$@"
-  ;;
-cp | cherry)
-  shift
-  _cherry "$@"
-  ;;
-rb | rebase)
-  shift
-  _rebase "$@"
-  ;;
-rl | reflog)
-  shift
-  _reflog "$@"
-  ;;
-bl | blame)
-  shift
-  _blame "$@"
-  ;;
-fx | fixup)
-  shift
-  _fixup "$@"
-  ;;
-sq | squash)
-  shift
-  _squash "$@"
-  ;;
-pr)
-  shift
-  _pr "$@"
-  ;;
-issue)
-  shift
-  _issue "$@"
-  ;;
-run)
-  shift
-  _run "$@"
-  ;;
-repo)
-  shift
-  _repo "$@"
-  ;;
-ig | ignore)
-  shift
-  _ignore "$@"
-  ;;
-clone)
-  shift
-  _clone "$@"
-  ;;
--h | h | --help) _help ;;
--v | v | --version) _ver ;;
-*) die "Invalid command: $1" ;;
+  a | add)
+    shift
+    _add "$@"
+    ;;
+  d | diff)
+    shift
+    _diff "$@"
+    ;;
+  D | difftool)
+    shift
+    _difftool "$@"
+    ;;
+  l | log)
+    shift
+    _log "$@"
+    ;;
+  s | show)
+    shift
+    _show "$@"
+    ;;
+  S | status)
+    shift
+    _status "$@"
+    ;;
+  b | branch)
+    shift
+    _branch "$@"
+    ;;
+  B | branches)
+    shift
+    _branch_delete "$@"
+    ;;
+  t | tag)
+    shift
+    _tag "$@"
+    ;;
+  c | commit)
+    shift
+    _commit "$@"
+    ;;
+  r | revert)
+    shift
+    _revert "$@"
+    ;;
+  R | reset)
+    shift
+    _reset "$@"
+    ;;
+  f | file)
+    shift
+    _file "$@"
+    ;;
+  st | stash)
+    shift
+    _stash "$@"
+    ;;
+  sp | stashpush)
+    shift
+    _stash_push "$@"
+    ;;
+  clean)
+    shift
+    _clean "$@"
+    ;;
+  cp | cherry)
+    shift
+    _cherry "$@"
+    ;;
+  rb | rebase)
+    shift
+    _rebase "$@"
+    ;;
+  rl | reflog)
+    shift
+    _reflog "$@"
+    ;;
+  bl | blame)
+    shift
+    _blame "$@"
+    ;;
+  fx | fixup)
+    shift
+    _fixup "$@"
+    ;;
+  sq | squash)
+    shift
+    _squash "$@"
+    ;;
+  pr)
+    shift
+    _pr "$@"
+    ;;
+  issue)
+    shift
+    _issue "$@"
+    ;;
+  run)
+    shift
+    _run "$@"
+    ;;
+  repo)
+    shift
+    _repo "$@"
+    ;;
+  ig | ignore)
+    shift
+    _ignore "$@"
+    ;;
+  clone)
+    shift
+    _clone "$@"
+    ;;
+  -h | h | --help) _help ;;
+  -v | v | --version) _ver ;;
+  *) die "Invalid command: $1" ;;
 esac

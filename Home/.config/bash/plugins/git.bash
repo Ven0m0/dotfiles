@@ -1,10 +1,10 @@
 has git || return
-gpush(){
+gpush() {
   git add -A && { git commit -m "${1:-Update}" && LC_ALL=C git push --recurse-submodules=on-demand; }
   git status
 }
 
-gctl(){
+gctl() {
   [[ $# -eq 0 ]] && {
     echo "Usage: gctl <git-repo-url> [directory]" >&2
     return 1

@@ -10,23 +10,17 @@ VERBOSE=false
 MODE="${MODE:-both}"
 DELETED_BRANCHES=0
 DELETED_REMOTE_BRANCHES=0
-<<<<<<< Updated upstream
-die(){
-||||||| Stash base
-die() {
-=======
 has() { command -v "$1" &>/dev/null; }
 die() {
->>>>>>> Stashed changes
   printf '%s\n' "$1" >&2
   exit 1
 }
-msg(){ printf '\033[0;96m==> %s\033[0m\n' "$1"; }
-warn(){ printf '\033[0;93mWARN: %s\033[0m\n' "$1"; }
-ok(){ printf '\033[0;92m%s\033[0m\n' "$1"; }
-err(){ printf '\033[0;31mERROR: %s\033[0m\n' "$1" >&2; }
-verbose(){ [[ $VERBOSE == true ]] && printf '\033[0;90m%s\033[0m\n' "$1" || :; }
-usage(){
+msg() { printf '\033[0;96m==> %s\033[0m\n' "$1"; }
+warn() { printf '\033[0;93mWARN: %s\033[0m\n' "$1"; }
+ok() { printf '\033[0;92m%s\033[0m\n' "$1"; }
+err() { printf '\033[0;31mERROR: %s\033[0m\n' "$1" >&2; }
+verbose() { [[ $VERBOSE == true ]] && printf '\033[0;90m%s\033[0m\n' "$1" || :; }
+usage() {
   cat <<EOF
 Usage: $(basename "$0") [MODE] [OPTIONS]
 
@@ -65,31 +59,31 @@ EOF
 }
 while [[ $# -gt 0 ]]; do
   case $1 in
-  clean | update | both)
-    MODE=$1
-    shift
-    ;;
-  merge)
-    MODE=$1
-    shift
-    PR_URL=${1:-}
-    MERGE_STRATEGY=${2:-theirs}
-    shift 2 || shift 1 || :
-    ;;
-  -d | --dry-run)
-    DRY_RUN=true
-    shift
-    ;;
-  -y | --yes)
-    AUTO_YES=true
-    shift
-    ;;
-  -v | --verbose)
-    VERBOSE=true
-    shift
-    ;;
-  -h | --help) usage ;;
-  *) die "Unknown option: $1" ;;
+    clean | update | both)
+      MODE=$1
+      shift
+      ;;
+    merge)
+      MODE=$1
+      shift
+      PR_URL=${1:-}
+      MERGE_STRATEGY=${2:-theirs}
+      shift 2 || shift 1 || :
+      ;;
+    -d | --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    -y | --yes)
+      AUTO_YES=true
+      shift
+      ;;
+    -v | --verbose)
+      VERBOSE=true
+      shift
+      ;;
+    -h | --help) usage ;;
+    *) die "Unknown option: $1" ;;
   esac
 done
 [[ $DRY_RUN == true ]] && msg "DRY RUN MODE"
@@ -102,7 +96,7 @@ else
   verbose "Using git"
 fi
 [[ -d .git ]] || die "Not a git repository"
-determine_trunk(){
+determine_trunk() {
   local trunk=
   if git branch --list master 2>/dev/null | grep -q master; then
     trunk=master
@@ -113,7 +107,7 @@ determine_trunk(){
   fi
   printf '%s' "$trunk"
 }
-update_repo(){
+update_repo() {
   msg "Updating repository..."
   local trunk=$(determine_trunk)
   verbose "Trunk: $trunk"
@@ -144,7 +138,7 @@ update_repo(){
     verbose "Would update $trunk from remote and sync submodules"
   fi
 }
-clean_repo(){
+clean_repo() {
   msg "Cleaning repository..."
   local trunk
   trunk=$(determine_trunk)
@@ -245,16 +239,8 @@ clean_repo(){
   fi
   optimize_repo
 }
-<<<<<<< Updated upstream
-check_gha_failures(){
-  if ! command -v gh &>/dev/null; then
-||||||| Stash base
-check_gha_failures() {
-  if ! command -v gh &>/dev/null; then
-=======
 check_gha_failures() {
   if ! has gh; then
->>>>>>> Stashed changes
     warn "gh command not found, skipping GHA failure check."
     return
   fi
@@ -283,7 +269,7 @@ check_gha_failures() {
     verbose "The latest workflow run was successful."
   fi
 }
-auto_merge_pr(){
+auto_merge_pr() {
   [[ -n $PR_URL ]] || die "PR URL required for merge mode."
   local strategy="$MERGE_STRATEGY"
   local owner repo pr
@@ -321,44 +307,44 @@ auto_merge_pr(){
   git checkout -q "$head_ref"
   msg "Merging $base_ref into $head_ref (strategy: $strategy)..."
   case $strategy in
-  theirs)
-    git merge "origin/$base_ref" -X theirs -m "Auto-merge: accept $base_ref" || {
-      git checkout --theirs .
-      git add -A
-      git -c core.editor=true merge --continue
-    }
-    ;;
-  ours)
-    git merge "origin/$base_ref" -X ours -m "Auto-merge: keep $head_ref" || {
-      git checkout --ours .
-      git add -A
-      git -c core.editor=true merge --continue
-    }
-    ;;
-  auto)
-    if git merge "origin/$base_ref" -m "Auto-merge: smart resolution"; then
-      :
-    else
-      while IFS= read -r file; do
-        case $file in
-        package-lock.json | yarn.lock | Cargo.lock | go.sum | composer.lock | Gemfile.lock | poetry.lock) git checkout --theirs "$file" ;;
-        .github/workflows/* | *.ya?ml | *.json | *.toml | *.ini | *.cfg) git checkout --theirs "$file" ;;
-        *) git checkout --ours "$file" ;;
-        esac
-      done < <(git diff --name-only --diff-filter=U)
-      git add -A
-      git -c core.editor=true merge --continue
-    fi
-    ;;
-  *)
-    die "Invalid strategy: $strategy"
-    ;;
+    theirs)
+      git merge "origin/$base_ref" -X theirs -m "Auto-merge: accept $base_ref" || {
+        git checkout --theirs .
+        git add -A
+        git -c core.editor=true merge --continue
+      }
+      ;;
+    ours)
+      git merge "origin/$base_ref" -X ours -m "Auto-merge: keep $head_ref" || {
+        git checkout --ours .
+        git add -A
+        git -c core.editor=true merge --continue
+      }
+      ;;
+    auto)
+      if git merge "origin/$base_ref" -m "Auto-merge: smart resolution"; then
+        :
+      else
+        while IFS= read -r file; do
+          case $file in
+            package-lock.json | yarn.lock | Cargo.lock | go.sum | composer.lock | Gemfile.lock | poetry.lock) git checkout --theirs "$file" ;;
+            .github/workflows/* | *.ya?ml | *.json | *.toml | *.ini | *.cfg) git checkout --theirs "$file" ;;
+            *) git checkout --ours "$file" ;;
+          esac
+        done < <(git diff --name-only --diff-filter=U)
+        git add -A
+        git -c core.editor=true merge --continue
+      fi
+      ;;
+    *)
+      die "Invalid strategy: $strategy"
+      ;;
   esac
   msg "Pushing changes..."
   git push -q origin "$head_ref"
   ok "Done. Conflicts resolved and pushed."
 }
-optimize_repo(){
+optimize_repo() {
   msg "Optimizing repository..."
   if [[ $DRY_RUN == true ]]; then
     msg "Would optimize: repack, gc, reflog, worktrees, maintenance"
@@ -387,15 +373,15 @@ optimize_repo(){
     ok "Optimization complete"
   fi
 }
-main(){
+main() {
   case $MODE in
-  clean) clean_repo ;;
-  update) update_repo ;;
-  both)
-    update_repo
-    clean_repo
-    ;;
-  merge) auto_merge_pr "$@" ;;
+    clean) clean_repo ;;
+    update) update_repo ;;
+    both)
+      update_repo
+      clean_repo
+      ;;
+    merge) auto_merge_pr "$@" ;;
   esac
   if [[ $MODE == "clean" || $MODE == "both" ]]; then
     optimize_repo
