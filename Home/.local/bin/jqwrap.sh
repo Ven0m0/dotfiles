@@ -19,6 +19,7 @@ jqwrap() {
     printf 'error: neither jq nor jaq found in PATH\n' >&2
     return 1
   fi
+}
 
 # support direct script use
-[[ "${BASH_SOURCE[0]}" != "$0" ]] || jqwrap "$@"
+[[ ${BASH_SOURCE[0]} != "$0" ]] || jqwrap "$@"

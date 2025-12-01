@@ -3,56 +3,45 @@ extends: default
 rules:
   indentation:
     indent-sequences: true
-    check-mapping-value: true
     spaces: 2
-  braces: disable
-    forbid: non-empty
-     max-spaces-inside: 1
+  braces:
+    forbid: false
+    max-spaces-inside: 1
   brackets:
-    forbid: non-empty
+    forbid: false
+    max-spaces-inside: 0
   comments:
     min-spaces-from-content: 1
     require-starting-space: true
   comments-indentation: disable
   colons:
     max-spaces-before: 0
-    min-spaces-after: 1
+    max-spaces-after: 1
   commas:
-    level: error
+    max-spaces-before: 0
+    min-spaces-after: 1
   key-duplicates: enable
-  # --- DOCUMENT/FILE STRUCTURE ---
-  document-start:
-    present: true
-    level: warning
-  document-end:
-    present: false
-  new-line-at-end-of-file:
-    present: true
-    files:
-      - '*.yaml'
-      - '*.yml'
+  document-start: disable
+  document-end: disable
+  new-line-at-end-of-file: enable
   trailing-spaces: enable
   empty-lines:
     max: 1
     max-start: 0
-    max-end: 0
-  # --- LENGTH/QUOTING/VALUE RULES ---
+    max-end: 1
   line-length:
-    max: 88
+    max: 120
     allow-non-breakable-inline-mappings: true
     level: warning
-  key-duplicates: {}
   octal-values:
     forbid-explicit-octal: true
     forbid-implicit-octal: true
   truthy:
-    level: error
-  quoted-strings:
-    required: only-when-needed
-    check-keys: true
-    quote-type: double
-    allow-quoted-quotes: true
-    extra-allowed: ["{|}"]
+    allowed-values:
+      - "true"
+      - "false"
+      - "on"
+    check-keys: false
 ignore: |
   .git/
   .svn/
@@ -60,5 +49,6 @@ ignore: |
   _build/
   node_modules/
   venv/
+  vendor/
   *.min.yaml
   charts/templates/

@@ -1,10 +1,15 @@
 continue_on_error: true
-doublestar: false
-exclude: [./.cache, ./go]
+doublestar: true
+exclude:
+  - ./.cache
+  - ./go
+  - ./node_modules
+  - ./vendor
+  - ./.git
 extensions:
   - yaml
   - yml
-gitignore_excludes: false
+gitignore_excludes: true
 gitignore_path: .gitignore
 include: []
 line_ending: lf
@@ -16,13 +21,13 @@ formatter:
   disable_alias_key_correction: true
   disallow_anchors: false
   drop_merge_tag: false
-  eof_newline: false
+  eof_newline: true
   force_array_style: ""
   include_document_start: false
   indent: 2
   indent_root_array: false
   indentless_arrays: false
-  max_line_length: 0
+  max_line_length: 120
   pad_line_comments: 1
   retain_line_breaks: false
   retain_line_breaks_single: false

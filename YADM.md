@@ -1,7 +1,7 @@
 # YADM Dotfiles Management Guide
 
-This repository is fully configured for [yadm](https://yadm.io) (Yet Another Dotfiles Manager) while maintaining a
-clean, hierarchical folder structure.
+This repository is fully configured for [yadm](https://yadm.io) (Yet Another
+Dotfiles Manager) while maintaining a clean, hierarchical folder structure.
 
 ## 📁 Repository Structure
 
@@ -247,7 +247,8 @@ When you run `yadm bootstrap`, the following happens:
 
 ### Subdirectory Deployment
 
-Unlike traditional yadm setups where dotfiles are at the repository root, this repo uses:
+Unlike traditional yadm setups where dotfiles are at the repository root, this
+repo uses:
 
 - **Repository**: `Home/.config/zsh/.zshrc`
 - **Deployed to**: `~/.config/zsh/.zshrc`
@@ -256,7 +257,8 @@ The `.yadm/bootstrap` script handles this deployment automatically using rsync.
 
 ### System Configs with Tuckr
 
-System-level configs (`/etc`, `/usr`) require root permissions and are managed with **tuckr**:
+System-level configs (`/etc`, `/usr`) require root permissions and are managed
+with **tuckr**:
 
 ```bash
 sudo tuckr link -d /path/to/repo -t / etc
@@ -269,7 +271,8 @@ ______________________________________________________________________
 
 ### OS-Specific Configurations (Alternates)
 
-yadm supports [alternate files](https://yadm.io/docs/alternates) for different operating systems or hosts:
+yadm supports [alternate files](https://yadm.io/docs/alternates) for different
+operating systems or hosts:
 
 ```bash
 # Create OS-specific version

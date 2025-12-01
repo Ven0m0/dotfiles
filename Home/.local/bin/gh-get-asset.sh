@@ -12,12 +12,12 @@ release=""
 output_opt=(-O)
 curl_args=(-fsSL)
 die() {
-	printf 'Error: %s\n' "$*" >&2
-	exit 1
+  printf 'Error: %s\n' "$*" >&2
+  exit 1
 }
 
 usage() {
-	cat <<'EOF'
+  cat <<'EOF'
 gh-get-asset - Download GitHub release assets
 
 USAGE:
@@ -52,57 +52,57 @@ EOF
 }
 
 gh_get_release() {
-	local repo="$1" substring="$2"
+  local repo="$1" substring="$2"
 
-	curl -fsSL -o "$TMP" "https://api.github.com/repos/${repo}/releases"
+  curl -fsSL -o "$TMP" "https://api.github.com/repos/${repo}/releases"
 
-	local selector='.[0]'
-	if [[ -n $release ]]; then
-		selector=".[] | select(.tag_name==\"${release}\")"
-	fi
+  local selector='.[0]'
+  if [[ -n $release ]]; then
+    selector=".[] | select(.tag_name==\"${release}\")"
+  fi
 
-	jq -rM "${selector}.assets[]|select(.name| contains(\"${substring}\"))? | .browser_download_url" <"$TMP"
+  jq -rM "${selector}.assets[]|select(.name| contains(\"${substring}\"))? | .browser_download_url" <"$TMP"
 }
 
 main() { # Parse options
-	while getopts "r:so:h" opt; do
-		case "$opt" in
-		r) release="$OPTARG" ;;
-		s) curl_args+=(-s) ;;
-		o) output_opt=(-o "$OPTARG") ;;
-		h)
-			usage
-			exit 0
-			;;
-		*) die "Invalid option. Use -h for help." ;;
-		esac
-	done
-	shift $((OPTIND - 1))
+  while getopts "r:so:h" opt; do
+    case "$opt" in
+      r) release="$OPTARG" ;;
+      s) curl_args+=(-s) ;;
+      o) output_opt=(-o "$OPTARG") ;;
+      h)
+        usage
+        exit 0
+        ;;
+      *) die "Invalid option. Use -h for help." ;;
+    esac
+  done
+  shift $((OPTIND - 1))
 
-	# Check arguments
-	[[ $# -eq 2 ]] || die "Expected 2 arguments. Use -h for help."
+  # Check arguments
+  [[ $# -eq 2 ]] || die "Expected 2 arguments. Use -h for help."
 
-	# Check dependencies
-	command -v curl &>/dev/null || die "curl is required"
-	command -v jq &>/dev/null || die "jq is required"
+  # Check dependencies
+  command -v curl &>/dev/null || die "curl is required"
+  command -v jq &>/dev/null || die "jq is required"
 
-	local repo="$1" substring="$2"
+  local repo="$1" substring="$2"
 
-	# Get assets
-	local -a assets
-	mapfile -t assets < <(gh_get_release "$repo" "$substring")
+  # Get assets
+  local -a assets
+  mapfile -t assets < <(gh_get_release "$repo" "$substring")
 
-	if [[ ${#assets[@]} -eq 0 ]]; then
-		die "Could not find asset matching '${substring}' in ${repo}"
-	fi
+  if [[ ${#assets[@]} -eq 0 ]]; then
+    die "Could not find asset matching '${substring}' in ${repo}"
+  fi
 
-	# Download each asset
-	for asset in "${assets[@]}"; do
-		printf 'Downloading: %s\n' "$asset"
-		curl "${output_opt[@]}" "${curl_args[@]}" "$asset"
-	done
+  # Download each asset
+  for asset in "${assets[@]}"; do
+    printf 'Downloading: %s\n' "$asset"
+    curl "${output_opt[@]}" "${curl_args[@]}" "$asset"
+  done
 
-	printf '✓ Download complete\n'
+  printf '✓ Download complete\n'
 }
 
 main "$@"

@@ -1,12 +1,12 @@
-[tool. ruff]
+[tool.ruff]
 line-length = 88
 target-version = "py311"
 extend-exclude = [
   "Home/.local/bin/speedtest.py",
   "__pycache__",
-  ". venv",
+  ".venv",
   "vendor",
-  "node_modules"
+  "node_modules",
 ]
 
 [tool.ruff.lint]

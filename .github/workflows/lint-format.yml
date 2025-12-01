@@ -1,0 +1,192 @@
+name: Lint & Format
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+env:
+  EXCLUDE_DIRS: ".git,node_modules,vendor,.cache,.venv,__pycache__"
+jobs:
+  lint-format:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: false
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install Linting Tools
+        run: |
+          set -euo pipefail
+          # Go tools
+          go install mvdan.cc/sh/v3/cmd/shfmt@latest
+          go install github.com/rhysd/actionlint/cmd/actionlint@latest
+          # Node tools
+          npm install -g @biomejs/biome prettier markdownlint-cli
+          # Python tools
+          pip install --quiet ruff yamllint mdformat mdformat-gfm
+          # Add to PATH
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Check Shell Scripts (shfmt)
+        id: shfmt
+        run: |
+          set -euo pipefail
+          echo "## Shell Format Check (2-space indent)" >> "$GITHUB_STEP_SUMMARY"
+          ERRORS=0
+          while IFS= read -r -d '' file; do
+            if ! shfmt -l -d -i 2 -ci -bn "$file" >/dev/null 2>&1; then
+              echo "::error file=$file::Shell formatting issues detected"
+              echo "- ❌ \`$file\` - needs formatting" >> "$GITHUB_STEP_SUMMARY"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done < <(find . -type f \( -name "*.sh" -o -name "*.bash" -o -name ".bashrc" -o -name ".bash_*" -o -name ".profile" -o -name ".zprofile" -o -name ".zshenv" \) ! -path "./.git/*" ! -path "./vendor/*" -print0)
+          if [[ $ERRORS -eq 0 ]]; then
+            echo "✅ All shell scripts properly formatted" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error::$ERRORS shell script(s) need formatting"
+            exit 1
+          fi
+      - name: Check Shell Scripts (shellcheck)
+        id: shellcheck
+        run: |
+          set -euo pipefail
+          echo "## ShellCheck Analysis" >> "$GITHUB_STEP_SUMMARY"
+          ERRORS=0
+          while IFS= read -r -d '' file; do
+            # Skip zsh-specific files
+            if [[ "$file" == *"zsh"* ]] || head -1 "$file" 2>/dev/null | grep -q "zsh"; then
+              continue
+            fi
+            if ! shellcheck --severity=warning -x "$file" 2>/dev/null; then
+              echo "- ⚠️ \`$file\` - has shellcheck warnings" >> "$GITHUB_STEP_SUMMARY"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done < <(find . -type f \( -name "*.sh" -o -name "*.bash" \) ! -path "./.git/*" ! -path "./vendor/*" -print0)
+          if [[ $ERRORS -eq 0 ]]; then
+            echo "✅ ShellCheck passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::$ERRORS shell script(s) have shellcheck warnings"
+          fi
+        continue-on-error: true
+      - name: Check JSON/JS/CSS (Biome)
+        id: biome
+        run: |
+          set -euo pipefail
+          echo "## Biome Check" >> "$GITHUB_STEP_SUMMARY"
+          if biome check . --reporter=summary 2>/dev/null; then
+            echo "✅ Biome check passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error::Biome check failed"
+            echo "❌ Biome check failed" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+        continue-on-error: true
+      - name: Check YAML (yamllint)
+        id: yamllint
+        run: |
+          set -euo pipefail
+          echo "## YAML Lint" >> "$GITHUB_STEP_SUMMARY"
+          CONFIG_ARGS=()
+          if [[ -f "Home/.yamllint.yaml" ]]; then
+            CONFIG_ARGS=(-c Home/.yamllint.yaml)
+          fi
+          ERRORS=0
+          while IFS= read -r -d '' file; do
+            if ! yamllint "${CONFIG_ARGS[@]}" "$file" 2>/dev/null | grep -q "error"; then
+              :
+            else
+              echo "- ⚠️ \`$file\` - has yamllint errors" >> "$GITHUB_STEP_SUMMARY"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done < <(find . -type f \( -name "*.yml" -o -name "*.yaml" \) ! -path "./.git/*" ! -path "./vendor/*" -print0)
+          if [[ $ERRORS -eq 0 ]]; then
+            echo "✅ YAML lint passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::$ERRORS YAML file(s) have errors"
+          fi
+        continue-on-error: true
+      - name: Check GitHub Actions (actionlint)
+        id: actionlint
+        run: |
+          set -euo pipefail
+          echo "## GitHub Actions Lint" >> "$GITHUB_STEP_SUMMARY"
+          if actionlint .github/workflows/*.yml 2>&1 | tee /tmp/actionlint.txt; then
+            echo "✅ Actionlint passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error::Actionlint found errors"
+            echo "❌ Actionlint found errors:" >> "$GITHUB_STEP_SUMMARY"
+            cat /tmp/actionlint.txt >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+      - name: Check Python (ruff)
+        id: ruff
+        run: |
+          set -euo pipefail
+          echo "## Python Lint (Ruff)" >> "$GITHUB_STEP_SUMMARY"
+          if find . -type f -name "*.py" ! -path "./.git/*" ! -path "./vendor/*" ! -path "./.venv/*" | head -1 | grep -q .; then
+            if ruff check . --config pyproject.toml 2>/dev/null; then
+              echo "✅ Ruff check passed" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "::warning::Ruff found issues"
+              echo "⚠️ Ruff found issues" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "ℹ️ No Python files found" >> "$GITHUB_STEP_SUMMARY"
+          fi
+        continue-on-error: true
+      - name: Check Markdown (markdownlint)
+        id: markdownlint
+        run: |
+          set -euo pipefail
+          echo "## Markdown Lint" >> "$GITHUB_STEP_SUMMARY"
+          CONFIG_ARGS=()
+          if [[ -f ".markdownlintrc" ]]; then
+            CONFIG_ARGS=(-c .markdownlintrc)
+          fi
+          if markdownlint "${CONFIG_ARGS[@]}" "**/*.md" --ignore node_modules --ignore vendor 2>/dev/null; then
+            echo "✅ Markdownlint passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::Markdownlint found issues"
+            echo "⚠️ Markdownlint found issues" >> "$GITHUB_STEP_SUMMARY"
+          fi
+        continue-on-error: true
+      - name: Summary
+        run: |
+          {
+            echo ""
+            echo "---"
+            echo "### 🛠️ Fix Commands"
+            echo '```bash'
+            echo "# Shell scripts (2-space indent)"
+            echo "shfmt -w -i 2 -ci -bn <file>"
+            echo ""
+            echo "# JSON/JS/CSS"
+            echo "biome format --write ."
+            echo ""
+            echo "# Python"
+            echo "ruff format . && ruff check --fix ."
+            echo ""
+            echo "# Markdown"
+            echo "mdformat --wrap 80 <file>"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

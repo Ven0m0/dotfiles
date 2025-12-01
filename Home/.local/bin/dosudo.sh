@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -u
 # from https://github.com/Enovale/doas-sudo-shim
 
 help() {
-	cat <<-EOF
+  cat <<-EOF
 		Usage:
 		 sudo (-i | -k | -v | -s) [-n] [-u <user>] [<command> [--] [<args>...]]
 		 sudo [-inskv] [-u <user>] <command> [--] [<args>...]
@@ -20,14 +20,14 @@ help() {
 }
 
 if [ $# -eq 0 ]; then
-	help >&2
-	exit 1
+  help >&2
+  exit 1
 fi
 
 # Note: "+" disables optional option parameters
 opts=$(getopt -n sudo -o +insu:kvh -l login,non-interactive,shell,user:,reset-timestamp,validate,help -- "$@") || {
-	help >&2
-	exit 1
+  help >&2
+  exit 1
 }
 eval set -- "$opts"
 
@@ -37,59 +37,59 @@ flag_s=
 flag_k=
 user=
 while [ $# -gt 0 ]; do
-	case "$1" in
-	-i | --login) flag_i='-i' ;;
-	-n | --non-interactive) flag_n='-n' ;;
-	-s | --shell) flag_s='-s' ;;
-	-u | --user)
-		user=${2#\#}
-		shift
-		;;
-	-k | --reset-timestamp) flag_k='-L' ;;
-	-v | --validate) flag_s="true" ;;
-	-h | --help)
-		help
-		exit 0
-		;;
-	--)
-		shift
-		break
-		;;
-	esac
-	shift
+  case "$1" in
+    -i | --login) flag_i='-i' ;;
+    -n | --non-interactive) flag_n='-n' ;;
+    -s | --shell) flag_s='-s' ;;
+    -u | --user)
+      user=${2#\#}
+      shift
+      ;;
+    -k | --reset-timestamp) flag_k='-L' ;;
+    -v | --validate) flag_s="true" ;;
+    -h | --help)
+      help
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+  esac
+  shift
 done
 
 if [ "$flag_i" ] && [ "$flag_s" ]; then
-	echo "sudo: you may not specify both the '-i' and '-s' options" >&2
-	exit 1
+  echo "sudo: you may not specify both the '-i' and '-s' options" >&2
+  exit 1
 fi
 _doas() { exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
 user_shell() {
-	if command -v getent >/dev/null 2>&1; then
-		getent passwd "${user:-root}" | awk -F: 'END {print $NF ? $NF : "sh"}'
-	else
-		awk -F: '$1 == "'"${user:-root}"'" {print $NF; m=1} END {if (!m) print "sh"}' /etc/passwd
-	fi
+  if command -v getent &>/dev/null; then
+    getent passwd "${user:-root}" | awk -F: 'END {print $NF ? $NF : "sh"}'
+  else
+    awk -F: '$1 == "'"${user:-root}"'" {print $NF; m=1} END {if (!m) print "sh"}' /etc/passwd
+  fi
 }
 export SUDO_GID=$(id -g)
 export SUDO_UID=$(id -u)
 export SUDO_USER=$(id -un)
 
 if [ $# -eq 0 ]; then
-	if [ "$flag_i" ]; then
-		_doas -- "$(user_shell)" -c 'cd "$HOME"; exec "$0" -l'
-	elif [ "$flag_k" ]; then
-		exec doas "$flag_k" "${user:+-u "$user"}"
-	else
-		_doas "$flag_s"
-	fi
+  if [ "$flag_i" ]; then
+    _doas -- "$(user_shell)" -c 'cd "$HOME"; exec "$0" -l'
+  elif [ "$flag_k" ]; then
+    exec doas "$flag_k" "${user:+-u "$user"}"
+  else
+    _doas "$flag_s"
+  fi
 elif [ "$flag_i" ]; then
-	_doas -- "$(user_shell)" -l -c 'cd "$HOME"; "$0" "$@"' "$@"
+  _doas -- "$(user_shell)" -l -c 'cd "$HOME"; "$0" "$@"' "$@"
 elif [ "$flag_s" ]; then
-	_doas -- "${SHELL:-$(user_shell)}" -c '"$0" "$@"' "$@"
+  _doas -- "${SHELL:-$(user_shell)}" -c '"$0" "$@"' "$@"
 elif [ "$flag_k" ]; then
-	doas "$flag_k" "${user:+-u "$user"}"
-	_doas -- "$@"
+  doas "$flag_k" "${user:+-u "$user"}"
+  _doas -- "$@"
 else
-	_doas -- "$@"
+  _doas -- "$@"
 fi
