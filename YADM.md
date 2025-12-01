@@ -71,7 +71,7 @@ There are two workflows depending on your preference:
 cd $(yadm rev-parse --show-toplevel)
 
 # 2. Make changes in Home/ directory
-vim Home/.config/zsh/.zshrc
+${EDITOR-nano} Home/.config/zsh/.zshrc
 
 # 3. Deploy changes to your home directory
 yadm-sync pull
@@ -86,7 +86,7 @@ yadm push
 
 ```bash
 # 1. Edit files in your home directory normally
-vim ~/.config/zsh/.zshrc
+${EDITOR-nano} ~/.config/zsh/.zshrc
 
 # 2. Sync changes back to repository
 yadm-sync push
@@ -128,8 +128,8 @@ yadm-sync diff
 
 ```bash
 # Make changes to your dotfiles
-vim ~/.bashrc
-vim ~/.config/starship.toml
+${EDITOR-nano} ~/.bashrc
+${EDITOR-nano} ~/.config/starship.toml
 
 # Check what changed
 yadm-sync status
@@ -176,7 +176,7 @@ System configs are managed separately with **tuckr**:
 cd $(yadm rev-parse --show-toplevel)
 
 # Edit system config
-sudo vim etc/pacman.conf
+sudo ${EDITOR-nano} etc/pacman.conf
 
 # Commit changes
 git add etc/pacman.conf
@@ -303,7 +303,7 @@ Add additional bootstrapping for specific applications:
 ```bash
 # Create app-specific bootstrap
 mkdir -p Home/.config/yadm/
-vim Home/.config/yadm/bootstrap
+${EDITOR-nano} Home/.config/yadm/bootstrap
 
 # This runs automatically after main bootstrap
 ```
