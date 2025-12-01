@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/rule.json
 severity: warning
+
 utils:
   is-console:
     kind: member_expression
@@ -26,34 +27,43 @@ utils:
       - pattern: insertAdjacentHTML($POS, $VAL)
       - pattern: document.write($VAL)
       - pattern: document.writeln($VAL)
+
 rules:
+  # ----------------------------------------------------------------------------
+  # TYPESCRIPT / JAVASCRIPT RULES
+  # ----------------------------------------------------------------------------
   - id: no-console
     language: typescript
     message: Remove console statements
     utils: is-console
     severity: error
     fix: ''
+
   - id: no-debugger
     language: typescript
     message: Remove debugger statement
     utils: is-debugger
     severity: error
     fix: ''
+
   - id: no-todo-comments
     languages: [typescript, javascript, bash]
     message: Resolve TODO/FIXME comment
     utils: has-todo
     severity: warning
+
   - id: no-unsafe-eval
     language: typescript
     message: Avoid eval and Function constructor
     utils: unsafe-eval
     severity: error
+
   - id: no-dangerous-html
     language: typescript
     message: Avoid direct HTML manipulation (XSS risk)
     utils: dangerous-html
     severity: warning
+
   - id: prefer-const
     language: typescript
     message: Use const for variables that are never reassigned
@@ -70,6 +80,7 @@ rules:
                 field: left
                 pattern: $VAR
     fix: const $VAR = $INIT
+
   - id: no-var
     language: typescript
     message: Use let or const instead of var
@@ -78,6 +89,7 @@ rules:
       pattern: var $VAR = $INIT
     fix: let $VAR = $INIT
     severity: error
+
   - id: prefer-arrow-function
     language: typescript
     message: Prefer arrow functions for callbacks
@@ -88,6 +100,7 @@ rules:
           - kind: arguments
           - kind: array
     fix: ($PARAMS) => $BODY
+
   - id: no-empty-catch
     language: typescript
     message: Empty catch block - handle error or remove try-catch
@@ -97,6 +110,23 @@ rules:
         kind: statement_block
         pattern: '{}'
     severity: warning
+
+  - id: prefer-strict-equality
+    language: typescript
+    message: Use === instead of ==
+    rule:
+      kind: binary_expression
+      any:
+        - pattern: $A == $B
+        - pattern: $A != $B
+    fix: $A === $B
+    severity: error
+
+  # ----------------------------------------------------------------------------
+  # BASH RULES & TRANSFORMS
+  # ----------------------------------------------------------------------------
+  
+  # Safety: Prevent word splitting on variables
   - id: bash-unquoted-var
     language: bash
     message: Quote variable to prevent word splitting
@@ -109,7 +139,14 @@ rules:
             - kind: double_quoted_string
             - kind: single_quoted_string
             - kind: arithmetic_expansion
+            - kind: test_command # [[ ... ]] handles quotes safely
+            - kind: assignment # var=$val is safe
+            - kind: case_item # case $var in is safe
     severity: error
+    # Note: No auto-fix provided for this one as context matters (e.g. arguments)
+    # If you want to force it: fix: '"$MATCH"' (where $MATCH is the expansion)
+
+  # Optimization: Use input redirection instead of cat | cmd
   - id: bash-useless-cat
     language: bash
     message: Useless cat - redirect directly
@@ -117,6 +154,9 @@ rules:
       kind: pipeline
       pattern: cat $FILE | $CMD
     fix: $CMD < $FILE
+    severity: warning
+
+  # Performance: Use mapfile/readarray for arrays
   - id: bash-prefer-mapfile
     language: bash
     message: Use mapfile instead of while read loop
@@ -124,37 +164,76 @@ rules:
       kind: while_statement
       pattern: |
         while IFS= read -r $VAR; do
-          $ARRAY+=("$$VAR")
+          $ARRAY+=("$VAR")
         done
     fix: mapfile -t $ARRAY
-  - id: prefer-strict-equality
-    language: typescript
-    message: Use === instead of ==
+    severity: info
+
+  # Idiom: Use ':' (no-op) instead of 'true'
+  # Replaces your 'bash-true' transform
+  - id: bash-idiom-true
+    language: bash
+    message: Prefer ':' over 'true' for no-ops
     rule:
-      kind: binary_expression
       any:
-        - pattern: $A == $B
-        - pattern: $A != $B
-    fix: $A === $B
-    severity: error
-transform:
-  bash-true:      # new variable name
-    replace:         # transform operation
-      source: $ARGS
-      replace: '|| true'
-      by: '|| :'
-  bash-function:
-    replace:
-      source: $ARGS
-      replace: '() {'
-      by: '(){'
-  bash-redir:
-    replace:
-      source: $ARGS
-      replace: '> /dev/null'
-      by: '>/dev/null'
-  bash-null:
-    replace:
-      source: $ARGS
-      replace: '>/dev/null 2&>1'
-      by: '&>/dev/null'
+        - pattern: $CMD || true
+        - pattern: while true; do $$$; done
+    fix: |
+      # Check which pattern matched to apply correct fix
+      # This uses a simple regex replacement approach within the fix since 
+      # ast-grep single-rule 'fix' applies to the whole match.
+      # For safety, we split into two sub-rules:
+    severity: info
+
+  - id: bash-idiom-true-or
+    language: bash
+    rule: 
+      pattern: $CMD || true
+    fix: $CMD || :
+  
+  - id: bash-idiom-true-while
+    language: bash
+    rule:
+      pattern: while true; do $$$BODY; done
+    fix: while :; do $$$BODY; done
+
+  # Style: Compact redirection (> /dev/null -> >/dev/null)
+  # Replaces your 'bash-redir' transform
+  - id: bash-style-compact-redirect
+    language: bash
+    message: Remove space before /dev/null
+    rule:
+      kind: redirect
+      regex: '> \/dev\/null' # Match strictly > space /dev/null
+    fix: '>/dev/null'
+
+  # Optimization: Compact silence (&>/dev/null)
+  # Replaces your 'bash-null' transform
+  # Handles: >/dev/null 2>&1  AND  > /dev/null 2>&1
+  - id: bash-opt-silence-all
+    language: bash
+    message: Use &>/dev/null instead of >/dev/null 2>&1
+    rule:
+      kind: command
+      # Pattern matching allows us to capture the command ignoring the specific redirect syntax first
+      pattern: $CMD > /dev/null 2>&1
+    fix: $CMD &>/dev/null
+
+  # Style: Function definitions without space
+  # Replaces your 'bash-function' transform
+  # Target: function name() { -> name(){
+  - id: bash-style-function-brace
+    language: bash
+    message: Remove space before function brace
+    rule:
+      kind: function_definition
+      # We check the raw text to ensure we only flag ones WITH a space
+      regex: '\) \{' 
+      pattern: |
+        $NAME() {
+          $$$BODY
+        }
+    fix: |
+      $NAME(){
+        $$$BODY
+      }
