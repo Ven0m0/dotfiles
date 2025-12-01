@@ -1,0 +1,21 @@
+name: qlty format
+on:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Format Code
+        uses: qltysh/qlty-action/fmt@v1
+        with:
+          commit: false
+          github-token: ${{ secrets.CLAUDE_TRIGGER_PAT }}
