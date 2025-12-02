@@ -13,13 +13,23 @@
 #       -s      select a wallpaper from directory via fzf
 #
 # dependencies: fzf, swaybg (wayland), fehbg (x11), libnotify (optional)
-set -euo pipefail
+
+# Source shared library (with fallback for standalone operation)
+# shellcheck source=../lib/bash/stdlib.bash
+if [[ -r "${HOME}/.local/lib/bash/stdlib.bash" ]]; then
+  . "${HOME}/.local/lib/bash/stdlib.bash"
+elif [[ -r "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" ]]; then
+  . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash"
+else
+  # Minimal fallback if stdlib not available
+  set -euo pipefail
+  has() { command -v "$1" &>/dev/null; }
+fi
 
 # exit 0 - successful execution
 # exit 1 - no selection
 # exit 2 - error
 
-has() { command -v "$1" &> /dev/null; }
 WALLPAPERS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/wallpapers"
 mkdir -p "$WALLPAPERS_DIR"
 QUIET=""
