@@ -205,7 +205,7 @@ rules:
     message: "Prefer ':' over 'true' (builtin vs external, saves 1 fork)"
     rule:
       pattern: $CMD || true
-    fix: $CMD || :
+    fix: "$CMD || :"
     severity: info
 
   - id: bash-idiom-true-while
@@ -213,7 +213,7 @@ rules:
     message: "Prefer ':' over 'true' in while loops (1 char, builtin)"
     rule:
       pattern: while true; do $$$BODY; done
-    fix: while :; do $$$BODY; done
+    fix: "while :; do $$$BODY; done"
     severity: info
 
   # ----------------------------------------------------------------------------
