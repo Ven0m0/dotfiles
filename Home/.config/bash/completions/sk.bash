@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 _sk() {
   local i cur prev opts cmd
   COMPREPLY=()

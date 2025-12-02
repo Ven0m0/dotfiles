@@ -98,6 +98,7 @@ preview_text() {
   local file="$1" center="${2:-0}" ext
   ext="$(ext_of "$file")"
   case "$ext" in
+<<<<<<< Updated upstream
     md) have glow && {
       glow --style=auto --width "$((${FZF_PREVIEW_COLUMNS:-80} - 1))" -- "$file"
       return
@@ -106,6 +107,25 @@ preview_text() {
       w3m -T text/html -dump -- "$file"
       return
     } ;;
+||||||| Stash base
+    md) have glow && {
+      glow --style=auto -- "$file"
+      return
+    } ;;
+    htm | html) have w3m && {
+      w3m -T text/html -dump -- "$file"
+      return
+    } ;;
+=======
+  md) have glow && {
+    glow --style=auto -- "$file"
+    return
+  } ;;
+  htm | html) have w3m && {
+    w3m -T text/html -dump -- "$file"
+    return
+  } ;;
+>>>>>>> Stashed changes
   esac
   local b
   b="$(batcmd)"
@@ -188,6 +208,7 @@ preview_archive() {
   size="$(get_file_size "$f" 2>/dev/null || printf '0')"
 
   case "$ext" in
+<<<<<<< Updated upstream
     zip) have unzip && {
       file --brief --dereference --mime -- "$f"
       ((size < max_size)) && {
@@ -195,7 +216,20 @@ preview_archive() {
         printf '\n'
         unzip -p -- "$f" 2>/dev/null | head -c 10000 || :
       }
+||||||| Stash base
+    7z) have 7z && {
+      7z l -p -- "$f" || :
+=======
+  7z) have 7z && {
+    7z l -p -- "$f" || :
+    return
+  } ;;
+  a | ace | alz | arc | arj | bz | bz2 | cab | cpio | deb | gz | jar | lha | lz | lzh | lzma | lzo | rpm | rz | t7z | tar | tbz | tbz2 | tgz | tlz | txz | tZ | tzo | war | xpi | xz | Z | zip | rar)
+    have atool && {
+      atool --list -- "$f" || :
+>>>>>>> Stashed changes
       return
+<<<<<<< Updated upstream
     } ;;
     gz) have zcat && {
       file --brief --dereference --mime -- "$f"
@@ -230,6 +264,18 @@ preview_archive() {
         return
       }
       ;;
+||||||| Stash base
+    } ;;
+    a | ace | alz | arc | arj | bz | bz2 | cab | cpio | deb | gz | jar | lha | lz | lzh | lzma | lzo | rpm | rz | t7z | tar | tbz | tbz2 | tgz | tlz | txz | tZ | tzo | war | xpi | xz | Z | zip | rar)
+      have atool && {
+        atool --list -- "$f" || :
+        return
+      }
+      ;;
+=======
+    }
+    ;;
+>>>>>>> Stashed changes
   esac
   file --brief --dereference --mime -- "$f"
 }
@@ -238,6 +284,7 @@ preview_misc_by_ext() {
   local f="$1" ext
   ext="$(ext_of "$f")"
   case "$ext" in
+<<<<<<< Updated upstream
     o) have nm && {
       nm -- "$f"
       return
@@ -266,6 +313,65 @@ preview_misc_by_ext() {
       exiftool -- "$f"
       return
     } ;;
+||||||| Stash base
+    o) have nm && {
+      nm -- "$f"
+      return
+    } ;;
+    iso) have iso-info && {
+      iso-info --no-header -l -- "$f"
+      return
+    } ;;
+    odt | ods | odp | sxw) have odt2txt && {
+      odt2txt -- "$f"
+      return
+    } ;;
+    doc) have catdoc && {
+      catdoc -- "$f"
+      return
+    } ;;
+    docx) have docx2txt && {
+      docx2txt -- "$f" -
+      return
+    } ;;
+    xls | xlsx) if have ssconvert && have bat; then
+      ssconvert --export-type=Gnumeric_stf:stf_csv -- "$f" "fd://1" | bat --language=csv
+      return
+    fi ;;
+    wav | mp3 | flac | m4a | wma | ape | ac3 | og[agx] | spx | opus | as[fx] | mka) have exiftool && {
+      exiftool -- "$f"
+      return
+    } ;;
+=======
+  o) have nm && {
+    nm -- "$f"
+    return
+  } ;;
+  iso) have iso-info && {
+    iso-info --no-header -l -- "$f"
+    return
+  } ;;
+  odt | ods | odp | sxw) have odt2txt && {
+    odt2txt -- "$f"
+    return
+  } ;;
+  doc) have catdoc && {
+    catdoc -- "$f"
+    return
+  } ;;
+  docx) have docx2txt && {
+    docx2txt -- "$f" -
+    return
+  } ;;
+  xls | xlsx) if have ssconvert && have bat; then
+    ssconvert --export-type=Gnumeric_stf:stf_csv -- "$f" "fd://1" | bat --language=csv
+    return
+  fi ;;
+  wav | mp3 | flac | m4a | wma | ape | ac3 | og[agx] | spx | opus | as[fx] | mka) have exiftool && {
+    exiftool -- "$f"
+    return
+  } ;;
+>>>>>>> Stashed changes
   esac
   file --brief --dereference --mime -- "$f"
 }
@@ -282,6 +388,7 @@ preview_file() {
 
   mime="$(mime_of "$loc" || printf '')"
   case "$mime" in
+<<<<<<< Updated upstream
     text/*) preview_text "$loc" "$center" ;;
     application/json) if have jq; then "$(batcmd)" -p --color=always -- "$loc" | jq .; else preview_text "$loc" "$center"; fi ;;
     inode/directory) if have eza; then eza -T -L 2 -- "$loc"; else find -- "$loc" -maxdepth 2 -printf '%y %p\n'; fi ;;
@@ -356,6 +463,57 @@ preview_file() {
       ;;
 
     *) preview_archive "$loc" || preview_misc_by_ext "$loc" ;;
+||||||| Stash base
+    text/*) preview_text "$loc" "$center" ;;
+    application/json) if have jq; then "$(batcmd)" -p --color=always -- "$loc" | jq .; else preview_text "$loc" "$center"; fi ;;
+    inode/directory) if have eza; then eza -T -L 2 -- "$loc"; else find -- "$loc" -maxdepth 2 -printf '%y %p\n'; fi ;;
+    inode/symlink) preview_symlink "$loc" ;;
+    application/x-executable | application/x-pie-executable | application/x-sharedlib) have readelf && readelf --wide --demangle=auto --all -- "$loc" || file -- "$loc" ;;
+    application/x-x509-ca-cert) have openssl && openssl x509 -text -noout -in "$loc" || file -- "$loc" ;;
+    image/*) preview_image_backend "$loc" ;;
+    video/*)
+      local base hash out
+      base="$(abspath "$loc")"
+      hash="$(sha256_of "$base")"
+      out="${cache_dir}/thumb-${hash}.jpg"
+      if ! [[ -s $out ]]; then have ffmpegthumbnailer && ffmpegthumbnailer -i "$loc" -o "$out" -s 1200 || :; fi
+      [[ -s $out ]] && preview_image_backend "$out" || file -- "$loc"
+      ;;
+    application/pdf)
+      local base hash out
+      base="$(abspath "$loc")"
+      hash="$(sha256_of "$base")"
+      out="${cache_dir}/pdf-${hash}.jpg"
+      if ! [[ -s $out ]]; then have pdftoppm && pdftoppm -jpeg -f 1 -singlefile -- "$loc" "${cache_dir}/pdf-${hash}" || :; fi
+      [[ -s $out ]] && preview_image_backend "$out" || file -- "$loc"
+      ;;
+    *) preview_archive "$loc" || preview_misc_by_ext "$loc" ;;
+=======
+  text/*) preview_text "$loc" "$center" ;;
+  application/json) if have jq; then "$(batcmd)" -p --color=always -- "$loc" | jq .; else preview_text "$loc" "$center"; fi ;;
+  inode/directory) if have eza; then eza -T -L 2 -- "$loc"; else find -- "$loc" -maxdepth 2 -printf '%y %p\n'; fi ;;
+  inode/symlink) preview_symlink "$loc" ;;
+  application/x-executable | application/x-pie-executable | application/x-sharedlib) have readelf && readelf --wide --demangle=auto --all -- "$loc" || file -- "$loc" ;;
+  application/x-x509-ca-cert) have openssl && openssl x509 -text -noout -in "$loc" || file -- "$loc" ;;
+  image/*) preview_image_backend "$loc" ;;
+  video/*)
+    local base hash out
+    base="$(abspath "$loc")"
+    hash="$(sha256_of "$base")"
+    out="${cache_dir}/thumb-${hash}.jpg"
+    if ! [[ -s $out ]]; then have ffmpegthumbnailer && ffmpegthumbnailer -i "$loc" -o "$out" -s 1200 || :; fi
+    [[ -s $out ]] && preview_image_backend "$out" || file -- "$loc"
+    ;;
+  application/pdf)
+    local base hash out
+    base="$(abspath "$loc")"
+    hash="$(sha256_of "$base")"
+    out="${cache_dir}/pdf-${hash}.jpg"
+    if ! [[ -s $out ]]; then have pdftoppm && pdftoppm -jpeg -f 1 -singlefile -- "$loc" "${cache_dir}/pdf-${hash}" || :; fi
+    [[ -s $out ]] && preview_image_backend "$out" || file -- "$loc"
+    ;;
+  *) preview_archive "$loc" || preview_misc_by_ext "$loc" ;;
+>>>>>>> Stashed changes
   esac
 
   rm -f "$tmp_img" "${tmp_img}.jpg" 2>/dev/null || :
@@ -402,13 +560,13 @@ main() {
   local cmd="${1:-}"
   shift || :
   case "${cmd:-}" in
-    preview) cmd_preview "$@" ;;
-    "" | -h | --help | help) usage ;;
-    *)
-      printf 'unknown: %s\n' "$cmd" >&2
-      usage
-      return 2
-      ;;
+  preview) cmd_preview "$@" ;;
+  "" | -h | --help | help) usage ;;
+  *)
+    printf 'unknown: %s\n' "$cmd" >&2
+    usage
+    return 2
+    ;;
   esac
 }
 

@@ -3,7 +3,7 @@ LC_ALL=C LANG=C
 
 # https://codeberg.org/TotallyLeGIT/doasedit/
 help() {
-  cat - >&2 <<EOF
+  cat - >&2 << EOF
 doasedit - edit files as root using an unprivileged editor
 
 usage: doasedit file...
@@ -34,7 +34,7 @@ check_doas_conf() {
   return 0
 }
 error() { printf 'doasedit: %s\n' "${@}" 1>&2; }
-has() { command -v "$1" &>/dev/null; }
+has() { command -v "$1" &> /dev/null; }
 _exit() {
   rm -rf "$tmpdir"
   trap - EXIT HUP QUIT TERM INT ABRT
@@ -93,7 +93,7 @@ for file; do
   dir="$(dirname -- "$file")"
   tmpfile="${tmpdir}/${file##*/}"
   tmpfile_copy="${tmpdir}/copy-of-${file##*/}"
-  printf '' | tee "$tmpfile" >"$tmpfile_copy"
+  printf '' | tee "$tmpfile" > "$tmpfile_copy"
   chmod 0600 "$tmpfile" "$tmpfile_copy"
   if [[ -e $file ]]; then
     if ! [[ -f $file ]]; then
@@ -138,13 +138,13 @@ for file; do
         error "${file}: editing user-readable and -writable files is not permitted"
         continue
       fi
-      cat -- "$file" >"$tmpfile"
+      cat -- "$file" > "$tmpfile"
     # Better not suppress stderr here as there might be something of importance.
-    elif ! doas cat -- "$file" >"$tmpfile"; then
+    elif ! doas cat -- "$file" > "$tmpfile"; then
       error "you are not permitted to call 'doas cat'"
       continue
     fi
-    cat "$tmpfile" >"$tmpfile_copy"
+    cat "$tmpfile" > "$tmpfile_copy"
   fi
   "$editor_cmd" "$tmpfile"
   check_doas_conf "$file" "$tmpfile" || continue

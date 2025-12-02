@@ -12,7 +12,7 @@ readonly LBLU=$'\e[38;5;117m' PNK=$'\e[38;5;218m' BWHT=$'\e[97m'
 readonly DEF=$'\e[0m' BLD=$'\e[1m' UL=$'\e[4m'
 
 # Core helpers
-has() { command -v "$1" &>/dev/null; }
+has() { command -v "$1" &> /dev/null; }
 err() { printf '%b[ERR]%b %s\n' "$RED" "$DEF" "$*" >&2; }
 die() {
   err "$@"
@@ -24,7 +24,7 @@ _ver() { printf '%b%s%b -- %bv1.0.0%b fuzzy git TUI (gix/gh/forgit)\n' "$BLD" "$
 
 # Help
 _help() {
-  cat <<EOF
+  cat << EOF
 ${BLD}USAGE${DEF}  ${0##*/} ${UL}CMD${DEF} [${UL}ARGS${DEF}]
 
 ${BLD}GIT COMMANDS${DEF}
@@ -86,9 +86,9 @@ EOF
 }
 
 # Tool detection
-for g in ${GIT_CMD:-gix git}; do has "$g" && GIT="$g" && break; done
+for g in "${GIT_CMD:-gix git}"; do has "$g" && GIT="$g" && break; done
 [[ -z ${GIT:-} ]] && die "No git/gix found"
-for f in ${FINDER:-sk fzf}; do has "$f" && FZF="$f" && break; done
+for f in "${FINDER:-sk fzf}"; do has "$f" && FZF="$f" && break; done
 [[ -z ${FZF:-} ]] && die "No fuzzy finder found (sk/fzf)"
 
 # Optional tools
@@ -123,7 +123,7 @@ _git() {
 
 # Check if in git repo
 _check_repo() {
-  _git rev-parse --git-dir &>/dev/null || die "Not a git repository"
+  _git rev-parse --git-dir &> /dev/null || die "Not a git repository"
 }
 
 # FZF wrapper with defaults
@@ -210,7 +210,7 @@ _add() {
     -b "ctrl-y:execute-silent(echo {} | tr '\n' ' ' | ${CLIP:-:})" \
     -b "alt-e:execute(${EDITOR:-vim} {})")
   [[ -z ${files} ]] && return 0
-  _git add "$(xargs <<<"$files")"
+  _git add "$(xargs <<< "$files")"
 }
 
 # Interactive git diff
@@ -277,14 +277,14 @@ _status() {
 _branch() {
   _check_repo
   local branch
-  branch=$(_git branch --all --color=always --sort=-committerdate "$@" |
-    grep -v HEAD | _fzf \
+  branch=$(_git branch --all --color=always --sort=-committerdate "$@" \
+    | grep -v HEAD | _fzf \
     -h $'Enter:checkout  Ctrl-Y:copy name\n?:toggle preview' \
     -l '[git branch]' \
     -w 'down:70%:wrap' \
     -p 'git log --oneline --graph --color=always {1}' \
-    -b "ctrl-y:execute-silent(echo {1} | ${CLIP:-:})" |
-    sed 's/^[* ]*//' | awk '{print $1}')
+    -b "ctrl-y:execute-silent(echo {1} | ${CLIP:-:})" \
+    | sed 's/^[* ]*//' | awk '{print $1}')
   [[ -z ${branch} ]] && return 0
   _git checkout "${branch#remotes/origin/}"
 }
@@ -293,16 +293,16 @@ _branch() {
 _branch_delete() {
   _check_repo
   local branches
-  branches=$(_git branch --color=always --sort=-committerdate "$@" |
-    grep -v '^\*' | _fzf -m \
+  branches=$(_git branch --color=always --sort=-committerdate "$@" \
+    | grep -v '^\*' | _fzf -m \
     -h $'Tab:select  Enter:delete  Ctrl-Y:copy\n?:toggle preview' \
     -l '[git branch -D]' \
     -w 'down:70%:wrap' \
     -p 'git log --oneline --graph --color=always {1}' \
-    -b "ctrl-y:execute-silent(echo {1} | ${CLIP:-:})" |
-    awk '{print $1}')
+    -b "ctrl-y:execute-silent(echo {1} | ${CLIP:-:})" \
+    | awk '{print $1}')
   [[ -z ${branches} ]] && return 0
-  _git branch -D "$(xargs <<<"$branches")"
+  _git branch -D "$(xargs <<< "$branches")"
 }
 
 # Interactive tag checkout
@@ -349,7 +349,7 @@ _reset() {
     -p "git diff --cached --color=always {} | ${pager}" \
     -b "ctrl-y:execute-silent(echo {} | ${CLIP:-:})")
   [[ -z ${files} ]] && return 0
-  _git reset HEAD "$(xargs <<<"$files")"
+  _git reset HEAD "$(xargs <<< "$files")"
 }
 
 # Interactive file checkout
@@ -364,7 +364,7 @@ _file() {
     -p "git diff --color=always {} | ${pager}" \
     -b "ctrl-y:execute-silent(echo {} | ${CLIP:-:})")
   [[ -z ${files} ]] && return 0
-  _git checkout -- "$(xargs <<<"$files")"
+  _git checkout -- "$(xargs <<< "$files")"
 }
 
 # Interactive stash viewer
@@ -378,8 +378,8 @@ _stash() {
     -w 'down:70%:wrap' \
     -p "git stash show -p {1} | ${pager}" \
     -b "ctrl-y:execute-silent(echo {1} | cut -d: -f1 | ${CLIP:-:})" \
-    -b "ctrl-d:reload(git stash drop {1} && git stash list)" |
-    cut -d: -f1)
+    -b "ctrl-d:reload(git stash drop {1} && git stash list)" \
+    | cut -d: -f1)
   [[ -z ${stash} ]] && return 0
   _git stash apply "$stash"
 }
@@ -395,7 +395,7 @@ _stash_push() {
     -w 'down:70%:wrap' \
     -p "git diff --color=always {} | ${pager}")
   [[ -z ${files} ]] && return 0
-  _git stash push -m "fzgit stash" -- "$(xargs <<<"$files")"
+  _git stash push -m "fzgit stash" -- "$(xargs <<< "$files")"
 }
 
 # Interactive git clean
@@ -412,7 +412,7 @@ _clean() {
   printf '%bClean these files? [y/N]%b ' "$YLW" "$DEF"
   read -r ans
   [[ ${ans} =~ ^[Yy] ]] || return 0
-  _git clean -xdff "$(xargs <<<"$files")"
+  _git clean -xdff "$(xargs <<< "$files")"
 }
 
 # Interactive cherry-pick
@@ -488,7 +488,7 @@ _difftool() {
   local files
   files=$(_diff "$@")
   [[ -z ${files} ]] && return 0
-  _git difftool "${1:-HEAD}" -- "$(xargs <<<"$files")"
+  _git difftool "${1:-HEAD}" -- "$(xargs <<< "$files")"
 }
 
 # GitHub PR viewer (requires gh)
@@ -558,7 +558,7 @@ _ignore() {
       -h 'Tab:select  Enter:generate' \
       -l '[.gitignore templates]')
     [[ -z ${list} ]] && return 0
-    set -- "$(xargs <<<"$list")"
+    set -- "$(xargs <<< "$list")"
   fi
 
   curl -fsSL "${api}/$(
@@ -577,8 +577,8 @@ _clone() {
     -l '[GitHub Clone]' \
     -w 'down:70%:wrap' \
     -p 'gh repo view {1}' \
-    -b "ctrl-y:execute-silent(echo https://github.com/{1} | ${CLIP:-:})" |
-    awk '{print $1}')
+    -b "ctrl-y:execute-silent(echo https://github.com/{1} | ${CLIP:-:})" \
+    | awk '{print $1}')
   [[ -z ${repo} ]] && return 0
   gh repo clone "$repo"
 }

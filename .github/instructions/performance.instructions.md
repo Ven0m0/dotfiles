@@ -1,8 +1,10 @@
----
-applyTo: "*" 
----
+______________________________________________________________________
 
-The most comprehensive, practical, and engineer-authored performance optimization instructions for all languages, frameworks, and stacks. Covers frontend, backend, and database best practices with actionable guidance, scenario-based checklists, troubleshooting, and pro tips.
+## applyTo: "\*"
+
+The most comprehensive, practical, and engineer-authored performance optimization instructions for all languages,
+frameworks, and stacks. Covers frontend, backend, and database best practices with actionable guidance, scenario-based
+checklists, troubleshooting, and pro tips.
 
 # Performance Optimization Best Practices
 

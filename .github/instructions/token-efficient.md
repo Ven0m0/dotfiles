@@ -1,6 +1,6 @@
----
-applyTo: "*"
----
+______________________________________________________________________
+
+## applyTo: "\*"
 
 Unified, compressed response style to minimize tokens and LLM work without reducing quality.
 

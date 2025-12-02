@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # bash completion for reflector        -*- shell-script -*-
 
 _reflector_complete() {
@@ -24,12 +25,12 @@ _reflector_complete_countries() {
 
   mkdir -p "$folder"
   if [[ -r $file ]]; then
-    country_names="$(<"$file")"
+    country_names="$(< "$file")"
   else
     rm -f "${file%.*}".*
     country_names=$(/bin/reflector --list-countries) || return 1
     country_names=$(echo "$country_names" | /bin/sed -e '1,2d' -e 's|^\(.*[a-z]\)[ ]*[A-Z][A-Z].*$|\1|')
-    echo "$country_names" >"$file"
+    echo "$country_names" > "$file"
   fi
 
   local IFS=$'\n'
@@ -42,15 +43,15 @@ _reflector_complete_mirrors() {
   local -r file="$folder/mirrors.$date"
   mkdir -p "$folder"
   if [[ -r $file ]]; then
-    local mirrors=$(<"$file")
+    local mirrors=$(< "$file")
   else
     local -r timeout=30
     local -r url="https://archlinux.org/mirrorlist/?protocol=https&ip_version=4&use_mirror_status=on"
     local mirrors=$(curl --fail -Lsm "$timeout" "$url" | grep "^#Server = " | awk '{print $NF}')
     [[ -n $mirrors ]] || exit 1
-    echo "$mirrors" >"$file"
+    echo "$mirrors" > "$file"
   fi
-  mirrors=$(fzf -m <"$file")
+  mirrors=$(fzf -m < "$file")
 
   local IFS=$'\n'
   COMPREPLY=("$(compgen -W "$mirrors" -- "$cur")")
@@ -127,5 +128,5 @@ _reflector_() {
       esac
       ;;
   esac
-} &&
-  complete -F _reflector_ reflector
+} \
+  && complete -F _reflector_ reflector

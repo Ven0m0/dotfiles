@@ -16,7 +16,8 @@
 
 ### Symbols for Analysis
 
-→ leads to | ⇒ converts | ∴ / ∵ therefore/because | ✅ / ❌ success/fail | ⚡ performance | 🛡️ security | 🧪 testing | 🔍 analysis
+→ leads to | ⇒ converts | ∴ / ∵ therefore/because | ✅ / ❌ success/fail | ⚡ performance | 🛡️ security | 🧪 testing | 🔍
+analysis
 
 ## Reasoning Patterns
 
@@ -60,9 +61,8 @@ Recommendation: [Choice] ∵ [Key reason]
 
 ## Technical Context (Minimal)
 
-**Targets:** Arch/Wayland, Debian/Raspbian, Termux.
-**Bash:** `set -euo pipefail`. Use `[[ ... ]]`, `printf`, `mapfile -t`. Avoid `eval`, parsing `ls`.
-**Tools:** fd→find, rg→grep, jaq→jq, aria2→curl.
+**Targets:** Arch/Wayland, Debian/Raspbian, Termux. **Bash:** `set -euo pipefail`. Use `[[ ... ]]`, `printf`,
+`mapfile -t`. Avoid `eval`, parsing `ls`. **Tools:** fd→find, rg→grep, jaq→jq, aria2→curl.
 
 ## Performance Analysis Framework
 

@@ -7,7 +7,7 @@ if has mise; then
   # Cache mise activation to improve startup time
   MISE_CACHE="${BASH_CACHE_DIR}/mise_init.bash"
   if [[ ! -f $MISE_CACHE || $(which mise) -nt $MISE_CACHE ]]; then
-    mise activate bash >"$MISE_CACHE"
+    mise activate bash > "$MISE_CACHE"
   fi
   source "$MISE_CACHE"
   alias mx="mise x --"
@@ -31,7 +31,7 @@ export PYTHONOPTIMIZE=2 PYTHONIOENCODING='UTF-8' PYTHON_JIT=1
 export PYTHON_DISABLE_REMOTE_DEBUG=1 PYTORCH_ENABLE_MPS_FALLBACK=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 # Use uv for pip operations when available
-pip(){
+pip() {
   if has uv && [[ "install uninstall list show freeze check" =~ $1 ]]; then
     command uv pip "$@"
   else

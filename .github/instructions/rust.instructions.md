@@ -1,6 +1,6 @@
----
-applyTo: "**/*.rs" 
----
+______________________________________________________________________
+
+## applyTo: "\*\*/\*.rs"
 
 # Rust Coding Conventions and Best Practices
 

@@ -1,6 +1,6 @@
 ______________________________________________________________________
 
-## Description: Analyze your own previous response with rigorous critical thinking.
+## Description: Analyze your own previous response with rigorous critical thinking
 
 # criticalthink
 

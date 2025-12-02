@@ -34,48 +34,48 @@ ls -la              # OK for single directory view
 
 ### BANNED - Never Use These Slow Tools
 
-* ❌ `tree` - NOT INSTALLED, use `fd` instead
-* ❌ `find` - use `fd` or `rg --files`
-* ❌ `grep` or `grep -r` - use `rg` instead
-* ❌ `ls -R` - use `rg --files` or `fd`
-* ❌ `cat file | grep` - use `rg pattern file`
+- ❌ `tree` - NOT INSTALLED, use `fd` instead
+- ❌ `find` - use `fd` or `rg --files`
+- ❌ `grep` or `grep -r` - use `rg` instead
+- ❌ `ls -R` - use `rg --files` or `fd`
+- ❌ `cat file | grep` - use `rg pattern file`
 
 ### Use These Faster Tools Instead
 
 ```bash
-# ripgrep (rg) - content search 
+# ripgrep (rg) - content search
 rg "search_term"                # Search in all files
 rg -i "case_insensitive"        # Case-insensitive
 rg "pattern" -t py              # Only Python files
 rg "pattern" -g "*.md"          # Only Markdown
 rg -1 "pattern"                 # Filenames with matches
 rg -c "pattern"                 # Count matches per file
-rg -n "pattern"                 # Show line numbers 
+rg -n "pattern"                 # Show line numbers
 rg -A 3 -B 3 "error"            # Context lines
 rg " (TODO| FIXME | HACK)"      # Multiple patterns
 
-# ripgrep (rg) - file listing 
+# ripgrep (rg) - file listing
 rg --files                      # List files (respects •gitignore)
-rg --files | rg "pattern"       # Find files by name 
-rg --files -t md                # Only Markdown files 
+rg --files | rg "pattern"       # Find files by name
+rg --files -t md                # Only Markdown files
 
-# fd - file finding 
-fd -e js                        # All •js files (fast find) 
-fd -x command {}                # Exec per-file 
-fd -e md -x ls -la {}           # Example with ls 
+# fd - file finding
+fd -e js                        # All •js files (fast find)
+fd -x command {}                # Exec per-file
+fd -e md -x ls -la {}           # Example with ls
 
-# jq - JSON processing 
-jq. data.json                   # Pretty-print 
-jq -r .name file.json           # Extract field 
+# jq - JSON processing
+jq. data.json                   # Pretty-print
+jq -r .name file.json           # Extract field
 jq '.id = 0' x.json             # Modify field
 ```
 
 ### Search Strategy
 
 1. Start broad, then narrow: `rg "partial" | rg "specific"`
-2. Filter by type early: `rg -t python "def function_name"`
-3. Batch patterns: `rg "(pattern1|pattern2|pattern3)"`
-4. Limit scope: `rg "pattern" src/`
+1. Filter by type early: `rg -t python "def function_name"`
+1. Batch patterns: `rg "(pattern1|pattern2|pattern3)"`
+1. Limit scope: `rg "pattern" src/`
 
 ### INSTANT DECISION TREE
 

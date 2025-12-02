@@ -1,4 +1,5 @@
-This is my archlinux dotfiles repo. It stores all my config files and some scripts for my optimal linux setup. Please follow these guidelines when contributing:
+This is my archlinux dotfiles repo. It stores all my config files and some scripts for my optimal linux setup. Please
+follow these guidelines when contributing:
 
 ## LLM rules / Code Standards
 
@@ -115,9 +116,9 @@ sg scan --config Home/sgconfig.yml --rule bash-useless-cat Home/.local/bin/wp.sh
 ### Adding New Rules
 
 1. Edit `Home/sgconfig.yml`
-2. Test locally: `sg check Home/sgconfig.yml`
-3. Verify matches: `sg scan --config Home/sgconfig.yml <file>`
-4. Commit and push (CI validates syntax)
+1. Test locally: `sg check Home/sgconfig.yml`
+1. Verify matches: `sg scan --config Home/sgconfig.yml <file>`
+1. Commit and push (CI validates syntax)
 
 ### Disabling Rules
 

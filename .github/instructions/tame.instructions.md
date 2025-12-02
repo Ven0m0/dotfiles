@@ -1,6 +1,6 @@
----
-applyTo: "*"
----
+______________________________________________________________________
+
+## applyTo: "\*"
 
 Prevent Copilot from wreaking havoc across your codebase, keeping it under control.
 

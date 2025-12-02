@@ -89,8 +89,7 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 <details>
 <summary><b>Supported Linux Distributions</b></summary>
 
-- [CachyOS](https://cachyos.org) specifically, but really any arch based distro
-  is good
+- [CachyOS](https://cachyos.org) specifically, but really any arch based distro is good
 - [DietPi](https://dietpi.com)
 - [Raspberry Pi OS](https://www.raspberrypi.com/software)
 
@@ -225,10 +224,10 @@ Purpose: dev guardrails.
 Prompts: compact/optimal/secure code; prefer builtins
 CI: markdownlint; shellcheck; shfmt; ensure CLAUDE.MD+GEMINI.MD exist
 ---
-Validation: find required files; markdownlint; rg for invisibles; sd to strip.  
-Merge: small→direct PR; big→issue.  
-Output: patched files + diff + changelog; else ISSUE.md.  
-Exit: all files + lint pass → ok; else fail.  
+Validation: find required files; markdownlint; rg for invisibles; sd to strip.
+Merge: small→direct PR; big→issue.
+Output: patched files + diff + changelog; else ISSUE.md.
+Exit: all files + lint pass → ok; else fail.
 Risk: no behavioral prompt changes without approval; templates stay minimal.
 ```
 

@@ -10,7 +10,7 @@ VERBOSE=false
 MODE="${MODE:-both}"
 DELETED_BRANCHES=0
 DELETED_REMOTE_BRANCHES=0
-has() { command -v "$1" &>/dev/null; }
+has() { command -v "$1" &> /dev/null; }
 die() {
   printf '%s\n' "$1" >&2
   exit 1
@@ -21,7 +21,7 @@ ok() { printf '\033[0;92m%s\033[0m\n' "$1"; }
 err() { printf '\033[0;31mERROR: %s\033[0m\n' "$1" >&2; }
 verbose() { [[ $VERBOSE == true ]] && printf '\033[0;90m%s\033[0m\n' "$1" || :; }
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $(basename "$0") [MODE] [OPTIONS]
 
 Git repository maintenance: cleanup merged branches and update from remote.
@@ -98,9 +98,9 @@ fi
 [[ -d .git ]] || die "Not a git repository"
 determine_trunk() {
   local trunk=
-  if git branch --list master 2>/dev/null | grep -q master; then
+  if git branch --list master 2> /dev/null | grep -q master; then
     trunk=master
-  elif git branch --list main 2>/dev/null | grep -q main; then
+  elif git branch --list main 2> /dev/null | grep -q main; then
     trunk=main
   else
     die "No trunk branch (master/main) found"
@@ -112,26 +112,26 @@ update_repo() {
   local trunk=$(determine_trunk)
   verbose "Trunk: $trunk"
   if [[ $DRY_RUN == false ]]; then
-    git remote prune origin &>/dev/null || :
-    git -c protocol.file.allow=always fetch --prune --no-tags --filter=blob:none origin ||
-      git -c protocol.file.allow=always fetch --prune --no-tags origin ||
-      die "Fetch failed"
+    git remote prune origin &> /dev/null || :
+    git -c protocol.file.allow=always fetch --prune --no-tags --filter=blob:none origin \
+      || git -c protocol.file.allow=always fetch --prune --no-tags origin \
+      || die "Fetch failed"
     check_gha_failures
-    git checkout "$trunk" &>/dev/null
-    git-submodule-update &>/dev/null
-    git reset --hard "origin/$trunk" &>/dev/null
-    git -c protocol.file.allow=always pull --rebase --autostash --prune origin "$trunk" ||
-      {
-        git rebase --abort &>/dev/null || :
+    git checkout "$trunk" &> /dev/null
+    git-submodule-update &> /dev/null
+    git reset --hard "origin/$trunk" &> /dev/null
+    git -c protocol.file.allow=always pull --rebase --autostash --prune origin "$trunk" \
+      || {
+        git rebase --abort &> /dev/null || :
         warn "Pull failed, continuing"
       }
-    if git config --get-regexp '^submodule\.' &>/dev/null; then
+    if git config --get-regexp '^submodule\.' &> /dev/null; then
       msg "Syncing submodules..."
-      git -c protocol.file.allow=always submodule sync --recursive &>/dev/null || :
-      git -c protocol.file.allow=always submodule update --init --recursive --remote --filter=blob:none --depth 1 --single-branch --jobs 8 ||
-        git -c protocol.file.allow=always submodule update --init --recursive --remote --depth 1 --jobs 8 ||
-        git -c protocol.file.allow=always submodule update --init --recursive --remote --jobs 8 ||
-        warn "Submodule update partial/failed"
+      git -c protocol.file.allow=always submodule sync --recursive &> /dev/null || :
+      git -c protocol.file.allow=always submodule update --init --recursive --remote --filter=blob:none --depth 1 --single-branch --jobs 8 \
+        || git -c protocol.file.allow=always submodule update --init --recursive --remote --depth 1 --jobs 8 \
+        || git -c protocol.file.allow=always submodule update --init --recursive --remote --jobs 8 \
+        || warn "Submodule update partial/failed"
     fi
     ok "Update complete"
   else
@@ -143,7 +143,7 @@ clean_repo() {
   local trunk
   trunk=$(determine_trunk)
   if [[ $DRY_RUN == false ]]; then
-    git checkout "$trunk" &>/dev/null || die "Checkout $trunk failed"
+    git checkout "$trunk" &> /dev/null || die "Checkout $trunk failed"
     msg "Checking uncommitted changes..."
     if [[ -n $(git diff HEAD) ]] || [[ -n $(git diff --cached) ]]; then
       err "Uncommitted changes found. Stash or commit first."
@@ -154,7 +154,7 @@ clean_repo() {
     ok "No uncommitted changes"
     msg "Fetching and pruning..."
     git -c protocol.file.allow=always fetch --prune || die "Fetch failed"
-    trunk_remote=$(git config --get "branch.$trunk.remote" 2>/dev/null || echo "origin")
+    trunk_remote=$(git config --get "branch.$trunk.remote" 2> /dev/null || echo "origin")
     git pull "$trunk_remote" "$trunk" || git pull origin "$trunk" || warn "Pull failed"
   else
     verbose "Would fetch and update $trunk"
@@ -168,7 +168,7 @@ clean_repo() {
   done < <(git remote prune origin --dry-run 2>&1 | grep '^\s*\*' | sed 's/^\s*\* //')
   if [[ $stale_count -gt 0 ]]; then
     if [[ $DRY_RUN == false ]]; then
-      git remote prune origin &>/dev/null
+      git remote prune origin &> /dev/null
       ok "Pruned $stale_count remote branch(es)"
       DELETED_REMOTE_BRANCHES=$stale_count
     else
@@ -190,7 +190,7 @@ clean_repo() {
     fi
     if [[ ${reply,,} == y ]]; then
       if [[ $DRY_RUN == false ]]; then
-        git branch -D "$branch" &>/dev/null && ((merged_count++)) || warn "Failed: $branch"
+        git branch -D "$branch" &> /dev/null && ((merged_count++)) || warn "Failed: $branch"
       else
         verbose "Would delete: $branch"
         ((merged_count++))
@@ -206,7 +206,7 @@ clean_repo() {
       [[ $branch == "$trunk" ]] && continue
       [[ -z $branch ]] && continue
       verbose "Checking PR: $branch"
-      merged=$(gh pr list --author @me --state merged --limit 1 --search "head:$branch" --json headRefName --jq '.[].headRefName' 2>/dev/null || :)
+      merged=$(gh pr list --author @me --state merged --limit 1 --search "head:$branch" --json headRefName --jq '.[].headRefName' 2> /dev/null || :)
       if [[ -n $merged && $merged == "$branch" ]]; then
         if [[ $AUTO_YES == true ]]; then
           reply=y
@@ -216,7 +216,7 @@ clean_repo() {
         fi
         if [[ ${reply,,} == y ]]; then
           if [[ $DRY_RUN == false ]]; then
-            git branch -D "$branch" &>/dev/null && ((pr_count++)) || warn "Failed: $branch"
+            git branch -D "$branch" &> /dev/null && ((pr_count++)) || warn "Failed: $branch"
           else
             verbose "Would delete: $branch"
             ((pr_count++))
@@ -230,7 +230,7 @@ clean_repo() {
     else
       ok "No PR-merged branches"
     fi
-    if gh extension list 2>/dev/null | grep -qF seachicken/gh-poi; then
+    if gh extension list 2> /dev/null | grep -qF seachicken/gh-poi; then
       msg "Running gh-poi..."
       [[ $DRY_RUN == false ]] && { gh poi || warn "gh-poi failed"; } || verbose "Would run gh-poi"
     fi
@@ -251,13 +251,13 @@ check_gha_failures() {
   local repo_name
   repo_name=$(echo "$remote_url" | sed -E 's#.*github.com[:/].*/([^/]+).*#\1#' | sed 's/\.git$//')
   local run_id
-  run_id=$(gh run list -L 1 --json databaseId -R "$repo_owner/$repo_name" 2>/dev/null | jq -r '.[0].databaseId')
+  run_id=$(gh run list -L 1 --json databaseId -R "$repo_owner/$repo_name" 2> /dev/null | jq -r '.[0].databaseId')
   if [[ -z $run_id ]]; then
     verbose "No workflow runs found or failed to get run list."
     return
   fi
   local conclusion
-  conclusion=$(gh run view "$run_id" --json conclusion -R "$repo_owner/$repo_name" 2>/dev/null | jq -r '.conclusion')
+  conclusion=$(gh run view "$run_id" --json conclusion -R "$repo_owner/$repo_name" 2> /dev/null | jq -r '.conclusion')
   if [[ -z $conclusion ]]; then
     err "Failed to get workflow run details."
     return
@@ -278,7 +278,7 @@ auto_merge_pr() {
     repo=${BASH_REMATCH[2]}
     pr=${BASH_REMATCH[3]}
   elif (($# >= 2)) && [[ $PR_URL =~ / ]] && [[ $MERGE_STRATEGY =~ ^[0-9]+$ ]]; then
-    IFS=/ read -r owner repo <<<"$PR_URL"
+    IFS=/ read -r owner repo <<< "$PR_URL"
     pr=$MERGE_STRATEGY
     strategy=${3:-theirs}
   else
@@ -292,12 +292,12 @@ auto_merge_pr() {
   has gh || die "gh CLI not installed"
   local pr_info head_ref base_ref is_cross
   pr_info=$(gh pr view "$pr" -R "$owner/$repo" --json headRefName,baseRefName,headRepository,isCrossRepository)
-  head_ref=$(jq -r .headRefName <<<"$pr_info")
-  base_ref=$(jq -r .baseRefName <<<"$pr_info")
-  is_cross=$(jq -r .isCrossRepository <<<"$pr_info")
+  head_ref=$(jq -r .headRefName <<< "$pr_info")
+  base_ref=$(jq -r .baseRefName <<< "$pr_info")
+  is_cross=$(jq -r .isCrossRepository <<< "$pr_info")
   local head_repo
   if [[ $is_cross == true ]]; then
-    head_repo=$(jq -r .headRepository.nameWithOwner <<<"$pr_info")
+    head_repo=$(jq -r .headRepository.nameWithOwner <<< "$pr_info")
     [[ -n $head_repo && $head_repo != null ]] || die "Cannot access fork repo"
   else
     head_repo="$owner/$repo"
@@ -350,25 +350,25 @@ optimize_repo() {
     msg "Would optimize: repack, gc, reflog, worktrees, maintenance"
   else
     verbose "Repack..."
-    git repack -adbq --depth=250 --window=250 &>/dev/null || :
+    git repack -adbq --depth=250 --window=250 &> /dev/null || :
     verbose "GC..."
-    git gc --aggressive --prune=now --quiet &>/dev/null || :
+    git gc --aggressive --prune=now --quiet &> /dev/null || :
     verbose "Reflog..."
-    git reflog expire --expire=30.days.ago --all &>/dev/null || :
-    git reflog expire --expire-unreachable=7.days.ago --all &>/dev/null || :
+    git reflog expire --expire=30.days.ago --all &> /dev/null || :
+    git reflog expire --expire-unreachable=7.days.ago --all &> /dev/null || :
     verbose "Worktrees..."
-    git worktree prune &>/dev/null || :
+    git worktree prune &> /dev/null || :
     verbose "Maintenance..."
-    git maintenance run &>/dev/null || :
-    git prune &>/dev/null || :
-    if git config --get-regexp '^submodule\.' &>/dev/null; then
+    git maintenance run &> /dev/null || :
+    git prune &> /dev/null || :
+    if git config --get-regexp '^submodule\.' &> /dev/null; then
       verbose "Optimizing submodules..."
       git submodule foreach --recursive '
         git repack -adbq --depth=100 --window=100 &>/dev/null || :
         git reflog expire --expire=now --all &>/dev/null || :
         git gc --auto --prune=now --quiet &>/dev/null || :
         git clean -fdXq &>/dev/null || :
-      ' &>/dev/null || :
+      ' &> /dev/null || :
     fi
     ok "Optimization complete"
   fi

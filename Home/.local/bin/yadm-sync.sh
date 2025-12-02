@@ -11,7 +11,7 @@ readonly BLD=$'\e[1m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
 readonly BLU=$'\e[34m' DEF=$'\e[0m'
 
 # Helper functions
-has() { command -v "$1" &>/dev/null; }
+has() { command -v "$1" &> /dev/null; }
 info() { printf '%b==>\e[0m %b%s%b\n' "${BLD}${BLU}" "$BLD" "$*" "$DEF"; }
 success() { printf '%b==>\e[0m %b%s%b\n' "${BLD}${GRN}" "$BLD" "$*" "$DEF"; }
 warn() { printf '%b==> WARNING:\e[0m %b%s%b\n' "${BLD}${YLW}" "$BLD" "$*" "$DEF"; }
@@ -23,7 +23,7 @@ die() {
 
 # Determine repository directory
 get_repo_dir() {
-  if yadm rev-parse --show-toplevel &>/dev/null; then
+  if yadm rev-parse --show-toplevel &> /dev/null; then
     yadm rev-parse --show-toplevel
   elif [[ -d "${HOME}/.local/share/yadm/repo.git" ]]; then
     echo "${HOME}/.local/share/yadm/repo.git"
@@ -34,7 +34,7 @@ get_repo_dir() {
 
 # Show usage
 usage() {
-  cat <<EOF
+  cat << EOF
 ${BLD}yadm-sync${DEF} - Sync dotfiles between ~/ and repository
 
 ${BLD}Usage:${DEF}
@@ -115,7 +115,7 @@ sync_push() {
   local exclude_file
   exclude_file="$(mktemp)"
 
-  cat >"$exclude_file" <<'EXCLUDES'
+  cat > "$exclude_file" << 'EXCLUDES'
 .cache
 .local/share
 .local/state
@@ -226,14 +226,14 @@ sync_diff() {
     local source_file="${HOME}/${rel_path}"
 
     if [[ -f $source_file && -f $file ]]; then
-      if ! diff -q "$source_file" "$file" &>/dev/null; then
+      if ! diff -q "$source_file" "$file" &> /dev/null; then
         echo ""
         echo "${BLD}${BLU}Differences in:${DEF} ${rel_path}"
         echo "${BLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${DEF}"
-        diff -u --color=always "$file" "$source_file" 2>/dev/null || :
+        diff -u --color=always "$file" "$source_file" 2> /dev/null || :
       fi
     fi
-  done < <(find "$home_dir" -type f -print0 2>/dev/null)
+  done < <(find "$home_dir" -type f -print0 2> /dev/null)
 }
 
 # Main

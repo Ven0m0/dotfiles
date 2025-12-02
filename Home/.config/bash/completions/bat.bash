@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # shellcheck disable=SC2207
 
 # Requires https://github.com/scop/bash-completion
@@ -31,7 +32,7 @@ __bat_escape_completions() {
 
 _bat() {
   local cur prev words split=false
-  if declare -F _init_completion &>/dev/null; then
+  if declare -F _init_completion &> /dev/null; then
     _init_completion -s || return 0
   else
     __bat_init_completion -n "=" || return 0
@@ -157,7 +158,7 @@ _bat() {
         snip
       )
       # shellcheck disable=SC2016
-      if declare -F _comp_delimited &>/dev/null; then
+      if declare -F _comp_delimited &> /dev/null; then
         # bash-completion > 2.11
         _comp_delimited , -W '"${styles[@]}"'
       else

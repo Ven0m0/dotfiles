@@ -26,16 +26,13 @@ on:
       - '**.jsx'
       - 'Home/sgconfig.yml'
   workflow_dispatch:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
   checks: write
-
 jobs:
   ast-grep-lint:
     name: ast-grep Analysis
@@ -45,13 +42,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-
       - name: Install ast-grep
         run: |
           set -euo pipefail
           curl -fsSL https://ast-grep.github.io/install.sh | sh -s -- --yes
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
       - name: Validate Configuration
         run: |
           set -euo pipefail
@@ -63,7 +58,6 @@ jobs:
             echo "❌ Configuration validation failed" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
-
       - name: Run ast-grep Scan (Bash)
         id: scan-bash
         continue-on-error: true
@@ -112,7 +106,6 @@ jobs:
             echo "errors=$ERRORS" >> "$GITHUB_OUTPUT"
             exit 1
           fi
-
       - name: Run ast-grep Scan (TypeScript/JavaScript)
         id: scan-ts
         continue-on-error: true
@@ -158,10 +151,9 @@ jobs:
           if [[ "$ERRORS" -gt 0 ]]; then
             exit 1
           fi
-
       - name: Generate Report
         if: always()
-        run: |
+        run: |-
           {
             echo "## 📊 ast-grep Scan Complete"
             echo ""

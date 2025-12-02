@@ -1,8 +1,10 @@
----
-applyTo: ".github/workflows/*.yml" 
----
+______________________________________________________________________
 
-Comprehensive guide for building robust, secure, and efficient CI/CD pipelines using GitHub Actions. Covers workflow structure, jobs, steps, environment variables, secret management, caching, matrix strategies, testing, and deployment strategies.
+## applyTo: ".github/workflows/\*.yml"
+
+Comprehensive guide for building robust, secure, and efficient CI/CD pipelines using GitHub Actions. Covers workflow
+structure, jobs, steps, environment variables, secret management, caching, matrix strategies, testing, and deployment
+strategies.
 
 # GitHub Actions CI/CD Best Practices
 

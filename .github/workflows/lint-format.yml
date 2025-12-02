@@ -44,10 +44,16 @@ jobs:
           # Node tools
           npm install -g @biomejs/biome prettier markdownlint-cli
           # Python tools
-          pip install --quiet ruff yamllint mdformat mdformat-gfm
+          pip install --quiet ruff black yamllint mdformat mdformat-gfm
+          # Rust tools (if available)
+          if command -v cargo &>/dev/null; then
+            cargo install --quiet taplo-cli --locked || true
+            cargo install --quiet tombi || true
+          fi
           # Add to PATH
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          [[ -d "$HOME/.cargo/bin" ]] && echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
       - name: Check Shell Scripts (shfmt)
         id: shfmt
         run: |
@@ -195,9 +201,21 @@ jobs:
             echo "mdformat --wrap 80 <file>"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Run Comprehensive Lint & Format
+        id: lint_format
+        run: |
+          set -euo pipefail
+          chmod +x ./lint-format.sh
+          if ./lint-format.sh; then
+            echo "success=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "success=false" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
       - name: Check Results
         if: always()
-        run: |
+        run: |-
+          set -euo pipefail
           # Critical checks that must pass
           if [[ "${{ steps.shfmt.outcome }}" == "failure" ]]; then
             echo "::error::Shell formatting check failed"
@@ -209,6 +227,10 @@ jobs:
           fi
           if [[ "${{ steps.actionlint.outcome }}" == "failure" ]]; then
             echo "::error::Actionlint check failed"
+            exit 1
+          fi
+          if [[ "${{ steps.lint_format.outcome }}" == "failure" ]]; then
+            echo "::error::Comprehensive lint & format check failed"
             exit 1
           fi
           echo "✅ All critical checks passed"

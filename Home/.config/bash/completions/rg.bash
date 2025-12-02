@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 _rg() {
   local i cur prev opts cmds
   COMPREPLY=()

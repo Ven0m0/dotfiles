@@ -31,8 +31,8 @@ if [[ ${1:-} == "-h" ]]; then
 fi
 
 query=$(
-  tac "$SEARCH_HIST_FILE" |
-    fzf \
+  tac "$SEARCH_HIST_FILE" \
+    | fzf \
       --prompt 'search: ' \
       --header="$(printf '%s\n' 'enter:print-query ctrl-o:open-from-history' "${FZF_DEFAULT_HEADER:-}")" \
       --delimiter '|' --with-nth="2" \
@@ -93,8 +93,8 @@ case "$query" in
 esac
 
 if [[ -n $query ]]; then
-  printf '%s\n' "$engine|$query|$(date "+%y/%m/%d-%H:%M:%S")" >>"$SEARCH_HIST_FILE"
-  nohup "$BROWSER" "${engine}${query}" &>/dev/null &
+  printf '%s\n' "$engine|$query|$(date "+%y/%m/%d-%H:%M:%S")" >> "$SEARCH_HIST_FILE"
+  nohup "$BROWSER" "${engine}${query}" &> /dev/null &
 else
   printf '%s\n' "No query!" >&2
   exit 1

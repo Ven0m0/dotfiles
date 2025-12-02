@@ -1,6 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/rule.json
 severity: warning
-
 # ==============================================================================
 # UTILITIES (Reusable Sub-Rules)
 # ==============================================================================
@@ -12,14 +11,11 @@ utils:
     has:
       kind: property_identifier
       regex: ^(log|debug|info|warn|error)$
-
   is-debugger:
     kind: debugger_statement
-
   has-todo:
     kind: comment
     regex: \b(TODO|FIXME|XXX|HACK)\b
-
   unsafe-eval:
     any:
       - pattern: eval($EXPR)
@@ -27,7 +23,6 @@ utils:
       - pattern: setTimeout($STRING, $$$)
         has:
           kind: string
-
   dangerous-html:
     any:
       - pattern: innerHTML = $VAL
@@ -35,18 +30,15 @@ utils:
       - pattern: insertAdjacentHTML($POS, $VAL)
       - pattern: document.write($VAL)
       - pattern: document.writeln($VAL)
-
   # --- Bash Utilities ---
   # Glob pattern check for case inlining safety
   has-glob-pattern:
     kind: case_item
     regex: '[\*\?\[]'
-
   # Getopt/flag parsing detection
   is-flag-case:
     kind: case_item
     regex: '^-[a-zA-Z]|--[a-z]'
-
 # ==============================================================================
 # RULES
 # ==============================================================================
@@ -61,34 +53,29 @@ rules:
     utils: is-console
     severity: error
     fix: ''
-
   - id: no-debugger
     language: typescript
     message: Remove debugger statement
     utils: is-debugger
     severity: error
     fix: ''
-
   - id: no-todo-comments
     languages: [typescript, javascript, bash]
     message: Resolve TODO/FIXME comment
     note: "Convert to tracked issues or resolve inline"
     utils: has-todo
     severity: warning
-
   - id: no-unsafe-eval
     language: typescript
     message: Avoid eval and Function constructor (code injection risk)
     utils: unsafe-eval
     severity: error
-
   - id: no-dangerous-html
     language: typescript
     message: Avoid direct HTML manipulation (XSS risk)
     note: "Use textContent, createElement, or DOMPurify"
     utils: dangerous-html
     severity: warning
-
   - id: prefer-const
     language: typescript
     message: Use const for variables that are never reassigned
@@ -106,7 +93,6 @@ rules:
                 pattern: $VAR
     fix: const $VAR = $INIT
     severity: info
-
   - id: no-var
     language: typescript
     message: Use let or const instead of var
@@ -115,7 +101,6 @@ rules:
       pattern: var $VAR = $INIT
     fix: let $VAR = $INIT
     severity: error
-
   - id: prefer-arrow-function
     language: typescript
     message: Prefer arrow functions for callbacks (lexical this)
@@ -127,7 +112,6 @@ rules:
           - kind: array
     fix: ($PARAMS) => $BODY
     severity: hint
-
   - id: no-empty-catch
     language: typescript
     message: Empty catch block - handle error or remove try-catch
@@ -138,7 +122,6 @@ rules:
         kind: statement_block
         pattern: '{}'
     severity: warning
-
   - id: prefer-strict-equality
     language: typescript
     message: Use === instead of == (avoid type coercion)
@@ -149,7 +132,6 @@ rules:
         - pattern: $A != $B
     fix: $A === $B
     severity: error
-
   # ----------------------------------------------------------------------------
   # BASH — Safety (Prevent Word Splitting & Injection)
   # ----------------------------------------------------------------------------
@@ -169,9 +151,8 @@ rules:
             - kind: test_command
             - kind: assignment
             - kind: case_item
-            - kind: for_statement  # for x in $LIST → often intentional
+            - kind: for_statement # for x in $LIST → often intentional
     severity: error
-
   # ----------------------------------------------------------------------------
   # BASH — Performance (Avoid Forks, Use Bash Builtins)
   # ----------------------------------------------------------------------------
@@ -183,7 +164,6 @@ rules:
       pattern: cat $FILE | $CMD
     fix: $CMD < $FILE
     severity: warning
-
   - id: bash-prefer-mapfile
     language: bash
     message: Use mapfile instead of while read loop (10-100x faster)
@@ -196,7 +176,6 @@ rules:
         done
     fix: mapfile -t $ARRAY
     severity: info
-
   # ----------------------------------------------------------------------------
   # BASH — Idioms (Token-Efficient, Fork-Efficient)
   # ----------------------------------------------------------------------------
@@ -207,7 +186,6 @@ rules:
       pattern: $CMD || true
     fix: "$CMD || :"
     severity: info
-
   - id: bash-idiom-true-while
     language: bash
     message: "Prefer ':' over 'true' in while loops (1 char, builtin)"
@@ -215,7 +193,6 @@ rules:
       pattern: while true; do $$$BODY; done
     fix: "while :; do $$$BODY; done"
     severity: info
-
   # ----------------------------------------------------------------------------
   # BASH — Style (Compact, Token-Efficient)
   # ----------------------------------------------------------------------------
@@ -227,7 +204,6 @@ rules:
       regex: '> \/dev\/null'
     fix: '>/dev/null'
     severity: info
-
   - id: bash-opt-silence-all
     language: bash
     message: Use &>/dev/null instead of >/dev/null 2>&1 (bash shorthand)
@@ -237,7 +213,6 @@ rules:
       pattern: $CMD > /dev/null 2>&1
     fix: $CMD &>/dev/null
     severity: info
-
   - id: bash-style-function-brace
     language: bash
     message: Remove space before function brace (compact style)
@@ -253,7 +228,6 @@ rules:
         $$$BODY
       }
     severity: info
-
   # ----------------------------------------------------------------------------
   # BASH — Case Inlining (Selective, Performance-Aware)
   # ----------------------------------------------------------------------------
@@ -277,7 +251,6 @@ rules:
                 - kind: for_statement
     fix: '[[ $VAR == $PATTERN ]] && $CMD'
     severity: hint
-
   - id: bash-case-two-to-if-else
     language: bash
     message: Consider if-else for two-branch case (clearer intent)
@@ -297,7 +270,6 @@ rules:
               kind: while_statement
     fix: if [[ $VAR == $PATTERN1 ]]; then $CMD1; else $CMD2; fi
     severity: hint
-
   # --- Keep getopt/flag case for readability ---
   - id: bash-case-getopt-preserve
     language: bash
@@ -308,7 +280,6 @@ rules:
       has:
         utils: is-flag-case
     severity: off
-
   # ----------------------------------------------------------------------------
   # BASH — Additional Optimizations
   # ----------------------------------------------------------------------------
@@ -322,7 +293,6 @@ rules:
         - pattern: echo $VAR | awk '{gsub(/^$PREFIX/,"")}1'
     fix: echo "${VAR#$PREFIX}"
     severity: hint
-
   - id: bash-builtin-test-bracket
     language: bash
     message: Use [[ ]] instead of [ ] (bash builtin, safer)
@@ -334,7 +304,6 @@ rules:
         regex: '^\[\['
     severity: info
     # No auto-fix due to syntax complexity; manual review safer
-
   - id: bash-prefer-printf-over-echo
     language: bash
     message: Prefer printf over echo for portable/safe output

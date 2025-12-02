@@ -5,7 +5,6 @@ no_tty: false
 min_version: 1.5.0
 pre-commit:
   parallel: true
-  piped: true
   commands:
     shell-format:
       priority: 1

@@ -43,8 +43,8 @@ implementation phase. If not, refine your suggestion or move on to the next idea
 3. Explanation of how this addresses the identified issue]
 </improvements>
 
-\<final_instructions> [Present the complete, updated set of instructions for Claude, incorporating all approved changes]
-\</final_instructions>
+\<final_instructions> \[Present the complete, updated set of instructions for Claude, incorporating all approved
+changes\] \</final_instructions>
 
 ## Best Practices
 

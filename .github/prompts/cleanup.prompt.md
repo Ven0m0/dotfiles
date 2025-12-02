@@ -1,16 +1,18 @@
 # Memory Bank Context Optimization
 
-You are a memory bank optimization specialist tasked with reducing token usage in the project's documentation system while maintaining all essential information and improving organization.
+You are a memory bank optimization specialist tasked with reducing token usage in the project's documentation system
+while maintaining all essential information and improving organization.
 
 ## Task Overview
 
-Analyze the project's memory bank files (CLAUDE-*.md, CLAUDE.md, README.md) to identify and eliminate token waste through:
+Analyze the project's memory bank files (CLAUDE-\*.md, CLAUDE.md, README.md) to identify and eliminate token waste
+through:
 
 1. **Duplicate content removal**
-2. **Obsolete file elimination**
-3. **Content consolidation**
-4. **Archive strategy implementation**
-5. **Essential content optimization**
+1. **Obsolete file elimination**
+1. **Content consolidation**
+1. **Archive strategy implementation**
+1. **Essential content optimization**
 
 ## Analysis Phase
 
@@ -46,7 +48,7 @@ wc -c CLAUDE.md README.md
 
 **Low-Impact Targets:**
 
-- Files <10KB with minor optimization potential
+- Files \<10KB with minor optimization potential
 - Content that could be streamlined but is unique
 
 ## Optimization Strategy
@@ -58,9 +60,9 @@ wc -c CLAUDE.md README.md
 **Actions:**
 
 1. Delete files marked as "REMOVED" or "DEPRECATED"
-2. Remove generated reviews/reports that are outdated
-3. Clean up empty or minimal temporary files
-4. Update CLAUDE.md references to removed files
+1. Remove generated reviews/reports that are outdated
+1. Clean up empty or minimal temporary files
+1. Update CLAUDE.md references to removed files
 
 **Expected Savings:** 30-50KB typically
 
@@ -78,9 +80,9 @@ wc -c CLAUDE.md README.md
 **Actions:**
 
 1. Create consolidated files with comprehensive coverage
-2. Ensure all essential information is preserved
-3. Remove the separate files
-4. Update all references in CLAUDE.md
+1. Ensure all essential information is preserved
+1. Remove the separate files
+1. Update all references in CLAUDE.md
 
 **Expected Savings:** 20-40KB typically
 
@@ -91,9 +93,9 @@ wc -c CLAUDE.md README.md
 **Actions:**
 
 1. Replace detailed descriptions with concise summaries
-2. Remove redundant architecture explanations
-3. Focus on essential guidance and references
-4. Eliminate duplicate setup instructions
+1. Remove redundant architecture explanations
+1. Focus on essential guidance and references
+1. Eliminate duplicate setup instructions
 
 **Expected Savings:** 5-10KB typically
 
@@ -104,10 +106,10 @@ wc -c CLAUDE.md README.md
 **Actions:**
 
 1. Create `archive/` directory
-2. Move resolved issue documentation to archive
-3. Add archive README.md with index
-4. Update CLAUDE.md with archive reference
-5. Preserve discoverability while reducing active memory
+1. Move resolved issue documentation to archive
+1. Add archive README.md with index
+1. Update CLAUDE.md with archive reference
+1. Preserve discoverability while reducing active memory
 
 **Expected Savings:** 10-20KB typically
 
@@ -120,7 +122,7 @@ wc -c CLAUDE.md README.md
 ```markdown
 # CLAUDE-security-comprehensive.md
 
-**Status**: ✅ COMPLETE - All Security Implementations  
+**Status**: ✅ COMPLETE - All Security Implementations
 **Coverage**: [List of consolidated topics]
 
 ## Executive Summary
@@ -129,7 +131,7 @@ wc -c CLAUDE.md README.md
 ## [Topic 1] - [Original File 1 Content]
 [Essential information from first file]
 
-## [Topic 2] - [Original File 2 Content] 
+## [Topic 2] - [Original File 2 Content]
 [Essential information from second file]
 
 ## [Topic 3] - [Original File 3 Content]
@@ -251,7 +253,7 @@ find . -name "CLAUDE-*.md" -not -path "*/archive/*" -exec wc -c {} \; | awk '{su
 ## [Major Section 1]
 [Comprehensive coverage of subtopic]
 
-## [Major Section 2] 
+## [Major Section 2]
 [Comprehensive coverage of subtopic]
 
 ## [Cross-cutting Concerns]
@@ -271,4 +273,5 @@ find . -name "CLAUDE-*.md" -not -path "*/archive/*" -exec wc -c {} \; | awk '{su
 Reference when investigating similar issues or understanding implementation history.
 ```
 
-This systematic approach ensures consistent, effective memory bank optimization while preserving all essential information and improving overall organization.
+This systematic approach ensures consistent, effective memory bank optimization while preserving all essential
+information and improving overall organization.

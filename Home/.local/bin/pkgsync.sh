@@ -7,9 +7,12 @@ IFS=$'\n\t'
 FILE_NATIVE="pkglist_native.txt"
 FILE_AUR="pkglist_aur.txt"
 
-has() { command -v "$1" &>/dev/null; }
+has() { command -v "$1" &> /dev/null; }
 log() { printf -- ":: %s\n" "$*"; }
-err() { printf -- "!! %s\n" "$*" >&2; exit 1; }
+err() {
+  printf -- "!! %s\n" "$*" >&2
+  exit 1
+}
 
 check_deps() {
   has pacman || err "pacman not found."
@@ -18,23 +21,23 @@ check_deps() {
 
 do_export() {
   log "Exporting native..."
-  pacman -Qqne >"$FILE_NATIVE"
+  pacman -Qqne > "$FILE_NATIVE"
   log "Exporting AUR..."
-  pacman -Qqme >"$FILE_AUR"
+  pacman -Qqme > "$FILE_AUR"
   log "Done."
 }
 
 do_import() {
   if [[ -s $FILE_NATIVE ]]; then
     log "Importing native..."
-    sudo pacman -S --needed - <"$FILE_NATIVE" || log "Native import issues."
+    sudo pacman -S --needed - < "$FILE_NATIVE" || log "Native import issues."
   else
     log "Skipping native (empty/missing)."
   fi
 
   if [[ -s $FILE_AUR ]]; then
     log "Importing AUR..."
-    paru -S --needed - <"$FILE_AUR" || log "AUR import issues."
+    paru -S --needed - < "$FILE_AUR" || log "AUR import issues."
   else
     log "Skipping AUR (empty/missing)."
   fi

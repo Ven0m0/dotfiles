@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 _uv() {
   local i cur prev opts cmd
   COMPREPLY=()

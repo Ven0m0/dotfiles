@@ -6,7 +6,7 @@ export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 # ==============================================================================
 # CONFIGURATION
 # ==============================================================================
-: "${JOBS:=$(nproc 2>/dev/null || echo 4)}" "${DRY_RUN:=0}" "${BACKUP:=0}" "${KEEP_MTIME:=1}"
+: "${JOBS:=$(nproc 2> /dev/null || echo 4)}" "${DRY_RUN:=0}" "${BACKUP:=0}" "${KEEP_MTIME:=1}"
 : "${BACKUP_DIR:=${HOME}/.cache/media-opt/backups/$(printf '%(%Y%m%d_%H%M%S)T' -1)}"
 : "${LOSSLESS:=1}" "${QUALITY:=95}" "${VIDEO_CRF:=24}"
 : "${VIDEO_CODEC:=libsvtav1}" "${AUDIO_CODEC:=libopus}" "${AUDIO_BR:=128k}"
@@ -14,9 +14,9 @@ export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' X=$'\e[0m'
 log() { printf "${B}[%(%H:%M:%S)T]${X} %s\n" -1 "$*"; }
 err() { printf "${R}[ERR]${X} %s\n" "$*" >&2; }
-has() { command -v "$1" &>/dev/null; }
+has() { command -v "$1" &> /dev/null; }
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $(basename "$0") [OPTIONS] [PATH...]
 Batch Mode:
   -j, --jobs N      Jobs (Default: $JOBS)
@@ -129,7 +129,7 @@ interactive_mode() {
 
     if [[ ${ext,,} == "gif" && $convert_ext != "gif" ]]; then
       local palette="${out_dir}/palette.png"
-      ffmpeg -i "$input_path" -vf "palettegen" -y "$palette" &>/dev/null
+      ffmpeg -i "$input_path" -vf "palettegen" -y "$palette" &> /dev/null
       cmd+=(-i "$palette" -lavfi "${vf_flags:+$vf_flags,}paletteuse")
     else
       [[ $convert_ext == "gif" ]] && vf_flags="fps=30${vf_flags:+,${vf_flags}}"
@@ -249,9 +249,9 @@ optimize_file() {
   fi
   local ok=0
   if [[ $tool =~ ^(oxipng|cwebp|svgo|jpegoptim)$ ]] && [[ ${cmd[*]} =~ (--stdout|--out\ -|-o\ -) ]]; then
-    "${cmd[@]}" >"$tmp" 2>/dev/null && ok=1
+    "${cmd[@]}" > "$tmp" 2> /dev/null && ok=1
   else
-    "${cmd[@]}" &>/dev/null && ok=1
+    "${cmd[@]}" &> /dev/null && ok=1
   fi
   if [[ $ok -eq 1 ]] && [[ -f $tmp ]]; then
     local old_sz new_sz

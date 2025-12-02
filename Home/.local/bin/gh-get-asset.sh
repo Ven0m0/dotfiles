@@ -11,14 +11,14 @@ trap 'rm -f "$TMP"' EXIT
 release=""
 output_opt=(-O)
 curl_args=(-fsSL)
-has() { command -v "$1" &>/dev/null; }
+has() { command -v "$1" &> /dev/null; }
 die() {
   printf 'Error: %s\n' "$*" >&2
   exit 1
 }
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 gh-get-asset - Download GitHub release assets
 
 USAGE:
@@ -62,7 +62,7 @@ gh_get_release() {
     selector=".[] | select(.tag_name==\"${release}\")"
   fi
 
-  jq -rM "${selector}.assets[]|select(.name| contains(\"${substring}\"))? | .browser_download_url" <"$TMP"
+  jq -rM "${selector}.assets[]|select(.name| contains(\"${substring}\"))? | .browser_download_url" < "$TMP"
 }
 
 main() { # Parse options

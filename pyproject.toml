@@ -1,7 +1,7 @@
 [tool.ruff]
 line-length = 120
 target-version = "py311"
-# Enforce 2-space indent (requires Ruff v0.2.0+)
+# Enforce 2-space indent per .editorconfig
 indent-width = 2
 
 [tool.ruff.lint]
@@ -10,12 +10,13 @@ indent-width = 2
 # B: flake8-bugbear, C4: flake8-comprehensions
 # SIM: flake8-simplify, RUF: ruff-specific
 select = ["E", "W", "F", "I", "N", "UP", "B", "C4", "SIM", "RUF"]
-ignore = ["E501"]  # line too long (handled by formatter)
+ignore = ["E501"]                                                 # line too long (handled by formatter)
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
+skip-magic-trailing-comma = false
 
 [tool.black]
 line-length = 120

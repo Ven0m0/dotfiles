@@ -1,33 +1,34 @@
 # Check Best Practices
 
-Analyze code against language-specific best practices, coding standards, and community conventions to improve code quality and maintainability.
+Analyze code against language-specific best practices, coding standards, and community conventions to improve code
+quality and maintainability.
 
 ## Usage Examples
 
 ### Basic Usage
-"Check if this code follows Python best practices"
-"Review JavaScript code for ES6+ best practices"
-"Analyze React components for best practices"
+
+"Check if this code follows Python best practices" "Review JavaScript code for ES6+ best practices" "Analyze React
+components for best practices"
 
 ### Specific Checks
-"Check if this follows PEP 8 conventions"
-"Review TypeScript code for proper type usage"
-"Verify REST API design best practices"
-"Check Git commit message conventions"
+
+"Check if this follows PEP 8 conventions" "Review TypeScript code for proper type usage" "Verify REST API design best
+practices" "Check Git commit message conventions"
 
 ## Instructions for Claude
 
 When checking best practices:
 
 1. **Identify Language/Framework**: Detect the languages and frameworks being used
-2. **Apply Relevant Standards**: Use appropriate style guides and conventions
-3. **Context Awareness**: Consider project-specific patterns and existing conventions
-4. **Actionable Feedback**: Provide specific examples of improvements
-5. **Prioritize Issues**: Focus on impactful improvements over nitpicks
+1. **Apply Relevant Standards**: Use appropriate style guides and conventions
+1. **Context Awareness**: Consider project-specific patterns and existing conventions
+1. **Actionable Feedback**: Provide specific examples of improvements
+1. **Prioritize Issues**: Focus on impactful improvements over nitpicks
 
 ### Language-Specific Guidelines
 
 #### Python
+
 - PEP 8 style guide compliance
 - PEP 484 type hints usage
 - Pythonic idioms and patterns
@@ -35,6 +36,7 @@ When checking best practices:
 - Module and package structure
 
 #### JavaScript/TypeScript
+
 - Modern ES6+ features usage
 - Async/await over callbacks
 - Proper error handling
@@ -42,6 +44,7 @@ When checking best practices:
 - TypeScript strict mode compliance
 
 #### React/Vue/Angular
+
 - Component structure and organization
 - State management patterns
 - Performance optimizations
@@ -49,6 +52,7 @@ When checking best practices:
 - Testing patterns
 
 #### API Design
+
 - RESTful conventions
 - Consistent naming patterns
 - Proper HTTP status codes
@@ -58,12 +62,14 @@ When checking best practices:
 ### Code Quality Aspects
 
 #### Naming Conventions
+
 - Variable and function names
 - Class and module names
 - Consistency across codebase
 - Meaningful and descriptive names
 
 #### Code Organization
+
 - File and folder structure
 - Separation of concerns
 - DRY (Don't Repeat Yourself)
@@ -71,12 +77,14 @@ When checking best practices:
 - Modular design
 
 #### Error Handling
+
 - Comprehensive error catching
 - Meaningful error messages
 - Proper logging practices
 - Graceful degradation
 
 #### Performance
+
 - Efficient algorithms
 - Proper caching strategies
 - Lazy loading where appropriate
@@ -84,6 +92,7 @@ When checking best practices:
 - Memory management
 
 #### Testing
+
 - Test coverage adequacy
 - Test naming conventions
 - Test organization
@@ -130,6 +139,7 @@ Structure the analysis as:
 ```
 
 Focus on:
+
 - Practical, implementable suggestions
 - Learning opportunities
 - Maintaining consistency with existing code

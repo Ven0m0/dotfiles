@@ -6,7 +6,7 @@ export LC_ALL=C LANG=C
 
 # Media toolkit: CD burning, USB creation, transcoding, and image optimization
 
-has() { command -v "$1" &>/dev/null; }
+has() { command -v "$1" &> /dev/null; }
 need() { has "$1" || die "Required: $1"; }
 die() {
   printf '\e[0;31mERROR: %s\e[0m\n' "$*" >&2
@@ -15,7 +15,7 @@ die() {
 log() { printf '\e[0;33m>>> %s\e[0m\n' "$*"; }
 info() { printf '\e[0;36m### %s\e[0m\n' "$*"; }
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 media - Media toolkit for CD burning, USB creation, and transcoding
 
 USAGE:
@@ -123,13 +123,13 @@ cmd_ripdvd() {
   log "Reading DVD info..."
   local dvd_info block_size volume_size total_size
   dvd_info=$(isoinfo -d -i "$dvd")
-  block_size=$(grep "^Logical block" <<<"$dvd_info" | awk '{print $5}')
-  volume_size=$(grep "^Volume size" <<<"$dvd_info" | awk '{print $4}')
+  block_size=$(grep "^Logical block" <<< "$dvd_info" | awk '{print $5}')
+  volume_size=$(grep "^Volume size" <<< "$dvd_info" | awk '{print $4}')
   total_size=$((block_size * volume_size))
   log "Creating ISO: $iso (${total_size} bytes)..."
-  dd if="$dvd" bs="$block_size" count="$volume_size" 2>/dev/null |
-    pv -pterb --size "$total_size" |
-    dd of="$iso" bs="$block_size" 2>/dev/null
+  dd if="$dvd" bs="$block_size" count="$volume_size" 2> /dev/null \
+    | pv -pterb --size "$total_size" \
+    | dd of="$iso" bs="$block_size" 2> /dev/null
   log "Verifying checksums..."
   local orig_check copy_check
   orig_check=$(sha1sum "$dvd" | awk '{print $1}')
@@ -182,20 +182,20 @@ cmd_pngzip() {
     ((GRAYSCALE)) && grayargs+=(--grayscale)
     local orig_size=$(stat -c %s "$f")
     local tmpq="${f}.pq.$$"
-    pngquant -Q 70-95 --strip "${grayargs[@]}" --force -o "$tmpq" -- "$f" &>/dev/null || rm -f "$tmpq"
+    pngquant -Q 70-95 --strip "${grayargs[@]}" --force -o "$tmpq" -- "$f" &> /dev/null || rm -f "$tmpq"
     if [[ -s $tmpq && $(stat -c %s "$tmpq") -lt $orig_size ]]; then
       cp "${preserve[@]}" "$tmpq" "$f"
       ((VERBOSE)) && printf 'pngquant: %s %s → %s\n' "$f" "$orig_size" "$(stat -c %s "$f")"
     fi
     rm -f "$tmpq"
-    oxipng -o max --strip all --alpha --zopfli -P --zi 25 --fix --scale16 -- "$f" &>/dev/null || :
+    oxipng -o max --strip all --alpha --zopfli -P --zi 25 --fix --scale16 -- "$f" &> /dev/null || :
     local osize=$(stat -c %s "$f")
     if ((DPI > 0)); then
       local tmpc="${f}.cr.$$"
-      pngcrush -brute -l 9 -res "$DPI" -s "$f" "$tmpc" &>/dev/null &&
-        [[ -s $tmpc && $(stat -c %s "$tmpc") -lt $osize ]] &&
-        cp "${preserve[@]}" "$tmpc" "$f" &&
-        ((VERBOSE)) && printf 'pngcrush: %s DPI=%s %s → %s\n' "$f" "$DPI" "$osize" "$(stat -c %s "$f")"
+      pngcrush -brute -l 9 -res "$DPI" -s "$f" "$tmpc" &> /dev/null \
+        && [[ -s $tmpc && $(stat -c %s "$tmpc") -lt $osize ]] \
+        && cp "${preserve[@]}" "$tmpc" "$f" \
+        && ((VERBOSE)) && printf 'pngcrush: %s DPI=%s %s → %s\n' "$f" "$DPI" "$osize" "$(stat -c %s "$f")"
       rm -f "$tmpc"
     fi
     ((VERBOSE)) && printf "%s: %s → %s bytes\n" "$f" "$orig_size" "$(stat -c %s "$f")"

@@ -35,6 +35,8 @@
     "lineEnding": "lf",
     "lineWidth": 120,
     "attributePosition": "auto",
+    "bracketSpacing": true,
+    "bracketSameLine": false,
     "includes": ["**/package-lock.json", "**/bun.lockb", "**/*.min.css"]
   },
   "linter": {

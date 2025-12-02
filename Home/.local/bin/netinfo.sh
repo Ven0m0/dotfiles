@@ -5,7 +5,7 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 readonly UA="netinfo/1.0"
-has() { command -v "$1" &>/dev/null; }
+has() { command -v "$1" &> /dev/null; }
 die() {
   printf 'Error: %s\n' "$*" >&2
   exit 1
@@ -19,7 +19,7 @@ has awk || die "awk is required"
 jget() {
   local json="$1" field="$2"
   if has jq; then
-    jq -r "$field" <<<"$json"
+    jq -r "$field" <<< "$json"
   else
     # Naive extraction for simple fields
     printf '%s\n' "$json" | sed -n "s/.*\"${field//./\\.}\":[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p" | head -1
@@ -30,12 +30,12 @@ speed_test() {
   local raw up
 
   printf 'Testing download speed...\n' >&2
-  raw=$(curl -sL -o /dev/null -w "%{speed_download}" "https://speed.cloudflare.com/__down?bytes=50000000" 2>/dev/null || printf '0')
+  raw=$(curl -sL -o /dev/null -w "%{speed_download}" "https://speed.cloudflare.com/__down?bytes=50000000" 2> /dev/null || printf '0')
   awk -v s="$raw" 'BEGIN{printf "Down: %.2f Mbps\n",(s*8)/(1024*1024)}'
 
   printf 'Testing upload speed...\n' >&2
-  up=$(dd if=/dev/zero bs=1M count=10 2>/dev/null |
-    curl -sS -o /dev/null -w "%{speed_upload}" --data-binary @- https://speed.cloudflare.com/__up 2>/dev/null || printf '0')
+  up=$(dd if=/dev/zero bs=1M count=10 2> /dev/null \
+    | curl -sS -o /dev/null -w "%{speed_upload}" --data-binary @- https://speed.cloudflare.com/__up 2> /dev/null || printf '0')
   awk -v s="$up" 'BEGIN{printf "Up:   %.2f Mbps\n",(s*8)/(1024*1024)}'
 }
 
@@ -52,7 +52,7 @@ weather() {
 ip_info() {
   local json ip loc
 
-  json=$(curl -fsS -H "User-Agent: ${UA}" https://ipinfo.io/json 2>/dev/null || printf '{}')
+  json=$(curl -fsS -H "User-Agent: ${UA}" https://ipinfo.io/json 2> /dev/null || printf '{}')
   ip=$(jget "$json" '.ip')
   loc=$(jget "$json" '.region')
 
@@ -64,7 +64,7 @@ ip_info() {
 }
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 netinfo - Network information tool
 
 USAGE:
@@ -103,7 +103,7 @@ main() {
     speed)
       # Use speedtest.py if available, otherwise fallback
       if has python && [[ -f "$(dirname "$0")/speedtest.py" ]]; then
-        python "$(dirname "$0")/speedtest.py" --simple 2>/dev/null || speed_test
+        python "$(dirname "$0")/speedtest.py" --simple 2> /dev/null || speed_test
       else
         speed_test
       fi

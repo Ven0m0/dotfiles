@@ -4,7 +4,7 @@ shopt -s nullglob globstar extglob
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
-have() { command -v "$1" &>/dev/null; }
+have() { command -v "$1" &> /dev/null; }
 die() {
   printf 'error: %s\n' "$*" >&2
   exit 1
@@ -85,7 +85,7 @@ symclean_cmd() {
   local d="${1:-$PWD}"
   [[ -d $d ]] || die "not dir: $d"
   log "cleaning broken symlinks in $d"
-  find "$d" -xtype l -print -delete 2>/dev/null || find -L "$d" -type l -print -delete 2>/dev/null || :
+  find "$d" -xtype l -print -delete 2> /dev/null || find -L "$d" -type l -print -delete 2> /dev/null || :
 }
 
 # -------- usb ----------
@@ -185,7 +185,7 @@ usb_cmd() {
 
 # -------- sysz (integrated) ----------
 sysz_help_keys() {
-  cat <<'EOF'
+  cat << 'EOF'
 Keys:
   TAB toggle sel
   ctrl-v cat unit
@@ -198,7 +198,7 @@ EOF
 }
 
 sysz_help() {
-  cat <<EOF
+  cat << EOF
 sysz: interactive systemctl via fzf.
 Usage: sysmaint sysz [opts] [command] [-- args]
 Opts:
@@ -317,21 +317,21 @@ sysz_cmd() {
   done
 
   mkdir -p "$(dirname "$HIST")"
-  : >"$HIST" || :
+  : > "$HIST" || :
 
   # validate states
   local ST
   for ST in "${STATES[@]}"; do
     ST="${ST##*=}"
-    [[ -n $ST ]] && systemctl --state=help | grep -Fx "$ST" &>/dev/null || die "bad state: $ST"
+    [[ -n $ST ]] && systemctl --state=help | grep -Fx "$ST" &> /dev/null || die "bad state: $ST"
   done
 
   # loop for unit selection
   local -a UNITS
   local KEY
   while :; do
-    mapfile -t UNITS < <(sysz_list_units "${MANAGERS[@]}" "${STATES[@]}" |
-      fzf --multi --ansi --expect=ctrl-r,ctrl-s \
+    mapfile -t UNITS < <(sysz_list_units "${MANAGERS[@]}" "${STATES[@]}" \
+      | fzf --multi --ansi --expect=ctrl-r,ctrl-s \
         --history="$HIST" \
         --prompt="Units: " \
         --header='? help' \
@@ -421,8 +421,8 @@ sysz_list() {
   (
     systemctl list-units "${args[@]}"
     systemctl list-unit-files "${args[@]}"
-  ) |
-    sort -u -t ' ' -k1,1 | while read -r l; do
+  ) \
+    | sort -u -t ' ' -k1,1 | while read -r l; do
     local unit=${l%% *}
     if [[ $l == *" active "* ]]; then
       printf '\033[0;32m%s\033[0m\n' "$unit"
@@ -459,13 +459,13 @@ sysz_daemon_reload() {
     case "$line" in '[user] daemon-reload') systemctl --user daemon-reload ;;
     '[system] daemon-reload') ((EUID == 0)) && systemctl --system daemon-reload || sudo systemctl --system daemon-reload ;;
     esac
-  done <<<"$picks"
+  done <<< "$picks"
 }
 
 sysz_pick_states() {
   local -n ref="$1"
-  mapfile -t chosen < <(systemctl --state=help | grep -v ':' | grep -v 'ing' | sort -u | grep -v '^$' |
-    fzf --multi --prompt='States: ') || return 1
+  mapfile -t chosen < <(systemctl --state=help | grep -v ':' | grep -v 'ing' | sort -u | grep -v '^$' \
+    | fzf --multi --prompt='States: ') || return 1
   ((${#chosen[@]})) || return 0
   ref=()
   local st
@@ -580,18 +580,18 @@ prsync_cmd() {
     par="${1##*=}"
     shift
   fi
-  [[ -n $par ]] || par="$(nproc 2>/dev/null || printf 10)"
+  [[ -n $par ]] || par="$(nproc 2> /dev/null || printf 10)"
   log "parallel=$par"
   local TMP
   TMP="$(mktemp -d)"
   trap 'rm -rf "$TMP"' EXIT
   log "dry-run listing"
-  rsync "$@" --out-format="%l %n" --no-v --dry-run 2>/dev/null |
-    grep -vF "sending incremental file list" | sort -nr >"$TMP/all"
+  rsync "$@" --out-format="%l %n" --no-v --dry-run 2> /dev/null \
+    | grep -vF "sending incremental file list" | sort -nr > "$TMP/all"
   local total
-  total=$(wc -l <"$TMP/all")
+  total=$(wc -l < "$TMP/all")
   local size
-  size=$(awk '{s+=$1}END{printf "%.0f",s}' <"$TMP/all")
+  size=$(awk '{s+=$1}END{printf "%.0f",s}' < "$TMP/all")
   log "$total files ($((size / 1024 ** 2)) MB)"
   ((total)) || {
     warn none
@@ -599,7 +599,7 @@ prsync_cmd() {
   }
   # distribute
   local i
-  for ((i = 0; i < par; i++)); do : >"$TMP/chunk.$i"; done
+  for ((i = 0; i < par; i++)); do : > "$TMP/chunk.$i"; done
   local -a sum
   for ((i = 0; i < par; i++)); do sum[i]=0; done
   local sz path idx=0
@@ -610,10 +610,10 @@ prsync_cmd() {
       mi=$j
     }; done
     sum[mi]=$((sum[mi] + sz))
-    printf '%s\n' "$path" >>"$TMP/chunk.$mi"
+    printf '%s\n' "$path" >> "$TMP/chunk.$mi"
     ((++idx % 25000 == 0)) && log "distributed $idx"
-  done <"$TMP/all"
-  for ((i = 1; i < par; i += 2)); do [[ -s "$TMP/chunk.$i" ]] && tac "$TMP/chunk.$i" >"$TMP/r" && mv "$TMP/r" "$TMP/chunk.$i" || :; done
+  done < "$TMP/all"
+  for ((i = 1; i < par; i += 2)); do [[ -s "$TMP/chunk.$i" ]] && tac "$TMP/chunk.$i" > "$TMP/r" && mv "$TMP/r" "$TMP/chunk.$i" || :; done
   log transferring
   if have parallel; then
     find "$TMP" -name 'chunk.*' -print0 | parallel -0 -j "$par" -t -- rsync --files-from={} "$@"

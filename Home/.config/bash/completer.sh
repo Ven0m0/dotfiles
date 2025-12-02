@@ -6,10 +6,10 @@
 load_completion() {
   local name="$1" cmd="$2" kind="$3" src="$4"
   has "$cmd" || return
-  declare -F "$name" &>/dev/null && return
+  declare -F "$name" &> /dev/null && return
   case "$kind" in
-    eval) eval "$src" &>/dev/null ;;
-    source | .) [[ -r ${src/#\~\//${HOME}/} ]] && . "${src/#\~\//${HOME}/}" &>/dev/null ;;
+    eval) eval "$src" &> /dev/null ;;
+    source | .) [[ -r ${src/#\~\//${HOME}/} ]] && . "${src/#\~\//${HOME}/}" &> /dev/null ;;
   esac
 }
 
@@ -29,7 +29,7 @@ fi
 # --- Editor FZF Completion
 if has fzf; then
   _editor_completion() {
-    bind '"\e[0n": redraw-current-line' &>/dev/null
+    bind '"\e[0n": redraw-current-line' &> /dev/null
     local selected
     if selected=$(compgen -f -- "${COMP_WORDS[COMP_CWORD]}" | fzf --prompt='❯ ' \
       --height=~100% --tiebreak=begin,index -1 -0 --exact \

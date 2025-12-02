@@ -92,11 +92,11 @@ max_line_length = 100
 indent_style = space
 indent_size = 4
 
-# Python
+# Python (2-space indent per project standard)
 [**.{py,pyw,pyi}]
 indent_style = space
-indent_size = 4
-max_line_length = 88
+indent_size = 2
+max_line_length = 120
 quote_type = double
 
 # Ruby
@@ -221,7 +221,7 @@ indent_size = 2
 
 [{poetry.lock,pyproject.toml,setup.py,setup.cfg}]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # =============================================================================
 # Git & Version Control

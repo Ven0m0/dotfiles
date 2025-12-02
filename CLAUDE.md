@@ -17,7 +17,8 @@
 
 ### Symbols
 
-→ leads to | ⇒ converts | « / » precedes/follows | ∴ / ∵ therefore/because | ✅ / ❌ success/fail | ⚡ performance | 🛡️ security | 🧪 testing | 📦 deployment | 🔍 analysis
+→ leads to | ⇒ converts | « / » precedes/follows | ∴ / ∵ therefore/because | ✅ / ❌ success/fail | ⚡ performance | 🛡️
+security | 🧪 testing | 📦 deployment | 🔍 analysis
 
 ## Bash Standards
 

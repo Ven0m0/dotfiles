@@ -19,7 +19,7 @@ set -euo pipefail
 # exit 1 - no selection
 # exit 2 - error
 
-has() { command -v "$1" &>/dev/null; }
+has() { command -v "$1" &> /dev/null; }
 WALLPAPERS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/wallpapers"
 mkdir -p "$WALLPAPERS_DIR"
 QUIET=""
@@ -69,9 +69,9 @@ random_wallpaper() {
 select_wallpaper() {
   local wallpaper
   wallpaper=$(
-    find "$WALLPAPERS_DIR" -type f -not -path '*/.git/*' -exec basename {} \; |
-      sed 's/\.\(png\|jpg\|jpeg\)$//' |
-      fzf \
+    find "$WALLPAPERS_DIR" -type f -not -path '*/.git/*' -exec basename {} \; \
+      | sed 's/\.\(png\|jpg\|jpeg\)$//' \
+      | fzf \
         --prompt "wallpaper: " \
         --header="${FZF_DEFAULT_HEADER:-}"
   ) || {
