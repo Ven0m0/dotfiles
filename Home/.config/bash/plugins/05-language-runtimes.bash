@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 #========================== [Language Runtimes] ===============================
 
-# --- Multi-language Manager
+# --- Multi-language Manager (Mise)
 if has mise; then
-  # Ensure command hashing is off for mise
   set +h
-  eval "$(mise activate -yq bash)" || :
+  # Cache mise activation to improve startup time
+  MISE_CACHE="${BASH_CACHE_DIR}/mise_init.bash"
+  if [[ ! -f $MISE_CACHE || $(which mise) -nt $MISE_CACHE ]]; then
+    mise activate bash >"$MISE_CACHE"
+  fi
+  source "$MISE_CACHE"
   alias mx="mise x --"
 fi
 
