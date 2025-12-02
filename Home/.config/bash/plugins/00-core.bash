@@ -1,17 +1,26 @@
 #================================== [Core] ====================================
 # --- History
-HISTCONTROL="erasedups:ignoreboth" HISTSIZE=5000 HISTFILESIZE=10000
-HISTIGNORE="&:bg:fg:clear:cls:exit:history:?"
-HISTTIMEFORMAT="%F %T " HISTFILE="${HOME}/.bash_history"
-PROMPT_DIRTRIM=3 PROMPT_COMMAND="history -a"
+HISTCONTROL="erasedups:ignoreboth" 
+HISTSIZE=10000 
+HISTFILESIZE=20000
+HISTIGNORE="&:bg:fg:clear:cls:exit:history:?:ls:pwd"
+HISTTIMEFORMAT="%F %T " 
+HISTFILE="${HOME}/.bash_history"
+PROMPT_DIRTRIM=3 
+PROMPT_COMMAND="history -a"
 
 # --- Shell Behavior
-shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob hostcomplete no_empty_cmd_completion histappend cmdhist
+shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob 
+shopt -s hostcomplete no_empty_cmd_completion histappend cmdhist
 set -o noclobber
-bind -r '\C-s'
-stty -ixon -ixoff -ixany
-export IGNOREEOF=10 COLUMNS
 
-# --- Sourcing
+# Disable flow control (Ctrl-S/Q)
+stty -ixon -ixoff -ixany 2>/dev/null
+bind -r '\C-s' 2>/dev/null
+
+export IGNOREEOF=10 
+export COLUMNS
+
+# --- Sourcing Legacy
 ifsource /etc/bashrc
 ifsource /usr/share/bash-preexec/bash-preexec.sh
