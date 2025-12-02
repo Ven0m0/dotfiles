@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
-set -eufo pipefail
-shopt -s nullglob
-export LC_ALL=C LANG=C
 # Download GitHub release assets
 # https://github.com/chmouel/gh-get-asset
+
+# Source shared library
+# shellcheck source=../lib/bash/stdlib.bash
+. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
+  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
+  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
+
 # Cleanup
 TMP=$(mktemp)
 trap 'rm -f "$TMP"' EXIT
+
 # Defaults
 release=""
 output_opt=(-O)
 curl_args=(-fsSL)
-has() { command -v "$1" &> /dev/null; }
-die() {
-  printf 'Error: %s\n' "$*" >&2
-  exit 1
-}
 
 usage() {
   cat << 'EOF'
@@ -62,7 +62,7 @@ gh_get_release() {
     selector=".[] | select(.tag_name==\"${release}\")"
   fi
 
-  jq -rM "${selector}.assets[]|select(.name| contains(\"${substring}\"))? | .browser_download_url" < "$TMP"
+  "$JQ" -rM "${selector}.assets[]|select(.name| contains(\"${substring}\"))? | .browser_download_url" < "$TMP"
 }
 
 main() { # Parse options
@@ -84,8 +84,8 @@ main() { # Parse options
   [[ $# -eq 2 ]] || die "Expected 2 arguments. Use -h for help."
 
   # Check dependencies
-  has curl || die "curl is required"
-  has jq || die "jq is required"
+  need curl
+  [[ -n $JQ ]] || die "jq/jaq is required"
 
   local repo="$1" substring="$2"
 

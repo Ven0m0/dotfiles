@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
 # pkg-sync.sh: Export/Import Pacman and AUR packages
 
-set -euo pipefail
+# Source shared library
+# shellcheck source=../lib/bash/stdlib.bash
+. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
+  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
+  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
+
 IFS=$'\n\t'
 
 FILE_NATIVE="pkglist_native.txt"
 FILE_AUR="pkglist_aur.txt"
 
-has() { command -v "$1" &> /dev/null; }
-log() { printf -- ":: %s\n" "$*"; }
-err() {
-  printf -- "!! %s\n" "$*" >&2
-  exit 1
-}
-
 check_deps() {
-  has pacman || err "pacman not found."
-  has paru || err "paru not found."
+  need pacman
+  need paru
 }
 
 do_export() {
@@ -30,7 +28,7 @@ do_export() {
 do_import() {
   if [[ -s $FILE_NATIVE ]]; then
     log "Importing native..."
-    sudo pacman -S --needed - < "$FILE_NATIVE" || log "Native import issues."
+    run_priv pacman -S --needed - < "$FILE_NATIVE" || log "Native import issues."
   else
     log "Skipping native (empty/missing)."
   fi
@@ -47,5 +45,5 @@ check_deps
 case "${1:-}" in
   export) do_export ;;
   import) do_import ;;
-  *) err "Usage: $0 [export|import]" ;;
+  *) die "Usage: $0 [export|import]" ;;
 esac

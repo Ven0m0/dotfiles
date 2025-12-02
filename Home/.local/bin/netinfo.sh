@@ -1,25 +1,24 @@
 #!/usr/bin/env bash
 # netinfo - Network information: IP, weather, speed test
-set -euo pipefail
-shopt -s nullglob globstar
+
+# Source shared library
+# shellcheck source=../lib/bash/stdlib.bash
+. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
+  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
+  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
+
 IFS=$'\n\t'
-export LC_ALL=C LANG=C
 readonly UA="netinfo/1.0"
-has() { command -v "$1" &> /dev/null; }
-die() {
-  printf 'Error: %s\n' "$*" >&2
-  exit 1
-}
 
 # Check dependencies
-has curl || die "curl is required"
-has awk || die "awk is required"
+need curl
+need awk
 
 # JSON getter with jq fallback
 jget() {
   local json="$1" field="$2"
-  if has jq; then
-    jq -r "$field" <<< "$json"
+  if [[ -n $JQ ]]; then
+    "$JQ" -r "$field" <<< "$json"
   else
     # Naive extraction for simple fields
     printf '%s\n' "$json" | sed -n "s/.*\"${field//./\\.}\":[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p" | head -1

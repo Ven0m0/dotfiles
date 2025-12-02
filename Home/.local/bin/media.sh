@@ -1,19 +1,14 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C
-
 # Media toolkit: CD burning, USB creation, transcoding, and image optimization
 
-has() { command -v "$1" &> /dev/null; }
-need() { has "$1" || die "Required: $1"; }
-die() {
-  printf '\e[0;31mERROR: %s\e[0m\n' "$*" >&2
-  exit 1
-}
-log() { printf '\e[0;33m>>> %s\e[0m\n' "$*"; }
-info() { printf '\e[0;36m### %s\e[0m\n' "$*"; }
+# Source shared library
+# shellcheck source=../lib/bash/stdlib.bash
+. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
+  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
+  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
+
+IFS=$'\n\t'
+
 usage() {
   cat << 'EOF'
 media - Media toolkit for CD burning, USB creation, and transcoding

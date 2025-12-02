@@ -1,25 +1,18 @@
 #!/usr/bin/env bash
 # yadm-sync - Bidirectional sync helper for subdirectory-based dotfiles
 # Syncs changes between ~/ and ${REPO}/Home/
-set -euo pipefail
-shopt -s nullglob globstar
+
+# Source shared library
+# shellcheck source=../lib/bash/stdlib.bash
+. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
+  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
+  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
+
 IFS=$'\n\t'
-export LC_ALL=C LANG=C
 
-# Colors
-readonly BLD=$'\e[1m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
-readonly BLU=$'\e[34m' DEF=$'\e[0m'
-
-# Helper functions
-has() { command -v "$1" &> /dev/null; }
-info() { printf '%b==>\e[0m %b%s%b\n' "${BLD}${BLU}" "$BLD" "$*" "$DEF"; }
-success() { printf '%b==>\e[0m %b%s%b\n' "${BLD}${GRN}" "$BLD" "$*" "$DEF"; }
-warn() { printf '%b==> WARNING:\e[0m %b%s%b\n' "${BLD}${YLW}" "$BLD" "$*" "$DEF"; }
-error() { printf '%b==> ERROR:\e[0m %b%s%b\n' "${BLD}${RED}" "$BLD" "$*" "$DEF" >&2; }
-die() {
-  error "$*"
-  exit 1
-}
+# Alias for script compatibility
+success() { ok "$@"; }
+error() { err "$@"; }
 
 # Determine repository directory
 get_repo_dir() {

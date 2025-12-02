@@ -3,10 +3,20 @@
 # repository: https://github.com/hollowillow/scripts
 # usage: fzman
 # dependencies: fzf
-set -euo pipefail
-shopt -s nullglob globstar
+
+# Source shared library (with fallback for standalone operation)
+# shellcheck source=../lib/bash/stdlib.bash
+if [[ -r "${HOME}/.local/lib/bash/stdlib.bash" ]]; then
+  . "${HOME}/.local/lib/bash/stdlib.bash"
+elif [[ -r "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" ]]; then
+  . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash"
+else
+  set -euo pipefail
+  shopt -s nullglob globstar
+  export LC_ALL=C LANG=C
+fi
+
 IFS=$'\n\t'
-export LC_ALL=C LANG=C
 
 if [[ ${1:-} == "-h" ]]; then
   sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"
@@ -15,7 +25,9 @@ fi
 
 readonly PREVIEW='man {1}'
 
-man -k . | fzf \
+[[ -n ${FZF:-} ]] || die "No fuzzy finder (fzf/sk) found"
+
+man -k . | "$FZF" \
   --prompt='manual: ' \
   --header="$(printf '%s\n' 'enter:open' "${FZF_DEFAULT_HEADER:-}")" \
   --delimiter=' ' \
