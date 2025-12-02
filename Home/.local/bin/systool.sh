@@ -464,7 +464,7 @@ sysz_daemon_reload() {
 
 sysz_pick_states() {
   local -n ref="$1"
-  mapfile -t chosen < <(systemctl --state=help | grep -v ':' | grep -v 'ing' | sort -u | grep -v '^$' \
+  mapfile -t chosen < <(systemctl --state=help | grep -Ev ':|ing|^$' | sort -u \
     | fzf --multi --prompt='States: ') || return 1
   ((${#chosen[@]})) || return 0
   ref=()

@@ -98,9 +98,10 @@ fi
 [[ -d .git ]] || die "Not a git repository"
 determine_trunk() {
   local trunk=
-  if git branch --list master 2> /dev/null | grep -q master; then
+  # Use -F for literal string matching (faster)
+  if git branch --list master 2> /dev/null | grep -qF master; then
     trunk=master
-  elif git branch --list main 2> /dev/null | grep -q main; then
+  elif git branch --list main 2> /dev/null | grep -qF main; then
     trunk=main
   else
     die "No trunk branch (master/main) found"
