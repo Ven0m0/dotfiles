@@ -24,7 +24,7 @@ init_tool zellij "zellij setup --generate-auto-start fish | string collect"
 init_tool intelli-shell "intelli-shell init fish"
 init_tool cod "cod init $fish_pid fish"
 
-# Deduplicate PATH entries while preserving order
+# Deduplicate PATH
 set -l unique_path
 for path_entry in $PATH
     if not contains $path_entry $unique_path
