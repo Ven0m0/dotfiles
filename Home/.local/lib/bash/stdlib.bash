@@ -208,14 +208,17 @@ is_termux() { [[ -n ${TERMUX_VERSION:-} ]]; }
 # Create temp directory with cleanup trap
 mktmpdir() {
   local tmpdir
-  tmpdir=$(mktemp -d) || die "Failed to create temp directory"
-  trap 'rm -rf "$tmpdir"' EXIT
-  printf '%s' "$tmpdir"
+  if tmpdir=$(mktemp -d); then
+    trap 'rm -rf "$tmpdir"' EXIT
+    printf '%s' "$tmpdir"
+  else
+    die "Failed to create temp directory"
+  fi
 }
 
 # Safe file stat (cross-platform)
 file_size() {
-  if stat --version &>/dev/null 2>&1; then
+  if stat --version &>/dev/null; then
     stat -c%s "$1"
   else
     stat -f%z "$1"

@@ -25,7 +25,9 @@ fi
 
 readonly PREVIEW='man {1}'
 
-man -k . | "${FZF:-fzf}" \
+[[ -n ${FZF:-} ]] || die "No fuzzy finder (fzf/sk) found"
+
+man -k . | "$FZF" \
   --prompt='manual: ' \
   --header="$(printf '%s\n' 'enter:open' "${FZF_DEFAULT_HEADER:-}")" \
   --delimiter=' ' \
