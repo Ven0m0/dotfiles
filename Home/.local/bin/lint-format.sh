@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 # Exhaustive Lint & Format Script
 # Policy: 2-space indent, 120 char width, 0 errors.
-set -euo pipefail
+
+# Source shared library
+# shellcheck source=../lib/bash/stdlib.bash
+. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
+  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
+  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
+
 IFS=$'\n\t'
+
 # --- Configuration ---
 readonly PROJECT_ROOT="${PWD}"
 readonly PARALLEL_JOBS="$(nproc)"
@@ -18,13 +25,8 @@ readonly TOOLS=(
   "Actionlint:actionlint"
   "MarkdownLint:markdownlint"
 )
-# Colors
-readonly R=$(tput setaf 1) G=$(tput setaf 2) Y=$(tput setaf 3) B=$(tput setaf 4) NC=$(tput sgr0)
+
 # --- Helpers ---
-has() { command -v "$1" &>/dev/null; }
-log() { printf "${B}[%s]${NC} %s\n" "$(date +%T)" "$1"; }
-err() { printf "${R}[ERR]${NC} %s\n" "$1" >&2; }
-ok() { printf "${G}[OK]${NC} %s\n" "$1"; }
 check_deps() {
   local missing=()
   for t in "${TOOLS[@]}"; do
@@ -42,8 +44,8 @@ check_deps() {
 find_files() {
   local ext="$1"
   # fd is preferred -> find fallback
-  if has fd; then
-    fd -u -t f -H -E .git -E node_modules -E .venv -e "$ext" . "$PROJECT_ROOT"
+  if [[ $FD != "find" ]]; then
+    "$FD" -u -t f -H -E .git -E node_modules -E .venv -e "$ext" . "$PROJECT_ROOT"
   else
     find "$PROJECT_ROOT" -type f -name "*.$ext" -not -path "*/.git/*" -not -path "*/node_modules/*"
   fi
