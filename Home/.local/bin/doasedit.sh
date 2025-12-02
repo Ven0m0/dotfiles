@@ -41,8 +41,8 @@ _exit() {
   exit "${1:-0}"
 }
 # no argument passed
-[ "${#}" -eq 0 ] && help && exit 1
-while [ "${#}" -ne 0 ]; do
+[[ "${#}" -eq 0 ]] && help && exit 1
+while [[ "${#}" -ne 0 ]]; do
   case "${1}" in
     --)
       shift
@@ -65,15 +65,15 @@ while [ "${#}" -ne 0 ]; do
   esac
 done
 user_id="$(LC_ALL=C id -u)"
-if [ "$user_id" -eq 0 ]; then
+if [[ "$user_id" -eq 0 ]]; then
   error "using this program as root is not permitted"
   exit 1
 fi
 for editor_cmd in "$DOAS_EDITOR" "$VISUAL" "$EDITOR"; do
-  [ "$editor_cmd" != "" ] && break
+  [[ -n "$editor_cmd" ]] && break
 done
 # shellcheck disable=SC2086
-if [ "$editor_cmd" = "" ]; then
+if [[ -z "$editor_cmd" ]]; then
   if has vi; then
     editor_cmd='vi'
   else
@@ -100,7 +100,7 @@ for file; do
       error "${file}: not a regular file"
       continue
     fi
-    if [ "$(find "$file" -prune -user "$user_id")" != "" ]; then
+    if [[ "$(find "$file" -prune -user "$user_id")" != "" ]]; then
       error "${file}: editing your own files is not permitted"
       continue
     fi
@@ -113,10 +113,10 @@ for file; do
     exists=0
   else
     # New file?
-    if [ "$(find "$dir" -prune -user "$user_id")" != "" ]; then
+    if [[ "$(find "$dir" -prune -user "$user_id")" != "" ]]; then
       error "${file}: creating files in your own directory is not permitted"
       continue
-    elif [ -x "$dir" ] && [ -w "$dir" ]; then
+    elif [[ -x "$dir" && -w "$dir" ]]; then
       error "${file}: creating files in a user-writable directory is not permitted"
       continue
     elif ! doas [ -e "$dir" ]; then
