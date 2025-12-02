@@ -161,14 +161,13 @@ pk() {
     return 1
   }
   local pids
-  # Use pgrep if available (faster), fallback to grep bracket trick (avoids grep -v grep pipe)
+  # Use pgrep if available (faster, handles special chars), fallback to grep
   if command -v pgrep &>/dev/null; then
     pids=$(pgrep -f "$1" | xargs)
   elif command -v rg &>/dev/null; then
-    pids=$(ps aux | rg "$1" | rg -v 'rg' | awk '{print $2}')
+    pids=$(ps aux | rg -F "$1" | rg -v 'rg' | awk '{print $2}')
   else
-    # Bracket trick: grep "[p]attern" won't match itself
-    pids=$(ps aux | grep "[${1:0:1}]${1:1}" | awk '{print $2}')
+    pids=$(ps aux | grep -F "$1" | grep -v grep | awk '{print $2}')
   fi
 
   [[ -z $pids ]] && {
@@ -180,9 +179,9 @@ pk() {
   if command -v pgrep &>/dev/null; then
     pgrep -af "$1"
   elif command -v rg &>/dev/null; then
-    ps aux | rg "$1" | rg -v 'rg'
+    ps aux | rg -F "$1" | rg -v 'rg'
   else
-    ps aux | grep "[${1:0:1}]${1:1}"
+    ps aux | grep -F "$1" | grep -v grep
   fi
 
   read -rp "❓ Kill these? (y/N): " confirm
