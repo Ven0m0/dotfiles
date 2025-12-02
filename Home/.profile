@@ -1,5 +1,5 @@
 #!/bin/sh
-[[ $- != *i* ]] && return
+case "$-" in *i*) ;; *) return ;; esac
 
 [ -n "$BASH_VERSION" ] && . "$HOME/.bashrc"
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"

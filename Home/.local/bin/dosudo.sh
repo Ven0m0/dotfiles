@@ -19,7 +19,7 @@ help() {
 	EOF
 }
 
-if [ $# -eq 0 ]; then
+if [[ $# -eq 0 ]]; then
   help >&2
   exit 1
 fi
@@ -36,7 +36,7 @@ flag_n=
 flag_s=
 flag_k=
 user=
-while [ $# -gt 0 ]; do
+while [[ $# -gt 0 ]]; do
   case "$1" in
     -i | --login) flag_i='-i' ;;
     -n | --non-interactive) flag_n='-n' ;;
@@ -59,7 +59,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-if [ "$flag_i" ] && [ "$flag_s" ]; then
+if [[ -n "$flag_i" && -n "$flag_s" ]]; then
   echo "sudo: you may not specify both the '-i' and '-s' options" >&2
   exit 1
 fi
@@ -76,19 +76,19 @@ export SUDO_GID=$(id -g)
 export SUDO_UID=$(id -u)
 export SUDO_USER=$(id -un)
 
-if [ $# -eq 0 ]; then
-  if [ "$flag_i" ]; then
+if [[ $# -eq 0 ]]; then
+  if [[ -n "$flag_i" ]]; then
     _doas -- "$(user_shell)" -c 'cd "$HOME"; exec "$0" -l'
-  elif [ "$flag_k" ]; then
+  elif [[ -n "$flag_k" ]]; then
     exec doas "$flag_k" "${user:+-u "$user"}"
   else
     _doas "$flag_s"
   fi
-elif [ "$flag_i" ]; then
+elif [[ -n "$flag_i" ]]; then
   _doas -- "$(user_shell)" -l -c 'cd "$HOME"; "$0" "$@"' "$@"
-elif [ "$flag_s" ]; then
+elif [[ -n "$flag_s" ]]; then
   _doas -- "${SHELL:-$(user_shell)}" -c '"$0" "$@"' "$@"
-elif [ "$flag_k" ]; then
+elif [[ -n "$flag_k" ]]; then
   doas "$flag_k" "${user:+-u "$user"}"
   _doas -- "$@"
 else
