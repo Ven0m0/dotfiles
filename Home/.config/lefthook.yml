@@ -134,11 +134,11 @@ pre-commit:
     end-of-file-fixer:
       priority: 14
       glob: '*'
-      exclude: "\\.(png|jpe? g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
+      exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         for f in {staged_files}; do
           [[ -f "$f" && -s "$f" && -n $(tail -c1 "$f") ]] && printf '\n' >> "$f"
-        done
+        done || :
       stage_fixed: true
       fail_text: 'End-of-file newline fix failed'
     detect-secrets:
