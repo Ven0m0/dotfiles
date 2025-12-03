@@ -118,8 +118,8 @@ cmd_ripdvd() {
   log "Reading DVD info..."
   local dvd_info block_size volume_size total_size
   dvd_info=$(isoinfo -d -i "$dvd")
-  block_size=$(grep "^Logical block" <<< "$dvd_info" | awk '{print $5}')
-  volume_size=$(grep "^Volume size" <<< "$dvd_info" | awk '{print $4}')
+  block_size=$(grep -F "Logical block" <<< "$dvd_info" | awk '{print $5}')
+  volume_size=$(grep -F "Volume size" <<< "$dvd_info" | awk '{print $4}')
   total_size=$((block_size * volume_size))
   log "Creating ISO: $iso (${total_size} bytes)..."
   dd if="$dvd" bs="$block_size" count="$volume_size" 2> /dev/null \

@@ -25,8 +25,9 @@ readonly normal=$(tput sgr0 2>/dev/null || echo '')
 
 unit="${1:-onedrive}"
 # Stream journal output with colorization
+# Use -F for fixed-string matching (faster than regex)
 journalctl -o cat --user-unit "$unit" -f 2>/dev/null |
-  (has ag && ag -v 'Remaining free space' || grep -v 'Remaining free space') |
+  (has ag && ag -v 'Remaining free space' || grep -vF 'Remaining free space') |
   sed -u "s/Uploading/${blue}Uploading${normal}/;
           s/Successfully created/${blue}Successfully created${normal}/;
           s/Downloading/${magenta}Downloading${normal}/;

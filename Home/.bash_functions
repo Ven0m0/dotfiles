@@ -161,10 +161,13 @@ pk() {
     return 1
   }
   local pids
-  if command -v rg &>/dev/null; then
-    pids=$(ps aux | rg "$1" | rg -v 'rg' | awk '{print $2}')
+  # Use pgrep if available (faster, handles special chars), fallback to grep
+  if command -v pgrep &>/dev/null; then
+    pids=$(pgrep -f "$1" | xargs)
+  elif command -v rg &>/dev/null; then
+    pids=$(ps aux | rg -F "$1" | rg -v 'rg' | awk '{print $2}')
   else
-    pids=$(ps aux | grep "$1" | grep -v grep | awk '{print $2}')
+    pids=$(ps aux | grep -F "$1" | grep -v grep | awk '{print $2}')
   fi
 
   [[ -z $pids ]] && {
@@ -173,10 +176,12 @@ pk() {
   }
 
   echo "🔍 Found processes:"
-  if command -v rg &>/dev/null; then
-    ps aux | rg "$1" | rg -v 'rg'
+  if command -v pgrep &>/dev/null; then
+    pgrep -af "$1"
+  elif command -v rg &>/dev/null; then
+    ps aux | rg -F "$1" | rg -v 'rg'
   else
-    ps aux | grep "$1" | grep -v grep
+    ps aux | grep -F "$1" | grep -v grep
   fi
 
   read -rp "❓ Kill these? (y/N): " confirm
@@ -418,9 +423,9 @@ gdbr() {
   local git_cmd=$(command -v gix &>/dev/null && echo "gix" || echo "git")
   "$git_cmd" fetch --prune
   if command -v rg &>/dev/null; then
-    "$git_cmd" branch -vv | rg ': gone]' | awk '{print $1}' | xargs -r "$git_cmd" branch -D
+    "$git_cmd" branch -vv | rg -F ': gone]' | awk '{print $1}' | xargs -r "$git_cmd" branch -D
   else
-    "$git_cmd" branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r "$git_cmd" branch -D
+    "$git_cmd" branch -vv | grep -F ': gone]' | awk '{print $1}' | xargs -r "$git_cmd" branch -D
   fi
 }
 
