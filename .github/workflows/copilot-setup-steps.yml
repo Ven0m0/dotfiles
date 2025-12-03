@@ -50,7 +50,6 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: "**/. megalinter.yml"
-      
       # 6. Install Python linters with uv
       - name: Install linter dependencies
         run: |
