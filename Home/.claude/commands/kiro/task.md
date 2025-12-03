@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: Generate implementation task lists from approved feature designs argument-hint: [feature name]
 
@@ -82,14 +82,12 @@ The tasks document should be based on the design document, so ensure it exists f
   ```
 
 - The model MUST format the implementation plan as a numbered checkbox list with a maximum of two levels of hierarchy:
-
   - Top-level items (like epics) should be used only when needed
   - Sub-tasks should be numbered with decimal notation (e.g., 1.1, 1.2, 2.1)
   - Each item must be a checkbox
   - Simple structure is preferred
 
 - The model MUST ensure each task item includes:
-
   - A clear objective as the task description that involves writing, modifying, or testing code
   - Additional information as sub-bullets under the task
   - Specific references to requirements from the requirements document (referencing granular sub-requirements, not just
@@ -125,7 +123,6 @@ The tasks document should be based on the design document, so ensure it exists f
 - The model MUST focus on code implementation tasks that can be executed within the development environment
 
 - The model MUST ensure each task is actionable by a coding agent by following these guidelines:
-
   - Tasks should involve writing, modifying, or testing specific code components
   - Tasks should specify what files or components need to be created or modified
   - Tasks should be concrete enough that a coding agent can execute them without additional clarification
@@ -133,7 +130,6 @@ The tasks document should be based on the design document, so ensure it exists f
   - Tasks should be scoped to specific coding activities (e.g., "Implement X function" rather than "Support X feature")
 
 - The model MUST explicitly avoid including the following types of non-coding tasks in the implementation plan:
-
   - User acceptance testing or user feedback gathering
   - Deployment to production or staging environments
   - Performance metrics gathering or analysis

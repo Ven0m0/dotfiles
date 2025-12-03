@@ -1,1 +1,9 @@
-#urlbar-results{max-height:400px;overflow-y:auto;scrollbar-color:var(--urlbar-separator-color,currentColor)transparent;scrollbar-width:thin}.urlbarView-no-wrap{position:relative}
+#urlbar-results {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-color: var(--urlbar-separator-color, currentColor) transparent;
+  scrollbar-width: thin;
+}
+.urlbarView-no-wrap {
+  position: relative;
+}

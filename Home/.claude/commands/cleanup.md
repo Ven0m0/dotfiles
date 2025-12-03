@@ -126,18 +126,23 @@ wc -c CLAUDE.md README.md
 **Coverage**: [List of consolidated topics]
 
 ## Executive Summary
+
 [High-level overview of all security work]
 
 ## [Topic 1] - [Original File 1 Content]
+
 [Essential information from first file]
 
 ## [Topic 2] - [Original File 2 Content]
+
 [Essential information from second file]
 
 ## [Topic 3] - [Original File 3 Content]
+
 [Essential information from third file]
 
 ## Consolidated [Cross-cutting Concerns]
+
 [Information that appeared in multiple files]
 ```
 
@@ -248,15 +253,19 @@ find . -name "CLAUDE-*.md" -not -path "*/archive/*" -exec wc -c {} \; | awk '{su
 **Coverage**: [What this file consolidates]
 
 ## Executive Summary
+
 [Overview of complete topic coverage]
 
 ## [Major Section 1]
+
 [Comprehensive coverage of subtopic]
 
 ## [Major Section 2]
+
 [Comprehensive coverage of subtopic]
 
 ## [Cross-cutting Concerns]
+
 [Information spanning multiple original files]
 ```
 
@@ -266,10 +275,13 @@ find . -name "CLAUDE-*.md" -not -path "*/archive/*" -exec wc -c {} \; | awk '{su
 # archive/README.md
 
 ## Archived Files
+
 ### [Category]
+
 - **filename.md** - [Description] (resolved/historic)
 
 ## Usage
+
 Reference when investigating similar issues or understanding implementation history.
 ```
 

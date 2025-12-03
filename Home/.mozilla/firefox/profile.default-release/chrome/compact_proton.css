@@ -1,1 +1,36 @@
-:root{--toolbarbutton-inner-padding:6px !important;--tab-block-margin:2px !important;--tabs-shadow-size:0px !important;--arrowpanel-menuitem-padding-block:5px !important;--panel-font-size:inherit !important;--arrowpanel-padding:0.8em !important;--inline-tab-padding:8px !important;--tab-inline-padding:8px !important}.subviewbutton.bookmark-item{padding-block:4px!important}.subview-subheader{display:block}menupopup>menuitem,menupopup>menu{padding-block:.3em!important}#nav-bar{box-shadow:inset 0 var(--tabs-shadow-size)0 var(--lwt-tabs-border-color)!important}.tab-close-button{margin-inline-start:0!important;width:20px!important;height:20px!important;padding:5px!important}#tabbrowser-tabs{--uc-tabs-scrollbutton-border:2px}#scrollbutton-up,#scrollbutton-down{border-block-width:var(--uc-tabs-scrollbutton-border,0px)!important}
+:root {
+  --toolbarbutton-inner-padding: 6px !important;
+  --tab-block-margin: 2px !important;
+  --tabs-shadow-size: 0px !important;
+  --arrowpanel-menuitem-padding-block: 5px !important;
+  --panel-font-size: inherit !important;
+  --arrowpanel-padding: 0.8em !important;
+  --inline-tab-padding: 8px !important;
+  --tab-inline-padding: 8px !important;
+}
+.subviewbutton.bookmark-item {
+  padding-block: 4px !important;
+}
+.subview-subheader {
+  display: block;
+}
+menupopup > menuitem,
+menupopup > menu {
+  padding-block: 0.3em !important;
+}
+#nav-bar {
+  box-shadow: inset 0 var(--tabs-shadow-size) 0 var(--lwt-tabs-border-color) !important;
+}
+.tab-close-button {
+  margin-inline-start: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+  padding: 5px !important;
+}
+#tabbrowser-tabs {
+  --uc-tabs-scrollbutton-border: 2px;
+}
+#scrollbutton-up,
+#scrollbutton-down {
+  border-block-width: var(--uc-tabs-scrollbutton-border, 0px) !important;
+}

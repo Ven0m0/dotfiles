@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: Fix GitHub issue argument-hint: [issue-number] allowed-tools: Write, Read, LS, Glob, Grep, Bash(gh:_), Bash(git:_)
 

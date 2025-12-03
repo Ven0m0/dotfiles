@@ -1,1 +1,27 @@
-.tabbrowser-tab:not([pinned]) .tab-icon-stack:is([muted],[soundplaying],[activemedia-blocked]){grid-template-areas:'a s'}.tabbrowser-tab:not([pinned]) .tab-icon-overlay:is([muted],[soundplaying],[activemedia-blocked]){grid-area:s}.tab-icon-overlay,.tab-icon-image,.tab-throbber{opacity:1!important}.tab-icon-overlay:not([pinned]){margin-inline:-2px 2px!important}.tab-secondary-label{display:none}.tab-secondary-label[pictureinpicture]{display:flex}.tab-icon-overlay{pointer-events:auto}.tab-content>.tab-icon-stack,.tab-icon-stack:hover>.tab-icon-image{visibility:visible}
+.tabbrowser-tab:not([pinned]) .tab-icon-stack:is([muted], [soundplaying], [activemedia-blocked]) {
+  grid-template-areas: 'a s';
+}
+.tabbrowser-tab:not([pinned]) .tab-icon-overlay:is([muted], [soundplaying], [activemedia-blocked]) {
+  grid-area: s;
+}
+.tab-icon-overlay,
+.tab-icon-image,
+.tab-throbber {
+  opacity: 1 !important;
+}
+.tab-icon-overlay:not([pinned]) {
+  margin-inline: -2px 2px !important;
+}
+.tab-secondary-label {
+  display: none;
+}
+.tab-secondary-label[pictureinpicture] {
+  display: flex;
+}
+.tab-icon-overlay {
+  pointer-events: auto;
+}
+.tab-content > .tab-icon-stack,
+.tab-icon-stack:hover > .tab-icon-image {
+  visibility: visible;
+}

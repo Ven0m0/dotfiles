@@ -107,33 +107,40 @@ Structure the analysis as:
 ## Best Practices Review
 
 ### Summary
+
 - Language/Framework: [Detected stack]
 - Overall Score: X/10
 - Key Areas for Improvement: [List]
 
 ### Excellent Practices Found
+
 - [Practice 1]: Brief explanation
 - [Practice 2]: Brief explanation
 
 ### Areas for Improvement
 
 #### High Priority
+
 1. **[Issue Name]**
    - Current: `code example`
    - Recommended: `improved code`
    - Reason: Explanation of why this matters
 
 #### Medium Priority
+
 [Similar format]
 
 #### Low Priority
+
 [Similar format]
 
 ### Quick Wins
+
 - [Easy improvement 1]
 - [Easy improvement 2]
 
 ### Long-term Recommendations
+
 - [Strategic improvement 1]
 - [Strategic improvement 2]
 ```

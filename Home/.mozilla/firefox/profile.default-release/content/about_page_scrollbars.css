@@ -1,1 +1,10 @@
-@-moz-document url-prefix("about:"){window,page,html,.main-content,scrollbar{scrollbar-color:#d2d2d2 #2a2a2e!important;scrollbar-width:thin}}
+@-moz-document url-prefix("about:") {
+  window,
+  page,
+  html,
+  .main-content,
+  scrollbar {
+    scrollbar-color: #d2d2d2 #2a2a2e !important;
+    scrollbar-width: thin;
+  }
+}

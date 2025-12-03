@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## name: deep-reflector description: Comprehensive session analysis and learning capture specialist. Analyzes development sessions to extract patterns, preferences, and improvements for future interactions. Use after significant work sessions to capture learnings
 

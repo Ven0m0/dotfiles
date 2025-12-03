@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## name: command-creator description: Expert at creating new Claude Code custom commands with proper structure and best practices. Use when needing to create well-structured custom commands. color: cyan
 
@@ -34,9 +34,11 @@ Create command file with this structure:
 
 ```markdown
 ---
+
 description: Brief description of the command
 argument-hint: Expected arguments format
 allowed-tools: List of required tools
+
 ---
 
 # Command Name
@@ -62,6 +64,7 @@ Detailed description of what this command does and when to use it.
 
 - Important considerations
 - Limitations or requirements
+
 ```
 
 ### 4. Quality Assurance
@@ -90,3 +93,4 @@ When creating a command, always:
 1. Create the complete command file
 1. Explain the command structure and usage
 1. Highlight any special considerations
+```

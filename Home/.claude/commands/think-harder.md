@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: Enhanced analytical thinking for complex problems argument-hint: [problem or question]
 

@@ -1,5 +1,4 @@
-______________________________________________________________________
-
+---
 ## Description: Analyze your own previous response with rigorous critical thinking
 
 # criticalthink
@@ -16,8 +15,7 @@ identify its potential weaknesses, hidden assumptions, and overlooked risks.
 
 Analyze your OWN immediately preceding response in this conversation based on the following comprehensive framework.
 Structure your output using these exact headings and numbering.
-
-______________________________________________________________________
+---
 
 ### 1. Core Thesis & Confidence Score (Initial)
 

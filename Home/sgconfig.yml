@@ -49,7 +49,7 @@ rules:
   - id: no-console
     language: typescript
     message: Remove console statements (use logger/debug build)
-    note: "Production code should use structured logging"
+    note: 'Production code should use structured logging'
     utils: is-console
     severity: error
     fix: ''
@@ -62,7 +62,7 @@ rules:
   - id: no-todo-comments
     languages: [typescript, javascript, bash]
     message: Resolve TODO/FIXME comment
-    note: "Convert to tracked issues or resolve inline"
+    note: 'Convert to tracked issues or resolve inline'
     utils: has-todo
     severity: warning
   - id: no-unsafe-eval
@@ -73,7 +73,7 @@ rules:
   - id: no-dangerous-html
     language: typescript
     message: Avoid direct HTML manipulation (XSS risk)
-    note: "Use textContent, createElement, or DOMPurify"
+    note: 'Use textContent, createElement, or DOMPurify'
     utils: dangerous-html
     severity: warning
   - id: prefer-const
@@ -115,7 +115,7 @@ rules:
   - id: no-empty-catch
     language: typescript
     message: Empty catch block - handle error or remove try-catch
-    note: "At minimum log error or add comment explaining silence"
+    note: 'At minimum log error or add comment explaining silence'
     rule:
       kind: catch_clause
       has:
@@ -138,7 +138,7 @@ rules:
   - id: bash-unquoted-var
     language: bash
     message: Quote variable to prevent word splitting/globbing
-    note: "Exceptions: [[ ]], arithmetic, assignments, case items (already safe)"
+    note: 'Exceptions: [[ ]], arithmetic, assignments, case items (already safe)'
     rule:
       kind: expansion
       regex: ^\$[A-Za-z_][A-Za-z0-9_]*$
@@ -167,7 +167,7 @@ rules:
   - id: bash-prefer-mapfile
     language: bash
     message: Use mapfile instead of while read loop (10-100x faster)
-    note: "Requires bash 4.0+; use -t for trim, -d for delimiter"
+    note: 'Requires bash 4.0+; use -t for trim, -d for delimiter'
     rule:
       kind: while_statement
       pattern: |
@@ -184,14 +184,14 @@ rules:
     message: "Prefer ':' over 'true' (builtin vs external, saves 1 fork)"
     rule:
       pattern: $CMD || true
-    fix: "$CMD || :"
+    fix: '$CMD || :'
     severity: info
   - id: bash-idiom-true-while
     language: bash
     message: "Prefer ':' over 'true' in while loops (1 char, builtin)"
     rule:
       pattern: while true; do $$$BODY; done
-    fix: "while :; do $$$BODY; done"
+    fix: 'while :; do $$$BODY; done'
     severity: info
   # ----------------------------------------------------------------------------
   # BASH — Style (Compact, Token-Efficient)
@@ -207,7 +207,7 @@ rules:
   - id: bash-opt-silence-all
     language: bash
     message: Use &>/dev/null instead of >/dev/null 2>&1 (bash shorthand)
-    note: "Supported bash 4.0+, zsh; not POSIX sh"
+    note: 'Supported bash 4.0+, zsh; not POSIX sh'
     rule:
       kind: command
       pattern: $CMD > /dev/null 2>&1
@@ -234,7 +234,7 @@ rules:
   - id: bash-case-trivial-inline
     language: bash
     message: Inline trivial case to direct test (avoids case overhead)
-    note: "Single branch, no globs, not in loops → [[ ]] && faster"
+    note: 'Single branch, no globs, not in loops → [[ ]] && faster'
     rule:
       kind: case_statement
       all:
@@ -254,7 +254,7 @@ rules:
   - id: bash-case-two-to-if-else
     language: bash
     message: Consider if-else for two-branch case (clearer intent)
-    note: "Case shines at 4+ branches; if-else clearer for 2"
+    note: 'Case shines at 4+ branches; if-else clearer for 2'
     rule:
       kind: case_statement
       all:
@@ -286,7 +286,7 @@ rules:
   - id: bash-prefer-parameter-expansion
     language: bash
     message: Use parameter expansion instead of sed/awk (no fork)
-    note: "${var#prefix}, ${var%suffix}, ${var//search/replace}"
+    note: '${var#prefix}, ${var%suffix}, ${var//search/replace}'
     rule:
       any:
         - pattern: echo $VAR | sed 's/^$PREFIX//'
@@ -296,7 +296,7 @@ rules:
   - id: bash-builtin-test-bracket
     language: bash
     message: Use [[ ]] instead of [ ] (bash builtin, safer)
-    note: "[[ ]] prevents word splitting, supports regex, no quoting needed"
+    note: '[[ ]] prevents word splitting, supports regex, no quoting needed'
     rule:
       kind: test_command
       regex: '^\['
@@ -307,7 +307,7 @@ rules:
   - id: bash-prefer-printf-over-echo
     language: bash
     message: Prefer printf over echo for portable/safe output
-    note: "echo behavior varies (BSD vs GNU); printf is POSIX-consistent"
+    note: 'echo behavior varies (BSD vs GNU); printf is POSIX-consistent'
     rule:
       kind: command
       pattern: echo -n $$$

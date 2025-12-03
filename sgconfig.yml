@@ -1,4 +1,1 @@
-ruleDirs:
-  - Home/.config/ast-grep/rules
-utilDirs:
-  - Home/.config/ast-grep/utils
+Home/sgconfig.yml

@@ -1,1 +1,19 @@
-:is(#pinned-tabs-container,#tabbrowser-arrowscrollbox:not([overflowing])) .tabbrowser-tab[pinned]{flex-grow:10;max-width:40px}:root[uidensity=compact] :is(#pinned-tabs-container,#tabbrowser-arrowscrollbox:not([overflowing])) .tabbrowser-tab[pinned]{max-width:32px}:is(#pinned-tabs-container,#tabbrowser-arrowscrollbox) .tab-content[pinned]{padding:0!important;justify-content:center}.tab-label-container[pinned]{display:none}scrollbox[part][orient=horizontal]{padding-inline:unset!important}
+:is(#pinned-tabs-container, #tabbrowser-arrowscrollbox:not([overflowing])) .tabbrowser-tab[pinned] {
+  flex-grow: 10;
+  max-width: 40px;
+}
+:root[uidensity='compact']
+  :is(#pinned-tabs-container, #tabbrowser-arrowscrollbox:not([overflowing]))
+  .tabbrowser-tab[pinned] {
+  max-width: 32px;
+}
+:is(#pinned-tabs-container, #tabbrowser-arrowscrollbox) .tab-content[pinned] {
+  padding: 0 !important;
+  justify-content: center;
+}
+.tab-label-container[pinned] {
+  display: none;
+}
+scrollbox[part][orient='horizontal'] {
+  padding-inline: unset !important;
+}

@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: Create a new Claude Code custom command argument-hint: [command-name] [description] allowed-tools: Write, Read, LS, Bash(mkdir:_), Bash(ls:_), WebSearch(\*)
 
@@ -43,9 +43,11 @@ Create a new Claude Code custom command with proper structure and best practices
 
 ```markdown
 ---
+
 description: Brief description of the command
 argument-hint: Expected arguments format
 allowed-tools: List of required tools
+
 ---
 
 # Command Name
@@ -71,6 +73,7 @@ Detailed description of what this command does and when to use it.
 
 - Important considerations
 - Limitations or requirements
+
 ```
 
 ## Best Practices
@@ -92,3 +95,4 @@ Create a new command named "$ARGUMENTS" following these guidelines:
 1. Create command file with proper structure
 1. Include comprehensive documentation and examples
 1. Validate command syntax and functionality
+```
