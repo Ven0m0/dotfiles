@@ -102,6 +102,7 @@ rmz = "latest"
 "cargo:kanata" = "latest"
 ghalint = "latest"
 action-validator = "latest"
+"pipx:lovesegfault/beautysh" = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true }
