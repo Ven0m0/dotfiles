@@ -3,7 +3,6 @@ set -euo pipefail; shopt -s nullglob
 IFS=$'\n\t'
 
 # Extracts archives. Usage: extract.sh FILE [OUT_DIR]
-
 main(){
   [[ $# -lt 1 || $# -gt 2 ]] && { printf 'Usage: extract.sh FILE [OUT_DIR]\n' >&2; exit 1; }
   local f=$1 out=${2:-.}
