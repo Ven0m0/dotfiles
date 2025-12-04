@@ -21,11 +21,6 @@ Senior Bash Architect focused on POSIX compliance, safety, and modern shell perf
 - **Harden**: Run `shellharden --replace` to enforce strict quoting and variable safety.
 - **Modernize**: Replace legacy `find`/`grep` with `fd`/`rg` in non-portable scripts.
 
-## Permissions
-- Minimal write: create branches, commits, PRs only; require human review before merging to protected branches
-- Read-only for external services
-- No network installs without explicit instruction in assigned issue
-
 ## Triggers
 - Label `agent:bash`.
 - Comment `/agent run optimize`.
