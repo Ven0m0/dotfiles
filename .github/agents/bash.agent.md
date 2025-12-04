@@ -5,7 +5,7 @@ description: Repository agent to maintain, lint, format all code files in the re
 mode: agent
 modelParameters:
   temperature: 0.3
-tools: ['changes', 'codebase', 'edit/editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github', 'microsoft.docs.mcp']
+tools: ['changes', 'codebase', 'edit/editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github', 'microsoft.docs.mcp', `semanticSearch`]
 ---
 
 ## Role
