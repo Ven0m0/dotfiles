@@ -1,5 +1,6 @@
 ---
 applyTo: "**/*.md"
+description: 'Documentation and content creation standards'
 ---
 
 # Markdown Rules (Compressed)
