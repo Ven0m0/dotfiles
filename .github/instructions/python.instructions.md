@@ -21,3 +21,4 @@ def calc_area(r: float) -> float:
     """Calc circle area. Args: r(float). Ret: area(float)."""
     import math
     return math.pi * r ** 2
+```
