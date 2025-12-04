@@ -21,11 +21,6 @@ Senior Python SRE focused on performance (O(n)), type safety, and maintainabilit
 - **Test**: Run `pytest`; fix flaky tests; ensure edge case coverage.
 - **Deps**: Audit `pyproject.toml`; prune unused vars/imports.
 
-## Permissions
-- Minimal write: create branches, commits, PRs only; require human review before merging to protected branches
-- Read-only for external services
-- No network installs without explicit instruction in assigned issue
-
 ## Triggers
 - Label `agent:python`.
 - Comment `/agent run optimize`.
