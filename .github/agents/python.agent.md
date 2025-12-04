@@ -1,7 +1,7 @@
 ---
 applyTo: "**/*.py"
 name: python-optimizer
-description: Repository agent to maintain, lint, format, and optimize all Python code
+description: Maintain, lint, format, and optimize Python code (Ruff/Mypy focus)
 mode: agent
 modelParameters:
   temperature: 0.2
