@@ -1,22 +1,21 @@
 #!/usr/bin/env bash
-# Media toolkit: CD burning, USB creation, transcoding, and image optimization
-
 set -euo pipefail
 IFS=$'\n\t'
 
-# ANSI colors
-BLD=$'\e[1m' BLU=$'\e[34m' CYN=$'\e[36m' RED=$'\e[31m' DEF=$'\e[0m'
+# Media toolkit: CD burning, USB creation, transcoding, and image optimization
 
-# Helper functions
+BLD=$'\e[1m' BLU=$'\e[34m' CYN=$'\e[36m' GRN=$'\e[32m' RED=$'\e[31m' DEF=$'\e[0m'
+
 has(){ command -v "$1" &>/dev/null; }
 log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
 info(){ printf '%b==>\e[0m %s\n' "${BLD}${CYN}" "$*"; }
+ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
 die(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; exit "${2:-1}"; }
 need(){ has "$1" || die "Required command not found: $1"; }
 
 usage(){
-  cat << 'EOF'
-media - Media toolkit for CD burning, USB creation, and transcoding
+  cat <<'EOF'
+media - Media toolkit for CD burning, USB creation, transcoding, and image optimization
 
 USAGE:
   media COMMAND [ARGS...]
@@ -30,6 +29,7 @@ COMMANDS:
   format      Format drive as exFAT
   ripdvd      Create ISO from DVD
   pngzip      Compress PNG files (pngquant + oxipng)
+  towebp      Convert images to WebP format
   vid1080     Transcode video to 1080p
   vid4k       Transcode video to 4K
   jpg         Convert image to optimized JPG
@@ -40,10 +40,12 @@ OPTIONS:
   -h, --help  Show this help message
 
 EXAMPLES:
-  media cd audio.toc
-  media usb ubuntu.iso /dev/sdc
+  media cd audio. toc
+  media usb ubuntu. iso /dev/sdc
   media ripdvd movie.iso
   media pngzip -g -r 72 images/
+  media towebp images/
+  media towebp -l picture.png
   media jpg wallpaper.png
   media vid1080 video.mp4
 
@@ -52,45 +54,47 @@ PNGZIP OPTIONS:
   -q          Quiet mode
   -t          Preserve timestamps
   -r DPI      Set DPI resolution
+
+TOWEBP OPTIONS:
+  -l          Lossless mode for PNGs (default)
+  -q QUALITY  Quality for JPEGs (default: 85)
+  -z LEVEL    Compression level 0-9 for lossless (default: 9)
+  -f          Force overwrite existing . webp files
 EOF
 }
 
 cmd_cd(){
-  local toc="$1"
-  need cdrdao
+  local toc=$1; need cdrdao
   [[ -f $toc ]] || die "TOC file not found: $toc"
   printf 'Burning CD from: %s\n' "$toc"
   sudo cdrdao write --eject --driver generic-mmc-raw "$toc"
-  printf '✓ CD burned successfully\n'
+  ok 'CD burned successfully'
 }
 
 cmd_usb(){
-  local iso="$1" dst="$2" size
+  local iso=$1 dst=$2 size
   for cmd in dd pv stat; do need "$cmd"; done
   [[ -f $iso ]] || die "File not found: $iso"
-  local ext="${iso##*.}"
-  ext="${ext,,}"
-  [[ $ext == iso || $ext == img ]] || die "Expected .iso or .img: $iso"
+  local ext=${iso##*.}
+  ext=${ext,,}
+  [[ $ext == iso || $ext == img ]] || die "Expected . iso or .img: $iso"
   [[ -b $dst ]] || die "Not a block device: $dst"
-  grep -q "$dst" /proc/mounts && die "Device mounted. Unmount first: $dst"
+  grep -q "$dst" /proc/mounts && die "Device mounted.  Unmount first: $dst"
   log "⚠️  WARNING: This will DESTROY all data on $dst!"
   read -rp "Continue? [y/N] " confirm
-  [[ $confirm == [yY] ]] || {
-    info "Cancelled"
-    exit 0
-  }
+  [[ $confirm == [yY] ]] || { info "Cancelled"; exit 0; }
   size=$(stat -c '%s' "$iso")
   log "Copying $iso (${size} bytes) to $dst..."
   dd if="$iso" bs=4M status=none | pv --size "$size" -pterb | sudo dd of="$dst" bs=4M status=none conv=fsync
   sync
-  log "✓ Copy completed!"
+  ok "Copy completed"
 }
 
 cmd_compress(){ tar -czf "${1%/}.tar.gz" "${1%/}"; }
 cmd_decompress(){ tar -xzf "$1"; }
 
 cmd_iso2sd(){
-  local iso="$1" dst="$2"
+  local iso=$1 dst=$2
   [[ -f $iso ]] || die "File not found: $iso"
   [[ -b $dst ]] || die "Not a block device: $dst"
   sudo dd bs=4M status=progress oflag=sync if="$iso" of="$dst"
@@ -98,26 +102,23 @@ cmd_iso2sd(){
 }
 
 cmd_format(){
-  local dev="$1" name="$2"
+  local dev=$1 name=$2
   [[ -b $dev ]] || die "Not a block device: $dev"
   log "⚠️  WARNING: Erasing all data on $dev, label '$name'"
   read -rp "Continue? [y/N] " confirm
-  [[ $confirm == [yY] ]] || {
-    info "Cancelled"
-    exit 0
-  }
+  [[ $confirm == [yY] ]] || { info "Cancelled"; exit 0; }
   sudo wipefs -a "$dev"
   sudo dd if=/dev/zero of="$dev" bs=1M count=100 status=progress
   sudo parted -s "$dev" mklabel gpt mkpart primary 1MiB 100%
-  local part="$([[ $dev == *nvme* ]] && echo "${dev}p1" || echo "${dev}1")"
+  local part=$([[ $dev == *nvme* ]] && echo "${dev}p1" || echo "${dev}1")
   sudo partprobe "$dev" || :
   sudo udevadm settle || :
-  sudo mkfs.exfat -n "$name" "$part"
+  sudo mkfs. exfat -n "$name" "$part"
   info "Drive $dev formatted as exFAT, labeled '$name'"
 }
 
 cmd_ripdvd(){
-  local iso="$1" dvd="/dev/sr0"
+  local iso=$1 dvd=/dev/sr0
   for cmd in isoinfo dd pv sha1sum; do need "$cmd"; done
   [[ -b $dvd ]] || die "DVD device not found: $dvd"
   log "Reading DVD info..."
@@ -127,9 +128,9 @@ cmd_ripdvd(){
   volume_size=$(grep -F "Volume size" <<< "$dvd_info" | awk '{print $4}')
   total_size=$((block_size * volume_size))
   log "Creating ISO: $iso (${total_size} bytes)..."
-  dd if="$dvd" bs="$block_size" count="$volume_size" 2> /dev/null \
+  dd if="$dvd" bs="$block_size" count="$volume_size" 2>/dev/null \
     | pv -pterb --size "$total_size" \
-    | dd of="$iso" bs="$block_size" 2> /dev/null
+    | dd of="$iso" bs="$block_size" 2>/dev/null
   log "Verifying checksums..."
   local orig_check copy_check
   orig_check=$(sha1sum "$dvd" | awk '{print $1}')
@@ -137,29 +138,26 @@ cmd_ripdvd(){
   info "Original: $orig_check"
   info "Copy:     $copy_check"
   [[ $orig_check == "$copy_check" ]] || die "Checksums do not match!"
-  log "✓ DVD ripped successfully!"
+  ok "DVD ripped successfully"
 }
 
 cmd_pngzip(){
   local GRAYSCALE=0 TOUCH=0 VERBOSE=1 DPI=0 OPTIND
   while getopts ":gqtr:h" o; do
     case $o in
-      g) GRAYSCALE=1 ;;
-      q) VERBOSE=0 ;;
-      t) TOUCH=1 ;;
-      r) DPI=${OPTARG//[^0-9]/} ;;
-      h)
-        usage
-        exit 0
-        ;;
-      *) die "Invalid option: -$OPTARG" ;;
+      g) GRAYSCALE=1;;
+      q) VERBOSE=0;;
+      t) TOUCH=1;;
+      r) DPI=${OPTARG//[^0-9]/};;
+      h) usage; exit 0;;
+      *) die "Invalid option: -$OPTARG";;
     esac
   done
   shift $((OPTIND - 1))
   for cmd in pngquant oxipng; do need "$cmd"; done
   ((DPI > 0)) && need pngcrush
   local targets=()
-  for x in "${@:-.}"; do
+  for x in "${@:-. }"; do
     if [[ -d $x ]]; then
       if has fd; then
         mapfile -t files < <(fd -tf -e png --strip-cwd-prefix "$x")
@@ -173,26 +171,23 @@ cmd_pngzip(){
   done
   [[ ${#targets[@]} -eq 0 ]] && die "No PNG files found"
   for f in "${targets[@]}"; do
-    [[ -f $f && -r $f && -w $f ]] || {
-      ((VERBOSE)) && printf "skip: %s\n" "$f"
-      continue
-    }
+    [[ -f $f && -r $f && -w $f ]] || { ((VERBOSE)) && printf "skip: %s\n" "$f"; continue; }
     local preserve=() grayargs=()
-    ((TOUCH)) && preserve+=("--preserve=timestamps")
+    ((TOUCH)) && preserve+=(--preserve=timestamps)
     ((GRAYSCALE)) && grayargs+=(--grayscale)
     local orig_size=$(stat -c %s "$f")
-    local tmpq="${f}.pq.$$"
-    pngquant -Q 70-95 --strip "${grayargs[@]}" --force -o "$tmpq" -- "$f" &> /dev/null || rm -f "$tmpq"
+    local tmpq=${f}. pq. $$
+    pngquant -Q 70-95 --strip "${grayargs[@]}" --force -o "$tmpq" -- "$f" &>/dev/null || rm -f "$tmpq"
     if [[ -s $tmpq && $(stat -c %s "$tmpq") -lt $orig_size ]]; then
       cp "${preserve[@]}" "$tmpq" "$f"
       ((VERBOSE)) && printf 'pngquant: %s %s → %s\n' "$f" "$orig_size" "$(stat -c %s "$f")"
     fi
     rm -f "$tmpq"
-    oxipng -o max --strip all --alpha --zopfli -P --zi 25 --fix --scale16 -- "$f" &> /dev/null || :
+    oxipng -o max --strip all --alpha --zopfli -P --zi 25 --fix --scale16 -- "$f" &>/dev/null || :
     local osize=$(stat -c %s "$f")
     if ((DPI > 0)); then
-      local tmpc="${f}.cr.$$"
-      pngcrush -brute -l 9 -res "$DPI" -s "$f" "$tmpc" &> /dev/null \
+      local tmpc=${f}. cr.$$
+      pngcrush -brute -l 9 -res "$DPI" -s "$f" "$tmpc" &>/dev/null \
         && [[ -s $tmpc && $(stat -c %s "$tmpc") -lt $osize ]] \
         && cp "${preserve[@]}" "$tmpc" "$f" \
         && ((VERBOSE)) && printf 'pngcrush: %s DPI=%s %s → %s\n' "$f" "$DPI" "$osize" "$(stat -c %s "$f")"
@@ -202,99 +197,94 @@ cmd_pngzip(){
   done
 }
 
+cmd_towebp(){
+  need cwebp
+  local lossless=true quality=85 zlevel=9 force=false OPTIND
+  while getopts ":lq:z:fh" o; do
+    case $o in
+      l) lossless=true;;
+      q) quality=${OPTARG//[^0-9]/};;
+      z) zlevel=${OPTARG//[^0-9]/};;
+      f) force=true;;
+      h) usage; exit 0;;
+      *) die "Invalid option: -$OPTARG";;
+    esac
+  done
+  shift $((OPTIND - 1))
+  local root=${1:-.}; local -a files=()
+  if has fd; then
+    if has fdfind; then FD=fdfind; else FD=fd; fi
+    mapfile -t files < <($FD -tf -E '*. webp' -e png -e jpg -e jpeg "$root")
+  else
+    mapfile -t files < <(find "$root" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) !  -iname "*.webp")
+  fi
+  [[ ${#files[@]} -eq 0 ]] && die "No images found in: $root"
+  local count=0
+  for src in "${files[@]}"; do
+    local out=${src%.*}. webp
+    if [[ -e $out && $force == false ]]; then
+      info "skip: $out (exists)"; continue
+    fi
+    local ext=${src##*.}; ext=${ext,,}
+    case $ext in
+      png) cwebp -lossless -z "$zlevel" -mt -quiet "$src" -o "$out" && ok "$src → $out" && ((count++)) || printf 'ERR: %s\n' "$src" >&2 ;;
+      jpg|jpeg) cwebp -q "$quality" -m 6 -mt -quiet "$src" -o "$out" && ok "$src → $out" && ((count++)) || printf 'ERR: %s\n' "$src" >&2 ;;
+    esac
+  done
+  log "Converted $count image(s) to WebP"
+}
+
 cmd_vid1080(){
-  local vid="$1"
-  need ffmpeg
+  local vid=$1; need ffmpeg
   ffmpeg -i "$vid" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${vid%.*}"-1080p.mp4
 }
 
 cmd_vid4k(){
-  local vid="$1"
-  need ffmpeg
+  local vid=$1; need ffmpeg
+  
   ffmpeg -i "$vid" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${vid%.*}"-optimized.mp4
 }
 
 cmd_jpg(){
-  local img="$1"
-  shift
+  local img=$1; shift
   need magick
   magick "$img" "$@" -quality 95 -strip "${img%.*}"-optimized.jpg
 }
 
 cmd_jpgsmall(){
-  local img="$1"
-  shift
+  local img=$1; shift
   need magick
   magick "$img" "$@" -resize 1080x\> -quality 95 -strip "${img%.*}"-optimized.jpg
 }
 
 cmd_png(){
-  local img="$1"
-  shift
+  local img=$1; shift
   need magick
   magick "$img" "$@" -strip -define png:compression-filter=5 \
     -define png:compression-level=9 -define png:compression-strategy=1 \
-    -define png:exclude-chunk=all "${img%.*}"-optimized.png
+    -define png:exclude-chunk=all "${img%.*}"-optimized. png
 }
 
 main(){
-  [[ ${#} -eq 0 || $1 == -h || $1 == --help ]] && {
-    usage
-    exit 0
-  }
-  local cmd="$1"
-  shift
+  [[ $# -eq 0 || $1 == -h || $1 == --help ]] && { usage; exit 0; }
+  local cmd=$1; shift
   case $cmd in
-    cd)
-      [[ ${#} -eq 1 ]] || die "Usage: media cd TOCFILE"
-      cmd_cd "$@"
-      ;;
-    usb)
-      [[ ${#} -eq 2 ]] || die "Usage: media usb ISO DEVICE"
-      cmd_usb "$@"
-      ;;
-    compress)
-      [[ ${#} -eq 1 ]] || die "Usage: media compress DIR"
-      cmd_compress "$@"
-      ;;
-    decompress)
-      [[ ${#} -eq 1 ]] || die "Usage: media decompress FILE"
-      cmd_decompress "$@"
-      ;;
-    iso2sd)
-      [[ ${#} -eq 2 ]] || die "Usage: media iso2sd ISO DEVICE"
-      cmd_iso2sd "$@"
-      ;;
-    format)
-      [[ ${#} -eq 2 ]] || die "Usage: media format DEVICE NAME"
-      cmd_format "$@"
-      ;;
-    ripdvd)
-      [[ ${#} -eq 1 ]] || die "Usage: media ripdvd OUTPUT.iso"
-      cmd_ripdvd "$@"
-      ;;
-    pngzip) cmd_pngzip "$@" ;;
-    vid1080)
-      [[ ${#} -eq 1 ]] || die "Usage: media vid1080 VIDEO"
-      cmd_vid1080 "$@"
-      ;;
-    vid4k)
-      [[ ${#} -eq 1 ]] || die "Usage: media vid4k VIDEO"
-      cmd_vid4k "$@"
-      ;;
-    jpg)
-      [[ ${#} -ge 1 ]] || die "Usage: media jpg IMAGE [MAGICK_OPTS...]"
-      cmd_jpg "$@"
-      ;;
-    jpgsmall)
-      [[ ${#} -ge 1 ]] || die "Usage: media jpgsmall IMAGE [MAGICK_OPTS...]"
-      cmd_jpgsmall "$@"
-      ;;
-    png)
-      [[ ${#} -ge 1 ]] || die "Usage: media png IMAGE [MAGICK_OPTS...]"
-      cmd_png "$@"
-      ;;
-    *) die "Unknown command: $cmd (run 'media --help')" ;;
+    cd) [[ $# -eq 1 ]] || die "Usage: media cd TOCFILE"; cmd_cd "$@";;
+    usb) [[ $# -eq 2 ]] || die "Usage: media usb ISO DEVICE"; cmd_usb "$@";;
+    compress) [[ $# -eq 1 ]] || die "Usage: media compress DIR"; cmd_compress "$@";;
+    decompress) [[ $# -eq 1 ]] || die "Usage: media decompress FILE"; cmd_decompress "$@";;
+    iso2sd) [[ $# -eq 2 ]] || die "Usage: media iso2sd ISO DEVICE"; cmd_iso2sd "$@";;
+    format) [[ $# -eq 2 ]] || die "Usage: media format DEVICE NAME"; cmd_format "$@";;
+    ripdvd) [[ $# -eq 1 ]] || die "Usage: media ripdvd OUTPUT. iso"; cmd_ripdvd "$@";;
+    pngzip) cmd_pngzip "$@";;
+    towebp) cmd_towebp "$@";;
+    vid1080) [[ $# -eq 1 ]] || die "Usage: media vid1080 VIDEO"; cmd_vid1080 "$@";;
+    vid4k) [[ $# -eq 1 ]] || die "Usage: media vid4k VIDEO"; cmd_vid4k "$@";;
+    jpg) [[ $# -ge 1 ]] || die "Usage: media jpg IMAGE [MAGICK_OPTS...]"; cmd_jpg "$@";;
+    jpgsmall) [[ $# -ge 1 ]] || die "Usage: media jpgsmall IMAGE [MAGICK_OPTS...]"; cmd_jpgsmall "$@";;
+    png) [[ $# -ge 1 ]] || die "Usage: media png IMAGE [MAGICK_OPTS...]"; cmd_png "$@";;
+    *) die "Unknown command: $cmd (run 'media --help')";;
   esac
 }
+
 main "$@"
