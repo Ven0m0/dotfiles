@@ -94,3 +94,6 @@ name = "trufflehog"
 
 [[plugin]]
 name = "yamllint"
+
+[[plugin]]
+name = "markdownlint"
