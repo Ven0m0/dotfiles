@@ -10,4 +10,13 @@ ffwrap(){
     printf 'error: neither ffzap nor ffmpeg found in PATH\n' >&2; return 1
   fi
 }
-[[ ${BASH_SOURCE[0]} != "$0" ]] || ffwrap "$@"
+jqwrap(){
+  if command -v jaq &>/dev/null; then
+    # --raw-input short: -R; --slurp: -s; --null-input: -n; all work the same in jaq, pass through
+    jaq "$@"
+  elif command -v jq &>/dev/null; then
+    jq "$@"
+  else
+    printf 'error: neither jq nor jaq found in PATH\n' >&2; return 1
+  fi
+}
