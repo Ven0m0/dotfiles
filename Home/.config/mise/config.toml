@@ -1,10 +1,9 @@
-# Mise Configuration - Optimized for Performance
-# https://mise.jdx.dev/configuration.html
+# Mise Configuration | https://mise.jdx.dev/configuration.html
 [settings]
 experimental = true
 color = true
 yes = true
-quiet = true
+#quiet = true
 auto_install = true
 jobs = 12
 lockfile = true
@@ -13,7 +12,6 @@ paranoid = false
 raw = false
 gix = true
 go_skip_checksum = true
-system_config_file = "~/.config/mise/config.toml"
 cache_prune_age = "7d"
 http_timeout = "30s"
 trusted_config_paths = ['~']
@@ -22,20 +20,18 @@ disable_default_shorthands = false
 # configure messages displayed when entering directories with config files
 status = { missing_tools = "if_other_versions_installed", show_env = false, show_tools = false }
 
-[settings.task]
-monorepo_depth = 3
-
 [settings.python]
-precompiled_os = "x86_64_v3"
-precompiled_flavor = "pgo+lto"                   # https://gregoryszorc.com/docs/python-build-standalone/main/running.html
 uv_venv_auto = true
-uv_venv_create_args = ["--system-site-packages"]
-
-[settings.pipx]
-uvx = true
+uv_venv_create_args = ["--system-site-packages", "--seed"]
+# https://gregoryszorc.com/docs/python-build-standalone/main/running.html
+precompiled_os = "x86_64_v3"
+precompiled_flavor = "pgo+lto"
 
 [settings.cargo]
 binstall = true
+
+[settings.pipx]
+uvx = true
 
 [settings.npm]
 bun = true
@@ -45,6 +41,9 @@ baked_registry = true
 
 [settings.ruby]
 ruby_build_opts = "--enable-shared"
+
+[settings.task]
+monorepo_depth = 3
 
 # Tools Configuration
 [tools]
@@ -105,7 +104,7 @@ ghalint = "latest"
 action-validator = "latest"
 
 [env]
-_.python.venv = { path = ".venv" }
+_.python.venv = { path = ".venv", create = true }
 _.java.GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
 UV_LINK_MODE = "hardlink"
 UV_COMPILE_BYTECODE = "1"
