@@ -1,5 +1,5 @@
 #================================ [Lazy Load] =================================
-lazy_fn() {
+lazy_fn(){
   local fn_name="$1" src_file="$2"
   # Redefine function: unset self, source file, execute function
   eval "$fn_name(){
@@ -9,7 +9,7 @@ lazy_fn() {
   }"
 }
 
-lazy_build_cache() {
+lazy_build_cache(){
   local dir="$1" cache_file="$2"
   # Use fd/rg for fast parsing, fallback to grep if needed
   if command -v fd >/dev/null && command -v rg >/dev/null; then
@@ -23,7 +23,7 @@ lazy_build_cache() {
   fi
 }
 
-lazy_init() {
+lazy_init(){
   local dir="$1" cache_file="$BASH_CACHE_DIR/fn_cache.tsv"
   local rebuild=0
 

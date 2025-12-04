@@ -30,11 +30,11 @@ TOTAL_ERRORS=0
 BLD=$'\e[1m' BLU=$'\e[34m' GRN=$'\e[32m' YLW=$'\e[33m' RED=$'\e[31m' DEF=$'\e[0m'
 
 # Logging functions
-has() { command -v "$1" &>/dev/null; }
-log() { printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
-ok() { printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
-warn() { printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
-err() { printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; }
+has(){ command -v "$1" &>/dev/null; }
+log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
+ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
+warn(){ printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
+err(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; }
 
 check_deps(){
   local missing=() optional=()

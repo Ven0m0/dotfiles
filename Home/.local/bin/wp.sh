@@ -15,7 +15,7 @@
 # dependencies: fzf, swaybg (wayland), fehbg (x11), libnotify (optional)
 
 set -euo pipefail
-has() { command -v "$1" &>/dev/null; }
+has(){ command -v "$1" &>/dev/null; }
 
 # exit 0 - successful execution
 # exit 1 - no selection

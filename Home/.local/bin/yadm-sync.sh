@@ -9,16 +9,16 @@ IFS=$'\n\t'
 BLD=$'\e[1m' DEF=$'\e[0m' BLU=$'\e[34m' CYN=$'\e[36m' GRN=$'\e[32m' YLW=$'\e[33m' RED=$'\e[31m'
 
 # Logging functions
-ok() { printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
-err() { printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; }
-warn() { printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
-info() { printf '%b==>\e[0m %s\n' "${BLD}${CYN}" "$*"; }
-die() { err "$@"; exit "${2:-1}"; }
-has() { command -v "$1" &>/dev/null; }
+ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
+err(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; }
+warn(){ printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
+info(){ printf '%b==>\e[0m %s\n' "${BLD}${CYN}" "$*"; }
+die(){ err "$@"; exit "${2:-1}"; }
+has(){ command -v "$1" &>/dev/null; }
 
 # Alias for script compatibility
-success() { ok "$@"; }
-error() { err "$@"; }
+success(){ ok "$@"; }
+error(){ err "$@"; }
 
 # Determine repository directory
 get_repo_dir(){

@@ -14,7 +14,7 @@ if has zellij; then
 fi
 
 if has yazi; then
-  y() {
+  y(){
     local cwd tmp_file="$(mktemp -t "yazi-cwd.XXXXXX")"
     yazi "$@" --cwd-file="$tmp_file"
     if IFS= read -r -d '' cwd <"$tmp_file" && [[ -n $cwd && $cwd != "$PWD" ]]; then

@@ -8,11 +8,11 @@ IFS=$'\n\t'
 BLD=$'\e[1m' GRN=$'\e[32m' BLU=$'\e[34m' RED=$'\e[31m' DEF=$'\e[0m'
 
 # Helper functions
-has() { command -v "$1" &>/dev/null; }
-log() { printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
-ok() { printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
-die() { printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; exit "${2:-1}"; }
-need() { has "$1" || die "Required command not found: $1"; }
+has(){ command -v "$1" &>/dev/null; }
+log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
+ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
+die(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; exit "${2:-1}"; }
+need(){ has "$1" || die "Required command not found: $1"; }
 
 need perl
 

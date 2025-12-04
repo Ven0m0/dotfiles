@@ -5,9 +5,9 @@
 set -euo pipefail
 
 # Helper functions
-has() { command -v "$1" &>/dev/null; }
-die() { printf 'ERROR: %s\n' "$*" >&2; exit "${2:-1}"; }
-need() { has "$1" || die "Required command not found: $1"; }
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf 'ERROR: %s\n' "$*" >&2; exit "${2:-1}"; }
+need(){ has "$1" || die "Required command not found: $1"; }
 
 # Tool detection (jq fallback chain: jaq → jq)
 if has jaq; then JQ=jaq; elif has jq; then JQ=jq; else JQ=''; fi

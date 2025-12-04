@@ -350,22 +350,22 @@ _pkgui_news(){
 '
   local awk_script
   read -r -d '' awk_script << 'AWK'
-function pad2(n) {
+function pad2(n){
     return (n < 10 ? "0" n : n)
 }
 /<article>/ {
     in_article = 1; title = ""; date = ""
 }
 in_article {
-    if ($0 ~ /<header>/) { in_header = 1 }
-    if (in_header) {
-        if (match($0, /<header><a[^>]*>([^<]+)<\/a>/, t)) {
+    if ($0 ~ /<header>/){ in_header = 1 }
+    if (in_header){
+        if (match($0, /<header><a[^>]*>([^<]+)<\/a>/, t)){
             title = t[1]
         }
-        if ($0 ~ /<\/header>/) { in_header = 0 }
+        if ($0 ~ /<\/header>/){ in_header = 0 }
     }
-    if ($0 ~ /<div class="details">/) {
-        if (match($0, /([0-9]+) ([A-Za-z]+) ([0-9]+)/, d)) {
+    if ($0 ~ /<div class="details">/){
+        if (match($0, /([0-9]+) ([A-Za-z]+) ([0-9]+)/, d)){
             day = pad2(d[1]); month = d[2]; year = d[3];
             split("01 02 03 04 05 06 07 08 09 10 11 12",m_n);
             split("January February March April May June July August September October November December",m_s);

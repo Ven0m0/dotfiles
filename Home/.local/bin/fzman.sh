@@ -10,8 +10,8 @@ export LC_ALL=C LANG=C
 IFS=$'\n\t'
 
 # Helper functions
-has() { command -v "$1" &>/dev/null; }
-die() { printf 'ERROR: %s\n' "$*" >&2; exit "${2:-1}"; }
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf 'ERROR: %s\n' "$*" >&2; exit "${2:-1}"; }
 
 # Tool detection (fuzzy finder: sk → fzf)
 if has sk; then FZF=sk; elif has fzf; then FZF=fzf; else FZF=''; fi
