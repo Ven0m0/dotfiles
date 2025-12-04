@@ -3,7 +3,7 @@ status -i >/dev/null 2>&1 || return
 test -r /usr/share/cachyos-fish-config/cachyos-config.fish >/dev/null 2>&1 && source /usr/share/cachyos-fish-config/cachyos-config.fish >/dev/null 2>&1
 
 function init_tool
-    type -qf $argv[1] || return
+    type -q $argv[1] || return
     type -q _evalcache && _evalcache "$argv[2]" >/dev/null 2>&1 || eval "$argv[2]" >/dev/null 2>&1
 end
 
@@ -24,5 +24,6 @@ init_tool zellij "zellij setup --generate-auto-start fish | string collect"
 init_tool intelli-shell "intelli-shell init fish"
 init_tool cod "cod init $fish_pid fish"
 
-# Deduplicate PATH
-set -gx PATH (printf "%s\n" $PATH | awk '!seen[$0]++')
+if status is-login
+    set -gx PATH (printf "%s\n" $PATH | awk '!seen[$0]++')
+end
