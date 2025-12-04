@@ -45,7 +45,8 @@ for f in "${FINDER:-sk fzf}"; do _pkgui_has "$f" && FND="$f" && break; done
 # FZF theme
 FZF_THEME="${FZF_THEME:-hl:italic:#FFFF00,hl+:bold:underline:#FF0000,fg:#98A0C5,fg+:bold:#FFFFFF,bg:#13172A,bg+:#0F1222,border:#75A2F7,label:bold:#75A2F7,preview-fg:#C0CAF5,preview-bg:#0F1222,marker:#00FF00,pointer:#FF0000,query:#FF0000,info:italic:#98A0C5}"
 # Cache
-declare -A _CI _CQ _CL _CLO
+declare -A _CI _CQ _CL _CLO _CUPD
+_CUPD_TIME=0
 _pkgui_ver(){ printf '%b%s%b v4.2.0 - Unified pacman/AUR TUI
 ' "$BD" "${0##*/}" "$D"; }
 _pkgui_help(){
@@ -271,11 +272,23 @@ _pkgui_rm(){
   if [[ $PAC == pacman ]]; then sudo pacman -Rns --nosave "${p[@]}"; else "$PAC" -Rns --nosave "${p[@]}"; fi
 }
 _pkgui_upd_check(){
-  _pkgui_msg "Checking updates..."
-  local pac aur=0 flat=0
-  pac=$(checkupdates 2> /dev/null | wc -l)
-  if [[ $PAC != pacman ]]; then aur=$("$PAC" -Qua 2> /dev/null | wc -l); fi
-  if _pkgui_has flatpak; then flat=$(flatpak remote-ls --updates 2> /dev/null | wc -l); fi
+  local now pac aur=0 flat=0
+  now=$(printf '%(%s)T' -1)
+  # Cache update checks for 300 seconds (5 minutes)
+  if (( now - _CUPD_TIME < 300 )) && [[ -n ${_CUPD[pac]:-} ]]; then
+    pac=${_CUPD[pac]}
+    aur=${_CUPD[aur]:-0}
+    flat=${_CUPD[flat]:-0}
+  else
+    _pkgui_msg "Checking updates..."
+    pac=$(checkupdates 2>/dev/null | wc -l)
+    if [[ $PAC != pacman ]]; then aur=$("$PAC" -Qua 2>/dev/null | wc -l); fi
+    if _pkgui_has flatpak; then flat=$(flatpak remote-ls --updates 2>/dev/null | wc -l); fi
+    _CUPD[pac]=$pac
+    _CUPD[aur]=$aur
+    _CUPD[flat]=$flat
+    _CUPD_TIME=$now
+  fi
   printf '
 %bUpdate Summary:%b
 ' "$BD" "$D"

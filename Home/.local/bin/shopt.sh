@@ -8,7 +8,7 @@ export LC_ALL=C LANG=C
 # Supports single files, directories, stdout output, and multi-variant compilation
 #──────────── Colors ────────────
 RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' DEF=$'\e[0m'
-has(){ command -v "$1" &> dev/null; }
+has(){ command -v "$1" &>/dev/null; }
 die(){ printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2; exit 1; }
 log(){ printf '%b%s%b\n' "$GRN" "$*" "$DEF"; }
 warn(){ printf '%b%s%b\n' "$YLW" "$*" "$DEF"; }

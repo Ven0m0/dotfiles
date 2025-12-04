@@ -111,29 +111,27 @@ usb_cmd(){
     esac
   done
   have lsblk || die lsblk
-  mapfile -t lines < <(lsblk -pn -o NAME,UUID,FSTYPE,LABEL,MOUNTPOINT | grep -E "^/dev/sd[$start-z][0-9]" || :)
+  local -a names uuids fss labels mpts lines
+  # Use awk for efficient field extraction from lsblk output
+  mapfile -t lines < <(lsblk -pn -o NAME,UUID,FSTYPE,LABEL,MOUNTPOINT | awk -v s="$start" '
+    /^\/dev\/sd[a-z][0-9]/ {
+      # Extract device letter and check if >= start
+      dev = substr($1, 9, 1)
+      if (dev >= s) {
+        # Print all fields separated by tab
+        name = $1; uuid = $2; fs = $3; label = $4; mp = $5
+        printf "%s\t%s\t%s\t%s\t%s\n", name, (uuid ? uuid : ""), (fs ? fs : ""), (label ? label : ""), (mp ? mp : "")
+      }
+    }
+  ')
   ((${#lines[@]})) || {
     log "no new device"
     return 0
   }
   log "Mount/Umount tool"
   local i=0
-  local -a names uuids fss labels mpts
   for line in "${lines[@]}"; do
-    local name uuid fs label mp rest
-    name="${line%% *}"
-    rest="${line#* }"
-    uuid="${rest%% *}"
-    rest="${rest#* }"
-    fs="${rest%% *}"
-    rest="${rest#* }"
-    label="${rest%% *}"
-    mp="${rest#* }"
-    names[i]="$name"
-    uuids[i]="$uuid"
-    fss[i]="$fs"
-    labels[i]="$label"
-    mpts[i]="$mp"
+    IFS=$'\t' read -r names[i] uuids[i] fss[i] labels[i] mpts[i] <<< "$line"
     printf ' %2d) %s %s [%s]%s\n' "$((i + 1))" "${uuids[i]:-—}" "${fss[i]:-—}" "${labels[i]:-—}" \
       "$([[ -n ${mpts[i]} ]] && printf ' -> %s' "${mpts[i]}")"
     ((i++))

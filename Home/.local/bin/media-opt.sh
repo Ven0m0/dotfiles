@@ -14,7 +14,17 @@ export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' X=$'\e[0m'
 log(){ printf "${B}[%(%H:%M:%S)T]${X} %s\n" -1 "$*"; }
 err(){ printf "${R}[ERR]${X} %s\n" "$*" >&2; }
-has(){ command -v "$1" &> /dev/null; }
+has(){ command -v "$1" &>/dev/null; }
+
+# Tool availability cache (set once, used everywhere)
+declare -A TOOL_CACHE
+cache_tools(){
+  local tools=(rimage image-optimizer jpegoptim oxipng cwebp svgcleaner scour minify svgo gifsicle ffzap ffmpeg)
+  for t in "${tools[@]}"; do
+    has "$t" && TOOL_CACHE[$t]=1 || TOOL_CACHE[$t]=0
+  done
+}
+has_cached(){ [[ ${TOOL_CACHE[$1]:-0} -eq 1 ]]; }
 usage(){
   cat << EOF
 Usage: $(basename "$0") [OPTIONS] [PATH...]
@@ -152,25 +162,25 @@ opt_img(){
   local f="$1" out="$2" ext l_ext
   ext="${f##*.}"
   l_ext="${ext,,}"
-  if has rimage; then
+  if has_cached rimage; then
     tool="rimage"
     cp "$f" "$out"
     [[ $LOSSLESS -eq 1 ]] && cmd=(rimage "$out" -q 100) || cmd=(rimage "$out" -q "$QUALITY")
-  elif has image-optimizer && [[ $l_ext =~ ^(jpg|jpeg|png|webp)$ ]]; then
+  elif has_cached image-optimizer && [[ $l_ext =~ ^(jpg|jpeg|png|webp)$ ]]; then
     tool="image-optimizer"
     cmd=(image-optimizer "$f" "$out")
   else
     case "$l_ext" in
-      jpg | jpeg | mjpg) has jpegoptim && {
+      jpg | jpeg | mjpg) has_cached jpegoptim && {
         tool="jpegoptim"
         cmd=(jpegoptim --strip-all --all-progressive --stdout "$f")
         [[ $LOSSLESS -eq 0 ]] && cmd+=(-m"$QUALITY")
       } ;;
-      png) has oxipng && {
+      png) has_cached oxipng && {
         tool="oxipng"
         cmd=(oxipng -o 4 --strip safe -i 0 --out - "$f")
       } ;;
-      webp) has cwebp && {
+      webp) has_cached cwebp && {
         tool="cwebp"
         cmd=(cwebp -mt -quiet "$f" -o -)
         [[ $LOSSLESS -eq 1 ]] && cmd+=(-lossless -z 9) || cmd+=(-q "$QUALITY" -m 6)
@@ -181,19 +191,19 @@ opt_img(){
 
 opt_svg(){
   local f="$1" out="$2"
-  if has image-optimizer; then
+  if has_cached image-optimizer; then
     tool="image-optimizer"
     cmd=(image-optimizer "$f" "$out")
-  elif has svgcleaner; then
+  elif has_cached svgcleaner; then
     tool="svgcleaner"
     cmd=(svgcleaner "$f" "$out")
-  elif has scour; then
+  elif has_cached scour; then
     tool="scour"
     cmd=(scour -i "$f" -o "$out" --enable-viewboxing --enable-id-stripping --shorten-ids --indent=none)
-  elif has minify; then
+  elif has_cached minify; then
     tool="minify"
     cmd=(minify -o "$out" "$f")
-  elif has svgo; then
+  elif has_cached svgo; then
     tool="svgo"
     cmd=(svgo -i "$f" -o - --multipass)
   fi
@@ -203,10 +213,10 @@ opt_vid(){
   local f="$1" out="$2"
   local a_args=(-c:a "$AUDIO_CODEC" -b:a "$AUDIO_BR")
   [[ $AUDIO_CODEC == "copy" ]] && a_args=(-c:a copy)
-  if has ffzap; then
+  if has_cached ffzap; then
     tool="ffzap"
     cmd=(ffzap -i "$f" -o "$out")
-  elif has ffmpeg; then
+  elif has_cached ffmpeg; then
     tool="ffmpeg"
     local v_args=()
     case "$VIDEO_CODEC" in
@@ -230,7 +240,7 @@ optimize_file(){
   case "${ext,,}" in
     jpg | jpeg | mjpg | png | webp | avif | jxl | bmp) opt_img "$f" "$tmp" ;;
     svg) opt_svg "$f" "$tmp" ;;
-    gif) has gifsicle && {
+    gif) has_cached gifsicle && {
       tool="gifsicle"
       cmd=(gifsicle "$f")
       [[ $LOSSLESS -eq 1 ]] && cmd+=(-O3 --no-comments --no-names --no-extensions --careful) || cmd+=(-O3 --lossy=80)
@@ -276,8 +286,8 @@ optimize_file(){
     [[ -f $tmp ]] && rm -f "$tmp"
   fi
 }
-export -f optimize_file opt_img opt_svg opt_vid has err log
-export JOBS QUALITY LOSSLESS VIDEO_CODEC VIDEO_CRF AUDIO_CODEC AUDIO_BR DRY_RUN BACKUP BACKUP_DIR KEEP_MTIME B G Y R X
+export -f optimize_file opt_img opt_svg opt_vid has has_cached err log
+export JOBS QUALITY LOSSLESS VIDEO_CODEC VIDEO_CRF AUDIO_CODEC AUDIO_BR DRY_RUN BACKUP BACKUP_DIR KEEP_MTIME B G Y R X TOOL_CACHE
 
 # ==============================================================================
 # MAIN
@@ -343,6 +353,7 @@ main(){
     log "Backups enabled: $BACKUP_DIR"
   fi
 
+  cache_tools
   log "Starting optimization ($JOBS jobs, Video Codec: $VIDEO_CODEC)..."
 
   local -a find_cmd
