@@ -2,7 +2,7 @@
 applyTo: "**/*.rs"
 ---
 
-# Rust Conventions (Compressed)
+# Rust Conventions
 
 ## General
 - **Std**: Idiomatic Rust; strict typing; memory safe.
