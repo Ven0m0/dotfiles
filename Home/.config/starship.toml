@@ -12,7 +12,6 @@ $sudo\
 $status\
 $character
 """
-
 right_format = "${custom.mommy}"
 
 scan_timeout = 30
@@ -157,7 +156,6 @@ style = "bold yellow"
 disabled = false
 style = "red"
 command = "mommy -1 -s $status"
-when = "true >/dev/null 2>&1"
 
 # Git repo name
 [custom.git_repo]
