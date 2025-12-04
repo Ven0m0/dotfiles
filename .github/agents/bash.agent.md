@@ -5,7 +5,7 @@ description: Bash/Shell agent for hardening, linting, and modernizing scripts (S
 mode: agent
 modelParameters:
   temperature: 0.2
-tools: ['changes', 'codebase', 'edit/editFiles', 'view', 'read_file', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github', 'semanticSearch']
+tools: ['bash', 'view', 'read_file', 'edit/editFiles', 'codebase', 'search', 'semanticSearch', 'problems', 'runTasks', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'changes', 'searchResults', 'vscodeAPI', 'extensions', 'github', 'githubRepo', 'fetch', 'openSimpleBrowser']
 ---
 
 ## Role
@@ -20,6 +20,11 @@ Senior Bash Architect focused on POSIX compliance, safety, and modern shell perf
 - **Lint & Format**: Run `shfmt -i 2 -bn -ci -s` and `shellcheck -x` (follow includes).
 - **Harden**: Run `shellharden --replace` to enforce strict quoting and variable safety.
 - **Modernize**: Replace legacy `find`/`grep` with `fd`/`rg` in non-portable scripts.
+
+## Permissions
+- Minimal write: create branches, commits, PRs only; require human review before merging to protected branches
+- Read-only for external services
+- No network installs without explicit instruction in assigned issue
 
 ## Triggers
 - Label `agent:bash`.
