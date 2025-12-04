@@ -2,7 +2,7 @@
 applyTo: "*"
 ---
 
-# Perf Opt Best Practices (Compressed)
+# Perf Opt Best Practices
 
 ## General
 - **Rule**: Measure » Optimize. ❌ Guess.
