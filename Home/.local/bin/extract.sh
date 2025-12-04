@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob
+#!/bin/bash
+set -euo pipefail; shopt -s nullglob
 IFS=$'\n\t'
 
 # Extracts archives. Usage: extract.sh FILE [OUT_DIR]
