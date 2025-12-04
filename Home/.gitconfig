@@ -15,7 +15,6 @@
 	deltaBaseCacheLimit = 1g
 	untrackedCache = true
 	symlinks = true
-	sparseCheckout = true
   commitGraph = true
   preloadindex = true
   abbrev = 12
@@ -53,21 +52,17 @@
 	prune = true
 	pruneTags = true
 	parallel = 0
-	fsckobjects = true
 	recurseSubmodules = on-demand
 	negotiationAlgorithm = skipping
 [pack]
 	threads = 0
-  compressThreads = 0
+  compression = 6
   useSparse = true
-	allowPackReuse = true
-  reuseObjects = true
-	useBitmaps = true
+  useBitmaps = true
 	writeBitmapHashCache = true
 	deltaCacheSize = 512m
-  packSizeLimit = 0
-  window = 256
-	compression = 6
+  window = 128
+  depth = 256
 [rebase]
 	autoSquash = true
 	autoStash = true
@@ -79,9 +74,7 @@
 	packRefs = true
 	aggressive = true
   writeCommitGraph = true
-  pruneExpire = now
-  aggressiveDepth = 50
-  aggressiveWindow = 512
+  pruneExpire = 2.weeks.ago
 [index]
 	threads = 0
 	version = 4
@@ -93,45 +86,34 @@
 [rerere]
 	enabled = true
 	autoupdate = true
-[receive]
-  fsckObjects = false
 [http]
 	version = HTTP/2
 	postBuffer = 104857600
 	followRedirects = true
   maxRequests = 10
-[transfer]
-	fsckObjects = false
-  unpackLimit = 0
 [help]
-	autoCorrect = 1
+	autoCorrect = prompt
 [delta]
-	hyperlinks = true
-	features = decorations
+  navigate = true
+  side-by-side = true
 	line-numbers = true
-	navigate = true
+  hyperlinks = true
 	hunk-header-style = omit
 [diff]
 	tool = vscode
 	algorithm = histogram
-	renames = true
 	colorMoved = dimmed_zebra
+  colorMovedWS = allow-indentation-change
+  context = 5
 	external = difft
 [difftool]
 	prompt = false
 [difftool "vscode"]
 	cmd = code --wait --diff $LOCAL $REMOTE
-[delta]
-  navigate = true
-  line-numbers = true
-  side-by-side = false
-  syntax-theme = none
-  hyperlinks = true
 [merge]
 	conflictStyle = zdiff3
 	tool = vscode
   stat = true
-  renameLimit = 999999
 [mergetool]
 	prompt = false
 	keepBackup = false
@@ -158,10 +140,10 @@
 	helper = gh auth git-credential
 [filter "lfs"]
 	process = git-lfs filter-process
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
 [tag]
 	sort = version:refname
-[include]
-	path = ~/.gitconfig.local
 [protocol]
   version = 2
 [protocol "file"]
@@ -184,3 +166,5 @@
   enabled = true
 [maintenance "worktree-prune"]
   enabled = true
+[include]
+	path = ~/.gitconfig.local
