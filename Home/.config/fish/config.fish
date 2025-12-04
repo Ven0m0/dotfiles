@@ -25,10 +25,4 @@ init_tool intelli-shell "intelli-shell init fish"
 init_tool cod "cod init $fish_pid fish"
 
 # Deduplicate PATH
-set -l unique_path
-for path_entry in $PATH
-    if not contains $path_entry $unique_path
-        set -a unique_path $path_entry
-    end
-end
-set -gx PATH $unique_path
+set -gx PATH (printf "%s\n" $PATH | awk '!seen[$0]++')
