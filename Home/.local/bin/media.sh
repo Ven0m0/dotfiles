@@ -3,16 +3,13 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # Media toolkit: CD burning, USB creation, transcoding, and image optimization
-
 BLD=$'\e[1m' BLU=$'\e[34m' CYN=$'\e[36m' GRN=$'\e[32m' RED=$'\e[31m' DEF=$'\e[0m'
-
 has(){ command -v "$1" &>/dev/null; }
 log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
 info(){ printf '%b==>\e[0m %s\n' "${BLD}${CYN}" "$*"; }
 ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
 die(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; exit "${2:-1}"; }
 need(){ has "$1" || die "Required command not found: $1"; }
-
 usage(){
   cat <<'EOF'
 media - Media toolkit for CD burning, USB creation, transcoding, and image optimization
