@@ -2,57 +2,48 @@
 # ============================================================================
 # Zsh Configuration - Optimized with Zimfw
 # ============================================================================
-
 # Exit if non-interactive
 [[ $- != *i* ]] && return
 
 # ---[ Helper Functions ]---
-has() { command -v -- "$1" &>/dev/null; }
-ifsource() { [[ -f $1 ]] && source "$1"; }
+has(){ command -v -- "$1" &>/dev/null; }
+ifsource(){ [[ -f $1 ]] && source "$1"; }
 
 # ---[ Instant Prompt (P10k) ]---
 ifsource "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 
 # ---[ XDG Base Directories ]---
-export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
-export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
-export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
-export ZDOTDIR=${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export ZDOTDIR="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}"
 
 # ---[ Zimfw Initialization ]---
-ZIM_HOME=${XDG_DATA_HOME}/zim
+ZIM_HOME="${XDG_DATA_HOME}/zim"
 
 # Download zimfw if missing
 if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
-  mkdir -p "${ZIM_HOME}" && command git clone --depth=1 https://github.com/zimfw/zimfw.git "${ZIM_HOME}"
+  mkdir -p "${ZIM_HOME}" && LC_ALL=C git clone --depth=1 --filter=blob:none https://github.com/zimfw/zimfw.git "${ZIM_HOME}"
 fi
 
 # Install plugins if missing
-if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
-  source "${ZIM_HOME}/zimfw.zsh" init -q
-fi
-
+[[ ! ${ZIM_HOME}/init.zsh -nt ${ZDOTDIR:-${HOME}}/.zimrc ]] && source "${ZIM_HOME}/zimfw.zsh" init -q
 # Initialize modules
 source "${ZIM_HOME}/init.zsh"
 
 # ---[ Zsh Options ]---
 # Globbing
 setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS NO_GLOBAL_RCS
-
 # Directory Navigation
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT PUSHD_TO_HOME
-
 # History
 setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS INC_APPEND_HISTORY
 setopt EXTENDED_HISTORY HIST_REDUCE_BLANKS HIST_SAVE_NO_DUPS
 setopt SHARE_HISTORY HIST_EXPIRE_DUPS_FIRST
-
 # Completion
 setopt COMPLETE_IN_WORD ALWAYS_TO_END AUTO_LIST AUTO_MENU LIST_PACKED
-
 # Other
 setopt NO_BEEP NO_HIST_BEEP NO_CLOBBER NOTIFY
-
 # Unset problematic options
 unsetopt MENU_COMPLETE FLOW_CONTROL
 
@@ -70,9 +61,8 @@ export HISTSIZE=50000 SAVEHIST=50000
 # ---[ Path Configuration ]---
 typeset -gU path fpath
 path=(
-  $HOME/.local/bin
-  $HOME/bin
-  $HOME/.cargo/bin
+  ${HOME}/.local/bin
+  ${HOME}/.cargo/bin
   /usr/local/bin
   /usr/local/sbin
   /usr/bin
@@ -98,18 +88,46 @@ bindkey '^[[B' history-substring-search-down
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
-# ---[ Tool Initialization ]---
-# Zoxide (smart cd)
-if has zoxide; then
-  eval "$(zoxide init zsh)"
-  alias cd=z
+# ---[ Tool Initialization - Optimized ]---
+# Check for zsh-defer availability
+if has zsh-defer; then
+  # Defer expensive initializations for faster startup
+  # Zoxide (smart cd) - deferred
+  has zoxide && zsh-defer -c 'eval "$(zoxide init --cmd cd zsh)"'
+  # Mise (version manager) - deferred
+  has mise && zsh-defer -c 'eval "$(mise activate zsh)"'
+  # FZF (fuzzy finder) - deferred
+  has fzf && zsh-defer -c 'eval "$(fzf --zsh)"'
+  # Mommy prompt - deferred (optional fun)
+  if has mommy; then
+    zsh-defer -c '
+      export MOMMY_COLOR="" MOMMY_PREFIX="%F{005}/%F{006}" MOMMY_SUFFIX="~%f" MOMMY_COMPLIMENTS_ENABLED=0
+      setopt PROMPT_SUBST
+      RPS1='\''$(mommy -1 -s $?)'\''
+    '
+  fi
+else
+  # Fallback without zsh-defer
+  if has zoxide; then
+    eval "$(zoxide init --cmd cd zsh)"
+  fi
+  has mise && eval "$(mise activate zsh)"
+  has fzf && eval "$(fzf --zsh)"
+  if has mommy; then
+    export MOMMY_COLOR="" MOMMY_PREFIX="%F{005}/%F{006}" MOMMY_SUFFIX="~%f"
+    export MOMMY_COMPLIMENTS_ENABLED=0
+    setopt PROMPT_SUBST
+    RPS1='$(mommy -1 -s $?)'
+  fi
 fi
 
-# Mise (version manager)
-has mise && eval "$(mise activate zsh)"
-
-# FZF (fuzzy finder)
-has fzf && eval "$(fzf --zsh)"
+# ---[ Lazy-loaded Commands ]---
+# Use lazyload for rarely-used or expensive commands
+if has lazyload; then
+  # Example: lazy-load docker commands
+  has docker && lazyload docker -- 'source <(docker completion zsh)'
+  has docker-compose && lazyload docker-compose -- 'source <(docker-compose completion zsh)'
+fi
 
 # ---[ Aliases ]---
 # Modern replacements
@@ -134,31 +152,20 @@ alias -g .....='../../../..'
 
 # ---[ Functions ]---
 # Make directory and cd into it
-mkcd() {
-  mkdir -p "$1" && cd "$1"
-}
+mkcd(){ mkdir -p "$1" && cd "$1"; }
 
 # Quick edit zsh config
-zshrc() {
-  ${EDITOR:-nano} "${ZDOTDIR:-$HOME}/.zshrc" && source "${ZDOTDIR:-$HOME}/.zshrc"
-}
+zshrc(){ ${EDITOR:-nano} "${ZDOTDIR:-$HOME}/.zshrc" && source "${ZDOTDIR:-$HOME}/.zshrc"; }
 
 # Reload zsh configuration
-reload() {
-  source "${ZDOTDIR:-$HOME}/.zshrc"
-}
+reload(){ source "${ZDOTDIR:-$HOME}/.zshrc"; }
+
+# Update zimfw and plugins
+zimupdate(){ zimfw update && zimfw upgrade; }
 
 # ---[ Keybindings ]---
 bindkey -e  # Emacs mode
 bindkey '^[[Z' reverse-menu-complete  # Shift+Tab
-
-# ---[ Mommy (optional fun) ]---
-if has mommy; then
-  export MOMMY_COLOR="" MOMMY_PREFIX="%F{005}/%F{006}" MOMMY_SUFFIX="~%f"
-  export MOMMY_COMPLIMENTS_ENABLED=0
-  setopt PROMPT_SUBST
-  RPS1='$(mommy -1 -s $?)'
-fi
 
 # ---[ Theme (Powerlevel10k) ]---
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
