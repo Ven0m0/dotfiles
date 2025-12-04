@@ -53,6 +53,6 @@ agents:
 
 chat_modes:
   quick-fix: "Min changes to fix immediate issue. No refactor. Test first."
-  refactor:  "Improve structure/names/logic. No behavior Δ. Explain trade-offs."
-  feature:   "Plan → Impl → Test → Doc. Minimize deps."
-  debug:     "Reproduce → Isolate → Fix → Reg-Test. Explain root cause."
+  refactor: "Improve structure/names/logic. No behavior Δ. Explain trade-offs."
+  feature: "Plan → Impl → Test → Doc. Minimize deps."
+  debug: "Reproduce → Isolate → Fix → Reg-Test. Explain root cause."
