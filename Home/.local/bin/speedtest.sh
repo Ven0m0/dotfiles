@@ -40,7 +40,7 @@ for srv in "${SERVERS[@]}"; do
   # use small HEAD/GET; follow redirects; short timeout
   sum=0
   ok=0
-  for i in $(seq 1 $PROBES); do
+  for i in "$(seq 1 "$PROBES")"; do
     t=$("$CURL" -s -o /dev/null -w '%{time_connect}' -L --max-time 6 "$srv" 2>/dev/null) || t=9999
     # ensure numeric
     case $t in ''|*[!0-9.]* ) t=9999 ;; esac

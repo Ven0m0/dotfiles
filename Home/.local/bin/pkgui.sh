@@ -38,9 +38,9 @@ _pkgui_msg(){ printf '%b%s%b
 _pkgui_warn(){ printf '%b[WARN]%b %s
 ' "$Y" "$D" "$*" >&2; }
 # Detect pkg mgr & fuzzy finder
-for p in ${PARUZ:-paru pacman}; do _pkgui_has "$p" && PAC="$p" && break; done
+for p in "${PARUZ:-paru pacman}"; do _pkgui_has "$p" && PAC="$p" && break; done
 [[ -z ${PAC:-} ]] && _pkgui_die "No pkg mgr (pacman/paru)"
-for f in ${FINDER:-sk fzf}; do _pkgui_has "$f" && FND="$f" && break; done
+for f in "${FINDER:-sk fzf}"; do _pkgui_has "$f" && FND="$f" && break; done
 [[ -z ${FND:-} ]] && _pkgui_die "No fuzzy finder (sk/fzf)"
 # FZF theme
 FZF_THEME="${FZF_THEME:-hl:italic:#FFFF00,hl+:bold:underline:#FF0000,fg:#98A0C5,fg+:bold:#FFFFFF,bg:#13172A,bg+:#0F1222,border:#75A2F7,label:bold:#75A2F7,preview-fg:#C0CAF5,preview-bg:#0F1222,marker:#00FF00,pointer:#FF0000,query:#FF0000,info:italic:#98A0C5}"
@@ -529,7 +529,7 @@ _pkgui_gen_lists(){
   expac --timefmt='%Y-%m-%d %T' '%l	%n' | sort > "$d/by-install.txt"
   if _pkgui_has flatpak; then flatpak list > "$d/flatpak.txt"; fi
   _pkgui_msg "Generated: $d"
-  find "$d" -name '*.txt' -exec ls -lh {} + | awk '{print $9,$5}'
+  find "$d" -name '*.txt' -printf '%p %s\n'
 }
 _pkgui_backup(){
   local b="$PKGLIST.$(date +%Y%m%d-%H%M%S)"

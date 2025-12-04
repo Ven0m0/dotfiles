@@ -166,7 +166,7 @@ EOF
   fi
   [[ $reverse == true ]] && sort_opts="$sort_opts -r"
   local data
-  data=$(df $df_opts | awk "$awk_filter")
+  data=$(df "$df_opts" | awk "$awk_filter")
   if [[ $output_json == true ]]; then
     printf '['
     printf '%s\n' "$data" | awk 'BEGIN{first=1}{if(! first)printf",";first=0;printf"{\"filesystem\":\"%s\",\"size\":\"%s\",\"used\":\"%s\",\"avail\":\"%s\",\"use%%\":\"%s\",\"mount\":\"%s\"}",$1,$2,$3,$4,$5,$6}END{print"]"}'
@@ -178,7 +178,7 @@ EOF
       [[ $no_header == false ]] && printf 'Filesystem      Size  Used Avail Use%% Mounted on\n'
       printf '%s\n' "$data"
     } | column -t
-  fi | { [[ -n $sort_opts ]] && sort $sort_opts || cat; }
+  fi | { [[ -n $sort_opts ]] && sort "$sort_opts" || cat; }
   log_action "Disk usage displayed"
 }
 
