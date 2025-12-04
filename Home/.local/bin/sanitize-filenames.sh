@@ -27,7 +27,7 @@ else
 fi
 if [[ $FD != "find" ]]; then finder=("$FD" -tf -td -H -I -0 .); else finder=(find . -print0); fi
 count=0
-"${finder[@]}" | sort -zr | while IFS= read -r -d '' f; do
+while IFS= read -r -d '' f; do
   [[ -e $f ]] || continue
   dir="${f%/*}"
   base="${f##*/}"
@@ -39,5 +39,5 @@ count=0
     continue
   }
   mv -f -- "$f" "$target" && printf '%s → %s\n' "$base" "$new" && ((count++)) || :
-done
+done < <("${finder[@]}" | sort -zr)
 log "Renamed $count item(s)"
