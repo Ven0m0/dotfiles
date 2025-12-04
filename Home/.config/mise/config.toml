@@ -101,8 +101,8 @@ rmz = "latest"
 "cargo:terminal_tools" = "latest"
 "cargo:dui-cli" = "latest"
 "cargo:kanata" = "latest"
-"cargo:https://github.com/vishruth-thimmaiah/converse" = "latest"
-#oxlint = "latest"
+ghalint = "latest"
+action-validator = "latest"
 
 [env]
 _.python.venv = { path = ".venv" }
@@ -120,7 +120,7 @@ NODE_PRESERVE_SYMLINKS = "1"
 NODE_TLS_REJECT_UNAUTHORIZED = "0"
 UV_THREADPOOL_SIZE = "16"
 NODE_NO_WARNINGS = "1"
-CURL_OPTS = "-fLSs --http2 --compressed --tlsv1.2"
+CURL_OPTS = "-fLs --http2 --tlsv1.2"
 CARGO_NET_GIT_FETCH_WITH_CLI = "true"
 CARGO_HTTP_MULTIPLEXING = "true"
 BINSTALL_DISABLE_TELEMETRY = "true"
@@ -141,7 +141,7 @@ run = "cargo cache -efg || :; cargo clean || :"
 
 [tasks.cleancache]
 description = "Clean system cache"
-run = "rm -rf ~/.cache/* || :"
+run = "rm -rf ~/.cache/* || :; mise cache c -y"
 hide = true
 
 [tasks.update]
