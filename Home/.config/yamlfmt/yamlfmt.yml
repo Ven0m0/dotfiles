@@ -1,6 +1,17 @@
 continue_on_error: true
+use_editorconfig: true
 doublestar: false
-exclude: [./.cache, ./go]
+exclude:
+  - .git/**
+  - node_modules/**
+  - vendor/**
+  - .venv/**
+  - __pycache__/**
+  - dist/**
+  - build/**
+  - .cache/**
+  - "*.min.yaml"
+  - "*.min.yml"
 extensions:
   - yaml
   - yml
