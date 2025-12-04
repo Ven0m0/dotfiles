@@ -3,12 +3,6 @@
 # Policy: 2-space indent, 120 char width, 0 errors
 # Pipeline: Format → Lint/Fix → Report
 
-# Source shared library
-# shellcheck source=../lib/bash/stdlib.bash
-. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
-  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
-  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
-
 set -euo pipefail
 shopt -s nullglob globstar
 IFS=$'\n\t'
@@ -32,7 +26,15 @@ TOTAL_MODIFIED=0
 TOTAL_ERRORS=0
 
 # --- Helpers ---
+# ANSI colors
+BLD=$'\e[1m' BLU=$'\e[34m' GRN=$'\e[32m' YLW=$'\e[33m' RED=$'\e[31m' DEF=$'\e[0m'
+
+# Logging functions
 has(){ command -v "$1" &>/dev/null; }
+log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
+ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
+warn(){ printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
+err(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; }
 
 check_deps(){
   local missing=() optional=()

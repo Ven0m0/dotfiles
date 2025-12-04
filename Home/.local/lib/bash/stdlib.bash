@@ -43,44 +43,44 @@ RESET=$_DEF GREEN=$_GRN YELLOW=$_YLW
 # =============================================================================
 
 # Check if command exists
-has() { command -v "$1" &>/dev/null; }
+has(){ command -v "$1" &>/dev/null; }
 
 # Source file if readable
-ifsource() { [[ -r ${1/#\~\//${HOME}/} ]] && . "${1/#\~\//${HOME}/}"; }
+ifsource(){ [[ -r ${1/#\~\//${HOME}/} ]] && . "${1/#\~\//${HOME}/}"; }
 
 # Export variable if path exists
-exportif() { [[ -e $2 ]] && export "$1=$2"; }
+exportif(){ [[ -e $2 ]] && export "$1=$2"; }
 
 # =============================================================================
 # LOGGING FUNCTIONS
 # =============================================================================
 
 # Standard logging with colors
-log() { printf '%b==>\e[0m %s\n' "${_BLD}${_BLU}" "$*"; }
-msg() { printf '%b==>\e[0m %s\n' "${_BLD}${_BLU}" "$*"; }
-info() { printf '%b==>\e[0m %s\n' "${_BLD}${_CYN}" "$*"; }
-ok() { printf '%b==>\e[0m %s\n' "${_BLD}${_GRN}" "$*"; }
-warn() { printf '%b==> WARNING:\e[0m %s\n' "${_BLD}${_YLW}" "$*"; }
-err() { printf '%b==> ERROR:\e[0m %s\n' "${_BLD}${_RED}" "$*" >&2; }
+log(){ printf '%b==>\e[0m %s\n' "${_BLD}${_BLU}" "$*"; }
+msg(){ printf '%b==>\e[0m %s\n' "${_BLD}${_BLU}" "$*"; }
+info(){ printf '%b==>\e[0m %s\n' "${_BLD}${_CYN}" "$*"; }
+ok(){ printf '%b==>\e[0m %s\n' "${_BLD}${_GRN}" "$*"; }
+warn(){ printf '%b==> WARNING:\e[0m %s\n' "${_BLD}${_YLW}" "$*"; }
+err(){ printf '%b==> ERROR:\e[0m %s\n' "${_BLD}${_RED}" "$*" >&2; }
 
 # Debug logging (only when DEBUG=1)
-dbg() { [[ ${DEBUG:-0} -eq 1 ]] && printf '%b[DBG]\e[0m %s\n' "${_DIM}" "$*" || :; }
+dbg(){ [[ ${DEBUG:-0} -eq 1 ]] && printf '%b[DBG]\e[0m %s\n' "${_DIM}" "$*" || :; }
 
 # Verbose logging (only when VERBOSE=1)
-verbose() { [[ ${VERBOSE:-0} -eq 1 ]] && printf '%s\n' "$*" || :; }
+verbose(){ [[ ${VERBOSE:-0} -eq 1 ]] && printf '%s\n' "$*" || :; }
 
 # =============================================================================
 # ERROR HANDLING
 # =============================================================================
 
 # Print error and exit
-die() {
+die(){
   err "$@"
   exit "${2:-1}"
 }
 
 # Require a command to exist
-need() {
+need(){
   has "$1" || die "Required command not found: $1"
 }
 
@@ -89,7 +89,7 @@ need() {
 # =============================================================================
 
 # Detect privilege escalation command (sudo-rs → sudo → doas)
-_get_priv_cmd() {
+_get_priv_cmd(){
   local c
   for c in sudo-rs sudo doas; do
     has "$c" && { printf '%s' "$c"; return 0; }
@@ -101,7 +101,7 @@ _get_priv_cmd() {
 PRIV_CMD=${PRIV_CMD:-$(_get_priv_cmd 2>/dev/null || true)}
 
 # Run command with privilege escalation if needed
-run_priv() {
+run_priv(){
   if [[ $EUID -eq 0 || -z ${PRIV_CMD:-} ]]; then
     "$@"
   else
@@ -114,7 +114,7 @@ run_priv() {
 # =============================================================================
 
 # Detect package manager (Arch: paru→yay→pacman, Debian: apt)
-_detect_pm() {
+_detect_pm(){
   if has paru; then printf 'paru'
   elif has yay; then printf 'yay'
   elif has pacman; then printf 'pacman'
@@ -130,7 +130,7 @@ PKG_MGR=${PKG_MGR:-$(_detect_pm)}
 # =============================================================================
 
 # Fuzzy finder (sk → fzf)
-_detect_fuzzy() {
+_detect_fuzzy(){
   if has sk; then printf 'sk'
   elif has fzf; then printf 'fzf'
   else printf ''
@@ -139,7 +139,7 @@ _detect_fuzzy() {
 FZF=${FZF:-$(_detect_fuzzy)}
 
 # fd (fdf → fd → fdfind → find)
-_detect_fd() {
+_detect_fd(){
   if has fdf; then printf 'fdf'
   elif has fd; then printf 'fd'
   elif has fdfind; then printf 'fdfind'
@@ -149,7 +149,7 @@ _detect_fd() {
 FD=${FD:-$(_detect_fd)}
 
 # ripgrep (rg → grep)
-_detect_rg() {
+_detect_rg(){
   if has rg; then printf 'rg'
   else printf 'grep'
   fi
@@ -157,7 +157,7 @@ _detect_rg() {
 RG=${RG:-$(_detect_rg)}
 
 # bat (bat → batcat → cat)
-_detect_bat() {
+_detect_bat(){
   if has bat; then printf 'bat'
   elif has batcat; then printf 'batcat'
   else printf 'cat'
@@ -166,7 +166,7 @@ _detect_bat() {
 BAT=${BAT:-$(_detect_bat)}
 
 # jq (jaq → jq)
-_detect_jq() {
+_detect_jq(){
   if has jaq; then printf 'jaq'
   elif has jq; then printf 'jq'
   else printf ''
@@ -175,7 +175,7 @@ _detect_jq() {
 JQ=${JQ:-$(_detect_jq)}
 
 # git (gix → git)
-_detect_git() {
+_detect_git(){
   if has gix; then printf 'gix'
   elif has git; then printf 'git'
   else printf ''
@@ -188,25 +188,25 @@ GIT=${GIT:-$(_detect_git)}
 # =============================================================================
 
 # Check if running on Wayland
-is_wayland() {
+is_wayland(){
   [[ ${XDG_SESSION_TYPE:-} == wayland || -n ${WAYLAND_DISPLAY:-} ]]
 }
 
 # Check if running on Arch Linux
-is_arch() { has pacman; }
+is_arch(){ has pacman; }
 
 # Check if running on Debian/Raspbian
-is_debian() { has apt && [[ -f /etc/debian_version ]]; }
+is_debian(){ has apt && [[ -f /etc/debian_version ]]; }
 
 # Check if running in Termux
-is_termux() { [[ -n ${TERMUX_VERSION:-} ]]; }
+is_termux(){ [[ -n ${TERMUX_VERSION:-} ]]; }
 
 # =============================================================================
 # UTILITY FUNCTIONS
 # =============================================================================
 
 # Create temp directory with cleanup trap
-mktmpdir() {
+mktmpdir(){
   local tmpdir
   if tmpdir=$(mktemp -d); then
     trap 'rm -rf "$tmpdir"' EXIT
@@ -217,7 +217,7 @@ mktmpdir() {
 }
 
 # Safe file stat (cross-platform)
-file_size() {
+file_size(){
   if stat --version &>/dev/null; then
     stat -c%s "$1"
   else
@@ -226,7 +226,7 @@ file_size() {
 }
 
 # Check if file is newer than another
-is_newer() {
+is_newer(){
   [[ $1 -nt $2 ]]
 }
 

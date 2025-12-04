@@ -13,12 +13,12 @@ zmodload zsh/system
 _fzf_bash_completion_awk="$( builtin command -v gawk &>/dev/null && echo gawk || echo awk )"
 _fzf_bash_completion_grep="$( builtin command -v ggrep &>/dev/null && echo ggrep || echo grep )"
 
-repeat-fzf-completion() {
+repeat-fzf-completion(){
     __repeat=1
     __query="$1"
 }
 
-fzf_completion() {
+fzf_completion(){
     local __repeat=1 __code= __action= __query=
     while (( __repeat )); do
         __code=
@@ -34,7 +34,7 @@ fzf_completion() {
     done
 }
 
-_fzf_completion() {
+_fzf_completion(){
     emulate -LR zsh +o ALIASES
     setopt interactivecomments
     local __value= __stderr=
@@ -52,19 +52,19 @@ _fzf_completion() {
     (
         # set -o pipefail
         # hacks
-        __override_compadd() { compadd() { _fzf_completion_compadd "$@"; }; }
+        __override_compadd(){ compadd(){ _fzf_completion_compadd "$@"; }; }
         __override_compadd
         # some completions change zstyle so need to propagate that out
-        zstyle() { _fzf_completion_zstyle "$@"; }
+        zstyle(){ _fzf_completion_zstyle "$@"; }
 
         # massive hack
         # _approximate also overrides _compadd, so we have to override their one
-        __override_approximate() {
+        __override_approximate(){
             functions[_approximate]="unfunction compadd; { ${functions[_approximate]//builtin compadd /_fzf_completion_compadd } } always { __override_compadd }"
         }
 
         if [[ "$functions[_approximate]" == 'builtin autoload'* ]]; then
-            _approximate() {
+            _approximate(){
                 unfunction _approximate
                 printf %s\\n "builtin autoload +XUz _approximate" >&"$__evaled"
                 builtin autoload +XUz _approximate
@@ -118,7 +118,7 @@ _fzf_completion() {
                 local __comp_index=0 __autoloaded=()
                 exec {__stdout}>&1
                 __stderr="$(
-                    _fzf_completion_preexit() {
+                    _fzf_completion_preexit(){
                         trap -
                         functions + | "$_fzf_bash_completion_grep"  -F -vx -e "$(functions -u +)" -e "$__full_functions" | while read -r f; do which -- "$f"; done >&"$__evaled"
                         # skip local and autoload vars
@@ -193,13 +193,13 @@ _fzf_completion() {
 
     # reset-prompt doesn't work in completion widgets
     # so call it after this function returns
-    eval "TRAPEXIT() {
+    eval "TRAPEXIT(){
         zle reset-prompt
         _fzf_completion_post ${(q)__stderr} ${(q)__code}
     }"
 }
 
-_fzf_completion_post() {
+_fzf_completion_post(){
     local stderr="$1" code="$2"
     if [ "$stderr" != "" ]; then
         zle -M -- "$stderr"
@@ -210,7 +210,7 @@ _fzf_completion_post() {
     fi
 }
 
-_fzf_completion_selector() {
+_fzf_completion_selector(){
     local lines=() reply REPLY
     exec {tty}</dev/tty
 
@@ -270,14 +270,14 @@ _fzf_completion_selector() {
     return "$code"
 }
 
-_fzf_completion_zstyle() {
+_fzf_completion_zstyle(){
     if [[ "$1" != -* ]]; then
         { printf 'zstyle %q ' "$@"; printf \\n } >&"$__evaled"
     fi
     builtin zstyle "$@"
 }
 
-_fzf_completion_compadd() {
+_fzf_completion_compadd(){
     local __flags=()
     local __OAD=()
     local __disp __hits __ipre __apre __hpre __hsuf __asuf __isuf __opts __optskv

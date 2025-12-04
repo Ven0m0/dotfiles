@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 # netinfo - Network information: IP, weather, speed test
 
-# Source shared library
-# shellcheck source=../lib/bash/stdlib.bash
-. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
-  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
-  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
-
+set -euo pipefail
 IFS=$'\n\t'
+
 readonly UA="netinfo/1.0"
+
+# Helper functions
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf 'ERROR: %s\n' "$*" >&2; exit "${2:-1}"; }
+need(){ has "$1" || die "Required command not found: $1"; }
+
+# Tool detection (jq fallback chain: jaq → jq)
+if has jaq; then JQ=jaq; elif has jq; then JQ=jq; else JQ=''; fi
 
 # Check dependencies
 need curl

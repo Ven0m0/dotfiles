@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 # Media toolkit: CD burning, USB creation, transcoding, and image optimization
 
-# Source shared library
-# shellcheck source=../lib/bash/stdlib.bash
-. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
-  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
-  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
-
+set -euo pipefail
 IFS=$'\n\t'
+
+# ANSI colors
+BLD=$'\e[1m' BLU=$'\e[34m' CYN=$'\e[36m' RED=$'\e[31m' DEF=$'\e[0m'
+
+# Helper functions
+has(){ command -v "$1" &>/dev/null; }
+log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
+info(){ printf '%b==>\e[0m %s\n' "${BLD}${CYN}" "$*"; }
+die(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; exit "${2:-1}"; }
+need(){ has "$1" || die "Required command not found: $1"; }
 
 usage(){
   cat << 'EOF'
