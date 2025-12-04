@@ -88,7 +88,7 @@ process_file(){
   [[ $do_diacritics -eq 1 ]] && { remove_diacritics "$file" || ret=$?; }
   [[ $do_empty -eq 1 ]] && { remove_empty "$file" || ret=$?; }
   [[ $do_leading -eq 1 ]] && { remove_leading "$file" || ret=$? ; }
-  return $ret
+  return "$ret"
 }
 
 process_path(){

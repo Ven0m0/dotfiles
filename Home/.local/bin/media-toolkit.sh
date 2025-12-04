@@ -211,7 +211,7 @@ cmd_towebp(){
   local root=${1:-.}; local -a files=()
   if has fd; then
     if has fdfind; then FD=fdfind; else FD=fd; fi
-    mapfile -t files < <($FD -tf -E '*. webp' -e png -e jpg -e jpeg "$root")
+    mapfile -t files < <("$FD" -tf -E '*. webp' -e png -e jpg -e jpeg "$root")
   else
     mapfile -t files < <(find "$root" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) !  -iname "*.webp")
   fi

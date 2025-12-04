@@ -42,7 +42,7 @@ log() {
     if [ "$LOG_FILE" ]; then
         echo "[$LEVEL] $MESSAGE" >> "$LOG_FILE"
     fi
-    if [ $VERBOSE -eq 1 ]; then
+    if [ "$VERBOSE" -eq 1 ]; then
         echo "[$LEVEL] $MESSAGE"
     fi
 }
@@ -113,7 +113,7 @@ process_file() {
     fi
 
     # Interactive mode confirmation
-    if [ $INTERACTIVE -eq 1 ]; then
+    if [ "$INTERACTIVE" -eq 1 ]; then
         read -p "Remove comments from $FILE? [y/N]: " CONFIRM
         if [[ "$CONFIRM" != "y" && "$CONFIRM" != "Y" ]]; then
             log "INFO" "Skipping $FILE"
@@ -122,7 +122,7 @@ process_file() {
     fi
 
     # Dry-run mode
-    if [ $DRY_RUN -eq 1 ]; then
+    if [ "$DRY_RUN" -eq 1 ]; then
         log "INFO" "Would process file: $FILE"
         return
     fi
@@ -193,7 +193,7 @@ find_and_process_files() {
     else
         # Assume it's a pattern
         shopt -s nullglob
-        local FILES=($TARGET)
+        local FILES=("$TARGET")
         if [ ${#FILES[@]} -eq 0 ]; then
             log "WARNING" "No files matched pattern: $TARGET"
         else

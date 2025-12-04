@@ -551,7 +551,7 @@ cmd_preview(){
 
 cleanup(){
   cleanup_ueberzug
-  ls -1t "$cache_dir" 2>/dev/null | tail -n +201 | while IFS= read -r f; do rm -f "${cache_dir}/$f"; done || :
+  find "$cache_dir" -maxdepth 1 -type f -printf '%T@\t%p\n' 2>/dev/null | sort -rn | tail -n +201 | cut -f2- | while IFS= read -r f; do rm -f "$f"; done || :
 }
 
 trap cleanup HUP INT TERM QUIT EXIT

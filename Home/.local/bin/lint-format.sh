@@ -8,7 +8,7 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 
 # --- Configuration ---
-readonly PROJECT_ROOT="${PWD}"
+readonly PROJECT_ROOT="$PWD"
 readonly PARALLEL_JOBS="$(nproc)"
 readonly DRY_RUN="${DRY_RUN:-false}"
 

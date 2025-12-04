@@ -83,7 +83,7 @@ rename_item(){
     local n=1
     local stem=$new ext=
     if [[ $new =~ \.  && $new != .* ]]; then
-      ext=. ${new##*.}
+      ext=. "${new##*.}"
       stem=${new%.*}
     fi
     while [[ -e $dir/${stem}_$n$ext ]]; do ((n++)); done
