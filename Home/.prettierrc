@@ -13,10 +13,37 @@
   "plugins": [],
   "overrides": [
     {
-      "files": "*.json",
+      "files": ["*.json", "*.jsonc"],
       "options": {
-        "trailingComma": "none"
+        "trailingComma": "none",
+        "parser": "json"
+      }
+    },
+    {
+      "files": ["*.yml", "*.yaml"],
+      "options": {
+        "tabWidth": 2,
+        "singleQuote": false
+      }
+    },
+    {
+      "files": ["*.md", "*.markdown"],
+      "options": {
+        "proseWrap": "always",
+        "printWidth": 80
       }
     }
+  ],
+  "ignorePatterns": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".cache/**",
+    "coverage/**",
+    "*.min.js",
+    "*.min.css",
+    "*.bundle.js",
+    "vendor/**",
+    ".git/**"
   ]
 }

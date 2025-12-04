@@ -1,0 +1,34 @@
+# yamlfmt configuration
+# https://github.com/google/yamlfmt/blob/main/docs/config-file.md
+
+formatter:
+  type: basic
+  indent: 2
+  include_document_start: false
+  line_ending: lf
+  retain_line_breaks: true
+  retain_line_breaks_single: false
+  disallow_anchors: false
+  max_line_length: 120
+  scan_folded_as_literal: false
+  indentless_arrays: false
+  drop_merge_tag: false
+  pad_line_comments: 1
+  trim_trailing_whitespace: true
+  eof_newline: true
+
+# Files/directories to exclude
+exclude:
+  - .git/**
+  - node_modules/**
+  - vendor/**
+  - .venv/**
+  - __pycache__/**
+  - dist/**
+  - build/**
+  - .cache/**
+  - "*.min.yaml"
+  - "*.min.yml"
+
+# Use .editorconfig settings
+use_editorconfig: true
