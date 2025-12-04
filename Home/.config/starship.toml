@@ -3,7 +3,7 @@
 format = """
 $username$hostname\
 $directory\
-${custom.git_repo}$git_branch$git_status\
+$git_branch$git_status\
 $localip\
 $shell$shlvl\
 ${custom.yazi_level}\
@@ -156,15 +156,6 @@ style = "bold yellow"
 disabled = false
 style = "red"
 command = "mommy -1 -s $status"
-
-# Git repo name
-[custom.git_repo]
-disabled = false
-command = "basename $(git rev-parse --show-toplevel 2>/dev/null || echo '')"
-when = "git rev-parse --is-inside-work-tree >/dev/null 2>&1"
-require_repo = true
-style = "bold magenta"
-format = " [$output]($style)"
 
 [custom.yazi_level]
 disabled = false
