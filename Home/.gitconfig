@@ -147,21 +147,5 @@
 	allow = always
 [maintenance]
   strategy = incremental
-[maintenance "prefetch"]
-  enabled = true
-[maintenance "gc"]
-  enabled = true
-[maintenance "loose-objects"]
-  enabled = true
-[maintenance "incremental-repack"]
-  enabled = true
-[maintenance "pack-refs"]
-  enabled = true
-[maintenance "reflog-expire"]
-  enabled = true
-[maintenance "rerere-gc"]
-  enabled = true
-[maintenance "worktree-prune"]
-  enabled = true
 [include]
 	path = ~/.gitconfig.local
