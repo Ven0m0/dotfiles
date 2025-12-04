@@ -23,15 +23,6 @@ follow these guidelines when contributing:
 
 ## Bash Standards
 
-**Targets:** Arch/Wayland, Debian/Raspbian (Pi), Termux.
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
-export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
-has(){ command -v "$1" &>/dev/null; }
-```
-
 **Idioms:**
 
 - Tests: `[[ ... ]]`. Regex: `[[ $var =~ ^pattern$ ]]`
@@ -45,7 +36,7 @@ has(){ command -v "$1" &>/dev/null; }
 
 ## Tool Preferences
 
-fd→fdfind→find | rg→grep | bat→cat | sd→sed | aria2→curl→wget | jaq→jq | rust-parallel→parallel→xargs
+fd→find | rg→grep | bat→cat | aria2→curl→wget | jaq→jq | rust-parallel→parallel→xargs
 
 ## Perf Patterns
 
@@ -53,73 +44,3 @@ fd→fdfind→find | rg→grep | bat→cat | sd→sed | aria2→curl→wget | ja
 - Frontend: Minimize DOM Δ. Stable keys. Lazy load.
 - Backend: Async I/O. Connection pool. Cache hot data.
 - Anchor regexes. Prefer literal search (grep -F, rg -F).
-
-## Privilege & Packages
-
-- Escalation: `sudo-rs`→`sudo`→`doas` (store in `PRIV_CMD`)
-- Install: `paru`→`yay`→`pacman` (Arch); `apt` (Debian)
-- Check before install: `pacman -Q`, `flatpak list`, `cargo install --list`
-
-## ast-grep Integration
-
-### Overview
-
-ast-grep performs AST-based linting and transformation for bash and TypeScript/JavaScript files.
-
-### Configuration
-
-- **Location:** `Home/sgconfig.yml`
-- **Schema:** [ast-grep rule schema](https://ast-grep.github.io/reference/yaml.html)
-
-### CI Integration
-
-The `ast-grep.yml` workflow runs on:
-
-- Push to `main`/`master` (when shell/TS/JS files change)
-- Pull requests
-- Manual dispatch
-
-**Severity Levels:**
-
-- `error` - Fails CI (security issues, critical bugs)
-- `warning` - Passes CI (potential bugs, anti-patterns)
-- `info`/`hint` - Passes CI (style suggestions, optimizations)
-
-### Local Usage
-
-```bash
-# Scan all files
-sg scan --config Home/sgconfig.yml Home/.local/bin/
-
-# Auto-fix safe rules
-sg scan --config Home/sgconfig.yml --update-all Home/.local/bin/*.sh
-
-# Test single rule
-sg scan --config Home/sgconfig.yml --rule bash-useless-cat Home/.local/bin/wp.sh
-```
-
-### Rule Categories
-
-**Bash:**
-
-- Safety: `bash-unquoted-var`
-- Performance: `bash-useless-cat`, `bash-prefer-mapfile`, `bash-case-*`
-- Idioms: `bash-idiom-true-*`, `bash-prefer-parameter-expansion`
-- Style: `bash-style-*`, `bash-opt-silence-all`
-
-**TypeScript/JavaScript:**
-
-- Security: `no-unsafe-eval`, `no-dangerous-html`
-- Quality: `prefer-const`, `no-var`, `prefer-strict-equality`
-- Debug: `no-console`, `no-debugger`
-
-### Adding New Rules
-
-1. Edit `Home/sgconfig.yml`
-1. Test locally: `sg check Home/sgconfig.yml`
-1. Verify matches: `sg scan --config Home/sgconfig.yml <file>`
-1. Commit and push (CI validates syntax)
-
-### Disabling Rules
-
-**Per-project:** Edit `Home/sgconfig.yml` and set `severity: off`
