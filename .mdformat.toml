@@ -5,7 +5,5 @@ number = false
 end_of_line = "lf"
 
 [mdformat.options]
-# GitHub Flavored Markdown
 gfm = true
-# Preserve trailing spaces
 preserve_trailing_spaces = false
