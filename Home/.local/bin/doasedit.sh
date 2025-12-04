@@ -2,7 +2,7 @@
 LC_ALL=C LANG=C
 
 # https://codeberg.org/TotallyLeGIT/doasedit/
-help() {
+help(){
   cat - >&2 << EOF
 doasedit - edit files as root using an unprivileged editor
 
@@ -17,7 +17,7 @@ EOF
 # Checks for syntax errors in doas' config
 # check_doas_conf <target> <tmp_target>
 
-check_doas_conf() {
+check_doas_conf(){
   if printf '%s' "${1}" | grep -q '^/etc/doas\(\.d/.*\)\?\.conf$'; then
     while ! doas -C "${2}"; do
       printf "doasedit: Replacing '%s' would " "$file"
@@ -33,13 +33,9 @@ check_doas_conf() {
   fi
   return 0
 }
-error() { printf 'doasedit: %s\n' "${@}" 1>&2; }
-has() { command -v "$1" &> /dev/null; }
-_exit() {
-  rm -rf "$tmpdir"
-  trap - EXIT HUP QUIT TERM INT ABRT
-  exit "${1:-0}"
-}
+error(){ printf 'doasedit: %s\n' "${@}" 1>&2; }
+has(){ command -v "$1" &> /dev/null; }
+_exit(){ rm -rf "$tmpdir"; trap - EXIT HUP QUIT TERM INT ABRT; exit "${1:-0}"; }
 # no argument passed
 [[ "${#}" -eq 0 ]] && help && exit 1
 while [[ "${#}" -ne 0 ]]; do

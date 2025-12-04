@@ -10,19 +10,16 @@ export LC_ALL=C LANG=C IFS=$'\n\t'
 readonly RED=$'\e[0;31m' GREEN=$'\e[0;32m' YELLOW=$'\e[0;33m' RESET=$'\e[0m'
 
 # Helper functions
-die() {
-  printf '%bError: %s%b\n' "$RED" "$*" "$RESET" >&2
-  exit 1
-}
-log() { printf '%s\n' "$*"; }
-ok() { printf '%b[ OK ]%b\n' "$GREEN" "$RESET"; }
-fail() { printf '%b[FAIL]%b\n' "$RED" "$RESET"; }
+die(){ printf '%bError: %s%b\n' "$RED" "$*" "$RESET" >&2; exit 1; }
+log(){ printf '%s\n' "$*"; }
+ok(){ printf '%b[ OK ]%b\n' "$GREEN" "$RESET"; }
+fail(){ printf '%b[FAIL]%b\n' "$RED" "$RESET"; }
 
 # Log file for operations
 readonly LOG_FILE=$(mktemp)
 trap 'rm -f "$LOG_FILE"' EXIT
 
-usage() {
+usage(){
   cat <<'EOF'
 git-rm-submodule - Completely remove Git submodules
 
@@ -57,12 +54,12 @@ NOTE:
 EOF
 }
 
-check_args() {
+check_args(){
   [[ ${#} -ge 1 ]] || die "Expected at least 1 argument, got ${#}"
   [[ -d ${PWD}/.git ]] || die "Not a Git repository. Run from repository root."
 }
 
-remove_git_submodule() {
+remove_git_submodule(){
   local submodule="$1"
 
   printf '  Deinitializing submodule                  '
@@ -93,14 +90,14 @@ remove_git_submodule() {
   fi
 }
 
-remove_git_submodules() {
+remove_git_submodules(){
   for module in "$@"; do
     printf '%b--- Removing module: %s ---%b\n' "$YELLOW" "$module" "$RESET"
     remove_git_submodule "$module"
   done
 }
 
-main() { # Check for help
+main(){ # Check for help
   for arg in "$@"; do
     if [[ $arg == -h || $arg == --help ]]; then
       usage

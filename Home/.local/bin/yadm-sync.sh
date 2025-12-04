@@ -11,11 +11,11 @@
 IFS=$'\n\t'
 
 # Alias for script compatibility
-success() { ok "$@"; }
-error() { err "$@"; }
+success(){ ok "$@"; }
+error(){ err "$@"; }
 
 # Determine repository directory
-get_repo_dir() {
+get_repo_dir(){
   if yadm rev-parse --show-toplevel &> /dev/null; then
     yadm rev-parse --show-toplevel
   elif [[ -d "${HOME}/.local/share/yadm/repo.git" ]]; then
@@ -26,7 +26,7 @@ get_repo_dir() {
 }
 
 # Show usage
-usage() {
+usage(){
   cat << EOF
 ${BLD}yadm-sync${DEF} - Sync dotfiles between ~/ and repository
 
@@ -63,7 +63,7 @@ EOF
 }
 
 # Sync from repo to home (deploy)
-sync_pull() {
+sync_pull(){
   local repo_dir home_dir dry_run="${1:-0}"
 
   repo_dir="$(get_repo_dir)"
@@ -90,7 +90,7 @@ sync_pull() {
 }
 
 # Sync from home to repo (update repo)
-sync_push() {
+sync_push(){
   local repo_dir home_dir dry_run="${1:-0}"
 
   repo_dir="$(get_repo_dir)"
@@ -182,7 +182,7 @@ EXCLUDES
 }
 
 # Show sync status
-sync_status() {
+sync_status(){
   local repo_dir home_dir
 
   repo_dir="$(get_repo_dir)"
@@ -201,7 +201,7 @@ sync_status() {
 }
 
 # Show detailed diff
-sync_diff() {
+sync_diff(){
   local repo_dir home_dir
 
   repo_dir="$(get_repo_dir)"
@@ -230,7 +230,7 @@ sync_diff() {
 }
 
 # Main
-main() {
+main(){
   local command="${1:-}"
   local dry_run=0
 
