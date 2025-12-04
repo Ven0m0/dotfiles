@@ -1,0 +1,13 @@
+# mdformat configuration
+# https://mdformat.readthedocs.io/
+
+[mdformat]
+wrap = 80
+number = false
+end_of_line = "lf"
+
+[mdformat.options]
+# GitHub Flavored Markdown
+gfm = true
+# Preserve trailing spaces (for manual line breaks)
+preserve_trailing_spaces = false

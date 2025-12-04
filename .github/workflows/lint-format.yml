@@ -42,13 +42,14 @@ jobs:
           go install github.com/rhysd/actionlint/cmd/actionlint@latest
           go install github.com/google/yamlfmt/cmd/yamlfmt@latest
           # Node tools
-          npm install -g @biomejs/biome prettier markdownlint-cli
+          npm install -g @biomejs/biome prettier markdownlint-cli markdownlint-cli2
           # Python tools
-          pip install --quiet ruff black yamllint mdformat mdformat-gfm
+          pip install --quiet ruff black yamllint mdformat mdformat-gfm mdformat-tables
           # Rust tools (if available)
           if command -v cargo &>/dev/null; then
             cargo install --quiet taplo-cli --locked || true
-            cargo install --quiet tombi || true
+            cargo install --quiet stylua --locked || true
+            cargo install --quiet selene --locked || true
           fi
           # Add to PATH
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
@@ -89,8 +90,9 @@ jobs:
             if head -1 "$file" 2>/dev/null | grep -q "zsh"; then
               continue
             fi
-            if ! shellcheck --severity=warning -x "$file" 2>/dev/null; then
-              echo "- ⚠️ \`$file\` - shellcheck warnings" >> "$GITHUB_STEP_SUMMARY"
+            if ! shellcheck --severity=error -x "$file" 2>/dev/null; then
+              echo "::error file=$file::ShellCheck errors found"
+              echo "- ❌ \`$file\` - shellcheck errors" >> "$GITHUB_STEP_SUMMARY"
               ERRORS=$((ERRORS + 1))
             fi
           done < <(find . -type f \( -name "*.sh" -o -name "*.bash" \) \
@@ -98,9 +100,9 @@ jobs:
           if [[ $ERRORS -eq 0 ]]; then
             echo "✅ ShellCheck passed" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "::warning::$ERRORS shell script(s) have shellcheck warnings"
+            echo "::error::$ERRORS shell script(s) have shellcheck errors"
+            exit 1
           fi
-        continue-on-error: true
       - name: Check JSON/JS/CSS (Biome)
         id: biome
         run: |
@@ -118,11 +120,12 @@ jobs:
         run: |
           set -euo pipefail
           echo "## YAML Lint" >> "$GITHUB_STEP_SUMMARY"
-          CONFIG_ARGS=(-c .yamllint.yaml)
+          CONFIG_ARGS=(-c .qlty/configs/.yamllint.yaml)
           ERRORS=0
           while IFS= read -r -d '' file; do
-            if yamllint "${CONFIG_ARGS[@]}" "$file" 2>/dev/null | grep -q "error"; then
-              echo "- ⚠️ \`$file\` - yamllint errors" >> "$GITHUB_STEP_SUMMARY"
+            if ! yamllint "${CONFIG_ARGS[@]}" "$file" 2>&1 | grep -qv "error"; then
+              echo "::error file=$file::yamllint errors found"
+              echo "- ❌ \`$file\` - yamllint errors" >> "$GITHUB_STEP_SUMMARY"
               ERRORS=$((ERRORS + 1))
             fi
           done < <(find . -type f \( -name "*.yml" -o -name "*.yaml" \) \
@@ -130,9 +133,9 @@ jobs:
           if [[ $ERRORS -eq 0 ]]; then
             echo "✅ YAML lint passed" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "::warning::$ERRORS YAML file(s) have errors"
+            echo "::error::$ERRORS YAML file(s) have errors"
+            exit 1
           fi
-        continue-on-error: true
       - name: Check GitHub Actions (actionlint)
         id: actionlint
         run: |
@@ -152,31 +155,44 @@ jobs:
           set -euo pipefail
           echo "## Python Lint (Ruff)" >> "$GITHUB_STEP_SUMMARY"
           PY_FILES=$(find . -type f -name "*.py" \
-            ! -path "./.git/*" ! -path "./vendor/*" ! -path "./.venv/*")
+            ! -path "./.git/*" ! -path "./vendor/*" ! -path "./.venv/*" || true)
           if [[ -n "$PY_FILES" ]]; then
-            if ruff check . --config pyproject.toml 2>/dev/null; then
+            if ruff check . --config pyproject.toml 2>&1; then
               echo "✅ Ruff check passed" >> "$GITHUB_STEP_SUMMARY"
             else
-              echo "::warning::Ruff found issues"
-              echo "⚠️ Ruff found issues" >> "$GITHUB_STEP_SUMMARY"
+              echo "::error::Ruff found issues"
+              echo "❌ Ruff found issues" >> "$GITHUB_STEP_SUMMARY"
+              exit 1
             fi
           else
             echo "ℹ️ No Python files found" >> "$GITHUB_STEP_SUMMARY"
           fi
-        continue-on-error: true
       - name: Check Markdown (markdownlint)
         id: markdownlint
         run: |
           set -euo pipefail
           echo "## Markdown Lint" >> "$GITHUB_STEP_SUMMARY"
           if markdownlint -c .markdownlintrc "**/*.md" \
-            --ignore node_modules --ignore vendor 2>/dev/null; then
+            --ignore node_modules --ignore vendor 2>&1; then
             echo "✅ Markdownlint passed" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "::warning::Markdownlint found issues"
-            echo "⚠️ Markdownlint found issues" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::Markdownlint found issues"
+            echo "❌ Markdownlint found issues" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
           fi
-        continue-on-error: true
+      - name: Run Comprehensive Lint & Format
+        id: lint_format
+        run: |
+          set -euo pipefail
+          chmod +x Home/.local/bin/lint-format.sh
+          cd Home/.local/bin
+          if bash lint-format.sh; then
+            echo "success=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::Comprehensive lint & format check failed"
+            echo "success=false" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
       - name: Summary
         if: always()
         run: |
@@ -189,7 +205,7 @@ jobs:
             echo "shfmt -w -i 2 -ci -bn <file>"
             echo ""
             echo "# JSON/JS/CSS"
-            echo "biome format --write ."
+            echo "biome format --write . && biome lint --write ."
             echo ""
             echo "# YAML"
             echo "yamlfmt -conf .yamlfmt <file>"
@@ -199,38 +215,53 @@ jobs:
             echo ""
             echo "# Markdown"
             echo "mdformat --wrap 80 <file>"
+            echo ""
+            echo "# Comprehensive (all)"
+            echo "Home/.local/bin/lint-format.sh"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-      - name: Run Comprehensive Lint & Format
-        id: lint_format
+      - name: Final Check - Zero Errors Enforcement
+        if: always()
         run: |
           set -euo pipefail
-          chmod +x ./lint-format.sh
-          if ./lint-format.sh; then
-            echo "success=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "success=false" >> "$GITHUB_OUTPUT"
-            exit 1
-          fi
-      - name: Check Results
-        if: always()
-        run: |-
-          set -euo pipefail
-          # Critical checks that must pass
+          FAILED=0
+          # Critical checks that must pass (zero errors)
           if [[ "${{ steps.shfmt.outcome }}" == "failure" ]]; then
             echo "::error::Shell formatting check failed"
-            exit 1
+            FAILED=1
+          fi
+          if [[ "${{ steps.shellcheck.outcome }}" == "failure" ]]; then
+            echo "::error::ShellCheck failed"
+            FAILED=1
           fi
           if [[ "${{ steps.biome.outcome }}" == "failure" ]]; then
             echo "::error::Biome check failed"
-            exit 1
+            FAILED=1
+          fi
+          if [[ "${{ steps.yamllint.outcome }}" == "failure" ]]; then
+            echo "::error::YAML lint failed"
+            FAILED=1
           fi
           if [[ "${{ steps.actionlint.outcome }}" == "failure" ]]; then
             echo "::error::Actionlint check failed"
-            exit 1
+            FAILED=1
+          fi
+          if [[ "${{ steps.ruff.outcome }}" == "failure" ]]; then
+            echo "::error::Ruff check failed"
+            FAILED=1
+          fi
+          if [[ "${{ steps.markdownlint.outcome }}" == "failure" ]]; then
+            echo "::error::Markdownlint check failed"
+            FAILED=1
           fi
           if [[ "${{ steps.lint_format.outcome }}" == "failure" ]]; then
             echo "::error::Comprehensive lint & format check failed"
+            FAILED=1
+          fi
+          if [[ $FAILED -eq 0 ]]; then
+            echo "✅ All checks passed - Zero errors achieved"
+            exit 0
+          else
+            echo "❌ FAILED: Zero-error policy violated - CI must fail"
             exit 1
           fi
-          echo "✅ All critical checks passed"
