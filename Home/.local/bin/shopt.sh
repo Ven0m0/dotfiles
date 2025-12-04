@@ -8,7 +8,7 @@ export LC_ALL=C LANG=C
 # Supports single files, directories, stdout output, and multi-variant compilation
 #──────────── Colors ────────────
 RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' DEF=$'\e[0m'
-has(){ command -v "$1" &> /dev/null; }
+has(){ command -v "$1" &> dev/null; }
 die(){ printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2; exit 1; }
 log(){ printf '%b%s%b\n' "$GRN" "$*" "$DEF"; }
 warn(){ printf '%b%s%b\n' "$YLW" "$*" "$DEF"; }
@@ -127,6 +127,10 @@ for cmd in shfmt shellharden shellcheck awk; do has "$cmd" || die "Missing: $cmd
 readonly HAS_SD=$(has sd && echo 1 || echo 0)
 readonly HAS_PREPROCESS=$(has preprocess && echo 1 || echo 0)
 ((compile && !HAS_PREPROCESS)) && die "Compile mode needs 'preprocess' (pip install preprocess)"
+# TODO: optional beautysh before formatting
+#if has beautysh; then
+  #beautysh -i 2 -s paronly --variable-style braces
+#fi
 #──────────── File Collection ────────────
 if ((compile || concat)); then
   [[ ! -d $target ]] && die "Compile/concat mode needs directory"
@@ -191,7 +195,7 @@ minify_enhanced(){
     [[ -n $stripped ]] && printf '%s\n' "$stripped" >> "$out"
   done < "$in"
   # Remove multiline comments & separator lines
-  sed -i -e '/^:[[:space:]]*'"'"'/,/^'"'"'/d' -e '/^#[[:space:]]*[-─]{5,}/d' "$out" 2> /dev/null || :
+  sed -i -e '/^:[[:space:]]*'"'"'/,/^'"'"'/d' -e '/^#[[:space:]]*[-─]{5,}/d' "$out" 2> dev/null || :
 }
 #──────────── Concatenate Files ────────────
 concat_files(){
@@ -229,7 +233,7 @@ concat_files(){
       while IFS= read -r -d '' lf; do
         [[ $lf == *__* || $lf == *_PLACEHOLDER* ]] && continue
         [[ $lf == *."$ext" ]] && cat "$lf" >> "$out"
-      done < <(eval find "$dirpath" -type f "$excl" -print0 2> /dev/null)
+      done < <(eval find "$dirpath" -type f "$excl" -print0 2> dev/null)
     done
   done
 }
@@ -273,8 +277,8 @@ optimize(){
   trap 'rm -f "$tmp"' RETURN
   printf '%s' "$content" > "$tmp"
   # Harden & lint
-  shellharden --replace "$tmp" &> /dev/null || :
-  shellcheck -a -x -s bash -f diff "$tmp" 2> /dev/null | patch -Np1 "$tmp" &> /dev/null || :
+  shellharden --replace "$tmp" &> dev/null || :
+  shellcheck -a -x -s bash -f diff "$tmp" 2> dev/null | patch -Np1 "$tmp" &> dev/null || :
   cat "$tmp" > "$out_target"
   chmod "$perm" "$out_target"
   log "✓ $out_target"
