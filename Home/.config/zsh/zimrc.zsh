@@ -20,6 +20,7 @@ zmodule romkatv/powerlevel10k --use degit
 # ---[ Syntax & Suggestions ]---
 zmodule zdharma-continuum/fast-syntax-highlighting
 zmodule zsh-users/zsh-autosuggestions
+zmodule marlonrichert/zsh-autocomplete
 
 # ---[ Auto-pairing ]---
 zmodule hlissner/zsh-autopair
@@ -30,6 +31,8 @@ zmodule lincheney/fzf-tab-completion --source zsh/fzf-zsh-completion.sh
 # ---[ Utility Plugins ]---
 zmodule MichaelAquilina/zsh-you-should-use
 zmodule QuarticCat/zsh-smartcache
+zmodule romkatv/zsh-defer
+zmodule qoomon/zsh-lazyload
 
 # ---[ OMZ Plugins (selective) ]---
 zmodule ohmyzsh/ohmyzsh --root plugins/git
