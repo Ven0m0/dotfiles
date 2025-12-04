@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # sanitize-filenames - Recursively rename files to be Linux-safe
-
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -15,16 +14,11 @@ warn(){ printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
 log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
 
 # Tool detection (fd fallback chain: fdf → fd → fdfind → find)
-if has fdf; then FD=fdf; elif has fd; then FD=fd; elif has fdfind; then FD=fdfind; else FD=find; fi
+if has fd; then FD=fd; elif has fdfind; then FD=fdfind; else FD=find; fi
 
 need iconv
-if has sd; then
-  sanitize(){ sd '[^A-Za-z0-9._-]+' '_' | sd '^_+|_+$' '' | sd '_+' '_'; }
-elif has sed; then
-  sanitize(){ sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^_+|_+$//g; s/_+/_/g'; }
-else
-  die "sed/sd required"
-fi
+sanitize(){ sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^_+|_+$//g; s/_+/_/g'; }
+
 if [[ $FD != "find" ]]; then finder=("$FD" -tf -td -H -I -0 .); else finder=(find . -print0); fi
 count=0
 while IFS= read -r -d '' f; do
@@ -34,10 +28,7 @@ while IFS= read -r -d '' f; do
   new=$(printf '%s' "$base" | iconv -f utf8 -t ascii//translit 2>/dev/null | sanitize)
   [[ $base != "$new" ]] || continue
   target="$dir/$new"
-  [[ ! -e $target ]] || {
-    warn "Collision: $f"
-    continue
-  }
+  [[ ! -e $target ]] || { warn "Collision: $f"; continue; }
   mv -f -- "$f" "$target" && printf '%s → %s\n' "$base" "$new" && ((count++)) || :
 done < <("${finder[@]}" | sort -zr)
 log "Renamed $count item(s)"
