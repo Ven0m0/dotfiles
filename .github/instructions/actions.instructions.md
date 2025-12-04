@@ -2,7 +2,7 @@
 applyTo: ".github/workflows/*.yml"
 ---
 
-# GitHub Actions CI/CD Best Practices (Compressed)
+# GitHub Actions CI/CD Best Practices
 
 ## Core Concepts
 - **Structure**: Clear, modular, reusable.
