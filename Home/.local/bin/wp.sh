@@ -14,17 +14,8 @@
 #
 # dependencies: fzf, swaybg (wayland), fehbg (x11), libnotify (optional)
 
-# Source shared library (with fallback for standalone operation)
-# shellcheck source=../lib/bash/stdlib.bash
-if [[ -r "${HOME}/.local/lib/bash/stdlib.bash" ]]; then
-  . "${HOME}/.local/lib/bash/stdlib.bash"
-elif [[ -r "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" ]]; then
-  . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash"
-else
-  # Minimal fallback if stdlib not available
-  set -euo pipefail
-  has(){ command -v "$1" &>/dev/null; }
-fi
+set -euo pipefail
+has() { command -v "$1" &>/dev/null; }
 
 # exit 0 - successful execution
 # exit 1 - no selection

@@ -1,13 +1,28 @@
 #!/usr/bin/env bash
 # pkg-sync.sh: Export/Import Pacman and AUR packages
 
-# Source shared library
-# shellcheck source=../lib/bash/stdlib.bash
-. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
-  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
-  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
-
+set -euo pipefail
 IFS=$'\n\t'
+
+# ANSI colors
+BLD=$'\e[1m' BLU=$'\e[34m' RED=$'\e[31m' DEF=$'\e[0m'
+
+# Helper functions
+has() { command -v "$1" &>/dev/null; }
+log() { printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
+die() { printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; exit "${2:-1}"; }
+need() { has "$1" || die "Required command not found: $1"; }
+
+# Privilege escalation helper
+_get_priv() {
+  local c
+  for c in sudo-rs sudo doas; do has "$c" && { printf '%s' "$c"; return 0; }; done
+  [[ $EUID -eq 0 ]] || die "No privilege tool found and not root."
+}
+PRIV_CMD=$(_get_priv 2>/dev/null || true)
+run_priv() {
+  if [[ $EUID -eq 0 || -z ${PRIV_CMD:-} ]]; then "$@"; else "$PRIV_CMD" -- "$@"; fi
+}
 
 FILE_NATIVE="pkglist_native.txt"
 FILE_AUR="pkglist_aur.txt"

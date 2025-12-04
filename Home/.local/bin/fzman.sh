@@ -4,19 +4,17 @@
 # usage: fzman
 # dependencies: fzf
 
-# Source shared library (with fallback for standalone operation)
-# shellcheck source=../lib/bash/stdlib.bash
-if [[ -r "${HOME}/.local/lib/bash/stdlib.bash" ]]; then
-  . "${HOME}/.local/lib/bash/stdlib.bash"
-elif [[ -r "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" ]]; then
-  . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash"
-else
-  set -euo pipefail
-  shopt -s nullglob globstar
-  export LC_ALL=C LANG=C
-fi
-
+set -euo pipefail
+shopt -s nullglob globstar
+export LC_ALL=C LANG=C
 IFS=$'\n\t'
+
+# Helper functions
+has() { command -v "$1" &>/dev/null; }
+die() { printf 'ERROR: %s\n' "$*" >&2; exit "${2:-1}"; }
+
+# Tool detection (fuzzy finder: sk → fzf)
+if has sk; then FZF=sk; elif has fzf; then FZF=fzf; else FZF=''; fi
 
 if [[ ${1:-} == "-h" ]]; then
   sed "1,2d;s/^# //;s/^#$/ /;/^$/ q" "$0"

@@ -1,13 +1,21 @@
 #!/usr/bin/env bash
 # sanitize-filenames - Recursively rename files to be Linux-safe
 
-# Source shared library
-# shellcheck source=../lib/bash/stdlib.bash
-. "${HOME}/.local/lib/bash/stdlib.bash" 2>/dev/null \
-  || . "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" 2>/dev/null \
-  || { echo "Error: stdlib.bash not found" >&2; exit 1; }
-
+set -euo pipefail
 IFS=$'\n\t'
+
+# ANSI colors
+BLD=$'\e[1m' YLW=$'\e[33m' BLU=$'\e[34m' DEF=$'\e[0m'
+
+# Helper functions
+has() { command -v "$1" &>/dev/null; }
+die() { printf '%b==> ERROR:\e[0m %s\n' "${BLD}${YLW}" "$*" >&2; exit "${2:-1}"; }
+need() { has "$1" || die "Required command not found: $1"; }
+warn() { printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
+log() { printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
+
+# Tool detection (fd fallback chain: fdf → fd → fdfind → find)
+if has fdf; then FD=fdf; elif has fd; then FD=fd; elif has fdfind; then FD=fdfind; else FD=find; fi
 
 need iconv
 if has sd; then
