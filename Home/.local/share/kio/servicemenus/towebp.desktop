@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=image/png;image/jpeg;image/jpg;inode/directory;
+Actions=convertToWebP;
+X-KDE-Submenu=Format
+
+[Desktop Action convertToWebP]
+Name=To WebP
+Icon=image-x-generic
+# Using bash to ensure we find the script in your local bin and pass arguments correctly
+Exec=bash -c '"${HOME}/.local/bin/towebp.sh" "$@"' -- %F
