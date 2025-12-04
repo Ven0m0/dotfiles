@@ -4,7 +4,6 @@ https://github.com/bigH/git-fuzzy
 https://github.com/wfxr/forgit
 
 # Misc
-https://github.com/Hetsh/mcsctl
 https://github.com/b3nj5m1n/xdg-ninja
 https://github.com/archy-linux/archy-scripts
 https://github.com/ayumu436/arch-linux-scripts
