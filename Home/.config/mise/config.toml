@@ -100,9 +100,11 @@ rmz = "latest"
 "cargo:terminal_tools" = "latest"
 "cargo:dui-cli" = "latest"
 "cargo:kanata" = "latest"
+"cargo:rust-parallel" = "latest"
 ghalint = "latest"
 action-validator = "latest"
 "pipx:lovesegfault/beautysh" = "latest"
+lefthook = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true }
