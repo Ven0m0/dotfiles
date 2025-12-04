@@ -1,53 +1,31 @@
 #!/usr/bin/env bash
+set -euo pipefail
+shopt -s nullglob
+IFS=$'\n\t'
 
-# Script Name: extract.sh
-# Description: Extracts files based on their extension.
-# Usage: extract.sh [archive file] [optional: output directory]
+# Extracts archives. Usage: extract.sh FILE [OUT_DIR]
 
-main() {
-    if [ $# -lt 1 ] || [ $# -gt 2 ]; then
-        echo "Usage: extract.sh [archive file] [optional: output directory]"
-        exit 1
-    fi
-
-    file="$1"
-    output_dir="${2:-.}"
-
-    if ! [ -f "$file" ]; then
-        echo "File $file does not exist."
-        exit 1
-    fi
-
-    if ! [ -d "$output_dir" ]; then
-        mkdir -p "$output_dir" || { echo "Failed to create output directory $output_dir"; exit 1; }
-        echo "Created output directory $output_dir"
-    fi
-
-    extract_file "$file" "$output_dir"
+main(){
+  [[ $# -lt 1 || $# -gt 2 ]] && { printf 'Usage: extract.sh FILE [OUT_DIR]\n' >&2; exit 1; }
+  local f=$1 out=${2:-.}
+  [[ -f $f ]] || { printf 'File %s not found\n' "$f" >&2; exit 1; }
+  [[ -d $out ]] || { mkdir -p "$out" && printf 'Created %s\n' "$out"; }
+  case ${f,,} in
+    *.tar.xz)   chk tar  && tar -xf "$f" -C "$out";;
+    *.tar.gz|*.tgz) chk tar  && tar -xzf "$f" -C "$out";;
+    *.tar.bz2)  chk tar  && tar -xjf "$f" -C "$out";;
+    *.tar.zst)  chk tar  && tar --zstd -xf "$f" -C "$out";;
+    *.tar)      chk tar  && tar -xf "$f" -C "$out";;
+    *.bz|*. bz2) chk bzip2 && bzip2 -dkc "$f" > "$out/${f%.bz*}";;
+    *.gz)       chk gzip && gzip -dc "$f" > "$out/${f%.gz}";;
+    *.xz)       chk xz   && xz -dkc "$f" > "$out/${f%.xz}";;
+    *.zst)      chk zstd && zstd -dco "$out/${f%.zst}" "$f";;
+    *.zip|*.jar) chk unzip && unzip -q "$f" -d "$out";;
+    *.Z)        chk uncompress && uncompress -c "$f" | tar -xC "$out";;
+    *.rar)      chk unrar && unrar x -inul "$f" "$out/";;
+    *.7z)       chk 7z   && 7z x -o"$out" "$f" >/dev/null;;
+    *) printf 'Unsupported: %s\n' "$f" >&2; exit 1;;
+  esac
 }
-
-extract_file() {
-    local file=$1
-    local output_dir=$2
-
-    case "$file" in
-        *.tar.xz)  command_exists "tar" && tar -xvf "$file" -C "$output_dir" ;;
-        *.tar.gz)  command_exists "tar" && tar -xzf "$file" -C "$output_dir" ;;
-        *.tar.bz2) command_exists "tar" && tar -xjf "$file" -C "$output_dir" ;;
-        *.tar)     command_exists "tar" && tar -xf "$file" -C "$output_dir" ;;
-        *.tgz)     command_exists "tar" && tar -xzf "$file" -C "$output_dir" ;;
-        *.bz|*.bz2) command_exists "bzip2" && bzip2 -d -k "$file" ;;
-        *.gz)      command_exists "gunzip" && gunzip "$file" -c > "$output_dir" ;;
-        *.zip|*.jar) command_exists "unzip" && unzip "$file" -d "$output_dir" ;;
-        *.Z)      command_exists "zcat" && zcat "$file" | tar -xvf - -C "$output_dir" ;;
-        *.rar)    command_exists "rar" && rar x "$file" "$output_dir" ;;
-        *.7z)     command_exists "7z" && 7z x "$file" -o"$output_dir" ;;
-        *) echo "Unsupported archive format." ;;
-    esac
-}
-
-command_exists() {
-    command -v "$1" >/dev/null 2>&1 || { echo >&2 "I require $1 but it's not installed. Aborting."; exit 1; }
-}
-
+chk(){ command -v "$1" >/dev/null || { printf '%s required\n' "$1" >&2; exit 1; }; }
 main "$@"
