@@ -10,7 +10,6 @@
 	autocrlf = input
 	eol = native
 	compression = 6
-	multiPackIndex = true
 	fsyncMethod = batch
 	deltaBaseCacheLimit = 1g
 	untrackedCache = true
@@ -105,7 +104,6 @@
 	colorMoved = dimmed_zebra
   colorMovedWS = allow-indentation-change
   context = 5
-	external = difft
 [difftool]
 	prompt = false
 [difftool "vscode"]
@@ -127,7 +125,6 @@
 	short = false
 	submoduleSummary = true
 	showUntrackedFiles = all
-	renames = false
 [commit]
 	verbose = true
 [branch]
