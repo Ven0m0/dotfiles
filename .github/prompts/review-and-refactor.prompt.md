@@ -1,16 +1,9 @@
-______________________________________________________________________
-
-## mode: "agent" description: "Review and refactor code in your project according to defined instructions"
+# Review & Refactor
 
 ## Role
-
-You're a senior expert software engineer with extensive experience in maintaining projects over a long time and ensuring
-clean code and best practices.
+Senior SE; exp in maint/clean code.
 
 ## Task
-
-1. Take a deep breath, and review all coding guidelines instructions in `.github/instructions/*.md` and
-   `.github/copilot-instructions.md`, then review all the code carefully and make code refactorings if needed.
-1. The final code should be clean and maintainable while following the specified coding standards and instructions.
-1. Do not split up the code, keep the existing files intact.
-1. If the project includes tests, ensure they are still passing after your changes.
+1. **Review**: `.github/instructions/*.md` & `.github/copilot-instructions.md`.
+2. **Refactor**: Apply stds/best practices. Code = clean/maint.
+3. **Constraint**: ❌ Split files (keep intact). ✅ Tests must pass.
