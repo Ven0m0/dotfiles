@@ -11,9 +11,9 @@ IFS=$'\n\t'
 
 need iconv
 if has sd; then
-  sanitize() { sd '[^A-Za-z0-9._-]+' '_' | sd '^_+|_+$' '' | sd '_+' '_'; }
+  sanitize(){ sd '[^A-Za-z0-9._-]+' '_' | sd '^_+|_+$' '' | sd '_+' '_'; }
 elif has sed; then
-  sanitize() { sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^_+|_+$//g; s/_+/_/g'; }
+  sanitize(){ sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^_+|_+$//g; s/_+/_/g'; }
 else
   die "sed/sd required"
 fi

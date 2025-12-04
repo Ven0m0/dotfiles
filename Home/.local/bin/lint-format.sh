@@ -32,9 +32,9 @@ TOTAL_MODIFIED=0
 TOTAL_ERRORS=0
 
 # --- Helpers ---
-has() { command -v "$1" &>/dev/null; }
+has(){ command -v "$1" &>/dev/null; }
 
-check_deps() {
+check_deps(){
   local missing=() optional=()
   local required=(shfmt shellcheck biome yamllint yamlfmt ruff markdownlint)
   local opt=(taplo mdformat stylua selene ast-grep actionlint prettier)
@@ -59,7 +59,7 @@ check_deps() {
   return 0
 }
 
-find_files() {
+find_files(){
   local ext="$1"
   if [[ $FD == "find" ]]; then
     find "$PROJECT_ROOT" -type f -name "*.$ext" \
@@ -78,14 +78,14 @@ find_files() {
   fi
 }
 
-find_files_multi() {
+find_files_multi(){
   local exts=("$@")
   for ext in "${exts[@]}"; do
     find_files "$ext"
   done | sort -u
 }
 
-record_result() {
+record_result(){
   local file="$1" group="$2" modified="$3" errors="$4"
   FILE_RESULTS["$file"]="$group|$modified|$errors"
   ((TOTAL_FILES++))
@@ -96,11 +96,11 @@ record_result() {
   }
 }
 
-add_fix_cmd() {
+add_fix_cmd(){
   FIX_COMMANDS+=("$1")
 }
 
-run_formatter() {
+run_formatter(){
   local tool="$1" desc="$2"
   shift 2
   if [[ $DRY_RUN == "true" ]]; then
@@ -111,7 +111,7 @@ run_formatter() {
   "$tool" "$@" 2>&1 || return 1
 }
 
-run_linter() {
+run_linter(){
   local tool="$1" desc="$2"
   shift 2
   log "$desc..."
@@ -119,7 +119,7 @@ run_linter() {
 }
 
 # --- YAML Processor ---
-proc_yaml() {
+proc_yaml(){
   local group="yaml" files=()
   mapfile -t files < <(find_files_multi yml yaml)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -165,7 +165,7 @@ proc_yaml() {
 }
 
 # --- JSON/JS/TS/CSS Processor ---
-proc_web() {
+proc_web(){
   local group="web"
   log "Processing JS/TS/JSON/CSS..."
 
@@ -192,7 +192,7 @@ proc_web() {
 }
 
 # --- Shell Scripts Processor ---
-proc_shell() {
+proc_shell(){
   local group="shell" files=()
   mapfile -t files < <(find_files_multi sh bash zsh)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -231,7 +231,7 @@ proc_shell() {
 }
 
 # --- Fish Scripts Processor ---
-proc_fish() {
+proc_fish(){
   local group="fish" files=()
   mapfile -t files < <(find_files fish)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -252,7 +252,7 @@ proc_fish() {
 }
 
 # --- TOML Processor ---
-proc_toml() {
+proc_toml(){
   local group="toml" files=()
   mapfile -t files < <(find_files toml)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -284,7 +284,7 @@ proc_toml() {
 }
 
 # --- Python Processor ---
-proc_python() {
+proc_python(){
   local group="python" files=()
   mapfile -t files < <(find_files py)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -311,7 +311,7 @@ proc_python() {
 }
 
 # --- Lua Processor ---
-proc_lua() {
+proc_lua(){
   local group="lua" files=()
   mapfile -t files < <(find_files lua)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -345,7 +345,7 @@ proc_lua() {
 }
 
 # --- Markdown Processor ---
-proc_markdown() {
+proc_markdown(){
   local group="markdown" files=()
   mapfile -t files < <(find_files md)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -378,7 +378,7 @@ proc_markdown() {
 }
 
 # --- GitHub Actions Processor ---
-proc_actions() {
+proc_actions(){
   local group="actions" files=()
   mapfile -t files < <(find .github/workflows -type f -name "*.yml" -o -name "*.yaml" 2>/dev/null || true)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -406,7 +406,7 @@ proc_actions() {
 }
 
 # --- XML Processor ---
-proc_xml() {
+proc_xml(){
   local group="xml" files=()
   mapfile -t files < <(find_files_multi xml svg)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -421,7 +421,7 @@ proc_xml() {
 }
 
 # --- AST-Grep Processor ---
-proc_ast_grep() {
+proc_ast_grep(){
   local group="ast-grep"
   if ! has ast-grep; then return 0; fi
 
@@ -437,7 +437,7 @@ proc_ast_grep() {
 }
 
 # --- Report Generation ---
-print_table() {
+print_table(){
   log ""
   log "═══════════════════════════════════════════════════════════════════════════"
   log "FILE RESULTS"
@@ -455,7 +455,7 @@ print_table() {
   log "═══════════════════════════════════════════════════════════════════════════"
 }
 
-print_commands() {
+print_commands(){
   log ""
   log "FIX COMMANDS (Reproducible)"
   log "───────────────────────────────────────────────────────────────────────────"
@@ -465,7 +465,7 @@ print_commands() {
   log ""
 }
 
-print_summary() {
+print_summary(){
   log ""
   log "═══════════════════════════════════════════════════════════════════════════"
   log "SUMMARY"
@@ -490,7 +490,7 @@ print_summary() {
 }
 
 # --- Main ---
-main() {
+main(){
   log "Exhaustive Lint & Format Pipeline"
   log "Policy: 2-space indent, 120-char width, zero errors"
   log "Root: $PROJECT_ROOT"
