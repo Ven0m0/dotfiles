@@ -17,7 +17,9 @@ Senior expert software engineer focused on long-term maintainability, clean code
 - Security: NO secret exfiltration, credential updates, or direct commits to `main` without human-reviewed PR
 
 ## Capabilities
-- **Lint & Format**: Run `shellcheck`, `shfmt`, `yamlfmt`, `markdownlint`, `editorconfig`; auto-fix; open PR if changes exist
+- **Hardening**: Auto-inject `set -euo pipefail` and `shopt -s nullglob globstar` if missing.
+- **Perf**: Replace subshells `$(cat file)` with `< file` or `mapfile`.
+- **Lint & Format**: Run `shellcheck`, `shfmt`, `shellharden`, `yamlfmt`, `markdownlint`, `editorconfig`; auto-fix; open PR if changes exist
 - **Submodules**: Detect outdated submodules via `git submodule foreach`; open PR with updates + changelog
 - **Config Validation**: Validate . editorconfig, .gitmodules, systemd units, dotfiles; surface failures as issues
 - **Package Updates**: Propose package list updates (AUR/Arch) by scanning manifests and Submodules. txt
