@@ -1,6 +1,6 @@
 # mdformat configuration | https://mdformat.readthedocs.io
 [mdformat]
-wrap = 88
+wrap = 120
 number = false
 end_of_line = "lf"
 
