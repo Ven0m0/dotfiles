@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 # jaq/jq wrapper: unify invocation for flags/compat
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar
+IFS=$'\n\t' LC_ALL=C LANG=C
 
-has(){ command -v "$1" &>/dev/null; }
-
+has(){ command -v -- "$1" &>/dev/null; }
 # Usage: jqwrap [jq_args...]
 jqwrap(){
   local jqbin
@@ -18,8 +15,7 @@ jqwrap(){
     jqbin=jq
     "$jqbin" "$@"
   else
-    printf 'error: neither jq nor jaq found in PATH\n' >&2
-    return 1
+    printf 'error: neither jq nor jaq found in PATH\n' >&2; return 1
   fi
 }
 
