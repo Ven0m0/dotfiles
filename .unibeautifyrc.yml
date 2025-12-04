@@ -17,7 +17,7 @@ TypeScript:
   object_curly_spacing: true
   quotes: "double"
   space_after_anon_function: false
-  wrap_line_length: 80
+  wrap_line_length: 88
 CSS:
   indent_char: " "
   indent_size: 2
