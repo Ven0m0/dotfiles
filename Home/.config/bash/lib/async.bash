@@ -8,15 +8,11 @@ async_exec(){
 }
 
 welcome_fetch(){
-  # Wait for the parent shell to become idle before running.
-  sleep 2
-  local fetch_cmd=''
-  if has hyfetch && has fastfetch; then
-    fetch_cmd='hyfetch -b fastfetch -p transgender'
+  if has hyfetch; then
+    hyfetch
   elif has fastfetch; then
-    fetch_cmd='fastfetch'
+    fastfetch
   fi
-  [[ -n $fetch_cmd ]] && eval "$fetch_cmd"
 }
 
 path_dedupe(){
