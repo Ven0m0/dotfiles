@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e; LC_ALL=C
 # jaq/jq wrapper: unify invocation for flags/compat
-# Usage: jqwrap [jq_args...]
 jqwrap(){
-  if command -v jaq; then
+  if command -v jaq &>/dev/null; then
     # --raw-input short: -R; --slurp: -s; --null-input: -n; all work the same in jaq, pass through
     jaq "$@"
   elif command -v jq &>/dev/null; then
