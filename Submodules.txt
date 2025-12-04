@@ -1,50 +1,11 @@
-# Package manager
-https://github.com/lestofante/PacmanParallelizer
-https://github.com/alexanderepstein/bsupdate
-
-https://github.com/andresgongora/synth-shell
-https://github.com/andresgongora/bash-tools
-https://github.com/andresgongora/dotfiles-manager
-
-# Help
-https://github.com/vaaandark/tldr-sh
-https://github.com/rustyflavor/clr.sh
-https://github.com/betafcc/clc
-https://github.com/alexanderepstein/Bash-Snippets/blob/master/cheat/cheat
-
-# File manager
-https://github.com/Naheel-Azawy/fmz
-https://github.com/dylanaraps/fff
-https://github.com/Artour64/rofiles
-
 # FZF
 https://github.com/DanielFGray/fzf-scripts
-https://github.com/niksingh710/fzf-preview
-https://github.com/pystardust/ytfzf
 https://github.com/bigH/git-fuzzy
 https://github.com/wfxr/forgit
 
-# Multi
-https://github.com/gavinlyonsrepo/cylon
-https://github.com/joehillen/sysz
-
 # Misc
-https://github.com/AnnikaV9/kbuilder
 https://github.com/Hetsh/mcsctl
-https://github.com/mssalvatore/ln2
-
-# Lint/Cleanup
 https://github.com/b3nj5m1n/xdg-ninja
-https://github.com/Zuzzuc/Bash-minifier
-
 https://github.com/archy-linux/archy-scripts
 https://github.com/ayumu436/arch-linux-scripts
 https://github.com/ulises-jeremias/dotfiles
-https://github.com/endeavouros-team/PKGBUILDS/tree/master/rami
-https://github.com/endeavouros-team/PKGBUILDS/tree/master/reflector-bash-completion
-https://github.com/endeavouros-team/PKGBUILDS/tree/master/keyserver-rank
-https://github.com/endeavouros-team/eos-bash-shared
-https://github.com/endeavouros-team/PKGBUILDS/tree/master/akm
-
-https://github.com/kazhala/dotbare
-https://github.com/rgomezcasas/dotfiles/blob/main/scripts/ui/change_wallpaper
