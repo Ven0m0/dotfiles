@@ -85,5 +85,5 @@ indent_size = 2
 tab = false
 backup = false
 check = false
-force_function_style = "paronly"  # Options: fnpar, fnonly, paronly
-variable_style = "braces"  # Options: braces
+force_function_style = "paronly"
+variable_style = "braces"
