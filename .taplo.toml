@@ -1,46 +1,25 @@
-# Taplo TOML formatter configuration
-# https://taplo.tamasfe.dev/configuration/
-
+# Taplo TOML formatter configuration | https://taplo.tamasfe.dev/configuration
 [formatting]
-# Align entries vertically
 align_entries = true
-# Align comments after entries
 align_comments = true
-# Use arrays of tables where possible
 array_trailing_comma = true
-# Auto-expand arrays
 array_auto_expand = true
 # Auto-collapse arrays (overrides auto_expand)
 array_auto_collapse = false
-# Compact arrays
 compact_arrays = true
-# Compact inline tables
 compact_inline_tables = true
-# Compact entries
 compact_entries = true
-# Column width
 column_width = 120
-# Indent tables
 indent_tables = false
-# Indent entries
 indent_entries = false
-# Indent string (2 spaces per .editorconfig)
-indent_string = "  "
-# Trailing newline
+indent_string = " "
 trailing_newline = true
-# Reorder keys
 reorder_keys = false
-# Reorder arrays
 reorder_arrays = false
-# Allowed blank lines
 allowed_blank_lines = 1
-# CRLF line endings
 crlf = false
 
 [formatting.options]
-# Additional options can be specified here
-
-# Exclude patterns
 exclude = [
   ".git/**",
   "node_modules/**",
