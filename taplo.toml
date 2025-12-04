@@ -3,7 +3,7 @@
 
 [formatting]
 # Align entries vertically
-align_entries = false
+align_entries = true
 # Align comments after entries
 align_comments = true
 # Use arrays of tables where possible
@@ -15,9 +15,9 @@ array_auto_collapse = false
 # Compact arrays
 compact_arrays = true
 # Compact inline tables
-compact_inline_tables = false
+compact_inline_tables = true
 # Compact entries
-compact_entries = false
+compact_entries = true
 # Column width
 column_width = 120
 # Indent tables

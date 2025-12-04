@@ -12,12 +12,12 @@ IFS=$'\n\t'
 FILE_NATIVE="pkglist_native.txt"
 FILE_AUR="pkglist_aur.txt"
 
-check_deps() {
+check_deps(){
   need pacman
   need paru
 }
 
-do_export() {
+do_export(){
   log "Exporting native..."
   pacman -Qqne > "$FILE_NATIVE"
   log "Exporting AUR..."
@@ -25,7 +25,7 @@ do_export() {
   log "Done."
 }
 
-do_import() {
+do_import(){
   if [[ -s $FILE_NATIVE ]]; then
     log "Importing native..."
     run_priv pacman -S --needed - < "$FILE_NATIVE" || log "Native import issues."

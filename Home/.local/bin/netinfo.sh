@@ -15,7 +15,7 @@ need curl
 need awk
 
 # JSON getter with jq fallback
-jget() {
+jget(){
   local json="$1" field="$2"
   if [[ -n $JQ ]]; then
     "$JQ" -r "$field" <<< "$json"
@@ -25,7 +25,7 @@ jget() {
   fi
 }
 
-speed_test() {
+speed_test(){
   local raw up
 
   printf 'Testing download speed...\n' >&2
@@ -38,7 +38,7 @@ speed_test() {
   awk -v s="$up" 'BEGIN{printf "Up:   %.2f Mbps\n",(s*8)/(1024*1024)}'
 }
 
-weather() {
+weather(){
   local location="${1:-}"
   [[ -z $location ]] && location="Bielefeld"
 
@@ -48,7 +48,7 @@ weather() {
   }
 }
 
-ip_info() {
+ip_info(){
   local json ip loc
 
   json=$(curl -fsS -H "User-Agent: ${UA}" https://ipinfo.io/json 2> /dev/null || printf '{}')
@@ -62,7 +62,7 @@ ip_info() {
   weather "$loc"
 }
 
-usage() {
+usage(){
   cat << 'EOF'
 netinfo - Network information tool
 
@@ -88,7 +88,7 @@ DEPENDENCIES:
 EOF
 }
 
-main() {
+main(){
   local cmd="${1:-all}"
   shift || :
 

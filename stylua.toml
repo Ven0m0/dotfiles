@@ -1,25 +1,18 @@
 # StyLua configuration
 # https://github.com/JohnnyMorganz/StyLua
-
-# Indentation (2 spaces per .editorconfig)
+# Indentation
 indent_type = "Spaces"
 indent_width = 2
-
 # Line width
 column_width = 120
-
 # Line endings
 line_endings = "Unix"
-
 # Quote style
 quote_style = "AutoPreferDouble"
-
 # Call parentheses
 call_parentheses = "Always"
-
 # Collapse simple statement
 collapse_simple_statement = "Never"
-
 # Sort requires
 sort_requires = {
   enabled = false,

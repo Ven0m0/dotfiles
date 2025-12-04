@@ -23,7 +23,7 @@ elif [[ -r "$(dirname "$(realpath "$0")")/../lib/bash/stdlib.bash" ]]; then
 else
   # Minimal fallback if stdlib not available
   set -euo pipefail
-  has() { command -v "$1" &>/dev/null; }
+  has(){ command -v "$1" &>/dev/null; }
 fi
 
 # exit 0 - successful execution
@@ -34,7 +34,7 @@ WALLPAPERS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/wallpapers"
 mkdir -p "$WALLPAPERS_DIR"
 QUIET=""
 
-send_feedback() {
+send_feedback(){
   local msg="$1"
   if [[ -z $QUIET ]]; then
     printf '%s\n' "$msg"
@@ -42,7 +42,7 @@ send_feedback() {
   fi
 }
 
-set_wallpaper() {
+set_wallpaper(){
   local wallpaper="$1"
   case "${XDG_SESSION_TYPE:-}" in
     wayland)
@@ -59,7 +59,7 @@ set_wallpaper() {
   esac
 }
 
-random_wallpaper() {
+random_wallpaper(){
   local wallpaper
   wallpaper=$(find "$WALLPAPERS_DIR" -type f -not -path '*/.git/*' | shuf -n 1) || {
     send_feedback "No file selected"
@@ -76,7 +76,7 @@ random_wallpaper() {
   fi
 }
 
-select_wallpaper() {
+select_wallpaper(){
   local wallpaper
   wallpaper=$(
     find "$WALLPAPERS_DIR" -type f -not -path '*/.git/*' -exec basename {} \; \

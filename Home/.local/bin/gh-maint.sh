@@ -10,17 +10,14 @@ VERBOSE=false
 MODE="${MODE:-both}"
 DELETED_BRANCHES=0
 DELETED_REMOTE_BRANCHES=0
-has() { command -v "$1" &> /dev/null; }
-die() {
-  printf '%s\n' "$1" >&2
-  exit 1
-}
-msg() { printf '\033[0;96m==> %s\033[0m\n' "$1"; }
-warn() { printf '\033[0;93mWARN: %s\033[0m\n' "$1"; }
-ok() { printf '\033[0;92m%s\033[0m\n' "$1"; }
-err() { printf '\033[0;31mERROR: %s\033[0m\n' "$1" >&2; }
-verbose() { [[ $VERBOSE == true ]] && printf '\033[0;90m%s\033[0m\n' "$1" || :; }
-usage() {
+has(){ command -v "$1" &> /dev/null; }
+die(){ printf '%s\n' "$1" >&2; exit 1; }
+msg(){ printf '\033[0;96m==> %s\033[0m\n' "$1"; }
+warn(){ printf '\033[0;93mWARN: %s\033[0m\n' "$1"; }
+ok(){ printf '\033[0;92m%s\033[0m\n' "$1"; }
+err(){ printf '\033[0;31mERROR: %s\033[0m\n' "$1" >&2; }
+verbose(){ [[ $VERBOSE == true ]] && printf '\033[0;90m%s\033[0m\n' "$1" || :; }
+usage(){
   cat << EOF
 Usage: $(basename "$0") [MODE] [OPTIONS]
 
@@ -96,7 +93,7 @@ else
   verbose "Using git"
 fi
 [[ -d .git ]] || die "Not a git repository"
-determine_trunk() {
+determine_trunk(){
   local trunk=
   # Use -F for literal string matching (faster)
   if git branch --list master 2> /dev/null | grep -qF master; then
@@ -108,7 +105,7 @@ determine_trunk() {
   fi
   printf '%s' "$trunk"
 }
-update_repo() {
+update_repo(){
   msg "Updating repository..."
   local trunk=$(determine_trunk)
   verbose "Trunk: $trunk"
@@ -139,7 +136,7 @@ update_repo() {
     verbose "Would update $trunk from remote and sync submodules"
   fi
 }
-clean_repo() {
+clean_repo(){
   msg "Cleaning repository..."
   local trunk
   trunk=$(determine_trunk)
@@ -240,7 +237,7 @@ clean_repo() {
   fi
   optimize_repo
 }
-check_gha_failures() {
+check_gha_failures(){
   if ! has gh; then
     warn "gh command not found, skipping GHA failure check."
     return
@@ -270,7 +267,7 @@ check_gha_failures() {
     verbose "The latest workflow run was successful."
   fi
 }
-auto_merge_pr() {
+auto_merge_pr(){
   [[ -n $PR_URL ]] || die "PR URL required for merge mode."
   local strategy="$MERGE_STRATEGY"
   local owner repo pr
@@ -345,7 +342,7 @@ auto_merge_pr() {
   git push -q origin "$head_ref"
   ok "Done. Conflicts resolved and pushed."
 }
-optimize_repo() {
+optimize_repo(){
   msg "Optimizing repository..."
   if [[ $DRY_RUN == true ]]; then
     msg "Would optimize: repack, gc, reflog, worktrees, maintenance"
@@ -374,7 +371,7 @@ optimize_repo() {
     ok "Optimization complete"
   fi
 }
-main() {
+main(){
   case $MODE in
     clean) clean_repo ;;
     update) update_repo ;;
