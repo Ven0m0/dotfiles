@@ -1,3 +1,6 @@
+[settings.cargo]
+binstall = true
+
 [env]
 RUSTC_BOOTSTRAP = "1"
 RUST_PANIC_STRATEGY = "abort"
