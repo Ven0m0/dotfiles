@@ -135,11 +135,11 @@ proc_yaml(){
 
     local modified=0 errors=0
     for f in "${files[@]}"; do
-      local before after
-      before="$(stat -c %Y "$f" 2>/dev/null || echo 0)"
+      local before_stat after_stat
+      before_stat="$(stat -c '%Y %s' "$f" 2>/dev/null || echo '0 0')"
       if yamlfmt -conf "$yamlfmt_cfg" "$f" 2>/dev/null; then
-        after="$(stat -c %Y "$f" 2>/dev/null || echo 0)"
-        [[ $after -gt $before ]] && ((modified++)) && record_result "$f" "$group" "yes" 0 || record_result "$f" "$group" "no" 0
+        after_stat="$(stat -c '%Y %s' "$f" 2>/dev/null || echo '0 0')"
+        [[ $after_stat != "$before_stat" ]] && ((modified++)) && record_result "$f" "$group" "yes" 0 || record_result "$f" "$group" "no" 0
       else
         ((errors++))
         record_result "$f" "$group" "no" 1
@@ -205,11 +205,11 @@ proc_shell(){
   if has shfmt; then
     local modified=0
     for f in "${files[@]}"; do
-      local before after
-      before="$(stat -c %Y "$f" 2>/dev/null || echo 0)"
+      local before_stat after_stat
+      before_stat="$(stat -c '%Y %s' "$f" 2>/dev/null || echo '0 0')"
       shfmt -w -i 2 -ci -bn "$f" 2>/dev/null || true
-      after="$(stat -c %Y "$f" 2>/dev/null || echo 0)"
-      [[ $after -gt $before ]] && ((modified++)) && record_result "$f" "$group" "yes" 0 || record_result "$f" "$group" "no" 0
+      after_stat="$(stat -c '%Y %s' "$f" 2>/dev/null || echo '0 0')"
+      [[ $after_stat != "$before_stat" ]] && ((modified++)) && record_result "$f" "$group" "yes" 0 || record_result "$f" "$group" "no" 0
     done
     add_fix_cmd "shfmt -w -i 2 -ci -bn <file>"
   fi

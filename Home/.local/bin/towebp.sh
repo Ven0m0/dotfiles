@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eo pipefail; shopt -s nullglob
+set -euo pipefail; shopt -s nullglob
 LC_ALL=C LANG=C
 # Function to convert a single file
 convert_to_webp() {

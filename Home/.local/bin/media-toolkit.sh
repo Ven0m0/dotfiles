@@ -153,10 +153,13 @@ cmd_pngzip(){
   shift $((OPTIND - 1))
   for cmd in pngquant oxipng; do need "$cmd"; done
   ((DPI > 0)) && need pngcrush
+  # Determine find tool once
+  local use_fd=0
+  has fd && use_fd=1
   local targets=()
   for x in "${@:-. }"; do
     if [[ -d $x ]]; then
-      if has fd; then
+      if ((use_fd)); then
         mapfile -t files < <(fd -tf -e png --strip-cwd-prefix "$x")
       else
         mapfile -t files < <(find "$x" -type f -name "*.png")
