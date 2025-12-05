@@ -5,7 +5,7 @@ description: Maintain, lint, format, and optimize Python code (Ruff/Mypy focus)
 mode: agent
 modelParameters:
   temperature: 0.2
-tools: ['bash', 'view', 'read_file', 'edit/editFiles', 'codebase', 'search', 'semanticSearch', 'problems', 'runTasks', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'changes', 'searchResults', 'vscodeAPI', 'extensions', 'github', 'githubRepo', 'fetch', 'openSimpleBrowser']
+tools: ['Read', 'Write', 'Edit', 'view', 'read_file', 'edit/editFiles', 'codebase', 'search', 'semanticSearch', 'problems', 'runTasks', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'changes', 'searchResults', 'vscodeAPI', 'extensions', 'github', 'githubRepo', 'fetch', 'openSimpleBrowser', 'Bash', 'Glob', 'Grep']
 ---
 
 ## Role
