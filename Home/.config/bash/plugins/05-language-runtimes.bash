@@ -53,7 +53,12 @@ export NODE_OPTIONS="--no-warnings --max-old-space-size=4096"
 # --- SDKMAN (Java/JVM)
 export SDKMAN_DIR="${SDKMAN_DIR:-$HOME/.sdkman}"
 ifsource "${SDKMAN_DIR}/bin/sdkman-init.sh"
-export JAVA_HOME="$(dirname "$(dirname "$(readlink -f "$(which java)")")")" && prependpath "${JAVA_HOME}/bin"
+# Only compute JAVA_HOME if java exists and JAVA_HOME not already set
+if [[ -z ${JAVA_HOME:-} ]] && has java; then
+  JAVA_HOME="$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")"
+  export JAVA_HOME
+  prependpath "${JAVA_HOME}/bin"
+fi
 
 # AppImages | https://github.com/pkgforge-dev/Citron-AppImage/issues/50
 export URUNTIME_PRELOAD=1 QT_QPA_PLATFORM=xcb
