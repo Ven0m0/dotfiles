@@ -10,7 +10,7 @@ export LC_ALL=C LANG=C
 #   FZF_PREVIEW_IMAGE_HANDLER=kitty|ueberzug|sixel|symbols (default auto)
 #   BAT_STYLE (e.g. "numbers,changes")
 
-have(){ command -v "$1" &>/dev/null; }
+has(){ command -v "$1" &>/dev/null; }
 batcmd(){ if have batcat; then printf '%s' batcat; elif have bat; then printf '%s' bat; else printf '%s' cat; fi; }
 
 cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/fzf"
@@ -98,34 +98,14 @@ preview_text(){
   local file="$1" center="${2:-0}" ext
   ext="$(ext_of "$file")"
   case "$ext" in
-<<<<<<< Updated upstream
-    md) have glow && {
+    md) has glow && {
       glow --style=auto --width "$((${FZF_PREVIEW_COLUMNS:-80} - 1))" -- "$file"
       return
     } ;;
-    htm | html) have w3m && {
+    htm | html) has w3m && {
       w3m -T text/html -dump -- "$file"
       return
     } ;;
-||||||| Stash base
-    md) have glow && {
-      glow --style=auto -- "$file"
-      return
-    } ;;
-    htm | html) have w3m && {
-      w3m -T text/html -dump -- "$file"
-      return
-    } ;;
-=======
-  md) have glow && {
-    glow --style=auto -- "$file"
-    return
-  } ;;
-  htm | html) have w3m && {
-    w3m -T text/html -dump -- "$file"
-    return
-  } ;;
->>>>>>> Stashed changes
   esac
   local b
   b="$(batcmd)"
@@ -150,9 +130,9 @@ init_ueberzug(){
   [[ -p $ueberzug_fifo ]] && return 0
   rm -f "$ueberzug_fifo" 2>/dev/null || :
   mkfifo "$ueberzug_fifo" || return 1
-  if have ueberzugpp; then
+  if has ueberzugpp; then
     tail -f --pid=$$ "$ueberzug_fifo" 2>/dev/null | ueberzugpp layer --silent &
-  elif have ueberzug; then
+  elif has ueberzug; then
     tail -f --pid=$$ "$ueberzug_fifo" 2>/dev/null | ueberzug layer --silent &
   else
     rm -f "$ueberzug_fifo"
@@ -171,7 +151,7 @@ preview_image_backend(){
   dim="$(term_dim)"
   local handler="${FZF_PREVIEW_IMAGE_HANDLER:-auto}"
 
-  if [[ $handler == "ueberzug" ]] || { [[ $handler == "auto" ]] && { have ueberzugpp || have ueberzug; }; }; then
+  if [[ $handler == "ueberzug" ]] || { [[ $handler == "auto" ]] && { has ueberzugpp || has ueberzug; }; }; then
     init_ueberzug && {
       printf '{"action": "add", "identifier": "fzf", "x": %d, "y": %d, "max_width": %d, "max_height": %d, "path": "%s"}\n' \
         "${FZF_PREVIEW_LEFT:-0}" "${FZF_PREVIEW_TOP:-0}" "${FZF_PREVIEW_COLUMNS:-80}" "${FZF_PREVIEW_LINES:-40}" "$img" >>"$ueberzug_fifo"
@@ -179,23 +159,23 @@ preview_image_backend(){
     }
   fi
 
-  if [[ $handler == "kitty" ]] || { [[ $handler == "auto" && (-n ${KITTY_WINDOW_ID:-} || -n ${GHOSTTY_RESOURCES_DIR:-}) ]] && have kitten; }; then
+  if [[ $handler == "kitty" ]] || { [[ $handler == "auto" && (-n ${KITTY_WINDOW_ID:-} || -n ${GHOSTTY_RESOURCES_DIR:-}) ]] && has kitten; }; then
     kitten icat --clear --transfer-mode=memory --unicode-placeholder --stdin=no --place="$dim@0x0" -- "$img" | sed '$d' | sed $'$s/$/\e[m/'
-    have mediainfo && mediainfo -- "$img" || :
+    has mediainfo && mediainfo -- "$img" || :
     return
   fi
 
   if [[ $handler == "sixel" || $handler == "auto" ]]; then
-    if have chafa; then
+    if has chafa; then
       chafa -f "${handler/auto/sixel}" -s "$dim" --animate false -- "$img"
-      have mediainfo && mediainfo -- "$img" || :
+      has mediainfo && mediainfo -- "$img" || :
       return
     fi
   fi
 
-  if [[ $handler == "symbols" ]] && have chafa; then
+  if [[ $handler == "symbols" ]] && has chafa; then
     chafa -f symbols -s "$dim" --animate false -- "$img"
-    have mediainfo && mediainfo -- "$img" || :
+    has mediainfo && mediainfo -- "$img" || :
     return
   fi
 

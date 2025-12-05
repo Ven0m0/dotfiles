@@ -97,7 +97,7 @@ cmd_asset(){
 cmd_maint(){
   for g in gix git; do has "$g" && GIT="$g" && break; done
   [[ -z ${GIT:-} ]] || die "git/gix required"
-  [[ -d . git ]] || die "Not a git repository"
+  [[ -d .git ]] || die "Not a git repository"
 
   local DRY_RUN=false AUTO_YES=true VERBOSE=false MODE=both
 
