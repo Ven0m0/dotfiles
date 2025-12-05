@@ -71,7 +71,7 @@ cmd_edit(){
     "$editor_cmd" "$tmpfile"
 
     # Validate doas.conf
-    if [[ $file =~ ^/etc/doas(\. d/.*)?\. conf$ ]]; then
+    if [[ $file =~ ^/etc/doas(\.d/.*)?\.conf$ ]]; then
       doas -C "$tmpfile" || die "Invalid doas.conf syntax"
     fi
 

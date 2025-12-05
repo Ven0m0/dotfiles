@@ -5,20 +5,17 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-# ANSI color codes
-BLD=$'\e[1m' DEF=$'\e[0m' BLU=$'\e[34m' CYN=$'\e[36m' GRN=$'\e[32m' YLW=$'\e[33m' RED=$'\e[31m'
+# Utility functions
+has() { command -v "$1" &>/dev/null; }
+die() { printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
+warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
+log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
+ok() { printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
 
-# Logging functions
-ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
-err(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; }
-warn(){ printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
-info(){ printf '%b==>\e[0m %s\n' "${BLD}${CYN}" "$*"; }
-die(){ err "$@"; exit "${2:-1}"; }
-has(){ command -v "$1" &>/dev/null; }
-
-# Alias for script compatibility
-success(){ ok "$@"; }
-error(){ err "$@"; }
+# Compatibility aliases
+info() { log "$@"; }
+success() { ok "$@"; }
+error() { die "$@"; }
 
 # Determine repository directory
 get_repo_dir(){

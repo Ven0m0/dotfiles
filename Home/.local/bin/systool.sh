@@ -4,12 +4,13 @@ shopt -s nullglob globstar extglob
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
-have(){ command -v "$1" &> /dev/null; }
-die(){ printf 'error: %s\n' "$*" >&2; exit 1; }
-warn(){ printf 'warn: %s\n' "$*" >&2; }
-log(){ printf 'info: %s\n' "$*"; }
+# Utility functions
+has() { command -v "$1" &>/dev/null; }
+die() { printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
+warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
+log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 SUDO=""
-((EUID != 0)) && have sudo && SUDO=sudo
+((EUID != 0)) && has sudo && SUDO=sudo
 
 usage(){
   printf 'sysmaint subcmds:\n'
@@ -110,7 +111,7 @@ usb_cmd(){
       *) break ;;
     esac
   done
-  have lsblk || die lsblk
+  has lsblk || die "lsblk command required"
   local -a names uuids fss labels mpts lines
   # Use awk for efficient field extraction from lsblk output
   mapfile -t lines < <(lsblk -pn -o NAME,UUID,FSTYPE,LABEL,MOUNTPOINT | awk -v s="$start" '
@@ -212,7 +213,7 @@ EOF
 }
 
 sysz_cmd(){
-  have fzf || die "fzf required"
+  has fzf || die "fzf required"
   local PROG="sysz" VER=1.4.3 VERBOSE=false
   local HIST="${SYSZ_HISTORY:-${XDG_CACHE_HOME:-$HOME/.cache}/sysz/history}"
   local -a MANAGERS STATES
@@ -610,9 +611,9 @@ prsync_cmd(){
   done < "$TMP/all"
   for ((i = 1; i < par; i += 2)); do [[ -s "$TMP/chunk.$i" ]] && tac "$TMP/chunk.$i" > "$TMP/r" && mv "$TMP/r" "$TMP/chunk.$i" || :; done
   log transferring
-  if have parallel; then
+  if has parallel; then
     find "$TMP" -name 'chunk.*' -print0 | parallel -0 -j "$par" -t -- rsync --files-from={} "$@"
-  elif have xargs; then
+  elif has xargs; then
     find "$TMP" -name 'chunk.*' -print0 | xargs -0 -n1 -P"$par" -I{} rsync --files-from={} "$@"
   else
     while read -r f; do rsync --files-from="$f" "$@"; done < <(find "$TMP" -name 'chunk.*')

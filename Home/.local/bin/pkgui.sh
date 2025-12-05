@@ -400,7 +400,7 @@ _pkgui_clean(){
   if [[ $PAC == pacman ]]; then sudo pacman -Sc; else "$PAC" -Sc; fi
   if _pkgui_has paccache; then sudo paccache -rk2; fi
   if [[ -d $HOME/.cache/yay ]]; then paccache -rk1 --cachedir "$HOME/.cache/yay" &>/dev/null; fi
-  if [[ -d $HOME/. cache/paru ]]; then paccache -rk1 --cachedir "$HOME/.cache/paru" &>/dev/null; fi
+  if [[ -d $HOME/.cache/paru ]]; then paccache -rk1 --cachedir "$HOME/.cache/paru" &>/dev/null; fi
 }
 _pkgui_pacdiff(){
   if !  _pkgui_has pacdiff; then
@@ -589,5 +589,103 @@ _pkgui_edit_sys(){
   local -A files=(
     ["/etc/pacman.conf"]="Pacman config"
     ["/etc/pacman.d/mirrorlist"]="Mirrors"
-    ["/etc/makep](#)*
+    ["/etc/makepkg.conf"]="Makepkg config"
+  )
+  local -a choices
+  for f in "${!files[@]}"; do
+    choices+=("$f - ${files[$f]}")
+  done
+  printf '%s\n' "${choices[@]}" | "$FND" --prompt='Edit:' | awk '{print $1}' | xargs -r "${EDITOR:-nano}"
+}
+main(){
+  case "${1:-}" in
+    -s) shift; _pkgui_search "$@" ;;
+    -S) shift; _pkgui_search "$@" | _pkgui_inst ;;
+    -l) _pkgui_local ;;
+    -R) _pkgui_local | _pkgui_rm ;;
+    -u) _pkgui_upd_full ;;
+    -i) _pkgui_info_sys ;;
+    -v) _pkgui_ver; exit 0 ;;
+    -h) _pkgui_help; exit 0 ;;
+    "") ;;
+    *) _pkgui_die "Invalid option: $1" ;;
+  esac
+  [[ $# -eq 0 ]] && _pkgui_menu
+}
+_pkgui_menu(){
+  local choice
+  while :; do
+    choice=$(cat <<'MENU' | "$FND" --prompt='Action:' --height=40 --header="$BD pkgui $D" || exit 0
+s - Search packages
+S - Search & install
+l - List local
+R - Remove packages
+A - Remove orphans
+O - Remove optional deps
+U - Check updates
+u - System update
+F - Update flatpak
+b - Browse AUR
+H - Install history
+M - Maintenance scan
+C - Clean cache
+V - Vulnerabilities
+W - Arch news
+m - Mirrors
+p - pacdiff
+f - Firmware
+k - Failed services
+N - Server status
+P - Generate pkg lists
+B - Backup list
+T - Restore backup
+L - Sync packagelist
+X - Export (native+AUR)
+I - Import (native+AUR)
+i - System info
+c - Edit config
+e - Edit system configs
+n - Desktop notify
+h - Help
+v - Version
+MENU
+)
+    case "${choice%% *}" in
+      s) _pkgui_search ;;
+      S) _pkgui_search | _pkgui_inst ;;
+      l) _pkgui_local ;;
+      R) _pkgui_local | _pkgui_rm ;;
+      A) _pkgui_orphans | _pkgui_rm ;;
+      O) _pkgui_opt_deps | _pkgui_rm ;;
+      U) _pkgui_upd_check ;;
+      u) _pkgui_upd_full ;;
+      F) _pkgui_upd_flat ;;
+      b) _pkgui_browse_aur | _pkgui_inst ;;
+      H) _pkgui_history ;;
+      M) _pkgui_maint ;;
+      C) _pkgui_clean ;;
+      V) _pkgui_vulns ;;
+      W) _pkgui_news ;;
+      m) _pkgui_mirrors ;;
+      p) _pkgui_pacdiff ;;
+      f) _pkgui_fw ;;
+      k) _pkgui_svc ;;
+      N) _pkgui_status ;;
+      P) _pkgui_gen_lists ;;
+      B) _pkgui_backup ;;
+      T) _pkgui_restore ;;
+      L) _pkgui_sync_list ;;
+      X) _pkgui_export ;;
+      I) _pkgui_import ;;
+      i) _pkgui_info_sys ;;
+      c) _pkgui_edit_cfg ;;
+      e) _pkgui_edit_sys ;;
+      n) _pkgui_notify ;;
+      h) _pkgui_help ;;
+      v) _pkgui_ver ;;
+      *) break ;;
+    esac
+  done
+}
+main "$@"
 

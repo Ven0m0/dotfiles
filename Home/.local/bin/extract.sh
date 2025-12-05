@@ -14,7 +14,7 @@ main(){
     *.tar.bz2)  chk tar  && tar -xjf "$f" -C "$out";;
     *.tar.zst)  chk tar  && tar --zstd -xf "$f" -C "$out";;
     *.tar)      chk tar  && tar -xf "$f" -C "$out";;
-    *.bz|*. bz2) chk bzip2 && bzip2 -dkc "$f" > "$out/${f%.bz*}";;
+    *.bz|*.bz2) chk bzip2 && bzip2 -dkc "$f" > "$out/${f%.bz*}";;
     *.gz)       chk gzip && gzip -dc "$f" > "$out/${f%.gz}";;
     *.xz)       chk xz   && xz -dkc "$f" > "$out/${f%.xz}";;
     *.zst)      chk zstd && zstd -dco "$out/${f%.zst}" "$f";;
