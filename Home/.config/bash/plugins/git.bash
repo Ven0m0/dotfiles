@@ -31,10 +31,12 @@ gctl(){
   LC_ALL=C git branch -vv
 }
 # Export GitHub token for MCP if gh is available
-if command -v gh &>/dev/null; then
-  TOKEN=$(gh auth token 2>/dev/null)
-  # Configure Git to use GitHub CLI for authentication
-  [[ -n $TOKEN ]] && { export GITHUB_TOKEN="$TOKEN" && gh auth setup-git; }
+# Lazy-load: only fetch token when needed, not on every shell startup
+if has gh; then
+  # Setup git to use gh for authentication (one-time config)
+  gh auth setup-git 2>/dev/null
+  # Define lazy function to get token only when GITHUB_TOKEN is accessed
+  get_github_token(){ export GITHUB_TOKEN="$(gh auth token 2>/dev/null)"; }
 fi
 
 # Display git repository file structure as a tree

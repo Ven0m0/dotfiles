@@ -34,11 +34,11 @@ lazy_build_cache(){
   local dir="$1" cache_file="$2"
   # Use fd/rg for fast parsing, fallback to grep if needed
   if command -v fd >/dev/null && command -v rg >/dev/null; then
-    command fd -t f '.*\.bash$' "$dir" |
-      command xargs -I{} rg -oN --no-heading '^[a-zA-Z0-9_]+[[:space:]]*\(\)' {} |
+    # Optimized: rg can search multiple files directly, no xargs needed
+    command fd -t f '.*\.bash$' "$dir" -X rg -oN --no-heading '^[a-zA-Z0-9_]+[[:space:]]*\(\)' |
       command sd -- '^(.*):([a-zA-Z0-9_]+)\(\)' '$2\t$1' >"$cache_file"
   else
-    # POSIX fallback
+    # POSIX fallback - uses + for batching instead of individual exec
     find "$dir" -name '*.bash' -exec grep -H '^[a-zA-Z0-9_]*()' {} + |
       sed 's/^\(.*\):\([a-zA-Z0-9_]*\)()/\2\t\1/' >"$cache_file"
   fi
