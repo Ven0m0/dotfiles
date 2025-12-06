@@ -18,6 +18,14 @@ odt_wrap(){
   find . -type f -regex '.*\.\(odt\|docx\|xlsx\)' |
   while IFS= read -r f; do repack_zip "$f"; done
 }
+repack_ods_zstd() {
+  f=$1; t=${f%.*}-zstd.ods
+  d=$(mktemp -d)
+  unzip -q "$f" -d "$d"
+  (cd "$d" && zip --compression-method zstd -q -r "../$t" .)
+  rm -rf "$d"
+  printf '%s\n' "$t"
+}
 lossless_pdf(){
   gs -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -dCompatibilityLevel=1.7 \
     -dNOPAUSE -dQUIET -dBATCH -sOutputFile=out.pdf in.pdf
