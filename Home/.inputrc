@@ -32,6 +32,7 @@ set mark-symlinked-directories on
 set mark-directories on
 set page-completions off
 set match-hidden-files off
+set print-completions-horizontally on
 set colored-completion-prefix on
 set colored-stats on
 set visible-stats on
