@@ -4,14 +4,17 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
-has(){ command -v "$1" &>/dev/null; }
-die(){ printf 'ERROR: %s\n' "$*" >&2; exit 1; }
-need(){ has "$1" || die "Required: $1"; }
+has() { command -v "$1" &>/dev/null; }
+die() {
+  printf 'ERROR: %s\n' "$*" >&2
+  exit 1
+}
+need() { has "$1" || die "Required: $1"; }
 
 if has jaq; then JQ=jaq; elif has jq; then JQ=jq; else JQ=''; fi
 [[ -n $JQ ]] || die "jq/jaq required"
 
-usage(){
+usage() {
   cat <<'EOF'
 gh-tools - GitHub utilities
 
@@ -53,17 +56,20 @@ EOF
 # ============================================================================
 # ASSET
 # ============================================================================
-cmd_asset(){
+cmd_asset() {
   need curl
   local release="" output_opt=(-O) curl_args=(-fsSL)
 
   while getopts "r:so:h" opt; do
     case "$opt" in
-      r) release="$OPTARG" ;;
-      s) curl_args+=(-s) ;;
-      o) output_opt=(-o "$OPTARG") ;;
-      h) usage; exit 0 ;;
-      *) die "Invalid option" ;;
+    r) release="$OPTARG" ;;
+    s) curl_args+=(-s) ;;
+    o) output_opt=(-o "$OPTARG") ;;
+    h)
+      usage
+      exit 0
+      ;;
+    *) die "Invalid option" ;;
     esac
   done
   shift $((OPTIND - 1))
@@ -94,7 +100,7 @@ cmd_asset(){
 # ============================================================================
 # MAINT
 # ============================================================================
-cmd_maint(){
+cmd_maint() {
   for g in gix git; do has "$g" && GIT="$g" && break; done
   [[ -z ${GIT:-} ]] || die "git/gix required"
   [[ -d .git ]] || die "Not a git repository"
@@ -103,25 +109,40 @@ cmd_maint(){
 
   while [[ $# -gt 0 ]]; do
     case $1 in
-      clean|update|both) MODE=$1; shift ;;
-      -d|--dry-run) DRY_RUN=true; shift ;;
-      -y|--yes) AUTO_YES=true; shift ;;
-      -v|--verbose) VERBOSE=true; shift ;;
-      -h|--help) usage; exit 0 ;;
-      *) die "Unknown: $1" ;;
+    clean | update | both)
+      MODE=$1
+      shift
+      ;;
+    -d | --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    -y | --yes)
+      AUTO_YES=true
+      shift
+      ;;
+    -v | --verbose)
+      VERBOSE=true
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *) die "Unknown: $1" ;;
     esac
   done
 
-  msg(){ printf '\033[0;96m==> %s\033[0m\n' "$1"; }
-  ok(){ printf '\033[0;92m%s\033[0m\n' "$1"; }
+  msg() { printf '\033[0;96m==> %s\033[0m\n' "$1"; }
+  ok() { printf '\033[0;92m%s\033[0m\n' "$1"; }
 
-  determine_trunk(){
+  determine_trunk() {
     git branch --list master 2>/dev/null | grep -qF master && printf 'master' && return
     git branch --list main 2>/dev/null | grep -qF main && printf 'main' && return
     die "No trunk branch found"
   }
 
-  update_repo(){
+  update_repo() {
     msg "Updating repository..."
     local trunk=$(determine_trunk)
     if [[ $DRY_RUN == false ]]; then
@@ -133,7 +154,7 @@ cmd_maint(){
     fi
   }
 
-  clean_repo(){
+  clean_repo() {
     msg "Cleaning repository..."
     local trunk=$(determine_trunk)
     if [[ $DRY_RUN == false ]]; then
@@ -144,11 +165,15 @@ cmd_maint(){
     local count=0
     while IFS= read -r branch; do
       [[ $branch == "$trunk" || -z $branch ]] && continue
-      if [[ $AUTO_YES == true ]] || { printf 'Delete %s? [y/N] ' "$branch"; read -r reply; [[ ${reply,,} == y ]]; }; then
+      if [[ $AUTO_YES == true ]] || {
+        printf 'Delete %s? [y/N] ' "$branch"
+        read -r reply
+        [[ ${reply,,} == y ]]
+      }; then
         [[ $DRY_RUN == false ]] && git branch -D "$branch" &>/dev/null && ((count++))
       fi
     done < <(git branch --merged "$trunk" --format='%(refname:short)')
-    
+
     [[ $count -gt 0 ]] && ok "Deleted $count branches" || ok "No merged branches"
 
     if [[ $DRY_RUN == false ]]; then
@@ -159,23 +184,26 @@ cmd_maint(){
   }
 
   case $MODE in
-    clean) clean_repo ;;
-    update) update_repo ;;
-    both) update_repo; clean_repo ;;
+  clean) clean_repo ;;
+  update) update_repo ;;
+  both)
+    update_repo
+    clean_repo
+    ;;
   esac
 }
 
 # ============================================================================
 # MAIN
 # ============================================================================
-main(){
+main() {
   local cmd="${1:-}"
   shift || :
   case "$cmd" in
-    asset) cmd_asset "$@" ;;
-    maint) cmd_maint "$@" ;;
-    -h|--help|help|"") usage ;;
-    *) die "Unknown: $cmd" ;;
+  asset) cmd_asset "$@" ;;
+  maint) cmd_maint "$@" ;;
+  -h | --help | help | "") usage ;;
+  *) die "Unknown: $cmd" ;;
   esac
 }
 

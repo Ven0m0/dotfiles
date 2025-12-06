@@ -4,9 +4,12 @@ shopt -s nullglob
 LC_ALL=C LANG=C
 # Open files/URIs in VS Code
 # Source: https://github.com/AhmetCanArslan/linux-scripts
-has(){ command -v "$1" &>/dev/null; }
-die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
-usage(){
+has() { command -v "$1" &>/dev/null; }
+die() {
+  printf 'Error: %s\n' "$*" >&2
+  exit 1
+}
+usage() {
   cat <<'EOF'
 open_with_vscode - Open files/URIs in VS Code
 
@@ -32,7 +35,7 @@ REQUIREMENTS:
   - code (VS Code CLI command)
 EOF
 }
-main(){
+main() {
   # Check for help
   [[ ${#} -eq 0 ]] && die "Usage: ${0##*/} <file|uri...>"
   for arg in "$@"; do

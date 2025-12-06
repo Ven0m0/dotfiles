@@ -6,7 +6,10 @@ export LC_ALL=C LANG=C
 
 # Utility functions
 has() { command -v "$1" &>/dev/null; }
-die() { printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
+die() {
+  printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
+  exit "${2:-1}"
+}
 warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
 log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 
@@ -17,7 +20,7 @@ for f in sk fzf; do has "$f" && FZF="$f" && break; done
 # Detect bat command
 batcmd() { has batcat && printf 'batcat' || has bat && printf 'bat' || printf 'cat'; }
 
-usage(){
+usage() {
   cat <<'EOF'
 fzf-tools - Unified fuzzy finder utilities
 
@@ -63,19 +66,29 @@ EOF
 # ============================================================================
 # PREVIEW COMMAND
 # ============================================================================
-cmd_preview(){
+cmd_preview() {
   cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/fzf"
   mkdir -p "$cache_dir" || :
 
-  mime_of(){ file --mime-type -b -- "$1"; }
-  ext_of(){ local b="${1##*/}"; b="${b##*.}"; printf '%s' "${b,,}"; }
-  
-  preview_text(){
+  mime_of() { file --mime-type -b -- "$1"; }
+  ext_of() {
+    local b="${1##*/}"
+    b="${b##*.}"
+    printf '%s' "${b,,}"
+  }
+
+  preview_text() {
     local file="$1" center="${2:-0}" ext
     ext="$(ext_of "$file")"
     case "$ext" in
-      md) has glow && { glow --style=auto --width "$((${FZF_PREVIEW_COLUMNS:-80}-1))" -- "$file"; return; } ;;
-      htm|html) has w3m && { w3m -T text/html -dump -- "$file"; return; } ;;
+    md) has glow && {
+      glow --style=auto --width "$((${FZF_PREVIEW_COLUMNS:-80} - 1))" -- "$file"
+      return
+    } ;;
+    htm | html) has w3m && {
+      w3m -T text/html -dump -- "$file"
+      return
+    } ;;
     esac
     local b=$(batcmd)
     if [[ $b == "cat" ]]; then
@@ -85,20 +98,20 @@ cmd_preview(){
     fi
   }
 
-  preview_file(){
+  preview_file() {
     local loc="$1" center="${2:-0}" mime
     mime="$(mime_of "$loc" || printf '')"
     case "$mime" in
-      text/*) preview_text "$loc" "$center" ;;
-      application/json) has jq && "$(batcmd)" -p --color=always -- "$loc" | jq . || preview_text "$loc" "$center" ;;
-      inode/directory) has eza && eza -T -L 2 -- "$loc" || find -- "$loc" -maxdepth 2 -printf '%y %p\n' ;;
-      *) file --brief --dereference -- "$loc" ;;
+    text/*) preview_text "$loc" "$center" ;;
+    application/json) has jq && "$(batcmd)" -p --color=always -- "$loc" | jq . || preview_text "$loc" "$center" ;;
+    inode/directory) has eza && eza -T -L 2 -- "$loc" || find -- "$loc" -maxdepth 2 -printf '%y %p\n' ;;
+    *) file --brief --dereference -- "$loc" ;;
     esac
   }
 
-  parse_arg(){
+  parse_arg() {
     local in="$1" file="$1" center=0
-    if [[ !  -r $file ]]; then
+    if [[ ! -r $file ]]; then
       if [[ $file =~ ^(. +):([0-9]+)\ *$ ]] && [[ -r ${BASH_REMATCH[1]} ]]; then
         file="${BASH_REMATCH[1]}"
         center="${BASH_REMATCH[2]}"
@@ -107,32 +120,38 @@ cmd_preview(){
     printf '%s\n%s\n' "${file/#\~\//$HOME/}" "$center"
   }
 
-  [[ $# -ge 1 ]] || { printf 'usage: fzf-tools preview PATH[:LINE]\n'; return 1; }
+  [[ $# -ge 1 ]] || {
+    printf 'usage: fzf-tools preview PATH[:LINE]\n'
+    return 1
+  }
   local file center
   read -r file center < <(parse_arg "$1")
-  [[ -r $file ]] || { printf 'not readable: %s\n' "$file" >&2; return 2; }
+  [[ -r $file ]] || {
+    printf 'not readable: %s\n' "$file" >&2
+    return 2
+  }
   preview_file "$file" "$center"
 }
 
 # ============================================================================
 # GIT COMMAND
 # ============================================================================
-cmd_git(){
+cmd_git() {
   for g in gix git; do has "$g" && GIT="$g" && break; done
   [[ -z ${GIT:-} ]] && die "No git/gix found"
 
-  _git(){ "$GIT" "$@"; }
-  _check_repo(){ _git rev-parse --git-dir &>/dev/null || die "Not a git repository"; }
-  _pager(){ has delta && printf 'delta --paging=never' || has bat && printf 'bat --style=plain --color=always --paging=never' || printf 'less -R'; }
-  _extract_hash(){ grep -Eo '[a-f0-9]{7,40}' | head -1; }
+  _git() { "$GIT" "$@"; }
+  _check_repo() { _git rev-parse --git-dir &>/dev/null || die "Not a git repository"; }
+  _pager() { has delta && printf 'delta --paging=never' || has bat && printf 'bat --style=plain --color=always --paging=never' || printf 'less -R'; }
+  _extract_hash() { grep -Eo '[a-f0-9]{7,40}' | head -1; }
 
-  _fzf_git(){
+  _fzf_git() {
     local -a opts=(--ansi --cycle --reverse --bind='? :toggle-preview' --bind='alt-w:toggle-preview-wrap')
     [[ ${FZF} == sk ]] && opts+=(--no-hscroll) || opts+=(--no-scrollbar)
     "$FZF" "${opts[@]}" "$@"
   }
 
-  git_add(){
+  git_add() {
     _check_repo
     local pager=$(_pager)
     local files
@@ -140,10 +159,10 @@ cmd_git(){
       --header='Tab:select Enter:add' \
       --preview="git diff --color=always {} | ${pager}")
     [[ -z ${files} ]] && return 0
-    _git add $(xargs <<< "$files")
+    _git add $(xargs <<<"$files")
   }
 
-  git_log(){
+  git_log() {
     _check_repo
     local pager=$(_pager)
     local format='%C(auto)%h%d %s %C(black)%C(bold)%cr%Creset'
@@ -152,7 +171,7 @@ cmd_git(){
       --preview="git show --color=always {1} | ${pager}"
   }
 
-  git_status(){
+  git_status() {
     _check_repo
     local pager=$(_pager)
     _git status --short --untracked-files=all | _fzf_git -m \
@@ -160,18 +179,18 @@ cmd_git(){
       --preview="git diff --color=always {2} | ${pager}"
   }
 
-  git_branch(){
+  git_branch() {
     _check_repo
     local branch
     branch=$(_git branch --all --color=always --sort=-committerdate "$@" | grep -v HEAD | _fzf_git \
       --header='Enter:checkout' \
-      --preview='git log --oneline --graph --color=always {1}' \
-      | sed 's/^[* ]*//' | awk '{print $1}')
+      --preview='git log --oneline --graph --color=always {1}' |
+      sed 's/^[* ]*//' | awk '{print $1}')
     [[ -z ${branch} ]] && return 0
     _git checkout "${branch#remotes/origin/}"
   }
 
-  git_stash(){
+  git_stash() {
     _check_repo
     local pager=$(_pager)
     local stash
@@ -185,20 +204,20 @@ cmd_git(){
   local subcmd="${1:-}"
   shift || :
   case "$subcmd" in
-    add|a) git_add "$@" ;;
-    log|l) git_log "$@" ;;
-    status|s|st) git_status "$@" ;;
-    branch|b) git_branch "$@" ;;
-    stash) git_stash "$@" ;;
-    -h|--help|help) printf 'fzf-tools git: add log status branch stash\n' ;;
-    *) die "Unknown git command: $subcmd" ;;
+  add | a) git_add "$@" ;;
+  log | l) git_log "$@" ;;
+  status | s | st) git_status "$@" ;;
+  branch | b) git_branch "$@" ;;
+  stash) git_stash "$@" ;;
+  -h | --help | help) printf 'fzf-tools git: add log status branch stash\n' ;;
+  *) die "Unknown git command: $subcmd" ;;
   esac
 }
 
 # ============================================================================
 # GREP COMMAND
 # ============================================================================
-cmd_grep(){
+cmd_grep() {
   has rg || die "ripgrep required"
   local PREVIEW='bat --style=full --color=always --highlight-line {2} {1} 2>/dev/null || cat {1}'
   local RELOAD='reload:rg --vimgrep --color=always --smart-case {q} || :'
@@ -217,9 +236,9 @@ cmd_grep(){
 # ============================================================================
 # MAN COMMAND
 # ============================================================================
-cmd_man(){
+cmd_man() {
   local PREVIEW='man {1}'
-  man -k .  | "$FZF" \
+  man -k . | "$FZF" \
     --prompt='manual: ' \
     --header='enter:open' \
     --delimiter=' ' \
@@ -231,16 +250,16 @@ cmd_man(){
 # ============================================================================
 # MAIN ROUTER
 # ============================================================================
-main(){
+main() {
   local cmd="${1:-}"
   shift || :
   case "$cmd" in
-    preview|prev|p) cmd_preview "$@" ;;
-    git|g) cmd_git "$@" ;;
-    grep|rg) cmd_grep "$@" ;;
-    man|m) cmd_man "$@" ;;
-    -h|--help|help|"") usage ;;
-    *) die "Unknown command: $cmd" ;;
+  preview | prev | p) cmd_preview "$@" ;;
+  git | g) cmd_git "$@" ;;
+  grep | rg) cmd_grep "$@" ;;
+  man | m) cmd_man "$@" ;;
+  -h | --help | help | "") usage ;;
+  *) die "Unknown command: $cmd" ;;
   esac
 }
 

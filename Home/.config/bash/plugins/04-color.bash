@@ -19,4 +19,4 @@ for c in "${!_c[@]}"; do
   printf -v BG_"${c^^}" '\e[%sm' $((40 + _c[$c]))
 done
 # Function for 256-colors only
-C(){ printf '\e[%d;5;%sm' "$([[ $1 == bg_* ]] && echo 48 || echo 38)" "${1#*_}"; }
+C() { printf '\e[%d;5;%sm' "$([[ $1 == bg_* ]] && echo 48 || echo 38)" "${1#*_}"; }

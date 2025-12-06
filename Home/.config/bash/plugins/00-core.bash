@@ -1,16 +1,16 @@
 #================================== [Core] ====================================
 # --- History
-HISTCONTROL="erasedups:ignoreboth" 
-HISTSIZE=10000 
+HISTCONTROL="erasedups:ignoreboth"
+HISTSIZE=10000
 HISTFILESIZE=20000
 HISTIGNORE="&:bg:fg:clear:cls:exit:history:?:ls:pwd"
-HISTTIMEFORMAT="%F %T " 
+HISTTIMEFORMAT="%F %T "
 HISTFILE="${HOME}/.bash_history"
-PROMPT_DIRTRIM=3 
+PROMPT_DIRTRIM=3
 PROMPT_COMMAND="history -a"
 
 # --- Shell Behavior
-shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob 
+shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob
 shopt -s hostcomplete no_empty_cmd_completion histappend cmdhist
 set -o noclobber
 
@@ -18,7 +18,7 @@ set -o noclobber
 stty -ixon -ixoff -ixany 2>/dev/null
 bind -r '\C-s' 2>/dev/null
 
-export IGNOREEOF=10 
+export IGNOREEOF=10
 export COLUMNS
 
 # --- Sourcing Legacy

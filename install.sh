@@ -13,9 +13,9 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Logo
-print_logo(){
+print_logo() {
   printf '%b\n' "$CYAN"
-  cat << "EOF"
+  cat <<"EOF"
    ██████╗██╗   ██╗██████╗ ███████╗ ██████╗ ██████╗      ██████╗ ██████╗  ██████╗
   ██╔════╝██║   ██║██╔══██╗██╔════╝██╔═══██╗██╔══██╗     ██╔══██╗██╔══██╗██╔═══██╗
   ██║     ██║   ██║██████╔╝███████╗██║   ██║██████╔╝     ██████╔╝██████╔╝██║   ██║
@@ -27,7 +27,7 @@ EOF
 }
 
 # Get download folder path
-get_downloads_dir(){
+get_downloads_dir() {
   if [[ "$(uname)" == "Darwin" ]]; then
     echo "$HOME/Downloads"
   else
@@ -42,7 +42,7 @@ get_downloads_dir(){
 }
 
 # Get latest version
-get_latest_version(){
+get_latest_version() {
   printf '%b\n' "${CYAN}ℹ️ Checking latest version...${NC}"
   latest_release=$(curl -s https://api.github.com/repos/yeongpin/cursor-free-vip/releases/latest) || {
     printf '%b\n' "${RED}❌ Cannot get latest version information${NC}"
@@ -59,7 +59,7 @@ get_latest_version(){
 }
 
 # Detect system type and architecture
-detect_os(){
+detect_os() {
   if [[ "$(uname)" == "Darwin" ]]; then
     # Detect macOS architecture
     ARCH=$(uname -m)
@@ -88,7 +88,7 @@ detect_os(){
 }
 
 # Install and download
-install_cursor_free_vip(){
+install_cursor_free_vip() {
   local downloads_dir=$(get_downloads_dir)
   local binary_name="CursorFreeVIP_${VERSION}_${OS}"
   local binary_path="${downloads_dir}/${binary_name}"
@@ -102,7 +102,7 @@ install_cursor_free_vip(){
     # Check if running as root
     if [[ $EUID -ne 0 ]]; then
       printf '%b\n' "${YELLOW}⚠️ Requesting administrator privileges...${NC}"
-      if command -v sudo &> /dev/null; then
+      if command -v sudo &>/dev/null; then
         printf '%b\n' "${CYAN}ℹ️ Starting program with sudo...${NC}"
         sudo chmod +x "$binary_path"
         sudo "$binary_path"
@@ -165,7 +165,7 @@ install_cursor_free_vip(){
 
   # Check downloaded file size
   local file_size
-  file_size=$(stat -f%z "$binary_path" 2> /dev/null || stat -c%s "$binary_path" 2> /dev/null)
+  file_size=$(stat -f%z "$binary_path" 2>/dev/null || stat -c%s "$binary_path" 2>/dev/null)
   printf '%b\n' "${CYAN}ℹ️ Downloaded file size: ${file_size} bytes${NC}"
 
   # If file is too small, it might be an error message
@@ -193,7 +193,7 @@ install_cursor_free_vip(){
 }
 
 # Main program
-main(){
+main() {
   print_logo
   get_latest_version
   detect_os

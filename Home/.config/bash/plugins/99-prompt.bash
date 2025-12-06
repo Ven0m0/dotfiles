@@ -4,7 +4,7 @@
 # Configure prompt (starship or fallback)
 if has starship; then
   export STARSHIP_LOG=error
-  eval "$(starship init bash 2> /dev/null)" || :
+  eval "$(starship init bash 2>/dev/null)" || :
 else
   # Fallback prompt with exit status
   c_red='\[\e[31m\]' c_grn='\[\e[32m\]' c_blu='\[\e[34m\]'

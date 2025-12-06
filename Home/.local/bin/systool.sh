@@ -6,13 +6,16 @@ export LC_ALL=C LANG=C
 
 # Utility functions
 has() { command -v "$1" &>/dev/null; }
-die() { printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
+die() {
+  printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
+  exit "${2:-1}"
+}
 warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
 log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 SUDO=""
 ((EUID != 0)) && has sudo && SUDO=sudo
 
-usage(){
+usage() {
   printf 'sysmaint subcmds:\n'
   printf '  ln2        LINK > TARGET | TARGET < LINK\n'
   printf '  swap       Swap two paths\n'
@@ -23,8 +26,8 @@ usage(){
 }
 
 # -------- ln2 ----------
-ln2_usage(){ printf 'Usage: sysmaint ln2 [ln opts] LINK > TARGET | TARGET < LINK\n'; }
-ln2_cmd(){
+ln2_usage() { printf 'Usage: sysmaint ln2 [ln opts] LINK > TARGET | TARGET < LINK\n'; }
+ln2_cmd() {
   local -a a
   a=("$@")
   ((${#a[@]} >= 3)) || {
@@ -46,25 +49,25 @@ ln2_cmd(){
   }
   local tgt link
   case "$op" in
-    '>')
-      tgt=$op2
-      link=$op1
-      ;;
-    '<')
-      tgt=$op1
-      link=$op2
-      ;;
-    *)
-      ln2_usage
-      return 2
-      ;;
+  '>')
+    tgt=$op2
+    link=$op1
+    ;;
+  '<')
+    tgt=$op1
+    link=$op2
+    ;;
+  *)
+    ln2_usage
+    return 2
+    ;;
   esac
   ln "${a[@]}" -- "$tgt" "$link"
 }
 
 # -------- swap ----------
-swap_usage(){ printf 'Usage: sysmaint swap A B\n'; }
-swap_cmd(){
+swap_usage() { printf 'Usage: sysmaint swap A B\n'; }
+swap_cmd() {
   (($# == 2)) || {
     swap_usage
     return 2
@@ -78,37 +81,37 @@ swap_cmd(){
 }
 
 # -------- symclean ----------
-symclean_usage(){ printf 'Usage: sysmaint symclean [DIR]\n'; }
-symclean_cmd(){
+symclean_usage() { printf 'Usage: sysmaint symclean [DIR]\n'; }
+symclean_cmd() {
   local d="${1:-$PWD}"
   [[ -d $d ]] || die "not dir: $d"
   log "cleaning broken symlinks in $d"
-  find "$d" -xtype l -print -delete 2> /dev/null || find -L "$d" -type l -print -delete 2> /dev/null || :
+  find "$d" -xtype l -print -delete 2>/dev/null || find -L "$d" -type l -print -delete 2>/dev/null || :
 }
 
 # -------- usb ----------
-usb_usage(){ printf 'Usage: sysmaint usb [-n COUNT] [-s START_LETTER] [-b BASE=/mnt/usbstick]\n'; }
-usb_cmd(){
+usb_usage() { printf 'Usage: sysmaint usb [-n COUNT] [-s START_LETTER] [-b BASE=/mnt/usbstick]\n'; }
+usb_cmd() {
   local cnt=4 start="b" base="/mnt/usbstick"
   while (($#)); do
     case "$1" in
-      -n)
-        cnt="$2"
-        shift 2
-        ;;
-      -s)
-        start="$2"
-        shift 2
-        ;;
-      -b)
-        base="${2%/}"
-        shift 2
-        ;;
-      -h | --help)
-        usb_usage
-        return 0
-        ;;
-      *) break ;;
+    -n)
+      cnt="$2"
+      shift 2
+      ;;
+    -s)
+      start="$2"
+      shift 2
+      ;;
+    -b)
+      base="${2%/}"
+      shift 2
+      ;;
+    -h | --help)
+      usb_usage
+      return 0
+      ;;
+    *) break ;;
     esac
   done
   has lsblk || die "lsblk command required"
@@ -132,7 +135,7 @@ usb_cmd(){
   log "Mount/Umount tool"
   local i=0
   for line in "${lines[@]}"; do
-    IFS=$'\t' read -r names[i] uuids[i] fss[i] labels[i] mpts[i] <<< "$line"
+    IFS=$'\t' read -r names[i] uuids[i] fss[i] labels[i] mpts[i] <<<"$line"
     printf ' %2d) %s %s [%s]%s\n' "$((i + 1))" "${uuids[i]:-—}" "${fss[i]:-—}" "${labels[i]:-—}" \
       "$([[ -n ${mpts[i]} ]] && printf ' -> %s' "${mpts[i]}")"
     ((i++))
@@ -180,8 +183,8 @@ usb_cmd(){
 }
 
 # -------- sysz (integrated) ----------
-sysz_help_keys(){
-  cat << 'EOF'
+sysz_help_keys() {
+  cat <<'EOF'
 Keys:
   TAB toggle sel
   ctrl-v cat unit
@@ -193,8 +196,8 @@ Keys:
 EOF
 }
 
-sysz_help(){
-  cat << EOF
+sysz_help() {
+  cat <<EOF
 sysz: interactive systemctl via fzf.
 Usage: sysmaint sysz [opts] [command] [-- args]
 Opts:
@@ -212,7 +215,7 @@ $(sysz_help_keys)
 EOF
 }
 
-sysz_cmd(){
+sysz_cmd() {
   has fzf || die "fzf required"
   local PROG="sysz" VER=1.4.3 VERBOSE=false
   local HIST="${SYSZ_HISTORY:-${XDG_CACHE_HOME:-$HOME/.cache}/sysz/history}"
@@ -222,35 +225,35 @@ sysz_cmd(){
   local arg
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -u | --user)
-        MANAGERS=(user)
-        shift
-        ;;
-      --sys | --system)
-        MANAGERS=(system)
-        shift
-        ;;
-      -s | --state)
-        STATES+=("--state=$2")
-        shift 2
-        ;;
-      --state=*)
-        STATES+=("$1")
-        shift
-        ;;
-      -V | --verbose)
-        VERBOSE=true
-        shift
-        ;;
-      -v | --version)
-        printf '%s %s\n' "$PROG" "$VER"
-        return 0
-        ;;
-      -h | --help)
-        sysz_help
-        return 0
-        ;;
-      *) break ;;
+    -u | --user)
+      MANAGERS=(user)
+      shift
+      ;;
+    --sys | --system)
+      MANAGERS=(system)
+      shift
+      ;;
+    -s | --state)
+      STATES+=("--state=$2")
+      shift 2
+      ;;
+    --state=*)
+      STATES+=("$1")
+      shift
+      ;;
+    -V | --verbose)
+      VERBOSE=true
+      shift
+      ;;
+    -v | --version)
+      printf '%s %s\n' "$PROG" "$VER"
+      return 0
+      ;;
+    -h | --help)
+      sysz_help
+      return 0
+      ;;
+    *) break ;;
     esac
   done
 
@@ -258,76 +261,76 @@ sysz_cmd(){
   local -a EXTRA
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      _fzf_preview)
-        shift
-        sysz_preview "$@"
-        return
-        ;;
-      _fzf_cat)
-        shift
-        sysz_cat "$@"
-        return
-        ;;
-      --)
-        shift
-        EXTRA=("$@")
-        break
-        ;;
-      re)
-        CMD=restart
-        shift
-        ;;
-      s)
-        CMD=status
-        shift
-        ;;
-      ed)
-        CMD=edit
-        shift
-        ;;
-      en)
-        CMD=enable
-        shift
-        ;;
-      d | dis)
-        CMD=disable
-        shift
-        ;;
-      j)
-        CMD=journal
-        shift
-        ;;
-      f)
-        CMD=follow
-        shift
-        ;;
-      c)
-        CMD='cat'
-        shift
-        ;;
-      *)
-        CMD="$1"
-        shift
-        ;;
+    _fzf_preview)
+      shift
+      sysz_preview "$@"
+      return
+      ;;
+    _fzf_cat)
+      shift
+      sysz_cat "$@"
+      return
+      ;;
+    --)
+      shift
+      EXTRA=("$@")
+      break
+      ;;
+    re)
+      CMD=restart
+      shift
+      ;;
+    s)
+      CMD=status
+      shift
+      ;;
+    ed)
+      CMD=edit
+      shift
+      ;;
+    en)
+      CMD=enable
+      shift
+      ;;
+    d | dis)
+      CMD=disable
+      shift
+      ;;
+    j)
+      CMD=journal
+      shift
+      ;;
+    f)
+      CMD=follow
+      shift
+      ;;
+    c)
+      CMD='cat'
+      shift
+      ;;
+    *)
+      CMD="$1"
+      shift
+      ;;
     esac
   done
 
   mkdir -p "$(dirname "$HIST")"
-  : > "$HIST" || :
+  : >"$HIST" || :
 
   # validate states
   local ST
   for ST in "${STATES[@]}"; do
     ST="${ST##*=}"
-    [[ -n $ST ]] && systemctl --state=help | grep -Fx "$ST" &> /dev/null || die "bad state: $ST"
+    [[ -n $ST ]] && systemctl --state=help | grep -Fx "$ST" &>/dev/null || die "bad state: $ST"
   done
 
   # loop for unit selection
   local -a UNITS
   local KEY
   while :; do
-    mapfile -t UNITS < <(sysz_list_units "${MANAGERS[@]}" "${STATES[@]}" \
-      | fzf --multi --ansi --expect=ctrl-r,ctrl-s \
+    mapfile -t UNITS < <(sysz_list_units "${MANAGERS[@]}" "${STATES[@]}" |
+      fzf --multi --ansi --expect=ctrl-r,ctrl-s \
         --history="$HIST" \
         --prompt="Units: " \
         --header='? help' \
@@ -339,14 +342,14 @@ sysz_cmd(){
     KEY="${UNITS[0]}"
     UNITS=("${UNITS[@]:1}")
     case "$KEY" in
-      ctrl-r)
-        sysz_daemon_reload
-        continue
-        ;;
-      ctrl-s)
-        sysz_pick_states STATES
-        continue
-        ;;
+    ctrl-r)
+      sysz_daemon_reload
+      continue
+      ;;
+    ctrl-s)
+      sysz_pick_states STATES
+      continue
+      ;;
     esac
     ((${#UNITS[@]})) || return 1
     break
@@ -371,22 +374,22 @@ sysz_cmd(){
   done
 }
 
-sysz_manager(){ case ${1%% *} in '[user]') printf -- '--user' ;; '[system]') printf -- '--system' ;; *) die "mgr" ;; esac }
+sysz_manager() { case ${1%% *} in '[user]') printf -- '--user' ;; '[system]') printf -- '--system' ;; *) die "mgr" ;; esac }
 
-sysz_cat(){
+sysz_cat() {
   local M=$(sysz_manager "$1")
   local U="${1##* }"
   SYSTEMD_COLORS=1 systemctl "$M" cat -- "$U"
 }
-sysz_preview(){
+sysz_preview() {
   local M=$(sysz_manager "$1")
   local U="${1##* }"
   if [[ $U == *@.* ]]; then sysz_cat "$@"; else SYSTEMD_COLORS=1 systemctl "$M" status --no-pager -- "$U"; fi
 }
 
-sysz_show(){ systemctl "$1" show "$2" -p "$3" --value; }
+sysz_show() { systemctl "$1" show "$2" -p "$3" --value; }
 
-sysz_sort(){
+sysz_sort() {
   local line mgr unit uclean n type
   while IFS= read -r line; do
     mgr=${line%% *}
@@ -411,14 +414,14 @@ sysz_sort(){
   done | sort -bifu | cut -d' ' -f2-
 }
 
-sysz_list(){
+sysz_list() {
   local -a args
   args=(--all --no-legend --full --plain --no-pager "$@")
   (
     systemctl list-units "${args[@]}"
     systemctl list-unit-files "${args[@]}"
-  ) \
-    | sort -u -t ' ' -k1,1 | while read -r l; do
+  ) |
+    sort -u -t ' ' -k1,1 | while read -r l; do
     local unit=${l%% *}
     if [[ $l == *" active "* ]]; then
       printf '\033[0;32m%s\033[0m\n' "$unit"
@@ -432,7 +435,7 @@ sysz_list(){
   done
 }
 
-sysz_list_units(){
+sysz_list_units() {
   local -a mgrs states
   mgrs=("$@")
   states=()
@@ -446,7 +449,7 @@ sysz_list_units(){
   for M in "${mm[@]}"; do sysz_list "--$M" "${states[@]}" | sed -E "s/^/[$M] /"; done | sysz_sort
 }
 
-sysz_daemon_reload(){
+sysz_daemon_reload() {
   local picks
   picks="$(printf '%s\n' '[system] daemon-reload' '[user] daemon-reload' | fzf --multi --no-info --prompt='Reload: ')" || return 1
   [[ -z $picks ]] && return 1
@@ -455,20 +458,20 @@ sysz_daemon_reload(){
     case "$line" in '[user] daemon-reload') systemctl --user daemon-reload ;;
     '[system] daemon-reload') ((EUID == 0)) && systemctl --system daemon-reload || sudo systemctl --system daemon-reload ;;
     esac
-  done <<< "$picks"
+  done <<<"$picks"
 }
 
-sysz_pick_states(){
+sysz_pick_states() {
   local -n ref="$1"
-  mapfile -t chosen < <(systemctl --state=help | grep -Ev ':|ing|^$' | sort -u \
-    | fzf --multi --prompt='States: ') || return 1
+  mapfile -t chosen < <(systemctl --state=help | grep -Ev ':|ing|^$' | sort -u |
+    fzf --multi --prompt='States: ') || return 1
   ((${#chosen[@]})) || return 0
   ref=()
   local st
   for st in "${chosen[@]}"; do ref+=("--state=$st"); done
 }
 
-sysz_pick_commands(){
+sysz_pick_commands() {
   local -a units
   units=()
   while [[ $1 != "" && $1 != "--" ]]; do
@@ -518,7 +521,7 @@ sysz_pick_commands(){
   printf '%s\n' "${pick[@]}"
 }
 
-sysz_exec(){
+sysz_exec() {
   local M="$1" UNIT="$2" CMD="$3"
   shift 3
   local -a args
@@ -526,35 +529,35 @@ sysz_exec(){
   local base="${CMD%% *}"
   local run=(systemctl "$M")
   case "$base" in
-    journal)
-      sysz_journal "$M" "$UNIT" -xe "${args[@]}"
-      return
-      ;;
-    follow)
-      sysz_journal "$M" "$UNIT" -xef "${args[@]}"
-      return
-      ;;
-    status)
-      SYSTEMD_COLORS=1 "${run[@]}" status --no-pager "${args[@]}" -- "$UNIT"
-      return
-      ;;
-    cat | show | edit)
-      "${run[@]}" "$base" "${args[@]}" -- "$UNIT"
-      return
-      ;;
-    mask | unmask | start | stop | restart | reload | enable | disable)
-      "${run[@]}" "$CMD" "${args[@]}" -- "$UNIT" || return $?
-      SYSTEMD_COLORS=1 "${run[@]}" status --no-pager -- "$UNIT"
-      return
-      ;;
-    *)
-      "${run[@]}" "$CMD" "${args[@]}" -- "$UNIT"
-      return
-      ;;
+  journal)
+    sysz_journal "$M" "$UNIT" -xe "${args[@]}"
+    return
+    ;;
+  follow)
+    sysz_journal "$M" "$UNIT" -xef "${args[@]}"
+    return
+    ;;
+  status)
+    SYSTEMD_COLORS=1 "${run[@]}" status --no-pager "${args[@]}" -- "$UNIT"
+    return
+    ;;
+  cat | show | edit)
+    "${run[@]}" "$base" "${args[@]}" -- "$UNIT"
+    return
+    ;;
+  mask | unmask | start | stop | restart | reload | enable | disable)
+    "${run[@]}" "$CMD" "${args[@]}" -- "$UNIT" || return $?
+    SYSTEMD_COLORS=1 "${run[@]}" status --no-pager -- "$UNIT"
+    return
+    ;;
+  *)
+    "${run[@]}" "$CMD" "${args[@]}" -- "$UNIT"
+    return
+    ;;
   esac
 }
 
-sysz_journal(){
+sysz_journal() {
   local M="$1" UNIT="$2"
   shift 2
   if [[ $M == --user ]]; then
@@ -565,8 +568,8 @@ sysz_journal(){
 }
 
 # -------- prsync ----------
-prsync_usage(){ printf 'Usage: sysmaint prsync [--parallel=N] RSYNC_ARGS...\n'; }
-prsync_cmd(){
+prsync_usage() { printf 'Usage: sysmaint prsync [--parallel=N] RSYNC_ARGS...\n'; }
+prsync_cmd() {
   (($#)) || {
     prsync_usage
     return 2
@@ -576,18 +579,18 @@ prsync_cmd(){
     par="${1##*=}"
     shift
   fi
-  [[ -n $par ]] || par="$(nproc 2> /dev/null || printf 10)"
+  [[ -n $par ]] || par="$(nproc 2>/dev/null || printf 10)"
   log "parallel=$par"
   local TMP
   TMP="$(mktemp -d)"
   trap 'rm -rf "$TMP"' EXIT
   log "dry-run listing"
-  rsync "$@" --out-format="%l %n" --no-v --dry-run 2> /dev/null \
-    | grep -vF "sending incremental file list" | sort -nr > "$TMP/all"
+  rsync "$@" --out-format="%l %n" --no-v --dry-run 2>/dev/null |
+    grep -vF "sending incremental file list" | sort -nr >"$TMP/all"
   local total
-  total=$(wc -l < "$TMP/all")
+  total=$(wc -l <"$TMP/all")
   local size
-  size=$(awk '{s+=$1}END{printf "%.0f",s}' < "$TMP/all")
+  size=$(awk '{s+=$1}END{printf "%.0f",s}' <"$TMP/all")
   log "$total files ($((size / 1024 ** 2)) MB)"
   ((total)) || {
     warn none
@@ -595,7 +598,7 @@ prsync_cmd(){
   }
   # distribute
   local i
-  for ((i = 0; i < par; i++)); do : > "$TMP/chunk.$i"; done
+  for ((i = 0; i < par; i++)); do : >"$TMP/chunk.$i"; done
   local -a sum
   for ((i = 0; i < par; i++)); do sum[i]=0; done
   local sz path idx=0
@@ -606,10 +609,10 @@ prsync_cmd(){
       mi=$j
     }; done
     sum[mi]=$((sum[mi] + sz))
-    printf '%s\n' "$path" >> "$TMP/chunk.$mi"
+    printf '%s\n' "$path" >>"$TMP/chunk.$mi"
     ((++idx % 25000 == 0)) && log "distributed $idx"
-  done < "$TMP/all"
-  for ((i = 1; i < par; i += 2)); do [[ -s "$TMP/chunk.$i" ]] && tac "$TMP/chunk.$i" > "$TMP/r" && mv "$TMP/r" "$TMP/chunk.$i" || :; done
+  done <"$TMP/all"
+  for ((i = 1; i < par; i += 2)); do [[ -s "$TMP/chunk.$i" ]] && tac "$TMP/chunk.$i" >"$TMP/r" && mv "$TMP/r" "$TMP/chunk.$i" || :; done
   log transferring
   if has parallel; then
     find "$TMP" -name 'chunk.*' -print0 | parallel -0 -j "$par" -t -- rsync --files-from={} "$@"
@@ -620,18 +623,18 @@ prsync_cmd(){
   fi
 }
 
-main(){
+main() {
   local c="${1:-}"
   shift || :
   case "$c" in
-    ln2) ln2_cmd "$@" ;;
-    swap) swap_cmd "$@" ;;
-    symclean) symclean_cmd "$@" ;;
-    usb) usb_cmd "$@" ;;
-    sysz) sysz_cmd "$@" ;;
-    prsync) prsync_cmd "$@" ;;
-    "" | -h | --help | help) usage ;;
-    *) die "unknown subcmd: $c" ;;
+  ln2) ln2_cmd "$@" ;;
+  swap) swap_cmd "$@" ;;
+  symclean) symclean_cmd "$@" ;;
+  usb) usb_cmd "$@" ;;
+  sysz) sysz_cmd "$@" ;;
+  prsync) prsync_cmd "$@" ;;
+  "" | -h | --help | help) usage ;;
+  *) die "unknown subcmd: $c" ;;
   esac
 }
 main "$@"
