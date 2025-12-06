@@ -231,7 +231,7 @@ Risk: no behavioral prompt changes without approval; templates stay minimal.
 <summary><b>Bash short</b></summary>
   
 ```markdown
-Identify and suggest improvements to slow or inefficient code and find and refactor duplicated code. Ensure that they are linted and formatted with shellcheck and shellharden. Avoid libraries and reimplement any libraries back into the scripts that source them. Each script needs to work on its own statically. Make use of small wrapper functions like this for example: `die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }` to save space for repetetive code. Enforce 2-space indent and use `;` to inline some short actions if it is reasonable and readable. Always use `(){` for functions  and ensure that there are no consecutive empty newlines, the max is 1. Keep whitespace and newlines reasonably minimal.
+Identify and suggest improvements to slow or inefficient code and find and refactor duplicated code. Run formatters/linters: shellcheck/shellharden. All Bash scripts must be standalone (statically linked/no external sourcing). Use compact wrapper functions to reduce verbosity: `die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }`. Enforce 2-space indent. Max 1 consecutive empty newline and use `;` to inline some short actions if it is reasonable and readable. Use `(){` for function declarations. Minimize vertical whitespace. Replace slow loops/subshells with Bash built-ins (arrays, mapfile, parameter expansion). Remove unused variables and dead code. Identify logic repeated >50 tokens; extract to atomic functions.
 ```
 </details>
 <details>
