@@ -39,8 +39,14 @@ pip() {
   fi
 }
 # Create and activate Python virtual environment using uv
-alias py-venv="[ -d .venv ] || uv venv .venv && source .venv/bin/activate"
+if has uv; then
+  alias py-venv="[[ -d .venv ]] || uv venv .venv && . .venv/bin/activate"
+else
+  alias py-venv="[[ -d .venv ]] || python3 -m venv && . .venv/bin/activate"
+fi
 alias py-server='python3 -m SimpleHTTPServer 8000'
+alias pdb="python3 -m pdb"
+alias serve="python3 -m http.server"
 # --- Node/Bun
 if has bun; then
   alias npx=bunx npm=bun
