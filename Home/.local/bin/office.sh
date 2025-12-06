@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar
-IFS=$'\n\t' LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t' LC_ALL=C LANG=C
 
 die(){ printf '%s\n' "$*" >&2; exit 1; }
 has(){ command -v "$1" &>/dev/null; }
