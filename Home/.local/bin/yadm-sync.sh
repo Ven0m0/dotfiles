@@ -2,8 +2,7 @@
 # yadm-sync - Bidirectional sync helper for subdirectory-based dotfiles
 # Syncs changes between ~/ and ${REPO}/Home/
 
-set -euo pipefail
-IFS=$'\n\t'
+set -euo pipefail; shopt -s nullglob globstar extglob; IFS=$'\n\t' LC_ALL=C LANG=C
 
 # Utility functions
 has(){ command -v "$1" &>/dev/null; }
