@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
 # Bash Script Optimizer, Minifier & Compiler
 # Formats, hardens, lints, minifies, and compiles shell scripts
 # Supports single files, directories, stdout output, and multi-variant compilation
