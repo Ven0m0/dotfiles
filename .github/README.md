@@ -149,46 +149,8 @@ Also clean them up and enhance/improve the configs
 ```
 </details>
 <details>
-<summary><b>TODO</b></summary>
-
-```markdown
-Objective: fix one small TODO, remove obvious dupes, and apply targeted perf improvements. Minimal, behavior-preserving edits. Output: patch + tests, or issue if non-trivial.
-Scope: trivial TODOs only; multi-module/design → issue. Detect langs per file; prefer AST tools. No public API changes without tests.
-Discovery:
-- TODOs: rg -H -I -nS '\bTODO\b'
-- Dupes: jscpd --min-tokens 50 + ast-grep
-- Perf smells: heuristics + rg (nested loops, O(n²) regex/concat, sync I/O)
-Pipeline:
-1. classify TODO: trivial / risky / external
-2. trivial → implement inline; extract helper if needed
-3. dupes → extract common fn/module; minimal diff
-4. perf → microbench; if >5% win, apply (algo/batching/caching)
-5. add/extend tests; run suite
-6. lint/format; commit on branch todo/<short>
-Safety:
-- preserve API/behavior; add tests for changes
-- small single-file patches only; big → issue
-- no tests → add regression test then fix
-Tools: rg→grep; fd→find; jscpd; ast-grep; semgrep; hyperfine/time/perf; cProfile/node --prof/go bench; git.
-Output:
-- git diff patch; 1-line changelog
-- tests added/updated, benchmarks before/after
-- short rationale + risk
-- non-trivial → issue w/ reproduction + plan
-Repro:
-- rg -H -I -nS '\bTODO\b'
-- jscpd --min-tokens 50
-- hyperfine 'cargo run --release --example foo'
-- git checkout -b todo/short && git add -A && git commit -m 'fix: TODO' && git push
-Exit:
-- trivial fixed + tests + lint clean → patch
-- else → issue w/ pointers + benchmark notes
-
-```
-</details>
-<details>
 <summary><b>LLM files</b></summary>
-  
+
 ```markdown
 Goal: ensure CLAUDE.MD, GEMINI.MD, copilot-instructions.md exist, stay minimal/consistent, pass lint; fail CI on missing/invalid.
 Discovery: fd -H -I -E .git -e md || find . -name '*.md'; rg -nS 'CLAUDE|GEMINI|copilot' || :
