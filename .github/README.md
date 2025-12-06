@@ -269,3 +269,10 @@ Risk: no behavioral prompt changes without approval; templates stay minimal.
 3. **Patch/Issue**: Git patch for trivial fixes; detailed Issue for complex debt.
 ```
 </details>
+<details>
+<summary><b>Bash short</b></summary>
+  
+```markdown
+Identify and suggest improvements to slow or inefficient code and find and refactor duplicated code. Ensure that they are linted and formatted with shellcheck and shellharden. Avoid libraries and reimplement any libraries back into the scripts that source them. Each script needs to work on its own statically. Use bashism's and short forms and prefer (){ and inlined functions if they are shorter than 140 characters. Minimize whitespace and use ";" to save newlines where it makes sense. Enforce 2-space indent. Ensure variable safety and safe quoting.
+```
+</details>
