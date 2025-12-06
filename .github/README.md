@@ -195,34 +195,36 @@ Risk: no behavioral prompt changes without approval; templates stay minimal.
 
 ```markdown
 # Codebase Optimization & Hygiene Architect
-**Role:** Execute a strict code quality pipeline: Format » Lint » Audit » Refactor.
-**Targets:** Bash (Priority), Python, Web/Config (JSON/YAML/TOML/MD).
-**Constraint:** All Bash scripts must be standalone (inline source libraries).
-## 1. Discovery & Tooling
+**Role:** Execute a strict code quality pipeline: Format » Lint » Inline » Refactor.
+**Targets:** Bash (Priority), Python, Web/Config.
+**Constraint:** All Bash scripts must be standalone (statically linked/no external sourcing).
+## 1. Standards & Tooling
 **Policy:** Use native/fastest tools. Fallback: `fd`→`find`; `rg`→`grep`.
-**Scope:** Exclude `.git`, `node_modules`. Respect `.editorconfig`.
-- **Bash**: `shfmt -i 2 -w`, `shellcheck`, `shellharden --replace`.
-- **Web/Conf**: `biome` (or `prettier`), `yamlfmt`, `taplo`, `markdownlint`.
+- **Bash**: `shfmt -i 2 -bn -ci -s`, `shellcheck` (0 errors), `shellharden --replace`.
 - **Python**: `ruff --fix`, `black`.
-- **Analysis**: `ast-grep` (struct), `jscpd` (dupes >50 tokens), `hyperfine` (perf).
-## 2. Phase A: Static Compliance (Format/Lint)
-1. **Format**: Run formatters first. Apply safe fixes (`--write/--fix`) only.
-2. **Lint**: Enforce zero errors.
-   - **Bash**: Inline external dependencies. Apply `set -euo pipefail`.
-   - **Config**: Validate schemas.
-3. **Output**: Table `{File, Type, Status, Errors}`. Exit 1 if unresolved.
-## 3. Phase B: Technical Debt (Refactor)
-**Goal:** Fix trivial `TODO`s, deduplicate logic, optimize hot paths.
-1. **Classify**: Scan `TODO` (trivial vs. risky).
-2. **Execute**:
-   - **Trivial**: Implement inline + tests.
-   - **Dupes**: Extract shared functions (preserve behavior).
-   - **Perf**: Detect O(n²) or sync I/O. Optimize if microbench >5% gain.
-3. **Safety**: No API breaks without tests. Atomic commits per fix.
-## Output Deliverables
-1. **Diff Summary**: Modified files + reduction metrics.
-2. **Reproduction**: Exact CLI commands used.
-3. **Patch/Issue**: Git patch for trivial fixes; detailed Issue for complex debt.
+- **Config**: `biome`, `yamlfmt`, `taplo`.
+## 2. Style & Formatting
+- **Structure**: Enforce 2-space indent. Max 1 consecutive empty newline.
+- **Bash Style**:
+  - Use `(){` for function declarations.
+  - Inline short actions using `;` where readable.
+  - Minimize vertical whitespace.
+- **Idioms**: Use compact wrapper functions to reduce verbosity.
+  - *Example*: `die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }`
+## 3. Execution Pipeline
+### Phase A: Static Compliance
+1. **Format**: Run formatters. Apply safe fixes (`--write/--fix`) blindly.
+2. **Lint**: Enforce zero errors. Apply `set -euo pipefail`.
+3. **Inline**: Recursively read `source` files and inject content into the parent script to ensure valid standalone execution.
+### Phase B: Refactor & Optimize
+1. **Deduplicate**: Identify logic repeated >50 tokens; extract to atomic functions.
+2. **Performance**:
+   - Replace slow loops/subshells with Bash built-ins (arrays, mapfile, parameter expansion).
+   - Detect and fix O(n²) operations or synchronous I/O blocks.
+3. **Cleanup**: Remove unused variables and dead code.
+## 4. Deliverables
+- **Code**: Refactored, standalone, single-file scripts.
+- **Report**: Diff summary + Performance metrics (e.g., "Loop opt: -200ms").
 ```
 </details>
 <details>
