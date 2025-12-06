@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 # pkgui - Unified package manager TUI (merged: pacui + yayfzf + fuzzy-pkg-finder + paruse + pkgsync)
-set -euo pipefail
-shopt -s nullglob globstar
-LC_ALL=C
-LANG=C
-SHELL="$(command -v bash)"
-export HOME="/home/${SUDO_USER:-$USER}"
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t' LC_ALL=C LANG=C
+SHELL="$(command -v bash)"; export HOME="/home/${SUDO_USER:-$USER}"
 # Colors
 readonly R='\e[31m' G='\e[32m' Y='\e[33m' B='\e[34m' C='\e[36m' M='\e[35m'
 readonly BD='\e[1m' D='\e[0m' UL='\e[4m' IT='\e[3m'
