@@ -1,34 +1,23 @@
 has git || return
-gpush() {
+gpush(){
   git add -A && { git commit -m "${1:-Update}" && LC_ALL=C git push --recurse-submodules=on-demand; }
   git status
 }
 
-gctl() {
-  [[ $# -eq 0 ]] && {
-    echo "Usage: gctl <git-repo-url> [directory]" >&2
-    return 1
-  }
-  local url="$1" dir="$2"
-  [[ -n $2 ]] || {
-    dir="$(basename "${url%%/}")"
-    dir="${dir%.git}"
-  }
+gctl(){
+  [[ $# -eq 0 ]] && { echo "Usage: gctl <git-repo-url> [directory]" >&2; return 1; }
+  local url="$1" dir="$2"; export LC_ALL=C LANG=C
+  [[ -n $2 ]] || { dir="$(basename "${url%%/}")"; dir="${dir%.git}"; }
   if [[ ! -d $dir ]]; then
     if has gix; then
-      LC_ALL=C gix clone --depth 1 --no-tags "$url" "$dir" || return 1
+      gix clone --depth 1 --no-tags "$url" "$dir" || return 1
     else
-      LC_ALL=C git clone --depth 1 --no-tags --filter='blob:none' -c protocol.version=2 -c http.version=HTTP/2 "$url" "$dir" || return 1
+      git clone --depth 1 --no-tags --filter='blob:none' -c protocol.version=2 -c http.version=HTTP/2 "$url" "$dir" || return 1
     fi
   else
-    [[ -d $dir ]] && {
-      cd -- "$dir" || return
-      LC_ALL=C git pull -c protocol.version=2 -c http.version=HTTP/2
-      return 0
-    }
+    [[ -d $dir ]] && { cd "$dir" || return; git pull -c protocol.version=2 -c http.version=HTTP/2; return 0; }
   fi
-  LC_ALL=C git status
-  LC_ALL=C git branch -vv
+  git status; git branch -vv
 }
 # Export GitHub token for MCP if gh is available
 # Lazy-load: only fetch token when needed, not on every shell startup
@@ -38,7 +27,8 @@ if has gh; then
   # Define lazy function to get token only when GITHUB_TOKEN is accessed
   get_github_token() { export GITHUB_TOKEN="$(gh auth token 2>/dev/null)"; }
 fi
-
+# Git dotfiles
+alias dot="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 # Display git repository file structure as a tree
 alias git-tree="git ls-tree -r HEAD --name-only | tree --fromfile"
 # GitHub PR metadata quick view
