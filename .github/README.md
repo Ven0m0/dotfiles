@@ -148,7 +148,6 @@ Constraints:
   - Respect project config files (.editorconfig, .prettierrc, pyproject.toml).
 Also clean them up and enhance/improve the configs
 ```
-
 </details>
 <details>
 <summary><b>TODO</b></summary>
@@ -187,11 +186,10 @@ Exit:
 - else → issue w/ pointers + benchmark notes
 
 ```
-
 </details>
 <details>
 <summary><b>LLM files</b></summary>
-
+  
 ```markdown
 Goal: ensure CLAUDE.MD, GEMINI.MD, copilot-instructions.md exist, stay minimal/consistent, pass lint; fail CI on missing/invalid.
 Discovery: fd -H -I -E .git -e md || find . -name '*.md'; rg -nS 'CLAUDE|GEMINI|copilot' || :
@@ -230,5 +228,44 @@ Output: patched files + diff + changelog; else ISSUE.md.
 Exit: all files + lint pass → ok; else fail.
 Risk: no behavioral prompt changes without approval; templates stay minimal.
 ```
+</details>
+<details>
+<summary><b>Format and refactor</b></summary>
 
+```markdown
+# Codebase Optimization & Hygiene Architect
+
+**Role:** Execute a strict code quality pipeline: Format » Lint » Audit » Refactor.
+**Targets:** Bash (Priority), Python, Web/Config (JSON/YAML/TOML/MD).
+**Constraint:** All Bash scripts must be standalone (inline source libraries).
+
+## 1. Discovery & Tooling
+**Policy:** Use native/fastest tools. Fallback: `fd`→`find`; `rg`→`grep`.
+**Scope:** Exclude `.git`, `node_modules`. Respect `.editorconfig`.
+- **Bash**: `shfmt -i 2 -w`, `shellcheck`, `shellharden --replace`.
+- **Web/Conf**: `biome` (or `prettier`), `yamlfmt`, `taplo`, `markdownlint`.
+- **Python**: `ruff --fix`, `black`.
+- **Analysis**: `ast-grep` (struct), `jscpd` (dupes >50 tokens), `hyperfine` (perf).
+
+## 2. Phase A: Static Compliance (Format/Lint)
+1. **Format**: Run formatters first. Apply safe fixes (`--write/--fix`) only.
+2. **Lint**: Enforce zero errors.
+   - **Bash**: Inline external dependencies. Apply `set -euo pipefail`.
+   - **Config**: Validate schemas.
+3. **Output**: Table `{File, Type, Status, Errors}`. Exit 1 if unresolved.
+
+## 3. Phase B: Technical Debt (Refactor)
+**Goal:** Fix trivial `TODO`s, deduplicate logic, optimize hot paths.
+1. **Classify**: Scan `TODO` (trivial vs. risky).
+2. **Execute**:
+   - **Trivial**: Implement inline + tests.
+   - **Dupes**: Extract shared functions (preserve behavior).
+   - **Perf**: Detect O(n²) or sync I/O. Optimize if microbench >5% gain.
+3. **Safety**: No API breaks without tests. Atomic commits per fix.
+
+## Output Deliverables
+1. **Diff Summary**: Modified files + reduction metrics.
+2. **Reproduction**: Exact CLI commands used.
+3. **Patch/Issue**: Git patch for trivial fixes; detailed Issue for complex debt.
+```
 </details>
