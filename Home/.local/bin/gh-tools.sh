@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
 
-has(){ command -v "$1" &>/dev/null; }
-die(){
-  printf 'ERROR: %s\n' "$*" >&2
-  exit 1
-}
+has(){ command -v -- "$1" &>/dev/null; }
+die(){ printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 need(){ has "$1" || die "Required: $1"; }
 
 if has jaq; then JQ=jaq; elif has jq; then JQ=jq; else JQ=''; fi
