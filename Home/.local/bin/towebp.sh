@@ -1,7 +1,5 @@
 #!/bin/bash
-set -euo pipefail
-shopt -s nullglob
-LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar extglob; IFS=$'\n\t' LC_ALL=C LANG=C
 # Function to convert a single file
 convert_to_webp(){
   local src="$1"
