@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob
-IFS=$'\n\t'
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t' LC_ALL=C LANG=C
 
 VERSION="3.0.0"
 BLD=$'\e[1m' GRN=$'\e[32m' BLU=$'\e[34m' YLW=$'\e[33m' CYN=$'\e[96m' RED=$'\e[31m' DEF=$'\e[0m'
