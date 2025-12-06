@@ -113,7 +113,6 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 </details>
 
 ## **Quick prompts**
-
 <details>
 <summary><b>Lint/Format</b></summary>
 
@@ -234,11 +233,9 @@ Risk: no behavioral prompt changes without approval; templates stay minimal.
 
 ```markdown
 # Codebase Optimization & Hygiene Architect
-
 **Role:** Execute a strict code quality pipeline: Format » Lint » Audit » Refactor.
 **Targets:** Bash (Priority), Python, Web/Config (JSON/YAML/TOML/MD).
 **Constraint:** All Bash scripts must be standalone (inline source libraries).
-
 ## 1. Discovery & Tooling
 **Policy:** Use native/fastest tools. Fallback: `fd`→`find`; `rg`→`grep`.
 **Scope:** Exclude `.git`, `node_modules`. Respect `.editorconfig`.
@@ -246,14 +243,12 @@ Risk: no behavioral prompt changes without approval; templates stay minimal.
 - **Web/Conf**: `biome` (or `prettier`), `yamlfmt`, `taplo`, `markdownlint`.
 - **Python**: `ruff --fix`, `black`.
 - **Analysis**: `ast-grep` (struct), `jscpd` (dupes >50 tokens), `hyperfine` (perf).
-
 ## 2. Phase A: Static Compliance (Format/Lint)
 1. **Format**: Run formatters first. Apply safe fixes (`--write/--fix`) only.
 2. **Lint**: Enforce zero errors.
    - **Bash**: Inline external dependencies. Apply `set -euo pipefail`.
    - **Config**: Validate schemas.
 3. **Output**: Table `{File, Type, Status, Errors}`. Exit 1 if unresolved.
-
 ## 3. Phase B: Technical Debt (Refactor)
 **Goal:** Fix trivial `TODO`s, deduplicate logic, optimize hot paths.
 1. **Classify**: Scan `TODO` (trivial vs. risky).
@@ -262,7 +257,6 @@ Risk: no behavioral prompt changes without approval; templates stay minimal.
    - **Dupes**: Extract shared functions (preserve behavior).
    - **Perf**: Detect O(n²) or sync I/O. Optimize if microbench >5% gain.
 3. **Safety**: No API breaks without tests. Atomic commits per fix.
-
 ## Output Deliverables
 1. **Diff Summary**: Modified files + reduction metrics.
 2. **Reproduction**: Exact CLI commands used.
@@ -273,6 +267,6 @@ Risk: no behavioral prompt changes without approval; templates stay minimal.
 <summary><b>Bash short</b></summary>
   
 ```markdown
-Identify and suggest improvements to slow or inefficient code and find and refactor duplicated code. Ensure that they are linted and formatted with shellcheck and shellharden. Avoid libraries and reimplement any libraries back into the scripts that source them. Each script needs to work on its own statically. Use bashism's and short forms and prefer (){ and inlined functions if they are shorter than 140 characters. Minimize whitespace and use ";" to save newlines where it makes sense. Enforce 2-space indent. Ensure variable safety and safe quoting.
+Identify and suggest improvements to slow or inefficient code and find and refactor duplicated code. Ensure that they are linted and formatted with shellcheck and shellharden. Avoid libraries and reimplement any libraries back into the scripts that source them. Each script needs to work on its own statically. Make use of small wrapper functions like this for example: `die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }` to save space for repetetive code. Enforce 2-space indent and use `;` to inline some short actions if it is reasonable and readable. Always use `(){` for functions  and ensure that there are no consecutive empty newlines, the max is 1. Keep whitespace and newlines reasonably minimal.
 ```
 </details>
