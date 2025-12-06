@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; LC_ALL=C; LANG=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 B=$'\e[1;34m' C=$'\e[1;36m' G=$'\e[1;32m' R=$'\e[1;31m' X=$'\e[0m'
 has(){ command -v "$1" &>/dev/null; }
 log(){ printf '%b==>%b %s\n' "$B" "$X" "$*"; }
