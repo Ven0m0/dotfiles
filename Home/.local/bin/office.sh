@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t' 
+set -euo pipefail
+shopt -s nullglob globstar
+IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
-die() { printf '%s\n' "$*" >&2; exit 1; }
+die() {
+  printf '%s\n' "$*" >&2
+  exit 1
+}
 has() { command -v "$1" &>/dev/null; }
 req() { has "$1" || die "missing: $1"; }
 
-img_opt(){ case $1 in *.png) has oxipng && oxipng -q -o2 "$1" || has optipng && optipng -q "$1";; *.jpg|*.jpeg) has jpegoptim && jpegoptim -q -s "$1";; esac; }
-repack_zip(){
+img_opt() { case $1 in *.png) has oxipng && oxipng -q -o2 "$1" || has optipng && optipng -q "$1" ;; *.jpg | *.jpeg) has jpegoptim && jpegoptim -q -s "$1" ;; esac }
+repack_zip() {
   local f=$1 t=${f%.*}-opt.${f##*.} d
   d=$(mktemp -d)
   unzip -q "$f" -d "$d"

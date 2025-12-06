@@ -245,7 +245,7 @@ proc_toml() {
       ((errors++))
     fi
     GROUP_ERRORS["$group"]=$errors
-    add_fix_cmd "taplo format --option \"indent_string=  \" <file>"
+    add_fix_cmd 'taplo format --option "indent_string=  " <file>'
   fi
   return 0
 }

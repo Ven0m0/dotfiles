@@ -48,13 +48,13 @@ resolve_paths() {
       --git) use_git=1 ;;
       --staged) use_staged=1 ;;
       *)
-        if [[ -d "$p" ]]; then
+        if [[ -d $p ]]; then
           if has fd; then
             mapfile -t -O "${#_out[@]}" _out < <(fd --type f --hidden --exclude .git . "$p")
           else
             mapfile -t -O "${#_out[@]}" _out < <(find "$p" -type f -not -path '*/.git/*')
           fi
-        elif [[ -f "$p" ]]; then
+        elif [[ -f $p ]]; then
           _out+=("$p")
         fi
         ;;
@@ -91,7 +91,7 @@ cmd_whitespace() {
   [[ ${#files[@]} -eq 0 ]] && die "No files found. Pass path or --git."
   log "Processing ${#files[@]} files..."
   for f in "${files[@]}"; do
-    [[ -f "$f" ]] || continue
+    [[ -f $f ]] || continue
     grep -qP -m1 '\x00' <(head -c 8000 "$f") && continue
     local dirty=0 file_issues=() sed_script=""
     if [[ $do_trailing -eq 1 ]] && grep -q '[[:space:]]$' "$f"; then
@@ -117,7 +117,7 @@ cmd_whitespace() {
         fi
       fi
     fi
-    if [[ $do_eof -eq 1 && -s "$f" ]] && [[ -n "$(tail -c 1 "$f")" ]]; then
+    if [[ $do_eof -eq 1 && -s $f ]] && [[ -n "$(tail -c 1 "$f")" ]]; then
       file_issues+=("no-eof-newline")
       [[ $check -eq 0 ]] && {
         echo >>"$f"
@@ -155,7 +155,7 @@ cmd_filenames() {
   resolve_paths args files
   [[ ${#files[@]} -eq 0 ]] && die "No paths provided"
   for src in "${files[@]}"; do
-    [[ -e "$src" ]] || continue
+    [[ -e $src ]] || continue
     local dir base clean
     dir=$(dirname "$src")
     base=$(basename "$src")
@@ -167,13 +167,13 @@ cmd_filenames() {
     [[ $spaces -eq 0 ]] && clean=${clean//[[:space:]]/_}
     clean=$(sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^[._-]+//; s/[._-]+$//; s/_+/_/g' <<<"$clean")
     [[ $lowercase -eq 1 ]] && clean=${clean,,}
-    [[ -z "$clean" ]] && clean="file_${RANDOM}"
-    if [[ "$base" != "$clean" ]]; then
+    [[ -z $clean ]] && clean="file_${RANDOM}"
+    if [[ $base != "$clean" ]]; then
       local dest="$dir/$clean"
       if [[ $dry -eq 1 ]]; then
         printf '%bRENAME%b %s → %s\n' "${YLW}" "${DEF}" "$src" "$dest"
       else
-        if [[ -e "$dest" ]]; then
+        if [[ -e $dest ]]; then
           err "Conflict: $dest exists. Skipping $src"
         else
           mv -n -- "$src" "$dest" && ok "$src → $clean"

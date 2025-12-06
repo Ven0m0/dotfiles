@@ -43,9 +43,9 @@ CLEANUP_DONE=false
 # Cleanup resources and temporary state
 cleanup_resources() {
   # Prevent double cleanup
-  [[ "$CLEANUP_DONE" = true ]] && return
+  [[ $CLEANUP_DONE == true ]] && return
   # Kill any background processes if they exist
-  if [[ -n "$CLAUDE_PID" ]]; then
+  if [[ -n $CLAUDE_PID ]]; then
     echo "[INFO] Terminating Claude CLI process (PID: $CLAUDE_PID)..."
     kill "$CLAUDE_PID" 2>/dev/null
     # Wait a bit for graceful termination
@@ -119,7 +119,7 @@ extract_old_format_timestamp() {
   local resume_timestamp
 
   resume_timestamp=$(echo "$claude_output" | awk -F'|' '{print $2}')
-  if ! [[ "$resume_timestamp" =~ ^[0-9]+$ ]] || [ "$resume_timestamp" -le 0 ]; then
+  if ! [[ $resume_timestamp =~ ^[0-9]+$ ]] || [ "$resume_timestamp" -le 0 ]; then
     echo "[ERROR] Failed to extract a valid resume timestamp from Claude output."
     echo "[HINT] Expected format: 'Claude AI usage limit reached|<timestamp>'"
     echo "[SUGGESTION] Check if Claude CLI output format has changed."
@@ -315,7 +315,7 @@ while [[ $# -gt 0 ]]; do
       exit 0
       ;;
     --test-mode)
-      if [ "$2" = "" ] || ! [[ "$2" =~ ^[0-9]+$ ]]; then
+      if [ "$2" = "" ] || ! [[ $2 =~ ^[0-9]+$ ]]; then
         echo "[ERROR] Option $1 requires a valid number of seconds."
         echo "[HINT] Provide number of seconds to simulate wait period."
         echo "[SUGGESTION] Example: claude-auto-resume --test-mode 10 -e 'echo test'"
@@ -524,7 +524,7 @@ if [ "$LIMIT_MSG" != "" ]; then
         # BSD date (macOS)
         RESUME_TIME_FMT=$(date -r "$RESUME_TIMESTAMP" "+%Y-%m-%d %H:%M:%S")
       fi
-      if [ "$RESUME_TIME_FMT" = "" ] || [[ "$RESUME_TIME_FMT" == *"?"* ]]; then
+      if [ "$RESUME_TIME_FMT" = "" ] || [[ $RESUME_TIME_FMT == *"?"* ]]; then
         echo "Claude usage limit detected. Waiting for $WAIT_SECONDS seconds (failed to format resume time, raw timestamp: $RESUME_TIMESTAMP)..."
       else
         echo "Claude usage limit detected. Waiting until $RESUME_TIME_FMT..."

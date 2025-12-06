@@ -1,8 +1,8 @@
 [tool.ruff]
-line-length = 120
-target-version = "py311"
-indent-width = 2
-extend-exclude = [
+line-length=120
+target-version="py311"
+indent-width=2
+extend-exclude=[
   ".git",
   "__pycache__",
   ".venv",
@@ -19,54 +19,54 @@ extend-exclude = [
 ]
 
 [tool.ruff.lint]
-select = [
-  "E",    # pycodestyle errors
-  "W",    # pycodestyle warnings
-  "F",    # pyflakes
-  "I",    # isort
-  "N",    # pep8-naming
-  "UP",   # pyupgrade
-  "B",    # flake8-bugbear
-  "C4",   # flake8-comprehensions
-  "SIM",  # flake8-simplify
-  "RUF",  # ruff-specific
-  "ANN",  # flake8-annotations
-  "S",    # flake8-bandit (security)
-  "T20",  # flake8-print
-  "Q",    # flake8-quotes
+select=[
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "N",   # pep8-naming
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "SIM", # flake8-simplify
+  "RUF", # ruff-specific
+  "ANN", # flake8-annotations
+  "S",   # flake8-bandit (security)
+  "T20", # flake8-print
+  "Q",   # flake8-quotes
 ]
-ignore = [
-  "E501",    # line too long (handled by formatter)
-  "ANN101",  # missing type annotation for self
-  "ANN102",  # missing type annotation for cls
-  "S101",    # use of assert
-  "T201",    # print found
+ignore=[
+  "E501",   # line too long (handled by formatter)
+  "ANN101", # missing type annotation for self
+  "ANN102", # missing type annotation for cls
+  "S101",   # use of assert
+  "T201",   # print found
 ]
-fixable = ["ALL"]
-unfixable = []
+fixable=["ALL"]
+unfixable=[]
 
 [tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-line-ending = "lf"
-skip-magic-trailing-comma = false
-docstring-code-format = true
+quote-style              ="double"
+indent-style             ="space"
+line-ending              ="lf"
+skip-magic-trailing-comma=false
+docstring-code-format    =true
 
 [tool.ruff.lint.isort]
-known-first-party = []
-known-third-party = []
-section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+known-first-party=[]
+known-third-party=[]
+section-order    =["future", "standard-library", "third-party", "first-party", "local-folder"]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]  # unused imports
-"test_*.py" = ["S101", "ANN"]  # allow assert and skip annotations in tests
-"*_test.py" = ["S101", "ANN"]
+"__init__.py"=["F401"]        # unused imports
+"test_*.py"  =["S101", "ANN"] # allow assert and skip annotations in tests
+"*_test.py"  =["S101", "ANN"]
 
 [tool.black]
-line-length = 120
-target-version = ["py311"]
-skip-string-normalization = false
-extend-exclude = '''
+line-length=120
+target-version=["py311"]
+skip-string-normalization=false
+extend-exclude='''
 /(
   \.git
   | \.venv
@@ -81,9 +81,9 @@ extend-exclude = '''
 '''
 
 [tool.beautysh]
-indent_size = 2
-tab = false
-backup = false
-check = false
-force_function_style = "paronly"
-variable_style = "braces"
+indent_size         =2
+tab                 =false
+backup              =false
+check               =false
+force_function_style="paronly"
+variable_style      ="braces"

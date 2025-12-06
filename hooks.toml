@@ -10,7 +10,7 @@
 # """
 # Post-link hook: Run after successfully linking etc/ to /etc
 # Useful for reloading services or validating deployments
-post = """
+post="""
 echo "✓ System configurations (etc/) linked successfully"
 echo "  Some services may need to be restarted to apply changes"
 """
@@ -18,7 +18,7 @@ echo "  Some services may need to be restarted to apply changes"
 # Hooks for the 'usr' package (system libraries and binaries)
 [usr]
 # Post-link hook: Run after successfully linking usr/ to /usr
-post = """
+post="""
 echo "✓ System libraries (usr/) linked successfully"
 # Reload systemd if systemd configs were modified
 if systemctl --version &>/dev/null; then

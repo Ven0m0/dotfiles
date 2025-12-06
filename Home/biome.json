@@ -6,24 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false,
-    "ignore": [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/build/**",
-      "**/.next/**",
-      "**/.turbo/**",
-      "**/.cache/**",
-      "**/coverage/**",
-      "**/.venv/**",
-      "**/target/**",
-      "**/*.min.js",
-      "**/*.min.css",
-      "**/*.bundle.js",
-      "**/.git/**",
-      "**/vendor/**",
-      "**/public/assets/**"
-    ]
+    "ignoreUnknown": false
   },
   "formatter": {
     "enabled": true,

@@ -1,51 +1,51 @@
 [settings.python]
-uv_venv_auto = true
-uv_venv_create_args = ["--system-site-packages", "--seed"]
+uv_venv_auto       =true
+uv_venv_create_args=["--system-site-packages", "--seed"]
 # https://gregoryszorc.com/docs/python-build-standalone/main/running.html
-precompiled_os = "x86_64_v3"
-precompiled_flavor = "pgo+lto"
+precompiled_os    ="x86_64_v3"
+precompiled_flavor="pgo+lto"
 
 [settings.pipx]
-uvx = true
+uvx=true
 
 [env]
-_.python.venv = { path = ".venv", create = true }
-UV_LINK_MODE = "hardlink"
-UV_COMPILE_BYTECODE = "1"
-UV_CONCURRENT_DOWNLOADS = "16"
+_.python.venv          ={path=".venv", create=true}
+UV_LINK_MODE           ="hardlink"
+UV_COMPILE_BYTECODE    ="1"
+UV_CONCURRENT_DOWNLOADS="16"
 
 [tools]
 # Installs the specified Python version
 # python = "{{ get_env(name='PYTHON_VERSION', default='3.11') }}" # Specific version
-python = "latest"
-uv = "latest"
-ruff = "latest"
+python="latest"
+uv    ="latest"
+ruff  ="latest"
 
 # Install dependencies
 [tasks.install]
-alias = "i"
-run = "uv pip install -r requirements.txt"
+alias="i"
+run  ="uv pip install -r requirements.txt"
 
 # Add a new dependency
 [tasks.add]
-run = "uv pip install"
+run="uv pip install"
 
 # Run the application
 [tasks.run]
-run = "python main.py"
+run="python main.py"
 
 # List dependencies
 [tasks.deps]
-run = "uv pip list"
+run="uv pip list"
 
 # Run tests
 [tasks.test]
-run = "pytest tests/"
+run="pytest tests/"
 
 # Lint the code
 [tasks.lint]
-run = "ruff src/"
+run="ruff src/"
 
 # Format the code
 [tasks.format]
-run = "ruff format src/"
+run="ruff format src/"

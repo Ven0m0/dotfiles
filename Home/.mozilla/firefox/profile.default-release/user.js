@@ -1,4 +1,4 @@
-(user_pref('toolkit.legacyUserProfileCustomizations.stylesheets', !0),
+user_pref('toolkit.legacyUserProfileCustomizations.stylesheets', !0),
   user_pref('intl.locale.requested', ''),
   user_pref('spellchecker.dictionary_path', '/usr/share/hunspell'),
   user_pref('widget.use-xdg-desktop-portal.file-picker', 1),
@@ -137,7 +137,7 @@
   user_pref('privacy.query_stripping.enabled', !0),
   user_pref(
     'privacy.query_stripping.strip_list',
-    '__hsfp __hssc __hstc __s _hsenc _openstat dclid fbclid gbraid gclid hsCtaTracking igshid mc_eid ml_subscriber ml_subscriber_hash msclkid oft_c oft_ck oft_d oft_id oft_ids oft_k oft_lk oft_sk oly_anon_id oly_enc_id rb_clickid s_cid twclid vero_conv vero_id wbraid wickedid yclid'
+    '__hsfp __hssc __hstc __s _hsenc _openstat dclid fbclid gbraid gclid hsCtaTracking igshid mc_eid ml_subscriber ml_subscriber_hash msclkid oft_c oft_ck oft_d oft_id oft_ids oft_k oft_lk oft_sk oly_anon_id oly_enc_id rb_clickid s_cid twclid vero_conv vero_id wbraid wickedid yclid',
   ),
   user_pref('privacy.partition.always_partition_third_party_non_cookie_storage', !0),
   user_pref('privacy.firstparty.isolate', !1),
@@ -415,4 +415,4 @@
   user_pref('reader.parse-on-load.enabled', !1),
   user_pref('narrate.enabled', !1),
   user_pref('print.enabled', !1),
-  user_pref('media.video_stats.enabled', !1));
+  user_pref('media.video_stats.enabled', !1);

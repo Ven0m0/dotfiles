@@ -4,8 +4,9 @@
 # To skip frames: convert-to-gif.sh <video-file-path> <time-in-seconds>
 # Example:
 # convert-to-gif.sh video.mp4 28
-if [[ -z "$1" ]]; then
-  echo "No video file specified"; exit 1
+if [[ -z $1 ]]; then
+  echo "No video file specified"
+  exit 1
 fi
 # get everything after last /
 video=${1##*/}

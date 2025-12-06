@@ -1,5 +1,5 @@
 .tabbrowser-tab:not([pinned]) .tab-icon-stack:is([muted], [soundplaying], [activemedia-blocked]) {
-  grid-template-areas: 'a s';
+  grid-template-areas: "a s";
 }
 .tabbrowser-tab:not([pinned]) .tab-icon-overlay:is([muted], [soundplaying], [activemedia-blocked]) {
   grid-area: s;

@@ -1,5 +1,4 @@
-@-moz-document url-prefix("chrome://mozapps/content/extensions/aboutaddons.html"),url("about:addons")
-{
+@-moz-document url-prefix("chrome://mozapps/content/extensions/aboutaddons.html"), url("about:addons") {
   .addon-card-message {
     margin-bottom: 0 !important;
     margin-top: 0 !important;
@@ -9,7 +8,7 @@
   }
   addon-card .addon-card-collapsed {
     display: grid !important;
-    grid-template-areas: 'ic con' 'op op';
+    grid-template-areas: "ic con" "op op";
     grid-template-columns: 48px auto;
   }
   addon-card .card-contents {
@@ -39,24 +38,24 @@
     background-color: rgba(127, 127, 127, 0.1) !important;
     backdrop-filter: none !important;
   }
-  button[role='menuitem'] {
+  button[role="menuitem"] {
     padding-inline-start: 30px !important;
     background-position-x: 8px !important;
   }
   .arrow,
   .more-options-menu > .more-options-button,
   .addon-name-container > .more-options-button,
-  panel-item[action='expand'] {
+  panel-item[action="expand"] {
     display: none !important;
   }
   div.list {
     display: inherit !important;
     flex-direction: row !important;
   }
-  panel-item[action='toggle-disabled'] {
-    --icon: url('chrome://browser/skin/quit.svg');
+  panel-item[action="toggle-disabled"] {
+    --icon: url("chrome://browser/skin/quit.svg");
   }
-  panel-item[action='preferences'] {
-    --icon: url('chrome://global/skin/icons/settings.svg');
+  panel-item[action="preferences"] {
+    --icon: url("chrome://global/skin/icons/settings.svg");
   }
 }

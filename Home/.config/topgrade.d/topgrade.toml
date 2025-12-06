@@ -2,9 +2,9 @@
 [include]
 # paths = ["/etc/topgrade.toml"]
 [misc]
-pre_sudo = true
+pre_sudo=true
 #sudo_command = "sudo"
-disable = [
+disable=[
   "config_update",
   "micro",
   "uv",
@@ -17,7 +17,7 @@ disable = [
   "vim",
   "containers",
 ]
-ignore_failures = [
+ignore_failures=[
   "system",
   "micro",
   "uv",
@@ -30,69 +30,69 @@ ignore_failures = [
   "node",
   "shell",
 ]
-assume_yes = true
-no_retry = true
-cleanup = true
-skip_notify = true
-notify_each_step = false
-no_self_update = true
-run_in_tmux = false
+assume_yes=true
+no_retry=true
+cleanup=true
+skip_notify=true
+notify_each_step=false
+no_self_update=true
+run_in_tmux=false
 # bashit_branch = "stable"
 # only = ["system", "emacs"]
 # remote_topgrades = ["pi3", "pi4", "Laptop"]
-remote_topgrade_path = ".cargo/bin/topgrade"
+remote_topgrade_path=".cargo/bin/topgrade"
 
 [pre_commands]
-"pacfree" = "rm -f /var/lib/pacman/db.lck"
+"pacfree"="rm -f /var/lib/pacman/db.lck"
 
 [post_commands]
-"paru_clean" = "paru -Scc --noconfirm; sudo paccache -rk0"
-"mise_clear" = "mise cache c -y"
-"bun_clear" = "bun pm cache rm"
-"pnpm_clear" = "pnpm prune; pnpm store prune"
-"uv_clear" = "uv clean"
-"cargo_cache" = "cargo cache -efg; cargo cache -ef trim --limit 1B"
+"paru_clean" ="paru -Scc --noconfirm; sudo paccache -rk0"
+"mise_clear" ="mise cache c -y"
+"bun_clear"  ="bun pm cache rm"
+"pnpm_clear" ="pnpm prune; pnpm store prune"
+"uv_clear"   ="uv clean"
+"cargo_cache"="cargo cache -efg; cargo cache -ef trim --limit 1B"
 
 [commands]
-"bun_up" = "bun update --latest -g"
+"bun_up"="bun update --latest -g"
 # "npm_up" = "sudo npm up -g"
-"pnpm_up" = " sudo pnpm up -g"
-"mise_up" = "sudo mise up -y"
-"ya_up" = "ya pkg upgrade"
-"sheldon_up" = "/usr/bin/sheldon lock --update"
+"pnpm_up"   =" sudo pnpm up -g"
+"mise_up"   ="sudo mise up -y"
+"ya_up"     ="ya pkg upgrade"
+"sheldon_up"="/usr/bin/sheldon lock --update"
 
 [brew]
-greedy_cask = true
-greedy_latest = true
-greedy_auto_updates = true
-autoremove = true
-fetch_head = true
+greedy_cask        =true
+greedy_latest      =true
+greedy_auto_updates=true
+autoremove         =true
+fetch_head         =true
 
 [linux]
 # Arch Package Manager to use.
 #  autodetect, pacman, paru, yay, aura, pamac, pikaur, trizen
-arch_package_manager = "paru"
-yay_arguments = "--combinedupgrade --batchinstall --nocheck --removemake --cleanafter --noconfirm --needed"
-show_arch_news = false
-enable_tlmgr = true
-nix_arguments = "--flake"
+arch_package_manager="paru"
+yay_arguments       ="--combinedupgrade --batchinstall --nocheck --removemake --cleanafter --noconfirm --needed"
+show_arch_news      =false
+enable_tlmgr        =true
+nix_arguments       ="--flake"
 # nix_env_arguments = "--prebuilt-only"
-home_manager_arguments = ["--flake", "file"]
+home_manager_arguments=["--flake", "file"]
 [git]
-max_concurrency = 8
+max_concurrency=8
 # pull_predefined = false
 #arguments = "-r -p --autostash"
 
 [windows]
-accept_all_updates = true
-winget_silent_install = true
-self_rename = true
+accept_all_updates   =true
+winget_silent_install=true
+self_rename          =true
 
 [npm]
-use_sudo = true
+use_sudo=true
 
 [yarn]
-use_sudo = true
+use_sudo=true
 
 [deno]
 # Upgrade deno executable to the given version.
@@ -102,7 +102,7 @@ use_sudo = true
 # force_plug_update = true
 
 [firmware]
-upgrade = true
+upgrade=true
 
 [vagrant]
 # power on vagrant boxes if needed
@@ -112,25 +112,25 @@ upgrade = true
 
 [flatpak]
 # Use sudo for updating the system-wide installation
-use_sudo = true
+use_sudo=true
 
 [distrobox]
-use_root = true
+use_root=true
 # containers = ["archlinux-latest"]
 
 [containers]
 # Specify the containers to ignore while updating (Wildcard supported)
 # ignored_containers = ["ghcr.io/rancher-sandbox/rancher-desktop/rdx-proxy:latest", "docker.io*"]
 # Specify the runtime to use for containers (default: "docker", allowed values: "docker", "podman")
-runtime = "podman"
+runtime="podman"
 
 [lensfun]
-use_sudo = true
+use_sudo=true
 
 [zigup]
-cleanup = true
+cleanup=true
 
 [vscode]
 # If this is set and is a non-empty string, it specifies the profile the
 # extensions should be updated for. (default: this won't be set by default)
-profile = "Main"
+profile="Main"
