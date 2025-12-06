@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-IFS=$'\n\t'
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
 # gamerun - Unified game/program launcher with optimized graphics profiles
 # Usage: gamerun [PROFILE] [ENV=val... ] <program> [args...]
 # Profiles:
@@ -15,10 +14,7 @@ IFS=$'\n\t'
 BLD=$'\e[1m' GRN=$'\e[32m' BLU=$'\e[34m' YLW=$'\e[33m' DEF=$'\e[0m'
 log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
 warn(){ printf '%b==> WARN:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
-die(){
-  printf '%b==> ERROR:\e[0m %s\n' "${BLD}${YLW}" "$*" >&2
-  exit "${2:-1}"
-}
+die(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${YLW}" "$*" >&2; exit "${2:-1}"; }
 profile=sarek
 set_sarek(){
   log "Profile: Sarek (Performance/DXVK)"
