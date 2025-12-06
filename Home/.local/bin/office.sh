@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t' LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t' 
+export LC_ALL=C LANG=C
 
 die(){ printf '%s\n' "$*" >&2; exit 1; }
 has(){ command -v "$1" &>/dev/null; }
 req(){ has "$1" || die "missing: $1"; }
 
-img_opt(){ case $1 in *.png)has oxipng&&oxipng -q -o2 "$1"||has optipng&&optipng -q "$1";;*.jpg|*.jpeg)has jpegoptim&&jpegoptim -q -s "$1";;esac; }
+img_opt(){ case $1 in *.png) has oxipng && oxipng -q -o2 "$1" || has optipng && optipng -q "$1";; *.jpg|*.jpeg) has jpegoptim && jpegoptim -q -s "$1";; esac; }
 repack_zip(){
   local f=$1 t=${f%.*}-opt.${f##*.} d
   d=$(mktemp -d); unzip -q "$f" -d "$d"
@@ -20,13 +21,14 @@ repack_zstd(){
 }
 pdf_lossless(){
   local f=$1 o=${f%.*}-opt.pdf
-  gs -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -dCompatibilityLevel=1.7 \
+  gs -sDEVICE=pdfwrite -dPDFSETTINGS=/default -dCompatibilityLevel=1.7 \
     -dNOPAUSE -dQUIET -dBATCH -sOutputFile="$o" "$f" 2>/dev/null || return 1
   printf '%s\n' "$o"
 }
 pdf_lossy(){
   local f=$1 o=${f%.*}-lossy.pdf
-  gs -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH \
+  gs -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook -dNOPAUSE -q -dBATCH \
+    -dDownsampleColorImages=true -dDownsampleMonoImages=true -dDownsampleGrayImages=true
     -sOutputFile="$o" "$f" 2>/dev/null || return 1
   printf '%s\n' "$o"
 }
@@ -49,7 +51,7 @@ compress_media(){
   for p in "${pdfs[@]}"; do
     local t="${p%.*}-t.pdf" s=$([[ $mode == lossy ]] && printf ebook || printf prepress)
     gs -sDEVICE=pdfwrite -dPDFSETTINGS=/$s -dCompatibilityLevel=1.7 \
-      -dNOPAUSE -dQUIET -dBATCH -sOutputFile="$t" "$p" 2>/dev/null && mv "$t" "$p"
+      -dNOPAUSE -q -dBATCH -sOutputFile="$t" "$p" 2>/dev/null && mv "$t" "$p"
   done
 }
 repack_media(){
