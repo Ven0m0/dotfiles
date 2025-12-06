@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-LC_ALL=C
+set -euo pipefail; shopt -s nullglob globstar extglob; IFS=$'\n\t' LC_ALL=C LANG=C
 # ffzap/ffmpeg wrapper: prefer ffzap, fallback to ffmpeg; uniform CLIs
 ffwrap(){
   if command -v ffzap &>/dev/null; then
