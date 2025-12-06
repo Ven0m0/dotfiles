@@ -6,9 +6,20 @@ die(){ printf '%s\n' "$*" >&2; exit 1; }
 has(){ command -v "$1" &>/dev/null; }
 req(){ has "$1" || die "missing: $1"; }
 
-repack_zip(){ local f=$1 t=${f%.*}-opt.${f##*.} d; d=$(mktemp -d); unzip -q "$f" -d "$d"; (cd "$d" && zip -9 -q -r "../$t" .); rm -rf "$d"; printf '%s\n' "$t"; }
-repack_zstd(){ local f=$1 t=${f%.*}-zstd.${f##*.} d; d=$(mktemp -d); unzip -q "$f" -d "$d"; (cd "$d" && zip --compression-method zstd -q -r "../$t" .); rm -rf "$d"; printf '%s\n' "$t"; }
-pdf_lossless(){ 
+img_opt(){ case $1 in *.png)has oxipng&&oxipng -q -o2 "$1"||has optipng&&optipng -q "$1";;*.jpg|*.jpeg)has jpegoptim&&jpegoptim -q -s "$1";;esac; }
+repack_zip(){
+  local f=$1 t=${f%.*}-opt.${f##*.} d
+  d=$(mktemp -d); unzip -q "$f" -d "$d"
+  (cd "$d" && zip -9 -q -r "../$t" .)
+  rm -rf "$d"; printf '%s\n' "$t"
+}
+repack_zstd(){
+  local f=$1 t=${f%.*}-zstd.${f##*.} d
+  d=$(mktemp -d); unzip -q "$f" -d "$d"
+  (cd "$d" && zip --compression-method zstd -q -r "../$t" .)
+  rm -rf "$d"; printf '%s\n' "$t"
+}
+pdf_lossless(){
   local f=$1 o=${f%.*}-opt.pdf
   gs -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -dCompatibilityLevel=1.7 \
     -dNOPAUSE -dQUIET -dBATCH -sOutputFile="$o" "$f" 2>/dev/null || return 1
@@ -29,6 +40,26 @@ validate_office(){
   fi
   rm -rf "$d"
 }
+
+compress_media(){
+  local d=$1 mode=${2:-lossless}
+  local -a imgs=() pdfs=()
+  mapfile -t imgs < <(find "$d" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \))
+  mapfile -t pdfs < <(find "$d" -type f -iname '*.pdf')
+  [[ ${#imgs[@]} -gt 0 ]] && printf '%s\n' "${imgs[@]}" | xargs -P"$(nproc 2>/dev/null||printf 4)" -I{} bash -c "$(declare -f img_opt has); img_opt {}"
+  for p in "${pdfs[@]}"; do
+    local t="${p%.*}-t.pdf" s=$([[ $mode == lossy ]] && printf ebook || printf prepress)
+    gs -sDEVICE=pdfwrite -dPDFSETTINGS=/$s -dCompatibilityLevel=1.7 \
+      -dNOPAUSE -dQUIET -dBATCH -sOutputFile="$t" "$p" 2>/dev/null && mv "$t" "$p"
+  done
+}
+repack_media(){
+  local f=$1 mode=${2:-lossless} t=${f%.*}-media.${f##*.} d
+  d=$(mktemp -d); unzip -q "$f" -d "$d"
+  compress_media "$d" "$mode"
+  (cd "$d" && zip -9 -q -r "../$t" .)
+  rm -rf "$d"; printf '%s\n' "$t"
+}
 compress_file(){
   local f=$1 mode=${2:-deflate}
   case $f in
@@ -41,23 +72,10 @@ compress_file(){
 batch_compress(){
   local mode=${1:-deflate} dir=${2:-.}
   local -a files=()
-  if has fd; then
-    mapfile -t files < <(fd -e pdf -e odt -e ods -e odp -e docx -e xlsx -e pptx . "$dir")
-  else
+  has fd && mapfile -t files < <(fd -e pdf -e odt -e ods -e odp -e docx -e xlsx -e pptx . "$dir") || \
     mapfile -t files < <(find "$dir" -type f \( -name '*.pdf' -o -name '*.odt' -o -name '*.ods' -o -name '*.odp' -o -name '*.docx' -o -name '*.xlsx' -o -name '*.pptx' \))
-  fi
   [[ ${#files[@]} -eq 0 ]] && die "no office files in $dir"
-  if has parallel; then
-    printf '%s\n' "${files[@]}" | parallel -j+0 --bar bash -c "$(declare -f compress_file repack_zip repack_zstd pdf_lossless pdf_lossy); compress_file \"\$1\" \"$mode\"" _ {}
-  else
-    local pids=() maxjobs=$(($(nproc 2>/dev/null || echo 4)))
-    for f in "${files[@]}"; do
-      compress_file "$f" "$mode" &
-      pids+=($!)
-      ((${#pids[@]} >= maxjobs)) && { wait "${pids[@]}"; pids=(); }
-    done
-    wait
-  fi
+  printf '%s\n' "${files[@]}" | xargs -P"$(nproc 2>/dev/null||printf 4)" -I{} bash -c "$(declare -f compress_file repack_zip repack_zstd pdf_lossless pdf_lossy); compress_file {} $mode" _
 }
 lint_office(){
   local dir=${1:-.}
@@ -90,6 +108,7 @@ show_stats(){
       rm -rf "$d" ;;
   esac
 }
+
 usage(){
   cat <<'EOF'
 office.sh - Office document compression & linting
@@ -98,6 +117,8 @@ Usage: office.sh <cmd> [args]
 Commands:
   compress <file> [mode]    Compress single file (mode: deflate|zstd|lossy)
   batch <mode> [dir]        Batch compress (parallel if available)
+  media <file> [mode]       Compress embedded images/PDFs (mode: lossless|lossy)
+  deep <file> [mode]        Full compress: archive + media
   lint [dir]                Validate office documents
   strip <file>              Remove metadata
   stats <file>              Show document statistics
@@ -105,7 +126,11 @@ Commands:
 Examples:
   office.sh compress doc.odt zstd
   office.sh batch deflate ./docs
+  office.sh media report.docx lossy
+  office.sh deep presentation.pptx zstd
   office.sh lint ~/documents
+  
+Media compression requires: oxipng/optipng (PNG), jpegoptim (JPEG)
 EOF
 }
 
@@ -114,6 +139,8 @@ main(){
   case $1 in
     compress) [[ $# -lt 2 ]] && die "usage: compress <file> [mode]"; compress_file "$2" "${3:-deflate}" ;;
     batch) batch_compress "${2:-deflate}" "${3:-.}" ;;
+    media) [[ $# -lt 2 ]] && die "usage: media <file> [mode]"; repack_media "$2" "${3:-lossless}" ;;
+    deep) [[ $# -lt 2 ]] && die "usage: deep <file> [mode]"; local m=${3:-deflate} tmp; tmp=$(compress_file "$2" "$m") && repack_media "$tmp" "$([[ $m == lossy ]] && printf lossy || printf lossless)" ;;
     lint) lint_office "${2:-.}" ;;
     strip) [[ $# -lt 2 ]] && die "usage: strip <file>"; strip_metadata "$2" ;;
     stats) [[ $# -lt 2 ]] && die "usage: stats <file>"; show_stats "$2" ;;
