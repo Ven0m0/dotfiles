@@ -81,12 +81,23 @@ zstyle ':completion:*:warnings' format '%F{red}-- no matches --%f'
 
 # FZF completion style
 zstyle ':fzf-tab:*' use-fzf-default-opts yes
+zstyle ':fzf-tab:complete:cd:*' popup-pad 20 0
 
 # History substring search configuration
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
+
+# Misc
+zstyle ':completion:*:git-checkout:*' sort false
+zstyle ':completion:*' insert-tab false
+zstyle ':completion:*' insert-unambiguous false
+zstyle ':completion:*' list-dirs-first true
+zstyle ':completion:*' original true
+zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' verbose true
+zstyle ':completion:*' special-dirs ..
 
 # ---[ Tool Initialization - Optimized ]---
 # Check for zsh-defer availability
