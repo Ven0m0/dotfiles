@@ -25,6 +25,3 @@ has btm && alias top='btm'
 has duf && alias df='duf'
 has dust && alias du='dust'
 has procs && alias ps='procs'
-
-# Git
-alias dot="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
