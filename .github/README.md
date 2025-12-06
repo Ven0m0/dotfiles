@@ -145,7 +145,7 @@ Constraints:
   - Prefer tools in PATH; detect & report missing tools.
   - Minimize forks; batch file lists; safe parallelism.
   - Respect project config files (.editorconfig, .prettierrc, pyproject.toml).
-Also clean them up and enhance/improve the configs
+Also clean them up and enhance/improve the configs and delete duplicate, redundant or deprecated files. 
 ```
 </details>
 <details>
