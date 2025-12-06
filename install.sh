@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 # Logo
 print_logo(){
   printf '%b\n' "$CYAN"
-  cat << "EOF"
+  cat <<"EOF"
    ██████╗██╗   ██╗██████╗ ███████╗ ██████╗ ██████╗      ██████╗ ██████╗  ██████╗
   ██╔════╝██║   ██║██╔══██╗██╔════╝██╔═══██╗██╔══██╗     ██╔══██╗██╔══██╗██╔═══██╗
   ██║     ██║   ██║██████╔╝███████╗██║   ██║██████╔╝     ██████╔╝██████╔╝██║   ██║
@@ -102,7 +102,7 @@ install_cursor_free_vip(){
     # Check if running as root
     if [[ $EUID -ne 0 ]]; then
       printf '%b\n' "${YELLOW}⚠️ Requesting administrator privileges...${NC}"
-      if command -v sudo &> /dev/null; then
+      if command -v sudo &>/dev/null; then
         printf '%b\n' "${CYAN}ℹ️ Starting program with sudo...${NC}"
         sudo chmod +x "$binary_path"
         sudo "$binary_path"
@@ -165,7 +165,7 @@ install_cursor_free_vip(){
 
   # Check downloaded file size
   local file_size
-  file_size=$(stat -f%z "$binary_path" 2> /dev/null || stat -c%s "$binary_path" 2> /dev/null)
+  file_size=$(stat -f%z "$binary_path" 2>/dev/null || stat -c%s "$binary_path" 2>/dev/null)
   printf '%b\n' "${CYAN}ℹ️ Downloaded file size: ${file_size} bytes${NC}"
 
   # If file is too small, it might be an error message

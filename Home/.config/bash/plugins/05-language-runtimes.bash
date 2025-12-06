@@ -7,7 +7,7 @@ if has mise; then
   # Cache mise activation to improve startup time
   MISE_CACHE="${BASH_CACHE_DIR}/mise_init.bash"
   if [[ ! -f $MISE_CACHE || $(which mise) -nt $MISE_CACHE ]]; then
-    mise activate bash > "$MISE_CACHE"
+    mise activate bash >"$MISE_CACHE"
   fi
   source "$MISE_CACHE"
   alias mx="mise x --"

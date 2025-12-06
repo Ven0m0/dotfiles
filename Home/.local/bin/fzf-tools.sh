@@ -5,17 +5,20 @@ IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
 # Utility functions
-has() { command -v "$1" &>/dev/null; }
-die() { printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
-warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
-log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
+has(){ command -v "$1" &>/dev/null; }
+die(){
+  printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
+  exit "${2:-1}"
+}
+warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
+log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 
 # Detect fuzzy finder
 for f in sk fzf; do has "$f" && FZF="$f" && break; done
 [[ -n ${FZF:-} ]] || die "No fuzzy finder (fzf/sk) found"
 
 # Detect bat command
-batcmd() { has batcat && printf 'batcat' || has bat && printf 'bat' || printf 'cat'; }
+batcmd(){ has batcat && printf 'batcat' || has bat && printf 'bat' || printf 'cat'; }
 
 usage(){
   cat <<'EOF'
@@ -68,14 +71,24 @@ cmd_preview(){
   mkdir -p "$cache_dir" || :
 
   mime_of(){ file --mime-type -b -- "$1"; }
-  ext_of(){ local b="${1##*/}"; b="${b##*.}"; printf '%s' "${b,,}"; }
-  
+  ext_of(){
+    local b="${1##*/}"
+    b="${b##*.}"
+    printf '%s' "${b,,}"
+  }
+
   preview_text(){
     local file="$1" center="${2:-0}" ext
     ext="$(ext_of "$file")"
     case "$ext" in
-      md) has glow && { glow --style=auto --width "$((${FZF_PREVIEW_COLUMNS:-80}-1))" -- "$file"; return; } ;;
-      htm|html) has w3m && { w3m -T text/html -dump -- "$file"; return; } ;;
+    md) has glow && {
+      glow --style=auto --width "$((${FZF_PREVIEW_COLUMNS:-80} - 1))" -- "$file"
+      return
+    } ;;
+    htm | html) has w3m && {
+      w3m -T text/html -dump -- "$file"
+      return
+    } ;;
     esac
     local b=$(batcmd)
     if [[ $b == "cat" ]]; then
@@ -89,16 +102,16 @@ cmd_preview(){
     local loc="$1" center="${2:-0}" mime
     mime="$(mime_of "$loc" || printf '')"
     case "$mime" in
-      text/*) preview_text "$loc" "$center" ;;
-      application/json) has jq && "$(batcmd)" -p --color=always -- "$loc" | jq . || preview_text "$loc" "$center" ;;
-      inode/directory) has eza && eza -T -L 2 -- "$loc" || find -- "$loc" -maxdepth 2 -printf '%y %p\n' ;;
-      *) file --brief --dereference -- "$loc" ;;
+    text/*) preview_text "$loc" "$center" ;;
+    application/json) has jq && "$(batcmd)" -p --color=always -- "$loc" | jq . || preview_text "$loc" "$center" ;;
+    inode/directory) has eza && eza -T -L 2 -- "$loc" || find -- "$loc" -maxdepth 2 -printf '%y %p\n' ;;
+    *) file --brief --dereference -- "$loc" ;;
     esac
   }
 
   parse_arg(){
     local in="$1" file="$1" center=0
-    if [[ !  -r $file ]]; then
+    if [[ ! -r $file ]]; then
       if [[ $file =~ ^(. +):([0-9]+)\ *$ ]] && [[ -r ${BASH_REMATCH[1]} ]]; then
         file="${BASH_REMATCH[1]}"
         center="${BASH_REMATCH[2]}"
@@ -107,10 +120,16 @@ cmd_preview(){
     printf '%s\n%s\n' "${file/#\~\//$HOME/}" "$center"
   }
 
-  [[ $# -ge 1 ]] || { printf 'usage: fzf-tools preview PATH[:LINE]\n'; return 1; }
+  [[ $# -ge 1 ]] || {
+    printf 'usage: fzf-tools preview PATH[:LINE]\n'
+    return 1
+  }
   local file center
   read -r file center < <(parse_arg "$1")
-  [[ -r $file ]] || { printf 'not readable: %s\n' "$file" >&2; return 2; }
+  [[ -r $file ]] || {
+    printf 'not readable: %s\n' "$file" >&2
+    return 2
+  }
   preview_file "$file" "$center"
 }
 
@@ -140,7 +159,7 @@ cmd_git(){
       --header='Tab:select Enter:add' \
       --preview="git diff --color=always {} | ${pager}")
     [[ -z ${files} ]] && return 0
-    _git add $(xargs <<< "$files")
+    _git add $(xargs <<<"$files")
   }
 
   git_log(){
@@ -165,8 +184,8 @@ cmd_git(){
     local branch
     branch=$(_git branch --all --color=always --sort=-committerdate "$@" | grep -v HEAD | _fzf_git \
       --header='Enter:checkout' \
-      --preview='git log --oneline --graph --color=always {1}' \
-      | sed 's/^[* ]*//' | awk '{print $1}')
+      --preview='git log --oneline --graph --color=always {1}' |
+      sed 's/^[* ]*//' | awk '{print $1}')
     [[ -z ${branch} ]] && return 0
     _git checkout "${branch#remotes/origin/}"
   }
@@ -185,13 +204,13 @@ cmd_git(){
   local subcmd="${1:-}"
   shift || :
   case "$subcmd" in
-    add|a) git_add "$@" ;;
-    log|l) git_log "$@" ;;
-    status|s|st) git_status "$@" ;;
-    branch|b) git_branch "$@" ;;
-    stash) git_stash "$@" ;;
-    -h|--help|help) printf 'fzf-tools git: add log status branch stash\n' ;;
-    *) die "Unknown git command: $subcmd" ;;
+  add | a) git_add "$@" ;;
+  log | l) git_log "$@" ;;
+  status | s | st) git_status "$@" ;;
+  branch | b) git_branch "$@" ;;
+  stash) git_stash "$@" ;;
+  -h | --help | help) printf 'fzf-tools git: add log status branch stash\n' ;;
+  *) die "Unknown git command: $subcmd" ;;
   esac
 }
 
@@ -219,7 +238,7 @@ cmd_grep(){
 # ============================================================================
 cmd_man(){
   local PREVIEW='man {1}'
-  man -k .  | "$FZF" \
+  man -k . | "$FZF" \
     --prompt='manual: ' \
     --header='enter:open' \
     --delimiter=' ' \
@@ -235,12 +254,12 @@ main(){
   local cmd="${1:-}"
   shift || :
   case "$cmd" in
-    preview|prev|p) cmd_preview "$@" ;;
-    git|g) cmd_git "$@" ;;
-    grep|rg) cmd_grep "$@" ;;
-    man|m) cmd_man "$@" ;;
-    -h|--help|help|"") usage ;;
-    *) die "Unknown command: $cmd" ;;
+  preview | prev | p) cmd_preview "$@" ;;
+  git | g) cmd_git "$@" ;;
+  grep | rg) cmd_grep "$@" ;;
+  man | m) cmd_man "$@" ;;
+  -h | --help | help | "") usage ;;
+  *) die "Unknown command: $cmd" ;;
   esac
 }
 

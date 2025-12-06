@@ -9,7 +9,7 @@ readonly ITERATIONS=10
 benchmark(){
   local total=0 i
   printf 'Running %d iterations...\n' "$ITERATIONS"
-  for ((i=1; i<=ITERATIONS; i++)); do
+  for ((i = 1; i <= ITERATIONS; i++)); do
     local start end elapsed
     start=$(date +%s%N)
     zsh -i -c exit &>/dev/null
@@ -34,7 +34,8 @@ benchmark(){
 
 main(){
   if ! command -v zsh &>/dev/null; then
-    printf 'Error: zsh not found\n' >&2; exit 1
+    printf 'Error: zsh not found\n' >&2
+    exit 1
   fi
   printf '=== Zsh Startup Benchmark ===\n\n'
   benchmark

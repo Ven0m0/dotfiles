@@ -17,10 +17,13 @@
 set -euo pipefail
 
 # Utility functions
-has() { command -v "$1" &>/dev/null; }
-die() { printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
-warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
-log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
+has(){ command -v "$1" &>/dev/null; }
+die(){
+  printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
+  exit "${2:-1}"
+}
+warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
+log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 
 # exit 0 - successful execution
 # exit 1 - no selection
@@ -30,7 +33,7 @@ WALLPAPERS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/wallpapers"
 mkdir -p "$WALLPAPERS_DIR"
 QUIET=""
 
-send_feedback() {
+send_feedback(){
   local msg="$1"
   if [[ -z $QUIET ]]; then
     printf '%s\n' "$msg"
@@ -38,23 +41,23 @@ send_feedback() {
   fi
 }
 
-set_wallpaper() {
+set_wallpaper(){
   local wallpaper="$1"
   case "${XDG_SESSION_TYPE:-}" in
-    wayland)
-      killall -q swaybg || :
-      swaybg --image "$wallpaper" &
-      ;;
-    x11)
-      feh --no-fehbg --bg-scale "$wallpaper" &
-      ;;
-    *)
-      die "Unknown session type: ${XDG_SESSION_TYPE:-none}" 2
-      ;;
+  wayland)
+    killall -q swaybg || :
+    swaybg --image "$wallpaper" &
+    ;;
+  x11)
+    feh --no-fehbg --bg-scale "$wallpaper" &
+    ;;
+  *)
+    die "Unknown session type: ${XDG_SESSION_TYPE:-none}" 2
+    ;;
   esac
 }
 
-random_wallpaper() {
+random_wallpaper(){
   local wallpaper
   wallpaper=$(find "$WALLPAPERS_DIR" -type f -not -path '*/.git/*' | shuf -n 1) || {
     send_feedback "No file selected"
@@ -71,7 +74,7 @@ random_wallpaper() {
   fi
 }
 
-select_wallpaper() {
+select_wallpaper(){
   local wallpaper
   wallpaper=$(
     find "$WALLPAPERS_DIR" -type f -not -path '*/.git/*' -exec basename {} \; |
@@ -98,30 +101,30 @@ select_wallpaper() {
 
 while getopts ":d:hqrs" opt; do
   case "$opt" in
-    d)
-      if [[ -d $OPTARG ]]; then
-        WALLPAPERS_DIR="$OPTARG"
-      else
-        die "Directory not found: $OPTARG" 2
-      fi
-      ;;
-    h)
-      sed -n '2,/^$/p' "$0" | sed 's/^# \?//'
-      exit 0
-      ;;
-    q) QUIET=1 ;;
-    r)
-      random_wallpaper
-      ;;
-    s)
-      select_wallpaper
-      ;;
-    \?)
-      die "Invalid option: -$OPTARG" 2
-      ;;
-    :)
-      die "Option -$OPTARG requires an argument" 2
-      ;;
+  d)
+    if [[ -d $OPTARG ]]; then
+      WALLPAPERS_DIR="$OPTARG"
+    else
+      die "Directory not found: $OPTARG" 2
+    fi
+    ;;
+  h)
+    sed -n '2,/^$/p' "$0" | sed 's/^# \?//'
+    exit 0
+    ;;
+  q) QUIET=1 ;;
+  r)
+    random_wallpaper
+    ;;
+  s)
+    select_wallpaper
+    ;;
+  \?)
+    die "Invalid option: -$OPTARG" 2
+    ;;
+  :)
+    die "Option -$OPTARG requires an argument" 2
+    ;;
   esac
 done
 

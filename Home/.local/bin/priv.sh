@@ -4,7 +4,10 @@ IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
 has(){ command -v "$1" &>/dev/null; }
-die(){ printf 'priv: %s\n' "$*" >&2; exit 1; }
+die(){
+  printf 'priv: %s\n' "$*" >&2
+  exit 1
+}
 
 usage(){
   cat <<'EOF'
@@ -94,14 +97,38 @@ cmd_sudo(){
   local flag_i= flag_n= flag_s= flag_k= user=
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -i|--login) flag_i='-i'; shift ;;
-      -n|--non-interactive) flag_n='-n'; shift ;;
-      -s|--shell) flag_s='-s'; shift ;;
-      -u|--user) user=${2#\#}; shift 2 ;;
-      -k|--reset-timestamp) flag_k='-L'; shift ;;
-      -v|--validate) flag_s="true"; shift ;;
-      -h|--help) usage; exit 0 ;;
-      --) shift; break ;;
+    -i | --login)
+      flag_i='-i'
+      shift
+      ;;
+    -n | --non-interactive)
+      flag_n='-n'
+      shift
+      ;;
+    -s | --shell)
+      flag_s='-s'
+      shift
+      ;;
+    -u | --user)
+      user=${2#\#}
+      shift 2
+      ;;
+    -k | --reset-timestamp)
+      flag_k='-L'
+      shift
+      ;;
+    -v | --validate)
+      flag_s="true"
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
     esac
   done
 
@@ -136,10 +163,10 @@ main(){
   local cmd="${1:-}"
   shift || :
   case "$cmd" in
-    edit|e) cmd_edit "$@" ;;
-    sudo|s) cmd_sudo "$@" ;;
-    -h|--help|help|"") usage ;;
-    *) die "Unknown: $cmd" ;;
+  edit | e) cmd_edit "$@" ;;
+  sudo | s) cmd_sudo "$@" ;;
+  -h | --help | help | "") usage ;;
+  *) die "Unknown: $cmd" ;;
   esac
 }
 

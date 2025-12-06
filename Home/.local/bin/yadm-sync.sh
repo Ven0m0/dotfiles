@@ -6,20 +6,23 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # Utility functions
-has() { command -v "$1" &>/dev/null; }
-die() { printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
-warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
-log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
-ok() { printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
+has(){ command -v "$1" &>/dev/null; }
+die(){
+  printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
+  exit "${2:-1}"
+}
+warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
+log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
+ok(){ printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
 
 # Compatibility aliases
-info() { log "$@"; }
-success() { ok "$@"; }
-error() { die "$@"; }
+info(){ log "$@"; }
+success(){ ok "$@"; }
+error(){ die "$@"; }
 
 # Determine repository directory
 get_repo_dir(){
-  if yadm rev-parse --show-toplevel &> /dev/null; then
+  if yadm rev-parse --show-toplevel &>/dev/null; then
     yadm rev-parse --show-toplevel
   elif [[ -d "${HOME}/.local/share/yadm/repo.git" ]]; then
     echo "${HOME}/.local/share/yadm/repo.git"
@@ -30,7 +33,7 @@ get_repo_dir(){
 
 # Show usage
 usage(){
-  cat << EOF
+  cat <<EOF
 ${BLD}yadm-sync${DEF} - Sync dotfiles between ~/ and repository
 
 ${BLD}Usage:${DEF}
@@ -111,7 +114,7 @@ sync_push(){
   local exclude_file
   exclude_file="$(mktemp)"
 
-  cat > "$exclude_file" << 'EXCLUDES'
+  cat >"$exclude_file" <<'EXCLUDES'
 .cache
 .local/share
 .local/state
@@ -222,14 +225,14 @@ sync_diff(){
     local source_file="${HOME}/${rel_path}"
 
     if [[ -f $source_file && -f $file ]]; then
-      if ! diff -q "$source_file" "$file" &> /dev/null; then
+      if ! diff -q "$source_file" "$file" &>/dev/null; then
         echo ""
         echo "${BLD}${BLU}Differences in:${DEF} ${rel_path}"
         echo "${BLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${DEF}"
-        diff -u --color=always "$file" "$source_file" 2> /dev/null || :
+        diff -u --color=always "$file" "$source_file" 2>/dev/null || :
       fi
     fi
-  done < <(find "$home_dir" -type f -print0 2> /dev/null)
+  done < <(find "$home_dir" -type f -print0 2>/dev/null)
 }
 
 # Main
@@ -241,45 +244,45 @@ main(){
   shift || :
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -h | --help)
-        usage
-        exit 0
-        ;;
-      -n | --dry-run)
-        dry_run=1
-        shift
-        ;;
-      -v | --verbose)
-        set -x
-        shift
-        ;;
-      *)
-        error "Unknown option: $1"
-        usage
-        exit 1
-        ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -n | --dry-run)
+      dry_run=1
+      shift
+      ;;
+    -v | --verbose)
+      set -x
+      shift
+      ;;
+    *)
+      error "Unknown option: $1"
+      usage
+      exit 1
+      ;;
     esac
   done
 
   case "$command" in
-    pull) sync_pull "$dry_run" ;;
-    push) sync_push "$dry_run" ;;
-    status) sync_status ;;
-    diff) sync_diff ;;
-    -h | --help | help)
-      usage
-      exit 0
-      ;;
-    "")
-      error "No command specified"
-      usage
-      exit 1
-      ;;
-    *)
-      error "Unknown command: $command"
-      usage
-      exit 1
-      ;;
+  pull) sync_pull "$dry_run" ;;
+  push) sync_push "$dry_run" ;;
+  status) sync_status ;;
+  diff) sync_diff ;;
+  -h | --help | help)
+    usage
+    exit 0
+    ;;
+  "")
+    error "No command specified"
+    usage
+    exit 1
+    ;;
+  *)
+    error "Unknown command: $command"
+    usage
+    exit 1
+    ;;
   esac
 }
 

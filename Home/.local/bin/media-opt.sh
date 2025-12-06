@@ -6,7 +6,7 @@ export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 # ==============================================================================
 # CONFIGURATION
 # ==============================================================================
-: "${JOBS:=$(nproc 2> /dev/null || echo 4)}" "${DRY_RUN:=0}" "${BACKUP:=0}" "${KEEP_MTIME:=1}"
+: "${JOBS:=$(nproc 2>/dev/null || echo 4)}" "${DRY_RUN:=0}" "${BACKUP:=0}" "${KEEP_MTIME:=1}"
 : "${BACKUP_DIR:=${HOME}/.cache/media-opt/backups/$(printf '%(%Y%m%d_%H%M%S)T' -1)}"
 : "${LOSSLESS:=1}" "${QUALITY:=95}" "${VIDEO_CRF:=24}"
 : "${VIDEO_CODEC:=libsvtav1}" "${AUDIO_CODEC:=libopus}" "${AUDIO_BR:=128k}"
@@ -26,7 +26,7 @@ cache_tools(){
 }
 has_cached(){ [[ ${TOOL_CACHE[$1]:-0} -eq 1 ]]; }
 usage(){
-  cat << EOF
+  cat <<EOF
 Usage: $(basename "$0") [OPTIONS] [PATH...]
 Batch Mode:
   -j, --jobs N      Jobs (Default: $JOBS)
@@ -75,31 +75,31 @@ interactive_mode(){
     # Target format menu
     local -a targets
     case "${ext,,}" in
-      gif) targets=("mkv" "mp4" "webm" "webp" "Format only" "Back") ;;
-      mp4 | mkv | webm | webp) targets=("gif" "mkv" "mp4" "webm" "webp" "Format only" "Back") ;;
-      *)
-        err "Unsupported input format: $ext"
-        sleep 2
-        continue
-        ;;
+    gif) targets=("mkv" "mp4" "webm" "webp" "Format only" "Back") ;;
+    mp4 | mkv | webm | webp) targets=("gif" "mkv" "mp4" "webm" "webp" "Format only" "Back") ;;
+    *)
+      err "Unsupported input format: $ext"
+      sleep 2
+      continue
+      ;;
     esac
 
     PS3=$'\n'"${B}Convert ${input_file} to?${X} "
     select choice in "${targets[@]}"; do
       case "$choice" in
-        "Back") break ;;
-        "Format only")
-          convert_ext="$ext"
-          break
-          ;;
-        "")
-          err "Invalid choice"
-          continue
-          ;;
-        *)
-          convert_ext="$choice"
-          break
-          ;;
+      "Back") break ;;
+      "Format only")
+        convert_ext="$ext"
+        break
+        ;;
+      "")
+        err "Invalid choice"
+        continue
+        ;;
+      *)
+        convert_ext="$choice"
+        break
+        ;;
       esac
     done
     [[ $choice == "Back" ]] && continue
@@ -113,16 +113,16 @@ interactive_mode(){
       PS3=$'\n'"${B}Add filter?${X} "
       select opt in "${options[@]}"; do
         case "$opt" in
-          "True size") vf_opts+=("scale=iw:ih") ;;
-          "50%") vf_opts+=("scale=iw/2:ih/2") ;;
-          "75%") vf_opts+=("scale=iw*0.75:ih*0.75") ;;
-          "Square (500px)") vf_opts+=("scale=500:500") ;;
-          "HQ Lanczos") vf_opts+=("flags=lanczos") ;;
-          "Rotate 90° CW") vf_opts+=("transpose=1") ;;
-          "Rotate 90° CCW") vf_opts+=("transpose=2") ;;
-          "Vertical Flip") vf_opts+=("vflip") ;;
-          "Done") break 2 ;;
-          *) err "Invalid choice" ;;
+        "True size") vf_opts+=("scale=iw:ih") ;;
+        "50%") vf_opts+=("scale=iw/2:ih/2") ;;
+        "75%") vf_opts+=("scale=iw*0.75:ih*0.75") ;;
+        "Square (500px)") vf_opts+=("scale=500:500") ;;
+        "HQ Lanczos") vf_opts+=("flags=lanczos") ;;
+        "Rotate 90° CW") vf_opts+=("transpose=1") ;;
+        "Rotate 90° CCW") vf_opts+=("transpose=2") ;;
+        "Vertical Flip") vf_opts+=("vflip") ;;
+        "Done") break 2 ;;
+        *) err "Invalid choice" ;;
         esac
         break
       done
@@ -139,7 +139,7 @@ interactive_mode(){
 
     if [[ ${ext,,} == "gif" && $convert_ext != "gif" ]]; then
       local palette="${out_dir}/palette.png"
-      ffmpeg -i "$input_path" -vf "palettegen" -y "$palette" &> /dev/null
+      ffmpeg -i "$input_path" -vf "palettegen" -y "$palette" &>/dev/null
       cmd+=(-i "$palette" -lavfi "${vf_flags:+$vf_flags,}paletteuse")
     else
       [[ $convert_ext == "gif" ]] && vf_flags="fps=30${vf_flags:+,${vf_flags}}"
@@ -171,20 +171,20 @@ opt_img(){
     cmd=(image-optimizer "$f" "$out")
   else
     case "$l_ext" in
-      jpg | jpeg | mjpg) has_cached jpegoptim && {
-        tool="jpegoptim"
-        cmd=(jpegoptim --strip-all --all-progressive --stdout "$f")
-        [[ $LOSSLESS -eq 0 ]] && cmd+=(-m"$QUALITY")
-      } ;;
-      png) has_cached oxipng && {
-        tool="oxipng"
-        cmd=(oxipng -o 4 --strip safe -i 0 --out - "$f")
-      } ;;
-      webp) has_cached cwebp && {
-        tool="cwebp"
-        cmd=(cwebp -mt -quiet "$f" -o -)
-        [[ $LOSSLESS -eq 1 ]] && cmd+=(-lossless -z 9) || cmd+=(-q "$QUALITY" -m 6)
-      } ;;
+    jpg | jpeg | mjpg) has_cached jpegoptim && {
+      tool="jpegoptim"
+      cmd=(jpegoptim --strip-all --all-progressive --stdout "$f")
+      [[ $LOSSLESS -eq 0 ]] && cmd+=(-m"$QUALITY")
+    } ;;
+    png) has_cached oxipng && {
+      tool="oxipng"
+      cmd=(oxipng -o 4 --strip safe -i 0 --out - "$f")
+    } ;;
+    webp) has_cached cwebp && {
+      tool="cwebp"
+      cmd=(cwebp -mt -quiet "$f" -o -)
+      [[ $LOSSLESS -eq 1 ]] && cmd+=(-lossless -z 9) || cmd+=(-q "$QUALITY" -m 6)
+    } ;;
     esac
   fi
 }
@@ -220,10 +220,10 @@ opt_vid(){
     tool="ffmpeg"
     local v_args=()
     case "$VIDEO_CODEC" in
-      libsvtav1) [[ $LOSSLESS -eq 1 ]] && v_args=(-preset 4 -crf "$VIDEO_CRF" -svtav1-params "tune=0:enable-overlays=1:scd=1") || v_args=(-preset 8 -crf "$((VIDEO_CRF + 6))" -svtav1-params "tune=0:scd=1") ;;
-      libaom-av1) [[ $LOSSLESS -eq 1 ]] && v_args=(-cpu-used 3 -usage good -row-mt 1 -crf "$VIDEO_CRF" -b:v 0) || v_args=(-cpu-used 6 -usage good -row-mt 1 -crf "$((VIDEO_CRF + 6))" -b:v 0) ;;
-      libx265) [[ $LOSSLESS -eq 1 ]] && v_args=(-preset slower -crf "$VIDEO_CRF" -x265-params "sao=1") || v_args=(-preset medium -crf "$((VIDEO_CRF + 4))") ;;
-      *) v_args=(-crf "$VIDEO_CRF") ;;
+    libsvtav1) [[ $LOSSLESS -eq 1 ]] && v_args=(-preset 4 -crf "$VIDEO_CRF" -svtav1-params "tune=0:enable-overlays=1:scd=1") || v_args=(-preset 8 -crf "$((VIDEO_CRF + 6))" -svtav1-params "tune=0:scd=1") ;;
+    libaom-av1) [[ $LOSSLESS -eq 1 ]] && v_args=(-cpu-used 3 -usage good -row-mt 1 -crf "$VIDEO_CRF" -b:v 0) || v_args=(-cpu-used 6 -usage good -row-mt 1 -crf "$((VIDEO_CRF + 6))" -b:v 0) ;;
+    libx265) [[ $LOSSLESS -eq 1 ]] && v_args=(-preset slower -crf "$VIDEO_CRF" -x265-params "sao=1") || v_args=(-preset medium -crf "$((VIDEO_CRF + 4))") ;;
+    *) v_args=(-crf "$VIDEO_CRF") ;;
     esac
     cmd=(ffmpeg -y -v error -i "$f" -c:v "$VIDEO_CODEC" "${v_args[@]}" "${a_args[@]}" -movflags +faststart "$out")
   fi
@@ -238,15 +238,15 @@ optimize_file(){
   tool=""
   cmd=()
   case "${ext,,}" in
-    jpg | jpeg | mjpg | png | webp | avif | jxl | bmp) opt_img "$f" "$tmp" ;;
-    svg) opt_svg "$f" "$tmp" ;;
-    gif) has_cached gifsicle && {
-      tool="gifsicle"
-      cmd=(gifsicle "$f")
-      [[ $LOSSLESS -eq 1 ]] && cmd+=(-O3 --no-comments --no-names --no-extensions --careful) || cmd+=(-O3 --lossy=80)
-    } ;;
-    mp4 | mkv | mov | avi | webm) opt_vid "$f" "$tmp" ;;
-    *) return 0 ;;
+  jpg | jpeg | mjpg | png | webp | avif | jxl | bmp) opt_img "$f" "$tmp" ;;
+  svg) opt_svg "$f" "$tmp" ;;
+  gif) has_cached gifsicle && {
+    tool="gifsicle"
+    cmd=(gifsicle "$f")
+    [[ $LOSSLESS -eq 1 ]] && cmd+=(-O3 --no-comments --no-names --no-extensions --careful) || cmd+=(-O3 --lossy=80)
+  } ;;
+  mp4 | mkv | mov | avi | webm) opt_vid "$f" "$tmp" ;;
+  *) return 0 ;;
   esac
   [[ -z $tool ]] && {
     [[ -f $tmp ]] && rm -f "$tmp"
@@ -259,9 +259,9 @@ optimize_file(){
   fi
   local ok=0
   if [[ $tool =~ ^(oxipng|cwebp|svgo|jpegoptim)$ ]] && [[ ${cmd[*]} =~ (--stdout|--out\ -|-o\ -) ]]; then
-    "${cmd[@]}" > "$tmp" 2> /dev/null && ok=1
+    "${cmd[@]}" >"$tmp" 2>/dev/null && ok=1
   else
-    "${cmd[@]}" &> /dev/null && ok=1
+    "${cmd[@]}" &>/dev/null && ok=1
   fi
   if [[ $ok -eq 1 ]] && [[ -f $tmp ]]; then
     local old_sz new_sz
@@ -296,51 +296,51 @@ main(){
   local -a inputs=()
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -i | --interactive)
-        interactive_mode
-        exit 0
-        ;;
-      -j | --jobs)
-        JOBS="$2"
-        shift 2
-        ;;
-      -l | --lossy)
-        LOSSLESS=0
-        shift
-        ;;
-      -q | --quality)
-        QUALITY="$2"
-        shift 2
-        ;;
-      --crf)
-        VIDEO_CRF="$2"
-        shift 2
-        ;;
-      --vcodec)
-        VIDEO_CODEC="$2"
-        shift 2
-        ;;
-      --acodec)
-        AUDIO_CODEC="$2"
-        shift 2
-        ;;
-      --backup)
-        BACKUP=1
-        shift
-        ;;
-      --dry-run)
-        DRY_RUN=1
-        shift
-        ;;
-      -h | --help) usage ;;
-      -*)
-        err "Unknown option: $1"
-        usage
-        ;;
-      *)
-        inputs+=("$1")
-        shift
-        ;;
+    -i | --interactive)
+      interactive_mode
+      exit 0
+      ;;
+    -j | --jobs)
+      JOBS="$2"
+      shift 2
+      ;;
+    -l | --lossy)
+      LOSSLESS=0
+      shift
+      ;;
+    -q | --quality)
+      QUALITY="$2"
+      shift 2
+      ;;
+    --crf)
+      VIDEO_CRF="$2"
+      shift 2
+      ;;
+    --vcodec)
+      VIDEO_CODEC="$2"
+      shift 2
+      ;;
+    --acodec)
+      AUDIO_CODEC="$2"
+      shift 2
+      ;;
+    --backup)
+      BACKUP=1
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
+    -h | --help) usage ;;
+    -*)
+      err "Unknown option: $1"
+      usage
+      ;;
+    *)
+      inputs+=("$1")
+      shift
+      ;;
     esac
   done
 

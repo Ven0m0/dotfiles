@@ -5,7 +5,10 @@ IFS=$'\n\t'
 
 BLD=$'\e[1m' GRN=$'\e[32m' YLW=$'\e[33m' RED=$'\e[31m' DEF=$'\e[0m'
 has(){ command -v "$1" &>/dev/null; }
-die(){ printf '%b==> ERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2; exit 1; }
+die(){
+  printf '%b==> ERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2
+  exit 1
+}
 log(){ printf '%b==>%b %s\n' "${BLD}" "$DEF" "$*"; }
 ok(){ printf '%b==>%b %s\n' "${BLD}${GRN}" "$DEF" "$*"; }
 
@@ -53,33 +56,52 @@ cmd_whitespace(){
   local checkonly=0 status=0
   local do_cr=0 do_blank=0 do_trailing=0 do_unicode=0
   local -a paths=()
-  remove_cr(){ [[ $checkonly -eq 1 ]] && grep -q $'\r' "$1" && { printf 'CR: %s\n' "$1"; return 1; } || sed -i 's/\r//g' "$1"; }
-  remove_blank(){ [[ $checkonly -eq 1 ]] && return 0; awk 'BEGIN{last=""}{if(NF==0&&last=="")next;else{print;last=$0}}' "$1" >"$1.tmp" && mv "$1.tmp" "$1"; }
-  remove_trailing(){ [[ $checkonly -eq 1 ]] && return 0; sed -i 's/[ \t]\+$//' "$1"; }
-  remove_unicode(){ [[ $checkonly -eq 1 ]] && return 0; has perl || die "perl required"; perl -CS -0777 -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g;s/[ \t]+$//mg;' -i "$1"; }
+  remove_cr(){ [[ $checkonly -eq 1 ]] && grep -q $'\r' "$1" && {
+    printf 'CR: %s\n' "$1"
+    return 1
+  } || sed -i 's/\r//g' "$1"; }
+  remove_blank(){
+    [[ $checkonly -eq 1 ]] && return 0
+    awk 'BEGIN{last=""}{if(NF==0&&last=="")next;else{print;last=$0}}' "$1" >"$1.tmp" && mv "$1.tmp" "$1"
+  }
+  remove_trailing(){
+    [[ $checkonly -eq 1 ]] && return 0
+    sed -i 's/[ \t]\+$//' "$1"
+  }
+  remove_unicode(){
+    [[ $checkonly -eq 1 ]] && return 0
+    has perl || die "perl required"
+    perl -CS -0777 -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g;s/[ \t]+$//mg;' -i "$1"
+  }
   while [[ $# -gt 0 ]]; do
     case $1 in
-      --check) checkonly=1 ;;
-      --cr) do_cr=1 ;;
-      --blank) do_blank=1 ;;
-      --trailing) do_trailing=1 ;;
-      --unicode) do_unicode=1 ;;
-      --all) do_cr=1 do_blank=1 do_trailing=1 do_unicode=1 ;;
-      -*) die "Unknown option: $1" ;;
-      *) paths+=("$1") ;;
+    --check) checkonly=1 ;;
+    --cr) do_cr=1 ;;
+    --blank) do_blank=1 ;;
+    --trailing) do_trailing=1 ;;
+    --unicode) do_unicode=1 ;;
+    --all) do_cr=1 do_blank=1 do_trailing=1 do_unicode=1 ;;
+    -*) die "Unknown option: $1" ;;
+    *) paths+=("$1") ;;
     esac
     shift
   done
   [[ ${#paths[@]} -eq 0 ]] && die "Must provide path"
-  [[ $((do_cr+do_blank+do_trailing+do_unicode)) -eq 0 ]] && do_cr=1 do_blank=1 do_trailing=1 do_unicode=1
+  [[ $((do_cr + do_blank + do_trailing + do_unicode)) -eq 0 ]] && do_cr=1 do_blank=1 do_trailing=1 do_unicode=1
   for p in "${paths[@]}"; do
-    [[ -f $p ]] || { log "skip: $p"; continue; }
+    [[ -f $p ]] || {
+      log "skip: $p"
+      continue
+    }
     [[ $do_cr -eq 1 ]] && { remove_cr "$p" || status=$?; }
     [[ $do_unicode -eq 1 ]] && { remove_unicode "$p" || status=$?; }
     [[ $do_trailing -eq 1 ]] && { remove_trailing "$p" || status=$?; }
     [[ $do_blank -eq 1 ]] && { remove_blank "$p" || status=$?; }
   done
-  [[ $checkonly -eq 1 && $status -eq 1 ]] && { printf 'Issues found\n'; exit 1; }
+  [[ $checkonly -eq 1 && $status -eq 1 ]] && {
+    printf 'Issues found\n'
+    exit 1
+  }
   ok "Done"
 }
 
@@ -106,12 +128,12 @@ cmd_filenames(){
   local -a paths=()
   while [[ $# -gt 0 ]]; do
     case $1 in
-      -n|--dry-run) dryrun=1 ;;
-      -v|--verbose) verbose=1 ;;
-      --preserve-case) lowercase=0 ;;
-      --allow-spaces) allow_spaces=1 ;;
-      -*) die "Unknown option: $1" ;;
-      *) paths+=("$1") ;;
+    -n | --dry-run) dryrun=1 ;;
+    -v | --verbose) verbose=1 ;;
+    --preserve-case) lowercase=0 ;;
+    --allow-spaces) allow_spaces=1 ;;
+    -*) die "Unknown option: $1" ;;
+    *) paths+=("$1") ;;
     esac
     shift
   done
@@ -119,7 +141,7 @@ cmd_filenames(){
   for p in "${paths[@]}"; do
     [[ -e $p ]] || continue
     local dir=${p%/*} base=${p##*/}
-    [[ $dir == "$p" ]] && dir=. 
+    [[ $dir == "$p" ]] && dir=.
     local new=$(sanitize_name "$base")
     [[ $base == "$new" ]] && continue
     if [[ $dryrun -eq 1 ]]; then
@@ -138,10 +160,10 @@ main(){
   local cmd="${1:-}"
   shift || :
   case "$cmd" in
-    whitespace|ws|w) cmd_whitespace "$@" ;;
-    filenames|fn|f) cmd_filenames "$@" ;;
-    -h|--help|help|"") usage ;;
-    *) die "Unknown: $cmd" ;;
+  whitespace | ws | w) cmd_whitespace "$@" ;;
+  filenames | fn | f) cmd_filenames "$@" ;;
+  -h | --help | help | "") usage ;;
+  *) die "Unknown: $cmd" ;;
   esac
 }
 

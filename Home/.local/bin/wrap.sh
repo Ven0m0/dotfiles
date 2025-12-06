@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e; LC_ALL=C
+set -e
+LC_ALL=C
 # ffzap/ffmpeg wrapper: prefer ffzap, fallback to ffmpeg; uniform CLIs
 ffwrap(){
   if command -v ffzap &>/dev/null; then
@@ -7,7 +8,8 @@ ffwrap(){
   elif command -v ffmpeg &>/dev/null; then
     ffmpeg -hide_banner "$@"
   else
-    printf 'error: neither ffzap nor ffmpeg found in PATH\n' >&2; return 1
+    printf 'error: neither ffzap nor ffmpeg found in PATH\n' >&2
+    return 1
   fi
 }
 jqwrap(){
@@ -17,6 +19,7 @@ jqwrap(){
   elif command -v jq &>/dev/null; then
     jq "$@"
   else
-    printf 'error: neither jq nor jaq found in PATH\n' >&2; return 1
+    printf 'error: neither jq nor jaq found in PATH\n' >&2
+    return 1
   fi
 }

@@ -5,7 +5,10 @@ LC_ALL=C LANG=C
 # Open files/URIs in VS Code
 # Source: https://github.com/AhmetCanArslan/linux-scripts
 has(){ command -v "$1" &>/dev/null; }
-die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
+die(){
+  printf 'Error: %s\n' "$*" >&2
+  exit 1
+}
 usage(){
   cat <<'EOF'
 open_with_vscode - Open files/URIs in VS Code

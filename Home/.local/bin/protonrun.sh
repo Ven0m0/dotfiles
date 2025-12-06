@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail; IFS=$'\n\t'
+set -euo pipefail
+IFS=$'\n\t'
 # gamerun - Unified game/program launcher with optimized graphics profiles
 # Usage: gamerun [PROFILE] [ENV=val... ] <program> [args...]
 # Profiles:
@@ -14,7 +15,10 @@ set -euo pipefail; IFS=$'\n\t'
 BLD=$'\e[1m' GRN=$'\e[32m' BLU=$'\e[34m' YLW=$'\e[33m' DEF=$'\e[0m'
 log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
 warn(){ printf '%b==> WARN:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
-die(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${YLW}" "$*" >&2; exit "${2:-1}"; }
+die(){
+  printf '%b==> ERROR:\e[0m %s\n' "${BLD}${YLW}" "$*" >&2
+  exit "${2:-1}"
+}
 profile=sarek
 set_sarek(){
   log "Profile: Sarek (Performance/DXVK)"
@@ -57,24 +61,41 @@ set_default(){ log "Profile: Default (no tweaks)"; }
 main(){
   [[ $# -eq 0 ]] && die "Usage: gamerun [PROFILE] [ENV=val...] <program> [args...]"
   case ${1:-} in
-    sarek|skth|skthrun|sarekrun) profile=sarek; shift;;
-    glthread) profile=glthread; shift;;
-    software|softwarerun) profile=software; shift;;
-    default) profile=default; shift;;
-    -h|--help)
-      printf 'Usage: %s [PROFILE] [ENV=val...] <program> [args...]\n' "$0" >&2
-      printf 'See script header for profiles\n' >&2; exit 0;;
+  sarek | skth | skthrun | sarekrun)
+    profile=sarek
+    shift
+    ;;
+  glthread)
+    profile=glthread
+    shift
+    ;;
+  software | softwarerun)
+    profile=software
+    shift
+    ;;
+  default)
+    profile=default
+    shift
+    ;;
+  -h | --help)
+    printf 'Usage: %s [PROFILE] [ENV=val...] <program> [args...]\n' "$0" >&2
+    printf 'See script header for profiles\n' >&2
+    exit 0
+    ;;
   esac
   case $profile in
-    sarek) set_sarek;;
-    glthread) set_glthread;;
-    software) set_software;;
-    default) set_default;;
+  sarek) set_sarek ;;
+  glthread) set_glthread ;;
+  software) set_software ;;
+  default) set_default ;;
   esac
   while [[ ${1:-} =~ = ]]; do
-    log "Custom env: $1"; export "$1"; shift
+    log "Custom env: $1"
+    export "$1"
+    shift
   done
   [[ $# -eq 0 ]] && die "No program specified"
-  log "Exec: $*"; exec "$@"
+  log "Exec: $*"
+  exec "$@"
 }
 main "$@"

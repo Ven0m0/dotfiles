@@ -448,7 +448,7 @@ print_table(){
   log "───────────────────────────────────────────────────────────────────────────"
 
   for file in "${!FILE_RESULTS[@]}"; do
-    IFS='|' read -r grp mod err <<< "${FILE_RESULTS[$file]}"
+    IFS='|' read -r grp mod err <<<"${FILE_RESULTS[$file]}"
     local short_file="${file#$PROJECT_ROOT/}"
     [[ ${#short_file} -gt 48 ]] && short_file="...${short_file: -45}"
     printf "%-50s %-12s %-10s %-8s\n" "$short_file" "$grp" "$mod" "$err"

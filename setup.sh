@@ -14,9 +14,12 @@ BLK=$'\e[30m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
 BLU=$'\e[34m' MGN=$'\e[35m' CYN=$'\e[36m' WHT=$'\e[37m'
 BWHT=$'\e[97m' DEF=$'\e[0m' BLD=$'\e[1m'
 
-has(){ command -v "$1" &> /dev/null; }
+has(){ command -v "$1" &>/dev/null; }
 warn(){ printf '%b\n' "${BLD}${YLW}==> WARNING:${BWHT} $1${DEF}"; }
-die(){ printf '%b\n' "${BLD}${RED}==> ERROR:${BWHT} $1${DEF}" >&2; exit 1; }
+die(){
+  printf '%b\n' "${BLD}${RED}==> ERROR:${BWHT} $1${DEF}" >&2
+  exit 1
+}
 info(){ printf '%b\n' "${BLD}${BLU}==>${BWHT} $1${DEF}"; }
 success(){ printf '%b\n' "${BLD}${GRN}==>${BWHT} $1${DEF}"; }
 
@@ -32,30 +35,30 @@ run_cmd(){
 parse_args(){
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --dry-run | -n)
-        DRY_RUN=true
-        info "Dry-run mode enabled"
-        shift
-        ;;
-      --verbose | -v)
-        VERBOSE=true
-        shift
-        ;;
-      --help | -h)
-        show_help
-        exit 0
-        ;;
-      *)
-        warn "Unknown option: $1"
-        show_help
-        exit 1
-        ;;
+    --dry-run | -n)
+      DRY_RUN=true
+      info "Dry-run mode enabled"
+      shift
+      ;;
+    --verbose | -v)
+      VERBOSE=true
+      shift
+      ;;
+    --help | -h)
+      show_help
+      exit 0
+      ;;
+    *)
+      warn "Unknown option: $1"
+      show_help
+      exit 1
+      ;;
     esac
   done
 }
 
 show_help(){
-  cat << EOF
+  cat <<EOF
 ${BLD}Dotfiles Setup Script${DEF}
 Usage: $(basename "$0") [OPTIONS]
 Options:
@@ -68,7 +71,7 @@ EOF
 parse_args "$@"
 [[ $EUID -eq 0 ]] && die "Run as a regular user, not root."
 [[ $DRY_RUN == false ]] && { sudo -v || die "sudo access required"; }
-! ping -c 1 archlinux.org &> /dev/null && die "No internet connection."
+! ping -c 1 archlinux.org &>/dev/null && die "No internet connection."
 
 #--- Configuration ---#
 readonly DOTFILES_REPO="https://github.com/Ven0m0/dotfiles.git"
@@ -118,7 +121,7 @@ setup_dotfiles(){
 deploy_dotfiles(){
   info "Deploying Home/ configs..."
   local repo_dir
-  if has yadm && yadm rev-parse --git-dir &> /dev/null; then
+  if has yadm && yadm rev-parse --git-dir &>/dev/null; then
     repo_dir="$(yadm rev-parse --show-toplevel)"
   elif [[ -d $DOTFILES_DIR ]]; then
     repo_dir="$DOTFILES_DIR"
