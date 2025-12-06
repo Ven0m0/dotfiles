@@ -14,7 +14,7 @@
 #
 # dependencies: fzf, swaybg (wayland), feh (x11), libnotify (optional)
 
-set -euo pipefail
+set -euo pipefail; shopt -s nullglob globstar extglob; IFS=$'\n\t' LC_ALL=C LANG=C
 
 # Utility functions
 has(){ command -v "$1" &>/dev/null; }
