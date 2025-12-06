@@ -1,7 +1,6 @@
 # Tuckr Hooks Configuration
 # This file defines hooks for deploying system-wide configurations
 # Documentation: https://github.com/RaphGL/Tuckr
-
 # Hooks for the 'etc' package (system configuration files)
 [etc]
 # Pre-link hook: Run before linking etc/ to /etc
@@ -9,7 +8,6 @@
 # pre = """
 # echo "Preparing to link etc/ configurations..."
 # """
-
 # Post-link hook: Run after successfully linking etc/ to /etc
 # Useful for reloading services or validating deployments
 post = """
