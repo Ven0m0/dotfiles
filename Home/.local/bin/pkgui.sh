@@ -10,7 +10,7 @@ readonly CFG="${XDG_CONFIG_HOME:-$HOME/.config}/pkgui"
 readonly CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/pkgui"
 readonly HIST="${PKGUI_HISTORY:-$CACHE/history}"
 readonly PKGLIST="${PKGUI_PKGLIST:-$CFG/packagelist}"
-readonly FILE_NATIVE="$CFG/pkglist_native. txt"
+readonly FILE_NATIVE="$CFG/pkglist_native.txt"
 readonly FILE_AUR="$CFG/pkglist_aur.txt"
 declare -A _pkgui_cmd_cache
 mkdir -p "$CFG" "$CACHE" "${HIST%/*}"
