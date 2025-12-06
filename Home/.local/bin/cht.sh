@@ -1,15 +1,8 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
 
 has(){ command -v "$1" &>/dev/null; }
-die(){
-  printf 'Error: %s\n' "$*" >&2
-  exit 1
-}
-
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 # Tool detection
 for c in curl wget2 wget; do has "$c" && HTTP="$c" && break; done
 [[ -z ${HTTP:-} ]] && die "curl/wget required"
