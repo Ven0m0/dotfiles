@@ -217,3 +217,17 @@ main() {
 }
 
 main "$@"
+
+# TODO: integrate these
+## RAM Usage
+# ram=$(free -h | awk '/^Mem:/ {print $3 "/" $2}')
+## Show CPU temperature
+# temperature=$(sensors | awk '/^Core*/ {print $1$2, $3}')
+## Most Memory Intensive processes
+# mem_intensive=$(ps axch -o cmd:15,%mem --sort=-%mem | head)
+## Most CPU Intensive processes
+# cpu_intensive=$(ps axch -o cmd:15,%cpu --sort=-%cpu | head)
+## Network usage stats
+# net_device=$(route | awk '/default/ {print $8}')
+# TRANSMITTED=$(ifconfig "$net_device" | awk '/TX packets/ {print $6$7}')
+# RECEIVED=$(ifconfig "$net_device" | awk '/RX packets/ {print $6$7}')
