@@ -35,7 +35,7 @@ pdf_lossless() {
 pdf_lossy() {
   local f=$1 o=${f%.*}-lossy.pdf
   gs -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook -dNOPAUSE -q -dBATCH \
-    -dDownsampleColorImages=true -dDownsampleMonoImages=true -dDownsampleGrayImages=true
+    -dDownsampleColorImages=true -dDownsampleMonoImages=true -dDownsampleGrayImages=true \
     -sOutputFile="$o" "$f" 2>/dev/null || return 1
   printf '%s\n' "$o"
 }
