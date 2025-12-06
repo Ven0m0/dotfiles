@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob
-LC_ALL=C LANG=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t' LC_ALL=C LANG=C
 # Open files/URIs in VS Code
 # Source: https://github.com/AhmetCanArslan/linux-scripts
 has(){ command -v "$1" &>/dev/null; }
