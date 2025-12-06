@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
 # bash completion for reflector        -*- shell-script -*-
 
-_reflector_complete(){
+_reflector_complete() {
   COMPREPLY=("$(compgen -W "$1" -- "$cur")")
   [[ $COMPREPLY == *= ]] && compopt -o nospace
   compopt -o nosort
 }
 
-_reflector_complete_delay(){
+_reflector_complete_delay() {
   COMPREPLY=("$(compgen -W "$1" -- "$cur")") # float
   [[ $COMPREPLY == *= ]] && compopt -o nospace
   compopt -o nosort
 }
 
-_reflector_complete_threads(){
+_reflector_complete_threads() {
   COMPREPLY=("$(compgen -W "{1..99}" -- "$cur")") # uint8
   [[ $COMPREPLY == *= ]] && compopt -o nospace
   compopt -o nosort
 }
 
-_reflector_complete_countries(){
+_reflector_complete_countries() {
   local -r file="$folder/countrylist.$(/bin/date +%Y%V)" # update countrylist weekly
   local country_names
 
@@ -39,7 +39,7 @@ _reflector_complete_countries(){
   compopt -o filenames
 }
 
-_reflector_complete_mirrors(){
+_reflector_complete_mirrors() {
   local -r file="$folder/mirrors.$date"
   mkdir -p "$folder"
   if [[ -r $file ]]; then
@@ -59,7 +59,7 @@ _reflector_complete_mirrors(){
   #compopt -o filenames
 }
 
-_reflector_options(){
+_reflector_options() {
   local opts=(
     --help -h
     --age -a
@@ -91,42 +91,42 @@ _reflector_options(){
   echo "${opts[*]}"
 }
 
-_reflector_(){
+_reflector_() {
   local cur prev #words cword split
   _init_completion -s || return
   local -r folder="$HOME"/.config/reflector-complete
   # Handle options that need sub-options.
   # Each option "case" should return immediately.
   case "$prev" in
-  --age | --cache-timeout | --connection-timeout | --download-timeout | --fastest | --latest | --score | --number | -a | -f | -l | -n)
-    COMPREPLY=("$(compgen -P "$cur" -W "{0..9}")")
-    compopt -o nospace
-    ;;
-  --completion-percent)
-    COMPREPLY=("$(compgen -W "{0..100}" -- "$cur")")
-    compopt -o nosort
-    ;;
-  --country | -c) _reflector_complete_countries ;;
-  --protocol | -p) _reflector_complete "https http rsync" ;;
-  --sort) _reflector_complete "age rate country score delay" ;;
-  --threads) _reflector_complete ;;
-  --delay) _reflector_complete ;;
-  --save) _filedir ;;
-  --url) ;;
-  --include | -i | --exclude | -x) ;; #_reflector_complete_mirrors ;;
+    --age | --cache-timeout | --connection-timeout | --download-timeout | --fastest | --latest | --score | --number | -a | -f | -l | -n)
+      COMPREPLY=("$(compgen -P "$cur" -W "{0..9}")")
+      compopt -o nospace
+      ;;
+    --completion-percent)
+      COMPREPLY=("$(compgen -W "{0..100}" -- "$cur")")
+      compopt -o nosort
+      ;;
+    --country | -c) _reflector_complete_countries ;;
+    --protocol | -p) _reflector_complete "https http rsync" ;;
+    --sort) _reflector_complete "age rate country score delay" ;;
+    --threads) _reflector_complete ;;
+    --delay) _reflector_complete ;;
+    --save) _filedir ;;
+    --url) ;;
+    --include | -i | --exclude | -x) ;; #_reflector_complete_mirrors ;;
 
-  *)
-    # Handle all top-level parameters.
-    case "$cur" in
-    -* | "")
-      # Any option or nothing yet.
-      _reflector_complete "$(_reflector_options)"
-      ;;
     *)
-      # Non-option parameters.
+      # Handle all top-level parameters.
+      case "$cur" in
+        -* | "")
+          # Any option or nothing yet.
+          _reflector_complete "$(_reflector_options)"
+          ;;
+        *)
+          # Non-option parameters.
+          ;;
+      esac
       ;;
-    esac
-    ;;
   esac
-} &&
-  complete -F _reflector_ reflector
+} \
+  && complete -F _reflector_ reflector

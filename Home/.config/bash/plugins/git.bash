@@ -1,10 +1,10 @@
 has git || return
-gpush(){
+gpush() {
   git add -A && { git commit -m "${1:-Update}" && LC_ALL=C git push --recurse-submodules=on-demand; }
   git status
 }
 
-gctl(){
+gctl() {
   [[ $# -eq 0 ]] && {
     echo "Usage: gctl <git-repo-url> [directory]" >&2
     return 1
@@ -36,7 +36,7 @@ if has gh; then
   # Setup git to use gh for authentication (one-time config)
   gh auth setup-git 2>/dev/null
   # Define lazy function to get token only when GITHUB_TOKEN is accessed
-  get_github_token(){ export GITHUB_TOKEN="$(gh auth token 2>/dev/null)"; }
+  get_github_token() { export GITHUB_TOKEN="$(gh auth token 2>/dev/null)"; }
 fi
 
 # Display git repository file structure as a tree

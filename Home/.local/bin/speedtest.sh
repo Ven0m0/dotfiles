@@ -13,7 +13,7 @@ PROBES=5
 SERVERS=("https://speed.cloudflare.com/" "https://nbg1-speed.hetzner.com/100MB.bin" "https://fsn1-speed.hetzner.com/100MB.bin" "https://ash-speed.hetzner.com/100MB.bin")
 UPLOAD_URL="https://httpbin.org/post"
 
-usage(){
+usage() {
   cat <<-USAGE
 Usage: $0 [-d DL_MB] [-u UL_MB] [-n probes] [-s server_url] [-U upload_url]
 Defaults: DL_MB=${DL_MB} UL_MB=${UL_MB} probes=${PROBES}
@@ -23,24 +23,24 @@ USAGE
 
 while getopts "hd:u:n:s:U:" opt; do
   case $opt in
-  h)
-    usage
-    exit 0
-    ;;
-  d) DL_MB=$OPTARG ;;
-  u) UL_MB=$OPTARG ;;
-  n) PROBES=$OPTARG ;;
-  s) SERVERS=("$OPTARG") ;;
-  U) UPLOAD_URL=$OPTARG ;;
-  *)
-    usage
-    exit 1
-    ;;
+    h)
+      usage
+      exit 0
+      ;;
+    d) DL_MB=$OPTARG ;;
+    u) UL_MB=$OPTARG ;;
+    n) PROBES=$OPTARG ;;
+    s) SERVERS=("$OPTARG") ;;
+    U) UPLOAD_URL=$OPTARG ;;
+    *)
+      usage
+      exit 1
+      ;;
   esac
 done
 
 # helpers
-fmt_mbps(){ awk "BEGIN{printf \"%.2f\", ($1*8)/1000000}"; } # bytes/s -> Mbit/s
+fmt_mbps() { awk "BEGIN{printf \"%.2f\", ($1*8)/1000000}"; } # bytes/s -> Mbit/s
 
 # 1) latency probe (time_connect) across servers
 best_srv=""
@@ -76,8 +76,8 @@ if printf '%s' "$best_srv" | grep -qE 'speed.cloudflare.com'; then
 else
   # if the server already points to a file, use it; otherwise append known 100MB.bin if size matches
   case "$best_srv" in
-  *100MB.bin) DL_URL="$best_srv" ;;
-  *) DL_URL="$best_srv" ;;
+    *100MB.bin) DL_URL="$best_srv" ;;
+    *) DL_URL="$best_srv" ;;
   esac
 fi
 
@@ -94,8 +94,8 @@ printf '  Downloaded: %s bytes in %s s — %s B/s = %s Mbps\n' "$bytes" "$time_s
 # 3) upload test — stream UL_MB from /dev/zero to upload URL
 printf '\nUpload test: streaming %d MB to %s\n' "$UL_MB" "$UPLOAD_URL"
 # generate stream and POST as binary
-UL_OUT=$(dd if=/dev/zero bs=1M count="$UL_MB" 2>/dev/null |
-  "$CURL" -s -X POST --data-binary @- -H 'Content-Type: application/octet-stream' -w '%{size_upload} %{time_total} %{speed_upload}' -o /dev/null "$UPLOAD_URL") || {
+UL_OUT=$(dd if=/dev/zero bs=1M count="$UL_MB" 2>/dev/null \
+  | "$CURL" -s -X POST --data-binary @- -H 'Content-Type: application/octet-stream' -w '%{size_upload} %{time_total} %{speed_upload}' -o /dev/null "$UPLOAD_URL") || {
   printf 'Upload failed\n'
   exit 1
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 export LC_ALL=C LANG=C
 
-nekofetch(){
+nekofetch() {
   local cat="${1:-}" json_tool="${2:-}" img_tool="${3:-}"
   local jsont imgt api_base="https://nekos.best/api/v2"
   local response img_url tmp_file

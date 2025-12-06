@@ -21,7 +21,7 @@ ifsource /usr/share/fzf/key-bindings.bash
 ifsource /usr/share/fzf/completion.bash
 # --- RGA integration
 if has rga && has fzf; then
-  rga-fzf(){
+  rga-fzf() {
     RG_PREFIX="rga --files-with-matches"
     local file="$(
       FZF_DEFAULT_COMMAND="$RG_PREFIX '$1'" \

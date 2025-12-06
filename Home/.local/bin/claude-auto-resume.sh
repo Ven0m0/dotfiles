@@ -15,7 +15,7 @@ CUSTOM_COMMAND=""
 TEST_MODE=false
 TEST_WAIT_SECONDS=0
 # Cleanup function for graceful termination
-cleanup_on_exit(){
+cleanup_on_exit() {
   local exit_code=$?
   # Always perform cleanup, regardless of exit code
   cleanup_resources
@@ -27,7 +27,7 @@ cleanup_on_exit(){
 }
 
 # Interrupt handler for SIGINT (Ctrl+C)
-interrupt_handler(){
+interrupt_handler() {
   echo ""
   echo "[INFO] Script interrupted by user (Ctrl+C)"
   echo "[INFO] Cleaning up and exiting gracefully..."
@@ -41,7 +41,7 @@ interrupt_handler(){
 CLEANUP_DONE=false
 
 # Cleanup resources and temporary state
-cleanup_resources(){
+cleanup_resources() {
   # Prevent double cleanup
   [[ "$CLEANUP_DONE" = true ]] && return
   # Kill any background processes if they exist
@@ -74,7 +74,7 @@ trap cleanup_on_exit EXIT
 trap interrupt_handler INT TERM
 
 # Function to execute custom commands with proper error handling
-execute_custom_command(){
+execute_custom_command() {
   local command="$1"
   local start_time=$(date +%s)
   echo "⚠️  WARNING: About to execute custom command: '$command'"
@@ -114,7 +114,7 @@ execute_custom_command(){
 }
 
 # Function to extract timestamp from old format: Claude AI usage limit reached|<timestamp>
-extract_old_format_timestamp(){
+extract_old_format_timestamp() {
   local claude_output="$1"
   local resume_timestamp
 
@@ -132,7 +132,7 @@ extract_old_format_timestamp(){
 }
 
 # Function to extract timestamp from new format: X-hour limit reached ∙ resets Xam/pm
-extract_new_format_timestamp(){
+extract_new_format_timestamp() {
   local claude_output="$1"
   local reset_time reset_hour reset_period reset_hour_24
   local now_timestamp today_reset resume_timestamp
@@ -197,7 +197,7 @@ extract_new_format_timestamp(){
 }
 
 # Function to check network connectivity
-check_network_connectivity(){
+check_network_connectivity() {
   # Try multiple connectivity checks for better reliability
   local connectivity_failed=true
 
@@ -227,7 +227,7 @@ check_network_connectivity(){
 }
 
 # Function to validate Claude CLI environment
-validate_claude_cli(){
+validate_claude_cli() {
   # Check if Claude CLI is installed and accessible
   if ! command -v claude &>/dev/null; then
     echo "[ERROR] Claude CLI not found. Please install Claude CLI first."
@@ -246,7 +246,7 @@ validate_claude_cli(){
 }
 
 # Function to show help
-show_help(){
+show_help() {
   cat <<EOF
 Usage: claude-auto-resume [OPTIONS] [PROMPT]
 
@@ -281,126 +281,126 @@ CUSTOM_PROMPT="$DEFAULT_PROMPT"
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-  -p | --prompt)
-    if [ "$2" = "" ]; then
-      echo "[ERROR] Option $1 requires a prompt argument."
-      echo "[HINT] Provide a prompt after $1 flag."
-      echo "[SUGGESTION] Example: claude-auto-resume $1 'continue with task'"
-      exit 1
-    fi
-    CUSTOM_PROMPT="$2"
-    shift 2
-    ;;
-  -c | --continue)
-    USE_CONTINUE_FLAG=true
-    shift
-    ;;
-  -e | --execute | --cmd)
-    if [ "$2" = "" ]; then
-      echo "[ERROR] Option $1 requires a command argument."
-      echo "[HINT] Provide a command to execute after $1 flag."
-      echo "[SUGGESTION] Example: claude-auto-resume $1 'npm run dev'"
-      exit 1
-    fi
-    EXECUTE_MODE=true
-    CUSTOM_COMMAND="$2"
-    shift 2
-    ;;
-  -h | --help)
-    show_help
-    exit 0
-    ;;
-  -v | --version)
-    echo "claude-auto-resume v${VERSION}"
-    exit 0
-    ;;
-  --test-mode)
-    if [ "$2" = "" ] || ! [[ "$2" =~ ^[0-9]+$ ]]; then
-      echo "[ERROR] Option $1 requires a valid number of seconds."
-      echo "[HINT] Provide number of seconds to simulate wait period."
-      echo "[SUGGESTION] Example: claude-auto-resume --test-mode 10 -e 'echo test'"
-      exit 1
-    fi
-    TEST_MODE=true
-    TEST_WAIT_SECONDS="$2"
-    shift 2
-    ;;
-  --check)
-    # Display comprehensive system check information
-    echo "claude-auto-resume v${VERSION} - System Check"
-    echo "================================================"
-    echo ""
-
-    # Script version
-    echo "Script Information:"
-    echo "  Version: ${VERSION}"
-    echo "  Location: $(realpath "$0")"
-    echo ""
-
-    # Claude CLI check
-    echo "Claude CLI Information:"
-    if command -v claude &>/dev/null; then
-      echo "  Status: Available"
-      echo "  Location: $(which claude)"
-
-      # Try to get Claude CLI version
-      CLAUDE_VERSION=$(claude --version 2>/dev/null || echo "Unknown")
-      echo "  Version: ${CLAUDE_VERSION}"
-
-      # Check for dangerously-skip-permissions support
-      if claude --help | grep -q "dangerously-skip-permissions"; then
-        echo "  --dangerously-skip-permissions: Supported"
-      else
-        echo "  --dangerously-skip-permissions: Not supported"
+    -p | --prompt)
+      if [ "$2" = "" ]; then
+        echo "[ERROR] Option $1 requires a prompt argument."
+        echo "[HINT] Provide a prompt after $1 flag."
+        echo "[SUGGESTION] Example: claude-auto-resume $1 'continue with task'"
+        exit 1
       fi
-    else
-      echo "  Status: Not found"
-      echo "  [ERROR] Claude CLI not found in PATH"
-    fi
-    echo ""
+      CUSTOM_PROMPT="$2"
+      shift 2
+      ;;
+    -c | --continue)
+      USE_CONTINUE_FLAG=true
+      shift
+      ;;
+    -e | --execute | --cmd)
+      if [ "$2" = "" ]; then
+        echo "[ERROR] Option $1 requires a command argument."
+        echo "[HINT] Provide a command to execute after $1 flag."
+        echo "[SUGGESTION] Example: claude-auto-resume $1 'npm run dev'"
+        exit 1
+      fi
+      EXECUTE_MODE=true
+      CUSTOM_COMMAND="$2"
+      shift 2
+      ;;
+    -h | --help)
+      show_help
+      exit 0
+      ;;
+    -v | --version)
+      echo "claude-auto-resume v${VERSION}"
+      exit 0
+      ;;
+    --test-mode)
+      if [ "$2" = "" ] || ! [[ "$2" =~ ^[0-9]+$ ]]; then
+        echo "[ERROR] Option $1 requires a valid number of seconds."
+        echo "[HINT] Provide number of seconds to simulate wait period."
+        echo "[SUGGESTION] Example: claude-auto-resume --test-mode 10 -e 'echo test'"
+        exit 1
+      fi
+      TEST_MODE=true
+      TEST_WAIT_SECONDS="$2"
+      shift 2
+      ;;
+    --check)
+      # Display comprehensive system check information
+      echo "claude-auto-resume v${VERSION} - System Check"
+      echo "================================================"
+      echo ""
 
-    # System compatibility
-    echo "System Compatibility:"
-    echo "  OS: $(uname -s)"
-    echo "  Architecture: $(uname -m)"
-    echo "  Shell: $SHELL"
-    echo ""
+      # Script version
+      echo "Script Information:"
+      echo "  Version: ${VERSION}"
+      echo "  Location: $(realpath "$0")"
+      echo ""
 
-    # Network utilities check
-    echo "Network Utilities:"
-    echo "  ping: $(command -v ping &>/dev/null && echo "Available" || echo "Not found")"
-    echo "  curl: $(command -v curl &>/dev/null && echo "Available" || echo "Not found")"
-    echo "  wget: $(command -v wget &>/dev/null && echo "Available" || echo "Not found")"
-    echo ""
+      # Claude CLI check
+      echo "Claude CLI Information:"
+      if command -v claude &>/dev/null; then
+        echo "  Status: Available"
+        echo "  Location: $(which claude)"
 
-    # Environment validation
-    echo "Environment Validation:"
-    if command -v claude &>/dev/null; then
-      echo "  Claude CLI: ✓ Available"
-    else
-      echo "  Claude CLI: ✗ Not found"
-    fi
+        # Try to get Claude CLI version
+        CLAUDE_VERSION=$(claude --version 2>/dev/null || echo "Unknown")
+        echo "  Version: ${CLAUDE_VERSION}"
 
-    # Network connectivity check
-    echo -n "  Network connectivity: "
-    if check_network_connectivity &>/dev/null; then
-      echo "✓ Connected"
-    else
-      echo "✗ Failed"
-    fi
+        # Check for dangerously-skip-permissions support
+        if claude --help | grep -q "dangerously-skip-permissions"; then
+          echo "  --dangerously-skip-permissions: Supported"
+        else
+          echo "  --dangerously-skip-permissions: Not supported"
+        fi
+      else
+        echo "  Status: Not found"
+        echo "  [ERROR] Claude CLI not found in PATH"
+      fi
+      echo ""
 
-    exit 0
-    ;;
-  -*)
-    echo "Unknown option: $1"
-    show_help
-    exit 1
-    ;;
-  *)
-    # If no flag specified, treat as prompt argument
-    CUSTOM_PROMPT="$1"
-    shift
-    ;;
+      # System compatibility
+      echo "System Compatibility:"
+      echo "  OS: $(uname -s)"
+      echo "  Architecture: $(uname -m)"
+      echo "  Shell: $SHELL"
+      echo ""
+
+      # Network utilities check
+      echo "Network Utilities:"
+      echo "  ping: $(command -v ping &>/dev/null && echo "Available" || echo "Not found")"
+      echo "  curl: $(command -v curl &>/dev/null && echo "Available" || echo "Not found")"
+      echo "  wget: $(command -v wget &>/dev/null && echo "Available" || echo "Not found")"
+      echo ""
+
+      # Environment validation
+      echo "Environment Validation:"
+      if command -v claude &>/dev/null; then
+        echo "  Claude CLI: ✓ Available"
+      else
+        echo "  Claude CLI: ✗ Not found"
+      fi
+
+      # Network connectivity check
+      echo -n "  Network connectivity: "
+      if check_network_connectivity &>/dev/null; then
+        echo "✓ Connected"
+      else
+        echo "✗ Failed"
+      fi
+
+      exit 0
+      ;;
+    -*)
+      echo "Unknown option: $1"
+      show_help
+      exit 1
+      ;;
+    *)
+      # If no flag specified, treat as prompt argument
+      CUSTOM_PROMPT="$1"
+      shift
+      ;;
   esac
 done
 

@@ -8,7 +8,10 @@
 #   not providing an argument launches a fzf window to select one or more files.
 #   providing arguments that are valid file names within the directory launches them directly.
 # dependencies: fzf
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
+set -euo pipefail
+shopt -s nullglob globstar
+IFS=$'\n\t'
+export LC_ALL=C LANG=C
 
 # create help message from comment block at the head of file
 if [[ ${1:-} == "-h" ]]; then
@@ -30,8 +33,8 @@ if [[ $# -gt 0 ]]; then
   files=("$@")
 else
   mapfile -t files < <(
-    find "$AUTOSTART_DIR" -type f -exec basename {} \; |
-      fzf \
+    find "$AUTOSTART_DIR" -type f -exec basename {} \; \
+      | fzf \
         --prompt='autostart: ' \
         --header="$(printf '%s\n' 'enter:confirm' "${FZF_DEFAULT_HEADER:-}")" \
         --preview='cat {}' \

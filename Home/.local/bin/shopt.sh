@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C
+set -euo pipefail
+shopt -s nullglob globstar
+IFS=$'\n\t'
+export LC_ALL=C LANG=C
 # Bash Script Optimizer, Minifier & Compiler
 # Formats, hardens, lints, minifies, and compiles shell scripts
 # Supports single files, directories, stdout output, and multi-variant compilation
 #──────────── Colors ────────────
 RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' DEF=$'\e[0m'
-has(){ command -v "$1" &>/dev/null; }
-die(){
+has() { command -v "$1" &>/dev/null; }
+die() {
   printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2
   exit 1
 }
-log(){ printf '%b%s%b\n' "$GRN" "$*" "$DEF"; }
-warn(){ printf '%b%s%b\n' "$YLW" "$*" "$DEF"; }
-usage(){
+log() { printf '%b%s%b\n' "$GRN" "$*" "$DEF"; }
+warn() { printf '%b%s%b\n' "$YLW" "$*" "$DEF"; }
+usage() {
   cat <<'EOF'
 Usage: shopt [-rfmscCvh] [-o FILE] [-p PERM] [-e EXT] [-V VARIANT] <file_or_dir>
 
@@ -56,66 +59,66 @@ output="" perm="u+x" regex=""
 [[ $# -eq 0 ]] && usage
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  -r | --recursive)
-    recursive=1
-    shift
-    ;;
-  -f | --format)
-    format=1
-    shift
-    ;;
-  -m | --minify)
-    minify=1
-    format=1
-    shift
-    ;;
-  -s | --strip)
-    strip=1
-    shift
-    ;;
-  -c | --compile)
-    compile=1
-    shift
-    ;;
-  -C | --concat)
-    concat=1
-    shift
-    ;;
-  -d | --debug)
-    debug=1
-    shift
-    ;;
-  -F | --force)
-    force=1
-    shift
-    ;;
-  -o | --output)
-    output="${2:?output requires arg}"
-    shift 2
-    ;;
-  -p | --permission)
-    perm="${2:?perm requires arg}"
-    shift 2
-    ;;
-  -e | --extensions)
-    IFS=',' read -ra extensions <<<"${2:?extensions requires arg}"
-    shift 2
-    ;;
-  -w | --whitelist)
-    IFS=',' read -ra whitelist <<<"${2:?whitelist requires arg}"
-    shift 2
-    ;;
-  -x | --regex)
-    regex="${2:?regex requires arg}"
-    shift 2
-    ;;
-  -v | --variants)
-    IFS=',' read -ra variants <<<"${2:?variants requires arg}"
-    shift 2
-    ;;
-  -h | --help) usage ;;
-  -*) die "Unknown option: $1" ;;
-  *) break ;;
+    -r | --recursive)
+      recursive=1
+      shift
+      ;;
+    -f | --format)
+      format=1
+      shift
+      ;;
+    -m | --minify)
+      minify=1
+      format=1
+      shift
+      ;;
+    -s | --strip)
+      strip=1
+      shift
+      ;;
+    -c | --compile)
+      compile=1
+      shift
+      ;;
+    -C | --concat)
+      concat=1
+      shift
+      ;;
+    -d | --debug)
+      debug=1
+      shift
+      ;;
+    -F | --force)
+      force=1
+      shift
+      ;;
+    -o | --output)
+      output="${2:?output requires arg}"
+      shift 2
+      ;;
+    -p | --permission)
+      perm="${2:?perm requires arg}"
+      shift 2
+      ;;
+    -e | --extensions)
+      IFS=',' read -ra extensions <<<"${2:?extensions requires arg}"
+      shift 2
+      ;;
+    -w | --whitelist)
+      IFS=',' read -ra whitelist <<<"${2:?whitelist requires arg}"
+      shift 2
+      ;;
+    -x | --regex)
+      regex="${2:?regex requires arg}"
+      shift 2
+      ;;
+    -v | --variants)
+      IFS=',' read -ra variants <<<"${2:?variants requires arg}"
+      shift 2
+      ;;
+    -h | --help) usage ;;
+    -*) die "Unknown option: $1" ;;
+    *) break ;;
   esac
 done
 target="${1:?No file/dir specified}"
@@ -147,8 +150,8 @@ fi
   log "No scripts found"
   exit 0
 }
-[[ ${#files[@]} -gt 1 && -n $output && $output != - ]] && ((!compile && !concat)) &&
-  die "Multiple files with single output unsupported (use -c/--compile)"
+[[ ${#files[@]} -gt 1 && -n $output && $output != - ]] && ((!compile && !concat)) \
+  && die "Multiple files with single output unsupported (use -c/--compile)"
 #──────────── Comment Strip AWK (Enhanced) ────────────
 read -r -d '' AWK_STRIP <<'AWK' || :
 NR==1 && /^#!/ { print; next }
@@ -158,9 +161,9 @@ NR==1 && /^#!/ { print; next }
 { gsub(/[[:space:]]+#.*/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, ""); if(length) print }
 AWK
 #──────────── Function Normalizer ────────────
-normalize_functions(){ sed -E 's/^[[:space:]]*function[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\{/\1(){\n/g'; }
+normalize_functions() { sed -E 's/^[[:space:]]*function[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\{/\1(){\n/g'; }
 #──────────── Preprocessor Prep ────────────
-prep_preprocess(){
+prep_preprocess() {
   local in="$1" out="$2"
   : >"$out"
   while IFS= read -r line; do
@@ -168,7 +171,7 @@ prep_preprocess(){
   done <"$in"
 }
 #──────────── Enhanced Minifier ────────────
-minify_enhanced(){
+minify_enhanced() {
   local in="$1" out="$2"
   : >"$out"
   while IFS= read -r line; do
@@ -198,7 +201,7 @@ minify_enhanced(){
   sed -i -e '/^:[[:space:]]*'"'"'/,/^'"'"'/d' -e '/^#[[:space:]]*[-─]{5,}/d' "$out" 2>dev/null || :
 }
 #──────────── Concatenate Files ────────────
-concat_files(){
+concat_files() {
   local base="$1" out="$2" rx="$5"
   local -n exts="$3" wlist="$4"
   : >"$out"
@@ -238,7 +241,7 @@ concat_files(){
   done
 }
 #──────────── Optimizer (Standard Mode) ────────────
-optimize(){
+optimize() {
   local f="$1" content
   local out_target="$f"
   # Handle output
@@ -284,7 +287,7 @@ optimize(){
   log "✓ $out_target"
 }
 #──────────── Compiler (Multi-Variant Mode) ────────────
-compile_variants(){
+compile_variants() {
   local base="$target"
   [[ -z $output ]] && die "Compile mode requires -o/--output"
   # Remove extension from output base
@@ -310,8 +313,8 @@ compile_variants(){
     prep_preprocess "$tmp_concat" "$tmp_prep"
     # Run preprocessor
     if ((HAS_PREPROCESS)); then
-      preprocess -D "SHELL_IS_${VAR}=true" -f -o "$tmp_proc" "$tmp_prep" ||
-        die "Preprocessor failed for $VAR"
+      preprocess -D "SHELL_IS_${VAR}=true" -f -o "$tmp_proc" "$tmp_prep" \
+        || die "Preprocessor failed for $VAR"
     else
       cp "$tmp_prep" "$tmp_proc"
     fi
