@@ -37,3 +37,11 @@ alias gh-pr-view="gh pr view --json number,title,state,url,author,createdAt,upda
 alias gh-pr-stats="gh pr view --json additions,deletions,changedFiles,files,title,state,url"
 # PR stats with full detailed information
 alias gh-pr-stats-full="gh pr view --json additions,deletions,changedFiles,files,title,author,state,createdAt,updatedAt,url,assignees,body,closed,closedAt,comments,commits,headRefName,headRefOid,isDraft,labels,mergeStateStatus,mergeable,mergedAt,mergedBy,reviewDecision,reviews"
+
+gcommits() {
+  if [ -z "$1" ]; then
+    git log --format="%C(auto)%h (%s, %ad)" -n 20 | cat
+  else
+    git log --format="%H" -n $1 | cat
+  fi
+}
