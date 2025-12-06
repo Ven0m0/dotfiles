@@ -18,6 +18,9 @@ set enable-keypad on
 set enable-bracketed-paste on
 set echo-control-characters off
 set bind-tty-special-chars off
+set history-size 1000
+set horizontal-scroll-mode off
+set expand-tilde off
 
 # Tab completion behavior
 set menu-complete-display-prefix on
@@ -26,7 +29,7 @@ set show-all-if-unmodified on
 set skip-completed-text on
 set completion-map-case on
 set completion-ignore-case on
-set completion-query-items 200
+set completion-query-items 300
 set completion-prefix-display-length 2
 set mark-symlinked-directories on
 set mark-directories on
