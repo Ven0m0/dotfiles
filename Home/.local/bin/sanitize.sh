@@ -4,15 +4,15 @@ shopt -s nullglob globstar dotglob
 IFS=$'\n\t'
 
 BLD=$'\e[1m' GRN=$'\e[32m' YLW=$'\e[33m' RED=$'\e[31m' DEF=$'\e[0m'
-has() { command -v "$1" &>/dev/null; }
-die() {
+has(){ command -v "$1" &>/dev/null; }
+die(){
   printf '%b==> ERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2
   exit 1
 }
-log() { printf '%b==>%b %s\n' "${BLD}" "$DEF" "$*"; }
-ok() { printf '%b==>%b %s\n' "${BLD}${GRN}" "$DEF" "$*"; }
+log(){ printf '%b==>%b %s\n' "${BLD}" "$DEF" "$*"; }
+ok(){ printf '%b==>%b %s\n' "${BLD}${GRN}" "$DEF" "$*"; }
 
-usage() {
+usage(){
   cat <<'EOF'
 sanitize - File sanitization utilities
 
@@ -52,23 +52,23 @@ EOF
 # ============================================================================
 # WHITESPACE
 # ============================================================================
-cmd_whitespace() {
+cmd_whitespace(){
   local checkonly=0 status=0
   local do_cr=0 do_blank=0 do_trailing=0 do_unicode=0
   local -a paths=()
-  remove_cr() { [[ $checkonly -eq 1 ]] && grep -q $'\r' "$1" && {
+  remove_cr(){ [[ $checkonly -eq 1 ]] && grep -q $'\r' "$1" && {
     printf 'CR: %s\n' "$1"
     return 1
   } || sed -i 's/\r//g' "$1"; }
-  remove_blank() {
+  remove_blank(){
     [[ $checkonly -eq 1 ]] && return 0
     awk 'BEGIN{last=""}{if(NF==0&&last=="")next;else{print;last=$0}}' "$1" >"$1.tmp" && mv "$1.tmp" "$1"
   }
-  remove_trailing() {
+  remove_trailing(){
     [[ $checkonly -eq 1 ]] && return 0
     sed -i 's/[ \t]\+$//' "$1"
   }
-  remove_unicode() {
+  remove_unicode(){
     [[ $checkonly -eq 1 ]] && return 0
     has perl || die "perl required"
     perl -CS -0777 -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g;s/[ \t]+$//mg;' -i "$1"
@@ -108,12 +108,12 @@ cmd_whitespace() {
 # ============================================================================
 # FILENAMES
 # ============================================================================
-cmd_filenames() {
+cmd_filenames(){
   local dryrun=0 verbose=0 transliterate=1 lowercase=1 allow_spaces=0
   if has fd; then FD=fd; elif has fdfind; then FD=fdfind; else FD=find; fi
   has iconv || transliterate=0
 
-  sanitize_name() {
+  sanitize_name(){
     local name=$1 cleaned=$name
     [[ $transliterate -eq 1 ]] && cleaned=$(printf '%s' "$cleaned" | iconv -f utf8 -t ascii//translit 2>/dev/null || printf '%s' "$cleaned")
     cleaned=${cleaned//[\`\$\!\*\?\<\>\|\"\'\:\;]/}
@@ -156,7 +156,7 @@ cmd_filenames() {
 # ============================================================================
 # MAIN
 # ============================================================================
-main() {
+main(){
   local cmd="${1:-}"
   shift || :
   case "$cmd" in

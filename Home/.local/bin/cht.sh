@@ -4,8 +4,8 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
-has() { command -v "$1" &>/dev/null; }
-die() {
+has(){ command -v "$1" &>/dev/null; }
+die(){
   printf 'Error: %s\n' "$*" >&2
   exit 1
 }
@@ -15,7 +15,7 @@ for c in curl wget2 wget; do has "$c" && HTTP="$c" && break; done
 [[ -z ${HTTP:-} ]] && die "curl/wget required"
 for f in sk fzf; do has "$f" && FZF="$f" && break; done
 [[ -z ${FZF:-} ]] && die "sk/fzf required"
-get() {
+get(){
   case "$HTTP" in
   curl) curl -fsL "$@" ;;
   wget*) "$HTTP" -qO- "$@" ;;
@@ -23,12 +23,12 @@ get() {
 }
 readonly CHT_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/cht_list"
 readonly CHT_URL="cheat.sh"
-cache() {
+cache(){
   [[ -f $CHT_CACHE && -n "$(find "$CHT_CACHE" -mtime -7 2>/dev/null)" ]] && return 0
   mkdir -p "${CHT_CACHE%/*}"
   get "${CHT_URL}/:list" >"$CHT_CACHE" || die "Failed to fetch list"
 }
-browse() {
+browse(){
   local sel q qlist url
   cache
   sel=$("$FZF" --ansi --reverse --cycle --prompt='cht> ' \
@@ -48,7 +48,7 @@ browse() {
   printf '\n→ %s\n\n' "$url"
   get "$url"
 }
-query() {
+query(){
   local lang="${1:-}" topic="${2:-}" flags="" url
   [[ -z $lang ]] && die "Language/topic required"
   [[ ${search:-0} -eq 1 ]] && lang="~${lang}" && topic="~${topic}"
@@ -60,7 +60,7 @@ query() {
   get "$url"
 }
 
-usage() {
+usage(){
   cat <<'EOF'
 cht - cheat.sh TUI with fuzzy search
 

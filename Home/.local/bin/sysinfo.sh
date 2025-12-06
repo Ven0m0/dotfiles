@@ -6,17 +6,17 @@ IFS=$'\n\t'
 VERSION="3.0.0"
 BLD=$'\e[1m' GRN=$'\e[32m' BLU=$'\e[34m' YLW=$'\e[33m' CYN=$'\e[96m' RED=$'\e[31m' DEF=$'\e[0m'
 
-has() { command -v "$1" &>/dev/null; }
-die() {
+has(){ command -v "$1" &>/dev/null; }
+die(){
   printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2
   exit "${2:-1}"
 }
-need() { has "$1" || die "Required: $1"; }
+need(){ has "$1" || die "Required: $1"; }
 
 if has jaq; then JQ=jaq; elif has jq; then JQ=jq; else JQ=''; fi
 VERBOSE=false
 
-usage() {
+usage(){
   cat <<'EOF'
 sysinfo - System & network information
 
@@ -59,7 +59,7 @@ EOF
 # ============================================================================
 # TEMPERATURE
 # ============================================================================
-get_cpu_temp() {
+get_cpu_temp(){
   local temp_c
   case $(uname -s) in
   Linux*)
@@ -80,7 +80,7 @@ get_cpu_temp() {
   esac
 }
 
-convert_temp() {
+convert_temp(){
   local temp_c=$1 unit=$2
   case $unit in
   C | c) printf '%s' "$temp_c" ;;
@@ -90,7 +90,7 @@ convert_temp() {
   esac
 }
 
-cmd_temp() {
+cmd_temp(){
   local unit=C monitor=0
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -123,7 +123,7 @@ cmd_temp() {
 # ============================================================================
 # DISK
 # ============================================================================
-cmd_disk() {
+cmd_disk(){
   local pattern="" sort_field="" output_json=false
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -159,9 +159,9 @@ cmd_disk() {
 # ============================================================================
 # NETWORK
 # ============================================================================
-jget() { [[ -n $JQ ]] && "$JQ" -r "$2" <<<"$1" || sed -n "s/.*\"${2//./\\. }\":[[:space:]]*\"\\([^\"]*\\)\". */\\1/p" <<<"$1" | head -1; }
+jget(){ [[ -n $JQ ]] && "$JQ" -r "$2" <<<"$1" || sed -n "s/.*\"${2//./\\. }\":[[:space:]]*\"\\([^\"]*\\)\". */\\1/p" <<<"$1" | head -1; }
 
-cmd_speed() {
+cmd_speed(){
   need curl
   printf 'Testing download.. .\n' >&2
   local down=$(curl -sL -o /dev/null -w "%{speed_download}" "https://speed.cloudflare.com/__down? bytes=50000000" 2>/dev/null || printf '0')
@@ -172,7 +172,7 @@ cmd_speed() {
   awk -v s="$up" 'BEGIN{printf "Up:   %.2f Mbps\n",(s*8)/(1024*1024)}'
 }
 
-cmd_ip() {
+cmd_ip(){
   need curl
   local json=$(curl -fsS https://ipinfo.io/json 2>/dev/null || printf '{}')
   local ip=$(jget "$json" '. ip')
@@ -181,7 +181,7 @@ cmd_ip() {
   printf '%bCity:%b %s\n' "${BLD}${BLU}" "$DEF" "${city:-unknown}"
 }
 
-cmd_weather() {
+cmd_weather(){
   local city=${1:-$(curl -fsS https://ipinfo.io/json 2>/dev/null | jget - '.city')}
   [[ -z $city ]] && city="Bielefeld"
   local data=$(curl -sL "http://wttr.in/$city? format=3" 2>/dev/null || printf '')
@@ -192,7 +192,7 @@ cmd_weather() {
 # ============================================================================
 # MAIN
 # ============================================================================
-main() {
+main(){
   local cmd=${1:-all}
   shift || :
   case $cmd in

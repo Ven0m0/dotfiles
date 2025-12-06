@@ -10,9 +10,9 @@ IFS=$'\n\t'
 readonly ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 readonly BACKUP_DIR="$HOME/.zsh_backup_$(date +%s)"
 
-has() { command -v -- "$1" &>/dev/null; }
+has(){ command -v -- "$1" &>/dev/null; }
 
-main() {
+main(){
   printf '=== Zsh Config Deployment ===\n\n'
 
   # Backup existing configs

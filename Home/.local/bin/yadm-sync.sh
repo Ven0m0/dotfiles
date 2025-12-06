@@ -6,22 +6,22 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # Utility functions
-has() { command -v "$1" &>/dev/null; }
-die() {
+has(){ command -v "$1" &>/dev/null; }
+die(){
   printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
   exit "${2:-1}"
 }
-warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
-log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
-ok() { printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
+warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
+log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
+ok(){ printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
 
 # Compatibility aliases
-info() { log "$@"; }
-success() { ok "$@"; }
-error() { die "$@"; }
+info(){ log "$@"; }
+success(){ ok "$@"; }
+error(){ die "$@"; }
 
 # Determine repository directory
-get_repo_dir() {
+get_repo_dir(){
   if yadm rev-parse --show-toplevel &>/dev/null; then
     yadm rev-parse --show-toplevel
   elif [[ -d "${HOME}/.local/share/yadm/repo.git" ]]; then
@@ -32,7 +32,7 @@ get_repo_dir() {
 }
 
 # Show usage
-usage() {
+usage(){
   cat <<EOF
 ${BLD}yadm-sync${DEF} - Sync dotfiles between ~/ and repository
 
@@ -69,7 +69,7 @@ EOF
 }
 
 # Sync from repo to home (deploy)
-sync_pull() {
+sync_pull(){
   local repo_dir home_dir dry_run="${1:-0}"
 
   repo_dir="$(get_repo_dir)"
@@ -96,7 +96,7 @@ sync_pull() {
 }
 
 # Sync from home to repo (update repo)
-sync_push() {
+sync_push(){
   local repo_dir home_dir dry_run="${1:-0}"
 
   repo_dir="$(get_repo_dir)"
@@ -188,7 +188,7 @@ EXCLUDES
 }
 
 # Show sync status
-sync_status() {
+sync_status(){
   local repo_dir home_dir
 
   repo_dir="$(get_repo_dir)"
@@ -207,7 +207,7 @@ sync_status() {
 }
 
 # Show detailed diff
-sync_diff() {
+sync_diff(){
   local repo_dir home_dir
 
   repo_dir="$(get_repo_dir)"
@@ -236,7 +236,7 @@ sync_diff() {
 }
 
 # Main
-main() {
+main(){
   local command="${1:-}"
   local dry_run=0
 

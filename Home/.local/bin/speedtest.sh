@@ -13,7 +13,7 @@ PROBES=5
 SERVERS=("https://speed.cloudflare.com/" "https://nbg1-speed.hetzner.com/100MB.bin" "https://fsn1-speed.hetzner.com/100MB.bin" "https://ash-speed.hetzner.com/100MB.bin")
 UPLOAD_URL="https://httpbin.org/post"
 
-usage() {
+usage(){
   cat <<-USAGE
 Usage: $0 [-d DL_MB] [-u UL_MB] [-n probes] [-s server_url] [-U upload_url]
 Defaults: DL_MB=${DL_MB} UL_MB=${UL_MB} probes=${PROBES}
@@ -40,7 +40,7 @@ while getopts "hd:u:n:s:U:" opt; do
 done
 
 # helpers
-fmt_mbps() { awk "BEGIN{printf \"%.2f\", ($1*8)/1000000}"; } # bytes/s -> Mbit/s
+fmt_mbps(){ awk "BEGIN{printf \"%.2f\", ($1*8)/1000000}"; } # bytes/s -> Mbit/s
 
 # 1) latency probe (time_connect) across servers
 best_srv=""

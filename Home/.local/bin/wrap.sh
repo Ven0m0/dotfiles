@@ -2,7 +2,7 @@
 set -e
 LC_ALL=C
 # ffzap/ffmpeg wrapper: prefer ffzap, fallback to ffmpeg; uniform CLIs
-ffwrap() {
+ffwrap(){
   if command -v ffzap &>/dev/null; then
     ffzap "$@"
   elif command -v ffmpeg &>/dev/null; then
@@ -12,7 +12,7 @@ ffwrap() {
     return 1
   fi
 }
-jqwrap() {
+jqwrap(){
   if command -v jaq &>/dev/null; then
     # --raw-input short: -R; --slurp: -s; --null-input: -n; all work the same in jaq, pass through
     jaq "$@"

@@ -14,16 +14,16 @@ BLK=$'\e[30m' RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m'
 BLU=$'\e[34m' MGN=$'\e[35m' CYN=$'\e[36m' WHT=$'\e[37m'
 BWHT=$'\e[97m' DEF=$'\e[0m' BLD=$'\e[1m'
 
-has() { command -v "$1" &>/dev/null; }
-warn() { printf '%b\n' "${BLD}${YLW}==> WARNING:${BWHT} $1${DEF}"; }
-die() {
+has(){ command -v "$1" &>/dev/null; }
+warn(){ printf '%b\n' "${BLD}${YLW}==> WARNING:${BWHT} $1${DEF}"; }
+die(){
   printf '%b\n' "${BLD}${RED}==> ERROR:${BWHT} $1${DEF}" >&2
   exit 1
 }
-info() { printf '%b\n' "${BLD}${BLU}==>${BWHT} $1${DEF}"; }
-success() { printf '%b\n' "${BLD}${GRN}==>${BWHT} $1${DEF}"; }
+info(){ printf '%b\n' "${BLD}${BLU}==>${BWHT} $1${DEF}"; }
+success(){ printf '%b\n' "${BLD}${GRN}==>${BWHT} $1${DEF}"; }
 
-run_cmd() {
+run_cmd(){
   if [[ $DRY_RUN == true ]]; then
     printf '%b\n' "${BLD}${CYN}[DRY-RUN]${BWHT} $*${DEF}"
     return 0
@@ -32,7 +32,7 @@ run_cmd() {
 }
 
 #--- Argument Parsing ---#
-parse_args() {
+parse_args(){
   while [[ $# -gt 0 ]]; do
     case "$1" in
     --dry-run | -n)
@@ -57,7 +57,7 @@ parse_args() {
   done
 }
 
-show_help() {
+show_help(){
   cat <<EOF
 ${BLD}Dotfiles Setup Script${DEF}
 Usage: $(basename "$0") [OPTIONS]
@@ -81,7 +81,7 @@ readonly TUCKR_DIR="$DOTFILES_DIR"
 readonly PARU_OPTS="--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade"
 
 #--- Main Logic ---#
-main() {
+main(){
   install_packages
   setup_dotfiles
   deploy_dotfiles
@@ -90,7 +90,7 @@ main() {
 }
 
 #--- Functions ---#
-install_packages() {
+install_packages(){
   info "Installing packages..."
   local pkgs=(
     git gitoxide aria2 curl zsh fd sd ripgrep bat jq
@@ -106,7 +106,7 @@ install_packages() {
   fi
 }
 
-setup_dotfiles() {
+setup_dotfiles(){
   has yadm || die "yadm not found."
   if [[ ! -d $DOTFILES_DIR ]]; then
     info "Cloning dotfiles..."
@@ -118,7 +118,7 @@ setup_dotfiles() {
   fi
 }
 
-deploy_dotfiles() {
+deploy_dotfiles(){
   info "Deploying Home/ configs..."
   local repo_dir
   if has yadm && yadm rev-parse --git-dir &>/dev/null; then
@@ -141,7 +141,7 @@ deploy_dotfiles() {
   fi
 }
 
-tuckr_system_configs() {
+tuckr_system_configs(){
   info "Linking system configs..."
   has tuckr || die "tuckr not found."
   [[ -d $TUCKR_DIR ]] || die "Repo not found at $TUCKR_DIR."
@@ -158,7 +158,7 @@ tuckr_system_configs() {
   done
 }
 
-final_steps() {
+final_steps(){
   success "Setup complete."
   info "Run 'yadm status' to check state."
 }

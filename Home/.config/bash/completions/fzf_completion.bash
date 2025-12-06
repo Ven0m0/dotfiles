@@ -22,13 +22,13 @@ if [[ $- =~ i ]]; then
   # To modify it, one can edit "common.sh" and run "./update-common.sh" to apply
   # the changes. See code comments in "common.sh" for the implementation details.
 
-  __fzf_defaults() {
+  __fzf_defaults(){
     printf '%s\n' "--height ${FZF_TMUX_HEIGHT:-40%} --min-height 20+ --bind=ctrl-z:ignore $1"
     command cat "${FZF_DEFAULT_OPTS_FILE-}" 2>/dev/null
     printf '%s\n' "${FZF_DEFAULT_OPTS-} $2"
   }
 
-  __fzf_exec_awk() {
+  __fzf_exec_awk(){
     if [[ -z ${__fzf_awk-} ]]; then
       __fzf_awk=awk
       if command -v mawk &>/dev/null; then
@@ -41,7 +41,7 @@ if [[ $- =~ i ]]; then
   }
   #----END INCLUDE
 
-  __fzf_select__() {
+  __fzf_select__(){
     FZF_DEFAULT_COMMAND=${FZF_CTRL_T_COMMAND:-} \
       FZF_DEFAULT_OPTS=$(__fzf_defaults "--reverse --walker=file,dir,follow,hidden --scheme=path" "${FZF_CTRL_T_OPTS-} -m") \
       FZF_DEFAULT_OPTS_FILE='' "$(__fzfcmd)" "$@" |
@@ -50,18 +50,18 @@ if [[ $- =~ i ]]; then
       done
   }
 
-  __fzfcmd() {
+  __fzfcmd(){
     [[ -n ${TMUX_PANE-} ]] && { [[ ${FZF_TMUX:-0} != 0 ]] || [[ -n ${FZF_TMUX_OPTS-} ]]; } &&
       echo "fzf-tmux ${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}} -- " || echo "fzf"
   }
 
-  fzf-file-widget() {
+  fzf-file-widget(){
     local selected="$(__fzf_select__ "$@")"
     READLINE_LINE="${READLINE_LINE:0:READLINE_POINT}$selected${READLINE_LINE:READLINE_POINT}"
     READLINE_POINT=$((READLINE_POINT + ${#selected}))
   }
 
-  __fzf_cd__() {
+  __fzf_cd__(){
     local dir
     dir=$(
       FZF_DEFAULT_COMMAND=${FZF_ALT_C_COMMAND:-} \
@@ -71,7 +71,7 @@ if [[ $- =~ i ]]; then
   }
 
   if command -v perl >/dev/null; then
-    __fzf_history__() {
+    __fzf_history__(){
       local output script
       script='BEGIN { getc; $/ = "\n\t"; $HISTCOUNT = $ENV{last_hist} + 1 } s/^[ *]//; s/\n/\n\t/gm; print $HISTCOUNT - $. . "\t$_" if !$seen{$_}++'
       output=$(
@@ -89,7 +89,7 @@ if [[ $- =~ i ]]; then
       fi
     }
   else # awk - fallback for POSIX systems
-    __fzf_history__() {
+    __fzf_history__(){
       local output script
       [[ $(HISTTIMEFORMAT='' builtin history 1) =~ [[:digit:]]+ ]] # how many history entries
       script='function P(b){ ++n; sub(/^[ *]/, "", b); if (!seen[b]++){ printf "%d\t%s%c", '$((BASH_REMATCH + 1))' - n, b, 0 } }
@@ -195,13 +195,13 @@ if [[ $- =~ i ]]; then
   # To modify it, one can edit "common.sh" and run "./update-common.sh" to apply
   # the changes. See code comments in "common.sh" for the implementation details.
 
-  __fzf_defaults() {
+  __fzf_defaults(){
     printf '%s\n' "--height ${FZF_TMUX_HEIGHT:-40%} --min-height 20+ --bind=ctrl-z:ignore $1"
     command cat "${FZF_DEFAULT_OPTS_FILE-}" 2>/dev/null
     printf '%s\n' "${FZF_DEFAULT_OPTS-} $2"
   }
 
-  __fzf_exec_awk() {
+  __fzf_exec_awk(){
     if [[ -z ${__fzf_awk-} ]]; then
       __fzf_awk=awk
       if [[ $OSTYPE == solaris* && -x /usr/xpg4/bin/awk ]]; then
@@ -216,7 +216,7 @@ if [[ $- =~ i ]]; then
   }
   #----END INCLUDE
 
-  __fzf_comprun() {
+  __fzf_comprun(){
     if [[ "$(type -t _fzf_comprun 2>&1)" == function ]]; then
       _fzf_comprun "$@"
     elif [[ -n ${TMUX_PANE-} ]] && { [[ ${FZF_TMUX:-0} != 0 ]] || [[ -n ${FZF_TMUX_OPTS-} ]]; }; then
@@ -228,7 +228,7 @@ if [[ $- =~ i ]]; then
     fi
   }
 
-  __fzf_orig_completion() {
+  __fzf_orig_completion(){
     local l comp f cmd
     while read -r l; do
       if [[ $l =~ ^(.*\ -F)\ *([^ ]*).*\ ([^ ]*)$ ]]; then
@@ -246,7 +246,7 @@ if [[ $- =~ i ]]; then
 
   # @param $1 cmd - Command name for which the original completion is searched
   # @var[out] REPLY - Original function name is returned
-  __fzf_orig_completion_get_orig_func() {
+  __fzf_orig_completion_get_orig_func(){
     local cmd orig_var orig
     cmd=$1
     orig_var="_fzf_orig_completion_${cmd//[^A-Za-z0-9_]/_}"
@@ -258,7 +258,7 @@ if [[ $- =~ i ]]; then
   # @param $1 cmd - Command name for which the original completion is searched
   # @param $2 func - Fzf's completion function to replace the original function
   # @var[out] REPLY - Completion setting is returned as a string to "eval"
-  __fzf_orig_completion_instantiate() {
+  __fzf_orig_completion_instantiate(){
     local cmd func orig_var orig
     cmd=$1
     func=$2
@@ -269,7 +269,7 @@ if [[ $- =~ i ]]; then
     printf -v REPLY "$orig" "$func"
   }
 
-  _fzf_opts_completion() {
+  _fzf_opts_completion(){
     local cur prev opts
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -424,7 +424,7 @@ if [[ $- =~ i ]]; then
     return 0
   }
 
-  _fzf_handle_dynamic_completion() {
+  _fzf_handle_dynamic_completion(){
     local cmd ret REPLY orig_cmd orig_complete
     cmd="$1"
     shift
@@ -456,7 +456,7 @@ if [[ $- =~ i ]]; then
     fi
   }
 
-  __fzf_generic_path_completion() {
+  __fzf_generic_path_completion(){
     local cur base dir leftover matches trigger cmd
     cmd="${COMP_WORDS[0]}"
     if [[ $cmd == \\* ]]; then
@@ -518,7 +518,7 @@ if [[ $- =~ i ]]; then
     fi
   }
 
-  _fzf_complete() {
+  _fzf_complete(){
     # Split arguments around --
     local args rest str_arg i sep
     args=("$@")
@@ -569,24 +569,24 @@ if [[ $- =~ i ]]; then
     fi
   }
 
-  _fzf_path_completion() {
+  _fzf_path_completion(){
     __fzf_generic_path_completion _fzf_compgen_path "-m" "" "$@"
   }
 
   # Deprecated. No file only completion.
-  _fzf_file_completion() {
+  _fzf_file_completion(){
     _fzf_path_completion "$@"
   }
 
-  _fzf_dir_completion() {
+  _fzf_dir_completion(){
     __fzf_generic_path_completion _fzf_compgen_dir "" "/" "$@"
   }
 
-  _fzf_complete_kill() {
+  _fzf_complete_kill(){
     _fzf_proc_completion "$@"
   }
 
-  _fzf_proc_completion() {
+  _fzf_proc_completion(){
     local transformer
     transformer='
     if [[ $FZF_KEY =~ ctrl|alt|shift ]] && [[ -n $FZF_NTH ]]; then
@@ -621,7 +621,7 @@ if [[ $- =~ i ]]; then
       )
   }
 
-  _fzf_proc_completion_post() {
+  _fzf_proc_completion_post(){
     __fzf_exec_awk '{print $2}'
   }
 
@@ -638,7 +638,7 @@ if [[ $- =~ i ]]; then
   #     printf '%s\n' "${COMPREPLY[@]}" | command sort -u --version-sort
   #   }
   if ! declare -F __fzf_list_hosts >/dev/null; then
-    __fzf_list_hosts() {
+    __fzf_list_hosts(){
       command sort -u \
         <(
           # Note: To make the pathname expansion of "~/.ssh/config.d/*" work
@@ -690,7 +690,7 @@ if [[ $- =~ i ]]; then
     }
   fi
 
-  _fzf_host_completion() {
+  _fzf_host_completion(){
     _fzf_complete +m -- "$@" < <(__fzf_list_hosts)
   }
 
@@ -699,7 +699,7 @@ if [[ $- =~ i ]]; then
   # > the first argument ($1) is the name of the command whose arguments are being completed,
   # > the second argument ($2) is the word being completed,
   # > and the third argument ($3) is the word preceding the word being completed on the current command line.
-  _fzf_complete_ssh() {
+  _fzf_complete_ssh(){
     case $3 in
     -i | -F | -E)
       _fzf_path_completion "$@"
@@ -712,13 +712,13 @@ if [[ $- =~ i ]]; then
     esac
   }
 
-  _fzf_var_completion() {
+  _fzf_var_completion(){
     _fzf_complete -m -- "$@" < <(
       declare -xp | command sed -En 's|^declare [^ ]+ ([^=]+).*|\1|p'
     )
   }
 
-  _fzf_alias_completion() {
+  _fzf_alias_completion(){
     _fzf_complete -m -- "$@" < <(
       alias | command sed -En 's|^alias ([^=]+).*|\1|p'
     )
@@ -732,7 +732,7 @@ if [[ $- =~ i ]]; then
   complete -o default -F _fzf_opts_completion fzf-tmux
 
   # Default path completion
-  __fzf_default_completion() {
+  __fzf_default_completion(){
     __fzf_generic_path_completion _fzf_compgen_path "-m" "" "$@"
 
     # Dynamic completion loader has updated the completion for the command
@@ -787,7 +787,7 @@ if [[ $- =~ i ]]; then
     _fzf_completion_loader=_completion_loader
   fi
 
-  __fzf_defc() {
+  __fzf_defc(){
     local cmd func opts REPLY
     cmd="$1"
     func="$2"
@@ -825,7 +825,7 @@ if [[ $- =~ i ]]; then
 
   unset cmd d_cmds a_cmds v_cmds
 
-  _fzf_setup_completion() {
+  _fzf_setup_completion(){
     local kind fn cmd
     kind=$1
     fn=_fzf_${1}_completion

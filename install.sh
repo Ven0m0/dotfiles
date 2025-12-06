@@ -13,7 +13,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Logo
-print_logo() {
+print_logo(){
   printf '%b\n' "$CYAN"
   cat <<"EOF"
    ██████╗██╗   ██╗██████╗ ███████╗ ██████╗ ██████╗      ██████╗ ██████╗  ██████╗
@@ -27,7 +27,7 @@ EOF
 }
 
 # Get download folder path
-get_downloads_dir() {
+get_downloads_dir(){
   if [[ "$(uname)" == "Darwin" ]]; then
     echo "$HOME/Downloads"
   else
@@ -42,7 +42,7 @@ get_downloads_dir() {
 }
 
 # Get latest version
-get_latest_version() {
+get_latest_version(){
   printf '%b\n' "${CYAN}ℹ️ Checking latest version...${NC}"
   latest_release=$(curl -s https://api.github.com/repos/yeongpin/cursor-free-vip/releases/latest) || {
     printf '%b\n' "${RED}❌ Cannot get latest version information${NC}"
@@ -59,7 +59,7 @@ get_latest_version() {
 }
 
 # Detect system type and architecture
-detect_os() {
+detect_os(){
   if [[ "$(uname)" == "Darwin" ]]; then
     # Detect macOS architecture
     ARCH=$(uname -m)
@@ -88,7 +88,7 @@ detect_os() {
 }
 
 # Install and download
-install_cursor_free_vip() {
+install_cursor_free_vip(){
   local downloads_dir=$(get_downloads_dir)
   local binary_name="CursorFreeVIP_${VERSION}_${OS}"
   local binary_path="${downloads_dir}/${binary_name}"
@@ -193,7 +193,7 @@ install_cursor_free_vip() {
 }
 
 # Main program
-main() {
+main(){
   print_logo
   get_latest_version
   detect_os

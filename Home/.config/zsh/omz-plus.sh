@@ -7,7 +7,7 @@
 OMZ_PLUS_VERSION=1.0.0
 
 # Set variables and configure OMZ PLUS!
-() {
+(){
   emulate -L zsh
   setopt LOCAL_OPTIONS EXTENDED_GLOB
 
@@ -86,7 +86,7 @@ function omz_plus_update {
 omz_plus_reset(){
   emulate -L zsh
   setopt LOCAL_OPTIONS EXTENDED_GLOB
-  omz_plus_reset_symlinks() {
+  omz_plus_reset_symlinks(){
     local dir=$1 link target
     [[ -d "$dir" ]] || return
     for link in "$dir"/*; do

@@ -6,7 +6,7 @@ IFS=$'\n\t'
 # Zsh Startup Benchmark
 # ============================================================================
 readonly ITERATIONS=10
-benchmark() {
+benchmark(){
   local total=0 i
   printf 'Running %d iterations...\n' "$ITERATIONS"
   for ((i = 1; i <= ITERATIONS; i++)); do
@@ -32,7 +32,7 @@ benchmark() {
   fi
 }
 
-main() {
+main(){
   if ! command -v zsh &>/dev/null; then
     printf 'Error: zsh not found\n' >&2
     exit 1

@@ -4,16 +4,16 @@ IFS=$'\n\t'
 
 # Media toolkit: CD burning, USB creation, transcoding, and image optimization
 BLD=$'\e[1m' BLU=$'\e[34m' CYN=$'\e[36m' GRN=$'\e[32m' RED=$'\e[31m' DEF=$'\e[0m'
-has() { command -v "$1" &>/dev/null; }
-log() { printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
-info() { printf '%b==>\e[0m %s\n' "${BLD}${CYN}" "$*"; }
-ok() { printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
-die() {
+has(){ command -v "$1" &>/dev/null; }
+log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
+info(){ printf '%b==>\e[0m %s\n' "${BLD}${CYN}" "$*"; }
+ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
+die(){
   printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2
   exit "${2:-1}"
 }
-need() { has "$1" || die "Required command not found: $1"; }
-usage() {
+need(){ has "$1" || die "Required command not found: $1"; }
+usage(){
   cat <<'EOF'
 media - Media toolkit for CD burning, USB creation, transcoding, and image optimization
 
@@ -63,7 +63,7 @@ TOWEBP OPTIONS:
 EOF
 }
 
-cmd_cd() {
+cmd_cd(){
   local toc=$1
   need cdrdao
   [[ -f $toc ]] || die "TOC file not found: $toc"
@@ -72,7 +72,7 @@ cmd_cd() {
   ok 'CD burned successfully'
 }
 
-cmd_usb() {
+cmd_usb(){
   local iso=$1 dst=$2 size
   for cmd in dd pv stat; do need "$cmd"; done
   [[ -f $iso ]] || die "File not found: $iso"
@@ -94,10 +94,10 @@ cmd_usb() {
   ok "Copy completed"
 }
 
-cmd_compress() { tar -czf "${1%/}.tar.gz" "${1%/}"; }
-cmd_decompress() { tar -xzf "$1"; }
+cmd_compress(){ tar -czf "${1%/}.tar.gz" "${1%/}"; }
+cmd_decompress(){ tar -xzf "$1"; }
 
-cmd_iso2sd() {
+cmd_iso2sd(){
   local iso=$1 dst=$2
   [[ -f $iso ]] || die "File not found: $iso"
   [[ -b $dst ]] || die "Not a block device: $dst"
@@ -105,7 +105,7 @@ cmd_iso2sd() {
   sudo eject "$dst" || :
 }
 
-cmd_format() {
+cmd_format(){
   local dev=$1 name=$2
   [[ -b $dev ]] || die "Not a block device: $dev"
   log "⚠️  WARNING: Erasing all data on $dev, label '$name'"
@@ -124,7 +124,7 @@ cmd_format() {
   info "Drive $dev formatted as exFAT, labeled '$name'"
 }
 
-cmd_ripdvd() {
+cmd_ripdvd(){
   local iso=$1 dvd=/dev/sr0
   for cmd in isoinfo dd pv sha1sum; do need "$cmd"; done
   [[ -b $dvd ]] || die "DVD device not found: $dvd"
@@ -148,7 +148,7 @@ cmd_ripdvd() {
   ok "DVD ripped successfully"
 }
 
-cmd_pngzip() {
+cmd_pngzip(){
   local GRAYSCALE=0 TOUCH=0 VERBOSE=1 DPI=0 OPTIND
   while getopts ":gqtr:h" o; do
     case $o in
@@ -213,7 +213,7 @@ cmd_pngzip() {
   done
 }
 
-cmd_towebp() {
+cmd_towebp(){
   need cwebp
   local lossless=true quality=85 zlevel=9 force=false OPTIND
   while getopts ":lq:z:fh" o; do
@@ -256,34 +256,34 @@ cmd_towebp() {
   log "Converted $count image(s) to WebP"
 }
 
-cmd_vid1080() {
+cmd_vid1080(){
   local vid=$1
   need ffmpeg
   ffmpeg -i "$vid" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${vid%.*}"-1080p.mp4
 }
 
-cmd_vid4k() {
+cmd_vid4k(){
   local vid=$1
   need ffmpeg
 
   ffmpeg -i "$vid" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${vid%.*}"-optimized.mp4
 }
 
-cmd_jpg() {
+cmd_jpg(){
   local img=$1
   shift
   need magick
   magick "$img" "$@" -quality 95 -strip "${img%.*}"-optimized.jpg
 }
 
-cmd_jpgsmall() {
+cmd_jpgsmall(){
   local img=$1
   shift
   need magick
   magick "$img" "$@" -resize 1080x\> -quality 95 -strip "${img%.*}"-optimized.jpg
 }
 
-cmd_png() {
+cmd_png(){
   local img=$1
   shift
   need magick
@@ -292,7 +292,7 @@ cmd_png() {
     -define png:exclude-chunk=all "${img%.*}"-optimized. png
 }
 
-main() {
+main(){
   [[ $# -eq 0 || $1 == -h || $1 == --help ]] && {
     usage
     exit 0

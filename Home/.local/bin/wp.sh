@@ -17,13 +17,13 @@
 set -euo pipefail
 
 # Utility functions
-has() { command -v "$1" &>/dev/null; }
-die() {
+has(){ command -v "$1" &>/dev/null; }
+die(){
   printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
   exit "${2:-1}"
 }
-warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
-log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
+warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
+log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 
 # exit 0 - successful execution
 # exit 1 - no selection
@@ -33,7 +33,7 @@ WALLPAPERS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/wallpapers"
 mkdir -p "$WALLPAPERS_DIR"
 QUIET=""
 
-send_feedback() {
+send_feedback(){
   local msg="$1"
   if [[ -z $QUIET ]]; then
     printf '%s\n' "$msg"
@@ -41,7 +41,7 @@ send_feedback() {
   fi
 }
 
-set_wallpaper() {
+set_wallpaper(){
   local wallpaper="$1"
   case "${XDG_SESSION_TYPE:-}" in
   wayland)
@@ -57,7 +57,7 @@ set_wallpaper() {
   esac
 }
 
-random_wallpaper() {
+random_wallpaper(){
   local wallpaper
   wallpaper=$(find "$WALLPAPERS_DIR" -type f -not -path '*/.git/*' | shuf -n 1) || {
     send_feedback "No file selected"
@@ -74,7 +74,7 @@ random_wallpaper() {
   fi
 }
 
-select_wallpaper() {
+select_wallpaper(){
   local wallpaper
   wallpaper=$(
     find "$WALLPAPERS_DIR" -type f -not -path '*/.git/*' -exec basename {} \; |

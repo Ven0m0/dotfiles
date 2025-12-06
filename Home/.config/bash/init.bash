@@ -10,17 +10,17 @@ export BASH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/bash"
 mkdir -p "$BASH_CONFIG_DIR"/{lib,plugins,functions} "$BASH_CACHE_DIR"
 
 #================================= [Helpers] ==================================
-has() { command -v -- "$1" &>/dev/null; }
-ifsource() { [[ -r ${1/#\~\//${HOME}/} ]] && . "${1/#\~\//${HOME}/}"; }
-exportif() { [[ -e $2 ]] && export "$1=$2"; }
-prepend_var() {
+has(){ command -v -- "$1" &>/dev/null; }
+ifsource(){ [[ -r ${1/#\~\//${HOME}/} ]] && . "${1/#\~\//${HOME}/}"; }
+exportif(){ [[ -e $2 ]] && export "$1=$2"; }
+prepend_var(){
   local -n p="$1"
   [[ -d $2 && ":$p:" != *":$2:"* ]] && p="$2${p:+:$p}"
 }
-prependpath() { prepend_var PATH "$1"; }
+prependpath(){ prepend_var PATH "$1"; }
 
 #================================ [Lazy Load] =================================
-lazy_fn() {
+lazy_fn(){
   local fn_name="$1" src_file="$2"
   # Redefine function: unset self, source file, execute function
   eval "$fn_name(){
@@ -30,7 +30,7 @@ lazy_fn() {
   }"
 }
 
-lazy_build_cache() {
+lazy_build_cache(){
   local dir="$1" cache_file="$2"
   # Use fd/rg for fast parsing, fallback to grep if needed
   if command -v fd >/dev/null && command -v rg >/dev/null; then
@@ -44,7 +44,7 @@ lazy_build_cache() {
   fi
 }
 
-lazy_init() {
+lazy_init(){
   local dir="$1" cache_file="$BASH_CACHE_DIR/fn_cache.tsv"
   local rebuild=0
 
@@ -72,7 +72,7 @@ lazy_init() {
 }
 
 #================================== [Async] ===================================
-async_exec() {
+async_exec(){
   # Execute a function in a detached background subshell.
   (
     "$@" &>/dev/null &
@@ -80,7 +80,7 @@ async_exec() {
   )
 }
 
-welcome_fetch() {
+welcome_fetch(){
   if has hyfetch; then
     hyfetch
   elif has fastfetch; then
@@ -88,7 +88,7 @@ welcome_fetch() {
   fi
 }
 
-path_dedupe() {
+path_dedupe(){
   local new_path=""
   local -A seen
   local old_ifs="$IFS"
