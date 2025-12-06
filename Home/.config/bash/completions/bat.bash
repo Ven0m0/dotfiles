@@ -5,12 +5,12 @@
 
 # Macs have bash3 for which the bash-completion package doesn't include
 # _init_completion. This is a minimal version of that function.
-__bat_init_completion(){
+__bat_init_completion() {
   COMPREPLY=()
   _get_comp_words_by_ref "$@" cur prev words cword
 }
 
-__bat_escape_completions(){
+__bat_escape_completions() {
   # Do not escape if completing a quoted value.
   [[ $cur == [\"\']* ]] && return 0
   # printf -v to an array index is available in bash >= 4.1.
@@ -30,7 +30,7 @@ __bat_escape_completions(){
   fi
 }
 
-_bat(){
+_bat() {
   local cur prev words split=false
   if declare -F _init_completion &>/dev/null; then
     _init_completion -s || return 0
@@ -40,11 +40,11 @@ _bat(){
   fi
   if [[ ${words[1]-} == cache ]]; then
     case $prev in
-    --source | --target)
-      _filedir -d
-      return 0
-      ;;
-    *) ;;
+      --source | --target)
+        _filedir -d
+        return 0
+        ;;
+      *) ;;
     esac
     COMPREPLY=("$(compgen -W "
 			--build
@@ -58,114 +58,114 @@ _bat(){
   fi
 
   case $prev in
-  -l | --language)
-    local IFS=$'\n'
-    COMPREPLY=("$(compgen -W "$(
-      "$1" --list-languages | while IFS=: read -r lang _; do
-        printf "%s\n" "$lang"
-      done
-    )" -- "$cur")")
-    __bat_escape_completions
-    return 0
-    ;;
-  -H | --highlight-line | \
-    --diff-context | \
-    --tabs | \
-    --terminal-width | \
-    -m | --map-syntax | \
-    --ignored-suffix | \
-    --list-themes | \
-    --squeeze-limit | \
-    --line-range | \
-    -L | --list-languages | \
-    --lessopen | \
-    --no-paging | \
-    --diagnostic | \
-    --acknowledgements | \
-    -h | --help | \
-    -V | --version | \
-    --cache-dir | \
-    --config-dir | \
-    --config-file | \
-    --generate-config-file)
-    # argument required but no completion available, or option
-    # causes an exit
-    return 0
-    ;;
-  --file-name)
-    _filedir
-    return 0
-    ;;
-  --wrap)
-    COMPREPLY=("$(compgen -W "auto never character" -- "$cur")")
-    return 0
-    ;;
-  --binary)
-    COMPREPLY=("$(compgen -W "no-printing as-text" -- "$cur")")
-    return 0
-    ;;
-  --nonprintable-notation)
-    COMPREPLY=("$(compgen -W "unicode caret" -- "$cur")")
-    return 0
-    ;;
-  --strip-ansi)
-    COMPREPLY=("$(compgen -W "auto never always" -- "$cur")")
-    return 0
-    ;;
-  --completion)
-    COMPREPLY=("$(compgen -W "bash fish zsh ps1" -- "$cur")")
-    return 0
-    ;;
-  --color | --decorations | --paging)
-    COMPREPLY=("$(compgen -W "auto never always" -- "$cur")")
-    return 0
-    ;;
-  --italic-text)
-    COMPREPLY=("$(compgen -W "always never" -- "$cur")")
-    return 0
-    ;;
-  --pager)
-    COMPREPLY=("$(compgen -c -- "$cur")")
-    return 0
-    ;;
-  --theme)
-    local IFS=$'\n'
-    COMPREPLY=("$(compgen -W "auto${IFS}auto:always${IFS}auto:system${IFS}dark${IFS}light${IFS}$("$1" --list-themes)" -- "$cur")")
-    __bat_escape_completions
-    return 0
-    ;;
-  --theme-dark | \
-    --theme-light)
-    local IFS=$'\n'
-    COMPREPLY=("$(compgen -W "$("$1" --list-themes)" -- "$cur")")
-    __bat_escape_completions
-    return 0
-    ;;
-  --style)
-    # shellcheck disable=SC2034
-    local -a styles=(
-      default
-      full
-      auto
-      plain
-      changes
-      header
-      header-filename
-      header-filesize
-      grid
-      rule
-      numbers
-      snip
-    )
-    # shellcheck disable=SC2016
-    if declare -F _comp_delimited &>/dev/null; then
-      # bash-completion > 2.11
-      _comp_delimited , -W '"${styles[@]}"'
-    else
-      COMPREPLY=("$(compgen -W '${styles[@]}' -- "$cur")")
-    fi
-    return 0
-    ;;
+    -l | --language)
+      local IFS=$'\n'
+      COMPREPLY=("$(compgen -W "$(
+        "$1" --list-languages | while IFS=: read -r lang _; do
+          printf "%s\n" "$lang"
+        done
+      )" -- "$cur")")
+      __bat_escape_completions
+      return 0
+      ;;
+    -H | --highlight-line | \
+      --diff-context | \
+      --tabs | \
+      --terminal-width | \
+      -m | --map-syntax | \
+      --ignored-suffix | \
+      --list-themes | \
+      --squeeze-limit | \
+      --line-range | \
+      -L | --list-languages | \
+      --lessopen | \
+      --no-paging | \
+      --diagnostic | \
+      --acknowledgements | \
+      -h | --help | \
+      -V | --version | \
+      --cache-dir | \
+      --config-dir | \
+      --config-file | \
+      --generate-config-file)
+      # argument required but no completion available, or option
+      # causes an exit
+      return 0
+      ;;
+    --file-name)
+      _filedir
+      return 0
+      ;;
+    --wrap)
+      COMPREPLY=("$(compgen -W "auto never character" -- "$cur")")
+      return 0
+      ;;
+    --binary)
+      COMPREPLY=("$(compgen -W "no-printing as-text" -- "$cur")")
+      return 0
+      ;;
+    --nonprintable-notation)
+      COMPREPLY=("$(compgen -W "unicode caret" -- "$cur")")
+      return 0
+      ;;
+    --strip-ansi)
+      COMPREPLY=("$(compgen -W "auto never always" -- "$cur")")
+      return 0
+      ;;
+    --completion)
+      COMPREPLY=("$(compgen -W "bash fish zsh ps1" -- "$cur")")
+      return 0
+      ;;
+    --color | --decorations | --paging)
+      COMPREPLY=("$(compgen -W "auto never always" -- "$cur")")
+      return 0
+      ;;
+    --italic-text)
+      COMPREPLY=("$(compgen -W "always never" -- "$cur")")
+      return 0
+      ;;
+    --pager)
+      COMPREPLY=("$(compgen -c -- "$cur")")
+      return 0
+      ;;
+    --theme)
+      local IFS=$'\n'
+      COMPREPLY=("$(compgen -W "auto${IFS}auto:always${IFS}auto:system${IFS}dark${IFS}light${IFS}$("$1" --list-themes)" -- "$cur")")
+      __bat_escape_completions
+      return 0
+      ;;
+    --theme-dark | \
+      --theme-light)
+      local IFS=$'\n'
+      COMPREPLY=("$(compgen -W "$("$1" --list-themes)" -- "$cur")")
+      __bat_escape_completions
+      return 0
+      ;;
+    --style)
+      # shellcheck disable=SC2034
+      local -a styles=(
+        default
+        full
+        auto
+        plain
+        changes
+        header
+        header-filename
+        header-filesize
+        grid
+        rule
+        numbers
+        snip
+      )
+      # shellcheck disable=SC2016
+      if declare -F _comp_delimited &>/dev/null; then
+        # bash-completion > 2.11
+        _comp_delimited , -W '"${styles[@]}"'
+      else
+        COMPREPLY=("$(compgen -W '${styles[@]}' -- "$cur")")
+      fi
+      return 0
+      ;;
   esac
 
   "$split" && return 0
