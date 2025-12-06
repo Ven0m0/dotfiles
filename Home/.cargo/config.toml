@@ -1,32 +1,32 @@
 [unstable]
-unstable-options = true
-git = true
+unstable-options=true
+git             =true
 #git = { shallow_index = true, shallow_deps = true }
-gitoxide = true
-avoid-dev-deps = true
-no-embed-metadata = true
-profile-rustflags = true
-trim-paths = true
-parallel-tests = true
-mtime-on-use = true
-checksum-freshness = true
-feature-unification = true
-doctest = false
-panic-abort-tests = true
-gc = true
+gitoxide           =true
+avoid-dev-deps     =true
+no-embed-metadata  =true
+profile-rustflags  =true
+trim-paths         =true
+parallel-tests     =true
+mtime-on-use       =true
+checksum-freshness =true
+feature-unification=true
+doctest            =false
+panic-abort-tests  =true
+gc                 =true
 #cargo-lints = true
 #build-std = ["std", "panic_abort"]
 #build-std-features = ["panic_immediate_abort"]
 
 [alias]
-b = "build -r"
-i = "install"
-rr = "run -r"
+b ="build -r"
+i ="install"
+rr="run -r"
 
 [build]
-rustc-wrapper = "sccache"
-incremental = false
-rustflags = [
+rustc-wrapper="sccache"
+incremental=false
+rustflags=[
   "-C",
   "target-cpu=native",
   "-C",
@@ -35,77 +35,77 @@ rustflags = [
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 [env]
-RUSTC_BOOTSTRAP = "1"
-RUST_PANIC_STRATEGY = "abort"
-RUST_MIN_STACK = "16777216"
-RUST_LIB_BACKTRACE = "0"
-CARGO_CACHE_RUSTC_INFO = "1"
-RUSTC_ICE = "0"
-CARGO_LOG = "off"
-RUSTDOC_LOG = "off"
-RUSTC_LOG = "off"
-CMAKE_BUILD_TYPE = "Release"
-MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
-_RJEM_MALLOC_CONF = "metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
-GITOXIDE_CORE_MULTIPACKINDEX = "true"
-SCCACHE_DIRECT = "true"
-SCCACHE_RECACHE = "true"
-SCCACHE_IDLE_TIMEOUT = "10800"
-CC = "sccache clang"
-CXX = "sccache clang++"
+RUSTC_BOOTSTRAP             ="1"
+RUST_PANIC_STRATEGY         ="abort"
+RUST_MIN_STACK              ="16777216"
+RUST_LIB_BACKTRACE          ="0"
+CARGO_CACHE_RUSTC_INFO      ="1"
+RUSTC_ICE                   ="0"
+CARGO_LOG                   ="off"
+RUSTDOC_LOG                 ="off"
+RUSTC_LOG                   ="off"
+CMAKE_BUILD_TYPE            ="Release"
+MALLOC_CONF                 ="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
+_RJEM_MALLOC_CONF           ="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
+GITOXIDE_CORE_MULTIPACKINDEX="true"
+SCCACHE_DIRECT              ="true"
+SCCACHE_RECACHE             ="true"
+SCCACHE_IDLE_TIMEOUT        ="10800"
+CC                          ="sccache clang"
+CXX                         ="sccache clang++"
 
 [cache]
-auto-clean-frequency = "7 days"
+auto-clean-frequency="7 days"
 
 [cache.global-clean]
-max-src-age = "1 month"
-max-crate-age = "2 months"
-max-index-age = "2 months"
-max-git-co-age = "1 month"
-max-git-db-age = "1 months"
+max-src-age   ="1 month"
+max-crate-age ="2 months"
+max-index-age ="2 months"
+max-git-co-age="1 month"
+max-git-db-age="1 months"
 
 [http]
-timeout = 30
-check-revoke = false
-multiplexing = true
-low-speed-limit = 10
+timeout        =30
+check-revoke   =false
+multiplexing   =true
+low-speed-limit=10
 
 [net]
-git-fetch-with-cli = true
-retry = 2
+git-fetch-with-cli=true
+retry             =2
 
 [registries.crates-io]
-protocol = "sparse"
+protocol="sparse"
 
 [resolver]
-incompatible-rust-versions = "allow"
+incompatible-rust-versions="allow"
 
 [profile.release]
-opt-level = 3
-codegen-units = 1
-lto = "fat"
-panic = "abort"
-strip = "symbols"
-debug = false
-debug-assertions = false
-overflow-checks = false
-rpath = false
+opt-level       =3
+codegen-units   =1
+lto             ="fat"
+panic           ="abort"
+strip           ="symbols"
+debug           =false
+debug-assertions=false
+overflow-checks =false
+rpath           =false
 
 [profile.dev]
-opt-level = 1
-lto = false
-codegen-units = 16
-debug = false
+opt-level    =1
+lto          =false
+codegen-units=16
+debug        =false
 
 [profile.release.build-override]
-inherits = "release"
-opt-level = 1
-codegen-units = 256
-incremental = true
+inherits     ="release"
+opt-level    =1
+codegen-units=256
+incremental  =true
 
 [target.x86_64-unknown-linux-gnu]
-linker = "clang"
-rustflags = [
+linker="clang"
+rustflags=[
   "-C",
   "target-cpu=native",
   "-C",
@@ -115,25 +115,25 @@ rustflags = [
 ]
 
 [target.x86_64-unknown-linux-musl]
-rustflags = ["-C", "target-feature=-crt-static"]
+rustflags=["-C", "target-feature=-crt-static"]
 
 [target.aarch64-linux-android]
-rustflags = ["-C", "link-arg=-fuse-ld=lld"]
+rustflags=["-C", "link-arg=-fuse-ld=lld"]
 
 [target.armv7-unknown-linux-gnueabihf]
-linker = "arm-linux-gnueabihf-gcc"
+linker="arm-linux-gnueabihf-gcc"
 
 [target.aarch64-unknown-linux-gnu]
-linker = "aarch64-linux-gnu-gcc"
+linker="aarch64-linux-gnu-gcc"
 
 [target.aarch64-unknown-linux-musl]
-linker = "aarch64-linux-musl-gcc"
-rustflags = ["-C", "target-feature=-crt-static"]
+linker   ="aarch64-linux-musl-gcc"
+rustflags=["-C", "target-feature=-crt-static"]
 
 [term]
-quiet = false
-verbose = false
-hyperlinks = true
-color = "auto"
-progress.when = "auto"
-progress.term-integration = true
+quiet                    =false
+verbose                  =false
+hyperlinks               =true
+color                    ="auto"
+progress.when            ="auto"
+progress.term-integration=true

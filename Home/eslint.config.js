@@ -71,7 +71,7 @@ module.exports = [
     },
     { files: ['**/*.tsx'], rules: { 'max-lines': ['warn', 150] } },
     { files: ['**/*Datas.ts', '**/*.config.{js,ts}'], rules: { 'max-lines': 'off' } },
-    { files: ['**/*.{test,spec}.{ts,tsx}'], rules: { '@typescript-eslint/no-magic-numbers': 'off' } }
+    { files: ['**/*.{test,spec}.{ts,tsx}'], rules: { '@typescript-eslint/no-magic-numbers': 'off' } },
   ),
   ...compat.config({ extends: ['next/core-web-vitals'], rules: { '@next/next/no-img-element': 'off' } }),
   prettierRecommended,

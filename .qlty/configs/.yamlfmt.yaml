@@ -1,0 +1,10 @@
+---
+# yamlfmt configuration
+# 2-space indent, 120-char line width
+formatter:
+  type: basic
+  indent: 2
+  line_length: 120
+  retain_line_breaks: true
+  include_document_start: false
+  pad_line_comments: 2

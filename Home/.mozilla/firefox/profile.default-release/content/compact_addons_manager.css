@@ -1,5 +1,4 @@
-@-moz-document url-prefix("chrome://mozapps/content/extensions/aboutaddons.html"),url("about:addons")
-{
+@-moz-document url-prefix("chrome://mozapps/content/extensions/aboutaddons.html"), url("about:addons") {
   :root {
     overflow-x: hidden;
   }
@@ -14,7 +13,7 @@
     addon-list > section {
       padding: 1em;
       display: grid;
-      grid-template-areas: 'hd hd' 'cd cd';
+      grid-template-areas: "hd hd" "cd cd";
       grid-auto-columns: 1fr;
       column-gap: 1em;
     }
@@ -22,9 +21,9 @@
       width: unset !important;
       white-space: initial !important;
     }
-    addon-list[type='extension'] .addon-name-container {
+    addon-list[type="extension"] .addon-name-container {
       display: grid !important;
-      grid-template-areas: 'name badge opt' 'name toggle toggle';
+      grid-template-areas: "name badge opt" "name toggle toggle";
       grid-row-gap: 6px;
       grid-auto-columns: 1fr 24px auto;
     }
@@ -44,7 +43,7 @@
     .addon-name-container > .addon-badge {
       grid-area: badge;
     }
-    addon-list[type='extension'] .more-options-button {
+    addon-list[type="extension"] .more-options-button {
       margin-inline: 0 !important;
     }
     .card-heading-image {
@@ -63,28 +62,28 @@
       max-height: 3em;
       scrollbar-width: thin;
     }
-    addon-list[type='theme'] addon-card {
+    addon-list[type="theme"] addon-card {
       margin-right: auto;
     }
   }
   @media (min-width: 640px) {
-    addon-list[type='extension'] > section {
-      grid-template-areas: 'hd hd hd' 'cd cd cd';
+    addon-list[type="extension"] > section {
+      grid-template-areas: "hd hd hd" "cd cd cd";
     }
   }
   @media (min-width: 960px) {
-    addon-list[type='extension'] > section {
-      grid-template-areas: 'hd hd hd hd' 'cd cd cd cd';
+    addon-list[type="extension"] > section {
+      grid-template-areas: "hd hd hd hd" "cd cd cd cd";
     }
   }
   @media (min-width: 1180px) {
-    addon-list[type='extension'] > section {
-      grid-template-areas: 'hd hd hd hd hd' 'cd cd cd cd cd';
+    addon-list[type="extension"] > section {
+      grid-template-areas: "hd hd hd hd hd" "cd cd cd cd cd";
     }
   }
   @media (min-width: 1420px) {
-    addon-list[type='extension'] > section {
-      grid-template-areas: 'hd hd hd hd hd hd' 'cd cd cd cd cd cd';
+    addon-list[type="extension"] > section {
+      grid-template-areas: "hd hd hd hd hd hd" "cd cd cd cd cd cd";
     }
   }
   addon-card:not([expanded]) .addon-badge-verified,
@@ -93,7 +92,7 @@
   addon-card:not([expanded]) .addon-card-message button[action] {
     display: none !important;
   }
-  addon-list[type='extension'] {
+  addon-list[type="extension"] {
     --card-padding: 8px;
   }
 }

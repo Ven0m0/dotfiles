@@ -1,22 +1,22 @@
 # Specifies the network interface to use for the LocalIP readout
-interface = "enp4s0"
+interface="enp4s0"
 # Lengthen uptime output
-long_uptime = false
+long_uptime=false
 # Lengthen shell output
-long_shell = false
+long_shell=false
 # Lengthen kernel output
-long_kernel = false
+long_kernel=false
 # Shorten gpu output
-shorter_gpu = true
+shorter_gpu=true
 # Shorten cpu output
-shorter_cpu = true
+shorter_cpu=true
 # Toggle between displaying the current shell or your user's default one.
-current_shell = true
+current_shell=true
 # Toggle between displaying the number of physical or logical cores of your
 # processor.
-physical_cores = true
-memory_percentage = true
-disk_space_percentage = true
+physical_cores       =true
+memory_percentage    =true
+disk_space_percentage=true
 
 # Accepted values (case-sensitive):
 #   - Host
@@ -39,7 +39,7 @@ disk_space_percentage = true
 #   - Battery
 #   - GPU
 # Example:
-show = [
+show=[
   "Kernel",
   "Distribution",
   "OperatingSystem",

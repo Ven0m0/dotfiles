@@ -1,40 +1,40 @@
 [env]
 # Set up the path for node module binaries
-BIN_PATH = "{{ cwd }}/node_modules/.bin"
+BIN_PATH="{{ cwd }}/node_modules/.bin"
 
 [tools]
 # Install Node.js using the specified version
 # node = "{{ env['NODE_VERSION'] | default(value='lts') }}" # LTS Version
 # node = "{{ get_env(name='NODE_VERSION', default='18.2') }}" # Specific version
-node = "latest"
-bun = "latest"
+node="latest"
+bun ="latest"
 
 # Install npm dependencies
 [tasks.install]
-run = "bun i"
+run="bun i"
 
 # Add a new dependency
 [tasks.add]
-run = "bun add"
+run="bun add"
 
 # Run the development server
 [tasks.dev]
-alias = "d"
-run = "bun -b run dev"
+alias="d"
+run  ="bun -b run dev"
 
 # Run linting
 [tasks.lint]
-run = "eslint src/"
+run="eslint src/"
 
 # Run formatting
 [tasks.format]
-run = "prettierd src/"
+run="prettierd src/"
 
 # Build the project
 [tasks.build]
-run = "bun -b run build"
+run="bun -b run build"
 
 [tasks.bunx]
-description = 'Bunx'
-run = "bunx --bun"
-alias = 'bx'
+description='Bunx'
+run        ="bunx --bun"
+alias      ='bx'

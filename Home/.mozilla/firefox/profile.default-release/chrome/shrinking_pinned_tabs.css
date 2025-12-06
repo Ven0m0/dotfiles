@@ -2,7 +2,7 @@
   flex-grow: 10;
   max-width: 40px;
 }
-:root[uidensity='compact']
+:root[uidensity="compact"]
   :is(#pinned-tabs-container, #tabbrowser-arrowscrollbox:not([overflowing]))
   .tabbrowser-tab[pinned] {
   max-width: 32px;
@@ -14,6 +14,6 @@
 .tab-label-container[pinned] {
   display: none;
 }
-scrollbox[part][orient='horizontal'] {
+scrollbox[part][orient="horizontal"] {
   padding-inline: unset !important;
 }

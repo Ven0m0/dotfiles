@@ -64,7 +64,7 @@ toolbar:hover .toolbarbutton-1:not(#PanelUI-menu-button) > *,
 #navigator-toolbox:not(:hover) #downloads-button[attention] {
   filter: brightness(2) drop-shadow(0 0 3px orange) drop-shadow(0 0 1px orange);
 }
-#nav-bar:not(:hover) > #PanelUI-button > #PanelUI-menu-button[badge-status^='update'],
-#navigator-toolbox:not(:hover) #downloads-button[attention='success'] {
+#nav-bar:not(:hover) > #PanelUI-button > #PanelUI-menu-button[badge-status^="update"],
+#navigator-toolbox:not(:hover) #downloads-button[attention="success"] {
   filter: brightness(2) drop-shadow(0 0 2px cyan) drop-shadow(0 0 1px cyan);
 }

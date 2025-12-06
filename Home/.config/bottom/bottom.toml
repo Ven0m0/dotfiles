@@ -11,7 +11,7 @@
 # Whether to use dot markers rather than braille.
 #dot_marker = false
 # The update rate of the application.
-rate = "2s"
+rate="2s"
 # Whether to put the CPU legend to the left.
 #cpu_left_legend = false
 # Whether to set CPU% on a process to be based on the total CPU or just current usage.
@@ -19,13 +19,13 @@ rate = "2s"
 # Whether to set CPU% on a process to be based on the total CPU or per-core CPU% (not divided by the number of cpus).
 #unnormalized_cpu = false
 # Whether to group processes with the same name together by default.
-group_processes = true
+group_processes=true
 # Whether to make process searching case sensitive by default.
 #case_sensitive = false
 # Whether to make process searching look for matching the entire word by default.
 #whole_word = false
 # Whether to make process searching use regex by default.
-regex = true
+regex=true
 # The temperature unit. One of the following, defaults to "c" for Celsius:
 #temperature_type = "c"
 ##temperature_type = "k"
@@ -38,7 +38,7 @@ regex = true
 # The time delta on each zoom in/out action (in milliseconds).
 #time_delta = 15000
 # Hides the time scale.
-hide_time = true
+hide_time=true
 # Override layout default widget
 #default_widget_type = "proc"
 #default_widget_count = 1
@@ -49,9 +49,9 @@ hide_time = true
 # Use the old network legend style
 #use_old_network_legend = false
 # Remove space in tables
-hide_table_gap = true
+hide_table_gap=true
 # Show the battery widgets
-battery = false
+battery=false
 # Disable mouse clicks
 #disable_click = false
 # Show memory values in the processes widget as values by default
@@ -111,11 +111,11 @@ battery = false
 # Temperature widget configuration
 [temperature]
 [sensor_filter]
-is_list_ignored = true
-list = ["cpu", "wifi", "hwmon"]
-regex = true
-case_sensitive = false
-whole_word = false
+is_list_ignored=true
+list           =["cpu", "wifi", "hwmon"]
+regex          =true
+case_sensitive =false
+whole_word     =false
 
 # Network widget configuration
 #[network]
@@ -212,20 +212,20 @@ whole_word = false
 #    default=true
 
 [[row]]
-ratio = 30
+ratio=30
 [[row.child]]
-type = "cpu"
+type="cpu"
 [[row]]
-ratio = 40
+ratio=40
 [[row.child]]
-ratio = 3
+ratio=3
 [[row.child.child]]
-type = "temp"
+type="temp"
 [[row.child]]
-ratio = 4
-type = "mem"
+ratio=4
+type ="mem"
 [[row]]
-ratio = 30
+ratio=30
 [[row.child]]
-type = "proc"
-default = true
+type   ="proc"
+default=true

@@ -1,61 +1,61 @@
-listen_addr = "127.0.0.1:53"
-cache = true
-cache_size = 10000
-cache_ttl_cap = 86400
-cache_in_memory_only = false
-prefetch_popular_queries = true
-prefetch_threshold = 5
+listen_addr             ="127.0.0.1:53"
+cache                   =true
+cache_size              =10000
+cache_ttl_cap           =86400
+cache_in_memory_only    =false
+prefetch_popular_queries=true
+prefetch_threshold      =5
 
-log_level = "warn"
-listen_addresses = ["0.0.0.0:53"]
-dns_packet_len_max = 4096
-upstream_servers = ["1.1.1.2:53", "1.0.0.2:53"]
-load_balancing_strategy = "fastest"
-server_timeout = 3
-probe_interval = 60
-max_udp_clients = 1000
-max_tcp_clients = 1000
-max_doh_connections = 100
-max_inflight_queries = 1000
-authoritative_dns = false
-serve_stale_grace_time = 86400
-serve_stale_ttl = 120
-negative_cache_ttl = 120
-min_cache_ttl = 1
-udp_rate_limit_window = 0
-udp_rate_limit_count = 1000
-udp_rate_limit_max_clients = 100000
-tcp_rate_limit_window = 0
-tcp_rate_limit_count = 100
-tcp_rate_limit_max_clients = 50000
-doh_rate_limit_window = 0
-doh_rate_limit_count = 400
-doh_rate_limit_max_clients = 50000
+log_level                 ="warn"
+listen_addresses          =["0.0.0.0:53"]
+dns_packet_len_max        =4096
+upstream_servers          =["1.1.1.2:53", "1.0.0.2:53"]
+load_balancing_strategy   ="fastest"
+server_timeout            =3
+probe_interval            =60
+max_udp_clients           =1000
+max_tcp_clients           =1000
+max_doh_connections       =100
+max_inflight_queries      =1000
+authoritative_dns         =false
+serve_stale_grace_time    =86400
+serve_stale_ttl           =120
+negative_cache_ttl        =120
+min_cache_ttl             =1
+udp_rate_limit_window     =0
+udp_rate_limit_count      =1000
+udp_rate_limit_max_clients=100000
+tcp_rate_limit_window     =0
+tcp_rate_limit_count      =100
+tcp_rate_limit_max_clients=50000
+doh_rate_limit_window     =0
+doh_rate_limit_count      =400
+doh_rate_limit_max_clients=50000
 
-metrics_address = "127.0.0.1:9100"
-metrics_path = "/metrics"
-max_metrics_connections = 25
-control_listen_addresses = ["127.0.0.1:8080"]
-control_path = "/control"
-max_control_connections = 16
-query_log_include_client_addr = false
-query_log_include_query_type = false
-enable_ecs = true
-ecs_prefix_v4 = 24
-ecs_prefix_v6 = 56
-enable_strict_ip_validation = false
-block_private_ips = false
-block_loopback_ips = false
-min_client_port = 1024
-blocked_ip_ranges = [
+metrics_address="127.0.0.1:9100"
+metrics_path="/metrics"
+max_metrics_connections=25
+control_listen_addresses=["127.0.0.1:8080"]
+control_path="/control"
+max_control_connections=16
+query_log_include_client_addr=false
+query_log_include_query_type=false
+enable_ecs=true
+ecs_prefix_v4=24
+ecs_prefix_v6=56
+enable_strict_ip_validation=false
+block_private_ips=false
+block_loopback_ips=false
+min_client_port=1024
+blocked_ip_ranges=[
   # Example: Block a specific range
   # "203.0.113.0/24"   # TEST-NET-3 (Documentation)
 ]
 # Username to drop privileges to after binding to sockets
 # If not set, privileges will not be dropped
 # Uncomment to enable privilege dropping
-user = "lucy"
-group = "lucy"
+user ="lucy"
+group="lucy"
 # Directory to chroot to after binding to sockets
 # If not set, chroot will not be performed
 # Uncomment to enable chroot (ensure the directory exists and is properly set up)
