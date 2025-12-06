@@ -115,7 +115,7 @@ cmd_git(){
       --header='Tab:select Enter:add' \
       --preview="git diff --color=always {} | ${pager}")
     [[ -z ${files} ]] && return 0
-    _git add $(xargs <<<"$files")
+    while IFS= read -r f; do _git add -- "$f"; done <<<"$files"
   }
   git_log(){
     _check_repo; local pager=$(_pager) format
