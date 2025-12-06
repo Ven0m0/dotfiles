@@ -1,170 +1,218 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar dotglob
-IFS=$'\n\t'
-
-BLD=$'\e[1m' GRN=$'\e[32m' YLW=$'\e[33m' RED=$'\e[31m' DEF=$'\e[0m'
-has(){ command -v "$1" &>/dev/null; }
-die(){
-  printf '%b==> ERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2
-  exit 1
-}
+set -euo pipefail; shopt -s nullglob globstar dotglob
+IFS=$'\n\t' LC_ALL=C LANG=C
+readonly BLD=$'\e[1m' GRN=$'\e[32m' RED=$'\e[31m' YLW=$'\e[33m' DEF=$'\e[0m' 
+# Helpers
+has(){ command -v -- "$1" &>/dev/null; }
+die(){ printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2; exit 1; }
 log(){ printf '%b==>%b %s\n' "${BLD}" "$DEF" "$*"; }
-ok(){ printf '%b==>%b %s\n' "${BLD}${GRN}" "$DEF" "$*"; }
-
+ok() { printf '%b✓%b %s\n' "${GRN}" "$DEF" "$*"; }
+err(){ printf '%b✗%b %s\n' "${RED}" "$DEF" "$*"; }
 usage(){
-  cat <<'EOF'
+  cat <<EOF
 sanitize - File sanitization utilities
-
 USAGE:
-  sanitize COMMAND [OPTIONS] [PATH...]
+  sanitize ws [OPTS] [PATH|--git|--staged]...
+  sanitize fn [OPTS] [PATH]...
 
 COMMANDS:
-  whitespace [PATH...]    Remove whitespace issues
-  filenames [PATH...]     Rename files to Linux-safe names
+  ws, whitespace   Fix whitespace (Trailing, EOF, CR, Unicode)
+  fn, filenames    Rename to Linux-safe (lowercase, no spaces, ascii)
 
 WHITESPACE OPTIONS:
-  --check              Check only, don't fix
-  --cr                 Remove carriage returns
-  --blank              Remove consecutive blank lines
-  --trailing           Remove trailing whitespace
-  --unicode            Remove non-standard Unicode spaces
-  --all                Apply all fixes (default)
+  --check          Audit mode (exit 1 if issues found)
+  --git            Check files modified in working tree
+  --staged         Check files staged for commit
+  --all            Enable all fixers (default)
+  --eof            Fix missing newline at EOF
+  --trailing       Fix trailing whitespace
+  --cr             Fix carriage returns (DOS->Unix)
+  --unicode        Fix non-breaking spaces (requires perl)
 
 FILENAME OPTIONS:
-  -n, --dry-run        Show renames without doing
-  -v, --verbose        Show skipped files
-  --preserve-case      Keep original case
-  --allow-spaces       Keep spaces
+  -n, --dry-run    Preview renames
+  --allow-spaces   Don't replace spaces with underscores
 
 EXAMPLES:
-  sanitize whitespace --check /path/to/dir
-  sanitize filenames -n . 
-  sanitize whitespace --unicode --trailing file.txt
-  sanitize filenames --preserve-case docs/
-
-DEPENDENCIES:
-  awk, sed, find/fd (whitespace)
-  iconv, find/fd (filenames)
+  sanitize ws --check --git      # Audit modified files
+  sanitize ws .                  # Recursive fix current dir
+  sanitize fn -n uploads/        # Preview renames
 EOF
+}
+# ============================================================================
+# CORE LOGIC
+# ============================================================================
+# Resolve input paths (Files, Directories recursive, or Git lists)
+resolve_paths(){
+  local -n _in="$1" _out="$2"; local use_git=0 use_staged=0
+  for p in "${_in[@]}"; do
+    case "$p" in
+      --git) use_git=1 ;;
+      --staged) use_staged=1 ;;
+      *)
+        if [[ -d "$p" ]]; then
+          # Recursive find: use fd if avail, else find. Ignore .git
+          if has fd; then
+            mapfile -t -O "${#_out[@]}" _out < <(fd --type f --hidden --exclude .git . "$p")
+          else
+            mapfile -t -O "${#_out[@]}" _out < <(find "$p" -type f -not -path '*/.git/*')
+          fi
+        elif [[ -f "$p" ]]; then
+          _out+=("$p")
+        fi ;;
+    esac
+  done
+  if [[ $use_staged -eq 1 ]]; then
+    mapfile -t -O "${#_out[@]}" _out < <(git diff --name-only --cached --diff-filter=ACMR)
+  elif [[ $use_git -eq 1 ]]; then
+    mapfile -t -O "${#_out[@]}" _out < <(git diff --name-only --diff-filter=ACMR HEAD)
+  fi
+  # De-duplicate
+  mapfile -t _out < <(printf '%s\n' "${_out[@]}" | sort -u)
 }
 
 # ============================================================================
 # WHITESPACE
 # ============================================================================
 cmd_whitespace(){
-  local checkonly=0 status=0
-  local do_cr=0 do_blank=0 do_trailing=0 do_unicode=0
-  local -a paths=()
-  remove_cr(){ [[ $checkonly -eq 1 ]] && grep -q $'\r' "$1" && {
-    printf 'CR: %s\n' "$1"
-    return 1
-  } || sed -i 's/\r//g' "$1"; }
-  remove_blank(){
-    [[ $checkonly -eq 1 ]] && return 0
-    awk 'BEGIN{last=""}{if(NF==0&&last=="")next;else{print;last=$0}}' "$1" >"$1.tmp" && mv "$1.tmp" "$1"
-  }
-  remove_trailing(){
-    [[ $checkonly -eq 1 ]] && return 0
-    sed -i 's/[ \t]\+$//' "$1"
-  }
-  remove_unicode(){
-    [[ $checkonly -eq 1 ]] && return 0
-    has perl || die "perl required"
-    perl -CS -0777 -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g;s/[ \t]+$//mg;' -i "$1"
-  }
+  local check=0 do_cr=0 do_eof=0 do_trailing=0 do_unicode=0 issues=0
+  local -a args=() files=()
+  # Parse Args
   while [[ $# -gt 0 ]]; do
     case $1 in
-    --check) checkonly=1 ;;
-    --cr) do_cr=1 ;;
-    --blank) do_blank=1 ;;
-    --trailing) do_trailing=1 ;;
-    --unicode) do_unicode=1 ;;
-    --all) do_cr=1 do_blank=1 do_trailing=1 do_unicode=1 ;;
-    -*) die "Unknown option: $1" ;;
-    *) paths+=("$1") ;;
+      --check)    check=1 ;;
+      --cr)       do_cr=1 ;;
+      --eof)      do_eof=1 ;;
+      --trailing) do_trailing=1 ;;
+      --unicode)  do_unicode=1 ;;
+      --all)      do_cr=1 do_eof=1 do_trailing=1 do_unicode=1 ;;
+      -h|--help)  usage; return 0 ;;
+      *)          args+=("$1") ;;
     esac
     shift
   done
-  [[ ${#paths[@]} -eq 0 ]] && die "Must provide path"
-  [[ $((do_cr + do_blank + do_trailing + do_unicode)) -eq 0 ]] && do_cr=1 do_blank=1 do_trailing=1 do_unicode=1
-  for p in "${paths[@]}"; do
-    [[ -f $p ]] || {
-      log "skip: $p"
-      continue
-    }
-    [[ $do_cr -eq 1 ]] && { remove_cr "$p" || status=$?; }
-    [[ $do_unicode -eq 1 ]] && { remove_unicode "$p" || status=$?; }
-    [[ $do_trailing -eq 1 ]] && { remove_trailing "$p" || status=$?; }
-    [[ $do_blank -eq 1 ]] && { remove_blank "$p" || status=$?; }
+  # Defaults
+  [[ $((do_cr + do_eof + do_trailing + do_unicode)) -eq 0 ]] && \
+    do_cr=1 do_eof=1 do_trailing=1 do_unicode=1
+  # Resolve Files
+  resolve_paths args files
+  [[ ${#files[@]} -eq 0 ]] && die "No files found. Pass path or --git."
+  log "Processing ${#files[@]} files..."
+  for f in "${files[@]}"; do
+    [[ -f "$f" ]] || continue
+    # Binary check (simple heuristic: null byte in first 8kb)
+    grep -qP -m1 '\x00' <(head -c 8000 "$f") && continue
+    local dirty=0 file_issues=()
+    # 1. Trailing Whitespace
+    if [[ $do_trailing -eq 1 ]]; then
+      if grep -q '[[:space:]]$' "$f"; then
+        file_issues+=("trailing-ws")
+        [[ $check -eq 0 ]] && { sed -i 's/[[:space:]]\+$//' "$f"; dirty=1; }
+      fi
+    fi
+    # 2. CR (DOS endings)
+    if [[ $do_cr -eq 1 ]]; then
+      if grep -q $'\r' "$f"; then
+        file_issues+=("crlf")
+        [[ $check -eq 0 ]] && { sed -i 's/\r//g' "$f"; dirty=1; }
+      fi
+    fi
+    # 3. Unicode Spaces (NBSP, etc)
+    if [[ $do_unicode -eq 1 ]] && has perl; then
+      if perl -ne 'exit 1 if /[\x{00A0}\x{202F}\x{200B}\x{00AD}]/' "$f"; then
+        if [[ $check -eq 1 ]]; then
+           # Quick scan
+           perl -CS -ne 'if(/[\x{00A0}\x{202F}\x{200B}\x{00AD}]/){print "issue\n"; exit}' "$f" | grep -q "issue" && file_issues+=("unicode")
+        else
+           # Fix
+           perl -CS -0777 -i -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g' "$f"
+        fi
+      fi
+    fi
+    # 4. EOF Newline
+    if [[ $do_eof -eq 1 && -s "$f" ]]; then
+      # Check if last byte is newline
+      if [[ -n "$(tail -c 1 "$f")" ]]; then
+        file_issues+=("no-eof-newline")
+        [[ $check -eq 0 ]] && { echo >> "$f"; dirty=1; }
+      fi
+    fi
+    # Reporting
+    if [[ ${#file_issues[@]} -gt 0 ]]; then
+      issues=$((issues + 1))
+      if [[ $check -eq 1 ]]; then
+        err "$f: ${file_issues[*]}"
+      else
+        ok "$f (fixed: ${file_issues[*]})"
+      fi
+    elif [[ $check -eq 1 ]]; then
+      # Only verbose success in check mode? Or silence?
+      # Silence is golden, but user snippet liked ticks.
+      [[ -n ${VERBOSE:-} ]] && ok "$f"
+    fi
   done
-  [[ $checkonly -eq 1 && $status -eq 1 ]] && {
-    printf 'Issues found\n'
-    exit 1
-  }
-  ok "Done"
+  if [[ $check -eq 1 && $issues -gt 0 ]]; then
+    die "Found issues in $issues files."
+  fi
+  [[ $check -eq 0 ]] && log "Done."
 }
 
 # ============================================================================
 # FILENAMES
 # ============================================================================
 cmd_filenames(){
-  local dryrun=0 verbose=0 transliterate=1 lowercase=1 allow_spaces=0
-  if has fd; then FD=fd; elif has fdfind; then FD=fdfind; else FD=find; fi
-  has iconv || transliterate=0
-
-  sanitize_name(){
-    local name=$1 cleaned=$name
-    [[ $transliterate -eq 1 ]] && cleaned=$(printf '%s' "$cleaned" | iconv -f utf8 -t ascii//translit 2>/dev/null || printf '%s' "$cleaned")
-    cleaned=${cleaned//[\`\$\!\*\?\<\>\|\"\'\:\;]/}
-    cleaned=${cleaned//\&/and}
-    cleaned=${cleaned//@/at}
-    [[ $allow_spaces -eq 0 ]] && cleaned=${cleaned//[[:space:]]/_}
-    cleaned=$(printf '%s' "$cleaned" | sed -E 's/[^A-Za-z0-9._-]+/_/g;s/^[._-]+|[._-]+$//g;s/_+/_/g')
-    [[ $lowercase -eq 1 ]] && cleaned=${cleaned,,}
-    [[ -z $cleaned ]] && cleaned="_${RANDOM}"
-    printf '%s' "$cleaned"
-  }
-  local -a paths=()
+  local dry=0 lowercase=1 spaces=0 args=() files=() trans=1
+  has iconv || trans=0
   while [[ $# -gt 0 ]]; do
     case $1 in
-    -n | --dry-run) dryrun=1 ;;
-    -v | --verbose) verbose=1 ;;
-    --preserve-case) lowercase=0 ;;
-    --allow-spaces) allow_spaces=1 ;;
-    -*) die "Unknown option: $1" ;;
-    *) paths+=("$1") ;;
-    esac
-    shift
+      -n|--dry-run) dry=1 ;;
+      --allow-spaces) spaces=1 ;;
+      --preserve-case) lowercase=0 ;; 
+      *) args+=("$1") ;;
+    esac; shift
   done
-  [[ ${#paths[@]} -eq 0 ]] && paths=(.)
-  for p in "${paths[@]}"; do
-    [[ -e $p ]] || continue
-    local dir=${p%/*} base=${p##*/}
-    [[ $dir == "$p" ]] && dir=.
-    local new=$(sanitize_name "$base")
-    [[ $base == "$new" ]] && continue
-    if [[ $dryrun -eq 1 ]]; then
-      printf '[DRY] %s → %s\n' "$base" "$new"
-    else
-      mv -n -- "$p" "$dir/$new" 2>/dev/null && ok "$base → $new"
+  resolve_paths args files
+  [[ ${#files[@]} -eq 0 ]] && die "No paths provided"
+  for src in "${files[@]}"; do
+    [[ -e "$src" ]] || continue
+    local dir base clean
+    dir=$(dirname "$src"); base=$(basename "$src")
+    clean="$base"
+    # Transliterate (utf8 -> ascii)
+    [[ $trans -eq 1 ]] && clean=$(printf '%s' "$clean" | iconv -f utf8 -t ascii//translit 2>/dev/null || printf '%s' "$clean")
+    # Substitutions
+    clean=${clean//[\`\$\!\*\?\<\>\|\"\'\:\;]/} # Unsafe chars
+    clean=${clean//\&/and}; clean=${clean//@/at}
+    [[ $spaces -eq 0 ]] && clean=${clean//[[:space:]]/_}
+    # Normalize separators
+    clean=$(sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^[._-]+//; s/[._-]+$//; s/_+/_/g' <<< "$clean")
+    [[ $lowercase -eq 1 ]] && clean=${clean,,}
+    [[ -z "$clean" ]] && clean="file_${RANDOM}"
+    if [[ "$base" != "$clean" ]]; then
+      local dest="$dir/$clean"
+      if [[ $dry -eq 1 ]]; then
+        printf '%bRENAME%b %s → %s\n' "${YLW}" "${DEF}" "$src" "$dest"
+      else
+        if [[ -e "$dest" ]]; then
+          err "Conflict: $dest exists. Skipping $src"
+        else
+          mv -n -- "$src" "$dest" && ok "$src → $clean"
+        fi
+      fi
     fi
   done
-  log "Complete"
 }
-
 # ============================================================================
 # MAIN
 # ============================================================================
 main(){
-  local cmd="${1:-}"
-  shift || :
+  [[ $# -eq 0 ]] && usage && exit 0
+  local cmd="$1"; shift
   case "$cmd" in
-  whitespace | ws | w) cmd_whitespace "$@" ;;
-  filenames | fn | f) cmd_filenames "$@" ;;
-  -h | --help | help | "") usage ;;
-  *) die "Unknown: $cmd" ;;
+    ws|whitespace|w) cmd_whitespace "$@" ;;
+    fn|filenames|f) cmd_filenames "$@" ;;
+    -h|--help) usage ;;
+    *) die "Unknown command: $cmd" ;;
   esac
 }
-
 main "$@"
