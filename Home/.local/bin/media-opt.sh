@@ -1,385 +1,150 @@
 #!/usr/bin/env bash
 set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
-# ==============================================================================
-# CONFIGURATION
-# ==============================================================================
-: "${JOBS:=$(nproc 2>/dev/null || echo 4)}" "${DRY_RUN:=0}" "${BACKUP:=0}" "${KEEP_MTIME:=1}"
-: "${BACKUP_DIR:=${HOME}/.cache/media-opt/backups/$(printf '%(%Y%m%d_%H%M%S)T' -1)}"
-: "${LOSSLESS:=1}" "${QUALITY:=95}" "${VIDEO_CRF:=24}"
-: "${VIDEO_CODEC:=libsvtav1}" "${AUDIO_CODEC:=libopus}" "${AUDIO_BR:=128k}"
 
+: "${JOBS:=$(nproc 2>/dev/null||printf 4)}" "${DRY:=0}" "${BACKUP:=0}" "${MTIME:=1}"
+: "${BACKUP_DIR:=${HOME}/.cache/media-opt/$(printf '%(%Y%m%d_%H%M%S)T' -1)}"
+: "${LOSSLESS:=1}" "${QUAL:=95}" "${VCRF:=24}" "${VCODEC:=libsvtav1}"
 R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' X=$'\e[0m'
 log(){ printf "${B}[%(%H:%M:%S)T]${X} %s\n" -1 "$*"; }
 err(){ printf "${R}[ERR]${X} %s\n" "$*" >&2; }
+die(){ err "$@"; exit 1; }
 has(){ command -v "$1" &>/dev/null; }
-
-# Tool availability cache (set once, used everywhere)
-declare -A TOOL_CACHE
-cache_tools(){
-  local tools=(rimage image-optimizer jpegoptim oxipng cwebp svgcleaner scour minify svgo gifsicle ffzap ffmpeg)
-  for t in "${tools[@]}"; do
-    has "$t" && TOOL_CACHE[$t]=1 || TOOL_CACHE[$t]=0
-  done
+declare -A TC; cache_tools(){ local t; for t in rimage jpegoptim oxipng cwebp gifsicle ffmpeg; do has "$t"&&TC[$t]=1||TC[$t]=0; done; }
+hc(){ [[ ${TC[$1]:-0} -eq 1 ]]; }
+opt_img(){
+  local f=$1 o=$2 t c=() x="${f##*.}" lx="${x,,}"
+  if hc rimage; then t=rimage; cp "$f" "$o"; [[ $LOSSLESS -eq 1 ]]&&c=(rimage "$o" -q 100)||c=(rimage "$o" -q "$QUAL")
+  else case "$lx" in
+    jpg|jpeg|mjpg)hc jpegoptim&&{ t=jpegoptim; c=(jpegoptim --strip-all --all-progressive --stdout "$f"); [[ $LOSSLESS -eq 0 ]]&&c+=(-m"$QUAL"); };;
+    png)hc oxipng&&{ t=oxipng; c=(oxipng -o4 --strip safe -i0 --out - "$f"); };;
+    webp)hc cwebp&&{ t=cwebp; c=(cwebp -mt -quiet "$f" -o -); [[ $LOSSLESS -eq 1 ]]&&c+=(-lossless -z9)||c+=(-q "$QUAL" -m6); };;
+  esac; fi
+  [[ -n $t ]]&&printf '%s:%s\n' "$t" "${c[*]}"
 }
-has_cached(){ [[ ${TOOL_CACHE[$1]:-0} -eq 1 ]]; }
-usage(){
-  cat <<EOF
-Usage: $(basename "$0") [OPTIONS] [PATH...]
-Batch Mode:
-  -j, --jobs N      Jobs (Default: $JOBS)
-  -l, --lossy       Lossy Mode (Default: Lossless)
-  -q, --quality N   Quality 1-100 (Default: $QUALITY)
-  --crf N           Video CRF (Default: $VIDEO_CRF)
-  --vcodec CODEC    Video Codec (Default: $VIDEO_CODEC)
-  --acodec CODEC    Audio Codec (Default: $AUDIO_CODEC)
-  --backup          Enable Backup
-  --dry-run         Simulate
-  -h, --help        Show this help message
-Interactive Mode:
-  -i, --interactive  Interactive conversion menu
-EOF
-  exit 0
+opt_vid(){
+  local f=$1 o=$2 t c=() va=()
+  hc ffmpeg||return 0; t=ffmpeg
+  case "$VCODEC" in
+    libsvtav1)[[ $LOSSLESS -eq 1 ]]&&va=(-preset 4 -crf "$VCRF" -svtav1-params tune=0:scd=1)||va=(-preset 8 -crf $((VCRF+6)));;
+    libaom-av1)[[ $LOSSLESS -eq 1 ]]&&va=(-cpu-used 3 -crf "$VCRF" -b:v 0)||va=(-cpu-used 6 -crf $((VCRF+6)) -b:v 0);;
+    libx265)[[ $LOSSLESS -eq 1 ]]&&va=(-preset slower -crf "$VCRF")||va=(-preset medium -crf $((VCRF+4)));;
+    libvpx-vp9)va=(-b:v 0 -crf $((VCRF+8)) -cpu-used 3 -row-mt 1);;
+  esac
+  c=(ffmpeg -y -v error -i "$f" -c:v "$VCODEC" "${va[@]}" -c:a libopus -b:a 128k -movflags +faststart "$o")
+  printf '%s:%s\n' "$t" "${c[*]}"
 }
-
-# ==============================================================================
-# INTERACTIVE MODE (yor-mc-lite integration)
-# ==============================================================================
-interactive_mode(){
-  has ffmpeg || {
-    err "ffmpeg required for interactive mode"
-    exit 1
-  }
-  local input_path
+optimize(){
+  local f=$1; [[ ! -f $f ]]&&return 0
+  local x="${f##*.}" lx="${x,,}" tmp="${f}.tmp.${x}" res t c=()
+  case "$lx" in
+    jpg|jpeg|mjpg|png|webp|avif|jxl|bmp)res=$(opt_img "$f" "$tmp");;
+    gif)hc gifsicle&&{ t=gifsicle; [[ $LOSSLESS -eq 1 ]]&&c=(gifsicle "$f" -O3 --careful)||c=(gifsicle "$f" -O3 --lossy=80); res="${t}:${c[*]}"; };;
+    mp4|mkv|mov|avi|webm)res=$(opt_vid "$f" "$tmp");;
+    svg)hc cwebp&&{ t=cwebp; c=(cwebp -mt -quiet "$f" -o -); res="${t}:${c[*]}"; };;
+    *)return 0;;
+  esac
+  [[ -z $res ]]&&{ [[ -f $tmp ]]&&rm -f "$tmp"; return 0; }
+  t="${res%%:*}"; IFS=: read -r _ cmdstr <<<"$res"; read -ra c <<<"$cmdstr"
+  [[ $DRY -eq 1 ]]&&{ printf "${B}[DRY]${X} %-10s %s\n" "$t" "$f"; [[ -f $tmp ]]&&rm -f "$tmp"; return 0; }
+  local ok=0
+  if [[ $t =~ ^(oxipng|cwebp|jpegoptim)$ ]]&&[[ ${c[*]} =~ (--stdout|--out.*-|-o.*-) ]]; then "${c[@]}">"$tmp" 2>/dev/null&&ok=1
+  else "${c[@]}"&>/dev/null&&ok=1; fi
+  if [[ $ok -eq 1 && -f $tmp ]]; then
+    local os ns d p
+    os=$(stat -c%s "$f"); ns=$(stat -c%s "$tmp")
+    if [[ $ns -gt 0 && $ns -lt $os ]]; then
+      d=$((os-ns)); p=$((d*100/os))
+      [[ $BACKUP -eq 1 ]]&&{ local bp="${BACKUP_DIR}/${f#.}"; mkdir -p "$(dirname "$bp")"; cp -p "$f" "$bp"; }
+      mv "$tmp" "$f"; [[ $MTIME -eq 1 ]]&&touch -r "$f" "$f"
+      printf "${G}[OK]${X} %-25s %-12s -%d%% (%s)\n" "$(basename "$f")" "[$t]" "$p" "$(numfmt --to=iec "$d")"
+    else rm -f "$tmp"; fi
+  else [[ -f $tmp ]]&&rm -f "$tmp"; fi
+}
+interactive(){
+  has ffmpeg||die "ffmpeg required for interactive mode"
+  local inp
   while :; do
-    clear
-    log "Media Conversion Tool"
-    read -r -p "Input file (or drag & drop, q to quit): " input_path
-    [[ $input_path == "q" ]] && break
-    input_path="${input_path//\'/}"                             # Remove single quotes
-    input_path="${input_path#\'}" input_path="${input_path%\'}" # Trim quotes
-    input_path="${input_path#\"}" input_path="${input_path%\"}"
-    [[ -f $input_path ]] || {
-      err "File not found"
-      sleep 2
-      continue
-    }
-
-    local input_file="${input_path##*/}"
-    local ext="${input_file##*.}"
-    local convert_ext=""
-    local -a vf_opts=()
-
-    # Target format menu
-    local -a targets
-    case "${ext,,}" in
-    gif) targets=("mkv" "mp4" "webm" "webp" "Format only" "Back") ;;
-    mp4 | mkv | webm | webp) targets=("gif" "mkv" "mp4" "webm" "webp" "Format only" "Back") ;;
-    *)
-      err "Unsupported input format: $ext"
-      sleep 2
-      continue
-      ;;
+    clear; log "Media Conversion Tool"
+    read -rp "Input file (q=quit): " inp; [[ $inp == q ]]&&break
+    inp="${inp//\'/}"; inp="${inp#[\'\"]}"; inp="${inp%[\'\"]}"; [[ -f $inp ]]||{ err "File not found"; sleep 2; continue; }
+    local fn="${inp##*/}" ext="${fn##*.}" lext="${ext,,}" cext="" vf=()
+    case "$lext" in
+      gif)local -a tgts=(mkv mp4 webm webp "Format only" Back);;
+      mp4|mkv|webm|webp)local -a tgts=(gif mkv mp4 webm webp "Format only" Back);;
+      *)err "Unsupported: $ext"; sleep 2; continue;;
     esac
-
-    PS3=$'\n'"${B}Convert ${input_file} to?${X} "
-    select choice in "${targets[@]}"; do
-      case "$choice" in
-      "Back") break ;;
-      "Format only")
-        convert_ext="$ext"
-        break
-        ;;
-      "")
-        err "Invalid choice"
-        continue
-        ;;
-      *)
-        convert_ext="$choice"
-        break
-        ;;
-      esac
-    done
-    [[ $choice == "Back" ]] && continue
-
-    # Options menu
-    local -a options=("True size" "50%" "75%" "Square (500px)" "HQ Lanczos" "Rotate 90° CW" "Rotate 90° CCW" "Vertical Flip" "Done")
+    PS3=$'\n'"${B}Convert ${fn} to?${X} "; select ch in "${tgts[@]}"; do
+      case "$ch" in Back)break;;"Format only")cext=$ext; break;;""*)err "Invalid"; continue;;*)cext=$ch; break;;esac
+    done; [[ $ch == Back ]]&&continue
+    local -a opts=("True size" "50%" "75%" "Square 500" "HQ Lanczos" "Rotate 90° CW" "Rotate 90° CCW" "Vflip" Done)
     while :; do
-      clear
-      log "Options for: ${input_file} -> ${convert_ext}"
-      printf "${Y}Selected Filters: %s${X}\n" "${vf_opts[*]:-(none)}"
-      PS3=$'\n'"${B}Add filter?${X} "
-      select opt in "${options[@]}"; do
-        case "$opt" in
-        "True size") vf_opts+=("scale=iw:ih") ;;
-        "50%") vf_opts+=("scale=iw/2:ih/2") ;;
-        "75%") vf_opts+=("scale=iw*0.75:ih*0.75") ;;
-        "Square (500px)") vf_opts+=("scale=500:500") ;;
-        "HQ Lanczos") vf_opts+=("flags=lanczos") ;;
-        "Rotate 90° CW") vf_opts+=("transpose=1") ;;
-        "Rotate 90° CCW") vf_opts+=("transpose=2") ;;
-        "Vertical Flip") vf_opts+=("vflip") ;;
-        "Done") break 2 ;;
-        *) err "Invalid choice" ;;
-        esac
-        break
+      clear; log "Options: ${fn} -> ${cext}"; printf "${Y}Filters: %s${X}\n" "${vf[*]:-(none)}"
+      PS3=$'\n'"${B}Add filter?${X} "; select o in "${opts[@]}"; do
+        case "$o" in
+          "True size")vf+=(scale=iw:ih);;"50%")vf+=(scale=iw/2:ih/2);;"75%")vf+=(scale=iw*0.75:ih*0.75);;
+          "Square 500")vf+=(scale=500:500);;"HQ Lanczos")vf+=(flags=lanczos);;
+          "Rotate 90° CW")vf+=(transpose=1);;"Rotate 90° CCW")vf+=(transpose=2);;Vflip)vf+=(vflip);;
+          Done)break 2;;*)err "Invalid";;
+        esac; break
       done
     done
-
-    # Perform conversion
-    local out_dir="${input_path%/*}"
-    local out_file="${out_dir}/${input_file%.*}-mc.${convert_ext}"
-    local vf_flags
-    IFS=, vf_flags="${vf_opts[*]}"
-
-    log "Converting..."
-    local -a cmd=(ffmpeg -y -hide_banner -i "$input_path")
-
-    if [[ ${ext,,} == "gif" && $convert_ext != "gif" ]]; then
-      local palette="${out_dir}/palette.png"
-      ffmpeg -i "$input_path" -vf "palettegen" -y "$palette" &>/dev/null
-      cmd+=(-i "$palette" -lavfi "${vf_flags:+$vf_flags,}paletteuse")
-    else
-      [[ $convert_ext == "gif" ]] && vf_flags="fps=30${vf_flags:+,${vf_flags}}"
-      [[ -n $vf_flags ]] && cmd+=(-vf "$vf_flags")
-    fi
-
-    cmd+=("$out_file")
-    "${cmd[@]}"
-
-    [[ -f ${palette:-} ]] && rm -f "$palette"
-    log "Done: $out_file"
-    read -r -p "Press ENTER to continue..."
+    local od="${inp%/*}" of="${od}/${fn%.*}-mc.${cext}" vff; IFS=, vff="${vf[*]}"; log "Converting..."
+    local -a cmd=(ffmpeg -y -hide_banner -i "$inp")
+    if [[ $lext == gif && $cext != gif ]]; then
+      local pal="${od}/pal.png"; ffmpeg -i "$inp" -vf palettegen -y "$pal"&>/dev/null
+      cmd+=(-i "$pal" -lavfi "${vff:+$vff,}paletteuse")
+    else [[ $cext == gif ]]&&vff="fps=30${vff:+,${vff}}"; [[ -n $vff ]]&&cmd+=(-vf "$vff"); fi
+    cmd+=("$of"); "${cmd[@]}"; [[ -f ${pal:-} ]]&&rm -f "$pal"; log "Done: $of"; read -rp "Press ENTER..."
   done
 }
-
-# ==============================================================================
-# BATCH OPTIMIZATION
-# ==============================================================================
-opt_img(){
-  local f="$1" out="$2" ext l_ext
-  ext="${f##*.}"
-  l_ext="${ext,,}"
-  if has_cached rimage; then
-    tool="rimage"
-    cp "$f" "$out"
-    [[ $LOSSLESS -eq 1 ]] && cmd=(rimage "$out" -q 100) || cmd=(rimage "$out" -q "$QUALITY")
-  elif has_cached image-optimizer && [[ $l_ext =~ ^(jpg|jpeg|png|webp)$ ]]; then
-    tool="image-optimizer"
-    cmd=(image-optimizer "$f" "$out")
-  else
-    case "$l_ext" in
-    jpg | jpeg | mjpg) has_cached jpegoptim && {
-      tool="jpegoptim"
-      cmd=(jpegoptim --strip-all --all-progressive --stdout "$f")
-      [[ $LOSSLESS -eq 0 ]] && cmd+=(-m"$QUALITY")
-    } ;;
-    png) has_cached oxipng && {
-      tool="oxipng"
-      cmd=(oxipng -o 4 --strip safe -i 0 --out - "$f")
-    } ;;
-    webp) has_cached cwebp && {
-      tool="cwebp"
-      cmd=(cwebp -mt -quiet "$f" -o -)
-      [[ $LOSSLESS -eq 1 ]] && cmd+=(-lossless -z 9) || cmd+=(-q "$QUALITY" -m 6)
-    } ;;
-    esac
-  fi
+batch(){
+  local dir=${1:-.} exts=".*\.(jpg|jpeg|mjpg|png|webp|svg|gif|avif|jxl|bmp|mp4|mkv|mov|webm|avi)\$"
+  local -a fc files
+  has fd&&fc=(fd -tf --hidden --no-ignore --regex "$exts" . "$dir")||fc=(find "$dir" -type f -iregex "$exts")
+  mapfile -t files < <("${fc[@]}"); [[ ${#files[@]} -eq 0 ]]&&die "no media files in $dir"
+  printf '%s\n' "${files[@]}"|xargs -P"$JOBS" -I{} bash -c "$(declare -f optimize opt_img opt_vid hc err log; declare -p TC LOSSLESS QUAL VCRF VCODEC DRY BACKUP BACKUP_DIR MTIME B G Y R X); optimize {}"
 }
-
-opt_svg(){
-  local f="$1" out="$2"
-  if has_cached image-optimizer; then
-    tool="image-optimizer"
-    cmd=(image-optimizer "$f" "$out")
-  elif has_cached svgcleaner; then
-    tool="svgcleaner"
-    cmd=(svgcleaner "$f" "$out")
-  elif has_cached scour; then
-    tool="scour"
-    cmd=(scour -i "$f" -o "$out" --enable-viewboxing --enable-id-stripping --shorten-ids --indent=none)
-  elif has_cached minify; then
-    tool="minify"
-    cmd=(minify -o "$out" "$f")
-  elif has_cached svgo; then
-    tool="svgo"
-    cmd=(svgo -i "$f" -o - --multipass)
-  fi
+usage(){
+  cat <<'EOF'
+media-opt.sh - Batch media optimization
+USAGE: media-opt.sh [OPTIONS] [PATH...]
+OPTIONS:
+  -j N          Jobs (default: auto)
+  -l            Lossy mode (default: lossless)
+  -q N          Quality 1-100 (default: 95)
+  --crf N       Video CRF (default: 24)
+  --vcodec C    Video codec (default: libsvtav1)
+  -i            Interactive conversion
+  --backup      Enable backups
+  --dry-run     Simulate
+  -h            Help
+EXAMPLES:
+  media-opt.sh -l -q 85 ~/Pictures
+  media-opt.sh --vcodec libvpx-vp9 --crf 28 ~/Videos
+  media-opt.sh -i
+EOF
 }
-
-opt_vid(){
-  local f="$1" out="$2"
-  local a_args=(-c:a "$AUDIO_CODEC" -b:a "$AUDIO_BR")
-  [[ $AUDIO_CODEC == "copy" ]] && a_args=(-c:a copy)
-  if has_cached ffzap; then
-    tool="ffzap"
-    cmd=(ffzap -i "$f" -o "$out")
-  elif has_cached ffmpeg; then
-    tool="ffmpeg"
-    local v_args=()
-    case "$VIDEO_CODEC" in
-    libsvtav1) [[ $LOSSLESS -eq 1 ]] && v_args=(-preset 4 -crf "$VIDEO_CRF" -svtav1-params "tune=0:enable-overlays=1:scd=1") || v_args=(-preset 8 -crf "$((VIDEO_CRF + 6))" -svtav1-params "tune=0:scd=1") ;;
-    libaom-av1) [[ $LOSSLESS -eq 1 ]] && v_args=(-cpu-used 3 -usage good -row-mt 1 -crf "$VIDEO_CRF" -b:v 0) || v_args=(-cpu-used 6 -usage good -row-mt 1 -crf "$((VIDEO_CRF + 6))" -b:v 0) ;;
-    libx265) [[ $LOSSLESS -eq 1 ]] && v_args=(-preset slower -crf "$VIDEO_CRF" -x265-params "sao=1") || v_args=(-preset medium -crf "$((VIDEO_CRF + 4))") ;;
-    *) v_args=(-crf "$VIDEO_CRF") ;;
-    esac
-    cmd=(ffmpeg -y -v error -i "$f" -c:v "$VIDEO_CODEC" "${v_args[@]}" "${a_args[@]}" -movflags +faststart "$out")
-  fi
-}
-
-optimize_file(){
-  local f="$1"
-  [[ ! -f $f ]] && return 0
-  local ext tmp tool cmd
-  ext="${f##*.}"
-  tmp="${f}.opt.tmp.${ext}"
-  tool=""
-  cmd=()
-  case "${ext,,}" in
-  jpg | jpeg | mjpg | png | webp | avif | jxl | bmp) opt_img "$f" "$tmp" ;;
-  svg) opt_svg "$f" "$tmp" ;;
-  gif) has_cached gifsicle && {
-    tool="gifsicle"
-    cmd=(gifsicle "$f")
-    [[ $LOSSLESS -eq 1 ]] && cmd+=(-O3 --no-comments --no-names --no-extensions --careful) || cmd+=(-O3 --lossy=80)
-  } ;;
-  mp4 | mkv | mov | avi | webm) opt_vid "$f" "$tmp" ;;
-  *) return 0 ;;
-  esac
-  [[ -z $tool ]] && {
-    [[ -f $tmp ]] && rm -f "$tmp"
-    return 0
-  }
-  if [[ $DRY_RUN -eq 1 ]]; then
-    printf "${B}[DRY]${X} %-10s %s\n" "$tool" "$f"
-    [[ -f $tmp ]] && rm -f "$tmp"
-    return 0
-  fi
-  local ok=0
-  if [[ $tool =~ ^(oxipng|cwebp|svgo|jpegoptim)$ ]] && [[ ${cmd[*]} =~ (--stdout|--out\ -|-o\ -) ]]; then
-    "${cmd[@]}" >"$tmp" 2>/dev/null && ok=1
-  else
-    "${cmd[@]}" &>/dev/null && ok=1
-  fi
-  if [[ $ok -eq 1 ]] && [[ -f $tmp ]]; then
-    local old_sz new_sz
-    old_sz=$(stat -c%s "$f")
-    new_sz=$(stat -c%s "$tmp")
-    if [[ $new_sz -gt 0 ]] && [[ $new_sz -lt $old_sz ]]; then
-      local diff pct
-      diff=$((old_sz - new_sz))
-      pct=$((diff * 100 / old_sz))
-      if [[ $BACKUP -eq 1 ]]; then
-        local bp="${BACKUP_DIR}/${f#.}"
-        mkdir -p "$(dirname "$bp")"
-        cp -p "$f" "$bp"
-      fi
-      mv "$tmp" "$f"
-      [[ $KEEP_MTIME -eq 1 ]] && touch -r "$f" "$f"
-      printf "${G}[OK]${X} %-25s %-12s -%d%% (%s)\n" "$(basename "$f")" "[$tool]" "$pct" "$(numfmt --to=iec "$diff")"
-    else
-      rm -f "$tmp"
-    fi
-  else
-    [[ -f $tmp ]] && rm -f "$tmp"
-  fi
-}
-export -f optimize_file opt_img opt_svg opt_vid has has_cached err log
-export JOBS QUALITY LOSSLESS VIDEO_CODEC VIDEO_CRF AUDIO_CODEC AUDIO_BR DRY_RUN BACKUP BACKUP_DIR KEEP_MTIME B G Y R X TOOL_CACHE
-
-# ==============================================================================
-# MAIN
-# ==============================================================================
 main(){
   local -a inputs=()
   while [[ $# -gt 0 ]]; do
-    case "$1" in
-    -i | --interactive)
-      interactive_mode
-      exit 0
-      ;;
-    -j | --jobs)
-      JOBS="$2"
-      shift 2
-      ;;
-    -l | --lossy)
-      LOSSLESS=0
-      shift
-      ;;
-    -q | --quality)
-      QUALITY="$2"
-      shift 2
-      ;;
-    --crf)
-      VIDEO_CRF="$2"
-      shift 2
-      ;;
-    --vcodec)
-      VIDEO_CODEC="$2"
-      shift 2
-      ;;
-    --acodec)
-      AUDIO_CODEC="$2"
-      shift 2
-      ;;
-    --backup)
-      BACKUP=1
-      shift
-      ;;
-    --dry-run)
-      DRY_RUN=1
-      shift
-      ;;
-    -h | --help) usage ;;
-    -*)
-      err "Unknown option: $1"
-      usage
-      ;;
-    *)
-      inputs+=("$1")
-      shift
-      ;;
+    case $1 in
+      -i|--interactive)interactive; exit 0;;
+      -j|--jobs)JOBS=$2; shift 2;;
+      -l|--lossy)LOSSLESS=0; shift;;
+      -q|--quality)QUAL=$2; shift 2;;
+      --crf)VCRF=$2; shift 2;;
+      --vcodec)VCODEC=$2; shift 2;;
+      --backup)BACKUP=1; shift;;
+      --dry-run)DRY=1; shift;;
+      -h|--help)usage; exit 0;;
+      -*)die "Unknown: $1";;
+      *)inputs+=("$1"); shift;;
     esac
   done
-
-  if [[ ${#inputs[@]} -eq 0 ]]; then
-    inputs=(".")
-  fi
-
-  if [[ $BACKUP -eq 1 ]]; then
-    mkdir -p "$BACKUP_DIR"
-    log "Backups enabled: $BACKUP_DIR"
-  fi
-
-  cache_tools
-  log "Starting optimization ($JOBS jobs, Video Codec: $VIDEO_CODEC)..."
-
-  local -a find_cmd
-  local exts_regex=".*\.(jpg|jpeg|mjpg|png|webp|svg|gif|avif|jxl|bmp|mp4|mkv|mov|webm|avi)$"
-
-  if has fd; then
-    find_cmd=(fd --type f --hidden --no-ignore --regex "$exts_regex" -- . "${inputs[@]}")
-  else
-    find_cmd=(find "${inputs[@]}" -type f -iregex "$exts_regex")
-  fi
-
-  local -a parallel_cmd
-  if has rust-parallel; then
-    parallel_cmd=(rust-parallel -j "$JOBS" -- 'optimize_file {}')
-  elif has parallel; then
-    parallel_cmd=(parallel -j "$JOBS" --no-notice "optimize_file {}")
-  else
-    parallel_cmd=(xargs -0 -P "$JOBS" -I {} bash -c 'optimize_file "$@"' _ {})
-    # Adjust find command for xargs -0
-    if has fd; then
-      find_cmd+=(--print0)
-    else
-      find_cmd+=(-print0)
-    fi
-  fi
-
-  "${find_cmd[@]}" | "${parallel_cmd[@]}"
-
+  [[ ${#inputs[@]} -eq 0 ]]&&inputs=(.)
+  [[ $BACKUP -eq 1 ]]&&{ mkdir -p "$BACKUP_DIR"; log "Backups: $BACKUP_DIR"; }
+  cache_tools; log "Optimizing ($JOBS jobs, $VCODEC)..."
+  for i in "${inputs[@]}"; do batch "$i"; done
   log "Done."
 }
-
 main "$@"
