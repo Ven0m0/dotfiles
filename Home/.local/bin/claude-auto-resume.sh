@@ -114,11 +114,13 @@ execute_custom_command() {
 }
 
 # Function to extract timestamp from old format: Claude AI usage limit reached|<timestamp>
+# Optimization: Replaced echo+awk with bash native parameter expansion
 extract_old_format_timestamp() {
   local claude_output="$1"
   local resume_timestamp
 
-  resume_timestamp=$(echo "$claude_output" | awk -F'|' '{print $2}')
+  # Native bash: split on '|' and take 2nd field
+  resume_timestamp="${claude_output##*|}"
   if ! [[ $resume_timestamp =~ ^[0-9]+$ ]] || [ "$resume_timestamp" -le 0 ]; then
     echo "[ERROR] Failed to extract a valid resume timestamp from Claude output."
     echo "[HINT] Expected format: 'Claude AI usage limit reached|<timestamp>'"
@@ -137,20 +139,17 @@ extract_new_format_timestamp() {
   local reset_time reset_hour reset_period reset_hour_24
   local now_timestamp today_reset resume_timestamp
 
-  # Extract the reset time (e.g., "3am")
-  reset_time=$(echo "$claude_output" | grep -o "resets [0-9]*[ap]m" | awk '{print $2}')
-  if [ "$reset_time" = "" ]; then
+  # Optimization: Replace grep+awk with bash regex matching
+  if [[ $claude_output =~ resets\ ([0-9]+)(am|pm) ]]; then
+    reset_hour="${BASH_REMATCH[1]}"
+    reset_period="${BASH_REMATCH[2]}"
+  else
     echo "[ERROR] Failed to extract reset time from new Claude output format."
     echo "[HINT] Expected format: 'X-hour limit reached ∙ resets Xam/pm'"
     echo "[SUGGESTION] Check if Claude CLI output format has changed."
     echo "[DEBUG] Raw output: $claude_output"
     exit 2
   fi
-
-  # Convert reset time to timestamp
-  # Extract hour and am/pm
-  reset_hour=$(echo "$reset_time" | sed 's/[ap]m//')
-  reset_period=$(echo "$reset_time" | grep -o '[ap]m')
 
   # Convert to 24-hour format
   if [ "$reset_period" = "am" ]; then
@@ -482,7 +481,11 @@ fi
 # 2. Check if usage limit is reached (support both old and new formats)
 # Old format: Claude AI usage limit reached|<timestamp>
 # New format: 5-hour limit reached ∙ resets 3am
-LIMIT_MSG=$(echo "$CLAUDE_OUTPUT" | grep -E "(Claude AI usage limit reached|limit reached.*resets)")
+# Optimization: Replace echo+grep with bash regex matching
+LIMIT_MSG=""
+if [[ $CLAUDE_OUTPUT =~ (Claude\ AI\ usage\ limit\ reached|limit\ reached.*resets) ]]; then
+  LIMIT_MSG="${BASH_REMATCH[0]}"
+fi
 
 # Test mode: simulate usage limit
 if [ "$TEST_MODE" = true ]; then
@@ -499,8 +502,8 @@ if [ "$LIMIT_MSG" != "" ]; then
     WAIT_SECONDS=$TEST_WAIT_SECONDS
   else
     # Normal mode: extract timestamp from Claude output
-    # Check if it's the old format with timestamp
-    if echo "$CLAUDE_OUTPUT" | grep -q "Claude AI usage limit reached|"; then
+    # Optimization: Replace echo+grep with bash string matching
+    if [[ $CLAUDE_OUTPUT == *"Claude AI usage limit reached|"* ]]; then
       # Old format: Claude AI usage limit reached|<timestamp>
       RESUME_TIMESTAMP=$(extract_old_format_timestamp "$CLAUDE_OUTPUT")
     else
