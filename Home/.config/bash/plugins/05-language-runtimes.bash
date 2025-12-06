@@ -47,6 +47,17 @@ fi
 alias py-server='python3 -m SimpleHTTPServer 8000'
 alias pdb="python3 -m pdb"
 alias serve="python3 -m http.server"
+# Script to format JSON files using Python JSON Tool
+_pj(){
+  [[ -z "$1" ]] && { printf "%s\n" "No file path"; return; }
+  if [[ "$1" == "." ]]; then
+    for json_file_path in $(find . -name *.json); do
+      pretty_json=$(python3 -m json.tool "$json_file_path") && echo "$pretty_json" > "$json_file_path"
+    done
+  else
+    pretty_json=$(python3 -m json.tool "$1") && echo "$pretty_json" > "$1"
+  fi
+}
 # --- Node/Bun
 if has bun; then
   alias npx=bunx npm=bun
