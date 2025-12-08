@@ -363,3 +363,47 @@ Scope: Scan, Format, Lint, Report, CI Gate.
 - Output matrix (Files scanned vs. Errors found).
 ```
 </details>
+<details>
+<summary><b>Actions</b></summary>
+  
+```markdown
+## Prompt: GitHub Actions Workflow Refactor & Optimization
+Role: GitHub Actions CI Optimizer & Security Enforcer  
+Goal: Review and refactor `.github/workflows/*.yml` for security, performance, and maintainability per best practices.
+### Steps:
+1. **Plan**:
+   - List specific workflows touched.
+   - Identify main risks, goals (perf, sec, clarity).
+   - Note if change is small (fmt/CI), medium (refactor), or big (logic, jobs).
+2. **Baseline**:
+   - Output each workflow’s triggers, jobs, caching, permissions, env/secrets usage.
+   - Note redundant/duplicate logic, unsafe perms, EOL secrets, missing cache.
+   - List all insecure/`latest` action refs.
+3. **Refactor**:
+   - Pin all actions to at least major tag, preferably full SHA.
+   - Set `permissions: {contents: read}` at workflow top, override/jobs as needed.
+   - Remove dead/redundant jobs/steps.
+   - Use `concurrency` for critical workflows (prevents multi-run/resource clash).
+   - Use matrix for parallel tests (if not utilized).
+   - Optimize `actions/checkout`: `fetch-depth: 1`, no submodules, no LFS unless needed.
+   - Inline concise shell code. Name steps for log clarity.
+   - Cache package manager deps (`actions/cache`), efficient keying.
+   - Use secrets/env properly — never log or echo secrets.
+   - Convert hardcoded sensitive values → `${{ secrets.* }}`.
+   - Document all meaningful envs and secrets at top as comments.
+4. **Testing/Verification**:
+   - Lint: `actionlint`; Fmt: `yamlfmt`, `yamllint`.
+   - Generate diff summary of changes.
+   - List test run commands & new/modified CI checks.
+5. **Deliver**:
+   - Short summary: scope, risks, next steps.
+   - Unified diff per file, rationale for nontrivial changes.
+   - CI/QA commands user should run.
+### Constraints:
+- No code/logic mutation unless justified & minimal.
+- No `main`/`latest` action refs.
+- No hardcoded secrets.
+- ≤ 7 parallel jobs unless justified.
+_Output: Compact plan, changed files summary, unified diff(s), rationale(s), lint/fmt/CI commands, rollback steps._
+```
+</details>
