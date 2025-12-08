@@ -4,11 +4,7 @@ set -euo pipefail
 # Check if bluetooth service is running, start if not
 if ! systemctl is-active --quiet bluetooth.service; then
   printf "Bluetooth service not running, starting...\n"
-  if command -v sudo &>/dev/null; then
-    sudo systemctl start bluetooth.service
-  else
-    systemctl start bluetooth.service
-  fi; sleep 1
+  sudo systemctl start bluetooth.service; sleep 1
 fi
 choice=$(bluetoothctl devices | fzf --prompt="Choose Device: " --height 40% --reverse -m)
 device=$(printf '%s' "$choice" | awk '{print $2}')
