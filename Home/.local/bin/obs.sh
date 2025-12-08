@@ -3,4 +3,4 @@ set -euo pipefail
 shopt -s nullglob globstar
 LC_ALL=C LANG=C
 
-OBS_USE_EGL=1 obs
+env OBS_USE_EGL=1 OBS_VKCAPTURE=1 obs
