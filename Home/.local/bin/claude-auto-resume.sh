@@ -1,7 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # https://github.com/terryso/claude-auto-resume
 # Auto-resume script for Claude CLI tasks
 # Depends only on standard shell commands and claude CLI
+set -euo pipefail
+shopt -s nullglob
+IFS=$'\n\t'
+
 # Version information
 VERSION="1.4.1"
 # Default prompt to use when resuming
@@ -91,8 +95,8 @@ execute_custom_command() {
   echo "===================="
 
   # Execute the command with proper error handling
-  # Use eval to support complex commands with pipes and redirections
-  eval "$command"
+  # Use bash -c instead of eval for isolation (runs in subshell)
+  bash -c "$command"
   local exit_code=$?
 
   local end_time=$(date +%s)

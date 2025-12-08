@@ -195,7 +195,7 @@ minify_enhanced() {
     [[ -n $stripped ]] && printf '%s\n' "$stripped" >>"$out"
   done <"$in"
   # Remove multiline comments & separator lines
-  sed -i -e '/^:[[:space:]]*'"'"'/,/^'"'"'/d' -e '/^#[[:space:]]*[-─]{5,}/d' "$out" 2>dev/null || :
+  sed -i -e '/^:[[:space:]]*'"'"'/,/^'"'"'/d' -e '/^#[[:space:]]*[-─]{5,}/d' "$out" 2>/dev/null || :
 }
 #──────────── Concatenate Files ────────────
 concat_files() {
@@ -221,19 +221,19 @@ concat_files() {
     # Check regex
     [[ -n $rx && ! $dirpath =~ $rx ]] && continue
     log "Concat: $dname"
-    # Build exclude params if __EXCLUDE_FILES exists
-    local excl=""
-    [[ -f $dirpath/__EXCLUDE_FILES ]] && {
+    # Build exclude array if __EXCLUDE_FILES exists
+    local -a excl_args=()
+    if [[ -f $dirpath/__EXCLUDE_FILES ]]; then
       while IFS= read -r xf; do
-        excl+=" ! -path '$xf'"
+        [[ -n $xf ]] && excl_args+=("!" "-path" "$xf")
       done <"$dirpath/__EXCLUDE_FILES"
-    }
+    fi
     # Process extensions
     for ext in "${exts[@]}"; do
       while IFS= read -r -d '' lf; do
         [[ $lf == *__* || $lf == *_PLACEHOLDER* ]] && continue
         [[ $lf == *."$ext" ]] && cat "$lf" >>"$out"
-      done < <(eval find "$dirpath" -type f "$excl" -print0 2>dev/null)
+      done < <(find "$dirpath" -type f "${excl_args[@]}" -print0 2>/dev/null)
     done
   done
 }
@@ -281,8 +281,8 @@ optimize() {
   trap 'rm -f "$tmp"' RETURN
   printf '%s' "$content" >"$tmp"
   # Harden & lint
-  shellharden --replace "$tmp" &>dev/null || :
-  shellcheck -a -x -s bash -f diff "$tmp" 2>dev/null | patch -Np1 "$tmp" &>dev/null || :
+  shellharden --replace "$tmp" &>/dev/null || :
+  shellcheck -a -x -s bash -f diff "$tmp" 2>/dev/null | patch -Np1 "$tmp" &>/dev/null || :
   cat "$tmp" >"$out_target"
   chmod "$perm" "$out_target"
   log "✓ $out_target"
