@@ -181,6 +181,16 @@ previewers=[
   {name="*", run="file"},
 ]
 
+[[plugin.prepend_previewers]]
+mime = "text/*"
+run = "bat"
+[[plugin.prepend_previewers]]
+mime = "application/json"
+run = "bat"
+[[plugin.prepend_previewers]]
+mime = "*/{xml,javascript,x-wine-extension-ini}"
+run = "bat"
+
 [input]
 cursor_blink=false
 
