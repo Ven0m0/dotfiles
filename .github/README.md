@@ -117,175 +117,174 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 <summary><b>Lint/Format</b></summary>
 
 ```markdown
-Objective: Exhaustive lint+format per .editorconfig. Enforce 2-space indent. Zero remaining errors. Fail CI on non-zero.
-Discovery: fd -tf -u -E .git -E node_modules -e <exts>
-Fallbacks: fd→find; rg→grep; sd→sed; zstd→gzip→xz.
+Objective: full tree conformance to .editorconfig; 2-space indent; zero remaining errors; non-zero exit on unresolved issues.
+Discovery: fd -tf -u -E .git -E node_modules -e <ext>; fallback: find.
+Scan: rg for invalid chars/invisibles; sd to clean; compressors: zstd→gzip→xz.
 Policy:
-  - Run formatters before linters.
-  - Apply only when tool supports safe write flag (--write/--apply/--fix).
-  - Show diff summary + list of CLI commands to reproduce.
-  - Exit non-zero if any unresolved errors.
-Filegroups & pipeline (format → lint/fix → report):
+  - Format before lint.
+  - Only use safe write modes (--write/--apply/--fix/-w).
+  - Batch file lists; minimal forks; xargs -P for parallel.
+  - Respect project configs (.editorconfig, prettierrc, pyproject.toml, etc.).
+  - Detect missing tools; report & skip group.
+Pipeline (group → format → lint/fix → report):
   - yaml: yamlfmt --apply; yamllint -f parsable.
-  - json/css/js/html: biome format --apply || prettier --write; eslint --fix; minify for final output.
-  - xml: minify (format-only).
-  - sh/zsh: shfmt -w -i 2; shellcheck --format=gcc || :; shellharden (audit).
-  - fish: fish_indent (write).
-  - toml: taplo format; tombi lint.
+  - json/css/js/html: biome fmt --apply || prettier --write; eslint --fix; minify final.
+  - xml: minify only (no linter).
+  - sh/zsh: shfmt -w -i 2; shellcheck --format=gcc || :; shellharden audit.
+  - fish: fish_indent -w.
+  - toml: taplo fmt; tombi lint.
   - markdown: mdformat; markdownlint --fix.
-  - actions: yamlfmt --apply; yamllint; actionlint.
+  - github actions: yamlfmt; yamllint; actionlint.
   - python: ruff --fix; black --fast.
-  - lua: stylua; selene lint.
-  - global: ast-grep run rules; rg to enumerate; run batched in parallel (xargs -P).
+  - lua: stylua; selene.
+  - global: ast-grep rules; rg enumeration; run via xargs -P.
 Output (structured):
-  - table: {file, group, modified, errors}
-  - commands: exact CLI to reproduce fixes
-  - summary: totals + exit code
-Constraints:
-  - Prefer tools in PATH; detect & report missing tools.
-  - Minimize forks; batch file lists; safe parallelism.
-  - Respect project config files (.editorconfig, .prettierrc, pyproject.toml).
-Also clean them up and enhance/improve the configs and delete duplicate, redundant or deprecated files. 
+  - table: {file, group, modified(yes/no), errors(count/list)}
+  - commands: exact CLI for reproducing fixes
+  - summary: totals + final exit
+Cleanup:
+  - Remove duplicate/obsolete/deprecated configs.
+  - Normalize all config files; unify indentation, charset, EOL.
+  - Ensure consistent toolchains (taplo/tombi, biome/prettier/eslint, mdformat/markdownlint).
 ```
 </details>
 <details>
 <summary><b>LLM files</b></summary>
 
 ```markdown
-Goal: ensure CLAUDE.MD, GEMINI.MD, copilot-instructions.md exist, stay minimal/consistent, pass lint; fail CI on missing/invalid.
-Discovery: fd -H -I -E .git -e md || find . -name '*.md'; rg -nS 'CLAUDE|GEMINI|copilot' || :
-Strategy: read→create-if-missing→merge sections→prune dupes→normalize (2-space, no invisibles, <=80 cols)→markdownlint→commit docs/{claude|gemini|copilot}/<short>.
-Tools: fd→find; rg→grep; sd→sed; shfmt (code blocks); markdownlint.
-Templates:
----
-# CLAUDE.MD
-Purpose: concise patterns & constraints.
-- model: claude-*
-- tone: blunt/precise
-- safety: no hallucinations; cite claims
-Prompts: system+task/constraints/output
-Rules: short answers; best-effort on ambiguity; runnable code w/ quoted vars
----
-# GEMINI.MD
-Purpose: patterns for Gemini.
-- model: gemini-*
-- tone: same as Claude
-- vision: yes/no
-Prompts: system+json/human examples
-Rules: web.run only for freshness; note model quirks
----
-# copilot-instructions.md
-Purpose: dev guardrails.
-- bash-native; arrays; shfmt/shellcheck clean
-- 2-space; short args; no eval/backticks
-- tools: fd→rg→sd→sed→awk→xargs
-- perf: low forks; batch IO
-Prompts: compact/optimal/secure code; prefer builtins
-CI: markdownlint; shellcheck; shfmt; ensure CLAUDE.MD+GEMINI.MD exist
----
-Validation: find required files; markdownlint; rg for invisibles; sd to strip.
-Merge: small→direct PR; big→issue.
-Output: patched files + diff + changelog; else ISSUE.md.
-Exit: all files + lint pass → ok; else fail.
-Risk: no behavioral prompt changes without approval; templates stay minimal.
-```
-</details>
-<details>
-<summary><b>Format and refactor</b></summary>
-
-```markdown
-# Codebase Optimization & Hygiene Architect
-**Role:** Execute a strict code quality pipeline: Format » Lint » Inline » Refactor.
-**Targets:** Bash (Priority), Python, Web/Config.
-**Constraint:** All Bash scripts must be standalone (statically linked/no external sourcing).
-## 1. Standards & Tooling
-**Policy:** Use native/fastest tools. Fallback: `fd`→`find`; `rg`→`grep`.
-- **Bash**: `shfmt -i 2 -bn -ci -s`, `shellcheck` (0 errors), `shellharden --replace`.
-- **Python**: `ruff --fix`, `black`.
-- **Config**: `biome`, `yamlfmt`, `taplo`.
-## 2. Style & Formatting
-- **Structure**: Enforce 2-space indent. Max 1 consecutive empty newline.
-- **Bash Style**:
-  - Use `(){` for function declarations.
-  - Inline short actions using `;` where readable.
-  - Minimize vertical whitespace.
-- **Idioms**: Use compact wrapper functions to reduce verbosity.
-  - *Example*: `die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }`
-## 3. Execution Pipeline
-### Phase A: Static Compliance
-1. **Format**: Run formatters. Apply safe fixes (`--write/--fix`) blindly.
-2. **Lint**: Enforce zero errors. Apply `set -euo pipefail`.
-3. **Inline**: Recursively read `source` files and inject content into the parent script to ensure valid standalone execution.
-### Phase B: Refactor & Optimize
-1. **Deduplicate**: Identify logic repeated >50 tokens; extract to atomic functions.
-2. **Performance**:
-   - Replace slow loops/subshells with Bash built-ins (arrays, mapfile, parameter expansion).
-   - Detect and fix O(n²) operations or synchronous I/O blocks.
-3. **Cleanup**: Remove unused variables and dead code.
-## 4. Deliverables
-- **Code**: Refactored, standalone, single-file scripts.
-- **Report**: Diff summary + Performance metrics (e.g., "Loop opt: -200ms").
+Role: LLM MD File Optimizer — ensure CLAUDE.MD, GEMINI.MD, copilot-instructions.md exist, minimal, consistent, lint-clean, CI-fail on missing/invalid.
+Discovery
+- Find candidate files: `fd -H -I -E .git -e md || find . -name '*.md'`
+- Locate targets: `rg -nS 'CLAUDE|GEMINI|copilot' || :`
+Tools (preferred → fallback)
+- fd → find; rg → grep; sd → sed; shfmt; markdownlint; shfmt (code blocks).
+Preflight checks (must run)
+1. Encoding/clean: `file -bi <file>` → UTF-8, strip BOM; `rg -nU '\p{Cc}' || :` → no control chars.
+2. Invisibles: `rg -nU '\p{C}' || :` and `sd '  +$' ''` (strip trailing spaces).
+3. Line width: wrap/soft-fail >80 cols; enforce ≤80 cols where reasonable.
+4. Code blocks: run `shfmt -i 2 -w` for bash blocks; preserve fenced language tags.
+Templates & canonical structure (per file)
+- Location: `docs/{claude|gemini|copilot}/<short>.md` (create dir if missing).
+- Required header (YAML or plain):
+  - Title
+  - Purpose (1 line)
+  - Model pattern (e.g., `claude-*` / `gemini-*`)
+  - Tone (blunt/precise)
+  - Key rules (bulleted)
+  - Minimal example: `system + task → expected short output`
+- File must be minimal and focused; no long narrative.
+Workflow (must follow)
+1. Plan: output 3–6 bullet plan (files touched, small|big change, tests, rollback).
+2. Read target files; if missing → create from template.
+3. Merge/prune:
+   - Merge sections when overlap; prune duplicates.
+   - Dedupe text blocks >3 lines or >50 tokens (prefer canonical template).
+4. Normalize:
+   - 2-space indent; remove invisible chars; LF endings; ≤80 cols.
+   - Run markdownlint: `markdownlint -c .markdownlint.json <files>`.
+5. Validate:
+   - Ensure presence of required sections and a minimal example per file.
+   - Ensure code blocks formatted (shfmt for bash blocks).
+6. Commit/PR:
+   - Small change → branch `docs/<type>/<short>`; commit msg: `docs(<type>): <short> — add/fix <what>`.
+   - Big/ambiguous → open ISSUE.md proposing changes and stop.
+7. Deliverables:
+   - Patched files (path list), unified diff, `CHANGES.md` entry, tests/smoke commands, `ISSUE.md` if non-auto.
+   - One-line risk note per file changed.
+CI rules (must cause fail)
+- If any required file missing → exit non-zero.
+- If `markdownlint` finds errors → fail.
+- If invisibles/control chars present → fail.
+- If example smoke test (run small parse or prompt check) fails → fail.
+Output format (Markdown)
+- Plan (3–6 bullets)
+- Files created/updated (paths)
+- Unified diff(s)
+- Tests / run commands (1–3 commands)
+- CHANGES.md entry content
+- One-line rationale + risk per non-trivial change
+Assumptions & limits
+- Do not alter intent or semantics of existing prompts without explicit approval.
+- Keep templates minimal; prefer small PRs. If ambiguous, create ISSUE.md and stop.
 ```
 </details>
 <details>
 <summary><b>Bash short</b></summary>
   
 ```markdown
-Identify and suggest improvements to slow or inefficient code and find and refactor duplicated code. Run formatters/linters: shellcheck/shellharden. All Bash scripts must be standalone (statically linked/no external sourcing). Use compact wrapper functions to reduce verbosity: `die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }`. Enforce 2-space indent. Max 1 consecutive empty newline and use `;` to inline some short actions if it is reasonable and readable. Use `(){` for function declarations. Minimize vertical whitespace. Replace slow loops/subshells with Bash built-ins (arrays, mapfile, parameter expansion). Remove unused variables and dead code. Identify logic repeated >50 tokens; extract to atomic functions.
+Role: Bash Refactor Agent — optimize, dedup, and produce standalone scripts.
+Rules:
+- Shebang/safety: use `#!/usr/bin/env bash`; `set -euo pipefail`; `shopt -s nullglob globstar`; `IFS=$'\n\t'`.
+- Formatting: `shfmt -i 2 -bn -ci -ln bash`; 2-space indent; max 1 consecutive empty line.
+- Linters: `shellcheck --severity=error` (fail on errors); `shellharden --replace` optional.
+- Forbidden: `eval`, parsing `ls`, unquoted expansions, unnecessary subshells, runtime `curl | bash`.
+- Portability: prefer POSIX-safe constructs where possible; verify on `bash` and a minimal shell (dash/busybox) when relevant.
+- Standalone: inline all `source`/`.` files with guard comments; dedupe inlined code (include once).
+- Performance rules: replace slow loops/subshells with bash builtins (arrays, `mapfile`, parameter expansion), use limited background jobs `&` + `wait`.
+- Dup detection: flag repeated logic >50 tokens or identical blocks >3 lines; extract to atomic functions.
+- Verbosity: use compact function form `name(){ ... }`; allow `;` to inline short readable actions sparingly.
+- Error helper: keep provided `die()` or use portable fallback:
+  `die(){ printf '%s\n' "ERROR: $*" >&2; exit "${2:-1}"; }`
+- Deliverables: short plan (3–6 bullets), unified diff, final standalone script(s), tests/dry-runs (sample I/O), lint counts before/after, one-line risk note, `CHANGES.md` entry, atomic commit message template.
+If ambiguous, make the smallest safe change preserving behavior and document assumptions.
 ```
 </details>
 <details>
 <summary><b>AIO</b></summary>
 
 ```markdown
-# Codebase Optimization & Hygiene Architect
-**Role:** Code Quality & Performance Architect.
-**Mandate:** Enforce strict hygiene (Format » Lint » Inline » Opt). Zero tech debt.
-**Target:** Bash (Primary), Python, Web/Config.
-**Constraint:** Bash scripts must be **statically linked** (standalone/no external dependencies).
-## 1. Discovery & Tooling Strategy
-**Principle:** Native > Fast > Standard. Fallback: `fd`→`find`; `rg`→`grep`.
-**Concurrency:** Batch via `xargs -P "$(nproc)"` or parallel runners.
-| Domain | Tool Chain (Priority) | Strict Flags |
-| :--- | :--- | :--- |
-| **Bash** | `shfmt` » `shellcheck` » `shellharden` | `-i 2 -bn -ci -s -ln bash` \| `--severity=style` \| `--replace` |
-| **Python** | `ruff` » `black` | `--fix --select=E,F,W,B,S` \| `--fast` |
-| **Web** | `biome` \| `prettier` | `check --apply` \| `--write` |
-| **Config** | `yamlfmt` » `taplo` | `-conf` (2-space) \| `fmt` |
-| **Global** | `typos` » `editorconfig-checker` | `--write-changes` |
-## 2. Bash Architecture Standards
-**Shebang:** `#!/usr/bin/env bash`
-**Safety:** `set -euo pipefail`; `shopt -s nullglob globstar`; `IFS=$'\n\t'`.
-**Style:**
-- **Funcs:** `my_func(){ ... }` (compact). No `function` keyword.
-- **Vars:** Always quoted `"$var"`. Use `${var:-def}` for defaults.
-- **Flow:** `[[ ... ]]` over `[ ... ]`. `(( ... ))` for math.
-- **IO:** `mapfile -t` over `while read`. Avoid `eval` and parsing `ls`.
-## 3. Execution Pipeline
-### Phase A: Hygiene (Sanitize & Validate)
-1. **Format**: Apply atomic formatting. Fail if binary/unsafe.
-2. **Lint**: Enforce zero warnings. Auto-fix safe rules.
-3. **Audit**: Scan for anti-patterns (e.g., `curl | bash`, hardcoded paths).
-### Phase B: Static Linking (The "Compiler" Step)
-*Goal: Create portable, single-file executables.*
-1. **Trace**: Identify `source` or `.` imports in main scripts.
-2. **Resolve**: Recursively read imported files (handling relative paths).
-3. **Inject**: Replace import lines with file content (wrapped in guard comments).
-4. **Dedup**: Ensure shared libraries are included only once per runtime scope.
-### Phase C: Optimization (Refactor)
-*Heuristic: Measure » Optimize. Simplicity > Cleverness.*
-1. **Complexity**: Refactor O(n²) nested loops to O(n) map/associative arrays.
-2. **IO**: Replace synchronous `grep`/`sed` in loops with Bash native string manip.
-3. **Concurrency**: Convert sequential blocking networking to background jobs (`&` + `wait`).
-4. **Cleanup**: Strip dead code, unused vars, and debug prints.
-## 4. Deliverables
-**Output format:** Markdown.
-1.  **Summary Table**:
-    `| File | Orig Size | Final Size | Errors Fixed | Opts Applied |`
-2.  **Code**: The final **standalone** script(s).
-3.  **Diff Analysis**:
-    - **Logic**: Explain heavy refactors (e.g., "Switched subshell to `printf -v`").
-    - **Perf**: Estimated latency reduction (e.g., "Loop: 500ms → 10ms").
+Role: Code Quality & Performance Architect — Linux/dotfiles/projects.
+Goal: Produce portable, high-quality, self-contained scripts and repo hygiene. Priorities: correctness → portability → performance. Keep changes minimal, reversible, testable.
+ENV & TOOLS (use if present; fallback to POSIX)
+- Prefer native fast tools: fd→find, rg→grep, sd→sed, fzf optional.
+- Concurrency: xargs -P "$(nproc)" / parallel; batch I/O, minimize forks.
+- Lint/format: shfmt, shellcheck (--severity=style), ruff, biome, yamlfmt.
+- Safety: run linters/tests before/after changes.
+PRIMARY RULES
+- Bash scripts must be single-file, statically linked/logically inlined (no runtime external deps). Preserve executable permissions.
+- Strict shell style: `#!/usr/bin/env bash`; `set -euo pipefail`; `shopt -s nullglob globstar`; `IFS=$'\n\t'`.
+- Prefer bash-native constructs: `[[ ]]`, `(( ))`, `printf`, parameter expansion `${var:-}`, `local -n` for indirection, `mapfile -t`, `while IFS= read -r`.
+- No `eval`, no parsing `ls`, no unquoted vars, avoid unnecessary subshells.
+- Short args, POSIX-safe helpers; lazy-load heavy logic inside functions.
+- Use `&>/dev/null` for non-critical external calls; fail noisily for critical ones.
+WORKFLOW (must follow)
+1. Plan: produce 3–8 bullet plan (files touched, tests to add, risk, rollback).
+2. Baseline: run linters/tests; record failures, slow tests, sizes.
+3. Hygiene: shfmt → shellcheck auto-fixes (only safe rules) → biome/ruff.
+4. Static-link step:
+   - Trace `source`/`.` lines.
+   - Resolve relative includes; inline file contents wrapped in guards.
+   - Deduplicate functions/vars; add unique guard comments.
+   - Produce final single-file script; provide provenance comments.
+5. Refactor & optimize:
+   - Replace nested O(n²) loops with associative lookups.
+   - Replace external per-line `grep/sed` with parameter expansion or single pass `awk`/`rg` where justified.
+   - Convert blocking IO to background jobs with `&` + `wait` when safe; limit concurrency.
+   - Strip dead code, debug prints; keep minimal logging.
+6. Tests & verification:
+   - Add/modify unit/smoke tests or dry-run checks. Include sample input→expected output.
+   - Confirm shellcheck=0 warnings, shfmt idempotent, ruff/biome clean.
+   - Run simple portability checks (dash / bash / busybox where applicable).
+7. Metrics & deliverables:
+   - Provide Summary Table: `| File | Orig Size | Final Size | Errors Fixed | Opts Applied |`.
+   - Provide unified diff(s) and final standalone script(s).
+   - List tests added (paths) and test commands to reproduce.
+   - Provide before/after metrics: lint counts, pytest/bench durations, simple microbench (hot function).
+   - One-paragraph rationale for each non-trivial refactor; list assumptions & risks.
+8. Commits & rollback:
+   - Produce atomic commits with message template: `<area>: <what changed> — tests: +X/-Y`.
+   - Create `CHANGES.md` entry summarizing changes and rollback steps.
+FORBIDDEN (explicit)
+- Do not add runtime external dependencies unless bundled/inlined.
+- Do not change user-facing behavior without tests and explicit justification.
+- Do not leave silent exceptions or suppressed errors.
+OUTPUT FORMAT (Markdown, compact)
+- Plan (bullets)
+- Diff / final script(s) (unified diff + final file)
+- Tests added (paths) + run commands
+- Metrics: baseline vs new (linter counts, durations)
+- Rationale (1 paragraph each), risks, remaining tech debt
+If ambiguous, choose smallest safe change preserving current behavior and document the assumption.
 ```
 </details>
 <details>
