@@ -13,8 +13,29 @@ if ! systemctl is-active --quiet bluetooth.service; then
   sleep 1
 fi
 
-# TODO: retry mechanism if connection fails
 choice=$(bluetoothctl devices | fzf --prompt="Choose Device: " --height 40% --reverse -m)
 device=$(printf '%s' "$choice" | awk '{print $2}')
 [[ -n $device ]] || exit 0
-bluetoothctl connect "$device"
+
+# Retry connection with exponential backoff
+max_retries=3
+retry_count=0
+delay=2
+
+while ((retry_count <= max_retries)); do
+  if ((retry_count > 0)); then
+    printf "Retrying connection (attempt %d/%d) in %ds...\n" "$retry_count" "$max_retries" "$delay"
+    sleep "$delay"
+    delay=$((delay * 2))
+  fi
+
+  if bluetoothctl connect "$device"; then
+    printf "Successfully connected to device\n"
+    exit 0
+  fi
+
+  ((retry_count++))
+done
+
+printf "Failed to connect after %d attempts\n" "$max_retries" >&2
+exit 1
