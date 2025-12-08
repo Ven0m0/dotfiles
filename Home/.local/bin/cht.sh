@@ -80,7 +80,7 @@ while getopts "sibruha" o; do
     i) insens=1; search=1 ;;
     b) bound=1; search=1 ;;
     r) recur=1; search=1 ;;
-    u) rm -f "$CHT_CACHE"; cache; printf '✓ Cache updated\n' exit 0 ;;
+    u) rm -f "$CHT_CACHE"; cache; printf '✓ Cache updated\n'; exit 0 ;;
     h | *) usage; exit 0 ;;
   esac
 done
