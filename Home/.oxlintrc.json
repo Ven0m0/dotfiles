@@ -1,0 +1,23 @@
+{
+  "$schema": "https://oxc.rs/schemas/oxlint.json",
+  "rules": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "warn",
+    "style": "warn",
+    "pedantic": "off"
+  },
+  "globals": {
+    "GM_addStyle": "readonly",
+    "GM_getValue": "readonly",
+    "GM_setValue": "readonly",
+    "GM_xmlhttpRequest": "readonly",
+    "unsafeWindow": "readonly"
+  },
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "node": true,
+    "greasemonkey": true
+  }
+}
