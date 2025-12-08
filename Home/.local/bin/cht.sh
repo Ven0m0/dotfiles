@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C
-
+set -euo pipefail; shopt -s nullglob globstar
+IFS=$'\n\t' LC_ALL=C LANG=C
 has(){ command -v "$1" &>/dev/null; }
-die(){
-  printf 'Error: %s\n' "$*" >&2
-  exit 1
-}
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 # Tool detection
 for c in curl wget2 wget; do has "$c" && HTTP="$c" && break; done
 [[ -z ${HTTP:-} ]] && die "curl/wget required"
@@ -28,22 +22,19 @@ cache(){
   get "${CHT_URL}/:list" >"$CHT_CACHE" || die "Failed to fetch list"
 }
 browse(){
-  local sel q qlist url
-  cache
+  local sel q qlist url; cache
   sel=$("$FZF" --ansi --reverse --cycle --prompt='cht> ' \
     --preview="curl -fsL ${CHT_URL}/{} 2>/dev/null | head -50" \
     --preview-window=right:70% <"$CHT_CACHE") || return 1
   qlist=$(get "${CHT_URL}/${sel}/:list" 2>/dev/null || :)
   if [[ -n $qlist ]]; then
-    q=$(printf '%s' "$qlist" | "$FZF" --print-query --ansi --reverse \
-      --prompt="cht/${sel}> " \
+    q=$(printf '%s' "$qlist" | "$FZF" --print-query --ansi --reverse --prompt="cht/${sel}> " \
       --preview="curl -fsL ${CHT_URL}/${sel}/{1} 2>/dev/null || curl -fsL ${CHT_URL}/${sel}/{q} 2>/dev/null" \
       --preview-window=right:70% | tail -1)
   else
     read -rp "Query [${sel}]: " q
   fi
-  q="${q// /+}"
-  url="${CHT_URL}/${sel}${q:+/${q}}"
+  q="${q// /+}"; url="${CHT_URL}/${sel}${q:+/${q}}"
   printf '\n→ %s\n\n' "$url"
   get "$url"
 }
@@ -58,7 +49,6 @@ query(){
   [[ -n $flags ]] && url+="/${flags}"
   get "$url"
 }
-
 usage(){
   cat <<'EOF'
 cht - cheat.sh TUI with fuzzy search
@@ -83,33 +73,15 @@ EXAMPLES:
   cht rust Vec      # Show Rust Vec docs
 EOF
 }
-
 search=0 insens="" bound="" recur=""
 while getopts "sibruha" o; do
   case "$o" in
     s) search=1 ;;
-    i)
-      insens=1
-      search=1
-      ;;
-    b)
-      bound=1
-      search=1
-      ;;
-    r)
-      recur=1
-      search=1
-      ;;
-    u)
-      rm -f "$CHT_CACHE"
-      cache
-      printf '✓ Cache updated\n'
-      exit 0
-      ;;
-    h | *)
-      usage
-      exit 0
-      ;;
+    i) insens=1; search=1 ;;
+    b) bound=1; search=1 ;;
+    r) recur=1; search=1 ;;
+    u) rm -f "$CHT_CACHE"; cache; printf '✓ Cache updated\n' exit 0 ;;
+    h | *) usage; exit 0 ;;
   esac
 done
 shift $((OPTIND - 1))
