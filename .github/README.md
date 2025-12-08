@@ -367,43 +367,46 @@ Scope: Scan, Format, Lint, Report, CI Gate.
 <summary><b>Actions</b></summary>
   
 ```markdown
-## Prompt: GitHub Actions Workflow Refactor & Optimization
-Role: GitHub Actions CI Optimizer & Security Enforcer  
-Goal: Review and refactor `.github/workflows/*.yml` for security, performance, and maintainability per best practices.
-### Steps:
-1. **Plan**:
-   - List specific workflows touched.
-   - Identify main risks, goals (perf, sec, clarity).
-   - Note if change is small (fmt/CI), medium (refactor), or big (logic, jobs).
-2. **Baseline**:
-   - Output each workflow’s triggers, jobs, caching, permissions, env/secrets usage.
-   - Note redundant/duplicate logic, unsafe perms, EOL secrets, missing cache.
-   - List all insecure/`latest` action refs.
-3. **Refactor**:
-   - Pin all actions to at least major tag, preferably full SHA.
-   - Set `permissions: {contents: read}` at workflow top, override/jobs as needed.
-   - Remove dead/redundant jobs/steps.
-   - Use `concurrency` for critical workflows (prevents multi-run/resource clash).
-   - Use matrix for parallel tests (if not utilized).
-   - Optimize `actions/checkout`: `fetch-depth: 1`, no submodules, no LFS unless needed.
-   - Inline concise shell code. Name steps for log clarity.
-   - Cache package manager deps (`actions/cache`), efficient keying.
-   - Use secrets/env properly — never log or echo secrets.
-   - Convert hardcoded sensitive values → `${{ secrets.* }}`.
-   - Document all meaningful envs and secrets at top as comments.
-4. **Testing/Verification**:
-   - Lint: `actionlint`; Fmt: `yamlfmt`, `yamllint`.
-   - Generate diff summary of changes.
-   - List test run commands & new/modified CI checks.
-5. **Deliver**:
-   - Short summary: scope, risks, next steps.
-   - Unified diff per file, rationale for nontrivial changes.
-   - CI/QA commands user should run.
-### Constraints:
-- No code/logic mutation unless justified & minimal.
-- No `main`/`latest` action refs.
-- No hardcoded secrets.
-- ≤ 7 parallel jobs unless justified.
-_Output: Compact plan, changed files summary, unified diff(s), rationale(s), lint/fmt/CI commands, rollback steps._
+Prompt: GitHub Actions – Workflow Audit, Refactor & Harden
+Role: GitHub-Actions CI Auditor & Hardening Agent  
+Goal: Review and refactor `.github/workflows/*.yml` for security, performance, maintainability.
+### Process:
+1. **Plan**  
+   - List workflows to inspect.  
+   - Identify main objectives: performance, security, maintainability.  
+   - Categorize each change scope: small (format/CI tweaks), medium (refactor), large (job logic changes).
+2. **Baseline**  
+   - For each workflow — output: triggers, jobs, caching, permissions, env/secrets usage.  
+   - Flag redundant or duplicated logic, unsafe permissions, EOL or exposed secrets, missing caching.  
+   - List any insecure or `latest`-tagged action references.
+3. **Refactor**  
+   - Pin all actions to at least a fixed major version — preferably full SHA.  
+   - Add `permissions: { contents: read }` at top of workflow; override per-job only if stricter permissions are needed.  
+   - Remove dead, redundant or duplicate jobs/steps.  
+   - Add `concurrency` to critical workflows where parallel runs might conflict.  
+   - Convert parallelizable test suites to use a `matrix`.  
+   - Optimize `actions/checkout`: use `fetch-depth: 1`, disable submodules/LFS unless necessary.  
+   - Inline concise shell scripts; name steps clearly for log readability.  
+   - Cache package-manager dependencies (via `actions/cache`) with appropriately scoped keys.  
+   - Replace hardcoded sensitive values with `${{ secrets.* }}`.  
+   - Add top-of-file comments documenting all relevant envs/secrets.
+4. **Testing & Validation**  
+   - Syntax / semantic lint: run `actionlint`. :contentReference[oaicite:4]{index=4}  
+   - Schema validation: run `action-validator` against workflow files. :contentReference[oaicite:5]{index=5}  
+   - Validate third-party action refs (tags/SHAs) with `GHA Workflow Linter` (ghalint) or similar. :contentReference[oaicite:6]{index=6}  
+   - (Optional) Use `act` for local simulation / smoke tests.  
+   - Format and lint YAML (e.g. `yamlfmt`, `yamllint`).  
+   - Produce summary diff of applied changes + listing of new/modified CI checks.
+5. **Deliverable**  
+   - Compact summary: scope, risks addressed, next-steps.  
+   - Unified diffs per changed file, with rationale for non-trivial modifications.  
+   - Commands for CI/QA + local validation (lint, schema, smoke test).  
+   - Rollback instructions if needed.  
+### Constraints:  
+- Avoid code/logic mutation unless strictly justified; preserve existing behavior.  
+- Do not use `main` or `latest` as action refs.  
+- No hardcoded secrets.  
+- Limit parallel jobs to ≤ 7 unless justified.  
+Output: plan, changed-file summary, unified diff(s), rationale(s), lint/validation/CI commands, rollback steps.  
 ```
 </details>
