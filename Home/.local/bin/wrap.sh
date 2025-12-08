@@ -2,10 +2,7 @@
 set -euo pipefail
 shopt -s nullglob globstar extglob
 IFS=$'\n\t' LC_ALL=C LANG=C
-die(){
-  printf 'error: %s\n' "$*" >&2
-  return 1
-}
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 ffwrap(){
   if command -v ffzap &>/dev/null; then
     ffzap "$@"
