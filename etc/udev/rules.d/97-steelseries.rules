@@ -2,3 +2,5 @@
 SUBSYSTEM=="input", GROUP="input", MODE="0666"
 SUBSYSTEM=="usb", ATTRS{idVendor}=="1038", ATTRS{idProduct}=="1038:1628", MODE="0666", GROUP="plugdev"
 KERNEL=="hidraw*", ATTRS{idVendor}=="1038", ATTRS{idProduct}=="1038:1628", MODE="0666", GROUP="plugdev"
+# https://github.com/MiddleMan5/steelseries-linux
+ACTION=="add", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1038" RUN+="/etc/udev/rules.d/steelseries-perms.py '%E{DEVNAME}'"
