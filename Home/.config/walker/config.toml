@@ -1,51 +1,51 @@
 [app]
-web_search     =false
-hide_icons     =true
-activation_mode={use_f_keys=false, disabled=false}
+web_search = false
+hide_icons = true
+activation_mode = { use_f_keys = false, disabled = false }
 
 [window]
-box={width=500, height=400}
+box = { width = 500, height = 400 }
 
 [list]
-max_entries      =10
-always_show      =true
-placeholder_theme="catppuccin"
+max_entries = 10
+always_show = true
+placeholder_theme = "catppuccin"
 
 [search]
-placeholder="Search..."
-delay      =0
+placeholder = "Search..."
+delay = 0
 
 [builtins.applications]
-show_generic  =true
-show_sub_apps =false
-prioritize_new=true
-min_score     =0.6
+show_generic = true
+show_sub_apps = false
+prioritize_new = true
+min_score = 0.6
 
 [builtins.runner]
-shell="/bin/bash"
+shell = "/bin/bash"
 
 [builtins.websearch]
-prefix="?"
-engines=[
-  {name="Google", url="https://google.com/search?q=%s"},
-  {name="DuckDuckGo", url="https://duckduckgo.com/?q=%s"},
+prefix = "?"
+engines = [
+  { name = "Google", url = "https://google.com/search?q=%s" },
+  { name = "DuckDuckGo", url = "https://duckduckgo.com/?q=%s" },
 ]
 
 [builtins.websearch]
-prefix="?"
-engines=[
-  {name="Brave", url="https://search.brave.com/search?q=%s"},
-  {name="Google", url="https://google.com/search?q=%s"},
-  {name="DuckDuckGo", url="https://duckduckgo.com/?q=%s"},
+prefix = "?"
+engines = [
+  { name = "Brave", url = "https://search.brave.com/search?q=%s" },
+  { name = "Google", url = "https://google.com/search?q=%s" },
+  { name = "DuckDuckGo", url = "https://duckduckgo.com/?q=%s" },
 ]
 
 [builtins.clipboard]
-max_entries=20
-exec       ="wl-copy"
+max_entries = 20
+exec = "wl-copy"
 
 [keys]
-trigger_labels="1234567890"
-close         =["escape"]
-accept        =["return", "enter"]
-down          =["down", "ctrl+n"]
-up            =["up", "ctrl+p"]
+trigger_labels = "1234567890"
+close = ["escape"]
+accept = ["return", "enter"]
+down = ["down", "ctrl+n"]
+up = ["up", "ctrl+p"]

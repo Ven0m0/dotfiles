@@ -1,34 +1,38 @@
 # https://bun.sh/docs/runtime/bunfig
-telemetry=false
-smol=false
-logLevel="error"
-trimWildcards=true
+telemetry = false
+smol = false
+logLevel = "error"
+trimWildcards = true
+
 [install]
-auto="auto"
-production=true
-optional=false
-peer=false
-dev=false
-exact=false
-frozenLockfile=false
-linkWorkspacePackages=true
-linker="hoisted"
-cacheHardLinks=true
-preferOffline=true
-preferLatest=true
-concurrency=16
+auto = "auto"
+production = true
+optional = false
+peer = false
+dev = false
+exact = false
+frozenLockfile = false
+linkWorkspacePackages = true
+linker = "hoisted"
+cacheHardLinks = true
+preferOffline = true
+preferLatest = true
+concurrency = 16
+
 [install.lockfile]
-save=true
-print="yarn"
+save = true
+print = "yarn"
+
 [run]
-silent=true
-bun=true
-hot=false
-shell="bash"
+silent = true
+bun = true
+hot = false
+shell = "bash"
+
 [test]
-coverageSkipTestFiles=true
-bail=true
-timeout=5000
-preload=[]
-coverage=false
-smol=true
+coverageSkipTestFiles = true
+bail = true
+timeout = 5000
+preload = []
+coverage = false
+smol = true

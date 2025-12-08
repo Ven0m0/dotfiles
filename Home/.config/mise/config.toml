@@ -1,151 +1,151 @@
 # Mise Configuration | https://mise.jdx.dev/configuration.html
 [settings]
-experimental=true
-color       =true
-yes         =true
-#quiet = true
-auto_install              =true
-jobs                      =12
-lockfile                  =true
-activate_aggressive       =true
-paranoid                  =false
-raw                       =false
-gix                       =true
-go_skip_checksum          =true
-cache_prune_age           ="7d"
-http_timeout              ="30s"
-trusted_config_paths      =['~']
-task_output               ="prefix"
-disable_default_shorthands=false
+experimental = true
+color = true
+yes = true
+# quiet = true
+auto_install = true
+jobs = 12
+lockfile = true
+activate_aggressive = true
+paranoid = false
+raw = false
+gix = true
+go_skip_checksum = true
+cache_prune_age = "7d"
+http_timeout = "30s"
+trusted_config_paths = ["~"]
+task_output = "prefix"
+disable_default_shorthands = false
 # configure messages displayed when entering directories with config files
-status={missing_tools="if_other_versions_installed", show_env=false, show_tools=false}
+status = { missing_tools = "if_other_versions_installed", show_env = false, show_tools = false }
 
 [settings.python]
-uv_venv_auto       =true
-uv_venv_create_args=["--system-site-packages", "--seed"]
+uv_venv_auto = true
+uv_venv_create_args = ["--system-site-packages", "--seed"]
 # https://gregoryszorc.com/docs/python-build-standalone/main/running.html
-precompiled_os    ="x86_64_v3"
-precompiled_flavor="pgo+lto"
+precompiled_os = "x86_64_v3"
+precompiled_flavor = "pgo+lto"
 
 [settings.cargo]
-binstall=true
+binstall = true
 
 [settings.pipx]
-uvx=true
+uvx = true
 
 [settings.npm]
-bun=true
+bun = true
 
 [settings.aqua]
-baked_registry=true
+baked_registry = true
 
 [settings.ruby]
-ruby_build_opts="--enable-shared"
+ruby_build_opts = "--enable-shared"
 
 [settings.task]
-monorepo_depth=3
+monorepo_depth = 3
 
 # Tools Configuration
 [tools]
-java                                                ="oracle-graalvm"
-"ubi:zeroBzeroT/ChunkCleaner"                       ="latest"
-"cargo:https://github.com/ComunidadAylas/PackSquash"="latest"
-"ubi:qltysh/qlty"                                   ="latest"
-cpz                                                 ="latest"
-rmz                                                 ="latest"
+java = "oracle-graalvm"
+"ubi:zeroBzeroT/ChunkCleaner" = "latest"
+"cargo:https://github.com/ComunidadAylas/PackSquash" = "latest"
+"ubi:qltysh/qlty" = "latest"
+cpz = "latest"
+rmz = "latest"
 # Cargo utilities
-"cargo:cargo-alias-exec"="latest"
-"cargo:cargo-syu"       ="latest"
-"cargo:cargo-list"      ="latest"
-"cargo:cargo-fresh"     ="latest"
-"cargo:cargo-minify"    ="latest"
-"cargo:cargo-diet"      ="latest"
-"cargo:cargo-mommy"     ="latest"
-"cargo:shell-mommy"     ="latest"
+"cargo:cargo-alias-exec" = "latest"
+"cargo:cargo-syu" = "latest"
+"cargo:cargo-list" = "latest"
+"cargo:cargo-fresh" = "latest"
+"cargo:cargo-minify" = "latest"
+"cargo:cargo-diet" = "latest"
+"cargo:cargo-mommy" = "latest"
+"cargo:shell-mommy" = "latest"
 # Image optimization tools
-"cargo:image-find"                        ="latest"
-"cargo:rimage"                            ={version="latest", features="build-binary", default-features=true}
-"cargo:https://github.com/Blobfolio/flaca"="latest"
-"cargo:image-optimizer"                   ="latest"
-"cargo:pixelsqueeze"                      ="latest"
-"cargo:imagineer"                         ="latest"
-"cargo:imgc"                              ="latest"
-"cargo:icu_tool"                          ="latest"
+"cargo:image-find" = "latest"
+"cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
+"cargo:https://github.com/Blobfolio/flaca" = "latest"
+"cargo:image-optimizer" = "latest"
+"cargo:pixelsqueeze" = "latest"
+"cargo:imagineer" = "latest"
+"cargo:imgc" = "latest"
+"cargo:icu_tool" = "latest"
 # Compression tools
-"cargo:compresscli"="latest"
-"cargo:ripunzip"   ="latest"
+"cargo:compresscli" = "latest"
+"cargo:ripunzip" = "latest"
 # Video tools
-"cargo:ffzap"                                         ="latest"
-"cargo:ab-av1"                                        ="latest"
-"cargo:vicut"                                         ="latest"
-"cargo:bgone"                                         ="latest"
-"cargo:youtube-tui"                                   ="latest"
-"cargo:rumdl"                                         ="latest"
-"cargo:mpatch"                                        ="latest"
-"cargo:frep"                                          ="latest"
-"cargo:ripuniq"                                       ="latest"
-"cargo:dedup"                                         ="latest"
-"cargo:dupe-krill"                                    ="latest"
-"cargo:xcp"                                           ="latest"
-"cargo:filerefine"                                    ="latest"
-"cargo:clean_git_history"                             ="latest"
-"cargo:build-clean"                                   ="latest"
-"cargo:rmrfrs"                                        ="latest"
-"cargo:https://github.com/fthomys/update-alternatives"="latest"
-"cargo:caligula"                                      ="latest"
-"cargo:roxide"                                        ="latest"
-"cargo:submod"                                        ="latest"
-"cargo:nvidia_oc"                                     ="latest"
-"cargo:etchdns"                                       ="latest"
-"cargo:terminal_tools"                                ="latest"
-"cargo:dui-cli"                                       ="latest"
-"cargo:kanata"                                        ="latest"
-"cargo:rust-parallel"                                 ="latest"
-ghalint                                               ="latest"
-action-validator                                      ="latest"
-"pipx:lovesegfault/beautysh"                          ="latest"
-lefthook                                              ="latest"
+"cargo:ffzap" = "latest"
+"cargo:ab-av1" = "latest"
+"cargo:vicut" = "latest"
+"cargo:bgone" = "latest"
+"cargo:youtube-tui" = "latest"
+"cargo:rumdl" = "latest"
+"cargo:mpatch" = "latest"
+"cargo:frep" = "latest"
+"cargo:ripuniq" = "latest"
+"cargo:dedup" = "latest"
+"cargo:dupe-krill" = "latest"
+"cargo:xcp" = "latest"
+"cargo:filerefine" = "latest"
+"cargo:clean_git_history" = "latest"
+"cargo:build-clean" = "latest"
+"cargo:rmrfrs" = "latest"
+"cargo:https://github.com/fthomys/update-alternatives" = "latest"
+"cargo:caligula" = "latest"
+"cargo:roxide" = "latest"
+"cargo:submod" = "latest"
+"cargo:nvidia_oc" = "latest"
+"cargo:etchdns" = "latest"
+"cargo:terminal_tools" = "latest"
+"cargo:dui-cli" = "latest"
+"cargo:kanata" = "latest"
+"cargo:rust-parallel" = "latest"
+ghalint = "latest"
+action-validator = "latest"
+"pipx:lovesegfault/beautysh" = "latest"
+lefthook = "latest"
 
 [env]
-_.python.venv               ={path=".venv", create=true}
-_.java.GRAALVM_HOME         ="${MISE_INSTALLS}/graalvm/${version}"
-UV_LINK_MODE                ="hardlink"
-UV_COMPILE_BYTECODE         ="1"
-UV_CONCURRENT_DOWNLOADS     ="12"
-UV_CONCURRENT_INSTALLS      ="8"
-DO_NOT_TRACK                ="1"
-MISE_NODE_NINJA             ="true"
-MISE_NODE_CONCURRENCY       ="16"
-NODE_OPTIONS                ="--max-old-space-size=8192"
-NODE_SKIP_PLATFORM_CHECK    ="1"
-NODE_PRESERVE_SYMLINKS      ="1"
-NODE_TLS_REJECT_UNAUTHORIZED="0"
-UV_THREADPOOL_SIZE          ="16"
-NODE_NO_WARNINGS            ="1"
-CURL_OPTS                   ="-fLs --http2 --tlsv1.2"
-CARGO_NET_GIT_FETCH_WITH_CLI="true"
-CARGO_HTTP_MULTIPLEXING     ="true"
-BINSTALL_DISABLE_TELEMETRY  ="true"
-RUSTC_WRAPPER               ="sccache"
-SCCACHE_DIRECT              ="true"
-CMAKE_BUILD_TYPE            ="Release"
-CMAKE_GENERATOR             ="Ninja"
-GITOXIDE_CORE_MULTIPACKINDEX="true"
-GIT_PROTOCOL                ="version 2"
-PYTHONOPTIMIZE              ="2"
-PYTHON_JIT                  ="1"
+_.python.venv = { path = ".venv", create = true }
+_.java.GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
+UV_LINK_MODE = "hardlink"
+UV_COMPILE_BYTECODE = "1"
+UV_CONCURRENT_DOWNLOADS = "12"
+UV_CONCURRENT_INSTALLS = "8"
+DO_NOT_TRACK = "1"
+MISE_NODE_NINJA = "true"
+MISE_NODE_CONCURRENCY = "16"
+NODE_OPTIONS = "--max-old-space-size=8192"
+NODE_SKIP_PLATFORM_CHECK = "1"
+NODE_PRESERVE_SYMLINKS = "1"
+NODE_TLS_REJECT_UNAUTHORIZED = "0"
+UV_THREADPOOL_SIZE = "16"
+NODE_NO_WARNINGS = "1"
+CURL_OPTS = "-fLs --http2 --tlsv1.2"
+CARGO_NET_GIT_FETCH_WITH_CLI = "true"
+CARGO_HTTP_MULTIPLEXING = "true"
+BINSTALL_DISABLE_TELEMETRY = "true"
+RUSTC_WRAPPER = "sccache"
+SCCACHE_DIRECT = "true"
+CMAKE_BUILD_TYPE = "Release"
+CMAKE_GENERATOR = "Ninja"
+GITOXIDE_CORE_MULTIPACKINDEX = "true"
+GIT_PROTOCOL = "version 2"
+PYTHONOPTIMIZE = "2"
+PYTHON_JIT = "1"
 
 # Task definitions
 [tasks.clean]
-description="Clean cargo and cache directories"
-depends    =['cleancache']
-run        ="cargo cache -efg || :; cargo clean || :"
+description = "Clean cargo and cache directories"
+depends = ["cleancache"]
+run = "cargo cache -efg || :; cargo clean || :"
 
 [tasks.cleancache]
-description="Clean system cache"
-run        ="rm -rf ~/.cache/* || :; mise cache c -y"
-hide       =true
+description = "Clean system cache"
+run = "rm -rf ~/.cache/* || :; mise cache c -y"
+hide = true
 
 [tasks.update]
-description="Update all mise tools"
-run        ="mise up -y || :; mise prune -y || :"
+description = "Update all mise tools"
+run = "mise up -y || :; mise prune -y || :"

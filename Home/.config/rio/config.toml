@@ -1,89 +1,88 @@
-hide-mouse-cursor-when-typing=false
-use-fork                     =true
-confirm-before-quit          =true
+hide-mouse-cursor-when-typing = false
+use-fork = true
+confirm-before-quit = true
 
 [bell]
-visual=false
-audio =false
+visual = false
+audio = false
 
 [cursor]
-blinking=false
+blinking = false
 
 [editor]
-program="micro"
-args   =[]
-
-env-vars=["COLORTERM=truecolor", "CLICOLOR=1"]
+program = "micro"
+args = []
+env-vars = ["COLORTERM=truecolor", "CLICOLOR=1"]
 
 [window]
-opacity    =0.8
-blur       =false
-decorations="enabled"
-mode       ="Windowed"
+opacity = 0.8
+blur = false
+decorations = "enabled"
+mode = "Windowed"
 
 [renderer]
-performance             ="High"
-backend                 ="Automatic"
-disable-unfocused-render=false
-disable-occluded-render =true
-target-fps              =120
-strategy                ="events"
+performance = "High"
+backend = "Automatic"
+disable-unfocused-render = false
+disable-occluded-render = true
+target-fps = 120
+strategy = "events"
 
 [keyboard]
-use-kitty-keyboard-protocol=true
-ime-cursor-positioning     =true
-disable-ctlseqs-alt        =false
+use-kitty-keyboard-protocol = true
+ime-cursor-positioning = true
+disable-ctlseqs-alt = false
 
 [fonts]
-family="JetBrainsMono Nerd Font Mono"
-size=12
-features=["zero", "calt", "liga", "ss01", "ss02", "ss19", "ss20"]
-hinting=true
-use-drawable-chars=true
-disable-warnings-not-found=true
-symbol-map=[
+family = "JetBrainsMono Nerd Font Mono"
+size = 12
+features = ["zero", "calt", "liga", "ss01", "ss02", "ss19", "ss20"]
+hinting = true
+use-drawable-chars = true
+disable-warnings-not-found = true
+symbol-map = [
   # powerline & powerline-extras
-  {start="e0b0", end="e0b3", font-family="JetBrainsMono Nerd Font Mono"},
-  {start="e0b4", end="e0c8", font-family="JetBrainsMono Nerd Font Mono"},
-  {start="e0cc", end="e0d4", font-family="JetBrainsMono Nerd Font Mono"},
-  {start="e0ca", end="e0ca", font-family="JetBrainsMono Nerd Font Mono"},
+  { start = "e0b0", end = "e0b3", font-family = "JetBrainsMono Nerd Font Mono" },
+  { start = "e0b4", end = "e0c8", font-family = "JetBrainsMono Nerd Font Mono" },
+  { start = "e0cc", end = "e0d4", font-family = "JetBrainsMono Nerd Font Mono" },
+  { start = "e0ca", end = "e0ca", font-family = "JetBrainsMono Nerd Font Mono" },
   # font-awesome
-  {start="f000", end="f2e0", font-family="JetBrainsMono Nerd Font Mono"},
-  {start="f200", end="e2a9", font-family="JetBrainsMono Nerd Font Mono"},
+  { start = "f000", end = "f2e0", font-family = "JetBrainsMono Nerd Font Mono" },
+  { start = "f200", end = "e2a9", font-family = "JetBrainsMono Nerd Font Mono" },
   # seti-ui
-  {start="e5fa", end="e6b1", font-family="JetBrainsMono Nerd Font Mono"},
+  { start = "e5fa", end = "e6b1", font-family = "JetBrainsMono Nerd Font Mono" },
   # codicons
-  {start="ea60", end="ebeb", font-family="JetBrainsMono Nerd Font Mono"},
+  { start = "ea60", end = "ebeb", font-family = "JetBrainsMono Nerd Font Mono" },
 ]
 
 [fonts.regular]
-family="JetBrainsMono Nerd Font Mono"
-style ="Normal"
-width ="Normal"
-weight=400
+family = "JetBrainsMono Nerd Font Mono"
+style = "Normal"
+width = "Normal"
+weight = 400
 
 [fonts.bold]
-family="JetBrainsMono Nerd Font Mono"
-style ="Bold"
-width ="Normal"
-weight=800
+family = "JetBrainsMono Nerd Font Mono"
+style = "Bold"
+width = "Normal"
+weight = 800
 
 [fonts.emoji]
-family="Noto Color Emoji"
+family = "Noto Color Emoji"
 
 [scroll]
-multiplier=3.0
-divider   =1.0
+multiplier = 3.0
+divider = 1.0
 
 [navigation]
-mode          ="bookmark"
-clickable     =true
-hide-if-single=true
-use-split     =true
+mode = "bookmark"
+clickable = true
+hide-if-single = true
+use-split = true
 
 [developer]
-log-level      ="OFF"
-enable-log-file=false
+log-level = "OFF"
+enable-log-file = false
 
 # [shell]
 # program = "/bin/fish"

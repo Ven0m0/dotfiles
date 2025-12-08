@@ -1,13 +1,13 @@
 # Tuckr Hooks Configuration
 # Documentation: https://github.com/RaphGL/Tuckr
 [etc]
-post="""
+post = """
 echo "✓ System configurations (etc/) linked successfully"
 echo "  Some services may need to be restarted to apply changes"
 """
 
 [usr]
-post="""
+post = """
 echo "✓ System libraries (usr/) linked successfully"
 if systemctl --version &>/dev/null; then
   echo "  Reloading systemd daemon..."

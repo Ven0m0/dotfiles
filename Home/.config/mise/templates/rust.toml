@@ -1,52 +1,52 @@
 [settings.cargo]
-binstall=true
+binstall = true
 
 [env]
-RUSTC_BOOTSTRAP       ="1"
-RUST_PANIC_STRATEGY   ="abort"
-RUST_MIN_STACK        ="16777216"
-CARGO_CACHE_RUSTC_INFO="1"
-CARGO_INCREMENTAL     ="0"
-OPT_LEVEL             ="3"
-RUSTC_LINKER          ="clang"
-RUSTC_WRAPPER         ="sccache"
-RUSTFLAGS             ="-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Clto=fat -Cstrip=symbols -Cllvm-args=-enable-dfa-jump-thread -Clink-arg=-fuse-ld=mold"
+RUSTC_BOOTSTRAP = "1"
+RUST_PANIC_STRATEGY = "abort"
+RUST_MIN_STACK = "16777216"
+CARGO_CACHE_RUSTC_INFO = "1"
+CARGO_INCREMENTAL = "0"
+OPT_LEVEL = "3"
+RUSTC_LINKER = "clang"
+RUSTC_WRAPPER = "sccache"
+RUSTFLAGS = "-Copt-level=3 -Ctarget-cpu=native -Ccodegen-units=1 -Clto=fat -Cstrip=symbols -Cllvm-args=-enable-dfa-jump-thread -Clink-arg=-fuse-ld=mold"
 
 # Use cargo binstall
 [tasks.cbin]
-description='Mise cargo-binstall use'
-run        ="env MISE_CARGO_BINSTALL=true mise use -gy"
+description = "Mise cargo-binstall use"
+run = "env MISE_CARGO_BINSTALL=true mise use -gy"
 
 # Install Rust dependencies
 [tasks.install]
-alias="i"
-run  ="cargo build"
+alias = "i"
+run = "cargo build"
 
 # Add a new dependency
 [tasks.add]
-run="cargo add"
+run = "cargo add"
 
 # Run the application
 [tasks.dev]
-run="cargo run"
+run = "cargo run"
 
 # Run linting
 [tasks.lint]
-run="cargo clippy"
+run = "cargo clippy"
 
 # Run formatting
 [tasks.format]
-run="cargo fmt"
+run = "cargo fmt"
 
 # Run tests
 [tasks.test]
-run="cargo test"
+run = "cargo test"
 
 # Cleaning the cache
 [tasks.clean]
-depends=['cleancache']
-run    ="cargo clean"
+depends = ["cleancache"]
+run = "cargo clean"
 
 [tasks.cleancache]
-run ="rm -rf .cache"
-hide=true
+run = "rm -rf .cache"
+hide = true

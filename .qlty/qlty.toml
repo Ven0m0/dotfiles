@@ -1,6 +1,6 @@
 # This configuration is used by https://qlty.sh
-config_version="0"
-exclude_patterns=[
+config_version = "0"
+exclude_patterns = [
   "*_min.*",
   "*-min.*",
   "*.min.*",
@@ -28,7 +28,7 @@ exclude_patterns=[
   "**/testdata/**",
   "**/vendor/**",
 ]
-test_patterns=[
+test_patterns = [
   "**/test/**",
   "**/spec/**",
   "**/*.test.*",
@@ -40,60 +40,60 @@ test_patterns=[
 ]
 
 [smells]
-mode="comment"
+mode = "comment"
 
 [[source]]
-name   ="default"
-default=true
+name = "default"
+default = true
 
 [[plugin]]
-name="actionlint"
+name = "actionlint"
 
 [[plugin]]
-name="ast-grep"
+name = "ast-grep"
 
 [[plugin]]
-name="bandit"
+name = "bandit"
 
 [[plugin]]
-name="biome"
+name = "biome"
 
 [[plugin]]
-name="eslint"
+name = "eslint"
 
 [[plugin]]
-name="prettier"
+name = "prettier"
 
 [[plugin]]
-name="radarlint-js"
+name = "radarlint-js"
 
 [[plugin]]
-name="radarlint-python"
-mode="comment"
+name = "radarlint-python"
+mode = "comment"
 
 [[plugin]]
-name="ripgrep"
-mode="comment"
+name = "ripgrep"
+mode = "comment"
 
 [[plugin]]
-name   ="ruff"
-drivers=["lint"]
+name = "ruff"
+drivers = ["lint"]
 
 [[plugin]]
-name="black"
+name = "black"
 
 [[plugin]]
-name="shellcheck"
+name = "shellcheck"
 
 [[plugin]]
-name   ="trivy"
-drivers=["config"]
+name = "trivy"
+drivers = ["config"]
 
 [[plugin]]
-name="trufflehog"
+name = "trufflehog"
 
 [[plugin]]
-name="yamllint"
+name = "yamllint"
 
 [[plugin]]
-name="markdownlint"
+name = "markdownlint"

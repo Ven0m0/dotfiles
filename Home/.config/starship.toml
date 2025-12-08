@@ -1,6 +1,5 @@
-"$schema"='https://starship.rs/config-schema.json'
-
-format="""
+"$schema" = "https://starship.rs/config-schema.json"
+format = """
 $username$hostname\
 $directory\
 $git_branch$git_status\
@@ -12,201 +11,224 @@ $sudo\
 $status\
 $character
 """
-right_format="${custom.mommy}"
-
-scan_timeout   =30
-command_timeout=100
-add_newline    =false
-follow_symlinks=false
+right_format = "${custom.mommy}"
+scan_timeout = 30
+command_timeout = 100
+add_newline = false
+follow_symlinks = false
 
 [line_break]
-disabled=true
+disabled = true
 
 [character]
-success_symbol='[>](bold green) '
-error_symbol  ='[x](bold red) '
+success_symbol = "[>](bold green) "
+error_symbol = "[x](bold red) "
 
 [directory]
-style                    ="purple"
-truncate_to_repo         =true
-fish_style_pwd_dir_length=3
-truncation_length        =3
-truncation_symbol        ="…/"
-home_symbol              ='~'
-format                   ='[$path]($style)[$read_only]($read_only_style)'
+style = "purple"
+truncate_to_repo = true
+fish_style_pwd_dir_length = 3
+truncation_length = 3
+truncation_symbol = "…/"
+home_symbol = "~"
+format = "[$path]($style)[$read_only]($read_only_style)"
 
 [username]
-disabled   =false
-show_always=false
-style_user ='pink bold'
-style_root ='red bold'
-format     ='[$user]($style)@'
-aliases    ={"ven0m0"="lucy"}
+disabled = false
+show_always = false
+style_user = "pink bold"
+style_root = "red bold"
+format = "[$user]($style)@"
+aliases = { "ven0m0" = "lucy" }
 
 [hostname]
-ssh_only=true
-disabled=false
-trim_at ='.'
+ssh_only = true
+disabled = false
+trim_at = "."
 
 [localip]
-ssh_only=true
-disabled=false
+ssh_only = true
+disabled = false
 
 [sudo]
-disabled=false
-style   ='bold red'
+disabled = false
+style = "bold red"
 
 [time]
-disabled       =true
-use_12hr       =false
-time_format    ="%H:%M"
-utc_time_offset="local"
-time_range     ="00:00:00-24:00:00"
+disabled = true
+use_12hr = false
+time_format = "%H:%M"
+utc_time_offset = "local"
+time_range = "00:00:00-24:00:00"
 
 [git_branch]
-disabled         =false
-truncation_length=4
-truncation_symbol=''
+disabled = false
+truncation_length = 4
+truncation_symbol = ""
 
 [git_status]
-format            ='([\[$all_status$ahead_behind\]]($style) )'
-disabled          =false
-use_git_executable=false
-ignore_submodules =true
-ahead             ='⇡${count}'
-diverged          ='⇕⇡${ahead_count}'
-behind            ='⇣${count}'
-modified          ='!${count}'
-untracked         ='?${count}'
+format = '([\[$all_status$ahead_behind\]]($style) )'
+disabled = false
+use_git_executable = false
+ignore_submodules = true
+ahead = "⇡${count}"
+diverged = "⇕⇡${ahead_count}"
+behind = "⇣${count}"
+modified = "!${count}"
+untracked = "?${count}"
 
 [package]
-disabled=true
-format  ='via $version(208 bold)'
+disabled = true
+format = "via $version(208 bold)"
 
 [bun]
-disabled=true
-format='via [🍔 $version](bold green) '
-detect_files=[
-  'bun.lock',
-  'bun.lockb',
-  'bunfig.toml',
-  'package.json',
-  'package-lock.json',
+disabled = true
+format = "via [🍔 $version](bold green) "
+detect_files = [
+  "bun.lock",
+  "bun.lockb",
+  "bunfig.toml",
+  "package.json",
+  "package-lock.json",
 ]
-detect_folders=['.bun']
+detect_folders = [".bun"]
 
 [mise]
-disabled=true
+disabled = true
 
 [status]
-disabled             =false
-symbol               ='❌ '
-success_symbol       ='✅ '
-not_executable_symbol='🚫 '
-not_found_symbol     ='🔍 '
-map_symbol           =true
-format               ='[$symbol]($style) '
+disabled = false
+symbol = "❌ "
+success_symbol = "✅ "
+not_executable_symbol = "🚫 "
+not_found_symbol = "🔍 "
+map_symbol = true
+format = "[$symbol]($style) "
 
 [memory_usage]
-disabled =true
-threshold=25
-symbol   =' '
-style    ='bold dimmed green'
-format   ='via $symbol [${ram_pct}( | ${swap_pct})]($style) '
+disabled = true
+threshold = 25
+symbol = " "
+style = "bold dimmed green"
+format = "via $symbol [${ram_pct}( | ${swap_pct})]($style) "
 
 [shell]
-disabled         =false
-format           ='[$indicator]($style)'
-style            ="cyan"
-bash_indicator   =' bsh'
-fish_indicator   =' fsh'
-zsh_indicator    =' zsh'
-ion_indicator    =' ion'
-unknown_indicator=''
+disabled = false
+format = "[$indicator]($style)"
+style = "cyan"
+bash_indicator = " bsh"
+fish_indicator = " fsh"
+zsh_indicator = " zsh"
+ion_indicator = " ion"
+unknown_indicator = ""
 
 [shlvl]
-disabled     =false
-format       ='${shlvl}($style)'
-threshold    =2
-repeat       =false
-repeat_offset=0
+disabled = false
+format = "${shlvl}($style)"
+threshold = 2
+repeat = false
+repeat_offset = 0
 
 [cmd_duration]
-disabled=false
-min_time=500
-format  ='took [$duration]($style) '
+disabled = false
+min_time = 500
+format = "took [$duration]($style) "
 
 [jobs]
-disabled        =false
-symbol          ="✦"
-number_threshold=1
-format          ='[$symbol$number]($style) '
+disabled = false
+symbol = "✦"
+number_threshold = 1
+format = "[$symbol$number]($style) "
 
 [battery]
-disabled=false
+disabled = false
+
 [[battery.display]]
-threshold=20
-style    ="bold red"
+threshold = 20
+style = "bold red"
+
 [[battery.display]]
-threshold=50
-style    ="bold yellow"
+threshold = 50
+style = "bold yellow"
 
 # https://github.com/fwdekker/mommy
 [custom.mommy]
-disabled=false
-style   ="red"
-command ="mommy -1 -s $status"
+disabled = false
+style = "red"
+command = "mommy -1 -s $status"
 
 [custom.yazi_level]
-disabled   =false
-description="Indicate the shell was launched by `yazi`"
-variable   ="YAZI_LEVEL"
-symbol     ="🦆"
-format     ='[ $symbol ]($style)'
+disabled = false
+description = "Indicate the shell was launched by `yazi`"
+variable = "YAZI_LEVEL"
+symbol = "🦆"
+format = "[ $symbol ]($style)"
 
 [aws]
-disabled=true
+disabled = true
+
 [cmake]
-disabled=true
+disabled = true
+
 [cobol]
-disabled=true
+disabled = true
+
 [dart]
-disabled=true
+disabled = true
+
 [docker_context]
-disabled=true
+disabled = true
+
 [elixir]
-disabled=true
+disabled = true
+
 [elm]
-disabled=true
+disabled = true
+
 [golang]
-disabled=true
+disabled = true
+
 [haskell]
-disabled=true
+disabled = true
+
 [hg_branch]
-disabled=true
+disabled = true
+
 [java]
-disabled=true
+disabled = true
+
 [julia]
-disabled=true
+disabled = true
+
 [nim]
-disabled=true
+disabled = true
+
 [nix_shell]
-disabled=true
+disabled = true
+
 [nodejs]
-disabled=true
+disabled = true
+
 [perl]
-disabled=true
+disabled = true
+
 [php]
-disabled=true
+disabled = true
+
 [python]
-disabled=true
+disabled = true
+
 [ruby]
-disabled=true
+disabled = true
+
 [rust]
-disabled=true
+disabled = true
+
 [scala]
-disabled=true
+disabled = true
+
 [swift]
-disabled=true
+disabled = true
+
 [lua]
-disabled=true
+disabled = true
