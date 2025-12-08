@@ -1,36 +1,36 @@
 :root {
-  --toolbarbutton-inner-padding: 6px !important;
-  --tab-block-margin: 2px !important;
-  --tabs-shadow-size: 0px !important;
-  --arrowpanel-menuitem-padding-block: 5px !important;
-  --panel-font-size: inherit !important;
-  --arrowpanel-padding: 0.8em !important;
-  --inline-tab-padding: 8px !important;
-  --tab-inline-padding: 8px !important;
+  --toolbarbutton-inner-padding: 6px;
+  --tab-block-margin: 2px;
+  --tabs-shadow-size: 0px;
+  --arrowpanel-menuitem-padding-block: 5px;
+  --panel-font-size: inherit;
+  --arrowpanel-padding: 0.8em;
+  --inline-tab-padding: 8px;
+  --tab-inline-padding: 8px;
 }
 .subviewbutton.bookmark-item {
-  padding-block: 4px !important;
+  padding-block: 4px;
 }
 .subview-subheader {
   display: block;
 }
 menupopup > menuitem,
 menupopup > menu {
-  padding-block: 0.3em !important;
+  padding-block: 0.3em;
 }
 #nav-bar {
-  box-shadow: inset 0 var(--tabs-shadow-size) 0 var(--lwt-tabs-border-color) !important;
+  box-shadow: inset 0 var(--tabs-shadow-size) 0 var(--lwt-tabs-border-color);
 }
 .tab-close-button {
-  margin-inline-start: 0 !important;
-  width: 20px !important;
-  height: 20px !important;
-  padding: 5px !important;
+  margin-inline-start: 0;
+  width: 20px;
+  height: 20px;
+  padding: 5px;
 }
 #tabbrowser-tabs {
   --uc-tabs-scrollbutton-border: 2px;
 }
 #scrollbutton-up,
 #scrollbutton-down {
-  border-block-width: var(--uc-tabs-scrollbutton-border, 0px) !important;
+  border-block-width: var(--uc-tabs-scrollbutton-border, 0px);
 }

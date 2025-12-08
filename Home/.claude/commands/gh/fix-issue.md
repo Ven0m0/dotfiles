@@ -1,22 +1,25 @@
 ---
 
-## description: Fix GitHub issue argument-hint: [issue-number] allowed-tools: Write, Read, LS, Glob, Grep, Bash(gh:_), Bash(git:_)
+## description: Fix GitHub issue argument-hint: [issue-number] allowed-tools: Write, Read, LS, Glob, Grep, Bash(gh:*), Bash(git:*)
 
 Please analyze and fix the Github issue $ARGUMENTS by following these steps:
 
 # PLAN
 
 1. Use 'gh issue view' to get the issue details
-1. Understand the problem described in the issue
-1. Ask clarifying questions if necessary
-1. Understand the prior art for this issue
-   - Search the scratchpads for previous thoughts related to the issue
-   - Search PRs to see if you can find history on this issue
-   - Search the codebase for relevant files
+2. Understand the problem described in the issue
+3. Ask clarifying questions if necessary
+4. Understand the prior art for this issue
+
+- Search the scratchpads for previous thoughts related to the issue
+- Search PRs to see if you can find history on this issue
+- Search the codebase for relevant files
+
 1. Think harder about how to break the issue down into a series of small, manageable tasks.
-1. Document your plan in a new scratchpad
-   - include the issue name in the filename
-   - include a link to the issue in the scratchpad.
+2. Document your plan in a new scratchpad
+
+- include the issue name in the filename
+- include a link to the issue in the scratchpad.
 
 # CREATE
 

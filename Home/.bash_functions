@@ -13,7 +13,7 @@ up(){
   d=${d#/}; cd -- "${d:=..}" || exit
 }
 # Display file/directory sizes
-fs(){ 
+fs(){
   if command -v dust &>/dev/null; then
     dust -r "${1:-.}"
   elif [[ $# -gt 0 ]]; then
@@ -178,7 +178,7 @@ bgd_full(){ ( nohup setsid "$@" &>/dev/null </dev/null &; disown ); }
 # =============================================================================
 # Fuzzy man page search
 fman(){
-  
+
   [[ $# -gt 0 ]] && { man "$@"; return; }
   if command -v sd &>/dev/null; then
     man -k . | fzf --reverse \

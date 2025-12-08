@@ -5,14 +5,14 @@ while maintaining all essential information and improving organization.
 
 ## Task Overview
 
-Analyze the project's memory bank files (CLAUDE-\*.md, CLAUDE.md, README.md) to identify and eliminate token waste
+Analyze the project's memory bank files (CLAUDE-*.md, CLAUDE.md, README.md) to identify and eliminate token waste
 through:
 
 1. **Duplicate content removal**
-1. **Obsolete file elimination**
-1. **Content consolidation**
-1. **Archive strategy implementation**
-1. **Essential content optimization**
+2. **Obsolete file elimination**
+3. **Content consolidation**
+4. **Archive strategy implementation**
+5. **Essential content optimization**
 
 ## Analysis Phase
 
@@ -48,7 +48,7 @@ wc -c CLAUDE.md README.md
 
 **Low-Impact Targets:**
 
-- Files \<10KB with minor optimization potential
+- Files <10KB with minor optimization potential
 - Content that could be streamlined but is unique
 
 ## Optimization Strategy
@@ -60,9 +60,9 @@ wc -c CLAUDE.md README.md
 **Actions:**
 
 1. Delete files marked as "REMOVED" or "DEPRECATED"
-1. Remove generated reviews/reports that are outdated
-1. Clean up empty or minimal temporary files
-1. Update CLAUDE.md references to removed files
+2. Remove generated reviews/reports that are outdated
+3. Clean up empty or minimal temporary files
+4. Update CLAUDE.md references to removed files
 
 **Expected Savings:** 30-50KB typically
 
@@ -80,9 +80,9 @@ wc -c CLAUDE.md README.md
 **Actions:**
 
 1. Create consolidated files with comprehensive coverage
-1. Ensure all essential information is preserved
-1. Remove the separate files
-1. Update all references in CLAUDE.md
+2. Ensure all essential information is preserved
+3. Remove the separate files
+4. Update all references in CLAUDE.md
 
 **Expected Savings:** 20-40KB typically
 
@@ -93,9 +93,9 @@ wc -c CLAUDE.md README.md
 **Actions:**
 
 1. Replace detailed descriptions with concise summaries
-1. Remove redundant architecture explanations
-1. Focus on essential guidance and references
-1. Eliminate duplicate setup instructions
+2. Remove redundant architecture explanations
+3. Focus on essential guidance and references
+4. Eliminate duplicate setup instructions
 
 **Expected Savings:** 5-10KB typically
 
@@ -106,10 +106,10 @@ wc -c CLAUDE.md README.md
 **Actions:**
 
 1. Create `archive/` directory
-1. Move resolved issue documentation to archive
-1. Add archive README.md with index
-1. Update CLAUDE.md with archive reference
-1. Preserve discoverability while reducing active memory
+2. Move resolved issue documentation to archive
+3. Add archive README.md with index
+4. Update CLAUDE.md with archive reference
+5. Preserve discoverability while reducing active memory
 
 **Expected Savings:** 10-20KB typically
 

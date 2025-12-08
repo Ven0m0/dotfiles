@@ -91,7 +91,7 @@ Create `.kiro/specs/{feature_name}/design.md` with these sections:
 When creating a design:
 
 1. Research relevant technologies and patterns
-1. Create the design document with all required sections
-1. Highlight key design decisions and trade-offs
-1. Ask for explicit approval before proceeding
-1. Iterate based on feedback until approved
+2. Create the design document with all required sections
+3. Highlight key design decisions and trade-offs
+4. Ask for explicit approval before proceeding
+5. Iterate based on feedback until approved

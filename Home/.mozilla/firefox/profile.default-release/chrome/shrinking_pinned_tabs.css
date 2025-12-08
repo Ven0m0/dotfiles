@@ -8,12 +8,12 @@
   max-width: 32px;
 }
 :is(#pinned-tabs-container, #tabbrowser-arrowscrollbox) .tab-content[pinned] {
-  padding: 0 !important;
+  padding: 0;
   justify-content: center;
 }
 .tab-label-container[pinned] {
   display: none;
 }
 scrollbox[part][orient="horizontal"] {
-  padding-inline: unset !important;
+  padding-inline: unset;
 }

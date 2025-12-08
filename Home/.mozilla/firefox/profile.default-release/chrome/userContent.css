@@ -1,34 +1,34 @@
 @-moz-document url("about:config") {
   :is(.button-delete, .button-edit, .button-reset, .button-save, .button-toggle) {
-    margin-block: 1px !important;
-    padding: 11px 0 0 !important;
-    min-height: 22px !important;
-    width: 22px !important;
-    outline-offset: 0 !important;
+    margin-block: 1px;
+    padding: 11px 0 0;
+    min-height: 22px;
+    width: 22px;
+    outline-offset: 0;
   }
   .cell-edit {
-    width: 28px !important;
+    width: 28px;
   }
   form > input,
   tr:not(.add) > th,
   tr:not(.add) > .cell-value {
-    padding-block: 0 !important;
+    padding-block: 0;
   }
   tr:not(:hover) .semi-transparent:not(.primary, .button-add) {
-    background-color: initial !important;
+    background-color: initial;
   }
 }
 @-moz-document url-prefix("chrome://mozapps/content/extensions/aboutaddons.html"), url("about:addons") {
   :root {
     overflow-x: hidden;
-    --sidebar-width: 60px !important;
+    --sidebar-width: 60px;
   }
   addon-card .addon-name-link {
     font-size: 0.9em;
   }
   @media (min-width: 420px) {
     #main {
-      max-width: unset !important;
+      max-width: unset;
       padding-right: 28px;
     }
     addon-list > section {
@@ -39,11 +39,11 @@
       column-gap: 1em;
     }
     addon-card .card-contents {
-      width: unset !important;
-      white-space: initial !important;
+      width: unset;
+      white-space: initial;
     }
     addon-list[type="extension"] .addon-name-container {
-      display: grid !important;
+      display: grid;
       grid-template-areas: "name badge opt" "name toggle toggle";
       grid-row-gap: 6px;
       grid-auto-columns: 1fr 24px auto;
@@ -60,7 +60,7 @@
     }
     .addon-name-container > .more-options-button {
       grid-area: opt;
-      margin-inline: 0 !important;
+      margin-inline: 0;
     }
     .addon-name-container > .addon-badge {
       grid-area: badge;
@@ -73,7 +73,7 @@
       grid-area: hd;
     }
     addon-card {
-      padding-block: 0 !important;
+      padding-block: 0;
       grid-area: auto;
     }
     addon-card .addon-description {
@@ -106,20 +106,20 @@
   }
   addon-card:not([expanded])
     :is(.addon-badge-verified, .addon-badge-recommended, .addon-description, .addon-card-message button[action]) {
-    display: none !important;
+    display: none;
   }
   addon-list[type="extension"] {
     --card-padding: 8px;
   }
   #categories {
-    width: var(--sidebar-width) !important;
+    width: var(--sidebar-width);
   }
   #categories > .category {
-    margin-left: 10px !important;
+    margin-left: 10px;
     -moz-box-pack: center;
   }
   .sidebar-footer-list {
-    margin-left: 18px !important;
+    margin-left: 18px;
   }
   .sidebar-footer-label,
   .category > .category-name {
@@ -130,17 +130,17 @@
 body input:not([value=""])[type],
 body input:not([value=""])[type]:focus ~ *,
 body input:not([value=""])[type] * {
-  background-image: none !important;
-  border-image: none !important;
-  font-family: inherit !important;
-  list-style-image: none !important;
-  cursor: unset !important;
-  content: none !important;
+  background-image: none;
+  border-image: none;
+  font-family: inherit;
+  list-style-image: none;
+  cursor: unset;
+  content: none;
 }
 body input:not([value=""])[type]:is(::before, ::after),
 body input:not([value=""])[type]:focus ~ *:is(::before, ::after),
 body input:not([value=""])[type] *:is(::before, ::after) {
-  content: none !important;
+  content: none;
 }
 a:link[HREF*="ad"] img,
 a:link[HREF*="click"] img,
@@ -159,14 +159,14 @@ iframe[SRC*="adserve"],
 *[ID*="sponsor"],
 img[src*="pixel"],
 img[src*="track"] {
-  display: none !important;
+  display: none;
 }
 a:link[HREF*="/add"] img,
 a:link[HREF*="/adsl"] img,
 a:link[HREF*="download"] img,
 a:link[HREF*="thread"] img,
 a:link[HREF*="load"] img {
-  display: inline !important;
+  display: inline;
 }
 object[type="application/x-shockwave-flash"],
 embed[type="application/x-shockwave-flash"] {

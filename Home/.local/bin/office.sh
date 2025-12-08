@@ -139,14 +139,14 @@ Commands:
   lint [dir]                Validate office documents
   strip <file>              Remove metadata
   stats <file>              Show document statistics
-  
+
 Examples:
   office.sh compress doc.odt zstd
   office.sh batch deflate ./docs
   office.sh media report.docx lossy
   office.sh deep presentation.pptx zstd
   office.sh lint ~/documents
-  
+
 Media compression requires: oxipng/optipng (PNG), jpegoptim (JPEG)
 EOF
 }

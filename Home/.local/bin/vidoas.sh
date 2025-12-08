@@ -15,47 +15,47 @@ vidoas - safely edit the doas.conf file (like visudo for doas)
 usage: vidoas [-hv]
 
 Options:
-  -h, --help		display help message and exit
-  -v, --version		display version information and exit
+  -h, --help  display help message and exit
+  -v, --version  display version information and exit
 
 Environment Variables:
-  DOAS_EDITOR	program used to edit files
-  EDITOR	program used to edit files if DOAS_EDITOR is unset
+  DOAS_EDITOR program used to edit files
+  EDITOR program used to edit files if DOAS_EDITOR is unset
 EOF
 }
 
 while [ "$#" -ne 0 ]; do
-	case "$1" in
-		-h | --help) help; exit 0 ;;
-		-v | --version) echo 'vidoas version 1.0.0'; exit 0 ;;
-		*) echo "vidoas: invalid option: '$1'"; help; exit 1 ;;
-	esac
+ case "$1" in
+  -h | --help) help; exit 0 ;;
+  -v | --version) echo 'vidoas version 1.0.0'; exit 0 ;;
+  *) echo "vidoas: invalid option: '$1'"; help; exit 1 ;;
+ esac
 done
 trap 'trap - EXIT HUP QUIT TERM INT ABRT; rm -f "$tmp" "$tmpcopy"' EXIT HUP QUIT TERM INT ABRT
 # Check for editor with fallback chain
 editor_cmd=""
 # Priority 1: DOAS_EDITOR
 if [ -n "$DOAS_EDITOR" ]; then
-	editor_cmd="$DOAS_EDITOR"
+ editor_cmd="$DOAS_EDITOR"
 # Priority 2: EDITOR
 elif [ -n "$EDITOR" ]; then
-	editor_cmd="$EDITOR"
+ editor_cmd="$EDITOR"
 # Priority 3: Search for common editors
 else
-	for editor in nano vim vi; do
-		if command -v "$editor" &>/dev/null; then
-			editor_cmd="$editor"
-			echo "vidoas: using '$editor' as editor (set \$EDITOR or \$DOAS_EDITOR to change)" >&2; break
-		fi
-	done
+ for editor in nano vim vi; do
+  if command -v "$editor" &>/dev/null; then
+   editor_cmd="$editor"
+   echo "vidoas: using '$editor' as editor (set \$EDITOR or \$DOAS_EDITOR to change)" >&2; break
+  fi
+ done
 fi
 # Final check if we found an editor
 if [ -z "$editor_cmd" ]; then
-	error 'no editor found. Please set $EDITOR or $DOAS_EDITOR, or install nano/vim/vi'
+ error 'no editor found. Please set $EDITOR or $DOAS_EDITOR, or install nano/vim/vi'
 fi
 # Verify the editor command exists
 if ! command -v "$editor_cmd" &>/dev/null; then
-	error "no valid editor command: '$editor_cmd'"
+ error "no valid editor command: '$editor_cmd'"
 fi
 # Set up temps
 tmp="$(mktemp)"
@@ -66,13 +66,13 @@ cat "$tmp" > "$tmpcopy"
 "$editor_cmd" "$tmp"
 # Loop until config is correct
 while ! doas -C $tmp; do
-	echo "Syntax Error! See Message above this line. Reopening Editor in 3 Seconds."
-	sleep 3
+ echo "Syntax Error! See Message above this line. Reopening Editor in 3 Seconds."
+ sleep 3
     "$editor_cmd" "$tmp"
 done
 # Copy if changed
 if cmp -s "$tmp" "$tmpcopy"; then
-	echo "vidoas: $conf: unchanged"
+ echo "vidoas: $conf: unchanged"
 else
     chown root:root "$tmp"
     chmod 0400 "$tmp"

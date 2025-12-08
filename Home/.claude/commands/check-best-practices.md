@@ -20,10 +20,10 @@ practices" "Check Git commit message conventions"
 When checking best practices:
 
 1. **Identify Language/Framework**: Detect the languages and frameworks being used
-1. **Apply Relevant Standards**: Use appropriate style guides and conventions
-1. **Context Awareness**: Consider project-specific patterns and existing conventions
-1. **Actionable Feedback**: Provide specific examples of improvements
-1. **Prioritize Issues**: Focus on impactful improvements over nitpicks
+2. **Apply Relevant Standards**: Use appropriate style guides and conventions
+3. **Context Awareness**: Consider project-specific patterns and existing conventions
+4. **Actionable Feedback**: Provide specific examples of improvements
+5. **Prioritize Issues**: Focus on impactful improvements over nitpicks
 
 ### Language-Specific Guidelines
 

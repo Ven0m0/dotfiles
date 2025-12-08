@@ -1,6 +1,7 @@
 # `Dotfiles`
 
 <details>
+
 <summary><b>Features</b></summary>
 
 - [Auto optimized media](.github/workflows/image-optimizer.yml)
@@ -9,28 +10,37 @@
 - [Auto updated submodules](.github/workflows/update-git-submodules.yml)
 
 </details>
+
 <details>
+
 <summary><b>Arch scripts</b></summary>
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash
 ```
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash
 ```
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
 ```
+
 </details>
+
 <details>
+
 <summary><b>Useful Stuff</b></summary>
 
-- <https://dotfiles.github.io/>
-- <https://terminal.sexy/>
-- <https://wiki.archlinux.org/title/Git>
+- [https://dotfiles.github.io/](https://dotfiles.github.io/)
+- [https://terminal.sexy/](https://terminal.sexy/)
+- [https://wiki.archlinux.org/title/Git](https://wiki.archlinux.org/title/Git)
 
 </details>
+
 <details>
+
 <summary><b>Packages:</b></summary>
 
 - [Arch PKG](https://archlinux.org/packages)
@@ -41,28 +51,39 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 - [Basher](https://www.basher.it/package)
 - [bpkg](https://bpkg.sh)
 - [x-cmd](https://www.x-cmd.com)
-  <details>
-  <summary><b>Install x-cmd</b></summary>
 
-  bash:
-  ```bash
-  eval "$(curl -s https://get.x-cmd.com)"
-  ```
-  fish:
-  ```sh
-  curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$HOME/.x-cmd.root/bin/x-cmd fish --setup
-  ```
-  </details>
+<details>
+
+<summary><b>Install x-cmd</b></summary>
+
+bash:
+
+```bash
+eval "$(curl -s https://get.x-cmd.com)"
+```
+
+fish:
+
+```sh
+curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$HOME/.x-cmd.root/bin/x-cmd fish --setup
+```
 
 </details>
+
+</details>
+
 <details>
+
 <summary><b>Supported Linux Distributions</b></summary>
 
 - [CachyOS](https://cachyos.org) specifically, but really any arch based distro is good
 - [DietPi](https://dietpi.com)
 - [Raspberry Pi OS](https://www.raspberrypi.com/software)
+
 </details>
+
 <details>
+
 <summary><b>Alternative frontends</b></summary>
 
 - [Libredirect](https://libredirect.github.io)
@@ -73,13 +94,17 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 - [Imgur](https://rimgo.lunar.icu)
 
 **Search engines**
+
 - [DuckduckGo](https://duckduckgo.com)
-- [Searchxng](https://searx.dresden.network/)  [Instances](https://searx.space)
+- [Searchxng](https://searx.dresden.network/) [Instances](https://searx.space)
 - [Brave search](https://search.brave.com)
+
 </details>
 
 ## **Quick prompts**
+
 <details>
+
 <summary><b>Lint/Format</b></summary>
 
 ```markdown
@@ -113,8 +138,11 @@ Cleanup:
   - Normalize all config files; unify indentation, charset, EOL.
   - Ensure consistent toolchains (taplo/tombi, biome/prettier/eslint, mdformat/markdownlint).
 ```
+
 </details>
+
 <details>
+
 <summary><b>LLM files</b></summary>
 
 ```markdown
@@ -173,10 +201,13 @@ Assumptions & limits
 - Do not alter intent or semantics of existing prompts without explicit approval.
 - Keep templates minimal; prefer small PRs. If ambiguous, create ISSUE.md and stop.
 ```
+
 </details>
+
 <details>
+
 <summary><b>Bash short</b></summary>
-  
+
 ```markdown
 Role: Bash Refactor Agent — full-repo shell codemod, fixer, and optimizer.
 Goal
@@ -223,8 +254,11 @@ Pipeline (per file)
 - Token-aware read; apply ordered transforms → shfmt → shellcheck → shellharden → re-check.
 - Create branch `codemod/bash/<timestamp>`; atomic commits per file.
 ```
+
 </details>
+
 <details>
+
 <summary><b>AIO</b></summary>
 
 ```markdown
@@ -290,10 +324,13 @@ Role: Repository Architect (Code Quality, Performance & CI Security)
 -   No unpinned CI actions.
 If instructions are ambiguous, choose the smallest safe change preserving current behavior and document the assumption.
 ```
+
 </details>
+
 <details>
+
 <summary><b>Python</b></summary>
-  
+
 ```markdown
 Role: You are a Senior Python Architect.
 Goal: refactor / clean up an existing Python project — maximize code quality, maintainability, strict typing, no duplicates, and preserve behavior.
@@ -323,8 +360,11 @@ When you respond, output:
 - one-paragraph rationale for non-trivial refactors,
 - note any assumptions / risks, and remaining technical debt.
 ```
+
 </details>
+
 <details>
+
 <summary><b>Javascript</b></summary>
 
 ```markdown
@@ -366,56 +406,62 @@ Scope: Scan, Format, Lint, Report, CI Gate.
 - Reproducible command sequence.
 - Output matrix (Files scanned vs. Errors found).
 ```
+
 </details>
+
 <details>
+
 <summary><b>Actions</b></summary>
-  
+
 ```markdown
 Prompt: GitHub Actions – Workflow Audit, Refactor & Harden
-Role: GitHub-Actions CI Auditor & Hardening Agent  
+Role: GitHub-Actions CI Auditor & Hardening Agent
 Goal: Review and refactor `.github/workflows/*.yml` for security, performance, maintainability.
 ### Process:
-1. **Plan**  
-   - List workflows to inspect.  
-   - Identify main objectives: performance, security, maintainability.  
+1. **Plan**
+   - List workflows to inspect.
+   - Identify main objectives: performance, security, maintainability.
    - Categorize each change scope: small (format/CI tweaks), medium (refactor), large (job logic changes).
-2. **Baseline**  
-   - For each workflow — output: triggers, jobs, caching, permissions, env/secrets usage.  
-   - Flag redundant or duplicated logic, unsafe permissions, EOL or exposed secrets, missing caching.  
+2. **Baseline**
+   - For each workflow — output: triggers, jobs, caching, permissions, env/secrets usage.
+   - Flag redundant or duplicated logic, unsafe permissions, EOL or exposed secrets, missing caching.
    - List any insecure or `latest`-tagged action references.
-3. **Refactor**  
-   - Add `permissions: { contents: read }` at top of workflow; override per-job only if stricter permissions are needed.  
-   - Remove dead, redundant or duplicate jobs/steps.  
-   - Add `concurrency` to critical workflows where parallel runs might conflict.  
-   - Convert parallelizable test suites to use a `matrix`.  
-   - Optimize `actions/checkout`: use `fetch-depth: 1`, disable submodules/LFS unless necessary.  
-   - Inline concise shell scripts; name steps clearly for log readability.  
-   - Cache package-manager dependencies (via `actions/cache`) with appropriately scoped keys.  
-   - Replace hardcoded sensitive values with `${{ secrets.* }}`.  
+3. **Refactor**
+   - Add `permissions: { contents: read }` at top of workflow; override per-job only if stricter permissions are needed.
+   - Remove dead, redundant or duplicate jobs/steps.
+   - Add `concurrency` to critical workflows where parallel runs might conflict.
+   - Convert parallelizable test suites to use a `matrix`.
+   - Optimize `actions/checkout`: use `fetch-depth: 1`, disable submodules/LFS unless necessary.
+   - Inline concise shell scripts; name steps clearly for log readability.
+   - Cache package-manager dependencies (via `actions/cache`) with appropriately scoped keys.
+   - Replace hardcoded sensitive values with `${{ secrets.* }}`.
    - Add top-of-file comments documenting all relevant envs/secrets.
-4. **Testing & Validation**  
-   - Syntax / semantic lint: run `actionlint`. :contentReference[oaicite:4]{index=4}  
-   - Schema validation: run `action-validator` against workflow files. :contentReference[oaicite:5]{index=5}  
-   - Validate third-party action refs (tags/SHAs) with `GHA Workflow Linter` (ghalint) or similar. :contentReference[oaicite:6]{index=6}  
-   - (Optional) Use `act` for local simulation / smoke tests.  
-   - Format and lint YAML (e.g. `yamlfmt`, `yamllint`).  
+4. **Testing & Validation**
+   - Syntax / semantic lint: run `actionlint`. :contentReference[oaicite:4]{index=4}
+   - Schema validation: run `action-validator` against workflow files. :contentReference[oaicite:5]{index=5}
+   - Validate third-party action refs (tags/SHAs) with `GHA Workflow Linter` (ghalint) or similar. :contentReference[oaicite:6]{index=6}
+   - (Optional) Use `act` for local simulation / smoke tests.
+   - Format and lint YAML (e.g. `yamlfmt`, `yamllint`).
    - Produce summary diff of applied changes + listing of new/modified CI checks.
-5. **Deliverable**  
-   - Compact summary: scope, risks addressed, next-steps.  
-   - Unified diffs per changed file, with rationale for non-trivial modifications.  
-   - Commands for CI/QA + local validation (lint, schema, smoke test).  
-   - Rollback instructions if needed.  
-### Constraints:  
-- Avoid code/logic mutation unless strictly justified; preserve existing behavior.  
-- Do not use `main` or `latest` as action refs.  
-- No hardcoded secrets.  
-- Limit parallel jobs to ≤ 7 unless justified.  
-Output: plan, changed-file summary, unified diff(s), rationale(s), lint/validation/CI commands, rollback steps.  
+5. **Deliverable**
+   - Compact summary: scope, risks addressed, next-steps.
+   - Unified diffs per changed file, with rationale for non-trivial modifications.
+   - Commands for CI/QA + local validation (lint, schema, smoke test).
+   - Rollback instructions if needed.
+### Constraints:
+- Avoid code/logic mutation unless strictly justified; preserve existing behavior.
+- Do not use `main` or `latest` as action refs.
+- No hardcoded secrets.
+- Limit parallel jobs to ≤ 7 unless justified.
+Output: plan, changed-file summary, unified diff(s), rationale(s), lint/validation/CI commands, rollback steps.
 ```
+
 </details>
+
 <details>
+
 <summary><b>TODO</b></summary>
-  
+
 ```markdown
 Role: Senior dev-assistant with repo commit & PR capability.
 Goal: Find a any safe, low-risk TODO in the codebase, implement it, add tests if needed, and produce a clean commit + PR-ready patch.
@@ -453,4 +499,5 @@ Constraints:
   - If TODO is ambiguous, make a single explicit assumption and document it.
 If you cannot implement any TODO safely, report the top 3 TODOs with brief reasons why each was skipped.
 ```
+
 </details>

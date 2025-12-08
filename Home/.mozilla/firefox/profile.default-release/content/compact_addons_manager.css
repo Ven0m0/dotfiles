@@ -7,7 +7,7 @@
   }
   @media (min-width: 420px) {
     #main {
-      max-width: unset !important;
+      max-width: unset;
       padding-right: 28px;
     }
     addon-list > section {
@@ -18,11 +18,11 @@
       column-gap: 1em;
     }
     addon-card .card-contents {
-      width: unset !important;
-      white-space: initial !important;
+      width: unset;
+      white-space: initial;
     }
     addon-list[type="extension"] .addon-name-container {
-      display: grid !important;
+      display: grid;
       grid-template-areas: "name badge opt" "name toggle toggle";
       grid-row-gap: 6px;
       grid-auto-columns: 1fr 24px auto;
@@ -44,7 +44,7 @@
       grid-area: badge;
     }
     addon-list[type="extension"] .more-options-button {
-      margin-inline: 0 !important;
+      margin-inline: 0;
     }
     .card-heading-image {
       max-width: calc(100% + 32px);
@@ -54,8 +54,8 @@
       grid-area: hd;
     }
     addon-card {
-      padding-bottom: 0 !important;
-      padding-top: 0 !important;
+      padding-bottom: 0;
+      padding-top: 0;
       grid-area: auto;
     }
     addon-card .addon-description {
@@ -90,7 +90,7 @@
   addon-card:not([expanded]) .addon-badge-recommended,
   addon-card:not([expanded]) .addon-description,
   addon-card:not([expanded]) .addon-card-message button[action] {
-    display: none !important;
+    display: none;
   }
   addon-list[type="extension"] {
     --card-padding: 8px;
@@ -98,17 +98,17 @@
 }
 @-moz-document url-prefix("about:addons") {
   :root {
-    --sidebar-width: 60px !important;
+    --sidebar-width: 60px;
   }
   #categories {
-    width: var(--sidebar-width) !important;
+    width: var(--sidebar-width);
   }
   #categories > .category {
-    margin-left: 10px !important;
+    margin-left: 10px;
     -moz-box-pack: center;
   }
   .sidebar-footer-list {
-    margin-left: 18px !important;
+    margin-left: 18px;
   }
   .sidebar-footer-label,
   .category > .category-name {

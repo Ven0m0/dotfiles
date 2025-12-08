@@ -45,7 +45,7 @@ Structure your output using these exact headings and numbering.
 Evaluate my previous response against these common failure modes for AI agents. Provide a "Pass" or "Fail" for each,
 with a brief justification for any "Fail".
 
-- **4-1. Problem Evasion:** (Pass/Fail) Did I solve the user's stated problem but avoid the _actual, underlying_
+- **4-1. Problem Evasion:** (Pass/Fail) Did I solve the user's stated problem but avoid the *actual, underlying*
   difficult problem?
 - **4-2. "Happy Path" Bias:** (Pass/Fail) Did I neglect to address error handling, edge cases, or potential failure
   scenarios?
@@ -62,5 +62,5 @@ with a brief justification for any "Fail".
 - **6-1. Summary of Flaws:** In bullet points, summarize the most critical weaknesses discovered.
 - **6-2. Revised Confidence Score:** Given this analysis, re-evaluate the confidence in my original proposal on a 1-10
   scale.
-- **6-3. Actionable Next Step:** What is the single most important action the user should take _before_ acting on my
+- **6-3. Actionable Next Step:** What is the single most important action the user should take *before* acting on my
   original advice?

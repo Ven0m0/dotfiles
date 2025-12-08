@@ -12,8 +12,8 @@ workflow from requirements to implementation planning.
 Transform rough ideas into detailed specifications through three phases:
 
 1. **Requirements** - Define what needs to be built
-1. **Design** - Determine how to build it
-1. **Tasks** - Create actionable implementation steps
+2. **Design** - Determine how to build it
+3. **Tasks** - Create actionable implementation steps
 
 Use kebab-case for feature names (e.g., "user-authentication").
 

@@ -28,12 +28,12 @@ toolbar .toolbarbutton-1 > *,
 .titlebar-button > *,
 #tabbrowser-tabs toolbarbutton > * {
   transform: scale(0);
-  transition: transform 82ms linear !important;
+  transition: transform 82ms linear;
 }
 #scrollbutton-up > .toolbarbutton-icon,
 #scrollbutton-down > .toolbarbutton-icon {
-  transform: scale(0) !important;
-  transition: transform 82ms linear !important;
+  transform: scale(0);
+  transition: transform 82ms linear;
 }
 toolbar:hover .toolbarbutton-1:not(#PanelUI-menu-button) > *,
 #nav-bar-overflow-button:hover + #PanelUI-button > .toolbarbutton-1 > stack,
@@ -45,20 +45,20 @@ toolbar:hover .toolbarbutton-1:not(#PanelUI-menu-button) > *,
   transform: scale(1);
 }
 #scrollbutton-up:hover > .toolbarbutton-icon {
-  transform: scale(1) !important;
+  transform: scale(1);
 }
 #scrollbutton-down:hover > .toolbarbutton-icon {
-  transform: scale(-1) !important;
+  transform: scale(-1);
 }
 .urlbar-icon {
-  transition: transform 82ms linear !important;
+  transition: transform 82ms linear;
 }
 #urlbar:not(:hover) .urlbar-icon:not([open]) {
   transform: scale(0.3);
 }
 #PanelUI-button {
-  border-left: 0 !important;
-  margin-left: 0 !important;
+  border-left: 0;
+  margin-left: 0;
 }
 #nav-bar:not(:hover) > #PanelUI-button > #PanelUI-menu-button[badge-status],
 #navigator-toolbox:not(:hover) #downloads-button[attention] {

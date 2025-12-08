@@ -1,24 +1,24 @@
 @-moz-document url-prefix("chrome://mozapps/content/extensions/aboutaddons.html"), url("about:addons") {
   .addon-card-message {
-    margin-bottom: 0 !important;
-    margin-top: 0 !important;
+    margin-bottom: 0;
+    margin-top: 0;
   }
   .card.addon {
-    padding-bottom: 0 !important;
+    padding-bottom: 0;
   }
   addon-card .addon-card-collapsed {
-    display: grid !important;
+    display: grid;
     grid-template-areas: "ic con" "op op";
     grid-template-columns: 48px auto;
   }
   addon-card .card-contents {
-    width: initial !important;
-    white-space: initial !important;
+    width: initial;
+    white-space: initial;
   }
   .more-options-menu {
-    position: static !important;
+    position: static;
     grid-area: op;
-    margin: 0 !important;
+    margin: 0;
   }
   .card-contents {
     grid-area: con;
@@ -28,29 +28,29 @@
   }
   plugin-options > panel-list,
   addon-options > panel-list {
-    position: static !important;
-    display: flex !important;
-    padding: 0 !important;
-    margin: 0 calc(0px - var(--card-padding)) !important;
-    border-width: 1px 0 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    background-color: rgba(127, 127, 127, 0.1) !important;
-    backdrop-filter: none !important;
+    position: static;
+    display: flex;
+    padding: 0;
+    margin: 0 calc(0px - var(--card-padding));
+    border-width: 1px 0 0;
+    border-radius: 0;
+    box-shadow: none;
+    background-color: rgba(127, 127, 127, 0.1);
+    backdrop-filter: none;
   }
   button[role="menuitem"] {
-    padding-inline-start: 30px !important;
-    background-position-x: 8px !important;
+    padding-inline-start: 30px;
+    background-position-x: 8px;
   }
   .arrow,
   .more-options-menu > .more-options-button,
   .addon-name-container > .more-options-button,
   panel-item[action="expand"] {
-    display: none !important;
+    display: none;
   }
   div.list {
-    display: inherit !important;
-    flex-direction: row !important;
+    display: inherit;
+    flex-direction: row;
   }
   panel-item[action="toggle-disabled"] {
     --icon: url("chrome://browser/skin/quit.svg");

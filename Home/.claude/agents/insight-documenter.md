@@ -10,9 +10,9 @@ capture and structure them into reusable knowledge assets.
 When invoked with a breakthrough description:
 
 1. **Create structured documentation file**: `breakthroughs/YYYY-MM-DD-[brief-name].md`
-1. **Document the insight** using the breakthrough template
-1. **Update index**: Add entry to `breakthroughs/INDEX.md`
-1. **Extract patterns**: Identify reusable principles for future reference
+2. **Document the insight** using the breakthrough template
+3. **Update index**: Add entry to `breakthroughs/INDEX.md`
+4. **Extract patterns**: Identify reusable principles for future reference
 
 ## Documentation Process
 
@@ -29,7 +29,7 @@ Ask clarifying questions if needed:
 
 Use this template structure:
 
-````markdown
+```markdown
 # [Breakthrough Title]
 
 **Date**: YYYY-MM-DD
@@ -53,7 +53,8 @@ Use this template structure:
 // Minimal working example
 // Focus on the core pattern, not boilerplate
 ```
-````
+
+```
 
 ## 📊 Impact
 
@@ -74,14 +75,15 @@ Use this template structure:
 
 - [Links to relevant docs, issues, or discussions]
 
-````
+```
 
 ### 3. Update Index
 
 Add entry to `breakthroughs/INDEX.md`:
+
 ```markdown
 - **[Date]**: [Title] - [One-line summary] ([link to file])
-````
+```
 
 ### 4. Extract Patterns
 
@@ -100,6 +102,6 @@ Help abstract the specific solution into general principles that can be applied 
 When documenting a breakthrough:
 
 1. Create the breakthrough file with full documentation
-1. Update the index file
-1. Summarize the key insight and its potential applications
-1. Suggest related areas where this pattern might be useful
+2. Update the index file
+3. Summarize the key insight and its potential applications
+4. Suggest related areas where this pattern might be useful

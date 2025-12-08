@@ -3,9 +3,9 @@
   --uc-scrollbutton-display-model: none;
 }
 scrollbox {
-  overflow-y: var(--uc-scrollbox-overflow, initial) !important;
+  overflow-y: var(--uc-scrollbox-overflow, initial);
 }
 #scrollbutton-up,
 #scrollbutton-down {
-  display: var(--uc-scrollbutton-display-model, initial) !important;
+  display: var(--uc-scrollbutton-display-model, initial);
 }

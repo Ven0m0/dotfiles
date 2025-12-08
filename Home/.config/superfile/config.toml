@@ -2,16 +2,16 @@
 #
 # change your theme
 theme='catppuccin'
-# 
+#
 # The editor files will be opened with. (Leave blank to use the EDITOR environment variable).
 editor=""
-# 
+#
 # The editor directories will be opened with. (Leave blank to use the default editors).
 dir_editor=""
 #
 # Auto check for update
 auto_check_update=true
-# 
+#
 # Cd on quit (For more details, please check out https://superfile.netlify.app/configure/superfile-config/#cd_on_quit)
 cd_on_quit=false
 #
@@ -20,7 +20,7 @@ default_open_file_preview=true
 #
 # Whether to show image preview
 show_image_preview=true
-# 
+#
 #
 # Whether to hide additional footer info for file panel.
 show_panel_footer_info=true
@@ -53,13 +53,13 @@ ignore_missing_fields=false
 #
 # Whether to use the builtin syntax highlighting with chroma or use bat. Values: "" for builtin chroma, "bat" for bat
 code_previewer='bat'
-# 
+#
 # If you don't have or don't want Nerdfont installed you can turn this off
 nerdfont=true
 #
 # Set transparent background or not (this only work when your terminal background is transparent)
 transparent_background=false
-# 
+#
 # File preview width allow '0' (this mean same as file panel),'x' x must be from 2 to 10 (This means that the width of the file preview will be one xth of the total width.)
 file_preview_width=0
 #
@@ -67,7 +67,7 @@ file_preview_width=0
 sidebar_width=20
 #
 # Border style
-# Make sure to add strings exactly one character wide. Use ' ' for borderless 
+# Make sure to add strings exactly one character wide. Use ' ' for borderless
 border_top         ='─'
 border_bottom      ='─'
 border_left        ='│'
@@ -78,10 +78,10 @@ border_bottom_left ='╰'
 border_bottom_right='╯'
 border_middle_left ='├'
 border_middle_right='┤'
-# 
+#
 # ========== PLUGINS ========== #
 # Plugins means that you need to install some external dependencies to use them.
-# 
+#
 # Show more detailed metadata, please install exiftool before enabling this plugin!
 metadata=false
 #

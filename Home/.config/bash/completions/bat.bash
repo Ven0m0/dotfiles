@@ -47,13 +47,13 @@ _bat() {
       *) ;;
     esac
     COMPREPLY=("$(compgen -W "
-			--build
-			--clear
-			--source
-			--target
-			--blank
-			--help
-		" -- "$cur")")
+   --build
+   --clear
+   --source
+   --target
+   --blank
+   --help
+  " -- "$cur")")
     return 0
   fi
 
@@ -173,54 +173,54 @@ _bat() {
   if [[ $cur == -* ]]; then
     # --unbuffered excluded intentionally (no-op)
     COMPREPLY=("$(compgen -W "
-			--show-all
-			--nonprintable-notation
-			--binary
-			--plain
-			--language
-			--highlight-line
-			--file-name
-			--diff
-			--diff-context
-			--tabs
-			--wrap
-			--chop-long-lines
-			--terminal-width
-			--number
-			--color
-			--italic-text
-			--decorations
-			--force-colorization
-			--paging
-			--no-paging
-			--pager
-			--map-syntax
-			--ignored-suffix
-			--theme
-			--theme-dark
-			--theme-light
-			--list-themes
-			--squeeze-blank
-			--squeeze-limit
-			--strip-ansi
-			--style
-			--line-range
-			--list-languages
-			--lessopen
-			--completion
-			--diagnostic
-			--acknowledgements
-			--set-terminal-title
-			--help
-			--version
-			--cache-dir
-			--config-dir
-			--config-file
-			--generate-config-file
-			--no-config
-			--no-custom-assets
-			--no-lessopen
-		" -- "$cur")")
+   --show-all
+   --nonprintable-notation
+   --binary
+   --plain
+   --language
+   --highlight-line
+   --file-name
+   --diff
+   --diff-context
+   --tabs
+   --wrap
+   --chop-long-lines
+   --terminal-width
+   --number
+   --color
+   --italic-text
+   --decorations
+   --force-colorization
+   --paging
+   --no-paging
+   --pager
+   --map-syntax
+   --ignored-suffix
+   --theme
+   --theme-dark
+   --theme-light
+   --list-themes
+   --squeeze-blank
+   --squeeze-limit
+   --strip-ansi
+   --style
+   --line-range
+   --list-languages
+   --lessopen
+   --completion
+   --diagnostic
+   --acknowledgements
+   --set-terminal-title
+   --help
+   --version
+   --cache-dir
+   --config-dir
+   --config-file
+   --generate-config-file
+   --no-config
+   --no-custom-assets
+   --no-lessopen
+  " -- "$cur")")
     return 0
   fi
   _filedir

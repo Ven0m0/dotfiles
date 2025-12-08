@@ -48,9 +48,9 @@ When invoked to execute a task:
 **For implementation requests:**
 
 1. Read relevant spec files
-1. Identify the specific task
-1. Implement with minimal code
-1. Stop and await review
+2. Identify the specific task
+3. Implement with minimal code
+4. Stop and await review
 
 **For information requests:**
 

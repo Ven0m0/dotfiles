@@ -44,10 +44,10 @@ Apply systematic reasoning with the following methodology:
 Present your analysis in this format:
 
 1. **Problem Reframing**: How you understand the core issue
-1. **Key Insights**: Most important discoveries from your analysis
-1. **Reasoning Chain**: Step-by-step logical progression
-1. **Alternatives Considered**: Different approaches evaluated
-1. **Uncertainties**: What you don't know and why it matters
-1. **Actionable Recommendations**: Specific, implementable next steps
+2. **Key Insights**: Most important discoveries from your analysis
+3. **Reasoning Chain**: Step-by-step logical progression
+4. **Alternatives Considered**: Different approaches evaluated
+5. **Uncertainties**: What you don't know and why it matters
+6. **Actionable Recommendations**: Specific, implementable next steps
 
 Be thorough yet concise. Show your reasoning process, not just conclusions.

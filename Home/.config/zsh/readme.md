@@ -13,7 +13,9 @@ Optimized Zsh configuration leveraging zimfw's performance plugins for minimal s
 ## Key Optimizations
 
 ### 1. Deferred Loading (`zsh-defer`)
+
 Moves expensive initializations after prompt appears:
+
 ```zsh
 zsh-defer -c 'eval "$(zoxide init zsh)"'
 zsh-defer -c 'eval "$(mise activate zsh)"'
@@ -21,12 +23,15 @@ zsh-defer -c 'eval "$(fzf --zsh)"'
 ```
 
 ### 2. Lazy Loading (`zsh-lazyload`)
+
 Loads completions only when first used:
+
 ```zsh
 lazyload docker -- 'source <(docker completion zsh)'
 ```
 
 ### 3. Smart Caching (`zsh-smartcache`)
+
 Automatically caches completion results (enabled via zimfw completion module).
 
 ## Quick Start
@@ -89,6 +94,7 @@ zimfw clean        # Remove plugin cache
 ## Customization
 
 ### Add Deferred Command
+
 ```zsh
 if has zsh-defer && has mycommand; then
   zsh-defer -c 'eval "$(mycommand init)"'
@@ -96,6 +102,7 @@ fi
 ```
 
 ### Add Lazy-loaded Command
+
 ```zsh
 if has lazyload && has mycommand; then
   lazyload mycommand -- 'source <(mycommand completion zsh)'
@@ -103,11 +110,13 @@ fi
 ```
 
 ### Local Overrides
+
 Create `~/.config/zsh/local.zsh` for machine-specific configs (auto-sourced).
 
 ## Troubleshooting
 
 ### Plugins not loading
+
 ```bash
 zimfw install -v  # Verbose install
 zimfw clean       # Clear cache
@@ -115,12 +124,14 @@ zimfw install     # Reinstall
 ```
 
 ### Slow startup
+
 ```bash
 ./benchmark-zsh.sh  # Measure performance
 zsh -xv 2>&1 | less # Debug loading
 ```
 
 ### Check deferred commands
+
 ```zsh
 zsh-defer -l  # List deferred commands
 ```

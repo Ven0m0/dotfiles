@@ -362,7 +362,7 @@ AWK
 AWK
   curl -fsSL 'https://archlinux.org/feeds/news/' 2>/dev/null \
     | grep -E '<title>|<pubDate>|<link>' | sed -e 's/<[^>]*>//g' -e 's/^[[:space:]]*//' \
-    | paste - - - | head -n 5 | awk -F'	' "$awk_script_news"
+    | paste - - - | head -n 5 | awk -F' ' "$awk_script_news"
 }
 _pkgui_status(){
   _pkgui_msg "Server status check..."
@@ -465,8 +465,8 @@ _pkgui_gen_lists(){
   pacman -Qmq >"$d/foreign.txt"
   pacman -Qtq >"$d/unrequired.txt"
   pacman -Qdttq 2>/dev/null >"$d/orphans.txt" || :
-  expac -H M '%m	%n' | sort -h >"$d/by-size.txt"
-  expac --timefmt='%Y-%m-%d %T' '%l	%n' | sort >"$d/by-install.txt"
+  expac -H M '%m %n' | sort -h >"$d/by-size.txt"
+  expac --timefmt='%Y-%m-%d %T' '%l %n' | sort >"$d/by-install.txt"
   if _pkgui_has flatpak; then flatpak list >"$d/flatpak. txt"; fi
   _pkgui_msg "Generated: $d"
   find "$d" -name '*.txt' -printf '%p %s\n'

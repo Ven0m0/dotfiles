@@ -1,13 +1,13 @@
-const { FlatCompat } = require('@eslint/eslintrc'),
-  eslint = require('@eslint/js'),
-  globals = require('globals'),
-  tseslint = require('typescript-eslint'),
-  perfectionist = require('eslint-plugin-perfectionist'),
-  json = require('@eslint/json'),
-  markdown = require('@eslint/markdown'),
-  css = require('@eslint/css'),
-  prettierRecommended = require('eslint-plugin-prettier/recommended'),
-  compat = new FlatCompat({ baseDirectory: __dirname });
+const { FlatCompat } = require('@eslint/eslintrc');
+const eslint = require('@eslint/js');
+const globals = require('globals');
+const tseslint = require('typescript-eslint');
+const perfectionist = require('eslint-plugin-perfectionist');
+const json = require('@eslint/json');
+const markdown = require('@eslint/markdown');
+const css = require('@eslint/css');
+const prettierRecommended = require('eslint-plugin-prettier/recommended');
+const compat = new FlatCompat({ baseDirectory: __dirname });
 module.exports = [
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
