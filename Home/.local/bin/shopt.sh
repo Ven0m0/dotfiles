@@ -9,10 +9,7 @@ export LC_ALL=C LANG=C
 #──────────── Colors ────────────
 RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' DEF=$'\e[0m'
 has(){ command -v "$1" &>/dev/null; }
-die(){
-  printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2
-  exit 1
-}
+die(){ printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2; exit 1; }
 log(){ printf '%b%s%b\n' "$GRN" "$*" "$DEF"; }
 warn(){ printf '%b%s%b\n' "$YLW" "$*" "$DEF"; }
 usage(){
@@ -59,64 +56,21 @@ output="" perm="u+x" regex=""
 [[ $# -eq 0 ]] && usage
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -r | --recursive)
-      recursive=1
-      shift
-      ;;
-    -f | --format)
-      format=1
-      shift
-      ;;
-    -m | --minify)
-      minify=1
-      format=1
-      shift
-      ;;
-    -s | --strip)
-      strip=1
-      shift
-      ;;
-    -c | --compile)
-      compile=1
-      shift
-      ;;
-    -C | --concat)
-      concat=1
-      shift
-      ;;
-    -d | --debug)
-      debug=1
-      shift
-      ;;
-    -F | --force)
-      force=1
-      shift
-      ;;
-    -o | --output)
-      output="${2:?output requires arg}"
-      shift 2
-      ;;
-    -p | --permission)
-      perm="${2:?perm requires arg}"
-      shift 2
-      ;;
-    -e | --extensions)
-      IFS=',' read -ra extensions <<<"${2:?extensions requires arg}"
-      shift 2
-      ;;
-    -w | --whitelist)
-      IFS=',' read -ra whitelist <<<"${2:?whitelist requires arg}"
-      shift 2
-      ;;
-    -x | --regex)
-      regex="${2:?regex requires arg}"
-      shift 2
-      ;;
-    -v | --variants)
-      IFS=',' read -ra variants <<<"${2:?variants requires arg}"
-      shift 2
-      ;;
-    -h | --help) usage ;;
+    -r|--recursive) recursive=1; shift ;;
+    -f|--format) format=1; shift ;;
+    -m|--minify) minify=1; format=1; shift ;;
+    -s|--strip) strip=1; shift ;;
+    -c|--compile) compile=1; shift ;;
+    -C|--concat) concat=1; shift ;;
+    -d|--debug) debug=1; shift ;;
+    -F|--force) force=1; shift ;;
+    -o|--output) output="${2:?output requires arg}"; shift 2 ;;
+    -p|--permission) perm="${2:?perm requires arg}"; shift 2 ;;
+    -e|--extensions) IFS=',' read -ra extensions <<<"${2:?extensions requires arg}"; shift 2 ;;
+    -w|--whitelist) IFS=',' read -ra whitelist <<<"${2:?whitelist requires arg}"; shift 2 ;;
+    -x|--regex) regex="${2:?regex requires arg}"; shift 2 ;;
+    -v|--variants) IFS=',' read -ra variants <<<"${2:?variants requires arg}"; shift 2 ;;
+    -h|--help) usage ;;
     -*) die "Unknown option: $1" ;;
     *) break ;;
   esac
@@ -143,10 +97,7 @@ elif [[ -f $target ]]; then
 else
   die "Not found: $target"
 fi
-((${#files[@]} == 0 && !compile && !concat)) && {
-  log "No scripts found"
-  exit 0
-}
+((${#files[@]} == 0 && !compile && !concat)) && { log "No scripts found"; exit 0; }
 [[ ${#files[@]} -gt 1 && -n $output && $output != - ]] && ((!compile && !concat)) \
   && die "Multiple files with single output unsupported (use -c/--compile)"
 #──────────── Comment Strip AWK (Enhanced) ────────────
@@ -174,24 +125,20 @@ minify_enhanced(){
   while IFS= read -r line; do
     # Keep preprocessor directives (# # define, # # ifdef, etc.)
     if [[ $line =~ ^#[[:space:]]*#[[:space:]]*(define|undef|ifdef|ifndef|if|elif|else|endif|error|include) ]]; then
-      printf '%s\n' "$line" >>"$out"
-      continue
+      printf '%s\n' "$line" >>"$out"; continue
     fi
     # Skip shebang (already handled)
     [[ $line =~ ^#! ]] && continue
     # Skip comment-only lines (but preserve copyright if in first 10 lines)
     if [[ $line =~ ^[[:space:]]*# ]]; then
       if ((NR <= 10)) && [[ $line =~ Copyright|License ]]; then
-        printf '%s\n' "$line" >>"$out"
-        continue
-      fi
-      continue
+        printf '%s\n' "$line" >>"$out"; continue
+      fi; continue
     fi
     # Normalize function declarations
     line=$(sed -E 's/^[[:space:]]*function[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\{/\1(){/g' <<<"$line")
     # Strip inline comments & whitespace
-    local stripped
-    stripped=$(sed -E 's/[[:space:]]+#[[:space:]]*[a-zA-Z0-9 ]*$//; s/^[[:space:]]+//; s/[[:space:]]+$//' <<<"$line")
+    local stripped=$(sed -E 's/[[:space:]]+#[[:space:]]*[a-zA-Z0-9 ]*$//; s/^[[:space:]]+//; s/[[:space:]]+$//' <<<"$line")
     [[ -n $stripped ]] && printf '%s\n' "$stripped" >>"$out"
   done <"$in"
   # Remove multiline comments & separator lines
@@ -199,8 +146,7 @@ minify_enhanced(){
 }
 #──────────── Concatenate Files ────────────
 concat_files(){
-  local base="$1" out="$2" rx="$5"
-  local -n exts="$3" wlist="$4"
+  local base="$1" out="$2" rx="$5"; local -n exts="$3" wlist="$4"
   : >"$out"
   for dirpath in "$base"/*/; do
     dirpath="${dirpath%/}"
@@ -211,10 +157,7 @@ concat_files(){
     if [[ ${#wlist[@]} -gt 0 ]]; then
       local found=0
       for w in "${wlist[@]}"; do
-        [[ $dname == "$w" ]] && {
-          found=1
-          break
-        }
+        [[ $dname == "$w" ]] && { found=1; break; }
       done
       ((found == 0)) && continue
     fi
@@ -239,8 +182,7 @@ concat_files(){
 }
 #──────────── Optimizer (Standard Mode) ────────────
 optimize(){
-  local f="$1" content
-  local out_target="$f"
+  local f="$1" content; local out_target="$f"
   # Handle output
   if [[ -n $output ]]; then
     [[ $output == - ]] && out_target="" || out_target="$output"
@@ -273,18 +215,14 @@ optimize(){
   fi
   # Output
   [[ -z $out_target ]] && {
-    printf '%s' "$content"
-    return 0
-  }
-  local tmp
-  tmp=$(mktemp)
+    printf '%s' "$content"; return 0; }
+  local tmp=$(mktemp)
   trap 'rm -f "$tmp"' RETURN
   printf '%s' "$content" >"$tmp"
   # Harden & lint
   shellharden --replace "$tmp" &>/dev/null || :
-  shellcheck -a -x -s bash -f diff "$tmp" 2>/dev/null | patch -Np1 "$tmp" &>/dev/null || :
-  cat "$tmp" >"$out_target"
-  chmod "$perm" "$out_target"
+  shellcheck -a -x -s bash -f diff "$tmp" 2>/dev/null|patch -Np1 "$tmp" &>/dev/null || :
+  cat "$tmp" >"$out_target"; chmod "$perm" "$out_target"
   log "✓ $out_target"
 }
 #──────────── Compiler (Multi-Variant Mode) ────────────
@@ -295,20 +233,16 @@ compile_variants(){
   local out_base="${output%.sh}"
   out_base="${out_base%.bash}"
   # Concatenate all files
-  local tmp_concat
-  tmp_concat=$(mktemp)
+  local tmp_concat=$(mktemp)
   trap 'rm -f "$tmp_concat"' RETURN
   log "Concatenating files from $base"
   concat_files "$base" "$tmp_concat" extensions whitelist "$regex"
   # Process each variant
   for var in "${variants[@]}"; do
-    local VAR="${var^^}"
-    local var_lo="${var,,}"
+    local VAR="${var^^}"; local var_lo="${var,,}"
     log "Compiling variant: $VAR"
     local tmp_prep tmp_proc tmp_mini
-    tmp_prep=$(mktemp)
-    tmp_proc=$(mktemp)
-    tmp_mini=$(mktemp)
+    tmp_prep=$(mktemp); tmp_proc=$(mktemp); tmp_mini=$(mktemp)
     trap 'rm -f "$tmp_prep" "$tmp_proc" "$tmp_mini"' RETURN
     # Prepare for preprocessor
     prep_preprocess "$tmp_concat" "$tmp_prep"
@@ -323,14 +257,10 @@ compile_variants(){
     minify_enhanced "$tmp_proc" "$tmp_mini"
     # Final output
     local final="${out_base}.${var_lo}"
-    mv "$tmp_mini" "$final"
-    chmod "$perm" "$final"
+    mv "$tmp_mini" "$final"; chmod "$perm" "$final"
     log "✓ $final"
     # Debug output
-    ((debug)) && {
-      cp "$tmp_concat" "${final}.debug"
-      log "Debug: ${final}.debug"
-    }
+    ((debug)) && { cp "$tmp_concat" "${final}.debug"; log "Debug: ${final}.debug"; }
   done
 }
 #──────────── Main ────────────
@@ -340,8 +270,7 @@ elif ((concat)); then
   [[ -z $output ]] && die "Concat mode requires -o/--output"
   log "Concatenating files from $target"
   concat_files "$target" "$output" extensions whitelist "$regex"
-  chmod "$perm" "$output"
-  log "✓ $output"
+  chmod "$perm" "$output"; log "✓ $output"
 else
   for f in "${files[@]}"; do optimize "$f"; done
   [[ -z $output ]] && log "Done: ${#files[@]} file(s)"
