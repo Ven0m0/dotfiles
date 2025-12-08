@@ -7,10 +7,7 @@ B=$'\e[1;34m' C=$'\e[1;36m' G=$'\e[1;32m' R=$'\e[1;31m' X=$'\e[0m'
 has(){ command -v "$1" &>/dev/null; }
 log(){ printf '%b==>%b %s\n' "$B" "$X" "$*"; }
 ok(){ printf '%b==>%b %s\n' "$G" "$X" "$*"; }
-die(){
-  printf '%b==> ERROR:%b %s\n' "$R" "$X" "$*" >&2
-  exit "${2:-1}"
-}
+die(){ printf '%b==> ERROR:%b %s\n' "$R" "$X" "$*" >&2; exit "${2:-1}"; }
 req(){ has "$1" || die "missing: $1"; }
 
 cd_burn(){
