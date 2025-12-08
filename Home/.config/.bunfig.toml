@@ -1,42 +1,34 @@
 # https://bun.sh/docs/runtime/bunfig
-# Global settings
-telemetry    =false
-smol         =false
-logLevel     ="error"
+telemetry=false
+smol=false
+logLevel="error"
 trimWildcards=true
-# Install configuration
 [install]
-# Package resolution
-auto          ="auto"
-production    =true
-optional      =false
-peer          =false
-dev           =false
-exact         =false
+auto="auto"
+production=true
+optional=false
+peer=false
+dev=false
+exact=false
 frozenLockfile=false
 linkWorkspacePackages=true
-linker               ="hoisted"
-cacheHardLinks       =true
-preferOffline        =true
-preferLatest         =true
-concurrency          =16
-
-# Lockfile settings
+linker="hoisted"
+cacheHardLinks=true
+preferOffline=true
+preferLatest=true
+concurrency=16
 [install.lockfile]
-save =true
+save=true
 print="yarn"
-
-# Run configuration
 [run]
 silent=true
-bun   =true
-hot   =false
-shell ="bash"
-# Test configuration
+bun=true
+hot=false
+shell="bash"
 [test]
 coverageSkipTestFiles=true
-bail                 =true
-timeout              =5000
-preload              =[]
-coverage             =false
-smol                 =true
+bail=true
+timeout=5000
+preload=[]
+coverage=false
+smol=true
