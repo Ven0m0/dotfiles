@@ -320,3 +320,46 @@ When you respond, output:
 - note any assumptions / risks, and remaining technical debt.
 ```
 </details>
+<details>
+<summary><b>Javascript</b></summary>
+
+```markdown
+Role: JS/TS Quality & High-Perf Enforcer
+Target: Architecture Guide compliant Bash script.
+Scope: Scan, Format, Lint, Report, CI Gate.
+## Discovery
+- **Tool**: `fd` (preferred) > `find`.
+- **Pattern**: `\.(js|jsx|ts|tsx|mjs|cjs)$`.
+- **Ignore**: `node_modules`, `.git`, `dist`, `build`.
+- **Cmd**: `fd -tf -e js -e jsx -e ts -e tsx -E node_modules -E .git`.
+## Toolchain & Config
+- **Formatter**: `biome format` (Replaces Prettier).
+- **Linter**: `biome check` (Replaces ESLint basic) + `oxlint` (Oxc, for deep static).
+- **Config Priority**:
+  1. `biome.json` / `oxlint.json` (Project root).
+  2. Fallback: Zero-config defaults (Opinionated best-practice).
+- **Integration**: Ensure Biome handles formatting; Oxc handles semantic correctness.
+## Policy
+- **Order**: Format (Write) » Lint (Fix) » Lint (Check) » Report.
+- **Concurrency**: Use tool native parallelism; avoid external `xargs -P` if tool handles it.
+- **Safety**: Only apply safe fixes automatically.
+- **CI**: Exit code `1` if unfixable errors remain; `0` otherwise.
+## Workflow Execution
+1. **Check Tools**: Verify `biome` and `oxlint` exist; warn/install if missing.
+2. **Format**: `biome format --write <files>`.
+3. **Lint (Fix)**: `biome check --write <files>` (applies safe fixes/imports).
+4. **Lint (Deep)**: `oxlint -D all --deny-warnings <files>` (catch complex issues).
+5. **Reporting**:
+   - Generate summary table: `| File | Status | Biome Issues | Oxc Issues |`.
+   - Output structured JSON logs for CI parsers if env `CI=true`.
+## Constraints
+- **Perf**: Maximize throughput (Rust-based tools); minimal I/O.
+- **Style**: 2-space indent, double quotes (Biome default), trailing commas.
+- **Logic**: No functional changes; style/safety only.
+- **Deps**: Do not rely on Node.js/npm runtime if binary exists.
+## Deliverables
+- Single Bash script (`quality-check.sh`).
+- Reproducible command sequence.
+- Output matrix (Files scanned vs. Errors found).
+```
+</details>
