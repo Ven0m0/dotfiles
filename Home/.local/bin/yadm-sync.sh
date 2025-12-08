@@ -3,10 +3,7 @@ set -euo pipefail
 shopt -s nullglob globstar extglob
 IFS=$'\n\t' LC_ALL=C LANG=C
 has(){ command -v "$1" &>/dev/null; }
-die(){
-  printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
-  exit "${2:-1}"
-}
+die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
 warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
 log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 ok(){ printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }

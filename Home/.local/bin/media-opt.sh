@@ -9,10 +9,7 @@ export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' X=$'\e[0m'
 log(){ printf "${B}[%(%H:%M:%S)T]${X} %s\n" -1 "$*"; }
 err(){ printf "${R}[ERR]${X} %s\n" "$*" >&2; }
-die(){
-  err "$@"
-  exit 1
-}
+die(){ err "$@"; exit 1; }
 has(){ command -v "$1" &>/dev/null; }
 declare -A TC
 cache_tools(){

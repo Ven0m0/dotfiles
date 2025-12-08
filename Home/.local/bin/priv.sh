@@ -4,10 +4,7 @@ shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C LANG=C
 
 has(){ command -v "$1" &>/dev/null; }
-die(){
-  printf 'priv: %s\n' "$*" >&2
-  exit 1
-}
+die(){ printf 'priv: %s\n' "$*" >&2; exit 1; }
 usage(){
   cat <<'EOF'
 priv - Privilege escalation wrapper (doas/sudo)

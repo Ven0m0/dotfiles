@@ -29,10 +29,7 @@ _pkgui_has(){
   fi
   return "${_pkgui_cmd_cache[$1]}"
 }
-_pkgui_die(){
-  printf '%b[ERR]%b %s\n' "$R" "$D" "$*" >&2
-  exit 1
-}
+_pkgui_die(){ printf '%b[ERR]%b %s\n' "$R" "$D" "$*" >&2; exit 1; }
 _pkgui_msg(){ printf '%b%s%b\n' "$G" "$*" "$D"; }
 _pkgui_warn(){ printf '%b[WARN]%b %s\n' "$Y" "$D" "$*" >&2; }
 # Detect pkg mgr & fuzzy finder

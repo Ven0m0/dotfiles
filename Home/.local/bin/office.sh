@@ -4,10 +4,7 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
-die(){
-  printf '%s\n' "$*" >&2
-  exit 1
-}
+die(){ printf '%s\n' "$*" >&2; exit 1; }
 has(){ command -v "$1" &>/dev/null; }
 req(){ has "$1" || die "missing: $1"; }
 
