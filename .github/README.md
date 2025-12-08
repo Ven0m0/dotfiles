@@ -222,7 +222,6 @@ Role: Repository Architect (Code Quality, Performance & CI Security)
 -   **Safety**: `&>/dev/null` for non-critical calls; fail noisily for critical ones.
 ### 2. GitHub Actions (CI Hardening)
 -   **Security**:
-    -   **Pin Actions**: Use full SHA (e.g., `uses: actions/checkout@a12...`) — NO `latest`/`main`.
     -   **Permissions**: Add top-level `permissions: { contents: read }`; escalate per-job only if needed.
     -   **Secrets**: Verify usage of `${{ secrets.* }}`; no hardcoded tokens.
 -   **Optimization**:
@@ -356,7 +355,6 @@ Goal: Review and refactor `.github/workflows/*.yml` for security, performance, m
    - Flag redundant or duplicated logic, unsafe permissions, EOL or exposed secrets, missing caching.  
    - List any insecure or `latest`-tagged action references.
 3. **Refactor**  
-   - Pin all actions to at least a fixed major version — preferably full SHA.  
    - Add `permissions: { contents: read }` at top of workflow; override per-job only if stricter permissions are needed.  
    - Remove dead, redundant or duplicate jobs/steps.  
    - Add `concurrency` to critical workflows where parallel runs might conflict.  
