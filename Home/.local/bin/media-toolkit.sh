@@ -4,16 +4,13 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 B=$'\e[1;34m' C=$'\e[1;36m' G=$'\e[1;32m' R=$'\e[1;31m' X=$'\e[0m'
-has() { command -v "$1" &>/dev/null; }
-log() { printf '%b==>%b %s\n' "$B" "$X" "$*"; }
-ok() { printf '%b==>%b %s\n' "$G" "$X" "$*"; }
-die() {
-  printf '%b==> ERROR:%b %s\n' "$R" "$X" "$*" >&2
-  exit "${2:-1}"
-}
-req() { has "$1" || die "missing: $1"; }
+has(){ command -v "$1" &>/dev/null; }
+log(){ printf '%b==>%b %s\n' "$B" "$X" "$*"; }
+ok(){ printf '%b==>%b %s\n' "$G" "$X" "$*"; }
+die(){ printf '%b==> ERROR:%b %s\n' "$R" "$X" "$*" >&2; exit "${2:-1}"; }
+req(){ has "$1" || die "missing: $1"; }
 
-cd_burn() {
+cd_burn(){
   local t=$1
   req cdrdao
   [[ -f $t ]] || die "not found: $t"
@@ -21,7 +18,7 @@ cd_burn() {
   sudo cdrdao write --eject --driver generic-mmc-raw "$t"
   ok "Done"
 }
-usb_write() {
+usb_write(){
   local iso=$1 dst=$2 x="${iso##*.}" sz
   for c in dd pv stat; do req "$c"; done
   [[ -f $iso ]] || die "not found: $iso"
@@ -41,14 +38,14 @@ usb_write() {
   sync
   ok "Done"
 }
-iso2sd() {
+iso2sd(){
   local iso=$1 dst=$2
   [[ -f $iso ]] || die "not found: $iso"
   [[ -b $dst ]] || die "not block: $dst"
   sudo dd bs=4M status=progress oflag=sync if="$iso" of="$dst"
   sudo eject "$dst" || :
 }
-format_exfat() {
+format_exfat(){
   local dev=$1 nm=$2
   [[ -b $dev ]] || die "not block: $dev"
   log "⚠️  WARNING: Erasing $dev, label '$nm'"
@@ -66,7 +63,7 @@ format_exfat() {
   sudo mkfs.exfat -n "$nm" "$p"
   log "Formatted: $dev as exFAT '$nm'"
 }
-rip_dvd() {
+rip_dvd(){
   local iso=$1 dvd=/dev/sr0 inf bs vs sz oc cc
   for c in isoinfo dd pv sha1sum; do req "$c"; done
   [[ -b $dvd ]] || die "DVD not found: $dvd"
@@ -85,7 +82,7 @@ rip_dvd() {
   [[ $oc == "$cc" ]] || die "Checksum mismatch!"
   ok "Ripped: $iso"
 }
-pngzip() {
+pngzip(){
   local GRAY=0 TOUCH=0 VERB=1 DPI=0 OPTIND o
   while getopts ":gqtr:h" o; do case $o in g) GRAY=1 ;; q) VERB=0 ;; t) TOUCH=1 ;; r) DPI=${OPTARG//[^0-9]/} ;; h)
     usage
@@ -133,7 +130,7 @@ pngzip() {
     ((VERB)) && printf "%s: %s→%s bytes\n" "$f" "$os" "$(stat -c%s "$f")"
   done
 }
-towebp() {
+towebp(){
   req cwebp
   local ll=true q=85 z=9 force=false OPTIND o
   while getopts ":lq:z:fh" o; do case $o in l) ll=true ;; q) q=${OPTARG//[^0-9]/} ;; z) z=${OPTARG//[^0-9]/} ;; f) force=true ;; h)
@@ -158,35 +155,35 @@ towebp() {
   done
   log "Converted $cnt image(s)"
 }
-vid1080() {
+vid1080(){
   local v=$1
   req ffmpeg
   ffmpeg -i "$v" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${v%.*}-1080p.mp4"
 }
-vid4k() {
+vid4k(){
   local v=$1
   req ffmpeg
   ffmpeg -i "$v" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${v%.*}-4k.mp4"
 }
-jpg_opt() {
+jpg_opt(){
   local i=$1
   shift
   req magick
   magick "$i" "$@" -quality 95 -strip "${i%.*}-opt.jpg"
 }
-jpg_small() {
+jpg_small(){
   local i=$1
   shift
   req magick
   magick "$i" "$@" -resize 1080x\> -quality 95 -strip "${i%.*}-small.jpg"
 }
-png_opt() {
+png_opt(){
   local i=$1
   shift
   req magick
   magick "$i" "$@" -strip -define png:compression-filter=5 -define png:compression-level=9 -define png:compression-strategy=1 -define png:exclude-chunk=all "${i%.*}-opt.png"
 }
-usage() {
+usage(){
   cat <<'EOF'
 media - Media toolkit
 USAGE: media COMMAND [ARGS...]
@@ -215,7 +212,7 @@ EXAMPLES:
   media vid1080 video.mp4
 EOF
 }
-main() {
+main(){
   [[ $# -eq 0 || $1 == -h || $1 == --help ]] && {
     usage
     exit 0

@@ -7,20 +7,17 @@ export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 : "${BACKUP_DIR:=${HOME}/.cache/media-opt/$(printf '%(%Y%m%d_%H%M%S)T' -1)}"
 : "${LOSSLESS:=1}" "${QUAL:=95}" "${VCRF:=24}" "${VCODEC:=libsvtav1}"
 R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' X=$'\e[0m'
-log() { printf "${B}[%(%H:%M:%S)T]${X} %s\n" -1 "$*"; }
-err() { printf "${R}[ERR]${X} %s\n" "$*" >&2; }
-die() {
-  err "$@"
-  exit 1
-}
-has() { command -v "$1" &>/dev/null; }
+log(){ printf "${B}[%(%H:%M:%S)T]${X} %s\n" -1 "$*"; }
+err(){ printf "${R}[ERR]${X} %s\n" "$*" >&2; }
+die(){ err "$@"; exit 1; }
+has(){ command -v "$1" &>/dev/null; }
 declare -A TC
-cache_tools() {
+cache_tools(){
   local t
   for t in rimage jpegoptim oxipng cwebp gifsicle ffmpeg; do has "$t" && TC[$t]=1 || TC[$t]=0; done
 }
-hc() { [[ ${TC[$1]:-0} -eq 1 ]]; }
-opt_img() {
+hc(){ [[ ${TC[$1]:-0} -eq 1 ]]; }
+opt_img(){
   local f=$1 o=$2 t c=() x="${f##*.}" lx="${x,,}"
   if hc rimage; then
     t=rimage
@@ -50,7 +47,7 @@ opt_img() {
   fi
   [[ -n $t ]] && printf '%s:%s\n' "$t" "${c[*]}"
 }
-opt_vid() {
+opt_vid(){
   local f=$1 o=$2 t c=() va=()
   hc ffmpeg || return 0
   t=ffmpeg
@@ -63,7 +60,7 @@ opt_vid() {
   c=(ffmpeg -y -v error -i "$f" -c:v "$VCODEC" "${va[@]}" -c:a libopus -b:a 128k -movflags +faststart "$o")
   printf '%s:%s\n' "$t" "${c[*]}"
 }
-optimize() {
+optimize(){
   local f=$1
   [[ ! -f $f ]] && return 0
   local x="${f##*.}" lx="${x,,}" tmp="${f}.tmp.${x}" res t c=()
@@ -124,7 +121,7 @@ optimize() {
 }
 export -f optimize opt_img opt_vid hc err log
 export TC LOSSLESS QUAL VCRF VCODEC DRY BACKUP BACKUP_DIR MTIME B G Y R X
-interactive() {
+interactive(){
   has ffmpeg || die "ffmpeg required for interactive mode"
   local inp
   while :; do
@@ -210,7 +207,7 @@ interactive() {
     read -rp "Press ENTER..."
   done
 }
-batch() {
+batch(){
   local dir=${1:-.} exts=".*\.(jpg|jpeg|mjpg|png|webp|svg|gif|avif|jxl|bmp|mp4|mkv|mov|webm|avi)\$"
   local -a fc files
   has fd && fc=(fd -tf --hidden --no-ignore --regex "$exts" . "$dir") || fc=(find "$dir" -type f -iregex "$exts")
@@ -218,7 +215,7 @@ batch() {
   [[ ${#files[@]} -eq 0 ]] && die "no media files in $dir"
   printf '%s\n' "${files[@]}" | xargs -P"$JOBS" -I{} bash -c 'optimize "$@"' _ {}
 }
-usage() {
+usage(){
   cat <<'EOF'
 media-opt.sh - Batch media optimization
 USAGE: media-opt.sh [OPTIONS] [PATH...]
@@ -238,7 +235,7 @@ EXAMPLES:
   media-opt.sh -i
 EOF
 }
-main() {
+main(){
   local -a inputs=()
   while [[ $# -gt 0 ]]; do
     case $1 in

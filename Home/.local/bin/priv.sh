@@ -3,12 +3,9 @@ set -euo pipefail
 shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C LANG=C
 
-has() { command -v "$1" &>/dev/null; }
-die() {
-  printf 'priv: %s\n' "$*" >&2
-  exit 1
-}
-usage() {
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf 'priv: %s\n' "$*" >&2; exit 1; }
+usage(){
   cat <<'EOF'
 priv - Privilege escalation wrapper (doas/sudo)
 USAGE:
@@ -35,7 +32,7 @@ EOF
 # ============================================================================
 # EDIT
 # ============================================================================
-cmd_edit() {
+cmd_edit(){
   [[ ${#} -eq 0 ]] && die "Usage: priv edit FILE..."
   local user_id=$(id -u)
   [[ $user_id -eq 0 ]] && die "Using as root not permitted"
@@ -73,7 +70,7 @@ cmd_edit() {
 # ============================================================================
 # SUDO SHIM
 # ============================================================================
-cmd_sudo() {
+cmd_sudo(){
   has getopt || die "getopt required"
   local opts=$(getopt -n priv-sudo -o +insu:kvh -l login,non-interactive,shell,user:,reset-timestamp,validate,help -- "$@") || die "Invalid options"
   eval set -- "$opts"
@@ -115,8 +112,8 @@ cmd_sudo() {
     esac
   done
   [[ -n $flag_i && -n $flag_s ]] && die "Cannot use -i and -s together"
-  _doas() { exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
-  user_shell() { has getent && getent passwd "${user:-root}" | awk -F: 'END{print $NF? $NF:"sh"}' || awk -F: '$1=="'"${user:-root}"'"{print $NF;m=1}END{if(! m)print"sh"}' /etc/passwd; }
+  _doas(){ exec doas "$flag_n" "${user:+-u "$user"}" "$@"; }
+  user_shell(){ has getent && getent passwd "${user:-root}" | awk -F: 'END{print $NF? $NF:"sh"}' || awk -F: '$1=="'"${user:-root}"'"{print $NF;m=1}END{if(! m)print"sh"}' /etc/passwd; }
   export SUDO_GID=$(id -g) SUDO_UID=$(id -u) SUDO_USER=$(id -un)
   if [[ $# -eq 0 ]]; then
     if [[ -n $flag_i ]]; then
@@ -137,7 +134,7 @@ cmd_sudo() {
 # ============================================================================
 # MAIN
 # ============================================================================
-main() {
+main(){
   local cmd="${1:-}"
   shift || :
   case "$cmd" in

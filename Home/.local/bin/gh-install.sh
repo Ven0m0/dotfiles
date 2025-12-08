@@ -4,22 +4,18 @@ set -eo pipefail
 TMP="/tmp/.gh-install"
 BINPATH="${GH_BINPATH:-$HOME/.local/bin}"
 REPO=$1
-
 if [ -z $REPO ]; then
-  echo "usage: gh install user/repo"
-  exit 1
+  echo "usage: gh install user/repo"; exit 1
 fi
-
-choose() {
-  if command -v fzf 2>&1 >/dev/null; then
-    echo $@ | xargs -n 1 | fzf --height 10 --prompt "$PS3" -1
+choose(){
+  if command -v fzf &>/dev/null; then
+    echo "$@" | xargs -n 1 | fzf --height 10 --prompt "$PS3" -1
   else
     select opt in $@; do break; done
-    echo $opt
+    echo "$opt"
   fi
 }
-
-extract() {
+extract(){
   for arg in $@; do
     if [ -f $arg ]; then
       case $arg in
@@ -40,53 +36,35 @@ extract() {
     else
       echo "'$arg' is not a valid file" && return 1
     fi
-  done
-  return 0
+  done; return 0
 }
-
-cleanup() {
-  rm -rf $TMP
-}
-
+cleanup(){ rm -rf "$TMP"; }
 trap cleanup EXIT
-
 PS3="> Select version: "
 tag=$(choose $(gh api "repos/$REPO/releases" -q ".[].tag_name"))
 echo "[version] $tag"
-
 PS3="> Select file: "
 filename=$(choose $(gh api "repos/$REPO/releases" -q '.[] | select(.tag_name == "'$tag'") | .assets[].name'))
 echo "[filename] $filename"
-
 echo "[*] Downloading... $filename"
 gh release download $tag --repo "$REPO" --pattern "$filename" --dir "$TMP"
-
 (
   cd $TMP
-
   if [[ $filename == *.deb ]]; then
     echo "[*] Installing debian package..."
-    sudo apt install ./$filename
-    exit 0
+    sudo apt install "./${filename}"; exit 0
   fi
-
   echo "[*] Extracting..."
-
   if extract $filename; then
-    PS3="> Select binary: "
-    bin=$(choose $(find * -type f -not -path "*$filename"))
+    PS3="> Select binary: "; bin=$(choose $(find * -type f -not -path "*$filename"))
   else
     bin=$filename
   fi
-
   # install
   basename=$(basename "$bin")
   read -p "> Choose a name (empty to leave: $basename): " name
   mkdir -p "$BINPATH"
   target="$BINPATH/${name:-$basename}"
-  mv "$bin" "$target"
-  chmod +x "$target"
-
-  echo "Success!"
-  echo "Saved in: $target"
+  mv "$bin" "$target"; chmod +x "$target"
+  echo "Success!"; echo "Saved in: $target"
 )

@@ -19,7 +19,7 @@ CUSTOM_COMMAND=""
 TEST_MODE=false
 TEST_WAIT_SECONDS=0
 # Cleanup function for graceful termination
-cleanup_on_exit() {
+cleanup_on_exit(){
   local exit_code=$?
   # Always perform cleanup, regardless of exit code
   cleanup_resources
@@ -31,7 +31,7 @@ cleanup_on_exit() {
 }
 
 # Interrupt handler for SIGINT (Ctrl+C)
-interrupt_handler() {
+interrupt_handler(){
   echo ""
   echo "[INFO] Script interrupted by user (Ctrl+C)"
   echo "[INFO] Cleaning up and exiting gracefully..."
@@ -45,7 +45,7 @@ interrupt_handler() {
 CLEANUP_DONE=false
 
 # Cleanup resources and temporary state
-cleanup_resources() {
+cleanup_resources(){
   # Prevent double cleanup
   [[ $CLEANUP_DONE == true ]] && return
   # Kill any background processes if they exist
@@ -78,7 +78,7 @@ trap cleanup_on_exit EXIT
 trap interrupt_handler INT TERM
 
 # Function to execute custom commands with proper error handling
-execute_custom_command() {
+execute_custom_command(){
   local command="$1"
   local start_time=$(date +%s)
   echo "⚠️  WARNING: About to execute custom command: '$command'"
@@ -119,7 +119,7 @@ execute_custom_command() {
 
 # Function to extract timestamp from old format: Claude AI usage limit reached|<timestamp>
 # Optimization: Replaced echo+awk with bash native parameter expansion
-extract_old_format_timestamp() {
+extract_old_format_timestamp(){
   local claude_output="$1"
   local resume_timestamp
 
@@ -138,7 +138,7 @@ extract_old_format_timestamp() {
 }
 
 # Function to extract timestamp from new format: X-hour limit reached ∙ resets Xam/pm
-extract_new_format_timestamp() {
+extract_new_format_timestamp(){
   local claude_output="$1"
   local reset_time reset_hour reset_period reset_hour_24
   local now_timestamp today_reset resume_timestamp
@@ -174,7 +174,7 @@ extract_new_format_timestamp() {
   now_timestamp=$(date +%s)
 
   # Get today's reset time
-  if date --version >/dev/null 2>&1; then
+  if date --version &>/dev/null; then
     # GNU date (Linux)
     today_reset=$(date -d "today ${reset_hour_24}:00:00" +%s)
   else
@@ -184,7 +184,7 @@ extract_new_format_timestamp() {
 
   # If reset time has passed today, use tomorrow's reset time
   if [ "$now_timestamp" -gt "$today_reset" ]; then
-    if date --version >/dev/null 2>&1; then
+    if date --version &>/dev/null; then
       # GNU date (Linux)
       resume_timestamp=$(date -d "tomorrow ${reset_hour_24}:00:00" +%s)
     else
@@ -200,21 +200,21 @@ extract_new_format_timestamp() {
 }
 
 # Function to check network connectivity
-check_network_connectivity() {
+check_network_connectivity(){
   # Try multiple connectivity checks for better reliability
   local connectivity_failed=true
 
   # Method 1: Ping Google DNS (most reliable for basic connectivity)
-  if ping -c 1 -W 3 8.8.8.8 >/dev/null 2>&1; then
+  if ping -c 1 -W 3 8.8.8.8 &>/dev/null; then
     connectivity_failed=false
   # Method 2: Try alternative DNS server
-  elif ping -c 1 -W 3 1.1.1.1 >/dev/null 2>&1; then
+  elif ping -c 1 -W 3 1.1.1.1 &>/dev/null; then
     connectivity_failed=false
   # Method 3: Try reaching a major website if ping is blocked
-  elif command -v curl >/dev/null 2>&1 && curl -s --max-time 5 --connect-timeout 3 https://www.google.com >/dev/null 2>&1; then
+  elif command -v curl &>/dev/null && curl -s --max-time 5 --connect-timeout 3 https://www.google.com &>/dev/null; then
     connectivity_failed=false
   # Method 4: Try wget as fallback if curl unavailable
-  elif command -v wget >/dev/null 2>&1 && wget -q --timeout=5 --tries=1 -O /dev/null https://www.google.com 2>/dev/null; then
+  elif command -v wget &>/dev/null && wget -q --timeout=5 --tries=1 -O /dev/null https://www.google.com 2>/dev/null; then
     connectivity_failed=false
   fi
 
@@ -230,7 +230,7 @@ check_network_connectivity() {
 }
 
 # Function to validate Claude CLI environment
-validate_claude_cli() {
+validate_claude_cli(){
   # Check if Claude CLI is installed and accessible
   if ! command -v claude &>/dev/null; then
     echo "[ERROR] Claude CLI not found. Please install Claude CLI first."
@@ -249,7 +249,7 @@ validate_claude_cli() {
 }
 
 # Function to show help
-show_help() {
+show_help(){
   cat <<EOF
 Usage: claude-auto-resume [OPTIONS] [PROMPT]
 
@@ -524,7 +524,7 @@ if [ "$LIMIT_MSG" != "" ]; then
     # Only format time if WAIT_SECONDS is positive
     if [ "$WAIT_SECONDS" -gt 0 ]; then
       # Format time compatible with Linux and macOS
-      if date --version >/dev/null 2>&1; then
+      if date --version &>/dev/null; then
         # GNU date (Linux)
         RESUME_TIME_FMT=$(date -d "@$RESUME_TIMESTAMP" "+%Y-%m-%d %H:%M:%S")
       else

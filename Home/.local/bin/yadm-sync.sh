@@ -2,16 +2,13 @@
 set -euo pipefail
 shopt -s nullglob globstar extglob
 IFS=$'\n\t' LC_ALL=C LANG=C
-has() { command -v "$1" &>/dev/null; }
-die() {
-  printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
-  exit "${2:-1}"
-}
-warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
-log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
-ok() { printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
+warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
+log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
+ok(){ printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
 BLD=$'\e[1m' BLU=$'\e[34m' DEF=$'\e[0m'
-get_repo_dir() {
+get_repo_dir(){
   if yadm rev-parse --show-toplevel &>/dev/null; then
     yadm rev-parse --show-toplevel
   elif [[ -d "${HOME}/.local/share/yadm/repo.git" ]]; then
@@ -20,7 +17,7 @@ get_repo_dir() {
     die "Cannot determine yadm repository location"
   fi
 }
-usage() {
+usage(){
   cat <<EOF
 ${BLD}yadm-sync${DEF} - Sync dotfiles between ~/ and repository
 ${BLD}Usage:${DEF}
@@ -49,7 +46,7 @@ ${BLD}Note:${DEF} This script manages the Home/ subdirectory. System configs (et
       are managed separately with tuckr.
 EOF
 }
-sync_pull() {
+sync_pull(){
   local repo_dir home_dir dry_run="${1:-0}"
   repo_dir="$(get_repo_dir)"
   home_dir="${repo_dir}/Home"
@@ -67,7 +64,7 @@ sync_pull() {
     ok "Dotfiles deployed to home directory"
   fi
 }
-sync_push() {
+sync_push(){
   local repo_dir home_dir dry_run="${1:-0}"
   repo_dir="$(get_repo_dir)"
   home_dir="${repo_dir}/Home"
@@ -135,7 +132,7 @@ EXCLUDES
     log "  git push"
   fi
 }
-sync_status() {
+sync_status(){
   local repo_dir home_dir
   repo_dir="$(get_repo_dir)"
   home_dir="${repo_dir}/Home"
@@ -147,7 +144,7 @@ sync_status() {
     return 0
   }
 }
-sync_diff() {
+sync_diff(){
   local repo_dir home_dir
   repo_dir="$(get_repo_dir)"
   home_dir="${repo_dir}/Home"
@@ -166,7 +163,7 @@ sync_diff() {
     fi
   done < <(find "$home_dir" -type f -print0 2>/dev/null)
 }
-main() {
+main(){
   local command="${1:-}" dry_run=0
   shift || :
   while [[ $# -gt 0 ]]; do

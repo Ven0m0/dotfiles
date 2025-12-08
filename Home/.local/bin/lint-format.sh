@@ -24,12 +24,12 @@ TOTAL_ERRORS=0
 # ANSI colors
 BLD=$'\e[1m' BLU=$'\e[34m' GRN=$'\e[32m' YLW=$'\e[33m' RED=$'\e[31m' DEF=$'\e[0m'
 # Logging functions
-has() { command -v "$1" &>/dev/null; }
-log() { printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
-ok() { printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
-warn() { printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
-err() { printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; }
-check_deps() {
+has(){ command -v "$1" &>/dev/null; }
+log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
+ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
+warn(){ printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
+err(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; }
+check_deps(){
   local missing=() optional=()
   local required=(shfmt shellcheck biome yamllint yamlfmt ruff markdownlint)
   local opt=(taplo mdformat stylua selene ast-grep actionlint prettier)
@@ -49,7 +49,7 @@ check_deps() {
   fi
   return 0
 }
-find_files() {
+find_files(){
   local ext="$1"
   if [[ $FD == "find" ]]; then
     find "$PROJECT_ROOT" -type f -name "*.$ext" \
@@ -67,13 +67,13 @@ find_files() {
       -e "$ext" . "$PROJECT_ROOT" 2>/dev/null || true
   fi
 }
-find_files_multi() {
+find_files_multi(){
   local exts=("$@")
   for ext in "${exts[@]}"; do
     find_files "$ext"
   done | sort -u
 }
-record_result() {
+record_result(){
   local file="$1" group="$2" modified="$3" errors="$4"
   FILE_RESULTS["$file"]="$group|$modified|$errors"
   ((TOTAL_FILES++))
@@ -83,10 +83,10 @@ record_result() {
     ((GROUP_ERRORS["$group"] += errors))
   }
 }
-add_fix_cmd() {
+add_fix_cmd(){
   FIX_COMMANDS+=("$1")
 }
-run_formatter() {
+run_formatter(){
   local tool="$1" desc="$2"
   shift 2
   if [[ $DRY_RUN == "true" ]]; then
@@ -96,14 +96,14 @@ run_formatter() {
   log "$desc..."
   "$tool" "$@" 2>&1 || return 1
 }
-run_linter() {
+run_linter(){
   local tool="$1" desc="$2"
   shift 2
   log "$desc..."
   "$tool" "$@" 2>&1 || return 1
 }
 # --- YAML Processor ---
-proc_yaml() {
+proc_yaml(){
   local group="yaml" files=()
   mapfile -t files < <(find_files_multi yml yaml)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -144,7 +144,7 @@ proc_yaml() {
   return 0
 }
 # --- JSON/JS/TS/CSS Processor ---
-proc_web() {
+proc_web(){
   local group="web"
   log "Processing JS/TS/JSON/CSS..."
   # Biome format + lint
@@ -168,7 +168,7 @@ proc_web() {
   return 0
 }
 # --- Shell Scripts Processor ---
-proc_shell() {
+proc_shell(){
   local group="shell" files=()
   mapfile -t files < <(find_files_multi sh bash zsh)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -203,7 +203,7 @@ proc_shell() {
   return 0
 }
 # --- Fish Scripts Processor ---
-proc_fish() {
+proc_fish(){
   local group="fish" files=()
   mapfile -t files < <(find_files fish)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -221,7 +221,7 @@ proc_fish() {
   return 0
 }
 # --- TOML Processor ---
-proc_toml() {
+proc_toml(){
   local group="toml" files=()
   mapfile -t files < <(find_files toml)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -250,7 +250,7 @@ proc_toml() {
   return 0
 }
 # --- Python Processor ---
-proc_python() {
+proc_python(){
   local group="python" files=()
   mapfile -t files < <(find_files py)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -274,7 +274,7 @@ proc_python() {
   return 0
 }
 # --- Lua Processor ---
-proc_lua() {
+proc_lua(){
   local group="lua" files=()
   mapfile -t files < <(find_files lua)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -304,7 +304,7 @@ proc_lua() {
   return 0
 }
 # --- Markdown Processor ---
-proc_markdown() {
+proc_markdown(){
   local group="markdown" files=()
   mapfile -t files < <(find_files md)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -333,7 +333,7 @@ proc_markdown() {
   return 0
 }
 # --- GitHub Actions Processor ---
-proc_actions() {
+proc_actions(){
   local group="actions" files=()
   mapfile -t files < <(find .github/workflows -type f -name "*.yml" -o -name "*.yaml" 2>/dev/null || true)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -357,7 +357,7 @@ proc_actions() {
   return 0
 }
 # --- XML Processor ---
-proc_xml() {
+proc_xml(){
   local group="xml" files=()
   mapfile -t files < <(find_files_multi xml svg)
   [[ ${#files[@]} -eq 0 ]] && return 0
@@ -368,7 +368,7 @@ proc_xml() {
   return 0
 }
 # --- AST-Grep Processor ---
-proc_ast_grep() {
+proc_ast_grep(){
   local group="ast-grep"
   if ! has ast-grep; then return 0; fi
   log "Running AST-grep rules..."
@@ -381,7 +381,7 @@ proc_ast_grep() {
   return 0
 }
 # --- Report Generation ---
-print_table() {
+print_table(){
   log ""
   log "═══════════════════════════════════════════════════════════════════════════"
   log "FILE RESULTS"
@@ -396,7 +396,7 @@ print_table() {
   done | sort -k1
   log "═══════════════════════════════════════════════════════════════════════════"
 }
-print_commands() {
+print_commands(){
   log ""
   log "FIX COMMANDS (Reproducible)"
   log "───────────────────────────────────────────────────────────────────────────"
@@ -405,7 +405,7 @@ print_commands() {
   done
   log ""
 }
-print_summary() {
+print_summary(){
   log ""
   log "═══════════════════════════════════════════════════════════════════════════"
   log "SUMMARY"
@@ -429,7 +429,7 @@ print_summary() {
 }
 
 # --- Main ---
-main() {
+main(){
   log "Exhaustive Lint & Format Pipeline"
   log "Policy: 2-space indent, 120-char width, zero errors"
   log "Root: $PROJECT_ROOT"
