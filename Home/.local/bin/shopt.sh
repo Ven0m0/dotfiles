@@ -129,11 +129,8 @@ target="${1:?No file/dir specified}"
 for cmd in shfmt shellharden shellcheck awk; do has "$cmd" || die "Missing: $cmd"; done
 readonly HAS_SD=$(has sd && echo 1 || echo 0)
 readonly HAS_PREPROCESS=$(has preprocess && echo 1 || echo 0)
+readonly HAS_BEAUTYSH=$(has beautysh && echo 1 || echo 0)
 ((compile && !HAS_PREPROCESS)) && die "Compile mode needs 'preprocess' (pip install preprocess)"
-# TODO: optional beautysh before formatting
-#if has beautysh; then
-#beautysh -i 2 -s paronly --variable-style braces
-#fi
 #──────────── File Collection ────────────
 if ((compile || concat)); then
   [[ ! -d $target ]] && die "Compile/concat mode needs directory"
@@ -263,6 +260,10 @@ optimize() {
   else
     content=$(sed -e 's/|| true/|| :/g' -e 's/[[:space:]]*()[[:space:]]*{/(){/g' \
       -e 's|&>/dev/null|&>/dev/null|g' <<<"$content")
+  fi
+  # Optional beautysh before formatting
+  if ((HAS_BEAUTYSH && format && !minify)); then
+    content=$(beautysh -i 2 -s paronly --variable-style braces - <<<"$content" 2>/dev/null || echo "$content")
   fi
   # Format/Minify
   if ((format)); then
