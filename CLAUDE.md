@@ -6,6 +6,7 @@
 **Style:** Blunt, precise. `Result ∴ Cause`. Lists ≤7.
 
 ## Standards
+
 - **Bash:** `set -euo pipefail`. `#!/usr/bin/env bash`.
   - *Idioms:* `[[ regex ]]`, `mapfile -t`, `local -n`, `printf`, `ret=$(fn)`.
   - *Ban:* `eval`, `ls` parse, backticks.
@@ -15,12 +16,14 @@
 - **Protected:** `pacman.conf`, `.zshrc`, `.gitconfig`, `sysctl.d/`.
 
 ## Workflow
+
 - **Cycle:** TDD (Red→Green→Refactor). Edit > Create.
 - **Sync:** `yadm-sync.sh` (User). `tuckr set etc usr` (Sys).
 - **CI:** `lint-format` (shfmt, shellcheck, biome, ruff, actionlint).
 - **QA:** Shellcheck + Syntax verify before save.
 
 ## Key Assets
+
 - **Scripts (`~/.local/bin`):**
   - *Sys:* `pkgui` (TUI), `systool` (maint), `dosudo` (priv), `autostart`.
   - *Media:* `media-opt`, `ffwrap`, `wp`.
@@ -30,4 +33,5 @@
 - **AI:** Claude (Agents/Cmds), Copilot, Gemini (`.gemini/`).
 
 ## Deployment
+
 `yadm clone --bootstrap` → Install Pkgs → Deploy Home → Deploy Sys (Tuckr).
