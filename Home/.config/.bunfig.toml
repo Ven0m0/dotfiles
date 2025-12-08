@@ -14,26 +14,18 @@ peer          =false
 dev           =false
 exact         =false
 frozenLockfile=false
-# Linking and caching
 linkWorkspacePackages=true
 linker               ="hoisted"
 cacheHardLinks       =true
 preferOffline        =true
 preferLatest         =true
 concurrency          =16
-# Registry configuration
-[install.scopes]
-# Add custom scopes here if needed
-# "@myorg" = { url = "https://registry.myorg.com/", token = "$NPM_TOKEN" }
 
 # Lockfile settings
 [install.lockfile]
 save =true
 print="yarn"
-# Package manager settings
-[install.registry]
-url="https://registry.npmjs.org/"
-# token = "$NPM_TOKEN"  # Uncomment and set if using private packages
+
 # Run configuration
 [run]
 silent=true
@@ -48,14 +40,3 @@ timeout              =5000
 preload              =[]
 coverage             =false
 smol                 =true
-# Macros
-[macros]
-# react = ["@babel/plugin-transform-react-jsx"]
-
-# Loader configuration
-[loader]
-# ".custom" = "text"
-
-# Define configuration (like webpack's DefinePlugin)
-[define]
-# "process.env.NODE_ENV" = "\"production\""
