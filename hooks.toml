@@ -7,7 +7,6 @@ echo "  Some services may need to be restarted to apply changes"
 """
 
 [usr]
-# Post-link hook: Run after successfully linking usr/ to /usr
 post="""
 echo "✓ System libraries (usr/) linked successfully"
 if systemctl --version &>/dev/null; then
