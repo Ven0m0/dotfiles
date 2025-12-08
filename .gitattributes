@@ -86,3 +86,14 @@ Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab
 .gitattributes export-ignore
 .gitkeep export-ignore
 .editorconfig text
+
+*.doc diff=astextplain
+*.DOC diff=astextplain
+*.docx diff=astextplain
+*.DOCX diff=astextplain
+*.dot diff=astextplain
+*.DOT diff=astextplain
+*.pdf diff=astextplain
+*.PDF diff=astextplain
+*.rtf diff=astextplain
+*.RTF diff=astextplain
