@@ -31,14 +31,15 @@ utils:
       - pattern: document.write($VAL)
       - pattern: document.writeln($VAL)
   # --- Bash Utilities ---
-  # Glob pattern check for case inlining safety
   has-glob-pattern:
     kind: case_item
     regex: '[\*\?\[]'
-  # Getopt/flag parsing detection
   is-flag-case:
     kind: case_item
     regex: '^-[a-zA-Z]|--[a-z]'
+  is-shebang-line:
+    kind: comment
+    regex: '^#!/'
 # ==============================================================================
 # RULES
 # ==============================================================================
@@ -133,12 +134,113 @@ rules:
     fix: $A === $B
     severity: error
   # ----------------------------------------------------------------------------
+  # BASH — Critical Standards (MUST HAVE)
+  # ----------------------------------------------------------------------------
+  - id: bash-require-env-shebang
+    language: bash
+    message: Use #!/usr/bin/env bash shebang
+    note: 'Portable, finds bash via PATH'
+    rule:
+      utils: is-shebang-line
+      regex: '^#!/bin/(ba)?sh'
+    fix: '#!/usr/bin/env bash'
+    severity: error
+  - id: bash-banned-backticks
+    language: bash
+    message: Use $() instead of backticks (nestable, POSIX)
+    rule:
+      kind: command_substitution
+      regex: '`.*`'
+    severity: error
+  - id: bash-banned-eval
+    language: bash
+    message: Never use eval (arbitrary code execution risk)
+    rule:
+      kind: command
+      pattern: eval $$$
+    severity: error
+  - id: bash-banned-expr
+    language: bash
+    message: Use (()) or [[ ]] instead of expr (fork overhead)
+    rule:
+      kind: command
+      pattern: expr $$$
+    severity: error
+  - id: bash-banned-ls-parse
+    language: bash
+    message: Never parse ls output (use globs, find, fd)
+    note: 'ls output is not machine-parseable'
+    rule:
+      kind: pipeline
+      pattern: ls $$$ARGS | $CMD
+    severity: error
+  # ----------------------------------------------------------------------------
+  # BASH — Bashisms (Style Enforcement)
+  # ----------------------------------------------------------------------------
+  - id: bash-function-no-space
+    language: bash
+    message: Remove space before function brace
+    note: 'fn(){ not fn() {'
+    rule:
+      kind: function_definition
+      regex: '\)\s+\{'
+    severity: error
+  - id: bash-redirect-compact
+    language: bash
+    message: Use &>/dev/null instead of >/dev/null 2>&1
+    note: 'Bash 4.0+ shorthand, 14 chars vs 20'
+    rule:
+      kind: command
+      regex: '>\s*/dev/null\s+2>&1'
+    severity: error
+  - id: bash-redirect-no-space
+    language: bash
+    message: Remove space before /dev/null
+    note: '>/dev/null not > /dev/null'
+    rule:
+      kind: redirect
+      regex: '>\s+/dev/null'
+    severity: error
+  - id: bash-idiom-colon-or
+    language: bash
+    message: "Use ':' instead of 'true' (builtin)"
+    note: '1 char, 0 forks'
+    rule:
+      pattern: $CMD || true
+    fix: '$CMD || :'
+    severity: info
+  - id: bash-idiom-colon-while
+    language: bash
+    message: "Use ':' instead of 'true' in loops"
+    rule:
+      pattern: while true; do $$$BODY; done
+    fix: 'while :; do $$$BODY; done'
+    severity: info
+  - id: bash-test-double-bracket
+    language: bash
+    message: Use [[ ]] instead of [ ] (bash builtin, safer)
+    note: 'No word splitting, supports regex, no quoting needed'
+    rule:
+      kind: test_command
+      regex: '^\[\s'
+      not:
+        regex: '^\[\['
+    severity: error
+  - id: bash-printf-over-echo-n
+    language: bash
+    message: Use printf instead of echo -n (portable)
+    note: 'echo behavior varies BSD vs GNU'
+    rule:
+      kind: command
+      pattern: echo -n $$$
+    severity: warning
+  # ----------------------------------------------------------------------------
   # BASH — Safety (Prevent Word Splitting & Injection)
   # ----------------------------------------------------------------------------
   - id: bash-unquoted-var
     language: bash
     message: Quote variable to prevent word splitting/globbing
-    note: 'Exceptions: [[ ]], arithmetic, assignments, case items (already safe)'
+    note: 'Exceptions: [[ ]], (( )), assignments, case items'
     rule:
       kind: expansion
       regex: ^\$[A-Za-z_][A-Za-z0-9_]*$
@@ -151,10 +253,22 @@ rules:
             - kind: test_command
             - kind: assignment
             - kind: case_item
-            - kind: for_statement # for x in $LIST → often intentional
+            - kind: for_statement
+    severity: error
+  - id: bash-unquoted-command-sub
+    language: bash
+    message: Quote command substitution
+    rule:
+      kind: command_substitution
+      not:
+        inside:
+          any:
+            - kind: double_quoted_string
+            - kind: test_command
+            - kind: assignment
     severity: error
   # ----------------------------------------------------------------------------
-  # BASH — Performance (Avoid Forks, Use Bash Builtins)
+  # BASH — Performance (Avoid Forks, Use Builtins)
   # ----------------------------------------------------------------------------
   - id: bash-useless-cat
     language: bash
@@ -166,8 +280,8 @@ rules:
     severity: warning
   - id: bash-prefer-mapfile
     language: bash
-    message: Use mapfile instead of while read loop (10-100x faster)
-    note: 'Requires bash 4.0+; use -t for trim, -d for delimiter'
+    message: Use mapfile instead of while read (10-100x faster)
+    note: 'Bash 4.0+; use -t for trim, -d for delimiter'
     rule:
       kind: while_statement
       pattern: |
@@ -176,65 +290,69 @@ rules:
         done
     fix: mapfile -t $ARRAY
     severity: info
-  # ----------------------------------------------------------------------------
-  # BASH — Idioms (Token-Efficient, Fork-Efficient)
-  # ----------------------------------------------------------------------------
-  - id: bash-idiom-true-or
+  - id: bash-prefer-parameter-expansion
     language: bash
-    message: "Prefer ':' over 'true' (builtin vs external, saves 1 fork)"
+    message: Use parameter expansion instead of sed (no fork)
+    note: '${var#prefix}, ${var%suffix}, ${var//search/replace}'
     rule:
-      pattern: $CMD || true
-    fix: '$CMD || :'
-    severity: info
-  - id: bash-idiom-true-while
+      any:
+        - pattern: echo $VAR | sed 's/^$PREFIX//'
+        - pattern: echo $VAR | awk '{gsub(/^$PREFIX/,"")}1'
+    fix: echo "${VAR#$PREFIX}"
+    severity: warning
+  - id: bash-no-subshell-in-loop
     language: bash
-    message: "Prefer ':' over 'true' in while loops (1 char, builtin)"
+    message: Avoid pipeline in loop (spawns subshell per iteration)
+    note: 'Use process substitution or pre-process data'
     rule:
-      pattern: while true; do $$$BODY; done
-    fix: 'while :; do $$$BODY; done'
-    severity: info
-  # ----------------------------------------------------------------------------
-  # BASH — Style (Compact, Token-Efficient)
-  # ----------------------------------------------------------------------------
-  - id: bash-style-compact-redirect
+      kind: pipeline
+      inside:
+        any:
+          - kind: while_statement
+          - kind: for_statement
+    severity: warning
+  - id: bash-prefer-builtin-printf
     language: bash
-    message: Remove space before /dev/null (saves 1 token)
-    rule:
-      kind: redirect
-      regex: '> \/dev\/null'
-    fix: '>/dev/null'
-    severity: info
-  - id: bash-opt-silence-all
-    language: bash
-    message: Use &>/dev/null instead of >/dev/null 2>&1 (bash shorthand)
-    note: 'Supported bash 4.0+, zsh; not POSIX sh'
+    message: Use builtin printf, not /usr/bin/printf
     rule:
       kind: command
-      pattern: $CMD > /dev/null 2>&1
-    fix: $CMD &>/dev/null
-    severity: info
-  - id: bash-style-function-brace
-    language: bash
-    message: Remove space before function brace (compact style)
-    rule:
-      kind: function_definition
-      regex: '\) \{'
-      pattern: |
-        $NAME() {
-          $$$BODY
-        }
-    fix: |
-      $NAME(){
-        $$$BODY
-      }
+      pattern: /usr/bin/printf $$$
+    fix: printf $$$
     severity: info
   # ----------------------------------------------------------------------------
-  # BASH — Case Inlining (Selective, Performance-Aware)
+  # BASH — Modern Tools (Prefer Rust/Fast Alternatives)
+  # ----------------------------------------------------------------------------
+  - id: bash-prefer-fd-over-find
+    language: bash
+    message: Consider fd instead of find (faster, better UX)
+    note: 'Fallback to find if fd unavailable'
+    rule:
+      kind: command
+      pattern: find $$$ARGS -name $PATTERN
+    severity: hint
+  - id: bash-prefer-rg-over-grep
+    language: bash
+    message: Consider rg instead of grep (10-100x faster)
+    note: 'Fallback to grep if rg unavailable'
+    rule:
+      kind: command
+      pattern: grep -r $$$
+    severity: hint
+  - id: bash-prefer-sd-over-sed
+    language: bash
+    message: Consider sd instead of sed (safer syntax)
+    note: 'Fallback to sed if sd unavailable'
+    rule:
+      kind: pipeline
+      pattern: $CMD | sed 's/$$$'
+    severity: hint
+  # ----------------------------------------------------------------------------
+  # BASH — Case Optimization (Selective Inlining)
   # ----------------------------------------------------------------------------
   - id: bash-case-trivial-inline
     language: bash
-    message: Inline trivial case to direct test (avoids case overhead)
-    note: 'Single branch, no globs, not in loops → [[ ]] && faster'
+    message: Inline trivial case to [[ ]] (faster)
+    note: 'Single branch, no globs, not in loops'
     rule:
       kind: case_statement
       all:
@@ -251,10 +369,10 @@ rules:
                 - kind: for_statement
     fix: '[[ $VAR == $PATTERN ]] && $CMD'
     severity: hint
-  - id: bash-case-two-to-if-else
+  - id: bash-case-two-to-if
     language: bash
-    message: Consider if-else for two-branch case (clearer intent)
-    note: 'Case shines at 4+ branches; if-else clearer for 2'
+    message: Consider if-else for two-branch case (clearer)
+    note: 'Case shines at 4+ branches'
     rule:
       kind: case_statement
       all:
@@ -270,11 +388,9 @@ rules:
               kind: while_statement
     fix: if [[ $VAR == $PATTERN1 ]]; then $CMD1; else $CMD2; fi
     severity: hint
-  # --- Keep getopt/flag case for readability ---
   - id: bash-case-getopt-preserve
     language: bash
-    message: Getopt/flag case detected - preserve for readability
-    note: "Flag parsing with case is idiomatic; don't inline"
+    message: Getopt/flag case preserved (idiomatic)
     rule:
       kind: case_statement
       has:
@@ -283,46 +399,51 @@ rules:
   # ----------------------------------------------------------------------------
   # BASH — Additional Optimizations
   # ----------------------------------------------------------------------------
-  - id: bash-prefer-parameter-expansion
+  - id: bash-declare-array
     language: bash
-    message: Use parameter expansion instead of sed/awk (no fork)
-    note: '${var#prefix}, ${var%suffix}, ${var//search/replace}'
+    message: Declare arrays explicitly for clarity
+    note: 'declare -a arr or declare -A assoc'
     rule:
-      any:
-        - pattern: echo $VAR | sed 's/^$PREFIX//'
-        - pattern: echo $VAR | awk '{gsub(/^$PREFIX/,"")}1'
-    fix: echo "${VAR#$PREFIX}"
-    severity: hint
-  - id: bash-builtin-test-bracket
-    language: bash
-    message: Use [[ ]] instead of [ ] (bash builtin, safer)
-    note: '[[ ]] prevents word splitting, supports regex, no quoting needed'
-    rule:
-      kind: test_command
-      regex: '^\['
+      kind: assignment
+      regex: '^[A-Za-z_][A-Za-z0-9_]*=\([^)]+\)'
       not:
-        regex: '^\[\['
-    severity: info
-    # No auto-fix due to syntax complexity; manual review safer
-  - id: bash-prefer-printf-over-echo
+        inside:
+          kind: declaration_command
+    severity: hint
+  - id: bash-local-in-function
     language: bash
-    message: Prefer printf over echo for portable/safe output
-    note: 'echo behavior varies (BSD vs GNU); printf is POSIX-consistent'
+    message: Use local for function variables (avoid globals)
+    rule:
+      kind: assignment
+      inside:
+        kind: function_definition
+      not:
+        inside:
+          kind: declaration_command
+    severity: warning
+  - id: bash-prefer-literal-search
+    language: bash
+    message: Use -F for literal grep/rg search (faster)
+    note: 'Avoids regex engine overhead'
     rule:
       kind: command
-      pattern: echo -n $$$
+      any:
+        - pattern: grep $PATTERN
+        - pattern: rg $PATTERN
+      not:
+        has:
+          regex: '\s-[EFPGo]'
     severity: hint
-    # No auto-fix; context-dependent
 # ==============================================================================
 # FILE FILTERS (Performance: Scope Scans)
 # ==============================================================================
-# Uncomment and customize if using via . ast-grep/rules/ structure:
+# Uncomment if using . ast-grep/rules/ structure:
 # files:
 #   - "**/*.sh"
-#   - "**/*. bash"
+#   - "**/*.bash"
 #   - "**/*.ts"
-#   - "**/*. tsx"
-#   - "**/*. js"
+#   - "**/*.tsx"
+#   - "**/*.js"
 #   - "**/*.jsx"
 # ignores:
 #   - "**/node_modules/**"
