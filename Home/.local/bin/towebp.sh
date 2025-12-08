@@ -3,7 +3,7 @@ set -euo pipefail
 shopt -s nullglob globstar extglob
 IFS=$'\n\t' LC_ALL=C LANG=C
 # Function to convert a single file
-convert_to_webp() {
+convert_to_webp(){
   local src="$1"
   local out="${src%.*}.webp"
   # Skip if output already exists

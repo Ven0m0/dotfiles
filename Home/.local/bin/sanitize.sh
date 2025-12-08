@@ -5,15 +5,15 @@ IFS=$'\n\t'
 LC_ALL=C
 LANG=C
 readonly BLD=$'\e[1m' GRN=$'\e[32m' RED=$'\e[31m' YLW=$'\e[33m' DEF=$'\e[0m'
-has() { command -v -- "$1" &>/dev/null; }
-die() {
+has(){ command -v -- "$1" &>/dev/null; }
+die(){
   printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2
   exit 1
 }
-log() { printf '%b==>%b %s\n' "${BLD}" "$DEF" "$*"; }
-ok() { printf '%b✓%b %s\n' "${GRN}" "$DEF" "$*"; }
-err() { printf '%b✗%b %s\n' "${RED}" "$DEF" "$*"; }
-usage() {
+log(){ printf '%b==>%b %s\n' "${BLD}" "$DEF" "$*"; }
+ok(){ printf '%b✓%b %s\n' "${GRN}" "$DEF" "$*"; }
+err(){ printf '%b✗%b %s\n' "${RED}" "$DEF" "$*"; }
+usage(){
   cat <<EOF
 sanitize - File sanitization utilities
 USAGE:
@@ -40,7 +40,7 @@ EXAMPLES:
   sanitize fn -n uploads/        # Preview renames
 EOF
 }
-resolve_paths() {
+resolve_paths(){
   local -n _in="$1" _out="$2"
   local use_git=0 use_staged=0
   for p in "${_in[@]}"; do
@@ -67,7 +67,7 @@ resolve_paths() {
   fi
   mapfile -t _out < <(printf '%s\n' "${_out[@]}" | sort -u)
 }
-cmd_whitespace() {
+cmd_whitespace(){
   local check=0 do_cr=0 do_eof=0 do_trailing=0 do_unicode=0 issues=0
   local -a args=() files=()
   while [[ $# -gt 0 ]]; do
@@ -140,7 +140,7 @@ cmd_whitespace() {
   fi
   [[ $check -eq 0 ]] && log "Done."
 }
-cmd_filenames() {
+cmd_filenames(){
   local dry=0 lowercase=1 spaces=0 args=() files=() trans=1
   has iconv || trans=0
   while [[ $# -gt 0 ]]; do
@@ -182,7 +182,7 @@ cmd_filenames() {
     fi
   done
 }
-main() {
+main(){
   [[ $# -eq 0 ]] && usage && exit 0
   local cmd="$1"
   shift

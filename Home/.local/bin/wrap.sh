@@ -2,11 +2,11 @@
 set -euo pipefail
 shopt -s nullglob globstar extglob
 IFS=$'\n\t' LC_ALL=C LANG=C
-die() {
+die(){
   printf 'error: %s\n' "$*" >&2
   return 1
 }
-ffwrap() {
+ffwrap(){
   if command -v ffzap &>/dev/null; then
     ffzap "$@"
   elif command -v ffmpeg &>/dev/null; then
@@ -15,7 +15,7 @@ ffwrap() {
     die "neither ffzap nor ffmpeg found in PATH"
   fi
 }
-jqwrap() {
+jqwrap(){
   if command -v jaq &>/dev/null; then
     jaq "$@"
   elif command -v jq &>/dev/null; then

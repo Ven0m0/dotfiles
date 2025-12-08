@@ -4,15 +4,15 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
-die() {
+die(){
   printf '%s\n' "$*" >&2
   exit 1
 }
-has() { command -v "$1" &>/dev/null; }
-req() { has "$1" || die "missing: $1"; }
+has(){ command -v "$1" &>/dev/null; }
+req(){ has "$1" || die "missing: $1"; }
 
-img_opt() { case $1 in *.png) has oxipng && oxipng -q -o2 "$1" || has optipng && optipng -q "$1" ;; *.jpg | *.jpeg) has jpegoptim && jpegoptim -q -s "$1" ;; esac }
-repack_zip() {
+img_opt(){ case $1 in *.png) has oxipng && oxipng -q -o2 "$1" || has optipng && optipng -q "$1" ;; *.jpg | *.jpeg) has jpegoptim && jpegoptim -q -s "$1" ;; esac }
+repack_zip(){
   local f=$1 t=${f%.*}-opt.${f##*.} d
   d=$(mktemp -d)
   unzip -q "$f" -d "$d"
@@ -20,7 +20,7 @@ repack_zip() {
   rm -rf "$d"
   printf '%s\n' "$t"
 }
-repack_zstd() {
+repack_zstd(){
   local f=$1 t=${f%.*}-zstd.${f##*.} d
   d=$(mktemp -d)
   unzip -q "$f" -d "$d"
@@ -28,20 +28,20 @@ repack_zstd() {
   rm -rf "$d"
   printf '%s\n' "$t"
 }
-pdf_lossless() {
+pdf_lossless(){
   local f=$1 o=${f%.*}-opt.pdf
   gs -sDEVICE=pdfwrite -dPDFSETTINGS=/default -dCompatibilityLevel=1.7 \
     -dNOPAUSE -dQUIET -dBATCH -sOutputFile="$o" "$f" 2>/dev/null || return 1
   printf '%s\n' "$o"
 }
-pdf_lossy() {
+pdf_lossy(){
   local f=$1 o=${f%.*}-lossy.pdf
   gs -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook -dNOPAUSE -q -dBATCH \
     -dDownsampleColorImages=true -dDownsampleMonoImages=true -dDownsampleGrayImages=true \
     -sOutputFile="$o" "$f" 2>/dev/null || return 1
   printf '%s\n' "$o"
 }
-validate_office() {
+validate_office(){
   local f=$1 d
   d=$(mktemp -d)
   if unzip -tq "$f" -d "$d" 2>/dev/null; then
@@ -52,7 +52,7 @@ validate_office() {
   rm -rf "$d"
 }
 
-compress_media() {
+compress_media(){
   local d=$1 mode=${2:-lossless}
   local -a imgs=() pdfs=()
   mapfile -t imgs < <(find "$d" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \))
@@ -64,7 +64,7 @@ compress_media() {
       -dNOPAUSE -q -dBATCH -sOutputFile="$t" "$p" 2>/dev/null && mv "$t" "$p"
   done
 }
-repack_media() {
+repack_media(){
   local f=$1 mode=${2:-lossless} t=${f%.*}-media.${f##*.} d
   d=$(mktemp -d)
   unzip -q "$f" -d "$d"
@@ -73,7 +73,7 @@ repack_media() {
   rm -rf "$d"
   printf '%s\n' "$t"
 }
-compress_file() {
+compress_file(){
   local f=$1 mode=${2:-deflate}
   case $f in
     *.pdf) [[ $mode == lossy ]] && pdf_lossy "$f" || pdf_lossless "$f" ;;
@@ -85,7 +85,7 @@ compress_file() {
       ;;
   esac
 }
-batch_compress() {
+batch_compress(){
   local mode=${1:-deflate} dir=${2:-.}
   local -a files=()
   has fd && mapfile -t files < <(fd -e pdf -e odt -e ods -e odp -e docx -e xlsx -e pptx . "$dir") \
@@ -93,7 +93,7 @@ batch_compress() {
   [[ ${#files[@]} -eq 0 ]] && die "no office files in $dir"
   printf '%s\n' "${files[@]}" | xargs -P"$(nproc 2>/dev/null || printf 4)" -I{} bash -c "$(declare -f compress_file repack_zip repack_zstd pdf_lossless pdf_lossy); compress_file {} $mode" _
 }
-lint_office() {
+lint_office(){
   local dir=${1:-.}
   local -a files=()
   has fd && mapfile -t files < <(fd -e odt -e ods -e odp -e docx -e xlsx -e pptx . "$dir") \
@@ -102,7 +102,7 @@ lint_office() {
     printf '%s: %s\n' "$f" "$(validate_office "$f")"
   done
 }
-strip_metadata() {
+strip_metadata(){
   local f=$1 t=${f%.*}-clean.${f##*.} d
   d=$(mktemp -d)
   unzip -q "$f" -d "$d"
@@ -113,7 +113,7 @@ strip_metadata() {
   rm -rf "$d"
   printf '%s\n' "$t"
 }
-show_stats() {
+show_stats(){
   local f=$1
   case $f in
     *.pdf) pdfinfo "$f" 2>/dev/null | grep -E '^(Pages|File size|PDF version):' || : ;;
@@ -129,7 +129,7 @@ show_stats() {
   esac
 }
 
-usage() {
+usage(){
   cat <<'EOF'
 office.sh - Office document compression & linting
 Usage: office.sh <cmd> [args]
@@ -154,7 +154,7 @@ Media compression requires: oxipng/optipng (PNG), jpegoptim (JPEG)
 EOF
 }
 
-main() {
+main(){
   [[ $# -lt 1 ]] && {
     usage
     exit 1

@@ -10,8 +10,8 @@ if [ -z $REPO ]; then
   exit 1
 fi
 
-choose() {
-  if command -v fzf 2>&1 >/dev/null; then
+choose(){
+  if command -v fzf &>/dev/null; then
     echo $@ | xargs -n 1 | fzf --height 10 --prompt "$PS3" -1
   else
     select opt in $@; do break; done
@@ -19,7 +19,7 @@ choose() {
   fi
 }
 
-extract() {
+extract(){
   for arg in $@; do
     if [ -f $arg ]; then
       case $arg in
@@ -44,7 +44,7 @@ extract() {
   return 0
 }
 
-cleanup() {
+cleanup(){
   rm -rf $TMP
 }
 

@@ -4,17 +4,17 @@ shopt -s nullglob globstar
 IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
-has() { command -v -- "$1" &>/dev/null; }
-die() {
+has(){ command -v -- "$1" &>/dev/null; }
+die(){
   printf 'ERROR: %s\n' "$*" >&2
   exit 1
 }
-need() { has "$1" || die "Required: $1"; }
+need(){ has "$1" || die "Required: $1"; }
 
 if has jaq; then JQ=jaq; elif has jq; then JQ=jq; else JQ=''; fi
 [[ -n $JQ ]] || die "jq/jaq required"
 
-usage() {
+usage(){
   cat <<'EOF'
 gh-tools - GitHub utilities
 
@@ -56,7 +56,7 @@ EOF
 # ============================================================================
 # ASSET
 # ============================================================================
-cmd_asset() {
+cmd_asset(){
   need curl
   local release="" output_opt=(-O) curl_args=(-fsSL)
 
@@ -100,7 +100,7 @@ cmd_asset() {
 # ============================================================================
 # MAINT
 # ============================================================================
-cmd_maint() {
+cmd_maint(){
   for g in gix git; do has "$g" && GIT="$g" && break; done
   [[ -n ${GIT:-} ]] || die "git/gix required"
   [[ -d .git ]] || die "Not a git repository"
@@ -133,16 +133,16 @@ cmd_maint() {
     esac
   done
 
-  msg() { printf '\033[0;96m==> %s\033[0m\n' "$1"; }
-  ok() { printf '\033[0;92m%s\033[0m\n' "$1"; }
+  msg(){ printf '\033[0;96m==> %s\033[0m\n' "$1"; }
+  ok(){ printf '\033[0;92m%s\033[0m\n' "$1"; }
 
-  determine_trunk() {
+  determine_trunk(){
     git branch --list master 2>/dev/null | grep -qF master && printf 'master' && return
     git branch --list main 2>/dev/null | grep -qF main && printf 'main' && return
     die "No trunk branch found"
   }
 
-  update_repo() {
+  update_repo(){
     msg "Updating repository..."
     local trunk=$(determine_trunk)
     if [[ $DRY_RUN == false ]]; then
@@ -154,7 +154,7 @@ cmd_maint() {
     fi
   }
 
-  clean_repo() {
+  clean_repo(){
     msg "Cleaning repository..."
     local trunk=$(determine_trunk)
     if [[ $DRY_RUN == false ]]; then
@@ -196,7 +196,7 @@ cmd_maint() {
 # ============================================================================
 # MAIN
 # ============================================================================
-main() {
+main(){
   local cmd="${1:-}"
   shift || :
   case "$cmd" in

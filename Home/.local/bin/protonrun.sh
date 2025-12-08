@@ -14,14 +14,14 @@ IFS=$'\n\t'
 #          gamerun glthread MESA_DEBUG=1 glxgears
 #          gamerun software blender
 BLD=$'\e[1m' GRN=$'\e[32m' BLU=$'\e[34m' YLW=$'\e[33m' DEF=$'\e[0m'
-log() { printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
-warn() { printf '%b==> WARN:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
-die() {
+log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
+warn(){ printf '%b==> WARN:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
+die(){
   printf '%b==> ERROR:\e[0m %s\n' "${BLD}${YLW}" "$*" >&2
   exit "${2:-1}"
 }
 profile=sarek
-set_sarek() {
+set_sarek(){
   log "Profile: Sarek (Performance/DXVK)"
   export WINEDEBUG="-all"
   export DXVK_LOG_LEVEL="none" VKD3D_DEBUG="none" VKD3D_SHADER_DEBUG="none"
@@ -49,17 +49,17 @@ set_sarek() {
   export DXVK_STATE_CACHE_PATH="${XDG_CACHE_HOME:-$HOME/.cache}/dxvk"
   export MESA_VK_WSI_PRESENT_MODE="immediate"
 }
-set_glthread() {
+set_glthread(){
   log "Profile: GLThread (OpenGL threading)"
   export __GL_THREADED_OPTIMIZATIONS="1" mesa_glthread="true"
 }
-set_software() {
+set_software(){
   log "Profile: Software (CPU rendering)"
   export LIBGL_ALWAYS_SOFTWARE="1" __GLX_VENDOR_LIBRARY_NAME="mesa" \
     VK_ICD_FILENAMES="/usr/share/vulkan/icd. d/lvp_icd.x86_64.json"
 }
-set_default() { log "Profile: Default (no tweaks)"; }
-main() {
+set_default(){ log "Profile: Default (no tweaks)"; }
+main(){
   [[ $# -eq 0 ]] && die "Usage: gamerun [PROFILE] [ENV=val...] <program> [args...]"
   case ${1:-} in
     sarek | skth | skthrun | sarekrun)
