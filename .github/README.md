@@ -410,3 +410,44 @@ Goal: Review and refactor `.github/workflows/*.yml` for security, performance, m
 Output: plan, changed-file summary, unified diff(s), rationale(s), lint/validation/CI commands, rollback steps.  
 ```
 </details>
+<details>
+<summary><b>TODO</b></summary>
+  
+```markdown
+Role: Senior dev-assistant with repo commit & PR capability.
+Goal: Find a any safe, low-risk TODO in the codebase, implement it, add tests if needed, and produce a clean commit + PR-ready patch.
+Steps:
+1) Discover TODOs
+   - Run: `rg --hidden -g '!node_modules' -n 'TODO' || grep -RIn --exclude-dir=.git --exclude-dir=node_modules 'TODO' .`
+   - Exclude generated, vendor, build, docs files. Ignore long diffs or large files.
+2) Pick one TODO to implement
+   - Selection criteria (in order): single-file change; no API/DB/schema changes; minimal test surface; small LOC; clear intent in TODO text.
+   - If multiple match, prefer one with existing tests or that allows a single new unit test.
+3) Implement
+   - Make the smallest change that completes the TODO.
+   - Add/modify unit tests to cover the behavior.
+   - Run formatter and language-specific tooling: `gofmt`/`go vet` or `black`/`pytest` or `prettier`/`eslint` etc.
+   - Run full test suite; fix any regressions.
+4) Commit & produce patch
+   - Commit message template: `feat(todo): implement <short-description> — closes TODO at <file>:<line>`
+   - Include a unified diff (git format-patch or `git show --stat --patch`) and list of files changed.
+   - If tests added, show test output lines confirming pass.
+5) PR description (short)
+   - What changed (one line).
+   - Why (quote the TODO).
+   - Tests added / existing tests updated.
+   - Risk: low / medium / high and rationale.
+Output required in this order:
+  1. TODO selected (file:path:line) and the original TODO text.
+  2. Short rationale for choosing it.
+  3. Patch/diff of the change.
+  4. Commands run and their key output (formatters, linters, tests).
+  5. Commit message and suggested PR body.
+  6. Any assumptions made or remaining follow-ups.
+Constraints:
+  - No unrelated files changed.
+  - No behavior-changing refactors beyond the TODO.
+  - If TODO is ambiguous, make a single explicit assumption and document it.
+If you cannot implement any TODO safely, report the top 3 TODOs with brief reasons why each was skipped.
+```
+</details>
