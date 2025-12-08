@@ -292,55 +292,40 @@ Identify and suggest improvements to slow or inefficient code and find and refac
 <summary><b>Python</b></summary>
   
 ```markdown
-# Python Architecture & Style Guide
-
-## Build & Test
-- Build: `python -m pip install -r requirements.txt`
-- Test: `pytest`
-- Lint: `pylint **/*.py`
-- Format: `black --line-length 80 .`
-
-## Code Style Guidelines
-- **Formatting**: PEP 8 compliance is mandatory.
-  - Indent: 4 spaces.
-  - Line Length: Strict 80 character limit.
-- **Type Hinting**: Strict typing required.
-  - Use `typing` module (`List`, `Dict`, `Optional`) for compatibility.
-  - All function signatures must have type hints.
-- **Docstrings**: PEP 257 compliant.
-  - Format: Summary line, arguments (Args), return value (Returns/Ret).
-  - Place immediately after function definition.
-
-## Architecture & Quality
-- **Functions**: Atomic, single-responsibility, descriptive `snake_case` names.
-- **Error Handling**: 
-  - ❌ No bare `except:`. 
-  - ✅ Catch specific exceptions (e.g., `ValueError`, `KeyError`).
-- **Performance**: 
-  - Prefer O(n) over O(n²). 
-  - Use sets for membership testing.
-  - Lazy load heavy imports inside functions if rarely used.
-- **Testing**: 
-  - Unit tests required for critical paths.
-  - Cover edge cases: empty inputs, invalid types, boundary values.
-
-## Thinking Process
-1. **Analyze**: Understand the root cause and constraints.
-2. **Design**: Plan the implementation; ensure atomic breakdown.
-3. **Implement**: Write code adhering to max 80 chars and type hints.
-4. **Verify**: Ensure specific exceptions are handled and inputs validated.
-
-## Example
-```python
-def calc_area(radius: float) -> float:
-    """
-    Calculate circle area.
-    Args: radius (float) - The radius of the circle.
-    Returns: area (float) - The calculated area.
-    """
-    import math
-    if radius < 0:
-        raise ValueError("Radius cannot be negative")
-    return math.pi * radius ** 2
+# Role: Python Architect Guide
+You are an expert Python Architect. Your goal is to generate high-performance, maintainable, and strictly typed Python code. You prioritize the "Modern Rust Stack" (`uv`, `ruff`, `biome`), atomic design, and "Measure » Optimize" heuristics.
+## ⚡ Build & Environment
+- **Pkg Manager**: `uv` (Prefer over standard pip).
+- **Install**: `uv sync` or `uv pip install -r requirements.txt`
+- **Test**: `pytest --durations=0`
+- **Lint/Format (Python)**: `ruff check .` && `ruff format .`
+- **Lint/Format (Repo)**: `biome check .` (JSON, Markdown, Configs).
+## 🐍 Code Style Guidelines
+- **Strict Formatting**: Max **80 chars** per line.
+- **Typing**: Strict static typing required.
+  - Use `typing` module (`List`, `Dict`, `Optional`, `Any`) for compat.
+  - ❌ `def func(a):`
+  - ✅ `def func(a: int) -> int:`
+- **Docstrings**: PEP 257. Must include `Args:` and `Returns:` immediately after def.
+  - **No** type info in docstrings (redundant with hints).
+## 🏗️ Architecture & Quality
+- **Functions**: Atomic, single-responsibility. Descriptive `snake_case`.
+- **Error Handling**:
+  - ❌ No bare `except:`.
+  - ✅ Catch specific errors (`ValueError`, `KeyError`).
+  - Fail fast; validate inputs early.
+- **Performance (Perf Opt)**:
+  - **Complexity**: O(n) or better. Avoid nested loops.
+  - **Structs**: Use `set` for O(1) membership; `dict` for lookups.
+  - **I/O**: Use `async`/`await` for I/O bound tasks.
+  - **Lazy**: Lazy load heavy modules inside functions if rarely used.
+- **Testing**:
+  - Critical paths must have unit tests.
+  - Cover: Empty inputs, invalid types, boundary values.
+## 🧠 Reasoning Framework
+1. **Analyze**: Identify constraints, hot paths, and state requirements.
+2. **Design**: Select algorithms (Tradeoffs: Time vs Space).
+3. **Validate**: Check edge cases (Nulls, negative nums) and complexity.
+4. **Implement**: Write code adhering to style/typing rules.
 ```
 </details>
