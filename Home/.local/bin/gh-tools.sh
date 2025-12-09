@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
-export LC_ALL=C LANG=C
-
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
 has(){ command -v -- "$1" &>/dev/null;}
 die(){ printf 'ERROR: %s\n' "$*" >&2;exit 1;}
 need(){ has "$1" || die "Required: $1";}
 if has jaq;then JQ=jaq;elif has jq;then JQ=jq;else die "jq/jaq required";fi
-
 usage(){
   cat <<'EOF'
 gh-tools - GitHub utilities
