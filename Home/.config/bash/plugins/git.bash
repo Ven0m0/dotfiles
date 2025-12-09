@@ -1,29 +1,23 @@
 has git || return
 gpush(){
-  git add -A && { git commit -m "${1:-Update}" && LC_ALL=C git push --recurse-submodules=on-demand; }
+  git maintenance run --auto --quiet; git add -A >/dev/null
+  git commit -q -m "${1:-Update}" && LC_ALL=C git push --recurse-submodules=on-demand --prune
   git status
 }
 gctl(){
-  [[ $# -eq 0 ]] && {
-    printf "Usage: gctl <git-repo-url> [directory]\n" >&2
-    return 1
-  }
+  [[ $# -eq 0 ]] && { printf "Usage: gctl <git-repo-url> [directory]\n" >&2; return 1; }
   local url="$1" dir="$2"
-  export LC_ALL=C LANG=C
-  [[ -n $2 ]] || {
-    dir="$(basename "${url%%/}")"
-    dir="${dir%.git}"
-  }
+  [[ -n $2 ]] || { dir="$(basename "${url%%/}")"; dir="${dir%.git}"; }
   if [[ ! -d $dir ]]; then
     if has gix; then
-      gix clone --depth 1 --no-tags "$url" "$dir" || return 1
+      LC_ALL=C gix clone --depth 1 --no-tags "$url" "$dir" || return 1
     else
-      git clone --depth 1 --no-tags --filter='blob:none' -c protocol.version=2 -c http.version=HTTP/2 "$url" "$dir" || return 1
+      LC_ALL=C git clone --depth 1 --no-tags --filter='blob:none' -c protocol.version=2 -c http.version=HTTP/2 "$url" "$dir" || return 1
     fi
   else
     [[ -d $dir ]] && {
       cd "$dir" || return
-      git pull -c protocol.version=2 -c http.version=HTTP/2
+      LC_ALL=C git pull -c protocol.version=2 -c http.version=HTTP/2
       return 0
     }
   fi
