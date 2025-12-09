@@ -5,14 +5,12 @@ export LC_ALL=C LANG=C
 has(){ command -v -- "$1" &>/dev/null;}
 die(){ printf 'ERROR: %s\n' "$*" >&2;exit 1;}
 need(){ has "$1" || die "Required: $1";}
-if has jaq;then JQ=jaq;elif has jq;then JQ=jq;else JQ='';fi
-[[ -n $JQ ]] || die "jq/jaq required"
+if has jaq;then JQ=jaq;elif has jq;then JQ=jq;else die "jq/jaq required";fi
 
 usage(){
   cat <<'EOF'
 gh-tools - GitHub utilities
-USAGE:
-  gh-tools COMMAND [ARGS...]
+USAGE: gh-tools COMMAND [ARGS...]
 COMMANDS:
   asset OWNER/REPO PATTERN     Download release asset
   install OWNER/REPO           Interactive install from release
@@ -42,12 +40,10 @@ EXAMPLES:
   gh-tools maint both --dry-run
 EOF
 }
-# ============================================================================
-# ASSET
-# ============================================================================
+
 cmd_asset(){
   need curl
-  local release="" output_opt=(-O) curl_args=(-fsSL)
+  local release="" output_opt=(-O) curl_args=(-fsSL) TMP
   while getopts "r:so:h" opt;do
     case "$opt" in
       r) release="$OPTARG";;
@@ -59,8 +55,8 @@ cmd_asset(){
   done
   shift $((OPTIND-1))
   [[ $# -eq 2 ]] || die "Usage: gh-tools asset OWNER/REPO PATTERN"
-  local repo="$1" substring="$2" TMP=$(mktemp)
-  trap 'rm -f "$TMP"' EXIT
+  local repo="$1" substring="$2"
+  TMP=$(mktemp);trap 'rm -f "$TMP"' EXIT
   curl -fsSL -o "$TMP" "https://api.github.com/repos/${repo}/releases"
   local selector='.[0]'
   [[ -n $release ]] && selector=".[]|select(.tag_name==\"${release}\")"
@@ -73,12 +69,10 @@ cmd_asset(){
   done
   printf '✓ Complete\n'
 }
-# ============================================================================
-# INSTALL
-# ============================================================================
+
 cmd_install(){
   need gh
-  local tag="" binpath="${GH_BINPATH:-$HOME/.local/bin}" TMP="/tmp/.gh-install"
+  local tag="" binpath="${GH_BINPATH:-$HOME/.local/bin}" TMP="/tmp/.gh-install" opt filename bin basename name target
   while getopts "t:p:h" opt;do
     case "$opt" in
       t) tag="$OPTARG";;
@@ -90,37 +84,22 @@ cmd_install(){
   shift $((OPTIND-1))
   [[ $# -eq 1 ]] || die "Usage: gh-tools install OWNER/REPO"
   local repo="$1"
-  choose(){
+  trap 'rm -rf "$TMP"' EXIT;mkdir -p "$TMP"
+  [[ -n $tag ]] || {
     if has fzf;then
-      printf '%s\n' "$@"|fzf --height 10 --prompt "$PS3" -1
+      tag=$(gh api "repos/$repo/releases" -q ".[].tag_name"|fzf --height 10 --prompt "> Select version: " -1)
     else
-      select opt in "$@";do break;done
-      printf '%s' "$opt"
+      PS3="> Select version: "
+      select tag in $(gh api "repos/$repo/releases" -q ".[].tag_name");do break;done
     fi
   }
-  extract(){
-    local arg="$1"
-    [[ -f $arg ]] || { printf "'%s' not a valid file\n" "$arg";return 1;}
-    case "$arg" in
-      *.tar.bz2) tar xjf "$arg";;
-      *.tar.gz) tar xzf "$arg";;
-      *.tar.xz|*.tar.zst|*.tar) tar xf "$arg";;
-      *.bz2) bunzip2 "$arg";;
-      *.gz) gunzip "$arg";;
-      *.tbz2) tar xjf "$arg";;
-      *.tgz) tar xzf "$arg";;
-      *.zip) unzip "$arg";;
-      *.Z) uncompress "$arg";;
-      *.rar) rar x "$arg";;
-      *) printf "'%s' cannot be extracted, assuming binary\n" "$arg";return 1;;
-    esac
-  }
-  trap 'rm -rf "$TMP"' EXIT
-  mkdir -p "$TMP"
-  [[ -n $tag ]] || { PS3="> Select version: ";tag=$(choose $(gh api "repos/$repo/releases" -q ".[].tag_name"));}
   printf '[version] %s\n' "$tag"
-  PS3="> Select file: "
-  local filename=$(choose $(gh api "repos/$repo/releases" -q '.[]|select(.tag_name=="'"$tag"'")|.assets[].name'))
+  if has fzf;then
+    filename=$(gh api "repos/$repo/releases" -q '.[]|select(.tag_name=="'"$tag"'")|.assets[].name'|fzf --height 10 --prompt "> Select file: " -1)
+  else
+    PS3="> Select file: "
+    select filename in $(gh api "repos/$repo/releases" -q '.[]|select(.tag_name=="'"$tag"'")|.assets[].name');do break;done
+  fi
   printf '[filename] %s\n[*] Downloading...\n' "$filename"
   gh release download "$tag" --repo "$repo" --pattern "$filename" --dir "$TMP"
   (
@@ -130,29 +109,41 @@ cmd_install(){
       sudo apt install "./${filename}";exit 0
     fi
     printf '[*] Extracting...\n'
-    local bin
-    if extract "$filename";then
-      PS3="> Select binary: "
-      bin=$(choose $(find . -type f -not -path "*$filename"))
-    else
-      bin="$filename"
+    if [[ -f $filename ]];then
+      case "$filename" in
+        *.tar.bz2|*.tbz2) tar xjf "$filename";;
+        *.tar.gz|*.tgz) tar xzf "$filename";;
+        *.tar.xz|*.tar.zst|*.tar) tar xf "$filename";;
+        *.bz2) bunzip2 "$filename";;
+        *.gz) gunzip "$filename";;
+        *.zip) unzip "$filename";;
+        *.Z) uncompress "$filename";;
+        *.rar) rar x "$filename";;
+        *) printf "'%s' cannot be extracted, assuming binary\n" "$filename";;
+      esac
     fi
-    local basename="${bin##*/}" name
+    if has fzf;then
+      bin=$(find . -type f -not -path "*$filename"|fzf --height 10 --prompt "> Select binary: " -1||printf '%s' "$filename")
+    else
+      PS3="> Select binary: "
+      select bin in $(find . -type f -not -path "*$filename");do break;done
+      [[ -z $bin ]] && bin="$filename"
+    fi
+    basename="${bin##*/}"
     read -rp "> Choose a name (empty to leave: $basename): " name
     mkdir -p "$binpath"
-    local target="$binpath/${name:-$basename}"
+    target="$binpath/${name:-$basename}"
     mv "$bin" "$target";chmod +x "$target"
     printf 'Success!\nSaved in: %s\n' "$target"
   )
 }
-# ============================================================================
-# MAINT
-# ============================================================================
+
 cmd_maint(){
+  local GIT
   for g in gix git;do has "$g" && GIT="$g" && break;done
   [[ -n ${GIT:-} ]] || die "git/gix required"
   [[ -d .git ]] || die "Not a git repository"
-  local DRY_RUN=false AUTO_YES=true VERBOSE=false MODE=both
+  local DRY_RUN=false AUTO_YES=true VERBOSE=false MODE=both trunk count=0 branch reply
   while [[ $# -gt 0 ]];do
     case "$1" in
       clean|update|both) MODE="$1";shift;;
@@ -163,56 +154,41 @@ cmd_maint(){
       *) die "Unknown: $1";;
     esac
   done
-  msg(){ printf '\033[0;96m==> %s\033[0m\n' "$1";}
-  ok(){ printf '\033[0;92m%s\033[0m\n' "$1";}
-  determine_trunk(){
-    git branch --list master 2>/dev/null|grep -qF master && printf 'master' && return
-    git branch --list main 2>/dev/null|grep -qF main && printf 'main' && return
-    die "No trunk branch found"
-  }
-  update_repo(){
-    msg "Updating repository..."
-    local trunk=$(determine_trunk)
+  trunk=$(git branch --list master main 2>/dev/null|grep -oE '(master|main)'|head -n1)
+  [[ -n $trunk ]] || die "No trunk branch found"
+  if [[ $MODE == update || $MODE == both ]];then
+    printf '\033[0;96m==> Updating repository...\033[0m\n'
     if [[ $DRY_RUN == false ]];then
       git remote prune origin &>/dev/null||:
       git fetch --prune --no-tags origin||die "Fetch failed"
       git checkout "$trunk" &>/dev/null
       git pull --recurse-submodules=on-demand -r origin "$trunk"||:
-      ok "Updated"
+      printf '\033[0;92mUpdated\033[0m\n'
     fi
-  }
-  clean_repo(){
-    msg "Cleaning repository..."
-    local trunk=$(determine_trunk) count=0
+  fi
+  if [[ $MODE == clean || $MODE == both ]];then
+    printf '\033[0;96m==> Cleaning repository...\033[0m\n'
     if [[ $DRY_RUN == false ]];then
       git checkout "$trunk" &>/dev/null
-      git fetch --prune || die "Fetch failed"
+      git fetch --prune||die "Fetch failed"
     fi
     while IFS= read -r branch;do
       [[ $branch == "$trunk" || -z $branch ]] && continue
       if [[ $AUTO_YES == true ]] || {
         printf 'Delete %s? [y/N] ' "$branch"
-        read -r reply; [[ ${reply,,} == y ]]
+        read -r reply;[[ ${reply,,} == y ]]
       };then
         [[ $DRY_RUN == false ]] && git branch -D "$branch" &>/dev/null && ((count++))
       fi
     done < <(git branch --merged "$trunk" --format='%(refname:short)')
-    [[ $count -gt 0 ]] && ok "Deleted $count branches"||ok "No merged branches"
+    [[ $count -gt 0 ]] && printf '\033[0;92mDeleted %d branches\033[0m\n' "$count" || printf '\033[0;92mNo merged branches\033[0m\n'
     if [[ $DRY_RUN == false ]];then
-      git maintenance run --quiet --task=prefetch --task=gc --task=loose-objects --task=incremental-repack --task=pack-refs --task=reflog-expire \
-        --task=rerere-gc --task=worktree-prune --task=commit-graph &>/dev/null ||:
-      ok "Optimized"
+      git maintenance run --quiet --task=prefetch --task=gc --task=loose-objects --task=incremental-repack \
+        --task=pack-refs --task=reflog-expire --task=rerere-gc --task=worktree-prune --task=commit-graph &>/dev/null||:
+      printf '\033[0;92mOptimized\033[0m\n'
     fi
-  }
-  case "$MODE" in
-    clean) clean_repo;;
-    update) update_repo;;
-    both) update_repo;clean_repo;;
-  esac
+  fi
 }
-# ============================================================================
-# MAIN
-# ============================================================================
 main(){
   local cmd="${1:-}"
   shift||:
