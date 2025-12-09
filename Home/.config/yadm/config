@@ -1,18 +1,14 @@
 # YADM Repository Configuration
-#
 # Repository Structure:
 # ├── Home/     → User dotfiles deployed to ~/ (via rsync in bootstrap)
 # ├── etc/      → System configs deployed to /etc (via tuckr)
 # ├── usr/      → System configs deployed to /usr (via tuckr)
 # └── vendor/   → Third-party dependencies
-#
 # Deployment:
 # • User configs: yadm bootstrap copies Home/ → ~/
 # • System configs: tuckr links etc/ → /etc and usr/ → /usr
 # • Run 'sudo tuckr link -d ~/.local/share/yadm/repo.git -t / etc usr'
 #
-[user]
- # User-specific git config will be inherited from system/user git config
 [core]
  # Exclude files that shouldn't be tracked
  excludesfile = ~/.config/yadm/ignore
@@ -20,54 +16,56 @@
  multiPackIndex = true
  fsyncMethod = batch
  fileMode = true
-  preferSymlinkRefs = true
-  symlinks = true
+ preferSymlinkRefs = true
+ symlinks = true
+ preloadIndex = true
+ untrackedCache = true
 [yadm]
- # Use the Home/ subdirectory for user dotfiles
- # Note: This is managed via bootstrap script deployment
- # System directories (etc/, usr/) are managed by tuckr, not yadm
- # Automatically manage git alternates
- auto-alt = true
- # Auto-exclude specific patterns
- auto-exclude = true
- # Enable yadm's private file permissions handling
- auto-private-dirs = true
+  # Use the Home/ subdirectory for user dotfiles
+  # Note: This is managed via bootstrap script deployment
+  # System directories (etc/, usr/) are managed by tuckr, not yadm
+  auto-alt = true
+  auto-exclude = true
+  auto-private-dirs = true
+  auto-perms = true
 [alias]
- # Helpful aliases for this repository structure
- sync-pull = "!bash -c 'yadm-sync pull'"
- sync-push = "!bash -c 'yadm-sync push'"
- sync-status = "!bash -c 'yadm-sync status'"
- deploy = "!bash -c 'yadm bootstrap'"
- submod = "!bash -c 'yadm submodule update --recursive --init'"
+  sync-pull = "!bash -c 'yadm-sync pull'"
+  sync-push = "!bash -c 'yadm-sync push'"
+  sync-status = "!bash -c 'yadm-sync status'"
+  deploy = "!bash -c 'yadm bootstrap'"
+  submod = "!bash -c 'yadm submodule update --recursive --init'"
 [push]
- default = simple
- autoSetupRemote = true
- recurseSubmodules = on-demand
+  default = simple
+  autoSetupRemote = true
+  recurseSubmodules = on-demand
 [pull]
- rebase = false
+  rebase = true
 [fetch]
- prune = true
- pruneTags = true
+  prune = true
+  pruneTags = true
   parallel = 0
   fsckobjects = true
- negotiationAlgorithm = skipping
+  negotiationAlgorithm = skipping
 [pack]
- threads = 0
- allowPackReuse = true
- compression = 9
+  threads = 0
+  allowPackReuse = true
+  compression = 9
 [rebase]
- autoSquash = true
- autoStash = true
- updateRefs = true
+  autoSquash = true
+  autoStash = true
+  updateRefs = true
 [init]
- defaultBranch = main
+  defaultBranch = main
 [gc]
- packRefs = true
- aggressive = true
+  packRefs = true
+  aggressive = true
 [index]
- threads = 0
- version = 4
+  threads = 0
+  version = 4
 [http]
- version = HTTP/2
+  version = HTTP/2
 [protocol]
   version = 2
+[status]
+  showUntrackedFiles = no  
+  submoduleSummary = true
