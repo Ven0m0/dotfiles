@@ -57,10 +57,8 @@ cmd_edit(){
   done
 }
 cmd_sudo(){
-  has getopt||die "getopt required"
-  local opts=$(getopt -n priv-sudo -o +insu:kvh -l login,non-interactive,shell,user:,reset-timestamp,validate,help -- "$@")||die "Invalid options"
-  eval set -- "$opts"
   local flag_i= flag_n= flag_s= flag_k= user=
+  local -a args=()
   while [[ $# -gt 0 ]];do
     case "$1" in
       -i|--login) flag_i='-i';shift;;
@@ -71,8 +69,11 @@ cmd_sudo(){
       -v|--validate) flag_s="true";shift;;
       -h|--help) usage;exit 0;;
       --) shift;break;;
+      -*) die "Unknown option: $1";;
+      *) args+=("$1");shift;;
     esac
   done
+  set -- "${args[@]}" "$@"
   [[ -n $flag_i && -n $flag_s ]] && die "Cannot use -i and -s together"
   _doas(){ exec doas "$flag_n" "${user:+-u "$user"}" "$@";}
   user_shell(){ has getent && getent passwd "${user:-root}"|awk -F: 'END{print $NF?$NF:"sh"}'||awk -F: '$1=="'"${user:-root}"'"{print $NF;m=1}END{if(!m)print"sh"}' /etc/passwd;}

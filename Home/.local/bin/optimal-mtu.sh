@@ -40,7 +40,7 @@ persist_mtu(){
   fi
   if [[ -d /etc/netplan ]] && compgen -G "/etc/netplan/*.yaml" >/dev/null; then
     local netplan_file
-    netplan_file=$(compgen -G "/etc/netplan/*. yaml" | head -1)
+    netplan_file=$(compgen -G "/etc/netplan/*.yaml" | head -1)
     echo "Updating Netplan config: $netplan_file"
     if grep -q "^ *$iface:" "$netplan_file" 2>/dev/null; then
       if grep -q "mtu:" "$netplan_file" 2>/dev/null; then
@@ -53,7 +53,7 @@ persist_mtu(){
     fi
   fi
   if [[ -d /etc/systemd/network ]]; then
-    local nwfile="/etc/systemd/network/99-$iface-mtu. network"
+    local nwfile="/etc/systemd/network/99-$iface-mtu.network"
     sudo tee "$nwfile" &>/dev/null << EOF
 [Match]
 Name=$iface

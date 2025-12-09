@@ -159,7 +159,7 @@ _pkgui_backup(){ local b="$PKGLIST.$(date +%Y%m%d-%H%M%S)";pacman -Qeq >"$b";_pk
 _pkgui_restore(){
   export -f _pkgui_fzf;export FND FZF_THEME HIST;local b
   compgen -G "$PKGLIST.*" >/dev/null||{ _pkgui_warn "No backups";return 1;}
-  b=$(find . -maxdepth 1 -name "$PKGLIST.*" -print0|xargs -0 ls -t|_pkgui_fzf -h "Select backup" -p "cat {}")
+  b=$(find . -maxdepth 1 -name "$PKGLIST.*" -printf '%T@ %p\0'|sort -zrn|cut -zd' ' -f2-|tr '\0' '\n'|_pkgui_fzf -h "Select backup" -p "cat {}")
   [[ -z $b ]] && return
   _pkgui_msg "Restoring: $b"
   [[ $PAC == pacman ]] && xargs -a "$b" sudo pacman -S --needed||xargs -a "$b" "$PAC" -S --needed

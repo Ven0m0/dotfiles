@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # speedtest-curl.sh — curl-only speedtest (ping-like, download, upload)
 # Usage: speedtest-curl.sh [-s server_url] [-d dl_mb] [-u ul_mb] [-n probes] [-U upload_url]
-set -u
+set -euo pipefail
 : "${CURL:=$(command -v curl)}" || {
   printf '%s\n' "curl required"
   exit 1
@@ -60,7 +60,7 @@ for srv in "${SERVERS[@]}"; do
   avg=$(awk "BEGIN{printf \"%.3f\", $sum / $ok}")
   printf '  %s -> avg connect: %s s\n' "$srv" "$avg"
   cmp=$(awk "BEGIN{print ($avg < $best_lat) ? 1 : 0}")
-  if [ "$cmp" -eq 1 ]; then
+  if [[ "$cmp" -eq 1 ]]; then
     best_lat=$avg
     best_srv=$srv
   fi
