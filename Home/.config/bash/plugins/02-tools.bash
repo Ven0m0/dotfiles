@@ -1,3 +1,4 @@
+# ~/.config/bash/plugins/02-tools.bash
 #!/usr/bin/env bash
 #======================== [Shell Enhancement Tools] ===========================
 
