@@ -1,8 +1,9 @@
 ---
-applyTo: "**/*.{sh,bash}"
+applyTo: "**/*.{sh,bash,zsh},PKGBUILD"
 name: bash-optimizer
 description: Bash/Shell agent for hardening, linting, and modernizing scripts (ShellCheck/Shfmt/Shellharden)
 mode: agent
+model: claude-sonnet-4.5
 modelParameters:
   temperature: 0.2
 tools: ['Read', 'Write', 'Edit', 'view', 'read_file', 'edit/editFiles', 'codebase', 'search', 'semanticSearch', 'problems', 'runTasks', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'changes', 'searchResults', 'vscodeAPI', 'extensions', 'github', 'githubRepo', 'fetch', 'openSimpleBrowser', 'Bash', 'Glob', 'Grep']
