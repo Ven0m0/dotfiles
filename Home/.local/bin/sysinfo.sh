@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
-export LC_ALL=C LANG=C
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
 readonly VERSION="3.0.0" BLD=$'\e[1m' GRN=$'\e[32m' BLU=$'\e[34m' YLW=$'\e[33m' CYN=$'\e[96m' RED=$'\e[31m' DEF=$'\e[0m'
-has(){ command -v "$1" &>/dev/null;}
-die(){ printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2;exit "${2:-1}";}
-need(){ has "$1"||die "Required: $1";}
-has jaq && JQ=jaq||has jq && JQ=jq||JQ=''
+die(){ printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2; exit "${2:-1}"; }
+need(){ has "$1" || die "Required: $1"; }
+has jaq && JQ=jaq || has jq && JQ=jq || JQ=''
 VERBOSE=false
 usage(){
   cat <<'EOF'

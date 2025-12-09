@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t';LC_ALL=C;LANG=C;SHELL="$(command -v bash)";export HOME="/home/${SUDO_USER:-$USER}"
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
+export HOME="/home/${SUDO_USER:-$USER}" SHELL="$(command -v bash)"
 readonly R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' C=$'\e[36m' M=$'\e[35m' BD=$'\e[1m' D=$'\e[0m' UL=$'\e[4m' IT=$'\e[3m'
 readonly CFG="${XDG_CONFIG_HOME:-$HOME/.config}/pkgui" CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/pkgui" HIST="${PKGUI_HISTORY:-$CACHE/history}" PKGLIST="${PKGUI_PKGLIST:-$CFG/packagelist}" FILE_NATIVE="$CFG/pkglist_native.txt" FILE_AUR="$CFG/pkglist_aur.txt"
 declare -A _pkgui_cmd_cache _CI _CQ _CL _CLO _CUPD

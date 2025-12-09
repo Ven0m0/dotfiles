@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
 # speedtest-curl.sh - curl-only speedtest (ping-like, download, upload)
 # Usage: speedtest-curl.sh [-s server_url] [-d dl_mb] [-u ul_mb] [-n probes] [-U upload_url]
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
-export LC_ALL=C LANG=C
-
-: "${CURL:=$(command -v curl)}" || {
-  printf '%s\n' "curl required"
-  exit 1
-}
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
+has curl || { printf 'curl required\n'; exit 1; }
+CURL=$(command -v curl)
 
 DL_MB=100
 UL_MB=20

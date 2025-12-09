@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
-export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
 # media-opt.sh - Batch media optimization with AV1/WebP support
 # Optimized for performance using xargs -P and fd
+export HOME="/home/${SUDO_USER:-$USER}"
 # Config
 : "${JOBS:=$(nproc 2>/dev/null || printf 4)}"
 : "${DRY:=0}"
@@ -19,7 +23,6 @@ R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' X=$'\e[0m'
 log(){ printf '%s[%(%T)T]%s %s\n' "$B" -1 "$X" "$*"; }
 err(){ printf '%s[ERR]%s %s\n' "$R" "$X" "$*" >&2; }
 die(){ err "$@"; exit 1; }
-has(){ command -v "$1" &>/dev/null; }
 # Tool Capability Cache
 declare -A TC
 cache_tools(){

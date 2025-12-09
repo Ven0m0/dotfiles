@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
-export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
 # media-toolkit.sh - Optimized media manipulation tools
+export HOME="/home/${SUDO_USER:-$USER}"
 # Colors
 B=$'\e[1;34m' C=$'\e[1;36m' G=$'\e[1;32m' R=$'\e[1;31m' X=$'\e[0m'
-# Helpers
-has(){ command -v "$1" &>/dev/null; }
 log(){ printf '%b==>%b %s\n' "$B" "$X" "$*"; }
 ok(){ printf '%b==>%b %s\n' "$G" "$X" "$*"; }
 die(){ printf '%b==> ERROR:%b %s\n' "$R" "$X" "$*" >&2; exit "${2:-1}"; }

@@ -1,26 +1,29 @@
 #!/usr/bin/env bash
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
-export LC_ALL=C LANG=C
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
 
 nekofetch(){
   local cat="${1:-}" json_tool="${2:-}" img_tool="${3:-}"
   local jsont imgt api_base="https://nekos.best/api/v2"
   local response img_url tmp_file
   # 1. Select JSON Parser (prefer user arg > jaq > jq)
-  if [[ -n $json_tool ]] && command -v "$json_tool" &>/dev/null; then
+  if [[ -n $json_tool ]] && has "$json_tool"; then
     jsont="$json_tool"
-  elif command -v jaq &>/dev/null; then
+  elif has jaq; then
     jsont="jaq"
-  elif command -v jq &>/dev/null; then
+  elif has jq; then
     jsont="jq"
   else
     printf 'error: no json tool found (install jaq or jq)\n' >&2
     return 1
   fi
   # 2. Select Image Renderer (prefer user arg > chafa > cat)
-  if [[ -n $img_tool ]] && command -v "$img_tool" &>/dev/null; then
+  if [[ -n $img_tool ]] && has "$img_tool"; then
     imgt="$img_tool"
-  elif command -v chafa &>/dev/null; then
+  elif has chafa; then
     imgt="chafa"
   else
     imgt="cat"
@@ -35,31 +38,31 @@ nekofetch(){
     }
     printf 'Available categories:\n'
     # Pretty print with column if available
-    if command -v column &>/dev/null; then
-      printf '%s' "$response" | "$jsont" -r 'to_entries[] | "\(.key)\t\(.value.format)"' | column -t -s $'\t'
+    if has column; then
+      printf '%s' "$response"|"$jsont" -r 'to_entries[] | "\(.key)\t\(.value.format)"'|column -t -s $'\t'
     else
-      printf '%s' "$response" | "$jsont" -r 'keys[]'
+      printf '%s' "$response"|"$jsont" -r 'keys[]'
     fi
     return 0
   fi
   # 4. Fetch Image Metadata
   # Optimistic fetch: directly hit the category endpoint. Fails fast if invalid.
-  response="$(curl -fsSL "$api_base/$cat")" || {
+  response="$(curl -fsSL "$api_base/$cat")"||{
     printf 'error: failed to fetch data (check category "%s")\n' "$cat" >&2
     return 3
   }
-  img_url="$(printf '%s' "$response" | "$jsont" -r '.results[0].url')"
-  [[ -n $img_url && $img_url != "null" ]] || {
+  img_url="$(printf '%s' "$response"|"$jsont" -r '.results[0].url')"
+  [[ -n $img_url && $img_url != "null" ]]||{
     printf 'error: failed to extract image URL\n' >&2
     return 4
   }
   # 5. Render or Download
   if [[ $imgt == "chafa" ]]; then
     # Optimization: Stream directly to stdout -> chafa (no disk I/O)
-    curl -fsSL "$img_url" | chafa -O 9 -w 9 --clear -
+    curl -fsSL "$img_url"|chafa -O 9 -w 9 --clear -
   else
     # Fallback: Download to temp file
-    tmp_file="$(mktemp "/tmp/neko_${cat}.XXXXXX")" || return 5
+    tmp_file="$(mktemp "/tmp/neko_${cat}.XXXXXX")||return 5"
     # Ensure cleanup on return, unless we are just printing the path
     trap 'rm -f "$tmp_file"' RETURN
     if curl -fsSL "$img_url" -o "$tmp_file"; then
