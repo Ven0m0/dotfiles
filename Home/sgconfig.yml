@@ -40,13 +40,209 @@ utils:
   is-shebang-line:
     kind: comment
     regex: '^#!/'
+  is-in-string:
+    inside:
+      any:
+        - kind: double_quoted_string
+        - kind: single_quoted_string
+        - kind: raw_string
+  is-in-test:
+    inside:
+      any:
+        - kind: test_command
+        - kind: arithmetic_expansion
+  # --- Python Utilities ---
+  is-import:
+    kind: import_statement
+  is-import-from:
+    kind: import_from_statement
+  is-function-def:
+    kind: function_definition
+  is-class-def:
+    kind: class_definition
+  has-type-hint:
+    has:
+      kind: type
 # ==============================================================================
-# RULES
+# RULES (Priority: error > warning > info > hint)
 # ==============================================================================
 rules:
-  # ----------------------------------------------------------------------------
+  # ============================================================================
+  # PYTHON — Type Safety & Style
+  # ============================================================================
+  - id: py-missing-return-type
+    language: python
+    message: Add return type hint to function
+    note: 'Use -> ReturnType, -> None for procedures'
+    rule:
+      utils: is-function-def
+      not:
+        utils: has-type-hint
+      not:
+        has:
+          kind: identifier
+          regex: ^__(init|new|enter|exit|del|repr|str)__$
+    severity: error
+  - id: py-missing-arg-type
+    language: python
+    message: Add type hints to function parameters
+    note: 'def fn(x: int, y: str) -> bool'
+    rule:
+      kind: parameters
+      inside:
+        utils: is-function-def
+      has:
+        kind: identifier
+        not:
+          follows:
+            kind: type
+      not:
+        has:
+          kind: identifier
+          regex: ^(self|cls)$
+    severity: error
+  - id: py-avoid-bare-except
+    language: python
+    message: Catch specific exceptions, not bare except
+    note: 'except Exception: or except (ValueError, KeyError):'
+    rule:
+      kind: except_clause
+      pattern: |
+        except:
+          $$$
+    severity: error
+  - id: py-no-mutable-default
+    language: python
+    message: Mutable default argument (shared across calls)
+    note: 'Use None then x = x or [] in body'
+    rule:
+      kind: default_parameter
+      has:
+        any:
+          - kind: list
+          - kind: dictionary
+          - kind: set
+    severity: error
+  - id: py-prefer-pathlib-exists
+    language: python
+    message: Use Path.exists() instead of os.path.exists
+    note: 'pathlib is more expressive, chainable'
+    rule:
+      pattern: os.path.exists($PATH)
+    fix: Path($PATH).exists()
+    severity: warning
+  - id: py-prefer-fstring
+    language: python
+    message: Use f-string instead of .format() (faster, clearer)
+    rule:
+      pattern: $STR.format($$$ARGS)
+    severity: info
+  - id: py-avoid-string-concat-loop
+    language: python
+    message: Use list append + join (O(n) vs O(n²))
+    note: 'result = []; result.append(x); "".join(result)'
+    rule:
+      kind: augmented_assignment
+      pattern: $VAR += $STR
+      inside:
+        any:
+          - kind: for_statement
+          - kind: while_statement
+    severity: warning
+  - id: py-prefer-dict-get
+    language: python
+    message: Use dict.get(k, default) instead of if k in dict
+    rule:
+      kind: if_statement
+      pattern: |
+        if $KEY in $DICT:
+          $VAR = $DICT[$KEY]
+        else:
+          $VAR = $DEFAULT
+    fix: $VAR = $DICT.get($KEY, $DEFAULT)
+    severity: info
+  - id: py-prefer-set-membership
+    language: python
+    message: Use set for membership test (O(1) vs O(n))
+    note: 'If checking same collection repeatedly'
+    rule:
+      kind: comparison_operator
+      pattern: $VAR in $LIST
+      has:
+        kind: list
+    severity: hint
+  - id: py-avoid-subprocess-shell
+    language: python
+    message: Pass list to subprocess, not shell=True (injection risk)
+    note: 'run(["cmd", arg1, arg2]) not run("cmd arg1", shell=True)'
+    rule:
+      pattern: subprocess.$METHOD($CMD, shell=True)
+    severity: error
+  - id: py-missing-docstring-public
+    language: python
+    message: Add docstring to public function/class
+    note: 'PEP 257: """Brief description."""'
+    rule:
+      any:
+        - utils: is-function-def
+        - utils: is-class-def
+      has:
+        kind: identifier
+        not:
+          regex: ^_
+      not:
+        has:
+          kind: expression_statement
+          has:
+            kind: string
+    severity: warning
+  - id: py-prefer-comprehension
+    language: python
+    message: Use comprehension instead of append loop
+    rule:
+      kind: for_statement
+      pattern: |
+        for $VAR in $ITER:
+          $LIST.append($EXPR)
+    fix: $LIST = [$EXPR for $VAR in $ITER]
+    severity: info
+  - id: py-dataclass-use-slots
+    language: python
+    message: Add slots=True to dataclass (memory/speed)
+    note: '@dataclass(slots=True)'
+    rule:
+      kind: decorated_definition
+      has:
+        kind: decorator
+        pattern: '@dataclass'
+        not:
+          regex: 'slots=True'
+    severity: info
+  - id: py-avoid-pathlib-hot-loop
+    language: python
+    message: Cache Path object outside loop (object creation overhead)
+    rule:
+      kind: call
+      pattern: Path($ARG)
+      inside:
+        any:
+          - kind: for_statement
+          - kind: while_statement
+    severity: hint
+  - id: py-precompile-regex
+    language: python
+    message: Precompile regex outside loop (10-100x faster)
+    note: 'pattern = re.compile(r"..."); pattern.search()'
+    rule:
+      pattern: re.$METHOD($PATTERN, $$$)
+      inside:
+        any:
+          - kind: for_statement
+          - kind: while_statement
+    severity: warning
+  # ============================================================================
   # TYPESCRIPT / JAVASCRIPT — Security & Style
-  # ----------------------------------------------------------------------------
+  # ============================================================================
   - id: no-console
     language: typescript
     message: Remove console statements (use logger/debug build)
@@ -61,7 +257,7 @@ rules:
     severity: error
     fix: ''
   - id: no-todo-comments
-    languages: [typescript, javascript, bash]
+    languages: [typescript, javascript, bash, python]
     message: Resolve TODO/FIXME comment
     note: 'Convert to tracked issues or resolve inline'
     utils: has-todo
@@ -111,7 +307,6 @@ rules:
         any:
           - kind: arguments
           - kind: array
-    fix: ($PARAMS) => $BODY
     severity: hint
   - id: no-empty-catch
     language: typescript
@@ -131,11 +326,24 @@ rules:
       any:
         - pattern: $A == $B
         - pattern: $A != $B
-    fix: $A === $B
     severity: error
-  # ----------------------------------------------------------------------------
-  # BASH — Critical Standards (MUST HAVE)
-  # ----------------------------------------------------------------------------
+  - id: ts-prefer-nullish-coalescing
+    language: typescript
+    message: Use ?? instead of || for null/undefined (0/false are valid)
+    rule:
+      kind: binary_expression
+      pattern: $A || $B
+    severity: hint
+  - id: ts-prefer-optional-chaining
+    language: typescript
+    message: Use optional chaining (?.) instead of && checks
+    rule:
+      pattern: $OBJ && $OBJ.$PROP
+    fix: $OBJ?.$PROP
+    severity: info
+  # ============================================================================
+  # BASH — Critical Standards (MUST HAVE - Priority 1)
+  # ============================================================================
   - id: bash-require-env-shebang
     language: bash
     message: Use #!/usr/bin/env bash shebang
@@ -174,9 +382,71 @@ rules:
       kind: pipeline
       pattern: ls $$$ARGS | $CMD
     severity: error
-  # ----------------------------------------------------------------------------
-  # BASH — Bashisms (Style Enforcement)
-  # ----------------------------------------------------------------------------
+  - id: bash-banned-bin-sh
+    language: bash
+    message: Never use /bin/sh in shebang (use bash)
+    rule:
+      utils: is-shebang-line
+      regex: '^#!/bin/sh'
+    severity: error
+  - id: bash-require-set-options
+    language: bash
+    message: Add set -euo pipefail at script start
+    note: 'Exit on error, undefined var, pipe failure'
+    rule:
+      kind: file
+      not:
+        has:
+          kind: command
+          pattern: set -$$$
+          has:
+            regex: '[euo].*pipefail|pipefail.*[euo]'
+    severity: error
+  # ============================================================================
+  # BASH — Safety (Prevent Word Splitting & Injection - Priority 2)
+  # ============================================================================
+  - id: bash-unquoted-var
+    language: bash
+    message: Quote variable to prevent word splitting/globbing
+    note: 'Exceptions: [[ ]], (( )), assignments, case items'
+    rule:
+      kind: expansion
+      regex: ^\$[A-Za-z_][A-Za-z0-9_]*$
+      not:
+        any:
+          - utils: is-in-string
+          - utils: is-in-test
+          - inside:
+              kind: assignment
+          - inside:
+              kind: case_item
+          - inside:
+              kind: for_statement
+    severity: error
+  - id: bash-unquoted-command-sub
+    language: bash
+    message: Quote command substitution
+    rule:
+      kind: command_substitution
+      not:
+        any:
+          - utils: is-in-string
+          - utils: is-in-test
+          - inside:
+              kind: assignment
+    severity: error
+  - id: bash-unquoted-array-expansion
+    language: bash
+    message: Quote array expansion or use "${arr[@]}"
+    rule:
+      kind: expansion
+      regex: '^\$\{[A-Za-z_][A-Za-z0-9_]*\[@\]\}$'
+      not:
+        utils: is-in-string
+    severity: error
+  # ============================================================================
+  # BASH — Bashisms (Style Enforcement - Priority 3)
+  # ============================================================================
   - id: bash-function-no-space
     language: bash
     message: Remove space before function brace
@@ -190,8 +460,9 @@ rules:
     message: Use &>/dev/null instead of >/dev/null 2>&1
     note: 'Bash 4.0+ shorthand, 14 chars vs 20'
     rule:
-      kind: command
+      kind: redirected_statement
       regex: '>\s*/dev/null\s+2>&1'
+    fix: '&>/dev/null'
     severity: error
   - id: bash-redirect-no-space
     language: bash
@@ -234,42 +505,20 @@ rules:
       kind: command
       pattern: echo -n $$$
     severity: warning
-  # ----------------------------------------------------------------------------
-  # BASH — Safety (Prevent Word Splitting & Injection)
-  # ----------------------------------------------------------------------------
-  - id: bash-unquoted-var
+  - id: bash-prefer-printf-over-echo
     language: bash
-    message: Quote variable to prevent word splitting/globbing
-    note: 'Exceptions: [[ ]], (( )), assignments, case items'
+    message: Use printf for formatted output (portable)
+    note: 'printf "%s\n" "$var" not echo "$var"'
     rule:
-      kind: expansion
-      regex: ^\$[A-Za-z_][A-Za-z0-9_]*$
+      kind: command
+      pattern: echo "$$$"
       not:
         inside:
-          any:
-            - kind: double_quoted_string
-            - kind: single_quoted_string
-            - kind: arithmetic_expansion
-            - kind: test_command
-            - kind: assignment
-            - kind: case_item
-            - kind: for_statement
-    severity: error
-  - id: bash-unquoted-command-sub
-    language: bash
-    message: Quote command substitution
-    rule:
-      kind: command_substitution
-      not:
-        inside:
-          any:
-            - kind: double_quoted_string
-            - kind: test_command
-            - kind: assignment
-    severity: error
-  # ----------------------------------------------------------------------------
-  # BASH — Performance (Avoid Forks, Use Builtins)
-  # ----------------------------------------------------------------------------
+          kind: if_statement
+    severity: hint
+  # ============================================================================
+  # BASH — Performance (Avoid Forks, Use Builtins - Priority 4)
+  # ============================================================================
   - id: bash-useless-cat
     language: bash
     message: Useless cat - redirect directly (saves fork)
@@ -296,8 +545,8 @@ rules:
     note: '${var#prefix}, ${var%suffix}, ${var//search/replace}'
     rule:
       any:
-        - pattern: echo $VAR | sed 's/^$PREFIX//'
-        - pattern: echo $VAR | awk '{gsub(/^$PREFIX/,"")}1'
+        - pattern: sed 's/^$PREFIX//' <<< "$VAR"
+        - pattern: echo "$VAR" | sed 's/^$PREFIX//'
     fix: echo "${VAR#$PREFIX}"
     severity: warning
   - id: bash-no-subshell-in-loop
@@ -319,36 +568,127 @@ rules:
       pattern: /usr/bin/printf $$$
     fix: printf $$$
     severity: info
-  # ----------------------------------------------------------------------------
-  # BASH — Modern Tools (Prefer Rust/Fast Alternatives)
-  # ----------------------------------------------------------------------------
+  - id: bash-prefer-read-array
+    language: bash
+    message: Use read -ra for splitting (builtin, no fork)
+    rule:
+      kind: command_substitution
+      pattern: $(echo "$VAR" | tr ' ' '\n')
+    fix: read -ra arr <<< "$VAR"
+    severity: info
+  - id: bash-batch-find
+    language: bash
+    message: Batch find results to array (avoid N forks)
+    note: 'mapfile -t arr < <(find ...) or arr=($(find ...))'
+    rule:
+      kind: while_statement
+      pattern: |
+        while IFS= read -r $VAR; do
+          $$$
+        done < <(find $$$)
+    severity: hint
+  - id: bash-prefer-builtin-read
+    language: bash
+    message: Use read instead of head -n1 (builtin)
+    rule:
+      kind: pipeline
+      pattern: $CMD | head -n1
+    fix: $CMD | { read -r line; echo "$line"; }
+    severity: info
+  - id: bash-avoid-unnecessary-subshell
+    language: bash
+    message: Remove unnecessary subshell (use { }; instead)
+    rule:
+      kind: subshell
+      not:
+        any:
+          - inside:
+              kind: pipeline
+          - inside:
+              kind: command_substitution
+    severity: info
+  - id: bash-prefer-arithmetic-expansion
+    language: bash
+    message: Use (( )) instead of let (shorter)
+    rule:
+      kind: command
+      pattern: let $$$
+    fix: '(( $$$ ))'
+    severity: info
+  - id: bash-parallel-background-jobs
+    language: bash
+    message: Consider parallelizing independent tasks (& and wait)
+    note: 'task1 & task2 & task3 & wait'
+    rule:
+      kind: list
+      all:
+        - pattern: |
+            $CMD1
+            $CMD2
+            $CMD3
+        - not:
+            has:
+              kind: background_command
+    severity: hint
+  # ============================================================================
+  # BASH — Modern Tools (Prefer Rust/Fast Alternatives - Priority 5)
+  # ============================================================================
   - id: bash-prefer-fd-over-find
     language: bash
-    message: Consider fd instead of find (faster, better UX)
-    note: 'Fallback to find if fd unavailable'
+    message: Use fd instead of find (faster, better UX)
+    note: 'Fallback: command -v fd &>/dev/null && fd ... || find ...'
     rule:
       kind: command
       pattern: find $$$ARGS -name $PATTERN
     severity: hint
   - id: bash-prefer-rg-over-grep
     language: bash
-    message: Consider rg instead of grep (10-100x faster)
-    note: 'Fallback to grep if rg unavailable'
+    message: Use rg instead of grep (10-100x faster)
+    note: 'Fallback: command -v rg &>/dev/null && rg ... || grep ...'
     rule:
       kind: command
-      pattern: grep -r $$$
+      any:
+        - pattern: grep -r $$$
+        - pattern: grep -R $$$
     severity: hint
   - id: bash-prefer-sd-over-sed
     language: bash
-    message: Consider sd instead of sed (safer syntax)
-    note: 'Fallback to sed if sd unavailable'
+    message: Use sd instead of sed (safer syntax)
+    note: 'Fallback: command -v sd &>/dev/null && sd ... || sed ...'
     rule:
-      kind: pipeline
-      pattern: $CMD | sed 's/$$$'
+      kind: command
+      pattern: sed -i $$$
     severity: hint
-  # ----------------------------------------------------------------------------
-  # BASH — Case Optimization (Selective Inlining)
-  # ----------------------------------------------------------------------------
+  - id: bash-prefer-jaq-over-jq
+    language: bash
+    message: Use jaq instead of jq (faster, Rust-based)
+    note: 'Fallback: command -v jaq &>/dev/null && jaq ... || jq ...'
+    rule:
+      kind: command
+      pattern: jq $$$
+    severity: hint
+  - id: bash-prefer-zstd-over-xz
+    language: bash
+    message: Use zstd instead of xz (faster, better ratio)
+    rule:
+      kind: command
+      any:
+        - pattern: xz -$$$
+        - pattern: unxz $$$
+    severity: hint
+  - id: bash-prefer-aria2c
+    language: bash
+    message: Use aria2c for downloads (parallel, resume)
+    note: 'Fallback chain: aria2c -> curl -> wget'
+    rule:
+      kind: command
+      any:
+        - pattern: wget $URL
+        - pattern: curl -O $URL
+    severity: hint
+  # ============================================================================
+  # BASH — Case Optimization (Selective Inlining - Priority 6)
+  # ============================================================================
   - id: bash-case-trivial-inline
     language: bash
     message: Inline trivial case to [[ ]] (faster)
@@ -388,17 +728,9 @@ rules:
               kind: while_statement
     fix: if [[ $VAR == $PATTERN1 ]]; then $CMD1; else $CMD2; fi
     severity: hint
-  - id: bash-case-getopt-preserve
-    language: bash
-    message: Getopt/flag case preserved (idiomatic)
-    rule:
-      kind: case_statement
-      has:
-        utils: is-flag-case
-    severity: off
-  # ----------------------------------------------------------------------------
-  # BASH — Additional Optimizations
-  # ----------------------------------------------------------------------------
+  # ============================================================================
+  # BASH — Additional Best Practices
+  # ============================================================================
   - id: bash-declare-array
     language: bash
     message: Declare arrays explicitly for clarity
@@ -418,8 +750,12 @@ rules:
       inside:
         kind: function_definition
       not:
-        inside:
-          kind: declaration_command
+        any:
+          - inside:
+              kind: declaration_command
+          - has:
+              kind: identifier
+              regex: ^[A-Z_]+$
     severity: warning
   - id: bash-prefer-literal-search
     language: bash
@@ -428,16 +764,62 @@ rules:
     rule:
       kind: command
       any:
-        - pattern: grep $PATTERN
-        - pattern: rg $PATTERN
+        - pattern: grep "$PATTERN" $$$
+        - pattern: rg "$PATTERN" $$$
       not:
         has:
           regex: '\s-[EFPGo]'
     severity: hint
+  - id: bash-prefer-globstar
+    language: bash
+    message: Use **/ for recursive globs (needs shopt -s globstar)
+    note: 'files=(**/*.sh) instead of find'
+    rule:
+      kind: command
+      pattern: find . -name "*.ext"
+    severity: hint
+  - id: bash-prefer-nullglob
+    language: bash
+    message: Use shopt -s nullglob to handle empty globs safely
+    note: 'Prevents literal "*.txt" when no matches'
+    rule:
+      kind: for_statement
+      pattern: for $VAR in $GLOB; do $$$
+      has:
+        kind: expansion
+        regex: '\*'
+    severity: hint
+  - id: bash-prefer-nameref
+    language: bash
+    message: Use local -n for reference parameters (cleaner)
+    note: 'local -n ref=$1; ref[key]=val'
+    rule:
+      kind: function_definition
+      has:
+        kind: assignment
+        regex: 'eval.*\$[0-9]'
+    severity: info
+  - id: bash-check-command-exists
+    language: bash
+    message: Check command exists before use
+    note: 'command -v cmd &>/dev/null || { echo "missing"; exit 1; }'
+    rule:
+      kind: command
+      any:
+        - pattern: fd $$$
+        - pattern: rg $$$
+        - pattern: sd $$$
+        - pattern: jaq $$$
+      not:
+        inside:
+          kind: if_statement
+          has:
+            pattern: command -v $CMD
+    severity: hint
 # ==============================================================================
 # FILE FILTERS (Performance: Scope Scans)
 # ==============================================================================
-# Uncomment if using . ast-grep/rules/ structure:
+# Uncomment if using ast-grep/rules/ structure:
 # files:
 #   - "**/*.sh"
 #   - "**/*.bash"
@@ -445,8 +827,13 @@ rules:
 #   - "**/*.tsx"
 #   - "**/*.js"
 #   - "**/*.jsx"
+#   - "**/*.py"
 # ignores:
 #   - "**/node_modules/**"
 #   - "**/.git/**"
 #   - "**/dist/**"
 #   - "**/build/**"
+#   - "**/__pycache__/**"
+#   - "**/*.pyc"
+#   - "**/venv/**"
+#   - "**/.venv/**"
