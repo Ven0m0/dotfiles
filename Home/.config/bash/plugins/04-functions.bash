@@ -1,11 +1,10 @@
 # ~/.config/bash/plugins/04-functions.bash
 #!/usr/bin/env bash
 #============================== [Functions] ===================================
-
 # --- Navigation & Directory
-mkcd(){ [[ -z $1 ]] && { echo "Usage: mkcd <dir>"; return 1; }; mkdir -p -- "$1" && cd -- "$1" || return 1; }
+mkcd(){ [[ -z $1 ]] && { printf "Usage: mkcd <dir>\n"; return 1; }; mkdir -p -- "$1" && cd -- "$1" || return 1; }
 cdls(){ cd -- "$1" && ls -A; }
-up(){ local d="" c="${1:-1}"; [[ ! $c =~ ^[0-9]+$ ]] && { echo "Usage: up [N]"; return 1; }; for ((i=1;i<=c;i++)); do d="../$d"; done; cd -- "$d" || return 1; }
+up(){ local d="" c="${1:-1}"; [[ ! $c =~ ^[0-9]+$ ]] && { printf "Usage: up [N]\n"; return 1; }; for ((i=1;i<=c;i++)); do d="../$d"; done; cd -- "$d" || return 1; }
 mounted(){ mount | column -t; }
 
 # --- File Info & Display
@@ -14,23 +13,23 @@ fs(){
   else
     local -a args=("$@")
     [[ $# -eq 0 ]] && { shopt -s nullglob; args=(.[!.]* ./*); shopt -u nullglob; }
-    [[ ${#args[@]} -gt 0 ]] && du -sbh -- "${args[@]}" 2>/dev/null | sort -hr
+    [[ ${#args[@]} -gt 0 ]] && du -sbh -- "${args[@]}" &>/dev/null | sort -hr
   fi
 }
 catt(){
   for i in "$@"; do
     if [[ -d $i ]]; then ls "$i"
-    elif has bat; then bat -p "$i" 2>/dev/null || cat "$i"
+    elif has bat; then bat -p "$i" &>/dev/null || cat "$i"
     else cat "$i"; fi
   done
 }
 vcode(){
-  [[ $# -eq 0 ]] && { echo "Usage: vcode FILE|URI..."; return 1; }
+  [[ $# -eq 0 ]] && { printf "Usage: vcode FILE|URI...\n"; return 1; }
   local cmd
   if has code; then cmd="code"
   elif has codium; then cmd="codium"
   elif has vscode; then cmd="vscode"
-  else echo "Error: VS Code/Codium not found" >&2; return 1; fi
+  else printf "Error: VS Code/Codium not found\n" >&2; return 1; fi
   for uri in "$@"; do
     local path="${uri#file://}" && path="${path//%20/ }"
     "$cmd" --new-window "$path" && printf 'Opened: %s\n' "$path" || printf 'Failed: %s\n' "$path" >&2
@@ -55,14 +54,14 @@ extract(){
     *.zst) zstd -dco "$out/${f%.zst}" "$f" ;;
     *.zip|*.jar) unzip -q "$f" -d "$out" ;;
     *.rar) unrar x -inul "$f" "$out/" ;;
-    *.7z) 7z x -o"$out" "$f" >/dev/null ;;
+    *.7z) 7z x -o"$out" "$f" &>/dev/null ;;
     *) printf 'Unsupported format: %s\n' "$f" >&2; return 1 ;;
   esac
   [[ $? -eq 0 ]] && printf 'Extracted: %s -> %s\n' "$f" "$out" || { printf 'Extraction failed for %s\n' "$f" >&2; return 1; }
 }
 cr(){
-  [[ $# -eq 0 ]] && { echo "Usage: cr <file_or_folder1> ..."; return 1; }
-  echo "Choose format: 1)tar.gz 2)tar.xz 3)tar.zst 4)zip 5)7z"
+  [[ $# -eq 0 ]] && { printf "Usage: cr <file_or_folder1> ...\n"; return 1; }
+  printf "Choose format: 1)tar.gz 2)tar.xz 3)tar.zst 4)zip 5)7z\n"
   local choice out
   read -rp "Choice [1-5]: " choice && read -rp "Output name (no extension): " out
   case "$choice" in
@@ -71,7 +70,7 @@ cr(){
     3) tar --zstd -cf "$out.tar.zst" "$@" ;;
     4) zip -r "$out.zip" "$@" ;;
     5) 7z a "$out.7z" "$@" ;;
-    *) echo "❌ Invalid choice"; return 1 ;;
+    *) printf "❌ Invalid choice\n"; return 1 ;;
   esac
 }
 
@@ -89,10 +88,10 @@ fiximg(){
   else GM_CMD="convert"; GM_IDENTIFY="identify"; fi
   local -a exts=(png jpg jpeg webp avif jxl)
   export GM_CMD GM_IDENTIFY
-  export -f _strip_file_internal 2>/dev/null
+  export -f _strip_file_internal &>/dev/null
   _strip_file_internal(){
     local f="$1" tmp
-    if [[ -n $("$GM_IDENTIFY" -format "%[EXIF:*]%[IPTC:*]%[Comment]" "$f" 2>/dev/null) ]]; then
+    if [[ -n $("$GM_IDENTIFY" -format "%[EXIF:*]%[IPTC:*]%[Comment]" "$f" &>/dev/null) ]]; then
       tmp="${f}.strip.$$" && "$GM_CMD" "$f" -strip "$tmp" && mv "$tmp" "$f"
     fi
   }
@@ -102,29 +101,29 @@ fiximg(){
 
 # --- Process Management
 pk(){
-  [[ $# -ne 1 ]] && { echo "Usage: pk <process_name>"; return 1; }
+  [[ $# -ne 1 ]] && { printf "Usage: pk <process_name>\n"; return 1; }
   local pids
   if has pgrep; then pids=$(pgrep -f "$1" | xargs)
   else pids=$(ps aux | grep -F "$1" | grep -v grep | awk '{print $2}'); fi
-  [[ -z $pids ]] && { echo "❌ No processes found matching '$1'"; return 1; }
-  echo "🔍 Found processes:"
+  [[ -z $pids ]] && { printf "❌ No processes found matching '%s'\n" "$1"; return 1; }
+  printf "🔍 Found processes:\n"
   has pgrep && pgrep -af "$1" || ps aux | grep -F "$1" | grep -v grep
   local confirm
   read -rp "❓ Kill these? (y/N): " confirm
-  [[ $confirm =~ ^[Yy]$ ]] && echo "$pids" | xargs kill -9 && echo "💀 Killed" || echo "❌ Cancelled"
+  [[ $confirm =~ ^[Yy]$ ]] && printf "%s" "$pids" | xargs kill -9 && printf "💀 Killed\n" || printf "❌ Cancelled\n"
 }
 fkill(){
-  local pid fuzzy=$(has sk && echo "sk" || echo "fzf")
+  local pid fuzzy=$(has sk && printf "sk" || printf "fzf")
   if [[ $UID != 0 ]]; then pid=$(ps -f -u "$UID" | tail -n +2 | $fuzzy -m | awk '{print $2}')
   else pid=$(ps -ef | tail -n +2 | $fuzzy -m | awk '{print $2}'); fi
-  [[ -n $pid ]] && echo "$pid" | xargs kill -"${1:-9}"
+  [[ -n $pid ]] && printf "%s" "$pid" | xargs kill -"${1:-9}"
 }
 bgd(){ ( nohup "$@" &>/dev/null </dev/null & ); disown; }
 
 # --- Man & Help
 fman(){
   [[ $# -gt 0 ]] && { man "$@"; return; }
-  local cmd=$(has sd && echo "man -k . | fzf --reverse --preview=\"echo {1,2} | sd ' \\(' '.' | sd '\\)\\s*\$' '' | xargs man\"" || echo "man -k . | fzf --reverse --preview=\"echo {1,2} | sed 's/ (/./' | sed -E 's/\)\s*$//' | xargs man\"")
+  local cmd=$(has sd && printf "man -k . | fzf --reverse --preview=\"echo {1,2} | sd ' \\(' '.' | sd '\\)\\s*\$' '' | xargs man\"" || printf "man -k . | fzf --reverse --preview=\"echo {1,2} | sed 's/ (/./' | sed -E 's/\)\s*$//' | xargs man\"")
   eval "$cmd" | awk '{print $1"."$2}' | tr -d '()' | xargs -r man
 }
 bathelp(){ "$@" --help 2>&1 | bat -plhelp; }
@@ -152,9 +151,9 @@ fz(){
       ;;
     dir|*)
       local dir
-      if has fdf; then dir=$(fdf "$search_path" -t d 2>/dev/null | fzf +m --preview 'ls -lah {}')
-      elif has fd; then dir=$(fd -t d . "$search_path" 2>/dev/null | fzf +m --preview 'ls -lah {}')
-      else dir=$(find "$search_path" -type d 2>/dev/null | fzf +m --preview 'ls -lah {}'); fi
+      if has fdf; then dir=$(fdf "$search_path" -t d &>/dev/null | fzf +m --preview 'ls -lah {}')
+      elif has fd; then dir=$(fd -t d . "$search_path" &>/dev/null | fzf +m --preview 'ls -lah {}')
+      else dir=$(find "$search_path" -type d &>/dev/null | fzf +m --preview 'ls -lah {}'); fi
       [[ -n $dir ]] && cd "$dir" || return 1
       ;;
   esac
@@ -167,19 +166,19 @@ ghpatch(){
   patch="$(mktemp)" || return 1
   trap 'rm -f "$patch"' EXIT
   if curl -sSfL "${url}.patch" -o "$patch"; then
-    git apply "$patch" && git add -A && git commit -m "Apply patch from ${url}" || { echo "❌ Patch failed"; return 1; }
-  else echo "❌ Failed to download patch"; return 1; fi
+    git apply "$patch" && git add -A && git commit -m "Apply patch from ${url}" || { printf "❌ Patch failed\n"; return 1; }
+  else printf "❌ Failed to download patch\n"; return 1; fi
 }
 ghf(){
   git rev-parse --is-inside-work-tree &>/dev/null || return
-  local git_cmd="git" grep_cmd=$(has rg && echo "rg" || echo "grep")
+  local git_cmd="git" grep_cmd=$(has rg && printf "rg" || printf "grep")
   git log --date=relative --format="%C(auto)%h%d %C(white)%s %C(cyan)%an %C(black)%C(bold)%cd%C(auto)" --graph --color=always |
   fzf --ansi --no-sort --reverse -m --bind 'ctrl-s:toggle-sort' --header 'CTRL-S: toggle sort' \
     --preview="$grep_cmd -o '[a-f0-9]\{7,\}' <<< {} | xargs $git_cmd show --color=always | delta" \
     --bind "enter:execute($grep_cmd -o '[a-f0-9]\{7,\}' <<< {} | xargs $git_cmd show --color=always | delta | less -R)"
 }
 fzf-git-status(){
-  git rev-parse --git-dir &>/dev/null || { echo "❌ Not in git repo"; return 1; }
+  git rev-parse --git-dir &>/dev/null || { printf "❌ Not in git repo\n"; return 1; }
   local selected=$(git -c color.status=always status --short | fzf --height 50% "$@" --border -m --ansi --nth 2..,.. --preview "(git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500" | cut -c4- | sed 's/.* -> //')
   [[ -n $selected ]] && while IFS= read -r file; do "$EDITOR" "$file"; done <<<"$selected"
 }
@@ -191,7 +190,7 @@ git_maintain_max(){
 update_git_pull(){ git pull --rebase --autostash && git submodule update --init --recursive; }
 gdbr(){
   git fetch --prune
-  local grep_cmd=$(has rg && echo "rg" || echo "grep")
+  local grep_cmd=$(has rg && printf "rg" || printf "grep")
   git branch -vv | $grep_cmd -F ': gone]' | awk '{print $1}' | xargs -r git branch -D
 }
 
@@ -204,21 +203,21 @@ pacsize(){
   fi
 }
 fuzzy_paru(){
-  has paru || { echo "paru not found"; return 1; }
+  has paru || { printf "paru not found\n"; return 1; }
   local fzf_input=$(awk 'FNR==NR {i[$0]=1; next} {if ($0 in i) printf "%s\t\033[32m[installed]\033[0m\n", $0; else print $0}' <(paru -Qq) <(paru -Ssq '^'))
   local -a selections=()
-  mapfile -t selections < <(echo "$fzf_input" | fzf --ansi -m --cycle --layout=reverse-list --preview 'paru -Si {1} 2>/dev/null | bat -plini --color=always' --expect=ctrl-u --header 'ENTER: install, CTRL-U: uninstall')
+  mapfile -t selections < <(printf "%s" "$fzf_input" | fzf --ansi -m --cycle --layout=reverse-list --preview 'paru -Si {1} &>/dev/null | bat -plini --color=always' --expect=ctrl-u --header 'ENTER: install, CTRL-U: uninstall')
   [[ ${#selections[@]} -eq 0 ]] && return
   local key="${selections[0]}" && unset "selections[0]"
-  [[ ${#selections[@]} -eq 0 ]] && { echo "No packages selected"; return; }
+  [[ ${#selections[@]} -eq 0 ]] && { printf "No packages selected\n"; return; }
   local -a packages=()
   for item in "${selections[@]}"; do packages+=("${item%% *}"); done
   if [[ $key == "ctrl-u" ]]; then printf '\e[31mUninstalling:\e[0m %s\n' "${packages[*]}"; sudo pacman -Rns --noconfirm "${packages[@]}"
   else printf '\e[32mInstalling:\e[0m %s\n' "${packages[*]}"; paru -S --needed --noconfirm "${packages[@]}"; fi
 }
 search(){
-  local jq_cmd=$(has jaq && echo "jaq" || echo "jq")
-  curl -s "https://aur.archlinux.org/rpc/?v=5&type=search&arg=$1" | "$jq_cmd" '.results[] | {Name,Description,Version,URL,NumVotes,Popularity,Maintainer}' || echo "Cannot query database"
+  local jq_cmd=$(has jaq && printf "jaq" || printf "jq")
+  curl -s "https://aur.archlinux.org/rpc/?v=5&type=search&arg=$1" | "$jq_cmd" '.results[] | {Name,Description,Version,URL,NumVotes,Popularity,Maintainer}' || printf "Cannot query database\n"
 }
 
 # --- Docker
@@ -231,7 +230,7 @@ drmi(){ docker images | tail -n +2 | fzf -q "$1" --no-sort -m --tac | awk '{prin
 # --- Misc Utilities
 list_opened_apps(){ ps axc | awk 'NR > 1 {print substr($0,index($0,$5))}' | sort -u; }
 shlint(){
-  [[ -z $1 ]] && { echo "Usage: shlint <script>"; return 1; }
+  [[ -z $1 ]] && { printf "Usage: shlint <script>\n"; return 1; }
   shellcheck -a -x --shell=bash --source-path=SCRIPTDIR -f diff "$1" | patch -p1
   shellharden --replace "$1"
   shfmt -w -ln bash -bn -i 2 -s "$1"
@@ -244,12 +243,12 @@ prune_empty(){
 ffwrap(){
   if has ffzap; then ffzap "$@"
   elif has ffmpeg; then ffmpeg -hide_banner "$@"
-  else echo "neither ffzap nor ffmpeg found in PATH" >&2; return 1; fi
+  else printf "neither ffzap nor ffmpeg found in PATH\n" >&2; return 1; fi
 }
 jqwrap(){
   if has jaq; then jaq "$@"
   elif has jq; then jq "$@"
-  else echo "neither jq nor jaq found in PATH" >&2; return 1; fi
+  else printf "neither jq nor jaq found in PATH\n" >&2; return 1; fi
 }
 
 # vim: set ft=bash ts=2 sw=2 et:

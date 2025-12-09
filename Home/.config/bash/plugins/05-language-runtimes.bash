@@ -1,7 +1,6 @@
 # ~/.config/bash/plugins/05-language-runtimes.bash
 #!/usr/bin/env bash
 #========================== [Language Runtimes] ===============================
-
 # --- Multi-language Manager (Mise)
 if has mise; then
   set +h
