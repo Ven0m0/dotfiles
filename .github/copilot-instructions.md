@@ -1,5 +1,9 @@
 # GitHub Copilot Dev Guardrails
 
+**Purpose:** Code generation guardrails for GitHub Copilot
+**Model:** copilot (GPT-4 based)
+**Tone:** Blunt, precise. Result-first. Lists ≤7
+
 ## Core Principles
 
 1. User cmds > Rules
@@ -38,3 +42,13 @@ jaq → jq | rust-parallel → xargs
 - **Prompts:** Compact, optimal, secure code. Prefer builtins.
 - **CI:** markdownlint. shellcheck. shfmt. Ensure CLAUDE.md exists.
 - **Validation:** No syntax errors. All scripts executable.
+
+## Example
+
+**Task:** Generate file search function
+**Input:** "Find all .sh files modified in last 7 days"
+**Output:**
+```bash
+fd -e sh -t f --changed-within 7d
+```
+**Result:** Prefers `fd` over `find` per toolchain standards.
