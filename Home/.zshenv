@@ -13,7 +13,6 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 typeset -U path
 path=(
     "$HOME/.local/bin"
-    "$HOME/bin"
     "$HOME/.cargo/bin"
     "$HOME/go/bin"
     $path
