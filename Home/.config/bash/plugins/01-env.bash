@@ -79,3 +79,34 @@ fi
 if has obs; then
   export OBS_USE_EGL=1 OBS_VKCAPTURE=1
 fi
+#=============================== [Game Profiles] ==============================
+_set_sarek(){
+  export WINEDEBUG="-all" DXVK_LOG_LEVEL="none" VKD3D_DEBUG="none" VKD3D_SHADER_DEBUG="none"
+  export __GL_SHADER_DISK_CACHE="1" __GL_SHADER_DISK_CACHE_SIZE="2147483648"
+  export MESA_SHADER_CACHE_DISABLE="false" MESA_SHADER_CACHE_MAX_SIZE="2097152K"
+  export __GL_IGNORE_GLSL_EXT_REQS="1" MESA_GL_VERSION_OVERRIDE="4.6" MESA_GLSL_VERSION_OVERRIDE="460" MESA_VK_VERSION_OVERRIDE="1.4"
+  export __GL_SYNC_TO_VBLANK="0" __GL_OpenGLImageSettings="3" __GL_FSAA_MODE="0" __GL_ALLOW_FXAA_USAGE="0" __GL_LOG_MAX_ANISO="0" __GL_VRR_ALLOWED="0"
+  export MESA_NO_ERROR="true" MESA_NO_DITHER="1" vblank_mode="0"
+  export MESA_EXTENSION_OVERRIDE="-GL_EXT_framebuffer_multisample -GL_EXT_framebuffer_multisample_blit_scaled -GL_EXT_texture_filter_anisotropic"
+  export __GL_THREADED_OPTIMIZATIONS="1" mesa_glthread="true"
+  export DXVK_CONFIG="dxgi.syncInterval=0;d3d9.presentInterval=0;d3d11.maxTessFactor=8;d3d11.relaxedBarriers=True;d3d11.ignoreGraphicsBarriers=True;d3d11.samplerAnisotropy=0;d3d9.samplerAnisotropy=0;d3d9.maxAvailableMemory=4096;dxgi.maxFrameLatency=1"
+  export DXVK_ASYNC="1" DXVK_STATE_CACHE_PATH="${XDG_CACHE_HOME:-$HOME/.cache}/dxvk" MESA_VK_WSI_PRESENT_MODE="immediate"
+}
+_set_glthread(){ export __GL_THREADED_OPTIMIZATIONS="1" mesa_glthread="true";}
+_set_software(){ export LIBGL_ALWAYS_SOFTWARE="1" __GLX_VENDOR_LIBRARY_NAME="mesa" VK_ICD_FILENAMES="/usr/share/vulkan/icd.d/lvp_icd.x86_64.json";}
+gamerun(){
+  [[ $# -eq 0 ]] && { printf 'Usage: gamerun [sarek|glthread|software|default] [ENV=val...] <program> [args...]\n' >&2;return 1;}
+  local profile=sarek
+  case ${1:-} in
+    sarek|skth) profile=sarek;shift;;
+    glthread) profile=glthread;shift;;
+    software) profile=software;shift;;
+    default) profile=default;shift;;
+  esac
+  case $profile in
+    sarek) _set_sarek;;glthread) _set_glthread;;software) _set_software;;
+  esac
+  while [[ ${1:-} =~ = ]];do export "$1";shift;done
+  [[ $# -eq 0 ]] && { printf 'No program specified\n' >&2;return 1;}
+  "$@"
+}
