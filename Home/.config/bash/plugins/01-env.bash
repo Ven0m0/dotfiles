@@ -1,3 +1,4 @@
+# ~/.config/bash/plugins/01-env.bash
 #!/usr/bin/env bash
 #============================= [Environment Vars] =============================
 
