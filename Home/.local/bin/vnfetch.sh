@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t' LC_ALL=C LANG=C
+set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
+export LC_ALL=C LANG=C
 # vnfetch (ven0m0-fetch), for Arch/Debian based distros
 # Heavily overoptimized bash fetch
 # Credit:

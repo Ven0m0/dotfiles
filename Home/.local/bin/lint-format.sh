@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
+set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
+export LC_ALL=C LANG=C
 
 # Exhaustive Lint & Format Script
 # Policy: 2-space indent, 120 char width, 0 errors
-# Pipeline: Format → Lint/Fix → Report
+# Pipeline: Format -> Lint/Fix -> Report
 
 readonly PROJECT_ROOT="$PWD"
 readonly PARALLEL_JOBS="$(nproc)"
 readonly DRY_RUN="${DRY_RUN:-false}"
 
-FD="$(command -v fd || command -v fdfind || echo "find")"
-RG="$(command -v rg || echo "grep")"
-SD="$(command -v sd || echo "sed")"
+FD="$(command -v fd || command -v fdfind || printf 'find')"
+RG="$(command -v rg || printf 'grep')"
+SD="$(command -v sd || printf 'sed')"
 
 declare -A FILE_RESULTS=()
 declare -A GROUP_ERRORS=()
@@ -36,28 +35,28 @@ check_deps(){
   local -a missing=() optional=()
   local -a required=(shfmt shellcheck biome yamllint yamlfmt ruff markdownlint)
   local -a opt=(taplo mdformat stylua selene ast-grep actionlint prettier)
-  
+
   for tool in "${required[@]}"; do
     has "$tool" || missing+=("$tool")
   done
-  
+
   for tool in "${opt[@]}"; do
     has "$tool" || optional+=("$tool")
   done
-  
+
   if [[ ${#missing[@]} -gt 0 ]]; then
     err "Missing required tools: ${missing[*]}"
     err "Install: paru -S ${missing[*]} || npm i -g ${missing[*]}"
     return 1
   fi
-  
+
   [[ ${#optional[@]} -gt 0 ]] && warn "Optional tools missing: ${optional[*]} (some features disabled)"
   return 0
 }
 
 find_files(){
   local ext="$1"
-  
+
   if [[ $FD == "find" ]]; then
     find "$PROJECT_ROOT" -type f -name "*.$ext" \
       ! -path "*/.git/*" \
@@ -103,20 +102,20 @@ proc_yaml(){
   local -a files=()
   mapfile -t files < <(find_files_multi yml yaml)
   [[ ${#files[@]} -eq 0 ]] && return 0
-  
+
   log "Processing YAML (${#files[@]} files)..."
-  
+
   if has yamlfmt; then
     local yamlfmt_cfg=".yamlfmt"
     [[ ! -f $yamlfmt_cfg ]] && yamlfmt_cfg=".qlty/configs/.yamlfmt.yaml"
     local modified=0 errors=0
-    
+
     for f in "${files[@]}"; do
       local before_stat after_stat
-      before_stat="$(stat -c '%Y %s' "$f" 2>/dev/null || echo '0 0')"
-      
+      before_stat="$(stat -c '%Y %s' "$f" 2>/dev/null || printf '0 0')"
+
       if yamlfmt -conf "$yamlfmt_cfg" "$f" 2>/dev/null; then
-        after_stat="$(stat -c '%Y %s' "$f" 2>/dev/null || echo '0 0')"
+        after_stat="$(stat -c '%Y %s' "$f" 2>/dev/null || printf '0 0')"
         if [[ $after_stat != "$before_stat" ]]; then
           ((modified++))
           record_result "$f" "$group" "yes" 0
@@ -128,15 +127,15 @@ proc_yaml(){
         record_result "$f" "$group" "no" 1
       fi
     done
-    
+
     add_fix_cmd "yamlfmt -conf $yamlfmt_cfg <file>"
     GROUP_ERRORS["$group"]=$errors
   fi
-  
+
   if has yamllint; then
     local yamllint_cfg=".qlty/configs/.yamllint.yaml"
     local lint_errors=0
-    
+
     for f in "${files[@]}"; do
       if ! yamllint -c "$yamllint_cfg" -f parsable "$f" 2>/dev/null; then
         ((lint_errors++))
@@ -144,11 +143,11 @@ proc_yaml(){
         FILE_RESULTS["$f"]="${FILE_RESULTS["$f"]%|*}|1"
       fi
     done
-    
+
     ((GROUP_ERRORS["$group"] += lint_errors))
     add_fix_cmd "yamllint -c $yamllint_cfg -f parsable <file>"
   fi
-  
+
   return 0
 }
 
@@ -157,26 +156,26 @@ proc_yaml(){
 # Report Generation
 print_table(){
   log ""
-  log "═══════════════════════════════════════════════════════════════════════════"
+  log "========================================================================"
   log "FILE RESULTS"
-  log "═══════════════════════════════════════════════════════════════════════════"
+  log "========================================================================"
   printf "%-50s %-12s %-10s %-8s\n" "FILE" "GROUP" "MODIFIED" "ERRORS"
-  log "───────────────────────────────────────────────────────────────────────────"
-  
+  log "------------------------------------------------------------------------"
+
   for file in "${!FILE_RESULTS[@]}"; do
     IFS='|' read -r grp mod err <<<"${FILE_RESULTS[$file]}"
-    local short_file="${file#$PROJECT_ROOT/}"
+    local short_file="${file#"$PROJECT_ROOT"/}"
     [[ ${#short_file} -gt 48 ]] && short_file="...${short_file: -45}"
     printf "%-50s %-12s %-10s %-8s\n" "$short_file" "$grp" "$mod" "$err"
   done | sort -k1
-  
-  log "═══════════════════════════════════════════════════════════════════════════"
+
+  log "========================================================================"
 }
 
 print_commands(){
   log ""
   log "FIX COMMANDS (Reproducible)"
-  log "───────────────────────────────────────────────────────────────────────────"
+  log "------------------------------------------------------------------------"
   for cmd in "${FIX_COMMANDS[@]}"; do
     log "  $cmd"
   done
@@ -185,26 +184,26 @@ print_commands(){
 
 print_summary(){
   log ""
-  log "═══════════════════════════════════════════════════════════════════════════"
+  log "========================================================================"
   log "SUMMARY"
-  log "═══════════════════════════════════════════════════════════════════════════"
+  log "========================================================================"
   log "Total Files Processed: $TOTAL_FILES"
   log "Files Modified: $TOTAL_MODIFIED"
   log "Total Errors: $TOTAL_ERRORS"
   log ""
   log "Errors by Group:"
-  
+
   for grp in "${!GROUP_ERRORS[@]}"; do
     printf "  %-12s: %d\n" "$grp" "${GROUP_ERRORS[$grp]}"
   done
-  
-  log "═══════════════════════════════════════════════════════════════════════════"
-  
+
+  log "========================================================================"
+
   if [[ $TOTAL_ERRORS -eq 0 ]]; then
-    ok "✅ Zero errors. All files compliant."
+    ok "Zero errors. All files compliant."
     return 0
   else
-    err "❌ $TOTAL_ERRORS error(s) found. Fix required."
+    err "$TOTAL_ERRORS error(s) found. Fix required."
     return 1
   fi
 }
@@ -215,9 +214,9 @@ main(){
   log "Policy: 2-space indent, 120-char width, zero errors"
   log "Root: $PROJECT_ROOT"
   log ""
-  
+
   check_deps || exit 1
-  
+
   # Run all processors
   proc_yaml
   proc_web
@@ -230,7 +229,7 @@ main(){
   proc_actions
   proc_xml
   proc_ast_grep
-  
+
   # Generate report
   print_table
   print_commands

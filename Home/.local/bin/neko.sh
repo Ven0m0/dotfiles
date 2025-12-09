@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
-IFS=$'\n\t'
+set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
 nekofetch(){

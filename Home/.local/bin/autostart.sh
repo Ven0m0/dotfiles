@@ -10,4 +10,4 @@ if [[ $# -gt 0 ]];then files=("$@")
 else mapfile -t files < <(command -v fd &>/dev/null && fd -t f --base-path "$AUTOSTART_DIR" || find "$AUTOSTART_DIR" -type f -exec basename {} \;|fzf --prompt='autostart: ' --preview='cat {}' -m --header="$(printf '%s\n' 'enter:confirm' "${FZF_DEFAULT_HEADER:-}")")
 fi
 [[ ${#files[@]} -eq 0 ]] && { printf '%s\n' "No files selected." >&2;exit 1;}
-for file in "${files[@]}";do [[ -f "$AUTOSTART_DIR/$file" ]] && while IFS= read -r program;do [[ -n $program ]] && nohup "$program" &>/dev/null &;done <"$AUTOSTART_DIR/$file"||printf '%s\n' "Warning: File '$file' does not exist." >&2;done
+for file in "${files[@]}";do [[ -f "$AUTOSTART_DIR/$file" ]] && while IFS= read -r program;do [[ -n $program ]] && nohup "$program" &>/dev/null & done <"$AUTOSTART_DIR/$file"||printf '%s\n' "Warning: File '$file' does not exist." >&2;done

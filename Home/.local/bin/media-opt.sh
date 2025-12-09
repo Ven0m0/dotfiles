@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
+set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
 export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 # media-opt.sh - Batch media optimization with AV1/WebP support
 # Optimized for performance using xargs -P and fd
 # Config
-: "${JOBS:=$(nproc 2>/dev/null || echo 4)}"
+: "${JOBS:=$(nproc 2>/dev/null || printf 4)}"
 : "${DRY:=0}"
 : "${BACKUP:=0}"
 : "${MTIME:=1}"
-: "${BACKUP_DIR:=${HOME}/.cache/media-opt/$(date +%Y%m%d_%H%M%S)}"
+: "${BACKUP_DIR:=${HOME}/.cache/media-opt/$(printf '%(%Y%m%d_%H%M%S)T' -1)}"
 : "${LOSSLESS:=1}"
 : "${QUAL:=95}"
 : "${VCRF:=28}"
@@ -16,8 +16,8 @@ export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 # Colors
 R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' X=$'\e[0m'
 # Helpers
-log(){ printf "${B}[%s]${X} %s\n" "$(date +%T)" "$*"; }
-err(){ printf "${R}[ERR]${X} %s\n" "$*" >&2; }
+log(){ printf '%s[%(%T)T]%s %s\n' "$B" -1 "$X" "$*"; }
+err(){ printf '%s[ERR]%s %s\n' "$R" "$X" "$*" >&2; }
 die(){ err "$@"; exit 1; }
 has(){ command -v "$1" &>/dev/null; }
 # Tool Capability Cache
@@ -92,9 +92,9 @@ optimize_worker(){
   [[ -z $res ]] && { [[ -f $tmp ]] && rm -f "$tmp"; return 0; }
   t="${res%%:*}"
   local cmdstr="${res#*:}"
-  read -ra c <<< "$cmdstr"
+  read -ra c <<<"$cmdstr"
   if [[ $DRY -eq 1 ]]; then
-    printf "${B}[DRY]${X} %-10s %s\n" "$t" "$f"
+    printf '%s[DRY]%s %-10s %s\n' "$B" "$X" "$t" "$f"
     [[ -f $tmp ]] && rm -f "$tmp"
     return 0
   fi
@@ -107,7 +107,9 @@ optimize_worker(){
   fi
   # Compare & Replace
   if [[ $ok -eq 1 && -s $tmp ]]; then
-    local os=$(stat -c%s "$f") ns=$(stat -c%s "$tmp") d p
+    local os ns d p
+    os=$(stat -c%s "$f")
+    ns=$(stat -c%s "$tmp")
     if [[ $os -gt 0 && $ns -lt $os ]]; then
       d=$((os - ns)); p=$((d * 100 / os))
       if [[ $BACKUP -eq 1 ]]; then
@@ -118,7 +120,7 @@ optimize_worker(){
       mv "$tmp" "$f"
       [[ $MTIME -eq 1 ]] && touch -r "$f" "$f"
       # Use printf directly to avoid race conditions with log function
-      printf "${G}[OK]${X} %-10s -%d%% (%s) %s\n" "[$t]" "$p" "$(numfmt --to=iec "$d")" "$(basename "$f")"
+      printf '%s[OK]%s %-10s -%d%% (%s) %s\n' "$G" "$X" "[$t]" "$p" "$(numfmt --to=iec "$d")" "$(basename "$f")"
     else
       rm -f "$tmp"
     fi
@@ -154,7 +156,7 @@ interactive(){
     # Filters
     local opts=("Scale 50%" "Scale 75%" "Width 1920" "Width 1280" "Rot 90 CW" "Done")
     while :; do
-      printf "${Y}Filters: %s${X}\n" "${vf[*]:-(none)}"
+      printf '%sFilters: %s%s\n' "$Y" "${vf[*]:-(none)}" "$X"
       PS3=$'\n'"${B}Add filter?${X} "
       select o in "${opts[@]}"; do
         case "$o" in
@@ -176,7 +178,7 @@ interactive(){
     case "$cext" in
       mp4) cmd+=(-c:v libx264 -preset slow -crf 23 -c:a aac -b:a 128k) ;;
       webm) cmd+=(-c:v libvpx-vp9 -b:v 0 -crf 30 -cpu-used 3 -c:a libopus) ;;
-      gif) 
+      gif)
         # High quality GIF palette gen
         local pal="${od}/pal.png"
         ffmpeg -y -i "$inp" -vf "${vff:+$vff,}palettegen" "$pal" &>/dev/null

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
+set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
 export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 # media-toolkit.sh - Optimized media manipulation tools
 # Colors
@@ -30,7 +30,7 @@ usb_write(){
   [[ $x == iso || $x == img ]] || die "need .iso/.img: $iso"
   [[ -b $dst ]] || die "not block device: $dst"
   if grep -q "$dst" /proc/mounts; then die "device mounted: $dst"; fi
-  log "⚠️  WARNING: DESTROY all data on $dst!"
+  log "WARNING: DESTROY all data on $dst!"
   read -rp "Continue? [y/N] " c
   [[ $c =~ ^[yY]$ ]] || { log "Cancelled"; exit 0; }
   sz=$(stat -c%s "$iso")
@@ -39,7 +39,6 @@ usb_write(){
   sudo dd if="$iso" bs=4M iflag=fullblock status=none \
     | pv --size "$sz" -pterb \
     | sudo dd of="$dst" bs=4M oflag=sync status=none
-    
   ok "Done"
 }
 iso2sd(){
@@ -52,7 +51,7 @@ iso2sd(){
 format_exfat(){
   local dev=$1 nm=$2
   [[ -b $dev ]] || die "not block: $dev"
-  log "⚠️  WARNING: Erasing $dev, label '$nm'"
+  log "WARNING: Erasing $dev, label '$nm'"
   read -rp "Continue? [y/N] " c
   [[ $c =~ ^[yY]$ ]] || { log "Cancelled"; exit 0; }
   sudo wipefs -a "$dev"
@@ -112,7 +111,7 @@ export_png_worker(){
   # 3. pngcrush (optional DPI)
   if ((dpi > 0)); then
     if pngcrush -brute -l9 -res "$dpi" -q "$f" "$tmp_cr" &>/dev/null; then
-      if [[ -s $tmp_cr ]] && (( $(stat -c%s "$tmp_cr") < $(stat -c%s "$f") )); then
+      if [[ -s $tmp_cr ]] && (($(stat -c%s "$tmp_cr") < $(stat -c%s "$f"))); then
         mv "$tmp_cr" "$f"
       fi
       rm -f "$tmp_cr"

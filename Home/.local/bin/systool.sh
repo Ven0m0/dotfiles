@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar extglob
-IFS=$'\n\t'
-LC_ALL=C LANG=C
-
-# --- Helpers ---
-has() { command -v "$1" &>/dev/null; }
-die() { printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
-warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
-log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
+set -euo pipefail;shopt -s nullglob globstar extglob;IFS=$'\n\t'
+export LC_ALL=C LANG=C
+# Helpers
+has(){ command -v "$1" &>/dev/null; }
+die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
+warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
+log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 
 SUDO=""
 ((EUID != 0)) && has sudo && SUDO=sudo

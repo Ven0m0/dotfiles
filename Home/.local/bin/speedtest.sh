@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# speedtest-curl.sh — curl-only speedtest (ping-like, download, upload)
+# speedtest-curl.sh - curl-only speedtest (ping-like, download, upload)
 # Usage: speedtest-curl.sh [-s server_url] [-d dl_mb] [-u ul_mb] [-n probes] [-U upload_url]
-set -euo pipefail
+set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
+export LC_ALL=C LANG=C
+
 : "${CURL:=$(command -v curl)}" || {
   printf '%s\n' "curl required"
   exit 1
@@ -23,19 +25,13 @@ USAGE
 
 while getopts "hd:u:n:s:U:" opt; do
   case $opt in
-    h)
-      usage
-      exit 0
-      ;;
+    h) usage; exit 0 ;;
     d) DL_MB=$OPTARG ;;
     u) UL_MB=$OPTARG ;;
     n) PROBES=$OPTARG ;;
     s) SERVERS=("$OPTARG") ;;
     U) UPLOAD_URL=$OPTARG ;;
-    *)
-      usage
-      exit 1
-      ;;
+    *) usage; exit 1 ;;
   esac
 done
 
@@ -60,7 +56,7 @@ for srv in "${SERVERS[@]}"; do
   avg=$(awk "BEGIN{printf \"%.3f\", $sum / $ok}")
   printf '  %s -> avg connect: %s s\n' "$srv" "$avg"
   cmp=$(awk "BEGIN{print ($avg < $best_lat) ? 1 : 0}")
-  if [[ "$cmp" -eq 1 ]]; then
+  if [[ $cmp -eq 1 ]]; then
     best_lat=$avg
     best_srv=$srv
   fi
@@ -70,7 +66,7 @@ printf '\nBest server (lowest connect): %s (%.3fs)\n\n' "$best_srv" "$best_lat"
 
 # 2) download test
 DL_BYTES=$((DL_MB * 1024 * 1024))
-# choose a download URL — if best_srv looks like a directory/UI, prefer known file endpoints
+# choose a download URL - if best_srv looks like a directory/UI, prefer known file endpoints
 if printf '%s' "$best_srv" | grep -qE 'speed.cloudflare.com'; then
   DL_URL="${best_srv}__down?bytes=${DL_BYTES}"
 else
@@ -89,9 +85,9 @@ DL_OUT=$("$CURL" -s -L -o /dev/null -w '%{size_download} %{time_total} %{speed_d
 }
 read -r bytes time_sec bps <<<"$DL_OUT"
 mbps=$(printf '%s' "$bps" | fmt_mbps)
-printf '  Downloaded: %s bytes in %s s — %s B/s = %s Mbps\n' "$bytes" "$time_sec" "$bps" "$mbps"
+printf '  Downloaded: %s bytes in %s s - %s B/s = %s Mbps\n' "$bytes" "$time_sec" "$bps" "$mbps"
 
-# 3) upload test — stream UL_MB from /dev/zero to upload URL
+# 3) upload test - stream UL_MB from /dev/zero to upload URL
 printf '\nUpload test: streaming %d MB to %s\n' "$UL_MB" "$UPLOAD_URL"
 # generate stream and POST as binary
 UL_OUT=$(dd if=/dev/zero bs=1M count="$UL_MB" 2>/dev/null \
@@ -101,6 +97,6 @@ UL_OUT=$(dd if=/dev/zero bs=1M count="$UL_MB" 2>/dev/null \
 }
 read -r ubytes utime ubps <<<"$UL_OUT"
 umbps=$(printf '%s' "$ubps" | fmt_mbps)
-printf '  Uploaded: %s bytes in %s s — %s B/s = %s Mbps\n' "$ubytes" "$utime" "$ubps" "$umbps"
+printf '  Uploaded: %s bytes in %s s - %s B/s = %s Mbps\n' "$ubytes" "$utime" "$ubps" "$umbps"
 
 exit 0
