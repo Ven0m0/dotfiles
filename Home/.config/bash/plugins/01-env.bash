@@ -1,32 +1,33 @@
 #!/usr/bin/env bash
 #============================= [Environment Vars] =============================
 
+# --- Tool Configuration
+export BASH_DEFAULT_TIMEOUT_MS=120000 BASH_MAX_OUTPUT_LENGTH=50000 BASH_MAX_TIMEOUT_MS=600000
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 CLAUDE_CODE_ENABLE_TELEMETRY=0
+export CLAUDE_CODE_MAX_OUTPUT_TOKENS=8192 CLAUDE_CODE_USE_BEDROCK=0 CLAUDE_USE_BEDROCK=0
+export DISABLE_BEDROCK=1 DISABLE_BUG_COMMAND=1 DISABLE_COST_WARNINGS=1 DISABLE_ERROR_REPORTING=1
+export DISABLE_NON_ESSENTIAL_MODEL_CALLS=1 DISABLE_PROMPT_CACHING=0 DISABLE_TELEMETRY=1
+export MAX_MCP_OUTPUT_TOKENS=25000 MCP_TIMEOUT=30000 MCP_TOOL_TIMEOUT=60000
+export MISE_EXPERIMENTAL=1 USE_BUILTIN_RIPGREP=1
+
 # --- Locale & Timezone
 export LANG='C.UTF-8' TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M'
 export GPG_TTY="$(tty)"
-unset LC_ALL
 
 # --- Editors
 has micro && export EDITOR='micro' MICRO_TRUECOLOR=1
 export EDITOR="${EDITOR:-nano}" GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR" FCEDIT="$EDITOR"
 
-if has code; then
-  export VISUAL="code -w"
-elif has vscode; then
-  export VISUAL="vscode -w"
-elif has kate; then
-  export VISUAL="kate"
-else
-  export VISUAL="${EDITOR:-nano}"
-fi
+if has code; then export VISUAL="code -w"
+elif has vscode; then export VISUAL="vscode -w"
+elif has kate; then export VISUAL="kate"
+else export VISUAL="${EDITOR:-nano}"; fi
 
 # --- Browser
 if has firefox; then
   export BROWSER='firefox' GTK_USE_PORTAL=1
   export MOZ_ENABLE_WAYLAND=1 MOZ_DBUS_REMOTE=1 MOZ_ENABLE_XINPUT2=1 MOZ_DISABLE_RDD_SANDBOX=1
-else
-  export BROWSER='xdg-open'
-fi
+else export BROWSER='xdg-open'; fi
 
 # --- Terminal
 if has ghostty; then
@@ -35,21 +36,16 @@ if has ghostty; then
 fi
 
 # --- Privilege Escalation
-if has sudo-rs; then
-  export SUDO='sudo-rs'
-elif has doas; then
-  export SUDO='doas'
-else
-  export SUDO='sudo'
-fi
+if has sudo-rs; then export SUDO='sudo-rs'
+elif has doas; then export SUDO='doas'
+else export SUDO='sudo'; fi
 
 # --- Path Setup
 prependpath "$HOME/.local/bin"
 prependpath "$HOME/bin"
 
 # --- Tool Settings
-export HOMEBREW_NO_ANALYTICS=1
-export PARALLEL_HOME="$XDG_CONFIG_HOME/parallel"
+export HOMEBREW_NO_ANALYTICS=1 PARALLEL_HOME="$XDG_CONFIG_HOME/parallel"
 
 # --- Wayland/Graphics
 if [[ ${XDG_SESSION_TYPE-} == "wayland" ]]; then
@@ -58,7 +54,7 @@ if [[ ${XDG_SESSION_TYPE-} == "wayland" ]]; then
   export QT_AUTO_SCREEN_SCALE_FACTOR=1 QT_NO_SYNTHESIZED_BOLD=1
   export _JAVA_AWT_WM_NONREPARENTING=1 _NROFF_U=1
 
-  # NVIDIA-specific settings
+  # NVIDIA-specific
   if has nvidia-smi; then
     export NVD_BACKEND=direct LIBVA_DRIVER_NAME=nvidia VDPAU_DRIVER=nvidia
     export __GLX_VENDOR_LIBRARY_NAME=nvidia mesa_glthread=true
