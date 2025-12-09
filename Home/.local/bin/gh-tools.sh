@@ -177,7 +177,7 @@ cmd_maint(){
       git remote prune origin &>/dev/null||:
       git fetch --prune --no-tags origin||die "Fetch failed"
       git checkout "$trunk" &>/dev/null
-      git pull --rebase origin "$trunk"||:
+      git pull --recurse-submodules=on-demand -r origin "$trunk"||:
       ok "Updated"
     fi
   }
@@ -186,22 +186,21 @@ cmd_maint(){
     local trunk=$(determine_trunk) count=0
     if [[ $DRY_RUN == false ]];then
       git checkout "$trunk" &>/dev/null
-      git fetch --prune||die "Fetch failed"
+      git fetch --prune || die "Fetch failed"
     fi
     while IFS= read -r branch;do
       [[ $branch == "$trunk" || -z $branch ]] && continue
       if [[ $AUTO_YES == true ]] || {
         printf 'Delete %s? [y/N] ' "$branch"
-        read -r reply
-        [[ ${reply,,} == y ]]
+        read -r reply; [[ ${reply,,} == y ]]
       };then
         [[ $DRY_RUN == false ]] && git branch -D "$branch" &>/dev/null && ((count++))
       fi
     done < <(git branch --merged "$trunk" --format='%(refname:short)')
     [[ $count -gt 0 ]] && ok "Deleted $count branches"||ok "No merged branches"
     if [[ $DRY_RUN == false ]];then
-      git gc --aggressive --prune=now --quiet &>/dev/null||:
-      git reflog expire --expire=30.days.ago --all &>/dev/null||:
+      git maintenance run --quiet --task=prefetch --task=gc --task=loose-objects --task=incremental-repack --task=pack-refs --task=reflog-expire \
+        --task=rerere-gc --task=worktree-prune --task=commit-graph &>/dev/null ||:
       ok "Optimized"
     fi
   }
