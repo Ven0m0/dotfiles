@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
-export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
 # Unified launcher for apps, files, and power management
 # Targets: Arch/Wayland, Debian/Raspbian, Termux
 # Dependencies: fzf, fd, bemenu/rofi (GUI fallbacks), systemctl/loginctl
-has(){ command -v "$1" &>/dev/null; }
+export HOME="/home/${SUDO_USER:-$USER}"
 
 # Menu abstraction - detects context and selects best provider
 _menu(){
@@ -19,7 +22,7 @@ _menu(){
   elif has dmenu; then
     dmenu -i -p "$prompt"
   else
-    printf "Error: No menu tool (fzf, bemenu, rofi) found.\n" >&2; exit 1
+    printf 'Error: No menu tool (fzf, bemenu, rofi) found.\n' >&2; exit 1
   fi
 }
 
@@ -67,7 +70,7 @@ mode_power(){
 # Mode: File Opener
 mode_file(){
   local target
-  target=$(fd --type f . "$HOME" 2>/dev/null | _menu "Open File: ") || return 0
+  target=$(fd --type f . "$HOME" 2>/dev/null|_menu "Open File: ")||return 0
   if [[ -n $target ]]; then
     xdg-open "$target" &>/dev/null &
     disown
@@ -81,7 +84,7 @@ main(){
     # Main menu if no argument provided
     local -a modes=("App Launcher" "File Opener" "Power Menu")
     local selection
-    selection=$(printf '%s\n' "${modes[@]}" | _menu "Launcher: ") || exit 0
+    selection=$(printf '%s\n' "${modes[@]}"|_menu "Launcher: ")||exit 0
     case "$selection" in
       "App Launcher") mode="app" ;;
       "File Opener") mode="file" ;;
