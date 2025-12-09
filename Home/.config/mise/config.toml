@@ -3,9 +3,8 @@
 experimental = true
 color = true
 yes = true
-# quiet = true
 auto_install = true
-jobs = 12
+jobs = 16  # Optimized for typical 16+ core systems
 lockfile = true
 activate_aggressive = true
 paranoid = false
@@ -22,7 +21,6 @@ status = { missing_tools = "if_other_versions_installed", show_env = false, show
 [settings.python]
 uv_venv_auto = true
 uv_venv_create_args = ["--system-site-packages", "--seed"]
-# https://gregoryszorc.com/docs/python-build-standalone/main/running.html
 precompiled_os = "x86_64_v3"
 precompiled_flavor = "pgo+lto"
 
@@ -49,47 +47,54 @@ monorepo_depth = 3
 java = "oracle-graalvm"
 #"ubi:zeroBzeroT/ChunkCleaner" = "latest"
 #"cargo:https://github.com/ComunidadAylas/PackSquash" = "latest"
-"ubi:qltysh/qlty" = "latest"
-cpz = "latest"
-rmz = "latest"
-"cargo:xcp" = "latest"
-# Cargo utilities
-"cargo:cargo-alias-exec" = "latest"
-"cargo:cargo-list" = "latest"
-#"cargo:cargo-minify" = "latest"
-#"cargo:cargo-diet" = "latest"
-"cargo:shell-mommy" = "latest"
+#"github:Voxelum/x-minecraft-launcher" = "latest"
+
+# Image & media tools
 "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
 "cargo:image-optimizer" = "latest"
 "cargo:imgc" = "latest"
 "cargo:ffzap" = "latest"
-#"cargo:ab-av1" = "latest"
+
+# Cargo utilities
+"cargo:cargo-alias-exec" = "latest"
+"cargo:cargo-list" = "latest"
+"cargo:shell-mommy" = "latest"
+#"cargo:cargo-minify" = "latest"
+#"cargo:cargo-diet" = "latest"
+
+# Utility tools
+cpz = "latest"
+rmz = "latest"
+"cargo:xcp" = "latest"
 "cargo:vicut" = "latest"
-#"cargo:youtube-tui" = "latest"
-#"cargo:mpatch" = "latest"
 "cargo:frep" = "latest"
 "cargo:ripuniq" = "latest"
 "cargo:ripunzip" = "latest"
 "cargo:filerefine" = "latest"
 "cargo:clean_git_history" = "latest"
 "cargo:https://github.com/fthomys/update-alternatives" = "latest"
-#"cargo:caligula" = "latest"
 "cargo:roxide" = "latest"
 "cargo:submod" = "latest"
 "cargo:nvidia_oc" = "latest"
-#"cargo:etchdns" = "latest"
 "cargo:dui-cli" = "latest"
 "cargo:kanata" = "latest"
+#"cargo:ab-av1" = "latest"
+#"cargo:youtube-tui" = "latest"
+#"cargo:caligula" = "latest"
+#"cargo:etchdns" = "latest"
 #"cargo:rust-parallel" = "latest"
-#ghalint = "latest"
-#action-validator = "latest"
+#"cargo:appInstalleR" = "latest"
+
+# Development & formatting
 lefthook = "latest"
 minify = "latest"
 "cargo:md-formatter" = "latest"
 "cargo:whitespace-format" = "latest"
-#"github:Voxelum/x-minecraft-launcher" = "latest"
 "cargo:sy" = "latest"
-#"cargo:appInstalleR" = "latest"
+"ubi:qltysh/qlty" = "latest"
+#ghalint = "latest"
+#action-validator = "latest"
+#"cargo:mpatch" = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true }
@@ -98,6 +103,7 @@ UV_LINK_MODE = "hardlink"
 UV_COMPILE_BYTECODE = "1"
 UV_CONCURRENT_DOWNLOADS = "12"
 UV_CONCURRENT_INSTALLS = "8"
+UV_THREADPOOL_SIZE = "16"
 DO_NOT_TRACK = "1"
 MISE_NODE_NINJA = "true"
 MISE_NODE_CONCURRENCY = "16"
@@ -105,7 +111,6 @@ NODE_OPTIONS = "--max-old-space-size=8192"
 NODE_SKIP_PLATFORM_CHECK = "1"
 NODE_PRESERVE_SYMLINKS = "1"
 NODE_TLS_REJECT_UNAUTHORIZED = "0"
-UV_THREADPOOL_SIZE = "16"
 NODE_NO_WARNINGS = "1"
 CURL_OPTS = "-fLs --http2 --tlsv1.2"
 CARGO_NET_GIT_FETCH_WITH_CLI = "true"
