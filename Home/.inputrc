@@ -1,18 +1,9 @@
-# /etc/inputrc - global inputrc for libreadline
-# See readline(3readline) and 'info rluserman' for more information.
-# Credit to:
-# https://github.com/dotphiles/dotphiles/blob/master/input/inputrc
-# https://github.com/Rudxain/dotfiles
-# https://www.gnu.org/software/bash/manual/html_node/Command-Line-Editing.html
-
 $include /etc/inputrc
-
 # UTF-8 support
 set input-meta on
 set output-meta on
 set convert-meta off
 set meta-flag on
-
 # Misc settings
 set enable-keypad on
 set enable-bracketed-paste on
@@ -21,7 +12,6 @@ set bind-tty-special-chars off
 set history-size 1000
 set horizontal-scroll-mode off
 set expand-tilde off
-
 # Tab completion behavior
 set menu-complete-display-prefix on
 set show-all-if-ambiguous on
@@ -41,7 +31,6 @@ set colored-stats on
 set visible-stats on
 set bell-style none
 set keyseq-timeout 100
-
 # Home/End keys (multiple variants for compatibility)
 "\e[1~": beginning-of-line
 "\e[4~": end-of-line
@@ -51,19 +40,15 @@ set keyseq-timeout 100
 "\eOF": end-of-line
 "\e[H": beginning-of-line
 "\e[F": end-of-line
-
 # Insert/Delete keys
 "\e[2~": quoted-insert
 "\e[3~": delete-char
-
 # Page Up/Down for history navigation
 "\e[5~": beginning-of-history
 "\e[6~": end-of-history
-
 # Smart history search with Up/Down arrows
 "\e[A": history-search-backward
 "\e[B": history-search-forward
-
 # Ctrl+Left/Right for word movement
 "\e[5C": forward-word
 "\e[5D": backward-word
@@ -71,11 +56,9 @@ set keyseq-timeout 100
 "\e\e[D": backward-word
 "\e[1;5C": forward-word
 "\e[1;5D": backward-word
-
 # Tab/Shift+Tab for menu completion
 "\t": menu-complete
 "\e[Z": menu-complete
-
 $if Bash
   Space: magic-space
   "\e\C-l": "\C-e | less\C-m"
