@@ -104,7 +104,6 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 ## **Quick prompts**
 
 <details>
-
 <summary><b>Lint/Format</b></summary>
 
 ```markdown
@@ -138,11 +137,8 @@ Cleanup:
   - Normalize all config files; unify indentation, charset, EOL.
   - Ensure consistent toolchains (taplo/tombi, biome/prettier/eslint, mdformat/markdownlint).
 ```
-
 </details>
-
 <details>
-
 <summary><b>LLM files</b></summary>
 
 ```markdown
@@ -151,7 +147,7 @@ Discovery
 - Find candidate files: `fd -H -I -E .git -e md || find . -name '*.md'`
 - Locate targets: `rg -nS 'CLAUDE|GEMINI|copilot' || :`
 Tools (preferred → fallback)
-- fd → find; rg → grep; sd → sed; shfmt; markdownlint; shfmt (code blocks).
+- fd → find; rg → grep; shfmt; markdownlint; shfmt (code blocks).
 Preflight checks (must run)
 1. Encoding/clean: `file -bi <file>` → UTF-8, strip BOM; `rg -nU '\p{Cc}' || :` → no control chars.
 2. Invisibles: `rg -nU '\p{C}' || :` and `sd '  +$' ''` (strip trailing spaces).
@@ -201,11 +197,8 @@ Assumptions & limits
 - Do not alter intent or semantics of existing prompts without explicit approval.
 - Keep templates minimal; prefer small PRs. If ambiguous, create ISSUE.md and stop.
 ```
-
 </details>
-
 <details>
-
 <summary><b>Bash short</b></summary>
 
 ```markdown
@@ -254,11 +247,8 @@ Pipeline (per file)
 - Token-aware read; apply ordered transforms → shfmt → shellcheck → shellharden → re-check.
 - Create branch `codemod/bash/<timestamp>`; atomic commits per file.
 ```
-
 </details>
-
 <details>
-
 <summary><b>AIO</b></summary>
 
 ```markdown
@@ -269,7 +259,7 @@ Role: Repository Architect (Code Quality, Performance & CI Security)
 2.  **Hygiene**: Minimal, test-covered, reversible edits.
 3.  **Dependencies**: No new runtime external deps unless inlined/bundled.
 ## 🛠️ Environment & Tools (Fallback to POSIX)
--   **Discovery**: `fd` → `find`; `rg` → `grep`; `sd` → `sed`.
+-   **Discovery**: `fd` → `find`; `rg` → `grep`.
 -   **Lint/Fmt**: `shfmt`, `shellcheck --severity=style`, `ruff`/`biome`, `yamlfmt`.
 -   **CI Tools**: `actionlint`, `action-validator`, `ghalint`, `act`.
 -   **Concurrency**: `xargs -P "$(nproc)"` / `parallel` (batch I/O).
@@ -324,11 +314,8 @@ Role: Repository Architect (Code Quality, Performance & CI Security)
 -   No unpinned CI actions.
 If instructions are ambiguous, choose the smallest safe change preserving current behavior and document the assumption.
 ```
-
 </details>
-
 <details>
-
 <summary><b>Python</b></summary>
 
 ```markdown
@@ -360,11 +347,8 @@ When you respond, output:
 - one-paragraph rationale for non-trivial refactors,
 - note any assumptions / risks, and remaining technical debt.
 ```
-
 </details>
-
 <details>
-
 <summary><b>Javascript</b></summary>
 
 ```markdown
@@ -406,11 +390,8 @@ Scope: Scan, Format, Lint, Report, CI Gate.
 - Reproducible command sequence.
 - Output matrix (Files scanned vs. Errors found).
 ```
-
 </details>
-
 <details>
-
 <summary><b>Actions</b></summary>
 
 ```markdown
