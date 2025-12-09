@@ -55,3 +55,15 @@ gcommits(){
     git log --format="%H" -n "$1" | cat
   fi
 }
+gh-cp(){
+    usage(){ echo "Usage: gh cp <repo> <path> <dest>"; }
+    [][ $# -lt 3 ]] && { usage >&2; exit 1; }
+    repo="$1"; path="$2"; dest="$3"
+    dest_file="${3%/}/$(basename "$path")"
+    if [[ ! -d "$dest" ]] && [[ $dest != */ ]]; then
+      dest_file="$dest"
+    fi
+    dest_dir="$(dirname "$dest_file")"
+    [[ "$dest_dir" = "." ]] || mkdir -p "$dest_dir"
+    gh api -H 'accept: application/vnd.github.v3.raw' "repos/$repo/contents/$path" > "$dest_file"
+}
