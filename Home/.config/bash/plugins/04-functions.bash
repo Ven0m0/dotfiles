@@ -43,7 +43,7 @@ extract(){
   [[ ! -f $f ]] && { printf 'File %s not found\n' "$f" >&2; return 1; }
   [[ ! -d $out ]] && mkdir -p "$out" && printf 'Created %s\n' "$out"
   case "${f,,}" in
-    *.tar.xz) tar -xf "$f" -C "$out" ;;
+    *.tar.xz) tar -xf "$1" -C "$out" ;;
     *.tar.gz|*.tgz) tar -xzf "$f" -C "$out" ;;
     *.tar.bz2) tar -xjf "$f" -C "$out" ;;
     *.tar.zst) tar --zstd -xf "$f" -C "$out" ;;
@@ -55,6 +55,7 @@ extract(){
     *.zip|*.jar) unzip -q "$f" -d "$out" ;;
     *.rar) unrar x -inul "$f" "$out/" ;;
     *.7z) 7z x -o"$out" "$f" &>/dev/null ;;
+    *.deb) ar x "$f" ;;
     *) printf 'Unsupported format: %s\n' "$f" >&2; return 1 ;;
   esac
   [[ $? -eq 0 ]] && printf 'Extracted: %s -> %s\n' "$f" "$out" || { printf 'Extraction failed for %s\n' "$f" >&2; return 1; }
