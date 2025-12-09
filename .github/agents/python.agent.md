@@ -3,6 +3,7 @@ applyTo: "**/*.py"
 name: python-optimizer
 description: Maintain, lint, format, and optimize Python code (Ruff/Mypy focus)
 mode: agent
+model: claude-sonnet-4.5
 modelParameters:
   temperature: 0.2
 tools: ['Read', 'Write', 'Edit', 'view', 'read_file', 'edit/editFiles', 'codebase', 'search', 'semanticSearch', 'problems', 'runTasks', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'changes', 'searchResults', 'vscodeAPI', 'extensions', 'github', 'githubRepo', 'fetch', 'openSimpleBrowser', 'Bash', 'Glob', 'Grep']
