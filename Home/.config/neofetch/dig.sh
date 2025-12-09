@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+set -euo pipefail
+shopt -s nullglob globstar
+IFS=$'\n\t'
 command -v neofetch &>/dev/null || exit 1
 PATCH_PATH="$HOME/.config/neofetch/neowofetch.patch"
 URL="https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Linux-Settings/Home/.config/neofetch/neowofetch.patch"
