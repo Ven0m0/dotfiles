@@ -1,0 +1,44 @@
+id: py-type-hints
+language: python
+severity: error
+message: Add type hints to function
+note: 'Use def fn(x: int) -> bool: for all public functions'
+rule:
+  any:
+    - pattern: def $FN($$$PARAMS):
+      not:
+        has:
+          kind: type
+      not:
+        has:
+          kind: identifier
+          regex: ^__(init|new|enter|exit|del|repr|str)__$
+    - kind: parameters
+      inside:
+        kind: function_definition
+      has:
+        kind: identifier
+        not:
+          follows:
+            kind: type
+        not:
+          regex: ^(self|cls)$
+---
+id: py-unsafe-patterns
+language: python
+severity: error
+message: Unsafe pattern detected
+note: 'Bare except catches KeyboardInterrupt; mutable defaults are shared; shell=True enables injection'
+rule:
+  any:
+    - kind: except_clause
+      pattern: |
+        except:
+          $$$
+    - kind: default_parameter
+      has:
+        any:
+          - kind: list
+          - kind: dictionary
+          - kind: set
+    - pattern: subprocess.$METHOD($CMD, shell=True)

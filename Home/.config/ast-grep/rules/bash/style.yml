@@ -1,0 +1,37 @@
+id: bash-compact-syntax
+language: bash
+severity: error
+message: Use compact bash syntax
+note: 'fn(){ not fn() {; &>/dev/null not >/dev/null 2>&1; [[ ]] not [ ]; printf not echo -n'
+rule:
+  any:
+    - kind: function_definition
+      regex: '\)\s+\{'
+    - kind: redirected_statement
+      regex: '>\s*/dev/null\s+2>&1'
+    - kind: redirect
+      regex: '>\s+/dev/null'
+    - kind: test_command
+      regex: '^\[\s'
+      not:
+        regex: '^\[\['
+    - kind: command
+      pattern: echo -n $$$
+    - kind: command
+      pattern: /usr/bin/printf $$$
+fix: |
+  &>/dev/null
+  printf
+---
+id: bash-idiom-colon
+language: bash
+severity: info
+message: Use ':' instead of 'true' (1 char, builtin)
+note: ': is the no-op builtin; true is an external command'
+rule:
+  any:
+    - pattern: $CMD || true
+    - pattern: while true; do $$$BODY; done
+fix: |
+  $CMD || :
+  while :; do $$$BODY; done

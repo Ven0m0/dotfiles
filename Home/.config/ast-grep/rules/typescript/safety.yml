@@ -1,0 +1,53 @@
+id: ts-unsafe-patterns
+language: typescript
+severity: warning
+message: Unsafe pattern detected
+note: 'innerHTML/document.write: XSS risk; empty catch: masks errors'
+rule:
+  any:
+    - pattern: innerHTML = $VAL
+    - pattern: outerHTML = $VAL
+    - pattern: insertAdjacentHTML($POS, $VAL)
+    - pattern: document.write($VAL)
+    - pattern: document.writeln($VAL)
+    - kind: catch_clause
+      has:
+        kind: statement_block
+        pattern: '{}'
+---
+id: ts-prefer-modern
+language: typescript
+severity: info
+message: Use modern syntax
+note: 'const over let, ?? over ||, ?. over && chains'
+rule:
+  any:
+    - kind: lexical_declaration
+      pattern: let $VAR = $INIT
+      not:
+        any:
+          - inside:
+              kind: for_statement
+          - inside:
+              kind: assignment_expression
+              has:
+                field: left
+                pattern: $VAR
+    - kind: binary_expression
+      pattern: $A || $B
+    - pattern: $OBJ && $OBJ.$PROP
+fix: |
+  const $VAR = $INIT
+  $OBJ?.$PROP
+---
+id: ts-arrow-functions
+language: typescript
+severity: hint
+message: Prefer arrow functions for callbacks (lexical this binding)
+note: 'Arrow functions inherit this from enclosing scope'
+rule:
+  kind: function_expression
+  inside:
+    any:
+      - kind: arguments
+      - kind: array

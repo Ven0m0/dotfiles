@@ -1,0 +1,68 @@
+id: bash-avoid-forks
+language: bash
+severity: warning
+message: Avoid unnecessary fork (use builtin/redirect instead)
+note: 'Useless cat, parameter expansion > sed, no subshells in loops, (( )) > let'
+rule:
+  any:
+    - kind: pipeline
+      pattern: cat $FILE | $CMD
+    - pattern: sed 's/^$PREFIX//' <<< "$VAR"
+    - pattern: echo "$VAR" | sed 's/^$PREFIX//'
+    - kind: pipeline
+      inside:
+        any:
+          - kind: for_statement
+          - kind: while_statement
+    - kind: subshell
+      not:
+        inside:
+          any:
+            - kind: pipeline
+            - kind: command_substitution
+    - kind: command
+      pattern: let $$$
+fix: |
+  $CMD < $FILE
+  echo "${VAR#$PREFIX}"
+  (( $$$ ))
+---
+id: bash-prefer-mapfile
+language: bash
+severity: info
+message: Use mapfile instead of while read (10-100x faster)
+note: 'mapfile -t array < file; Bash 4.0+'
+rule:
+  kind: while_statement
+  pattern: |
+    while IFS= read -r $VAR; do
+      $ARRAY+=("$VAR")
+    done
+fix: mapfile -t $ARRAY
+---
+id: bash-prefer-read-builtin
+language: bash
+severity: info
+message: Use read builtin instead of head (avoids fork)
+note: 'cmd | { read -r line; echo "$line"; }'
+rule:
+  kind: pipeline
+  pattern: $CMD | head -n1
+fix: $CMD | { read -r line; echo "$line"; }
+---
+id: bash-local-vars
+language: bash
+severity: warning
+message: Use local for function variables (avoid polluting global scope)
+note: 'local var=value; declare -l lowercase; declare -u uppercase'
+rule:
+  kind: assignment
+  inside:
+    kind: function_definition
+  not:
+    any:
+      - inside:
+          kind: declaration_command
+      - has:
+          kind: identifier
+          regex: ^[A-Z_]+$

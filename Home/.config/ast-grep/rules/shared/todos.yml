@@ -1,0 +1,12 @@
+id: todo-comments
+languages:
+  - typescript
+  - javascript
+  - bash
+  - python
+severity: warning
+message: Resolve TODO/FIXME/XXX/HACK comment
+note: 'Convert to tracked issues or resolve inline'
+rule:
+  kind: comment
+  regex: \b(TODO|FIXME|XXX|HACK)\b
