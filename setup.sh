@@ -41,8 +41,6 @@ ping -c 1 archlinux.org &>/dev/null || die "No internet connection."
 readonly DOTFILES_REPO="https://github.com/Ven0m0/dotfiles.git"
 readonly DOTFILES_DIR="${HOME}/.local/share/yadm/repo.git"
 readonly TUCKR_DIR="$DOTFILES_DIR"
-# Note: Do not quote this variable when using it to allow word splitting
-readonly PARU_OPTS="--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade"
 #--- Main Logic ---#
 main(){
   install_packages
@@ -50,10 +48,10 @@ main(){
   tuckr_system_configs
   final_steps
 }
-
 #--- Functions ---#
 install_packages(){
   info "Installing packages..."
+  local paru_opts=(--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade)
   local pkgs=(git gitoxide aria2 curl zsh fd sd ripgrep bat jq
     zoxide starship fzf yadm tuckr)
   has paru || die "paru not found."
@@ -61,7 +59,7 @@ install_packages(){
     info "[DRY-RUN] Would install: ${pkgs[*]}"
   else
     # shellcheck disable=SC2086
-    paru -Syuq --noconfirm --needed --skipreview "$PARU_OPTS" "${pkgs[@]}" || die "Failed to install packages"
+    paru -Syuq "${paru_opts[@]}" "${pkgs[@]}" || die "Failed to install packages"
   fi
 }
 setup_dotfiles(){
