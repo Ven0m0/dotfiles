@@ -24,3 +24,4 @@ rtrans(){
     --tpslimit 4 \
     --progress
 }
+alias mount-drive="rclone mount onedrive: ~/OneDrive --vfs-cache-mode full --vfs-cache-max-size 10G --daemon"
