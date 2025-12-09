@@ -3,11 +3,9 @@ const eslint = require('@eslint/js');
 const globals = require('globals');
 const tseslint = require('typescript-eslint');
 const perfectionist = require('eslint-plugin-perfectionist');
-const json = require('@eslint/json');
 const markdown = require('@eslint/markdown');
-const css = require('@eslint/css');
-const prettierRecommended = require('eslint-plugin-prettier/recommended');
 const compat = new FlatCompat({ baseDirectory: __dirname });
+
 module.exports = [
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
@@ -15,23 +13,19 @@ module.exports = [
     languageOptions: { globals: globals.browser },
   },
   { files: ['**/*.js'], languageOptions: { sourceType: 'commonjs' } },
-  { files: ['**/*.json'], plugins: { json }, language: 'json/json', ...json.configs.recommended },
-  { files: ['**/*.jsonc'], plugins: { json }, language: 'json/jsonc', ...json.configs.recommended },
-  { files: ['**/*.json5'], plugins: { json }, language: 'json/json5', ...json.configs.recommended },
   { files: ['**/*.md'], plugins: { markdown }, language: 'markdown/gfm', ...markdown.configs.recommended },
-  { files: ['**/*.css'], plugins: { css }, language: 'css/css', ...css.configs.recommended },
   ...tseslint.config(
     eslint.configs.all,
     ...tseslint.configs.strictTypeChecked,
     ...tseslint.configs.stylisticTypeChecked,
     perfectionist.configs['recommended-natural'],
     {
-      languageOptions: { parserOptions: { projectService: !0, tsconfigRootDir: __dirname } },
+      languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: __dirname } },
       rules: {
         '@typescript-eslint/array-type': ['error', { default: 'generic' }],
         '@typescript-eslint/consistent-return': 'off',
         '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-        '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: !0 }],
+        '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
         '@typescript-eslint/naming-convention': [
           'error',
           { format: ['camelCase'], selector: 'default' },
@@ -40,10 +34,10 @@ module.exports = [
           { format: ['camelCase', 'PascalCase'], selector: 'import' },
           { format: ['camelCase', 'UPPER_CASE'], modifiers: ['const', 'global'], selector: 'variable' },
           { format: ['camelCase', 'PascalCase'], selector: 'variable', types: ['function'] },
-          { filter: { match: !0, regex: '^_' }, format: [], selector: 'parameter' },
+          { filter: { match: true, regex: '^_' }, format: [], selector: 'parameter' },
           { format: ['camelCase', 'PascalCase'], selector: 'function' },
         ],
-        '@typescript-eslint/no-confusing-void-expression': ['error', { ignoreArrowShorthand: !0 }],
+        '@typescript-eslint/no-confusing-void-expression': ['error', { ignoreArrowShorthand: true }],
         '@typescript-eslint/no-magic-numbers': 'off',
         '@typescript-eslint/no-unsafe-type-assertion': 'off',
         '@typescript-eslint/no-unused-vars': [
@@ -52,9 +46,9 @@ module.exports = [
         ],
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/prefer-destructuring': 'off',
-        '@typescript-eslint/strict-boolean-expressions': ['error', { allowNullableBoolean: !0 }],
+        '@typescript-eslint/strict-boolean-expressions': ['error', { allowNullableBoolean: true }],
         'capitalized-comments': 'off',
-        'func-style': ['error', 'declaration', { allowArrowFunctions: !0 }],
+        'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
         'id-length': ['error', { exceptions: ['x', 'y', 'z', 'w', 'i', 'j', 'k'] }],
         'max-lines-per-function': ['error', 150],
         'max-statements': ['error', 30],
@@ -74,5 +68,4 @@ module.exports = [
     { files: ['**/*.{test,spec}.{ts,tsx}'], rules: { '@typescript-eslint/no-magic-numbers': 'off' } },
   ),
   ...compat.config({ extends: ['next/core-web-vitals'], rules: { '@next/next/no-img-element': 'off' } }),
-  prettierRecommended,
 ];
