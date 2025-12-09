@@ -1,32 +1,48 @@
-import os
-import sys
 import atexit
+import os
 import readline
+import sys
+import json
+from pprint import pprint
 
-HISTORY_FILE_PATH = os.path.expanduser('~/.python_history')
+# 1. Enable Tab Completion
+try:
+    import readline
+    import rlcompleter
+    readline.parse_and_bind("tab: complete")
+except ImportError:
+    pass
 
-# prompt
-sys.ps1 = "> "
-sys.ps2 = "| "
+# 2. Enable History Saving (XDG Compliant)
+# Stores history in ~/.local/state/python/history instead of cluttering ~
+xdg_state_home = os.environ.get('XDG_STATE_HOME', os.path.expanduser('~/.local/state'))
+history_dir = os.path.join(xdg_state_home, 'python')
+history_file = os.path.join(history_dir, 'history')
 
-# tab completion
-readline.parse_and_bind('tab: complete')
-with open('/usr/share/fzf-tab-completion/python/fzf_python_completion.py') as file:
-exec(file.read())
+# Ensure directory exists
+os.makedirs(history_dir, exist_ok=True)
+try:
+    readline.read_history_file(history_file)
+except FileNotFoundError:
+    pass
+# Save history on exit
+atexit.register(readline.write_history_file, history_file)
 
-def save_history(history_file_path=HISTORY_FILE_PATH):
-    import sys
-    if sys.version_info.major > 2:
-        import readline
-        readline.write_history_file(history_file_path)
+# 3. Pretty Printing by Default
+# Any expression result will be pretty-printed instead of standard print()
+def my_displayhook(value):
+    if value is not None:
+        try:
+            import builtins
+            builtins._ = value
+        except ImportError:
+            __builtins__._ = value
+        pprint(value)
 
+sys.displayhook = my_displayhook
 
-def load_history(history_file_path=HISTORY_FILE_PATH):
-    if sys.version_info.major > 2 and os.path.exists(HISTORY_FILE_PATH):
-        readline.read_history_file(HISTORY_FILE_PATH)
-
-
-load_history()
-
-atexit.register(save_history)
-del os, atexit, readline, sys, save_history, load_history, HISTORY_FILE_PATH
+# 4. Welcome Message
+print(f"\n🐍 Python {sys.version.split()[0]} Startup Script Loaded.")
+print(f"   • History saved to: {history_file}")
+print(f"   • Tab completion enabled.")
+print(f"   • Auto-imports: os, sys, json, pprint\n")
