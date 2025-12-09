@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
-export LC_ALL=C LANG=C
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
 
 # Exhaustive Lint & Format Script
 # Policy: 2-space indent, 120 char width, 0 errors
@@ -10,9 +13,9 @@ readonly PROJECT_ROOT="$PWD"
 readonly PARALLEL_JOBS="$(nproc)"
 readonly DRY_RUN="${DRY_RUN:-false}"
 
-FD="$(command -v fd || command -v fdfind || printf 'find')"
-RG="$(command -v rg || printf 'grep')"
-SD="$(command -v sd || printf 'sed')"
+FD="$(command -v fd||command -v fdfind||printf 'find')"
+RG="$(command -v rg||printf 'grep')"
+SD="$(command -v sd||printf 'sed')"
 
 declare -A FILE_RESULTS=()
 declare -A GROUP_ERRORS=()
@@ -23,9 +26,6 @@ TOTAL_ERRORS=0
 
 # ANSI colors
 readonly BLD=$'\e[1m' BLU=$'\e[34m' GRN=$'\e[32m' YLW=$'\e[33m' RED=$'\e[31m' DEF=$'\e[0m'
-
-# Helpers
-has(){ command -v "$1" &>/dev/null; }
 log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
 ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
 warn(){ printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
