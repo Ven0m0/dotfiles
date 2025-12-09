@@ -1,13 +1,11 @@
 # Disable history/position logging
 unset historylog
 unset positionlog
-
 # Display settings
 set linenumbers
 set softwrap
 set minibar
 set quickblank
-
 # Editor behavior
 set autoindent
 set smarthome
@@ -16,20 +14,16 @@ set breaklonglines
 set cutfromcursor
 set zap
 set mouse
-
 # Indentation and formatting
 set tabstospaces
 set tabsize 2
-
 # File handling
 set unix
 set saveonexit
-
 # Syntax highlighting
 include "/usr/share/nano/*.nanorc"
 include "/usr/share/nano/extra/*.nanorc"
 include "/usr/share/nano-syntax-highlighting/*.nanorc"
-
 # Key bindings
 bind ^Z undo main
 bind ^Y redo main
