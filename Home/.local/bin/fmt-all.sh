@@ -11,5 +11,5 @@ has biome && biome check --fix --unsafe --skip-parse-errors --no-errors-on-unmat
 has ruff && ruff format --line-length 120 "${PWD:-.}"
 has black && black "${PWD:-.}"
 has gh && { gh tidy; gh poi; }
-git maintenance run --quiet --task=prefetch --task=gc --task=loose-objects --task=incremental-repack --task=pack-refs --task=reflog-expire --task=rerere-gc --task=worktree-prune
+git maintenance run --quiet --task=prefetch --task=gc --task=loose-objects --task=incremental-repack --task=pack-refs --task=reflog-expire --task=rerere-gc --task=worktree-prune >/dev/null ||:
 git add -A; git commit -q -m "Format & Lint" >/dev/null && LC_ALL=C git push --recurse-submodules=on-demand --prune
