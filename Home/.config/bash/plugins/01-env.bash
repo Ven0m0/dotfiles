@@ -76,3 +76,6 @@ if has wine; then
   export WINE_NO_WM_DECORATION=1 WINE_PREFER_SDL_INPUT=1
   export WINEPREFIX="$XDG_DATA_HOME/wine"
 fi
+if has obs; then
+  export OBS_USE_EGL=1 OBS_VKCAPTURE=1
+fi
