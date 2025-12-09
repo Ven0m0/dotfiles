@@ -1,6 +1,0 @@
---info=inline
---layout=reverse-list
---marker='*'
---border
---cycle
---walker-skip='.git,node_modules'
