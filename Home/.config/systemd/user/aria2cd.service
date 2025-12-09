@@ -1,8 +1,15 @@
 [Unit]
 Description=aria2 Daemon
+After=network-online.target
+Wants=network-online.target
 
 [Service]
+Type=simple
 ExecStart=/usr/bin/aria2c --conf-path=%h/.config/aria2/aria2-daemon.conf
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=10
+Persistent=true
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
