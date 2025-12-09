@@ -215,7 +215,17 @@ Core rules
 - Forbidden: `eval`, parsing `ls`, unquoted expansions, unnecessary subshells, runtime piping into shell.
 - Standalone: inline sourced files once; dedupe repeated logic; keep guard comments.
 - Performance: replace slow loops/subshells with bash builtins (arrays, mapfile, parameter expansion); limited `&` + `wait`.
-- Use printf's date instead of date
+- Use printf's date instead of date (```date(){ local x="${1:-%d/%m/%y-%R}"; printf "%($x)T\n" '-1'; }```).
+- Use bash native methods instead of a useless cat (```fcat(){ printf '%s\n' "$(<${1})"; }```).
+- Use read instead of sleep when safe (```sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }```).
+- Start every script like this:
+    #!/usr/bin/env bash
+    # shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+    set -euo pipefail; shopt -s nullglob globstar
+    export LC_ALL=C; IFS=$'\n\t'
+    s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+    has(){ command -v -- "$1" &>/dev/null; }
+
 Codemod transformations
 1. Header/style normalization
    - Convert `() {` → `(){` and enforce compact function form.
