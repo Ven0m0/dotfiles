@@ -405,4 +405,24 @@ prune_empty(){
   fi
 }
 
+ffwrap(){
+  if command -v ffzap &>/dev/null; then
+    ffzap "$@"
+  elif command -v ffmpeg &>/dev/null; then
+    ffmpeg -hide_banner "$@"
+  else
+    die "neither ffzap nor ffmpeg found in PATH"
+  fi
+}
+jqwrap(){
+  if command -v jaq &>/dev/null; then
+    jaq "$@"
+  elif command -v jq &>/dev/null; then
+    jq "$@"
+  else
+    die "neither jq nor jaq found in PATH"
+  fi
+}
+
+
 # vim: set ft=bash ts=2 sw=2 et:
