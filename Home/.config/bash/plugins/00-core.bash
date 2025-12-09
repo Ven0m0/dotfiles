@@ -1,3 +1,4 @@
+# ~/.config/bash/plugins/00-core.bash
 #================================== [Core] ====================================
 # --- History
 HISTCONTROL="erasedups:ignoreboth"
@@ -18,8 +19,7 @@ set -o noclobber
 stty -ixon -ixoff -ixany 2>/dev/null
 bind -r '\C-s' 2>/dev/null
 
-export IGNOREEOF=10
-export COLUMNS
+export IGNOREEOF=10 COLUMNS
 
 # --- Sourcing Legacy
 ifsource /etc/bashrc
