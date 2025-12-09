@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
-export LC_ALL=C LANG=C LANGUAGE=C HOME="/home/${SUDO_USER:-${USER:-$(id -un)}}"
+export LC_ALL=C LANG=C LANGUAGE=C
 cd -- "$(cd "$( dirname "${BASH_SOURCE[0]}" )" &>/dev/null && pwd -P)" || exit 1
 #--- Options ---#
 DRY_RUN=false; VERBOSE=true
