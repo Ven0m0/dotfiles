@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
+export LC_ALL=C LANG=C
 
-
-rmount(){ 
+rmount(){
   mkdir -p ~/OneDrive
   rclone mount onedrive: ~/OneDrive \
     --vfs-cache-mode full \
@@ -15,6 +15,7 @@ rmount(){
     --tpslimit 4 \
     --daemon
 }
+
 rtrans(){
   mkdir -p ~/OneDrive ~/Documents
   rclone copy ~/Documents onedrive:Documents \
@@ -24,4 +25,6 @@ rtrans(){
     --tpslimit 4 \
     --progress
 }
+
+# shellcheck disable=SC2139
 alias mount-drive="rclone mount onedrive: ~/OneDrive --vfs-cache-mode full --vfs-cache-max-size 10G --daemon"

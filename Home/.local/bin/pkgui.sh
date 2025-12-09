@@ -217,7 +217,7 @@ _pkgui_edit_sys(){
 }
 main(){
   case "${1:-}" in
-    -s) shift;_pkgui_search "$@";;-S) shift;_pkgui_search "$@"|_pkgui_inst;;-l) _pkgui_local;;-R) _pkgui_local|_pkgui_rm;;-u) _pkgui_upd_full;;-i) _pkgui_info_sys;;-v) _pkgui_ver;exit 0;;-h) _pkgui_help;exit 0;;"")";;*) _pkgui_die "Invalid option: $1";;
+    -s) shift;_pkgui_search "$@";;-S) shift;_pkgui_search "$@"|_pkgui_inst;;-l) _pkgui_local;;-R) _pkgui_local|_pkgui_rm;;-u) _pkgui_upd_full;;-i) _pkgui_info_sys;;-v) _pkgui_ver;exit 0;;-h) _pkgui_help;exit 0;;"");;*) _pkgui_die "Invalid option: $1";;
   esac
   [[ $# -eq 0 ]] && _pkgui_menu
 }

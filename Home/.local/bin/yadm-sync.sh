@@ -97,6 +97,6 @@ sync_diff(){
 main(){
   local command="${1:-}" dry_run=0;shift||:
   while [[ $# -gt 0 ]];do case "$1" in -h|--help) usage;exit 0;;-n|--dry-run) dry_run=1;shift;;-v|--verbose) set -x;shift;;*) die "Unknown option: $1";;esac;done
-  case "$command" in pull) sync_pull "$dry_run";;push) sync_push "$dry_run";;status) sync_status;;diff) sync_diff;;-h|--help|help) usage;exit 0;;""} die "No command specified";;*) die "Unknown command: $command";;esac
+  case "$command" in pull) sync_pull "$dry_run";;push) sync_push "$dry_run";;status) sync_status;;diff) sync_diff;;-h|--help|help) usage;exit 0;;"") die "No command specified";;*) die "Unknown command: $command";;esac
 }
 main "$@"

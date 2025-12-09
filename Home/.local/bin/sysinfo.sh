@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t';LC_ALL=C;LANG=C
+set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
+export LC_ALL=C LANG=C
 readonly VERSION="3.0.0" BLD=$'\e[1m' GRN=$'\e[32m' BLU=$'\e[34m' YLW=$'\e[33m' CYN=$'\e[96m' RED=$'\e[31m' DEF=$'\e[0m'
 has(){ command -v "$1" &>/dev/null;}
 die(){ printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2;exit "${2:-1}";}

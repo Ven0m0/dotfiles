@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
+set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
 export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
 # Unified launcher for apps, files, and power management
 # Targets: Arch/Wayland, Debian/Raspbian, Termux
 # Dependencies: fzf, fd, bemenu/rofi (GUI fallbacks), systemctl/loginctl
 has(){ command -v "$1" &>/dev/null; }
+
 # Menu abstraction - detects context and selects best provider
 _menu(){
   local prompt="${1:-select: }"
@@ -21,10 +22,13 @@ _menu(){
     printf "Error: No menu tool (fzf, bemenu, rofi) found.\n" >&2; exit 1
   fi
 }
+
 _confirm(){
-  local ans=$(printf "No\nYes" | _menu "Confirm execute?")
+  local ans
+  ans=$(printf "No\nYes" | _menu "Confirm execute?")
   [[ $ans == "Yes" ]]
 }
+
 # Mode: App Launcher
 mode_app(){
   local cmd dir file
@@ -40,9 +44,11 @@ mode_app(){
   done
   cmd=$(printf '%s\n' "${!paths[@]}" | sort | _menu "Run: ") || return 0
   if [[ -n $cmd ]]; then
-    nohup "$cmd" &>/dev/null &; disown
+    nohup "$cmd" &>/dev/null &
+    disown
   fi
 }
+
 # Mode: Power Menu
 mode_power(){
   local -a opts=("Lock" "Suspend" "Logout" "Reboot" "Power Off" "Firmware Setup")
@@ -54,17 +60,20 @@ mode_power(){
     "Logout") _confirm && loginctl terminate-user "$USER" ;;
     "Reboot") _confirm && systemctl reboot ;;
     "Power Off") _confirm && systemctl poweroff ;;
-    "Firmware Setup")  _confirm && systemctl reboot --firmware-setup ;;
+    "Firmware Setup") _confirm && systemctl reboot --firmware-setup ;;
   esac
 }
+
 # Mode: File Opener
 mode_file(){
   local target
   target=$(fd --type f . "$HOME" 2>/dev/null | _menu "Open File: ") || return 0
   if [[ -n $target ]]; then
-    xdg-open "$target" &>/dev/null &; disown
+    xdg-open "$target" &>/dev/null &
+    disown
   fi
 }
+
 # Main dispatch
 main(){
   local mode="${1:-}"
@@ -86,4 +95,5 @@ main(){
     *) printf "Usage: %s [app|power|file]\n" "$0"; exit 1 ;;
   esac
 }
+
 main "$@"
