@@ -88,6 +88,8 @@ minify = "latest"
 "cargo:md-formatter" = "latest"
 "cargo:whitespace-format" = "latest"
 #"github:Voxelum/x-minecraft-launcher" = "latest"
+#"cargo:sy" = "latest"
+#"cargo:appInstalleR" = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true }
