@@ -2,7 +2,7 @@
 set -euo pipefail; shopt -s nullglob
 IFS=$'\n\t' LC_ALL=C LANG=C
 export HOME="/home/${SUDO_USER:-$USER}"
-has(){ command -v -- "$1" &> /dev/null; }
+has(){ command -v -- "$1" &>/dev/null; }
 die(){ echo "ERROR: $*" >&2; exit 1; }
 check_requirements(){
   local -a missing=() reqs=(ping ip)
@@ -38,41 +38,41 @@ persist_mtu(){
       echo "Persistent via NetworkManager: $conn"; return 0
     fi
   fi
-  if [[ -d /etc/netplan ]] && compgen -G "/etc/netplan/*.yaml" > /dev/null; then
+  if [[ -d /etc/netplan ]] && compgen -G "/etc/netplan/*.yaml" >/dev/null; then
     local netplan_file
     netplan_file=$(compgen -G "/etc/netplan/*. yaml" | head -1)
     echo "Updating Netplan config: $netplan_file"
-    if grep -q "^ *$iface:" "$netplan_file" 2> /dev/null; then
-      if grep -q "mtu:" "$netplan_file" 2> /dev/null; then
+    if grep -q "^ *$iface:" "$netplan_file" 2>/dev/null; then
+      if grep -q "mtu:" "$netplan_file" 2>/dev/null; then
         sudo sed -i "s/mtu: [0-9]*/mtu: $mtu/" "$netplan_file"
       else
         sudo sed -i "/^ *$iface:/a\      mtu: $mtu" "$netplan_file"
       fi
-      sudo netplan apply &> /dev/null || echo "Run 'sudo netplan apply' to activate"
+      sudo netplan apply &>/dev/null || echo "Run 'sudo netplan apply' to activate"
       echo "Persistent via Netplan: $netplan_file"; return 0
     fi
   fi
   if [[ -d /etc/systemd/network ]]; then
     local nwfile="/etc/systemd/network/99-$iface-mtu. network"
-    sudo tee "$nwfile" &> /dev/null << EOF
+    sudo tee "$nwfile" &>/dev/null << EOF
 [Match]
 Name=$iface
 
 [Link]
 MTUBytes=$mtu
 EOF
-    sudo systemctl restart systemd-networkd &> /dev/null || :
+    sudo systemctl restart systemd-networkd &>/dev/null || :
     echo "Persistent via systemd-networkd: $nwfile"; return 0
   fi
   if [[ -f /etc/network/interfaces ]]; then
-    if grep -q "iface $iface inet" /etc/network/interfaces 2> /dev/null; then
-      if grep -q "^ *mtu $iface" /etc/network/interfaces 2> /dev/null; then
+    if grep -q "iface $iface inet" /etc/network/interfaces 2>/dev/null; then
+      if grep -q "^ *mtu $iface" /etc/network/interfaces 2>/dev/null; then
         sudo sed -i "/iface $iface inet/,/^iface/ s/^ *mtu . */    mtu $mtu/" /etc/network/interfaces
       else
         sudo sed -i "/iface $iface inet/ a\    mtu $mtu" /etc/network/interfaces
       fi
       echo "Persistent via /etc/network/interfaces"
-      sudo systemctl restart networking &> /dev/null || sudo ifdown "$iface" && sudo ifup "$iface" || :; return 0
+      sudo systemctl restart networking &>/dev/null || sudo ifdown "$iface" && sudo ifup "$iface" || :; return 0
     fi
   fi
   echo "Manual persistence needed - no supported network manager found"
@@ -87,12 +87,12 @@ find_mtu_binary(){
     overhead=28; ping_cmd="ping"
   fi
   echo "Testing MTU to $srv (IPv$ipver) via binary search..."
-  "$ping_cmd" -c1 -W1 "$srv" &> /dev/null || die "Server $srv unreachable"
-  "$ping_cmd" -M 'do' -s$((lo - overhead)) -c1 "$srv" &> /dev/null || die "Min MTU $lo not viable"
+  "$ping_cmd" -c1 -W1 "$srv" &>/dev/null || die "Server $srv unreachable"
+  "$ping_cmd" -M 'do' -s$((lo - overhead)) -c1 "$srv" &>/dev/null || die "Min MTU $lo not viable"
   opt=$lo
   while ((lo <= hi)); do
     mid=$(((lo + hi) / 2))
-    if "$ping_cmd" -M 'do' -s$((mid - overhead)) -c1 "$srv" &> /dev/null; then
+    if "$ping_cmd" -M 'do' -s$((mid - overhead)) -c1 "$srv" &>/dev/null; then
       opt="$mid"; lo=$((mid + 1))
     else
       hi=$((mid - 1))
@@ -111,17 +111,17 @@ find_mtu_incremental(){
     overhead=28; ping_cmd="ping"
   fi
   echo "Testing MTU to $srv (IPv$ipver) via incremental (step=$step)..."
-  "$ping_cmd" -c1 -W1 "$srv" &> /dev/null || die "Server $srv unreachable"
-  sudo ip link set dev "$iface" mtu "$max_mtu" &> /dev/null || die "Cannot set initial MTU"
+  "$ping_cmd" -c1 -W1 "$srv" &>/dev/null || die "Server $srv unreachable"
+  sudo ip link set dev "$iface" mtu "$max_mtu" &>/dev/null || die "Cannot set initial MTU"
   current="$min_mtu"; last_ok="$min_mtu"
   while ((current <= max_mtu)); do
     printf "Testing MTU: %d...  " "$current"
-    if "$ping_cmd" -M 'do' -s$((current - overhead)) -c1 -W1 "$srv" &> /dev/null; then
+    if "$ping_cmd" -M 'do' -s$((current - overhead)) -c1 -W1 "$srv" &>/dev/null; then
       echo "OK"; last_ok="$current"
     else
       echo "FAIL - retrying..."
-      read -rt 0.5 -- <> <(:) &> /dev/null || :
-      if "$ping_cmd" -M 'do' -s$((current - overhead)) -c1 -W1 "$srv" &> /dev/null; then
+      read -rt 0.5 -- <> <(:) &>/dev/null || :
+      if "$ping_cmd" -M 'do' -s$((current - overhead)) -c1 -W1 "$srv" &>/dev/null; then
         echo "  Retry OK"; last_ok="$current"
       else
         echo "  Retry FAIL - stopping"; break
@@ -167,9 +167,9 @@ EOF
     echo "Dry run only - no changes applied"
     iface="(not selected)"
     if ((step_mode)); then
-      find_mtu_incremental "$srv" "$iface" "$step_size" > /dev/null
+      find_mtu_incremental "$srv" "$iface" "$step_size" >/dev/null
     else
-      find_mtu_binary "$srv" "$iface" > /dev/null
+      find_mtu_binary "$srv" "$iface" >/dev/null
     fi; return 0
   }
   iface=$(select_interface)

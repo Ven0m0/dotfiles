@@ -31,7 +31,7 @@ export PYTHONOPTIMIZE=2 PYTHONIOENCODING='UTF-8' PYTHON_JIT=1
 export PYTHON_DISABLE_REMOTE_DEBUG=1 PYTORCH_ENABLE_MPS_FALLBACK=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 # Use uv for pip operations when available
-pip() {
+pip(){
   if has uv && [[ "install uninstall list show freeze check" =~ $1 ]]; then
     command uv pip "$@"
   else
@@ -48,7 +48,7 @@ alias py-server='python3 -m SimpleHTTPServer 8000'
 alias pdb="python3 -m pdb"
 alias serve="python3 -m http.server"
 # Script to format JSON files using Python JSON Tool
-_pj() {
+_pj(){
   [[ -z $1 ]] && {
     printf "%s\n" "No file path"
     return

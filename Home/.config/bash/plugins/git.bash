@@ -1,10 +1,10 @@
 has git || return
-gpush() {
+gpush(){
   git add -A && { git commit -m "${1:-Update}" && LC_ALL=C git push --recurse-submodules=on-demand; }
   git status
 }
 
-gctl() {
+gctl(){
   [[ $# -eq 0 ]] && {
     echo "Usage: gctl <git-repo-url> [directory]" >&2
     return 1
@@ -50,7 +50,7 @@ alias gh-pr-stats="gh pr view --json additions,deletions,changedFiles,files,titl
 # PR stats with full detailed information
 alias gh-pr-stats-full="gh pr view --json additions,deletions,changedFiles,files,title,author,state,createdAt,updatedAt,url,assignees,body,closed,closedAt,comments,commits,headRefName,headRefOid,isDraft,labels,mergeStateStatus,mergeable,mergedAt,mergedBy,reviewDecision,reviews"
 
-gcommits() {
+gcommits(){
   if [ -z "$1" ]; then
     git log --format="%C(auto)%h (%s, %ad)" -n 20 | cat
   else

@@ -26,13 +26,13 @@ TOTAL_ERRORS=0
 readonly BLD=$'\e[1m' BLU=$'\e[34m' GRN=$'\e[32m' YLW=$'\e[33m' RED=$'\e[31m' DEF=$'\e[0m'
 
 # Helpers
-has() { command -v "$1" &>/dev/null; }
-log() { printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
-ok() { printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
-warn() { printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
-err() { printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; }
+has(){ command -v "$1" &>/dev/null; }
+log(){ printf '%b==>\e[0m %s\n' "${BLD}${BLU}" "$*"; }
+ok(){ printf '%b==>\e[0m %s\n' "${BLD}${GRN}" "$*"; }
+warn(){ printf '%b==> WARNING:\e[0m %s\n' "${BLD}${YLW}" "$*"; }
+err(){ printf '%b==> ERROR:\e[0m %s\n' "${BLD}${RED}" "$*" >&2; }
 
-check_deps() {
+check_deps(){
   local -a missing=() optional=()
   local -a required=(shfmt shellcheck biome yamllint yamlfmt ruff markdownlint)
   local -a opt=(taplo mdformat stylua selene ast-grep actionlint prettier)
@@ -55,7 +55,7 @@ check_deps() {
   return 0
 }
 
-find_files() {
+find_files(){
   local ext="$1"
   
   if [[ $FD == "find" ]]; then
@@ -75,14 +75,14 @@ find_files() {
   fi
 }
 
-find_files_multi() {
+find_files_multi(){
   local -a exts=("$@")
   for ext in "${exts[@]}"; do
     find_files "$ext"
   done | sort -u
 }
 
-record_result() {
+record_result(){
   local file="$1" group="$2" modified="$3" errors="$4"
   FILE_RESULTS["$file"]="$group|$modified|$errors"
   ((TOTAL_FILES++))
@@ -93,12 +93,12 @@ record_result() {
   }
 }
 
-add_fix_cmd() {
+add_fix_cmd(){
   FIX_COMMANDS+=("$1")
 }
 
 # YAML Processor
-proc_yaml() {
+proc_yaml(){
   local group="yaml"
   local -a files=()
   mapfile -t files < <(find_files_multi yml yaml)
@@ -155,7 +155,7 @@ proc_yaml() {
 # [Similar structure for other processors: proc_web, proc_shell, proc_fish, proc_toml, proc_python, proc_lua, proc_markdown, proc_actions, proc_xml, proc_ast_grep]
 
 # Report Generation
-print_table() {
+print_table(){
   log ""
   log "═══════════════════════════════════════════════════════════════════════════"
   log "FILE RESULTS"
@@ -173,7 +173,7 @@ print_table() {
   log "═══════════════════════════════════════════════════════════════════════════"
 }
 
-print_commands() {
+print_commands(){
   log ""
   log "FIX COMMANDS (Reproducible)"
   log "───────────────────────────────────────────────────────────────────────────"
@@ -183,7 +183,7 @@ print_commands() {
   log ""
 }
 
-print_summary() {
+print_summary(){
   log ""
   log "═══════════════════════════════════════════════════════════════════════════"
   log "SUMMARY"
@@ -210,7 +210,7 @@ print_summary() {
 }
 
 # Main
-main() {
+main(){
   log "Exhaustive Lint & Format Pipeline"
   log "Policy: 2-space indent, 120-char width, zero errors"
   log "Root: $PROJECT_ROOT"

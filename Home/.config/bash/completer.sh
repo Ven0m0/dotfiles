@@ -3,7 +3,7 @@
 
 #=============================== [Completions] ================================
 # Lazy-load completion function
-load_completion() {
+load_completion(){
   local name="$1" cmd="$2" kind="$3" src="$4"
   has "$cmd" || return
   declare -F "$name" &>/dev/null && return
