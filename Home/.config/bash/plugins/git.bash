@@ -3,10 +3,9 @@ gpush(){
   git add -A && { git commit -m "${1:-Update}" && LC_ALL=C git push --recurse-submodules=on-demand; }
   git status
 }
-
 gctl(){
   [[ $# -eq 0 ]] && {
-    echo "Usage: gctl <git-repo-url> [directory]" >&2
+    printf "Usage: gctl <git-repo-url> [directory]\n" >&2
     return 1
   }
   local url="$1" dir="$2"
@@ -35,9 +34,9 @@ gctl(){
 # Lazy-load: only fetch token when needed, not on every shell startup
 if has gh; then
   # Setup git to use gh for authentication (one-time config)
-  gh auth setup-git 2>/dev/null
+  gh auth setup-git &>/dev/null
   # Define lazy function to get token only when GITHUB_TOKEN is accessed
-  get_github_token() { export GITHUB_TOKEN="$(gh auth token 2>/dev/null)"; }
+  get_github_token(){ export GITHUB_TOKEN="$(gh auth token &>/dev/null)"; }
 fi
 # Git dotfiles
 alias dot="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
@@ -49,11 +48,10 @@ alias gh-pr-view="gh pr view --json number,title,state,url,author,createdAt,upda
 alias gh-pr-stats="gh pr view --json additions,deletions,changedFiles,files,title,state,url"
 # PR stats with full detailed information
 alias gh-pr-stats-full="gh pr view --json additions,deletions,changedFiles,files,title,author,state,createdAt,updatedAt,url,assignees,body,closed,closedAt,comments,commits,headRefName,headRefOid,isDraft,labels,mergeStateStatus,mergeable,mergedAt,mergedBy,reviewDecision,reviews"
-
 gcommits(){
-  if [ -z "$1" ]; then
+  if [[ -z $1 ]]; then
     git log --format="%C(auto)%h (%s, %ad)" -n 20 | cat
   else
-    git log --format="%H" -n $1 | cat
+    git log --format="%H" -n "$1" | cat
   fi
 }

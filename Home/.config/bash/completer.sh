@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 [[ $- != *i* ]] && return
-
 #=============================== [Completions] ================================
 # Lazy-load completion function
 load_completion(){
@@ -12,23 +11,19 @@ load_completion(){
     source | .) [[ -r ${src/#\~\//${HOME}/} ]] && . "${src/#\~\//${HOME}/}" &>/dev/null ;;
   esac
 }
-
 # --- System Completions
 load_completion _git git source /usr/share/bash-completion/completions/git
-
 # --- Tool Completions
 if has gh; then
   load_completion _gh gh eval "$(gh completion -s bash)"
 fi
-
 if has rustup; then
   load_completion _rustup rustup eval "$(rustup completions bash rustup)"
   load_completion _cargo cargo eval "$(rustup completions bash cargo)"
 fi
-
 # --- Editor FZF Completion
 if has fzf; then
-  _editor_completion() {
+  _editor_completion(){
     bind '"\e[0n": redraw-current-line' &>/dev/null
     local selected
     if selected=$(compgen -f -- "${COMP_WORDS[COMP_CWORD]}" | fzf --prompt='❯ ' \
@@ -39,14 +34,12 @@ if has fzf; then
     fi
     printf '\e[5n'
   }
-
   # Register editor commands
   for _cmd in "${EDITOR:-}" nano micro vi vim nvim code; do
     has "$_cmd" && complete -o nospace -F _editor_completion "$_cmd"
   done
   unset _cmd
 fi
-
 # --- Custom Completions
 # Add your custom completions below
 # Example:

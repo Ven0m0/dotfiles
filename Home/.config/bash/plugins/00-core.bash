@@ -9,18 +9,14 @@ HISTTIMEFORMAT="%F %T "
 HISTFILE="${HOME}/.bash_history"
 PROMPT_DIRTRIM=3
 PROMPT_COMMAND="history -a"
-
 # --- Shell Behavior
 shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob
 shopt -s hostcomplete no_empty_cmd_completion histappend cmdhist
 set -o noclobber
-
 # Disable flow control (Ctrl-S/Q)
-stty -ixon -ixoff -ixany 2>/dev/null
-bind -r '\C-s' 2>/dev/null
-
+stty -ixon -ixoff -ixany &>/dev/null
+bind -r '\C-s' &>/dev/null
 export IGNOREEOF=10 COLUMNS
-
 # --- Sourcing Legacy
 ifsource /etc/bashrc
 ifsource /usr/share/bash-preexec/bash-preexec.sh
