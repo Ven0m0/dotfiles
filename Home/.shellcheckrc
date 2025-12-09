@@ -1,4 +1,4 @@
-# shellcheck.net/wiki
+# shellcheck.net
 shell=bash
 external-sources=true
 source-path=SCRIPTDIR
