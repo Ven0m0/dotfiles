@@ -1,3 +1,0 @@
-[D-Bus Service]
-Name=org.freedesktop.Notifications
-Exec=/usr/bin/wired -r
