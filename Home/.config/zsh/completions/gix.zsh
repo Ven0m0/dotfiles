@@ -2,7 +2,7 @@
 
 autoload -U is-at-least
 
-_gix() {
+_gix(){
     typeset -A opt_args
     typeset -a _arguments_options
     local ret=1
@@ -4122,7 +4122,7 @@ esac
 }
 
 (( $+functions[_gix_commands] )) ||
-_gix_commands() {
+_gix_commands(){
     local commands; commands=(
 'archive:Subcommands for creating worktree archives' \
 'clean:Remove untracked files from the working tree' \
@@ -4171,12 +4171,12 @@ _gix_commands() {
     _describe -t commands 'gix commands' commands "$@"
 }
 (( $+functions[_gix__archive_commands] )) ||
-_gix__archive_commands() {
+_gix__archive_commands(){
     local commands; commands=()
     _describe -t commands 'gix archive commands' commands "$@"
 }
 (( $+functions[_gix__attributes_commands] )) ||
-_gix__attributes_commands() {
+_gix__attributes_commands(){
     local commands; commands=(
 'validate-baseline:Run \`git check-attr\` and \`git check-ignore\` on all files of the index or all files passed via stdin and validate that we get the same outcome when computing attributes' \
 'query:List all attributes of the given path-specs and display the result similar to \`git check-attr\`' \
@@ -4185,7 +4185,7 @@ _gix__attributes_commands() {
     _describe -t commands 'gix attributes commands' commands "$@"
 }
 (( $+functions[_gix__attributes__help_commands] )) ||
-_gix__attributes__help_commands() {
+_gix__attributes__help_commands(){
     local commands; commands=(
 'validate-baseline:Run \`git check-attr\` and \`git check-ignore\` on all files of the index or all files passed via stdin and validate that we get the same outcome when computing attributes' \
 'query:List all attributes of the given path-specs and display the result similar to \`git check-attr\`' \
@@ -4194,12 +4194,12 @@ _gix__attributes__help_commands() {
     _describe -t commands 'gix attributes help commands' commands "$@"
 }
 (( $+functions[_gix__attributes__help__help_commands] )) ||
-_gix__attributes__help__help_commands() {
+_gix__attributes__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix attributes help help commands' commands "$@"
 }
 (( $+functions[_gix__attributes__help__query_commands] )) ||
-_gix__attributes__help__query_commands() {
+_gix__attributes__help__query_commands(){
     local commands; commands=()
     _describe -t commands 'gix attributes help query commands' commands "$@"
 }
@@ -4209,7 +4209,7 @@ _gix__attributes__help__validate-baseline_commands() {
     _describe -t commands 'gix attributes help validate-baseline commands' commands "$@"
 }
 (( $+functions[_gix__attributes__query_commands] )) ||
-_gix__attributes__query_commands() {
+_gix__attributes__query_commands(){
     local commands; commands=()
     _describe -t commands 'gix attributes query commands' commands "$@"
 }
@@ -4219,27 +4219,27 @@ _gix__attributes__validate-baseline_commands() {
     _describe -t commands 'gix attributes validate-baseline commands' commands "$@"
 }
 (( $+functions[_gix__blame_commands] )) ||
-_gix__blame_commands() {
+_gix__blame_commands(){
     local commands; commands=()
     _describe -t commands 'gix blame commands' commands "$@"
 }
 (( $+functions[_gix__cat_commands] )) ||
-_gix__cat_commands() {
+_gix__cat_commands(){
     local commands; commands=()
     _describe -t commands 'gix cat commands' commands "$@"
 }
 (( $+functions[_gix__clean_commands] )) ||
-_gix__clean_commands() {
+_gix__clean_commands(){
     local commands; commands=()
     _describe -t commands 'gix clean commands' commands "$@"
 }
 (( $+functions[_gix__clone_commands] )) ||
-_gix__clone_commands() {
+_gix__clone_commands(){
     local commands; commands=()
     _describe -t commands 'gix clone commands' commands "$@"
 }
 (( $+functions[_gix__commit_commands] )) ||
-_gix__commit_commands() {
+_gix__commit_commands(){
     local commands; commands=(
 'verify:Verify the signature of a commit' \
 'describe:Describe the current commit or the given one using the name of the closest annotated tag in its ancestry' \
@@ -4248,12 +4248,12 @@ _gix__commit_commands() {
     _describe -t commands 'gix commit commands' commands "$@"
 }
 (( $+functions[_gix__commit__describe_commands] )) ||
-_gix__commit__describe_commands() {
+_gix__commit__describe_commands(){
     local commands; commands=()
     _describe -t commands 'gix commit describe commands' commands "$@"
 }
 (( $+functions[_gix__commit__help_commands] )) ||
-_gix__commit__help_commands() {
+_gix__commit__help_commands(){
     local commands; commands=(
 'verify:Verify the signature of a commit' \
 'describe:Describe the current commit or the given one using the name of the closest annotated tag in its ancestry' \
@@ -4262,22 +4262,22 @@ _gix__commit__help_commands() {
     _describe -t commands 'gix commit help commands' commands "$@"
 }
 (( $+functions[_gix__commit__help__describe_commands] )) ||
-_gix__commit__help__describe_commands() {
+_gix__commit__help__describe_commands(){
     local commands; commands=()
     _describe -t commands 'gix commit help describe commands' commands "$@"
 }
 (( $+functions[_gix__commit__help__help_commands] )) ||
-_gix__commit__help__help_commands() {
+_gix__commit__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix commit help help commands' commands "$@"
 }
 (( $+functions[_gix__commit__help__verify_commands] )) ||
-_gix__commit__help__verify_commands() {
+_gix__commit__help__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix commit help verify commands' commands "$@"
 }
 (( $+functions[_gix__commit__verify_commands] )) ||
-_gix__commit__verify_commands() {
+_gix__commit__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix commit verify commands' commands "$@"
 }
@@ -4325,12 +4325,12 @@ _gix__commit-graph__verify_commands() {
     _describe -t commands 'gix commit-graph verify commands' commands "$@"
 }
 (( $+functions[_gix__completions_commands] )) ||
-_gix__completions_commands() {
+_gix__completions_commands(){
     local commands; commands=()
     _describe -t commands 'gix completions commands' commands "$@"
 }
 (( $+functions[_gix__config_commands] )) ||
-_gix__config_commands() {
+_gix__config_commands(){
     local commands; commands=()
     _describe -t commands 'gix config commands' commands "$@"
 }
@@ -4340,7 +4340,7 @@ _gix__config-tree_commands() {
     _describe -t commands 'gix config-tree commands' commands "$@"
 }
 (( $+functions[_gix__credential_commands] )) ||
-_gix__credential_commands() {
+_gix__credential_commands(){
     local commands; commands=(
 'fill:Get the credentials fed for \`url=<url>\` via STDIN' \
 'get:Get the credentials fed for \`url=<url>\` via STDIN' \
@@ -4353,17 +4353,17 @@ _gix__credential_commands() {
     _describe -t commands 'gix credential commands' commands "$@"
 }
 (( $+functions[_gix__credential__approve_commands] )) ||
-_gix__credential__approve_commands() {
+_gix__credential__approve_commands(){
     local commands; commands=()
     _describe -t commands 'gix credential approve commands' commands "$@"
 }
 (( $+functions[_gix__credential__fill_commands] )) ||
-_gix__credential__fill_commands() {
+_gix__credential__fill_commands(){
     local commands; commands=()
     _describe -t commands 'gix credential fill commands' commands "$@"
 }
 (( $+functions[_gix__credential__help_commands] )) ||
-_gix__credential__help_commands() {
+_gix__credential__help_commands(){
     local commands; commands=(
 'fill:Get the credentials fed for \`url=<url>\` via STDIN' \
 'approve:Approve the information piped via STDIN as obtained with last call to \`fill\`' \
@@ -4373,32 +4373,32 @@ _gix__credential__help_commands() {
     _describe -t commands 'gix credential help commands' commands "$@"
 }
 (( $+functions[_gix__credential__help__approve_commands] )) ||
-_gix__credential__help__approve_commands() {
+_gix__credential__help__approve_commands(){
     local commands; commands=()
     _describe -t commands 'gix credential help approve commands' commands "$@"
 }
 (( $+functions[_gix__credential__help__fill_commands] )) ||
-_gix__credential__help__fill_commands() {
+_gix__credential__help__fill_commands(){
     local commands; commands=()
     _describe -t commands 'gix credential help fill commands' commands "$@"
 }
 (( $+functions[_gix__credential__help__help_commands] )) ||
-_gix__credential__help__help_commands() {
+_gix__credential__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix credential help help commands' commands "$@"
 }
 (( $+functions[_gix__credential__help__reject_commands] )) ||
-_gix__credential__help__reject_commands() {
+_gix__credential__help__reject_commands(){
     local commands; commands=()
     _describe -t commands 'gix credential help reject commands' commands "$@"
 }
 (( $+functions[_gix__credential__reject_commands] )) ||
-_gix__credential__reject_commands() {
+_gix__credential__reject_commands(){
     local commands; commands=()
     _describe -t commands 'gix credential reject commands' commands "$@"
 }
 (( $+functions[_gix__diff_commands] )) ||
-_gix__diff_commands() {
+_gix__diff_commands(){
     local commands; commands=(
 'tree:Diff two trees' \
 'file:Diff two versions of a file' \
@@ -4407,12 +4407,12 @@ _gix__diff_commands() {
     _describe -t commands 'gix diff commands' commands "$@"
 }
 (( $+functions[_gix__diff__file_commands] )) ||
-_gix__diff__file_commands() {
+_gix__diff__file_commands(){
     local commands; commands=()
     _describe -t commands 'gix diff file commands' commands "$@"
 }
 (( $+functions[_gix__diff__help_commands] )) ||
-_gix__diff__help_commands() {
+_gix__diff__help_commands(){
     local commands; commands=(
 'tree:Diff two trees' \
 'file:Diff two versions of a file' \
@@ -4421,32 +4421,32 @@ _gix__diff__help_commands() {
     _describe -t commands 'gix diff help commands' commands "$@"
 }
 (( $+functions[_gix__diff__help__file_commands] )) ||
-_gix__diff__help__file_commands() {
+_gix__diff__help__file_commands(){
     local commands; commands=()
     _describe -t commands 'gix diff help file commands' commands "$@"
 }
 (( $+functions[_gix__diff__help__help_commands] )) ||
-_gix__diff__help__help_commands() {
+_gix__diff__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix diff help help commands' commands "$@"
 }
 (( $+functions[_gix__diff__help__tree_commands] )) ||
-_gix__diff__help__tree_commands() {
+_gix__diff__help__tree_commands(){
     local commands; commands=()
     _describe -t commands 'gix diff help tree commands' commands "$@"
 }
 (( $+functions[_gix__diff__tree_commands] )) ||
-_gix__diff__tree_commands() {
+_gix__diff__tree_commands(){
     local commands; commands=()
     _describe -t commands 'gix diff tree commands' commands "$@"
 }
 (( $+functions[_gix__env_commands] )) ||
-_gix__env_commands() {
+_gix__env_commands(){
     local commands; commands=()
     _describe -t commands 'gix env commands' commands "$@"
 }
 (( $+functions[_gix__exclude_commands] )) ||
-_gix__exclude_commands() {
+_gix__exclude_commands(){
     local commands; commands=(
 'query:Check if path-specs are excluded and print the result similar to \`git check-ignore\`' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -4454,7 +4454,7 @@ _gix__exclude_commands() {
     _describe -t commands 'gix exclude commands' commands "$@"
 }
 (( $+functions[_gix__exclude__help_commands] )) ||
-_gix__exclude__help_commands() {
+_gix__exclude__help_commands(){
     local commands; commands=(
 'query:Check if path-specs are excluded and print the result similar to \`git check-ignore\`' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -4462,27 +4462,27 @@ _gix__exclude__help_commands() {
     _describe -t commands 'gix exclude help commands' commands "$@"
 }
 (( $+functions[_gix__exclude__help__help_commands] )) ||
-_gix__exclude__help__help_commands() {
+_gix__exclude__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix exclude help help commands' commands "$@"
 }
 (( $+functions[_gix__exclude__help__query_commands] )) ||
-_gix__exclude__help__query_commands() {
+_gix__exclude__help__query_commands(){
     local commands; commands=()
     _describe -t commands 'gix exclude help query commands' commands "$@"
 }
 (( $+functions[_gix__exclude__query_commands] )) ||
-_gix__exclude__query_commands() {
+_gix__exclude__query_commands(){
     local commands; commands=()
     _describe -t commands 'gix exclude query commands' commands "$@"
 }
 (( $+functions[_gix__fetch_commands] )) ||
-_gix__fetch_commands() {
+_gix__fetch_commands(){
     local commands; commands=()
     _describe -t commands 'gix fetch commands' commands "$@"
 }
 (( $+functions[_gix__free_commands] )) ||
-_gix__free_commands() {
+_gix__free_commands(){
     local commands; commands=(
 'commit-graph:Subcommands for interacting with commit-graphs' \
 'mailmap:Subcommands for interacting with mailmaps' \
@@ -4525,12 +4525,12 @@ _gix__free__commit-graph__verify_commands() {
     _describe -t commands 'gix free commit-graph verify commands' commands "$@"
 }
 (( $+functions[_gix__free__discover_commands] )) ||
-_gix__free__discover_commands() {
+_gix__free__discover_commands(){
     local commands; commands=()
     _describe -t commands 'gix free discover commands' commands "$@"
 }
 (( $+functions[_gix__free__help_commands] )) ||
-_gix__free__help_commands() {
+_gix__free__help_commands(){
     local commands; commands=(
 'commit-graph:Subcommands for interacting with commit-graphs' \
 'mailmap:Subcommands for interacting with mailmaps' \
@@ -4554,17 +4554,17 @@ _gix__free__help__commit-graph__verify_commands() {
     _describe -t commands 'gix free help commit-graph verify commands' commands "$@"
 }
 (( $+functions[_gix__free__help__discover_commands] )) ||
-_gix__free__help__discover_commands() {
+_gix__free__help__discover_commands(){
     local commands; commands=()
     _describe -t commands 'gix free help discover commands' commands "$@"
 }
 (( $+functions[_gix__free__help__help_commands] )) ||
-_gix__free__help__help_commands() {
+_gix__free__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix free help help commands' commands "$@"
 }
 (( $+functions[_gix__free__help__index_commands] )) ||
-_gix__free__help__index_commands() {
+_gix__free__help__index_commands(){
     local commands; commands=(
 'from-list:Create an index from a list of empty files, one per line of the input' \
 'verify:Validate constraints and assumptions of an index along with its integrity' \
@@ -4584,29 +4584,29 @@ _gix__free__help__index__from-list_commands() {
     _describe -t commands 'gix free help index from-list commands' commands "$@"
 }
 (( $+functions[_gix__free__help__index__info_commands] )) ||
-_gix__free__help__index__info_commands() {
+_gix__free__help__index__info_commands(){
     local commands; commands=()
     _describe -t commands 'gix free help index info commands' commands "$@"
 }
 (( $+functions[_gix__free__help__index__verify_commands] )) ||
-_gix__free__help__index__verify_commands() {
+_gix__free__help__index__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix free help index verify commands' commands "$@"
 }
 (( $+functions[_gix__free__help__mailmap_commands] )) ||
-_gix__free__help__mailmap_commands() {
+_gix__free__help__mailmap_commands(){
     local commands; commands=(
 'verify:Parse all entries in the mailmap and report malformed lines or collisions' \
     )
     _describe -t commands 'gix free help mailmap commands' commands "$@"
 }
 (( $+functions[_gix__free__help__mailmap__verify_commands] )) ||
-_gix__free__help__mailmap__verify_commands() {
+_gix__free__help__mailmap__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix free help mailmap verify commands' commands "$@"
 }
 (( $+functions[_gix__free__help__pack_commands] )) ||
-_gix__free__help__pack_commands() {
+_gix__free__help__pack_commands(){
     local commands; commands=(
 'index:Subcommands for interacting with pack indices (.idx)' \
 'multi-index:Subcommands for interacting with multi-pack indices (named "multi-pack-index")' \
@@ -4618,24 +4618,24 @@ _gix__free__help__pack_commands() {
     _describe -t commands 'gix free help pack commands' commands "$@"
 }
 (( $+functions[_gix__free__help__pack__create_commands] )) ||
-_gix__free__help__pack__create_commands() {
+_gix__free__help__pack__create_commands(){
     local commands; commands=()
     _describe -t commands 'gix free help pack create commands' commands "$@"
 }
 (( $+functions[_gix__free__help__pack__explode_commands] )) ||
-_gix__free__help__pack__explode_commands() {
+_gix__free__help__pack__explode_commands(){
     local commands; commands=()
     _describe -t commands 'gix free help pack explode commands' commands "$@"
 }
 (( $+functions[_gix__free__help__pack__index_commands] )) ||
-_gix__free__help__pack__index_commands() {
+_gix__free__help__pack__index_commands(){
     local commands; commands=(
 'create:create a pack index from a pack data file' \
     )
     _describe -t commands 'gix free help pack index commands' commands "$@"
 }
 (( $+functions[_gix__free__help__pack__index__create_commands] )) ||
-_gix__free__help__pack__index__create_commands() {
+_gix__free__help__pack__index__create_commands(){
     local commands; commands=()
     _describe -t commands 'gix free help pack index create commands' commands "$@"
 }
@@ -4670,17 +4670,17 @@ _gix__free__help__pack__multi-index__verify_commands() {
     _describe -t commands 'gix free help pack multi-index verify commands' commands "$@"
 }
 (( $+functions[_gix__free__help__pack__receive_commands] )) ||
-_gix__free__help__pack__receive_commands() {
+_gix__free__help__pack__receive_commands(){
     local commands; commands=()
     _describe -t commands 'gix free help pack receive commands' commands "$@"
 }
 (( $+functions[_gix__free__help__pack__verify_commands] )) ||
-_gix__free__help__pack__verify_commands() {
+_gix__free__help__pack__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix free help pack verify commands' commands "$@"
 }
 (( $+functions[_gix__free__index_commands] )) ||
-_gix__free__index_commands() {
+_gix__free__index_commands(){
     local commands; commands=(
 'from-list:Create an index from a list of empty files, one per line of the input' \
 'verify:Validate constraints and assumptions of an index along with its integrity' \
@@ -4701,7 +4701,7 @@ _gix__free__index__from-list_commands() {
     _describe -t commands 'gix free index from-list commands' commands "$@"
 }
 (( $+functions[_gix__free__index__help_commands] )) ||
-_gix__free__index__help_commands() {
+_gix__free__index__help_commands(){
     local commands; commands=(
 'from-list:Create an index from a list of empty files, one per line of the input' \
 'verify:Validate constraints and assumptions of an index along with its integrity' \
@@ -4722,32 +4722,32 @@ _gix__free__index__help__from-list_commands() {
     _describe -t commands 'gix free index help from-list commands' commands "$@"
 }
 (( $+functions[_gix__free__index__help__help_commands] )) ||
-_gix__free__index__help__help_commands() {
+_gix__free__index__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix free index help help commands' commands "$@"
 }
 (( $+functions[_gix__free__index__help__info_commands] )) ||
-_gix__free__index__help__info_commands() {
+_gix__free__index__help__info_commands(){
     local commands; commands=()
     _describe -t commands 'gix free index help info commands' commands "$@"
 }
 (( $+functions[_gix__free__index__help__verify_commands] )) ||
-_gix__free__index__help__verify_commands() {
+_gix__free__index__help__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix free index help verify commands' commands "$@"
 }
 (( $+functions[_gix__free__index__info_commands] )) ||
-_gix__free__index__info_commands() {
+_gix__free__index__info_commands(){
     local commands; commands=()
     _describe -t commands 'gix free index info commands' commands "$@"
 }
 (( $+functions[_gix__free__index__verify_commands] )) ||
-_gix__free__index__verify_commands() {
+_gix__free__index__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix free index verify commands' commands "$@"
 }
 (( $+functions[_gix__free__mailmap_commands] )) ||
-_gix__free__mailmap_commands() {
+_gix__free__mailmap_commands(){
     local commands; commands=(
 'verify:Parse all entries in the mailmap and report malformed lines or collisions' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -4755,7 +4755,7 @@ _gix__free__mailmap_commands() {
     _describe -t commands 'gix free mailmap commands' commands "$@"
 }
 (( $+functions[_gix__free__mailmap__help_commands] )) ||
-_gix__free__mailmap__help_commands() {
+_gix__free__mailmap__help_commands(){
     local commands; commands=(
 'verify:Parse all entries in the mailmap and report malformed lines or collisions' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -4763,22 +4763,22 @@ _gix__free__mailmap__help_commands() {
     _describe -t commands 'gix free mailmap help commands' commands "$@"
 }
 (( $+functions[_gix__free__mailmap__help__help_commands] )) ||
-_gix__free__mailmap__help__help_commands() {
+_gix__free__mailmap__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix free mailmap help help commands' commands "$@"
 }
 (( $+functions[_gix__free__mailmap__help__verify_commands] )) ||
-_gix__free__mailmap__help__verify_commands() {
+_gix__free__mailmap__help__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix free mailmap help verify commands' commands "$@"
 }
 (( $+functions[_gix__free__mailmap__verify_commands] )) ||
-_gix__free__mailmap__verify_commands() {
+_gix__free__mailmap__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix free mailmap verify commands' commands "$@"
 }
 (( $+functions[_gix__free__pack_commands] )) ||
-_gix__free__pack_commands() {
+_gix__free__pack_commands(){
     local commands; commands=(
 'index:Subcommands for interacting with pack indices (.idx)' \
 'multi-index:Subcommands for interacting with multi-pack indices (named "multi-pack-index")' \
@@ -4791,17 +4791,17 @@ _gix__free__pack_commands() {
     _describe -t commands 'gix free pack commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__create_commands] )) ||
-_gix__free__pack__create_commands() {
+_gix__free__pack__create_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack create commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__explode_commands] )) ||
-_gix__free__pack__explode_commands() {
+_gix__free__pack__explode_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack explode commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__help_commands] )) ||
-_gix__free__pack__help_commands() {
+_gix__free__pack__help_commands(){
     local commands; commands=(
 'index:Subcommands for interacting with pack indices (.idx)' \
 'multi-index:Subcommands for interacting with multi-pack indices (named "multi-pack-index")' \
@@ -4814,29 +4814,29 @@ _gix__free__pack__help_commands() {
     _describe -t commands 'gix free pack help commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__help__create_commands] )) ||
-_gix__free__pack__help__create_commands() {
+_gix__free__pack__help__create_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack help create commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__help__explode_commands] )) ||
-_gix__free__pack__help__explode_commands() {
+_gix__free__pack__help__explode_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack help explode commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__help__help_commands] )) ||
-_gix__free__pack__help__help_commands() {
+_gix__free__pack__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack help help commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__help__index_commands] )) ||
-_gix__free__pack__help__index_commands() {
+_gix__free__pack__help__index_commands(){
     local commands; commands=(
 'create:create a pack index from a pack data file' \
     )
     _describe -t commands 'gix free pack help index commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__help__index__create_commands] )) ||
-_gix__free__pack__help__index__create_commands() {
+_gix__free__pack__help__index__create_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack help index create commands' commands "$@"
 }
@@ -4871,17 +4871,17 @@ _gix__free__pack__help__multi-index__verify_commands() {
     _describe -t commands 'gix free pack help multi-index verify commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__help__receive_commands] )) ||
-_gix__free__pack__help__receive_commands() {
+_gix__free__pack__help__receive_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack help receive commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__help__verify_commands] )) ||
-_gix__free__pack__help__verify_commands() {
+_gix__free__pack__help__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack help verify commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__index_commands] )) ||
-_gix__free__pack__index_commands() {
+_gix__free__pack__index_commands(){
     local commands; commands=(
 'create:create a pack index from a pack data file' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -4889,12 +4889,12 @@ _gix__free__pack__index_commands() {
     _describe -t commands 'gix free pack index commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__index__create_commands] )) ||
-_gix__free__pack__index__create_commands() {
+_gix__free__pack__index__create_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack index create commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__index__help_commands] )) ||
-_gix__free__pack__index__help_commands() {
+_gix__free__pack__index__help_commands(){
     local commands; commands=(
 'create:create a pack index from a pack data file' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -4902,12 +4902,12 @@ _gix__free__pack__index__help_commands() {
     _describe -t commands 'gix free pack index help commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__index__help__create_commands] )) ||
-_gix__free__pack__index__help__create_commands() {
+_gix__free__pack__index__help__create_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack index help create commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__index__help__help_commands] )) ||
-_gix__free__pack__index__help__help_commands() {
+_gix__free__pack__index__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack index help help commands' commands "$@"
 }
@@ -4979,22 +4979,22 @@ _gix__free__pack__multi-index__verify_commands() {
     _describe -t commands 'gix free pack multi-index verify commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__receive_commands] )) ||
-_gix__free__pack__receive_commands() {
+_gix__free__pack__receive_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack receive commands' commands "$@"
 }
 (( $+functions[_gix__free__pack__verify_commands] )) ||
-_gix__free__pack__verify_commands() {
+_gix__free__pack__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix free pack verify commands' commands "$@"
 }
 (( $+functions[_gix__fsck_commands] )) ||
-_gix__fsck_commands() {
+_gix__fsck_commands(){
     local commands; commands=()
     _describe -t commands 'gix fsck commands' commands "$@"
 }
 (( $+functions[_gix__help_commands] )) ||
-_gix__help_commands() {
+_gix__help_commands(){
     local commands; commands=(
 'archive:Subcommands for creating worktree archives' \
 'clean:Remove untracked files from the working tree' \
@@ -5035,12 +5035,12 @@ _gix__help_commands() {
     _describe -t commands 'gix help commands' commands "$@"
 }
 (( $+functions[_gix__help__archive_commands] )) ||
-_gix__help__archive_commands() {
+_gix__help__archive_commands(){
     local commands; commands=()
     _describe -t commands 'gix help archive commands' commands "$@"
 }
 (( $+functions[_gix__help__attributes_commands] )) ||
-_gix__help__attributes_commands() {
+_gix__help__attributes_commands(){
     local commands; commands=(
 'validate-baseline:Run \`git check-attr\` and \`git check-ignore\` on all files of the index or all files passed via stdin and validate that we get the same outcome when computing attributes' \
 'query:List all attributes of the given path-specs and display the result similar to \`git check-attr\`' \
@@ -5048,7 +5048,7 @@ _gix__help__attributes_commands() {
     _describe -t commands 'gix help attributes commands' commands "$@"
 }
 (( $+functions[_gix__help__attributes__query_commands] )) ||
-_gix__help__attributes__query_commands() {
+_gix__help__attributes__query_commands(){
     local commands; commands=()
     _describe -t commands 'gix help attributes query commands' commands "$@"
 }
@@ -5058,27 +5058,27 @@ _gix__help__attributes__validate-baseline_commands() {
     _describe -t commands 'gix help attributes validate-baseline commands' commands "$@"
 }
 (( $+functions[_gix__help__blame_commands] )) ||
-_gix__help__blame_commands() {
+_gix__help__blame_commands(){
     local commands; commands=()
     _describe -t commands 'gix help blame commands' commands "$@"
 }
 (( $+functions[_gix__help__cat_commands] )) ||
-_gix__help__cat_commands() {
+_gix__help__cat_commands(){
     local commands; commands=()
     _describe -t commands 'gix help cat commands' commands "$@"
 }
 (( $+functions[_gix__help__clean_commands] )) ||
-_gix__help__clean_commands() {
+_gix__help__clean_commands(){
     local commands; commands=()
     _describe -t commands 'gix help clean commands' commands "$@"
 }
 (( $+functions[_gix__help__clone_commands] )) ||
-_gix__help__clone_commands() {
+_gix__help__clone_commands(){
     local commands; commands=()
     _describe -t commands 'gix help clone commands' commands "$@"
 }
 (( $+functions[_gix__help__commit_commands] )) ||
-_gix__help__commit_commands() {
+_gix__help__commit_commands(){
     local commands; commands=(
 'verify:Verify the signature of a commit' \
 'describe:Describe the current commit or the given one using the name of the closest annotated tag in its ancestry' \
@@ -5086,12 +5086,12 @@ _gix__help__commit_commands() {
     _describe -t commands 'gix help commit commands' commands "$@"
 }
 (( $+functions[_gix__help__commit__describe_commands] )) ||
-_gix__help__commit__describe_commands() {
+_gix__help__commit__describe_commands(){
     local commands; commands=()
     _describe -t commands 'gix help commit describe commands' commands "$@"
 }
 (( $+functions[_gix__help__commit__verify_commands] )) ||
-_gix__help__commit__verify_commands() {
+_gix__help__commit__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix help commit verify commands' commands "$@"
 }
@@ -5114,12 +5114,12 @@ _gix__help__commit-graph__verify_commands() {
     _describe -t commands 'gix help commit-graph verify commands' commands "$@"
 }
 (( $+functions[_gix__help__completions_commands] )) ||
-_gix__help__completions_commands() {
+_gix__help__completions_commands(){
     local commands; commands=()
     _describe -t commands 'gix help completions commands' commands "$@"
 }
 (( $+functions[_gix__help__config_commands] )) ||
-_gix__help__config_commands() {
+_gix__help__config_commands(){
     local commands; commands=()
     _describe -t commands 'gix help config commands' commands "$@"
 }
@@ -5129,7 +5129,7 @@ _gix__help__config-tree_commands() {
     _describe -t commands 'gix help config-tree commands' commands "$@"
 }
 (( $+functions[_gix__help__credential_commands] )) ||
-_gix__help__credential_commands() {
+_gix__help__credential_commands(){
     local commands; commands=(
 'fill:Get the credentials fed for \`url=<url>\` via STDIN' \
 'approve:Approve the information piped via STDIN as obtained with last call to \`fill\`' \
@@ -5138,22 +5138,22 @@ _gix__help__credential_commands() {
     _describe -t commands 'gix help credential commands' commands "$@"
 }
 (( $+functions[_gix__help__credential__approve_commands] )) ||
-_gix__help__credential__approve_commands() {
+_gix__help__credential__approve_commands(){
     local commands; commands=()
     _describe -t commands 'gix help credential approve commands' commands "$@"
 }
 (( $+functions[_gix__help__credential__fill_commands] )) ||
-_gix__help__credential__fill_commands() {
+_gix__help__credential__fill_commands(){
     local commands; commands=()
     _describe -t commands 'gix help credential fill commands' commands "$@"
 }
 (( $+functions[_gix__help__credential__reject_commands] )) ||
-_gix__help__credential__reject_commands() {
+_gix__help__credential__reject_commands(){
     local commands; commands=()
     _describe -t commands 'gix help credential reject commands' commands "$@"
 }
 (( $+functions[_gix__help__diff_commands] )) ||
-_gix__help__diff_commands() {
+_gix__help__diff_commands(){
     local commands; commands=(
 'tree:Diff two trees' \
 'file:Diff two versions of a file' \
@@ -5161,39 +5161,39 @@ _gix__help__diff_commands() {
     _describe -t commands 'gix help diff commands' commands "$@"
 }
 (( $+functions[_gix__help__diff__file_commands] )) ||
-_gix__help__diff__file_commands() {
+_gix__help__diff__file_commands(){
     local commands; commands=()
     _describe -t commands 'gix help diff file commands' commands "$@"
 }
 (( $+functions[_gix__help__diff__tree_commands] )) ||
-_gix__help__diff__tree_commands() {
+_gix__help__diff__tree_commands(){
     local commands; commands=()
     _describe -t commands 'gix help diff tree commands' commands "$@"
 }
 (( $+functions[_gix__help__env_commands] )) ||
-_gix__help__env_commands() {
+_gix__help__env_commands(){
     local commands; commands=()
     _describe -t commands 'gix help env commands' commands "$@"
 }
 (( $+functions[_gix__help__exclude_commands] )) ||
-_gix__help__exclude_commands() {
+_gix__help__exclude_commands(){
     local commands; commands=(
 'query:Check if path-specs are excluded and print the result similar to \`git check-ignore\`' \
     )
     _describe -t commands 'gix help exclude commands' commands "$@"
 }
 (( $+functions[_gix__help__exclude__query_commands] )) ||
-_gix__help__exclude__query_commands() {
+_gix__help__exclude__query_commands(){
     local commands; commands=()
     _describe -t commands 'gix help exclude query commands' commands "$@"
 }
 (( $+functions[_gix__help__fetch_commands] )) ||
-_gix__help__fetch_commands() {
+_gix__help__fetch_commands(){
     local commands; commands=()
     _describe -t commands 'gix help fetch commands' commands "$@"
 }
 (( $+functions[_gix__help__free_commands] )) ||
-_gix__help__free_commands() {
+_gix__help__free_commands(){
     local commands; commands=(
 'commit-graph:Subcommands for interacting with commit-graphs' \
 'mailmap:Subcommands for interacting with mailmaps' \
@@ -5216,12 +5216,12 @@ _gix__help__free__commit-graph__verify_commands() {
     _describe -t commands 'gix help free commit-graph verify commands' commands "$@"
 }
 (( $+functions[_gix__help__free__discover_commands] )) ||
-_gix__help__free__discover_commands() {
+_gix__help__free__discover_commands(){
     local commands; commands=()
     _describe -t commands 'gix help free discover commands' commands "$@"
 }
 (( $+functions[_gix__help__free__index_commands] )) ||
-_gix__help__free__index_commands() {
+_gix__help__free__index_commands(){
     local commands; commands=(
 'from-list:Create an index from a list of empty files, one per line of the input' \
 'verify:Validate constraints and assumptions of an index along with its integrity' \
@@ -5241,29 +5241,29 @@ _gix__help__free__index__from-list_commands() {
     _describe -t commands 'gix help free index from-list commands' commands "$@"
 }
 (( $+functions[_gix__help__free__index__info_commands] )) ||
-_gix__help__free__index__info_commands() {
+_gix__help__free__index__info_commands(){
     local commands; commands=()
     _describe -t commands 'gix help free index info commands' commands "$@"
 }
 (( $+functions[_gix__help__free__index__verify_commands] )) ||
-_gix__help__free__index__verify_commands() {
+_gix__help__free__index__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix help free index verify commands' commands "$@"
 }
 (( $+functions[_gix__help__free__mailmap_commands] )) ||
-_gix__help__free__mailmap_commands() {
+_gix__help__free__mailmap_commands(){
     local commands; commands=(
 'verify:Parse all entries in the mailmap and report malformed lines or collisions' \
     )
     _describe -t commands 'gix help free mailmap commands' commands "$@"
 }
 (( $+functions[_gix__help__free__mailmap__verify_commands] )) ||
-_gix__help__free__mailmap__verify_commands() {
+_gix__help__free__mailmap__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix help free mailmap verify commands' commands "$@"
 }
 (( $+functions[_gix__help__free__pack_commands] )) ||
-_gix__help__free__pack_commands() {
+_gix__help__free__pack_commands(){
     local commands; commands=(
 'index:Subcommands for interacting with pack indices (.idx)' \
 'multi-index:Subcommands for interacting with multi-pack indices (named "multi-pack-index")' \
@@ -5275,24 +5275,24 @@ _gix__help__free__pack_commands() {
     _describe -t commands 'gix help free pack commands' commands "$@"
 }
 (( $+functions[_gix__help__free__pack__create_commands] )) ||
-_gix__help__free__pack__create_commands() {
+_gix__help__free__pack__create_commands(){
     local commands; commands=()
     _describe -t commands 'gix help free pack create commands' commands "$@"
 }
 (( $+functions[_gix__help__free__pack__explode_commands] )) ||
-_gix__help__free__pack__explode_commands() {
+_gix__help__free__pack__explode_commands(){
     local commands; commands=()
     _describe -t commands 'gix help free pack explode commands' commands "$@"
 }
 (( $+functions[_gix__help__free__pack__index_commands] )) ||
-_gix__help__free__pack__index_commands() {
+_gix__help__free__pack__index_commands(){
     local commands; commands=(
 'create:create a pack index from a pack data file' \
     )
     _describe -t commands 'gix help free pack index commands' commands "$@"
 }
 (( $+functions[_gix__help__free__pack__index__create_commands] )) ||
-_gix__help__free__pack__index__create_commands() {
+_gix__help__free__pack__index__create_commands(){
     local commands; commands=()
     _describe -t commands 'gix help free pack index create commands' commands "$@"
 }
@@ -5327,27 +5327,27 @@ _gix__help__free__pack__multi-index__verify_commands() {
     _describe -t commands 'gix help free pack multi-index verify commands' commands "$@"
 }
 (( $+functions[_gix__help__free__pack__receive_commands] )) ||
-_gix__help__free__pack__receive_commands() {
+_gix__help__free__pack__receive_commands(){
     local commands; commands=()
     _describe -t commands 'gix help free pack receive commands' commands "$@"
 }
 (( $+functions[_gix__help__free__pack__verify_commands] )) ||
-_gix__help__free__pack__verify_commands() {
+_gix__help__free__pack__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix help free pack verify commands' commands "$@"
 }
 (( $+functions[_gix__help__fsck_commands] )) ||
-_gix__help__fsck_commands() {
+_gix__help__fsck_commands(){
     local commands; commands=()
     _describe -t commands 'gix help fsck commands' commands "$@"
 }
 (( $+functions[_gix__help__help_commands] )) ||
-_gix__help__help_commands() {
+_gix__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix help help commands' commands "$@"
 }
 (( $+functions[_gix__help__index_commands] )) ||
-_gix__help__index_commands() {
+_gix__help__index_commands(){
     local commands; commands=(
 'entries:Print all entries to standard output' \
 'from-tree:Create an index from a tree-ish' \
@@ -5355,7 +5355,7 @@ _gix__help__index_commands() {
     _describe -t commands 'gix help index commands' commands "$@"
 }
 (( $+functions[_gix__help__index__entries_commands] )) ||
-_gix__help__index__entries_commands() {
+_gix__help__index__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix help index entries commands' commands "$@"
 }
@@ -5375,12 +5375,12 @@ _gix__help__is-clean_commands() {
     _describe -t commands 'gix help is-clean commands' commands "$@"
 }
 (( $+functions[_gix__help__log_commands] )) ||
-_gix__help__log_commands() {
+_gix__help__log_commands(){
     local commands; commands=()
     _describe -t commands 'gix help log commands' commands "$@"
 }
 (( $+functions[_gix__help__mailmap_commands] )) ||
-_gix__help__mailmap_commands() {
+_gix__help__mailmap_commands(){
     local commands; commands=(
 'entries:Print all entries in configured mailmaps, inform about errors as well' \
 'check:Print the canonical form of contacts according to the configured mailmaps' \
@@ -5388,17 +5388,17 @@ _gix__help__mailmap_commands() {
     _describe -t commands 'gix help mailmap commands' commands "$@"
 }
 (( $+functions[_gix__help__mailmap__check_commands] )) ||
-_gix__help__mailmap__check_commands() {
+_gix__help__mailmap__check_commands(){
     local commands; commands=()
     _describe -t commands 'gix help mailmap check commands' commands "$@"
 }
 (( $+functions[_gix__help__mailmap__entries_commands] )) ||
-_gix__help__mailmap__entries_commands() {
+_gix__help__mailmap__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix help mailmap entries commands' commands "$@"
 }
 (( $+functions[_gix__help__merge_commands] )) ||
-_gix__help__merge_commands() {
+_gix__help__merge_commands(){
     local commands; commands=(
 'file:Merge a file by specifying ours, base and theirs' \
 'tree:Merge a tree by specifying ours, base and theirs, writing it to the object database' \
@@ -5407,17 +5407,17 @@ _gix__help__merge_commands() {
     _describe -t commands 'gix help merge commands' commands "$@"
 }
 (( $+functions[_gix__help__merge__commit_commands] )) ||
-_gix__help__merge__commit_commands() {
+_gix__help__merge__commit_commands(){
     local commands; commands=()
     _describe -t commands 'gix help merge commit commands' commands "$@"
 }
 (( $+functions[_gix__help__merge__file_commands] )) ||
-_gix__help__merge__file_commands() {
+_gix__help__merge__file_commands(){
     local commands; commands=()
     _describe -t commands 'gix help merge file commands' commands "$@"
 }
 (( $+functions[_gix__help__merge__tree_commands] )) ||
-_gix__help__merge__tree_commands() {
+_gix__help__merge__tree_commands(){
     local commands; commands=()
     _describe -t commands 'gix help merge tree commands' commands "$@"
 }
@@ -5427,7 +5427,7 @@ _gix__help__merge-base_commands() {
     _describe -t commands 'gix help merge-base commands' commands "$@"
 }
 (( $+functions[_gix__help__odb_commands] )) ||
-_gix__help__odb_commands() {
+_gix__help__odb_commands(){
     local commands; commands=(
 'entries:Print all object names' \
 'info:Provide general information about the object database' \
@@ -5436,22 +5436,22 @@ _gix__help__odb_commands() {
     _describe -t commands 'gix help odb commands' commands "$@"
 }
 (( $+functions[_gix__help__odb__entries_commands] )) ||
-_gix__help__odb__entries_commands() {
+_gix__help__odb__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix help odb entries commands' commands "$@"
 }
 (( $+functions[_gix__help__odb__info_commands] )) ||
-_gix__help__odb__info_commands() {
+_gix__help__odb__info_commands(){
     local commands; commands=()
     _describe -t commands 'gix help odb info commands' commands "$@"
 }
 (( $+functions[_gix__help__odb__stats_commands] )) ||
-_gix__help__odb__stats_commands() {
+_gix__help__odb__stats_commands(){
     local commands; commands=()
     _describe -t commands 'gix help odb stats commands' commands "$@"
 }
 (( $+functions[_gix__help__remote_commands] )) ||
-_gix__help__remote_commands() {
+_gix__help__remote_commands(){
     local commands; commands=(
 'refs:Print all references available on the remote' \
 'ref-map:Print all references available on the remote as filtered through ref-specs' \
@@ -5464,12 +5464,12 @@ _gix__help__remote__ref-map_commands() {
     _describe -t commands 'gix help remote ref-map commands' commands "$@"
 }
 (( $+functions[_gix__help__remote__refs_commands] )) ||
-_gix__help__remote__refs_commands() {
+_gix__help__remote__refs_commands(){
     local commands; commands=()
     _describe -t commands 'gix help remote refs commands' commands "$@"
 }
 (( $+functions[_gix__help__revision_commands] )) ||
-_gix__help__revision_commands() {
+_gix__help__revision_commands(){
     local commands; commands=(
 'list:List all commits reachable from the given rev-spec' \
 'explain:Provide the revision specification like \`@~1\` to explain' \
@@ -5479,12 +5479,12 @@ _gix__help__revision_commands() {
     _describe -t commands 'gix help revision commands' commands "$@"
 }
 (( $+functions[_gix__help__revision__explain_commands] )) ||
-_gix__help__revision__explain_commands() {
+_gix__help__revision__explain_commands(){
     local commands; commands=()
     _describe -t commands 'gix help revision explain commands' commands "$@"
 }
 (( $+functions[_gix__help__revision__list_commands] )) ||
-_gix__help__revision__list_commands() {
+_gix__help__revision__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix help revision list commands' commands "$@"
 }
@@ -5494,41 +5494,41 @@ _gix__help__revision__previous-branches_commands() {
     _describe -t commands 'gix help revision previous-branches commands' commands "$@"
 }
 (( $+functions[_gix__help__revision__resolve_commands] )) ||
-_gix__help__revision__resolve_commands() {
+_gix__help__revision__resolve_commands(){
     local commands; commands=()
     _describe -t commands 'gix help revision resolve commands' commands "$@"
 }
 (( $+functions[_gix__help__status_commands] )) ||
-_gix__help__status_commands() {
+_gix__help__status_commands(){
     local commands; commands=()
     _describe -t commands 'gix help status commands' commands "$@"
 }
 (( $+functions[_gix__help__submodule_commands] )) ||
-_gix__help__submodule_commands() {
+_gix__help__submodule_commands(){
     local commands; commands=(
 'list:Print all direct submodules to standard output' \
     )
     _describe -t commands 'gix help submodule commands' commands "$@"
 }
 (( $+functions[_gix__help__submodule__list_commands] )) ||
-_gix__help__submodule__list_commands() {
+_gix__help__submodule__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix help submodule list commands' commands "$@"
 }
 (( $+functions[_gix__help__tag_commands] )) ||
-_gix__help__tag_commands() {
+_gix__help__tag_commands(){
     local commands; commands=(
 'list:List all tags' \
     )
     _describe -t commands 'gix help tag commands' commands "$@"
 }
 (( $+functions[_gix__help__tag__list_commands] )) ||
-_gix__help__tag__list_commands() {
+_gix__help__tag__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix help tag list commands' commands "$@"
 }
 (( $+functions[_gix__help__tree_commands] )) ||
-_gix__help__tree_commands() {
+_gix__help__tree_commands(){
     local commands; commands=(
 'entries:Print entries in a given tree' \
 'info:Provide information about a tree' \
@@ -5536,34 +5536,34 @@ _gix__help__tree_commands() {
     _describe -t commands 'gix help tree commands' commands "$@"
 }
 (( $+functions[_gix__help__tree__entries_commands] )) ||
-_gix__help__tree__entries_commands() {
+_gix__help__tree__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix help tree entries commands' commands "$@"
 }
 (( $+functions[_gix__help__tree__info_commands] )) ||
-_gix__help__tree__info_commands() {
+_gix__help__tree__info_commands(){
     local commands; commands=()
     _describe -t commands 'gix help tree info commands' commands "$@"
 }
 (( $+functions[_gix__help__verify_commands] )) ||
-_gix__help__verify_commands() {
+_gix__help__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix help verify commands' commands "$@"
 }
 (( $+functions[_gix__help__worktree_commands] )) ||
-_gix__help__worktree_commands() {
+_gix__help__worktree_commands(){
     local commands; commands=(
 'list:List all worktrees, along with some accompanying information' \
     )
     _describe -t commands 'gix help worktree commands' commands "$@"
 }
 (( $+functions[_gix__help__worktree__list_commands] )) ||
-_gix__help__worktree__list_commands() {
+_gix__help__worktree__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix help worktree list commands' commands "$@"
 }
 (( $+functions[_gix__index_commands] )) ||
-_gix__index_commands() {
+_gix__index_commands(){
     local commands; commands=(
 'entries:Print all entries to standard output' \
 'from-tree:Create an index from a tree-ish' \
@@ -5573,7 +5573,7 @@ _gix__index_commands() {
     _describe -t commands 'gix index commands' commands "$@"
 }
 (( $+functions[_gix__index__entries_commands] )) ||
-_gix__index__entries_commands() {
+_gix__index__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix index entries commands' commands "$@"
 }
@@ -5583,7 +5583,7 @@ _gix__index__from-tree_commands() {
     _describe -t commands 'gix index from-tree commands' commands "$@"
 }
 (( $+functions[_gix__index__help_commands] )) ||
-_gix__index__help_commands() {
+_gix__index__help_commands(){
     local commands; commands=(
 'entries:Print all entries to standard output' \
 'from-tree:Create an index from a tree-ish' \
@@ -5592,7 +5592,7 @@ _gix__index__help_commands() {
     _describe -t commands 'gix index help commands' commands "$@"
 }
 (( $+functions[_gix__index__help__entries_commands] )) ||
-_gix__index__help__entries_commands() {
+_gix__index__help__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix index help entries commands' commands "$@"
 }
@@ -5602,7 +5602,7 @@ _gix__index__help__from-tree_commands() {
     _describe -t commands 'gix index help from-tree commands' commands "$@"
 }
 (( $+functions[_gix__index__help__help_commands] )) ||
-_gix__index__help__help_commands() {
+_gix__index__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix index help help commands' commands "$@"
 }
@@ -5617,12 +5617,12 @@ _gix__is-clean_commands() {
     _describe -t commands 'gix is-clean commands' commands "$@"
 }
 (( $+functions[_gix__log_commands] )) ||
-_gix__log_commands() {
+_gix__log_commands(){
     local commands; commands=()
     _describe -t commands 'gix log commands' commands "$@"
 }
 (( $+functions[_gix__mailmap_commands] )) ||
-_gix__mailmap_commands() {
+_gix__mailmap_commands(){
     local commands; commands=(
 'entries:Print all entries in configured mailmaps, inform about errors as well' \
 'check:Print the canonical form of contacts according to the configured mailmaps' \
@@ -5631,17 +5631,17 @@ _gix__mailmap_commands() {
     _describe -t commands 'gix mailmap commands' commands "$@"
 }
 (( $+functions[_gix__mailmap__check_commands] )) ||
-_gix__mailmap__check_commands() {
+_gix__mailmap__check_commands(){
     local commands; commands=()
     _describe -t commands 'gix mailmap check commands' commands "$@"
 }
 (( $+functions[_gix__mailmap__entries_commands] )) ||
-_gix__mailmap__entries_commands() {
+_gix__mailmap__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix mailmap entries commands' commands "$@"
 }
 (( $+functions[_gix__mailmap__help_commands] )) ||
-_gix__mailmap__help_commands() {
+_gix__mailmap__help_commands(){
     local commands; commands=(
 'entries:Print all entries in configured mailmaps, inform about errors as well' \
 'check:Print the canonical form of contacts according to the configured mailmaps' \
@@ -5650,22 +5650,22 @@ _gix__mailmap__help_commands() {
     _describe -t commands 'gix mailmap help commands' commands "$@"
 }
 (( $+functions[_gix__mailmap__help__check_commands] )) ||
-_gix__mailmap__help__check_commands() {
+_gix__mailmap__help__check_commands(){
     local commands; commands=()
     _describe -t commands 'gix mailmap help check commands' commands "$@"
 }
 (( $+functions[_gix__mailmap__help__entries_commands] )) ||
-_gix__mailmap__help__entries_commands() {
+_gix__mailmap__help__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix mailmap help entries commands' commands "$@"
 }
 (( $+functions[_gix__mailmap__help__help_commands] )) ||
-_gix__mailmap__help__help_commands() {
+_gix__mailmap__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix mailmap help help commands' commands "$@"
 }
 (( $+functions[_gix__merge_commands] )) ||
-_gix__merge_commands() {
+_gix__merge_commands(){
     local commands; commands=(
 'file:Merge a file by specifying ours, base and theirs' \
 'tree:Merge a tree by specifying ours, base and theirs, writing it to the object database' \
@@ -5675,17 +5675,17 @@ _gix__merge_commands() {
     _describe -t commands 'gix merge commands' commands "$@"
 }
 (( $+functions[_gix__merge__commit_commands] )) ||
-_gix__merge__commit_commands() {
+_gix__merge__commit_commands(){
     local commands; commands=()
     _describe -t commands 'gix merge commit commands' commands "$@"
 }
 (( $+functions[_gix__merge__file_commands] )) ||
-_gix__merge__file_commands() {
+_gix__merge__file_commands(){
     local commands; commands=()
     _describe -t commands 'gix merge file commands' commands "$@"
 }
 (( $+functions[_gix__merge__help_commands] )) ||
-_gix__merge__help_commands() {
+_gix__merge__help_commands(){
     local commands; commands=(
 'file:Merge a file by specifying ours, base and theirs' \
 'tree:Merge a tree by specifying ours, base and theirs, writing it to the object database' \
@@ -5695,27 +5695,27 @@ _gix__merge__help_commands() {
     _describe -t commands 'gix merge help commands' commands "$@"
 }
 (( $+functions[_gix__merge__help__commit_commands] )) ||
-_gix__merge__help__commit_commands() {
+_gix__merge__help__commit_commands(){
     local commands; commands=()
     _describe -t commands 'gix merge help commit commands' commands "$@"
 }
 (( $+functions[_gix__merge__help__file_commands] )) ||
-_gix__merge__help__file_commands() {
+_gix__merge__help__file_commands(){
     local commands; commands=()
     _describe -t commands 'gix merge help file commands' commands "$@"
 }
 (( $+functions[_gix__merge__help__help_commands] )) ||
-_gix__merge__help__help_commands() {
+_gix__merge__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix merge help help commands' commands "$@"
 }
 (( $+functions[_gix__merge__help__tree_commands] )) ||
-_gix__merge__help__tree_commands() {
+_gix__merge__help__tree_commands(){
     local commands; commands=()
     _describe -t commands 'gix merge help tree commands' commands "$@"
 }
 (( $+functions[_gix__merge__tree_commands] )) ||
-_gix__merge__tree_commands() {
+_gix__merge__tree_commands(){
     local commands; commands=()
     _describe -t commands 'gix merge tree commands' commands "$@"
 }
@@ -5725,7 +5725,7 @@ _gix__merge-base_commands() {
     _describe -t commands 'gix merge-base commands' commands "$@"
 }
 (( $+functions[_gix__odb_commands] )) ||
-_gix__odb_commands() {
+_gix__odb_commands(){
     local commands; commands=(
 'entries:Print all object names' \
 'info:Provide general information about the object database' \
@@ -5736,12 +5736,12 @@ _gix__odb_commands() {
     _describe -t commands 'gix odb commands' commands "$@"
 }
 (( $+functions[_gix__odb__entries_commands] )) ||
-_gix__odb__entries_commands() {
+_gix__odb__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix odb entries commands' commands "$@"
 }
 (( $+functions[_gix__odb__help_commands] )) ||
-_gix__odb__help_commands() {
+_gix__odb__help_commands(){
     local commands; commands=(
 'entries:Print all object names' \
 'info:Provide general information about the object database' \
@@ -5751,37 +5751,37 @@ _gix__odb__help_commands() {
     _describe -t commands 'gix odb help commands' commands "$@"
 }
 (( $+functions[_gix__odb__help__entries_commands] )) ||
-_gix__odb__help__entries_commands() {
+_gix__odb__help__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix odb help entries commands' commands "$@"
 }
 (( $+functions[_gix__odb__help__help_commands] )) ||
-_gix__odb__help__help_commands() {
+_gix__odb__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix odb help help commands' commands "$@"
 }
 (( $+functions[_gix__odb__help__info_commands] )) ||
-_gix__odb__help__info_commands() {
+_gix__odb__help__info_commands(){
     local commands; commands=()
     _describe -t commands 'gix odb help info commands' commands "$@"
 }
 (( $+functions[_gix__odb__help__stats_commands] )) ||
-_gix__odb__help__stats_commands() {
+_gix__odb__help__stats_commands(){
     local commands; commands=()
     _describe -t commands 'gix odb help stats commands' commands "$@"
 }
 (( $+functions[_gix__odb__info_commands] )) ||
-_gix__odb__info_commands() {
+_gix__odb__info_commands(){
     local commands; commands=()
     _describe -t commands 'gix odb info commands' commands "$@"
 }
 (( $+functions[_gix__odb__stats_commands] )) ||
-_gix__odb__stats_commands() {
+_gix__odb__stats_commands(){
     local commands; commands=()
     _describe -t commands 'gix odb stats commands' commands "$@"
 }
 (( $+functions[_gix__remote_commands] )) ||
-_gix__remote_commands() {
+_gix__remote_commands(){
     local commands; commands=(
 'refs:Print all references available on the remote' \
 'ref-map:Print all references available on the remote as filtered through ref-specs' \
@@ -5790,7 +5790,7 @@ _gix__remote_commands() {
     _describe -t commands 'gix remote commands' commands "$@"
 }
 (( $+functions[_gix__remote__help_commands] )) ||
-_gix__remote__help_commands() {
+_gix__remote__help_commands(){
     local commands; commands=(
 'refs:Print all references available on the remote' \
 'ref-map:Print all references available on the remote as filtered through ref-specs' \
@@ -5799,7 +5799,7 @@ _gix__remote__help_commands() {
     _describe -t commands 'gix remote help commands' commands "$@"
 }
 (( $+functions[_gix__remote__help__help_commands] )) ||
-_gix__remote__help__help_commands() {
+_gix__remote__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix remote help help commands' commands "$@"
 }
@@ -5809,7 +5809,7 @@ _gix__remote__help__ref-map_commands() {
     _describe -t commands 'gix remote help ref-map commands' commands "$@"
 }
 (( $+functions[_gix__remote__help__refs_commands] )) ||
-_gix__remote__help__refs_commands() {
+_gix__remote__help__refs_commands(){
     local commands; commands=()
     _describe -t commands 'gix remote help refs commands' commands "$@"
 }
@@ -5819,12 +5819,12 @@ _gix__remote__ref-map_commands() {
     _describe -t commands 'gix remote ref-map commands' commands "$@"
 }
 (( $+functions[_gix__remote__refs_commands] )) ||
-_gix__remote__refs_commands() {
+_gix__remote__refs_commands(){
     local commands; commands=()
     _describe -t commands 'gix remote refs commands' commands "$@"
 }
 (( $+functions[_gix__revision_commands] )) ||
-_gix__revision_commands() {
+_gix__revision_commands(){
     local commands; commands=(
 'list:List all commits reachable from the given rev-spec' \
 'l:List all commits reachable from the given rev-spec' \
@@ -5841,12 +5841,12 @@ _gix__revision_commands() {
     _describe -t commands 'gix revision commands' commands "$@"
 }
 (( $+functions[_gix__revision__explain_commands] )) ||
-_gix__revision__explain_commands() {
+_gix__revision__explain_commands(){
     local commands; commands=()
     _describe -t commands 'gix revision explain commands' commands "$@"
 }
 (( $+functions[_gix__revision__help_commands] )) ||
-_gix__revision__help_commands() {
+_gix__revision__help_commands(){
     local commands; commands=(
 'list:List all commits reachable from the given rev-spec' \
 'explain:Provide the revision specification like \`@~1\` to explain' \
@@ -5857,17 +5857,17 @@ _gix__revision__help_commands() {
     _describe -t commands 'gix revision help commands' commands "$@"
 }
 (( $+functions[_gix__revision__help__explain_commands] )) ||
-_gix__revision__help__explain_commands() {
+_gix__revision__help__explain_commands(){
     local commands; commands=()
     _describe -t commands 'gix revision help explain commands' commands "$@"
 }
 (( $+functions[_gix__revision__help__help_commands] )) ||
-_gix__revision__help__help_commands() {
+_gix__revision__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix revision help help commands' commands "$@"
 }
 (( $+functions[_gix__revision__help__list_commands] )) ||
-_gix__revision__help__list_commands() {
+_gix__revision__help__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix revision help list commands' commands "$@"
 }
@@ -5877,12 +5877,12 @@ _gix__revision__help__previous-branches_commands() {
     _describe -t commands 'gix revision help previous-branches commands' commands "$@"
 }
 (( $+functions[_gix__revision__help__resolve_commands] )) ||
-_gix__revision__help__resolve_commands() {
+_gix__revision__help__resolve_commands(){
     local commands; commands=()
     _describe -t commands 'gix revision help resolve commands' commands "$@"
 }
 (( $+functions[_gix__revision__list_commands] )) ||
-_gix__revision__list_commands() {
+_gix__revision__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix revision list commands' commands "$@"
 }
@@ -5892,17 +5892,17 @@ _gix__revision__previous-branches_commands() {
     _describe -t commands 'gix revision previous-branches commands' commands "$@"
 }
 (( $+functions[_gix__revision__resolve_commands] )) ||
-_gix__revision__resolve_commands() {
+_gix__revision__resolve_commands(){
     local commands; commands=()
     _describe -t commands 'gix revision resolve commands' commands "$@"
 }
 (( $+functions[_gix__status_commands] )) ||
-_gix__status_commands() {
+_gix__status_commands(){
     local commands; commands=()
     _describe -t commands 'gix status commands' commands "$@"
 }
 (( $+functions[_gix__submodule_commands] )) ||
-_gix__submodule_commands() {
+_gix__submodule_commands(){
     local commands; commands=(
 'list:Print all direct submodules to standard output' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -5910,7 +5910,7 @@ _gix__submodule_commands() {
     _describe -t commands 'gix submodule commands' commands "$@"
 }
 (( $+functions[_gix__submodule__help_commands] )) ||
-_gix__submodule__help_commands() {
+_gix__submodule__help_commands(){
     local commands; commands=(
 'list:Print all direct submodules to standard output' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -5918,22 +5918,22 @@ _gix__submodule__help_commands() {
     _describe -t commands 'gix submodule help commands' commands "$@"
 }
 (( $+functions[_gix__submodule__help__help_commands] )) ||
-_gix__submodule__help__help_commands() {
+_gix__submodule__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix submodule help help commands' commands "$@"
 }
 (( $+functions[_gix__submodule__help__list_commands] )) ||
-_gix__submodule__help__list_commands() {
+_gix__submodule__help__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix submodule help list commands' commands "$@"
 }
 (( $+functions[_gix__submodule__list_commands] )) ||
-_gix__submodule__list_commands() {
+_gix__submodule__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix submodule list commands' commands "$@"
 }
 (( $+functions[_gix__tag_commands] )) ||
-_gix__tag_commands() {
+_gix__tag_commands(){
     local commands; commands=(
 'list:List all tags' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -5941,7 +5941,7 @@ _gix__tag_commands() {
     _describe -t commands 'gix tag commands' commands "$@"
 }
 (( $+functions[_gix__tag__help_commands] )) ||
-_gix__tag__help_commands() {
+_gix__tag__help_commands(){
     local commands; commands=(
 'list:List all tags' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -5949,22 +5949,22 @@ _gix__tag__help_commands() {
     _describe -t commands 'gix tag help commands' commands "$@"
 }
 (( $+functions[_gix__tag__help__help_commands] )) ||
-_gix__tag__help__help_commands() {
+_gix__tag__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix tag help help commands' commands "$@"
 }
 (( $+functions[_gix__tag__help__list_commands] )) ||
-_gix__tag__help__list_commands() {
+_gix__tag__help__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix tag help list commands' commands "$@"
 }
 (( $+functions[_gix__tag__list_commands] )) ||
-_gix__tag__list_commands() {
+_gix__tag__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix tag list commands' commands "$@"
 }
 (( $+functions[_gix__tree_commands] )) ||
-_gix__tree_commands() {
+_gix__tree_commands(){
     local commands; commands=(
 'entries:Print entries in a given tree' \
 'info:Provide information about a tree' \
@@ -5973,12 +5973,12 @@ _gix__tree_commands() {
     _describe -t commands 'gix tree commands' commands "$@"
 }
 (( $+functions[_gix__tree__entries_commands] )) ||
-_gix__tree__entries_commands() {
+_gix__tree__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix tree entries commands' commands "$@"
 }
 (( $+functions[_gix__tree__help_commands] )) ||
-_gix__tree__help_commands() {
+_gix__tree__help_commands(){
     local commands; commands=(
 'entries:Print entries in a given tree' \
 'info:Provide information about a tree' \
@@ -5987,32 +5987,32 @@ _gix__tree__help_commands() {
     _describe -t commands 'gix tree help commands' commands "$@"
 }
 (( $+functions[_gix__tree__help__entries_commands] )) ||
-_gix__tree__help__entries_commands() {
+_gix__tree__help__entries_commands(){
     local commands; commands=()
     _describe -t commands 'gix tree help entries commands' commands "$@"
 }
 (( $+functions[_gix__tree__help__help_commands] )) ||
-_gix__tree__help__help_commands() {
+_gix__tree__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix tree help help commands' commands "$@"
 }
 (( $+functions[_gix__tree__help__info_commands] )) ||
-_gix__tree__help__info_commands() {
+_gix__tree__help__info_commands(){
     local commands; commands=()
     _describe -t commands 'gix tree help info commands' commands "$@"
 }
 (( $+functions[_gix__tree__info_commands] )) ||
-_gix__tree__info_commands() {
+_gix__tree__info_commands(){
     local commands; commands=()
     _describe -t commands 'gix tree info commands' commands "$@"
 }
 (( $+functions[_gix__verify_commands] )) ||
-_gix__verify_commands() {
+_gix__verify_commands(){
     local commands; commands=()
     _describe -t commands 'gix verify commands' commands "$@"
 }
 (( $+functions[_gix__worktree_commands] )) ||
-_gix__worktree_commands() {
+_gix__worktree_commands(){
     local commands; commands=(
 'list:List all worktrees, along with some accompanying information' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -6020,7 +6020,7 @@ _gix__worktree_commands() {
     _describe -t commands 'gix worktree commands' commands "$@"
 }
 (( $+functions[_gix__worktree__help_commands] )) ||
-_gix__worktree__help_commands() {
+_gix__worktree__help_commands(){
     local commands; commands=(
 'list:List all worktrees, along with some accompanying information' \
 'help:Print this message or the help of the given subcommand(s)' \
@@ -6028,17 +6028,17 @@ _gix__worktree__help_commands() {
     _describe -t commands 'gix worktree help commands' commands "$@"
 }
 (( $+functions[_gix__worktree__help__help_commands] )) ||
-_gix__worktree__help__help_commands() {
+_gix__worktree__help__help_commands(){
     local commands; commands=()
     _describe -t commands 'gix worktree help help commands' commands "$@"
 }
 (( $+functions[_gix__worktree__help__list_commands] )) ||
-_gix__worktree__help__list_commands() {
+_gix__worktree__help__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix worktree help list commands' commands "$@"
 }
 (( $+functions[_gix__worktree__list_commands] )) ||
-_gix__worktree__list_commands() {
+_gix__worktree__list_commands(){
     local commands; commands=()
     _describe -t commands 'gix worktree list commands' commands "$@"
 }

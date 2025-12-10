@@ -11,12 +11,12 @@ log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 SUDO=""
 ((EUID != 0)) && has sudo && SUDO=sudo
 
-usage() { printf 'sysmaint: ln2 swap symclean usb sysz prsync\n'; }
+usage(){ printf 'sysmaint: ln2 swap symclean usb sysz prsync\n'; }
 
 # --- Commands ---
 
-ln2_usage() { printf 'Usage: sysmaint ln2 [opts] LINK > TARGET | TARGET < LINK\n'; }
-ln2_cmd() {
+ln2_usage(){ printf 'Usage: sysmaint ln2 [opts] LINK > TARGET | TARGET < LINK\n'; }
+ln2_cmd(){
   local -a a=("$@")
   ((${#a[@]} >= 3)) || { ln2_usage; return 2; }
   [[ " ${a[*]} " =~ \ -h\  || " ${a[*]} " =~ \ --help\  ]] && { ln2_usage; return 0; }
@@ -36,8 +36,8 @@ ln2_cmd() {
   ln "${a[@]}" -- "$tgt" "$link"
 }
 
-swap_usage() { printf 'Usage: sysmaint swap A B\n'; }
-swap_cmd() {
+swap_usage(){ printf 'Usage: sysmaint swap A B\n'; }
+swap_cmd(){
   (($# == 2)) || { swap_usage; return 2; }
   local file_a="$1" file_b="$2" tmp
   [[ -e $file_a && -e $file_b ]] || die "Files not found"
@@ -53,16 +53,16 @@ swap_cmd() {
   [[ -d $file_a ]] && rmdir "$tmp" 2>/dev/null || rm -f "$tmp"
 }
 
-symclean_usage() { printf 'Usage: sysmaint symclean [DIR]\n'; }
-symclean_cmd() {
+symclean_usage(){ printf 'Usage: sysmaint symclean [DIR]\n'; }
+symclean_cmd(){
   local d="${1:-$PWD}"
   [[ -d $d ]] || die "not dir: $d"
   log "cleaning broken symlinks in $d"
   find "$d" -xtype l -print -delete 2>/dev/null || find -L "$d" -type l -print -delete 2>/dev/null || :
 }
 
-usb_usage() { printf 'Usage: sysmaint usb [-n COUNT] [-b BASE]\n'; }
-usb_cmd() {
+usb_usage(){ printf 'Usage: sysmaint usb [-n COUNT] [-b BASE]\n'; }
+usb_cmd(){
   local cnt=4 base="/mnt/usbstick"
   while (($#)); do
     case "$1" in
@@ -136,11 +136,11 @@ usb_cmd() {
   fi
 }
 
-sysz_help_keys() { cat <<'EOF'
+sysz_help_keys(){ cat <<'EOF'
 Keys: TAB(toggle) ctrl-v(cat) ctrl-s(states) ctrl-r(reload) ctrl-p/n(hist) ?(help)
 EOF
 }
-sysz_help() {
+sysz_help(){
   cat <<EOF
 sysz: interactive systemctl via fzf
 Usage: sysmaint sysz [opts] [cmd] [-- args]
@@ -149,7 +149,7 @@ Commands: start stop restart status edit reload enable disable cat journal follo
 $(sysz_help_keys)
 EOF
 }
-sysz_cmd() {
+sysz_cmd(){
   has fzf || die "fzf required"
   local PROG="sysz" VER=1.4.3 VERBOSE=false HIST="${SYSZ_HISTORY:-${XDG_CACHE_HOME:-$HOME/.cache}/sysz/history}"
   local -a MANAGERS STATES
@@ -232,27 +232,27 @@ sysz_cmd() {
   done
 }
 
-sysz_manager() {
+sysz_manager(){
   case ${1%% *} in
     '[user]') printf -- '--user' ;;
     '[system]') printf -- '--system' ;;
     *) die "mgr" ;;
   esac
 }
-sysz_cat() {
+sysz_cat(){
   local M
   M=$(sysz_manager "$1")
   local U="${1##* }"
   SYSTEMD_COLORS=1 systemctl "$M" cat -- "$U"
 }
-sysz_preview() {
+sysz_preview(){
   local M
   M=$(sysz_manager "$1")
   local U="${1##* }"
   [[ $U == *@.* ]] && sysz_cat "$@" || SYSTEMD_COLORS=1 systemctl "$M" status --no-pager -- "$U"
 }
-sysz_show() { systemctl "$1" show "$2" -p "$3" --value; }
-sysz_sort() {
+sysz_show(){ systemctl "$1" show "$2" -p "$3" --value; }
+sysz_sort(){
   local line mgr unit uclean n type
   while IFS= read -r line; do
     mgr=${line%% *}
@@ -266,7 +266,7 @@ sysz_sort() {
     printf '%s\n' "$n$type${unit//-/} $mgr $unit"
   done | sort -bifu | cut -d' ' -f2-
 }
-sysz_list() {
+sysz_list(){
   local -a args=(--all --no-legend --full --plain --no-pager "$@")
   (systemctl list-units "${args[@]}"; systemctl list-unit-files "${args[@]}") | sort -u -t ' ' -k1,1 | while read -r l; do
     local unit=${l%% *}
@@ -276,7 +276,7 @@ sysz_list() {
     [[ $l != *" active "* && $l != *" failed "* && $l != *" not-found "* ]] && printf '%s\n' "$unit"
   done
 }
-sysz_list_units() {
+sysz_list_units(){
   local -a mgrs=("$@") states=() mm=() x
   for x in "${mgrs[@]}"; do [[ $x == --state=* ]] && states+=("$x") || mm+=("${x#--}"); done
   local M
@@ -287,7 +287,7 @@ sysz_list_units() {
     fi
   done | sysz_sort
 }
-sysz_daemon_reload() {
+sysz_daemon_reload(){
   local picks
   picks=$(printf '%s\n' '[system] daemon-reload' '[user] daemon-reload' | fzf --multi --no-info --prompt='Reload: ') || return 1
   [[ -z $picks ]] && return 1
@@ -299,7 +299,7 @@ sysz_daemon_reload() {
     esac
   done <<<"$picks"
 }
-sysz_pick_states() {
+sysz_pick_states(){
   local -n ref="$1"
   local -a chosen
   mapfile -t chosen < <(systemctl --state=help | grep -Ev ':|ing|^$' | sort -u | fzf --multi --prompt='States: ') || return 1
@@ -308,7 +308,7 @@ sysz_pick_states() {
   local st
   for st in "${chosen[@]}"; do ref+=("--state=$st"); done
 }
-sysz_pick_commands() {
+sysz_pick_commands(){
   local -a units=() extra=()
   while [[ $1 != "" && $1 != "--" ]]; do units+=("$1"); shift; done
   shift || :
@@ -349,7 +349,7 @@ sysz_pick_commands() {
   mapfile -t pick < <(printf '%s\n' "${cmds[@]}" | fzf --multi --ansi --no-info --prompt='Commands: ' --preview="$PREVIEW_CMD" --preview-window=80%)
   printf '%s\n' "${pick[@]}"
 }
-sysz_exec() {
+sysz_exec(){
   local M="$1" UNIT="$2" CMD="$3"
   shift 3
   local -a args=("$@")
@@ -368,7 +368,7 @@ sysz_exec() {
     *) "${run[@]}" "$CMD" "${args[@]}" -- "$UNIT"; return ;;
   esac
 }
-sysz_journal() {
+sysz_journal(){
   local M="$1" UNIT="$2"
   shift 2
   if [[ $M == --user ]]; then
@@ -378,8 +378,8 @@ sysz_journal() {
   fi
 }
 
-prsync_usage() { printf 'Usage: sysmaint prsync [--parallel=N] RSYNC_ARGS...\n'; }
-prsync_cmd() {
+prsync_usage(){ printf 'Usage: sysmaint prsync [--parallel=N] RSYNC_ARGS...\n'; }
+prsync_cmd(){
   (($#)) || { prsync_usage; return 2; }
   local par=""
   [[ $1 == --parallel=* ]] && { par="${1##*=}"; shift; }
@@ -431,7 +431,7 @@ prsync_cmd() {
   fi
 }
 
-main() {
+main(){
   local c="${1:-}"
   shift || :
   case "$c" in

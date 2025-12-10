@@ -16,10 +16,10 @@ success(){ printf '%b\n' "${BLD}${GRN}==>${BWHT} $1${DEF}"; }
 parse_args(){
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    --dry-run | -n) DRY_RUN=true; info "Dry-run mode enabled"; shift;;
-    --verbose | -v) VERBOSE=true; shift;;
-    --help | -h) show_help; exit 0;;
-    *) warn "Unknown option: $1"; show_help; exit 1;;
+      --dry-run|-n) DRY_RUN=true; info "Dry-run mode enabled"; shift ;;
+      --verbose|-v) VERBOSE=true; shift ;;
+      --help|-h) show_help; exit 0 ;;
+      *) warn "Unknown option: $1"; show_help; exit 1 ;;
     esac
   done
 }
@@ -36,7 +36,7 @@ EOF
 parse_args "$@"
 [[ $EUID -eq 0 ]] && die "Run as a regular user, not root."
 [[ $DRY_RUN == false ]] && { sudo -v || die "sudo access required"; }
-ping -c 1 archlinux.org &>/dev/null || die "No internet connection."
+ping -c 1 archlinux.org &>/dev/null || die "No internet connection"
 #--- Configuration ---#
 readonly DOTFILES_REPO="https://github.com/Ven0m0/dotfiles.git"
 readonly DOTFILES_DIR="${HOME}/.local/share/yadm/repo.git"

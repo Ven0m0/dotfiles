@@ -2,7 +2,7 @@
 
 autoload -U is-at-least
 
-_uv() {
+_uv(){
     typeset -A opt_args
     typeset -a _arguments_options
     local ret=1
@@ -5197,7 +5197,7 @@ esac
 }
 
 (( $+functions[_uv_commands] )) ||
-_uv_commands() {
+_uv_commands(){
     local commands; commands=(
 'auth:Manage authentication' \
 'run:Run a command or script' \
@@ -5226,12 +5226,12 @@ _uv_commands() {
     _describe -t commands 'uv commands' commands "$@"
 }
 (( $+functions[_uv__add_commands] )) ||
-_uv__add_commands() {
+_uv__add_commands(){
     local commands; commands=()
     _describe -t commands 'uv add commands' commands "$@"
 }
 (( $+functions[_uv__auth_commands] )) ||
-_uv__auth_commands() {
+_uv__auth_commands(){
     local commands; commands=(
 'login:Login to a service' \
 'logout:Logout of a service' \
@@ -5241,27 +5241,27 @@ _uv__auth_commands() {
     _describe -t commands 'uv auth commands' commands "$@"
 }
 (( $+functions[_uv__auth__dir_commands] )) ||
-_uv__auth__dir_commands() {
+_uv__auth__dir_commands(){
     local commands; commands=()
     _describe -t commands 'uv auth dir commands' commands "$@"
 }
 (( $+functions[_uv__auth__login_commands] )) ||
-_uv__auth__login_commands() {
+_uv__auth__login_commands(){
     local commands; commands=()
     _describe -t commands 'uv auth login commands' commands "$@"
 }
 (( $+functions[_uv__auth__logout_commands] )) ||
-_uv__auth__logout_commands() {
+_uv__auth__logout_commands(){
     local commands; commands=()
     _describe -t commands 'uv auth logout commands' commands "$@"
 }
 (( $+functions[_uv__auth__token_commands] )) ||
-_uv__auth__token_commands() {
+_uv__auth__token_commands(){
     local commands; commands=()
     _describe -t commands 'uv auth token commands' commands "$@"
 }
 (( $+functions[_uv__build_commands] )) ||
-_uv__build_commands() {
+_uv__build_commands(){
     local commands; commands=()
     _describe -t commands 'uv build commands' commands "$@"
 }
@@ -5320,7 +5320,7 @@ _uv__build-backend__prepare-metadata-for-build-wheel_commands() {
     _describe -t commands 'uv build-backend prepare-metadata-for-build-wheel commands' commands "$@"
 }
 (( $+functions[_uv__cache_commands] )) ||
-_uv__cache_commands() {
+_uv__cache_commands(){
     local commands; commands=(
 'clean:Clear the cache, removing all entries or those linked to specific packages' \
 'prune:Prune all unreachable objects from the cache' \
@@ -5329,32 +5329,32 @@ _uv__cache_commands() {
     _describe -t commands 'uv cache commands' commands "$@"
 }
 (( $+functions[_uv__cache__clean_commands] )) ||
-_uv__cache__clean_commands() {
+_uv__cache__clean_commands(){
     local commands; commands=()
     _describe -t commands 'uv cache clean commands' commands "$@"
 }
 (( $+functions[_uv__cache__dir_commands] )) ||
-_uv__cache__dir_commands() {
+_uv__cache__dir_commands(){
     local commands; commands=()
     _describe -t commands 'uv cache dir commands' commands "$@"
 }
 (( $+functions[_uv__cache__prune_commands] )) ||
-_uv__cache__prune_commands() {
+_uv__cache__prune_commands(){
     local commands; commands=()
     _describe -t commands 'uv cache prune commands' commands "$@"
 }
 (( $+functions[_uv__clean_commands] )) ||
-_uv__clean_commands() {
+_uv__clean_commands(){
     local commands; commands=()
     _describe -t commands 'uv clean commands' commands "$@"
 }
 (( $+functions[_uv__export_commands] )) ||
-_uv__export_commands() {
+_uv__export_commands(){
     local commands; commands=()
     _describe -t commands 'uv export commands' commands "$@"
 }
 (( $+functions[_uv__format_commands] )) ||
-_uv__format_commands() {
+_uv__format_commands(){
     local commands; commands=()
     _describe -t commands 'uv format commands' commands "$@"
 }
@@ -5364,22 +5364,22 @@ _uv__generate-shell-completion_commands() {
     _describe -t commands 'uv generate-shell-completion commands' commands "$@"
 }
 (( $+functions[_uv__help_commands] )) ||
-_uv__help_commands() {
+_uv__help_commands(){
     local commands; commands=()
     _describe -t commands 'uv help commands' commands "$@"
 }
 (( $+functions[_uv__init_commands] )) ||
-_uv__init_commands() {
+_uv__init_commands(){
     local commands; commands=()
     _describe -t commands 'uv init commands' commands "$@"
 }
 (( $+functions[_uv__lock_commands] )) ||
-_uv__lock_commands() {
+_uv__lock_commands(){
     local commands; commands=()
     _describe -t commands 'uv lock commands' commands "$@"
 }
 (( $+functions[_uv__pip_commands] )) ||
-_uv__pip_commands() {
+_uv__pip_commands(){
     local commands; commands=(
 'compile:Compile a \`requirements.in\` file to a \`requirements.txt\` or \`pylock.toml\` file' \
 'sync:Sync an environment with a \`requirements.txt\` or \`pylock.toml\` file' \
@@ -5394,57 +5394,57 @@ _uv__pip_commands() {
     _describe -t commands 'uv pip commands' commands "$@"
 }
 (( $+functions[_uv__pip__check_commands] )) ||
-_uv__pip__check_commands() {
+_uv__pip__check_commands(){
     local commands; commands=()
     _describe -t commands 'uv pip check commands' commands "$@"
 }
 (( $+functions[_uv__pip__compile_commands] )) ||
-_uv__pip__compile_commands() {
+_uv__pip__compile_commands(){
     local commands; commands=()
     _describe -t commands 'uv pip compile commands' commands "$@"
 }
 (( $+functions[_uv__pip__freeze_commands] )) ||
-_uv__pip__freeze_commands() {
+_uv__pip__freeze_commands(){
     local commands; commands=()
     _describe -t commands 'uv pip freeze commands' commands "$@"
 }
 (( $+functions[_uv__pip__install_commands] )) ||
-_uv__pip__install_commands() {
+_uv__pip__install_commands(){
     local commands; commands=()
     _describe -t commands 'uv pip install commands' commands "$@"
 }
 (( $+functions[_uv__pip__list_commands] )) ||
-_uv__pip__list_commands() {
+_uv__pip__list_commands(){
     local commands; commands=()
     _describe -t commands 'uv pip list commands' commands "$@"
 }
 (( $+functions[_uv__pip__show_commands] )) ||
-_uv__pip__show_commands() {
+_uv__pip__show_commands(){
     local commands; commands=()
     _describe -t commands 'uv pip show commands' commands "$@"
 }
 (( $+functions[_uv__pip__sync_commands] )) ||
-_uv__pip__sync_commands() {
+_uv__pip__sync_commands(){
     local commands; commands=()
     _describe -t commands 'uv pip sync commands' commands "$@"
 }
 (( $+functions[_uv__pip__tree_commands] )) ||
-_uv__pip__tree_commands() {
+_uv__pip__tree_commands(){
     local commands; commands=()
     _describe -t commands 'uv pip tree commands' commands "$@"
 }
 (( $+functions[_uv__pip__uninstall_commands] )) ||
-_uv__pip__uninstall_commands() {
+_uv__pip__uninstall_commands(){
     local commands; commands=()
     _describe -t commands 'uv pip uninstall commands' commands "$@"
 }
 (( $+functions[_uv__publish_commands] )) ||
-_uv__publish_commands() {
+_uv__publish_commands(){
     local commands; commands=()
     _describe -t commands 'uv publish commands' commands "$@"
 }
 (( $+functions[_uv__python_commands] )) ||
-_uv__python_commands() {
+_uv__python_commands(){
     local commands; commands=(
 'list:List the available Python installations' \
 'install:Download and install Python versions' \
@@ -5458,32 +5458,32 @@ _uv__python_commands() {
     _describe -t commands 'uv python commands' commands "$@"
 }
 (( $+functions[_uv__python__dir_commands] )) ||
-_uv__python__dir_commands() {
+_uv__python__dir_commands(){
     local commands; commands=()
     _describe -t commands 'uv python dir commands' commands "$@"
 }
 (( $+functions[_uv__python__find_commands] )) ||
-_uv__python__find_commands() {
+_uv__python__find_commands(){
     local commands; commands=()
     _describe -t commands 'uv python find commands' commands "$@"
 }
 (( $+functions[_uv__python__install_commands] )) ||
-_uv__python__install_commands() {
+_uv__python__install_commands(){
     local commands; commands=()
     _describe -t commands 'uv python install commands' commands "$@"
 }
 (( $+functions[_uv__python__list_commands] )) ||
-_uv__python__list_commands() {
+_uv__python__list_commands(){
     local commands; commands=()
     _describe -t commands 'uv python list commands' commands "$@"
 }
 (( $+functions[_uv__python__pin_commands] )) ||
-_uv__python__pin_commands() {
+_uv__python__pin_commands(){
     local commands; commands=()
     _describe -t commands 'uv python pin commands' commands "$@"
 }
 (( $+functions[_uv__python__uninstall_commands] )) ||
-_uv__python__uninstall_commands() {
+_uv__python__uninstall_commands(){
     local commands; commands=()
     _describe -t commands 'uv python uninstall commands' commands "$@"
 }
@@ -5493,22 +5493,22 @@ _uv__python__update-shell_commands() {
     _describe -t commands 'uv python update-shell commands' commands "$@"
 }
 (( $+functions[_uv__python__upgrade_commands] )) ||
-_uv__python__upgrade_commands() {
+_uv__python__upgrade_commands(){
     local commands; commands=()
     _describe -t commands 'uv python upgrade commands' commands "$@"
 }
 (( $+functions[_uv__remove_commands] )) ||
-_uv__remove_commands() {
+_uv__remove_commands(){
     local commands; commands=()
     _describe -t commands 'uv remove commands' commands "$@"
 }
 (( $+functions[_uv__run_commands] )) ||
-_uv__run_commands() {
+_uv__run_commands(){
     local commands; commands=()
     _describe -t commands 'uv run commands' commands "$@"
 }
 (( $+functions[_uv__self_commands] )) ||
-_uv__self_commands() {
+_uv__self_commands(){
     local commands; commands=(
 'update:Update uv' \
 'version:Display uv'\''s version' \
@@ -5516,22 +5516,22 @@ _uv__self_commands() {
     _describe -t commands 'uv self commands' commands "$@"
 }
 (( $+functions[_uv__self__update_commands] )) ||
-_uv__self__update_commands() {
+_uv__self__update_commands(){
     local commands; commands=()
     _describe -t commands 'uv self update commands' commands "$@"
 }
 (( $+functions[_uv__self__version_commands] )) ||
-_uv__self__version_commands() {
+_uv__self__version_commands(){
     local commands; commands=()
     _describe -t commands 'uv self version commands' commands "$@"
 }
 (( $+functions[_uv__sync_commands] )) ||
-_uv__sync_commands() {
+_uv__sync_commands(){
     local commands; commands=()
     _describe -t commands 'uv sync commands' commands "$@"
 }
 (( $+functions[_uv__tool_commands] )) ||
-_uv__tool_commands() {
+_uv__tool_commands(){
     local commands; commands=(
 'run:Run a command provided by a Python package' \
 'uvx:Run a command provided by a Python package.' \
@@ -5545,27 +5545,27 @@ _uv__tool_commands() {
     _describe -t commands 'uv tool commands' commands "$@"
 }
 (( $+functions[_uv__tool__dir_commands] )) ||
-_uv__tool__dir_commands() {
+_uv__tool__dir_commands(){
     local commands; commands=()
     _describe -t commands 'uv tool dir commands' commands "$@"
 }
 (( $+functions[_uv__tool__install_commands] )) ||
-_uv__tool__install_commands() {
+_uv__tool__install_commands(){
     local commands; commands=()
     _describe -t commands 'uv tool install commands' commands "$@"
 }
 (( $+functions[_uv__tool__list_commands] )) ||
-_uv__tool__list_commands() {
+_uv__tool__list_commands(){
     local commands; commands=()
     _describe -t commands 'uv tool list commands' commands "$@"
 }
 (( $+functions[_uv__tool__run_commands] )) ||
-_uv__tool__run_commands() {
+_uv__tool__run_commands(){
     local commands; commands=()
     _describe -t commands 'uv tool run commands' commands "$@"
 }
 (( $+functions[_uv__tool__uninstall_commands] )) ||
-_uv__tool__uninstall_commands() {
+_uv__tool__uninstall_commands(){
     local commands; commands=()
     _describe -t commands 'uv tool uninstall commands' commands "$@"
 }
@@ -5575,27 +5575,27 @@ _uv__tool__update-shell_commands() {
     _describe -t commands 'uv tool update-shell commands' commands "$@"
 }
 (( $+functions[_uv__tool__upgrade_commands] )) ||
-_uv__tool__upgrade_commands() {
+_uv__tool__upgrade_commands(){
     local commands; commands=()
     _describe -t commands 'uv tool upgrade commands' commands "$@"
 }
 (( $+functions[_uv__tool__uvx_commands] )) ||
-_uv__tool__uvx_commands() {
+_uv__tool__uvx_commands(){
     local commands; commands=()
     _describe -t commands 'uv tool uvx commands' commands "$@"
 }
 (( $+functions[_uv__tree_commands] )) ||
-_uv__tree_commands() {
+_uv__tree_commands(){
     local commands; commands=()
     _describe -t commands 'uv tree commands' commands "$@"
 }
 (( $+functions[_uv__venv_commands] )) ||
-_uv__venv_commands() {
+_uv__venv_commands(){
     local commands; commands=()
     _describe -t commands 'uv venv commands' commands "$@"
 }
 (( $+functions[_uv__version_commands] )) ||
-_uv__version_commands() {
+_uv__version_commands(){
     local commands; commands=()
     _describe -t commands 'uv version commands' commands "$@"
 }

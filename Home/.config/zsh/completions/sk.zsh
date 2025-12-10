@@ -2,7 +2,7 @@
 
 autoload -U is-at-least
 
-_sk() {
+_sk(){
   typeset -A opt_args
   typeset -a _arguments_options
   local ret=1
