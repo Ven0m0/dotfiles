@@ -159,7 +159,7 @@ result-*
 *.dmg
 *.deb
 venv/
-.venv/
+/.venv*/
 
 # ---------------------
 # Linter
