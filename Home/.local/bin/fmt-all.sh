@@ -4,6 +4,8 @@ set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t'
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
 has(){ command -v -- "$1" &>/dev/null; }
+# Find all .git folders except in the main folder and delete them
+find "$PWD" -type d -name .git -not -path "${PWD}/.git" -exec rm -rf {} +
 has image-optimizer && image-optimizer -r --png-optimization-level max --zopfli-iterations 100 -i .
 has mdfmt && mdfmt . --width 120 -w
 has tombi && tombi format
