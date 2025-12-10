@@ -2,13 +2,13 @@ id: bash-critical-standards
 language: bash
 severity: error
 message: Critical bash standard violation
-note: 'Use #!/usr/bin/env bash, no eval/expr/backticks/ls parsing, no /bin/sh'
+note: "Use #!/usr/bin/env bash, no eval/expr/backticks/ls parsing, no /bin/sh"
 rule:
   any:
     - kind: comment
-      regex: '^#!/bin/(ba)?sh'
+      regex: "^#!/bin/(ba)?sh"
     - kind: command_substitution
-      regex: '`.*`'
+      regex: "`.*`"
     - kind: command
       pattern: eval $$$
     - kind: command
@@ -16,14 +16,14 @@ rule:
     - kind: pipeline
       pattern: ls $$$ARGS | $CMD
     - kind: comment
-      regex: '^#!/bin/sh'
-fix: '#!/usr/bin/env bash'
+      regex: "^#!/bin/sh"
+fix: "#!/usr/bin/env bash"
 ---
 id: bash-set-options
 language: bash
 severity: error
 message: Add 'set -euo pipefail' at script start
-note: 'Exit on error, undefined vars, pipe failures'
+note: "Exit on error, undefined vars, pipe failures"
 rule:
   kind: file
   not:
@@ -31,7 +31,7 @@ rule:
       kind: command
       pattern: set -$$$
       has:
-        regex: '[euo].*pipefail|pipefail.*[euo]'
+        regex: "[euo].*pipefail|pipefail.*[euo]"
 fix: |
   #!/usr/bin/env bash
   set -euo pipefail

@@ -17,14 +17,14 @@ readonly TARGET_EXT="mkv"
 export LC_ALL=C
 export IFS=$'\n\t'
 
-has() { command -v -- "$1" &>/dev/null; }
+has(){ command -v -- "$1" &>/dev/null; }
 
 # --- Logging ---
-log() { printf '[%s] %s\n' "$(date +'%H:%M:%S')" "$*"; }
-err() { printf '[%s] [ERR] %s\n' "$(date +'%H:%M:%S')" "$*" >&2; }
+log(){ printf '[%s] %s\n' "$(date +'%H:%M:%S')" "$*"; }
+err(){ printf '[%s] [ERR] %s\n' "$(date +'%H:%M:%S')" "$*" >&2; }
 
 # --- Helpers ---
-is_av1() {
+is_av1(){
   local src="$1"
   local codec
   codec=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$src" || echo "err")
@@ -32,7 +32,7 @@ is_av1() {
 }
 
 # --- Engines ---
-run_ffzap() {
+run_ffzap(){
   local list_file="$1"
   local ffmpeg_args="$2"
   
@@ -49,7 +49,7 @@ run_ffzap() {
     -o "{{dir}}/{{name}}${OUT_SUFFIX}.${TARGET_EXT}"
 }
 
-run_ffmpeg_loop() {
+run_ffmpeg_loop(){
   local -n targets=$1
   local ffmpeg_args="$2"
   local active_jobs=0
@@ -85,7 +85,7 @@ run_ffmpeg_loop() {
   wait
 }
 
-main() {
+main(){
   local target="${1:-.}"
   
   if ! has ffmpeg || ! has ffprobe; then

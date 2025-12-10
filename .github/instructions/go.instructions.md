@@ -1,11 +1,13 @@
 ---
-description: 'Instructions for writing Go code following idiomatic Go practices and community standards'
-applyTo: '**/*.go,**/go.mod,**/go.sum'
+description: "Instructions for writing Go code following idiomatic Go practices and community standards"
+applyTo: "**/*.go,**/go.mod,**/go.sum"
 ---
 
 # Go Development Instructions
 
-Follow idiomatic Go practices and community standards when writing Go code. These instructions are based on [Effective Go](https://go.dev/doc/effective_go), [Go Code Review Comments](https://go.dev/wiki/CodeReviewComments), and [Google's Go Style Guide](https://google.github.io/styleguide/go/).
+Follow idiomatic Go practices and community standards when writing Go code. These instructions are based on
+[Effective Go](https://go.dev/doc/effective_go), [Go Code Review Comments](https://go.dev/wiki/CodeReviewComments), and
+[Google's Go Style Guide](https://google.github.io/styleguide/go/).
 
 ## General Instructions
 
@@ -19,7 +21,8 @@ Follow idiomatic Go practices and community standards when writing Go code. Thes
 - Write self-documenting code with clear, descriptive names
 - Document exported types, functions, methods, and packages
 - Use Go modules for dependency management
-- Leverage the Go standard library instead of reinventing the wheel (e.g., use `strings.Builder` for string concatenation, `filepath.Join` for path construction)
+- Leverage the Go standard library instead of reinventing the wheel (e.g., use `strings.Builder` for string
+  concatenation, `filepath.Join` for path construction)
 - Prefer standard library solutions over custom implementations when functionality exists
 - Write comments in English by default; translate only upon user request
 - Avoid using emoji in code and comments
@@ -131,7 +134,8 @@ Follow idiomatic Go practices and community standards when writing Go code. Thes
 - Use struct tags for JSON, XML, database mappings
 - Prefer explicit type conversions
 - Use type assertions carefully and check the second return value
-- Prefer generics over unconstrained types; when an unconstrained type is truly needed, use the predeclared alias `any` instead of `interface{}` (Go 1.18+)
+- Prefer generics over unconstrained types; when an unconstrained type is truly needed, use the predeclared alias `any`
+  instead of `interface{}` (Go 1.18+)
 
 ### Pointers vs Values
 
@@ -173,7 +177,8 @@ Follow idiomatic Go practices and community standards when writing Go code. Thes
 - Use `sync.Mutex` for protecting shared state
 - Keep critical sections small
 - Use `sync.RWMutex` when you have many readers
-- Choose between channels and mutexes based on the use case: use channels for communication, mutexes for protecting state
+- Choose between channels and mutexes based on the use case: use channels for communication, mutexes for protecting
+  state
 - Use `sync.Once` for one-time initialization
 - WaitGroup usage by Go version:
   - If `go >= 1.25` in `go.mod`, use the new `WaitGroup.Go` method ([documentation](https://pkg.go.dev/sync#WaitGroup)):
@@ -215,7 +220,8 @@ wg.Wait()
 - Handle errors gracefully and return appropriate error responses
 - Router usage by Go version:
   - If `go >= 1.22`, prefer the enhanced `net/http` `ServeMux` with pattern-based routing and method matching
-  - If `go < 1.22`, use the classic `ServeMux` and handle methods/paths manually (or use a third-party router when justified)
+  - If `go < 1.22`, use the classic `ServeMux` and handle methods/paths manually (or use a third-party router when
+    justified)
 
 ### JSON APIs
 
@@ -227,12 +233,18 @@ wg.Wait()
 
 ### HTTP Clients
 
-- Keep the client struct focused on configuration and dependencies only (e.g., base URL, `*http.Client`, auth, default headers). It must not store per-request state
-- Do not store or cache `*http.Request` inside the client struct, and do not persist request-specific state across calls; instead, construct a fresh request per method invocation
-- Methods should accept `context.Context` and input parameters, assemble the `*http.Request` locally (or via a short-lived builder/helper created per call), then call `c.httpClient.Do(req)`
-- If request-building logic is reused, factor it into unexported helper functions or a per-call builder type; never keep `http.Request` (URL params, body, headers) as fields on the long-lived client
-- Ensure the underlying `*http.Client` is configured (timeouts, transport) and is safe for concurrent use; avoid mutating `Transport` after first use
-- Always set headers on the request instance you’re sending, and close response bodies (`defer resp.Body.Close()`), handling errors appropriately
+- Keep the client struct focused on configuration and dependencies only (e.g., base URL, `*http.Client`, auth, default
+  headers). It must not store per-request state
+- Do not store or cache `*http.Request` inside the client struct, and do not persist request-specific state across
+  calls; instead, construct a fresh request per method invocation
+- Methods should accept `context.Context` and input parameters, assemble the `*http.Request` locally (or via a
+  short-lived builder/helper created per call), then call `c.httpClient.Do(req)`
+- If request-building logic is reused, factor it into unexported helper functions or a per-call builder type; never keep
+  `http.Request` (URL params, body, headers) as fields on the long-lived client
+- Ensure the underlying `*http.Client` is configured (timeouts, transport) and is safe for concurrent use; avoid
+  mutating `Transport` after first use
+- Always set headers on the request instance you’re sending, and close response bodies (`defer resp.Body.Close()`),
+  handling errors appropriately
 
 ## Performance Optimization
 
@@ -246,25 +258,34 @@ wg.Wait()
 
 ### I/O: Readers and Buffers
 
-- Most `io.Reader` streams are consumable once; reading advances state. Do not assume a reader can be re-read without special handling
+- Most `io.Reader` streams are consumable once; reading advances state. Do not assume a reader can be re-read without
+  special handling
 - If you must read data multiple times, buffer it once and recreate readers on demand:
-  - Use `io.ReadAll` (or a limited read) to obtain `[]byte`, then create fresh readers via `bytes.NewReader(buf)` or `bytes.NewBuffer(buf)` for each reuse
+  - Use `io.ReadAll` (or a limited read) to obtain `[]byte`, then create fresh readers via `bytes.NewReader(buf)` or
+    `bytes.NewBuffer(buf)` for each reuse
   - For strings, use `strings.NewReader(s)`; you can `Seek(0, io.SeekStart)` on `*bytes.Reader` to rewind
 - For HTTP requests, do not reuse a consumed `req.Body`. Instead:
   - Keep the original payload as `[]byte` and set `req.Body = io.NopCloser(bytes.NewReader(buf))` before each send
-  - Prefer configuring `req.GetBody` so the transport can recreate the body for redirects/retries: `req.GetBody = func() (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(buf)), nil }`
-- To duplicate a stream while reading, use `io.TeeReader` (copy to a buffer while passing through) or write to multiple sinks with `io.MultiWriter`
-- Reusing buffered readers: call `(*bufio.Reader).Reset(r)` to attach to a new underlying reader; do not expect it to “rewind” unless the source supports seeking
-- For large payloads, avoid unbounded buffering; consider streaming, `io.LimitReader`, or on-disk temporary storage to control memory
+  - Prefer configuring `req.GetBody` so the transport can recreate the body for redirects/retries:
+    `req.GetBody = func() (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(buf)), nil }`
+- To duplicate a stream while reading, use `io.TeeReader` (copy to a buffer while passing through) or write to multiple
+  sinks with `io.MultiWriter`
+- Reusing buffered readers: call `(*bufio.Reader).Reset(r)` to attach to a new underlying reader; do not expect it to
+  “rewind” unless the source supports seeking
+- For large payloads, avoid unbounded buffering; consider streaming, `io.LimitReader`, or on-disk temporary storage to
+  control memory
 - Use `io.Pipe` to stream without buffering the whole payload:
   - Write to `*io.PipeWriter` in a separate goroutine while the reader consumes
   - Always close the writer; use `CloseWithError(err)` on failures
   - `io.Pipe` is for streaming, not rewinding or making readers reusable
-- **Warning:** When using `io.Pipe` (especially with multipart writers), all writes must be performed in strict, sequential order. Do not write concurrently or out of order—multipart boundaries and chunk order must be preserved. Out-of-order or parallel writes can corrupt the stream and result in errors.
+- **Warning:** When using `io.Pipe` (especially with multipart writers), all writes must be performed in strict,
+  sequential order. Do not write concurrently or out of order—multipart boundaries and chunk order must be preserved.
+  Out-of-order or parallel writes can corrupt the stream and result in errors.
 - Streaming multipart/form-data with `io.Pipe`:
   - `pr, pw := io.Pipe()`; `mw := multipart.NewWriter(pw)`; use `pr` as the HTTP request body
   - Set `Content-Type` to `mw.FormDataContentType()`
-  - In a goroutine: write all parts to `mw` in the correct order; on error `pw.CloseWithError(err)`; on success `mw.Close()` then `pw.Close()`
+  - In a goroutine: write all parts to `mw` in the correct order; on error `pw.CloseWithError(err)`; on success
+    `mw.Close()` then `pw.Close()`
   - Do not store request/in-flight form state on a long-lived client; build per call
   - Streamed bodies are not rewindable; for retries/redirects, buffer small payloads or provide `GetBody`
 
@@ -368,6 +389,8 @@ wg.Wait()
 - Not understanding nil interfaces vs nil pointers
 - Forgetting to close resources (files, connections)
 - Using global variables unnecessarily
-- Over-using unconstrained types (e.g., `any`); prefer specific types or generic type parameters with constraints. If an unconstrained type is required, use `any` rather than `interface{}`
+- Over-using unconstrained types (e.g., `any`); prefer specific types or generic type parameters with constraints. If an
+  unconstrained type is required, use `any` rather than `interface{}`
 - Not considering the zero value of types
-- **Creating duplicate `package` declarations** - this is a compile error; always check existing files before adding package declarations
+- **Creating duplicate `package` declarations** - this is a compile error; always check existing files before adding
+  package declarations

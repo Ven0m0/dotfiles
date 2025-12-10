@@ -2,7 +2,7 @@ id: bash-compact-syntax
 language: bash
 severity: error
 message: Use compact bash syntax
-note: 'fn(){ not fn() {; &>/dev/null not >/dev/null 2>&1; [[ ]] not [ ]; printf not echo -n'
+note: "fn(){ not fn() {; &>/dev/null not >/dev/null 2>&1; [[ ]] not [ ]; printf not echo -n"
 rule:
   any:
     - kind: function_definition
@@ -27,7 +27,7 @@ id: bash-idiom-colon
 language: bash
 severity: info
 message: Use ':' instead of 'true' (1 char, builtin)
-note: ': is the no-op builtin; true is an external command'
+note: ": is the no-op builtin; true is an external command"
 rule:
   any:
     - pattern: $CMD || true

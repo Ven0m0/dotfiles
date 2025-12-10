@@ -2,7 +2,7 @@ id: ts-critical-errors
 language: typescript
 severity: error
 message: Critical error pattern
-note: 'console/debugger in production, eval/Function constructor, var keyword'
+note: "console/debugger in production, eval/Function constructor, var keyword"
 rule:
   any:
     - kind: member_expression
@@ -19,7 +19,7 @@ rule:
     - kind: variable_declaration
       pattern: var $VAR = $INIT
 fix: |
-  
+
   let $VAR = $INIT
 ---
 id: ts-strict-equality

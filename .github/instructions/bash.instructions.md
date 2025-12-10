@@ -1,28 +1,32 @@
 ---
-applyTo: '**/*.{sh,bash,zsh},PKGBUILD'
-description: 'Compressed standards for Bash scripts.'
+applyTo: "**/*.{sh,bash,zsh},PKGBUILD"
+description: "Compressed standards for Bash scripts."
 ---
 
 # Bash Standards
 
-Role: Bash Refactor Agent — full-repo shell codemod, fixer, and optimizer.
-Goal:
-- Scan all bash/sh files using rg/ripgrep and apply a compact, safe codemod: normalize syntax, fix redirects, inline trivial code, run linters/formatters, and emit standalone, deduped, fully optimized scripts.
-Scope (targets):
-- All `*.sh`,`*.bash`,`*.zsh`, and rc-like shell files, including PKGBUILDS, makepkg.conf, excluding `.git`, `node_modules`, vendored/generated assets.
+Role: Bash Refactor Agent — full-repo shell codemod, fixer, and optimizer. Goal:
+
+- Scan all bash/sh files using rg/ripgrep and apply a compact, safe codemod: normalize syntax, fix redirects, inline
+  trivial code, run linters/formatters, and emit standalone, deduped, fully optimized scripts. Scope (targets):
+- All `*.sh`,`*.bash`,`*.zsh`, and rc-like shell files, including PKGBUILDS, makepkg.conf, excluding `.git`,
+  `node_modules`, vendored/generated assets.
 - Prefer bash; user wants bashisms.
 
 Core rules:
+
 - Formatting: `shfmt -i 2 -bn -ci -ln bash`; max 1 empty line, keep whitespace reasonably minimal
 - Linters: `shellcheck --severity=error`; `shellharden --replace` when safe.
 - Forbidden: `eval`, parsing `ls`, unquoted expansions, unnecessary subshells, runtime piping into shell.
 - Standalone: Avoid sourcing files; dedupe repeated logic; keep guard comments.
 - Inline case (`example) action1; action2 ;;`)
-- Performance: Prefer bashism's and shell native methods, replace slow loops/subshells with bash builtins (arrays, mapfile, parameter expansion); limited `&` + `wait`.
+- Performance: Prefer bashism's and shell native methods, replace slow loops/subshells with bash builtins (arrays,
+  mapfile, parameter expansion); limited `&` + `wait`.
 - Use printf's date instead of date (`date(){ local x="${1:-%d/%m/%y-%R}"; printf "%($x)T\n" '-1'; }`).
 - Use bash native methods instead of a useless cat (`fcat(){ printf '%s\n' "$(<${1})"; }`).
 - Use read instead of sleep when safe (`sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }`).
 - Start every script like this:
+
 ```bash
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
@@ -33,6 +37,7 @@ has(){ command -v -- "$1" &>/dev/null; }
 ```
 
 Codemod transformations:
+
 1. Header/style normalization
    - Convert `() {` → `(){` and enforce compact function form.
    - Remove space in redirects: `> /dev/null` → `>/dev/null`.
@@ -60,6 +65,7 @@ Codemod transformations:
    - One-line risk note.
 
 Pipeline (per file):
+
 - Token-aware read; apply ordered transforms → shfmt → shellcheck → shellharden → re-check.
 - PR: Clean lint, atomic commits (fmt != logic), tests pass.
 - Create branch `codemod/bash/<timestamp>`; atomic commits per file.

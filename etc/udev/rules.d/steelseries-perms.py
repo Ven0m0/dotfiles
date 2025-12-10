@@ -18,36 +18,38 @@ _IOC_DIRSHIFT = _IOC_SIZESHIFT + _IOC_SIZEBITS
 
 _IOC_READ = 2
 
+
 def _IOC(dir, type, nr, size):
-    return (dir << _IOC_DIRSHIFT) | \
-        (ord(type) << _IOC_TYPESHIFT) | \
-        (nr << _IOC_NRSHIFT) | \
-        (size << _IOC_SIZESHIFT)
+    return (dir << _IOC_DIRSHIFT) | (ord(type) << _IOC_TYPESHIFT) | (nr << _IOC_NRSHIFT) | (size << _IOC_SIZESHIFT)
+
 
 def _IOR(type, nr, size):
     return _IOC(_IOC_READ, type, nr, size)
 
+
 HID_MAX_DESCRIPTOR_SIZE = 4096
+
 
 class hidraw_report_descriptor(ctypes.Structure):
     _fields_ = [
-        ('size', ctypes.c_uint),
-        ('value', ctypes.c_uint8 * HID_MAX_DESCRIPTOR_SIZE),
+        ("size", ctypes.c_uint),
+        ("value", ctypes.c_uint8 * HID_MAX_DESCRIPTOR_SIZE),
     ]
 
-HIDIOCGRDESCSIZE = _IOR('H', 0x01, ctypes.sizeof(ctypes.c_int))
-HIDIOCGRDESC = _IOR('H', 0x02, ctypes.sizeof(hidraw_report_descriptor))
+
+HIDIOCGRDESCSIZE = _IOR("H", 0x01, ctypes.sizeof(ctypes.c_int))
+HIDIOCGRDESC = _IOR("H", 0x02, ctypes.sizeof(hidraw_report_descriptor))
 
 hidraw = sys.argv[1]
 
-with open(hidraw, 'wb') as fd:
+with open(hidraw, "wb") as fd:
     size = ctypes.c_uint()
     fcntl.ioctl(fd, HIDIOCGRDESCSIZE, size, True)
     descriptor = hidraw_report_descriptor()
     descriptor.size = size
     fcntl.ioctl(fd, HIDIOCGRDESC, descriptor, True)
 
-descriptor = bytes(descriptor.value)[0:int.from_bytes(size, byteorder=sys.byteorder)]
+descriptor = bytes(descriptor.value)[0 : int.from_bytes(size, byteorder=sys.byteorder)]
 
 # walk through the descriptor until we find the usage page
 usagePage = 0
@@ -63,20 +65,20 @@ while i < len(descriptor):
 
     if b0 == 0b11111110:
         # long types shouldn't be the usage page, skip them
-        i += 3 + descriptor[i+1]
+        i += 3 + descriptor[i + 1]
         continue
 
     if bType == 1 and bTag == 0:
         # usage page, grab it
-        format = ''
+        format = ""
         if bSize == 1:
-            format = 'B'
+            format = "B"
         elif bSize == 2:
-            format = 'H'
+            format = "H"
         elif bSize == 4:
-            format = 'I'
+            format = "I"
         else:
-            raise Exception('usage page is length {}???'.format(bSize))
+            raise Exception("usage page is length {}???".format(bSize))
         usagePage = struct.unpack_from(format, descriptor, i + 1)[0]
         break
 

@@ -8,43 +8,43 @@ pre-commit:
   commands:
     shell-format:
       priority: 1
-      glob: '*.{sh,bash,zsh}'
+      glob: "*.{sh,bash,zsh}"
       run: |
         shfmt -w -i 2 -bn -ci -sr {staged_files}
         shellcheck -S style {staged_files}
         shellharden --replace {staged_files}
         git add {staged_files}
       stage_fixed: true
-      fail_text: 'Shell format failed'
+      fail_text: "Shell format failed"
     yaml-lint:
       priority: 2
-      glob: '*.{yml,yaml}'
+      glob: "*.{yml,yaml}"
       run: |
         yamlfmt {staged_files} && yamllint -s {staged_files}
         git add {staged_files}
       stage_fixed: true
-      fail_text: 'YAML lint failed'
+      fail_text: "YAML lint failed"
     json-validate:
       priority: 3
-      glob: '*.{json,jsonc,json5}'
+      glob: "*.{json,jsonc,json5}"
       run: |
         for f in {staged_files}; do
           jaq -e . "$f" &>/dev/null || jq -e . "$f" || { printf "Invalid: %s\n" "$f" >&2; exit 1; }
         done
-      fail_text: 'JSON invalid'
+      fail_text: "JSON invalid"
     biome:
       priority: 4
-      glob: '*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}'
+      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       run: |
         cfg="${HOME}/.config/biome.json"
         [[ -r "$cfg" ]] || cfg="${HOME}/biome.json"
         BIOME_CONFIG_PATH="$cfg" biome check --write --skip-parse-errors --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files} || :
         git add {staged_files}
       stage_fixed: true
-      fail_text: 'Biome failed'
+      fail_text: "Biome failed"
     normalize:
       priority: 5
-      glob: '*'
+      glob: "*"
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         if command -v sd &>/dev/null; then
@@ -56,7 +56,7 @@ pre-commit:
         fi
         command -v dos2unix &>/dev/null && dos2unix -q {staged_files} 2>/dev/null || sed -i 's/\r$//' {staged_files}
       stage_fixed: true
-      fail_text: 'Normalize failed'
+      fail_text: "Normalize failed"
     security:
       priority: 6
       run: |
@@ -72,20 +72,20 @@ pre-commit:
           -e '\bset -x\b' \
           -e '^(<{7}|={7}|>{7})' \
           {staged_files} && { printf "Security/debug code detected\n" >&2; exit 1; } || :
-      fail_text: 'Security check failed!'
+      fail_text: "Security check failed!"
     gha-lint:
       priority: 7
-      glob: '.github/workflows/*.{yml,yaml}'
+      glob: ".github/workflows/*.{yml,yaml}"
       run: |
         actionlint {staged_files} || :
         command -v zizmor &>/dev/null && zizmor --format plain {staged_files} || :
-      fail_text: 'GHA lint failed'
+      fail_text: "GHA lint failed"
     branch-protect:
       priority: 8
       run: |
         branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
         [[ "$branch" =~ ^(main|master)$ ]] && { printf "Direct commits to %s blocked\n" "$branch" >&2; exit 1; } || :
-      fail_text: 'Protected branch'
+      fail_text: "Protected branch"
 commit-msg:
   commands:
     conventional:
@@ -97,7 +97,7 @@ commit-msg:
         subject=$(head -n1 {1})
         (( ${#subject} > 72 )) && { printf "Subject >72 chars (%d)\n" "${#subject}" >&2; exit 1; } || :
         grep -qEi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP/TODO\n" >&2; exit 1; } || :
-      fail_text: 'Commit format invalid'
+      fail_text: "Commit format invalid"
 pre-push:
   parallel: true
   commands:
@@ -108,7 +108,7 @@ pre-push:
         [[ -f package.json ]] && { bun test || npm test &>/dev/null; exit 0; }
         [[ -f Cargo.toml ]] && { cargo test -q &>/dev/null; exit 0; }
         exit 0
-      fail_text: 'Tests failed'
+      fail_text: "Tests failed"
     branch:
       priority: 2
       run: |
@@ -117,14 +117,14 @@ pre-push:
         [[ "$branch" =~ ^(develop|staging|release/.+|hotfix/.+|feature/.+|(bug)?fix/.+|beta|alpha|next)$ ]] || {
           printf "Use git-flow: feature/*, fix/*, release/*, hotfix/*\n" >&2
         }; exit 0
-      fail_text: 'Branch naming violation'
+      fail_text: "Branch naming violation"
     audit:
       priority: 3
       run: |
         [[ -f package.json ]] && { bun audit || npm audit --production --audit-level=high; } || :
         [[ -f Cargo.toml ]] && cargo audit || :
         exit 0
-      fail_text: 'Audit failed'
+      fail_text: "Audit failed"
 post-merge:
   commands:
     deps:
@@ -133,13 +133,13 @@ post-merge:
         [[ -f bun.lockb || -f package-lock.json ]] && bun install --frozen-lockfile --production 2>/dev/null || :
         [[ -f Cargo.lock ]] && cargo fetch &>/dev/null || :
         exit 0
-      fail_text: 'Deps update failed'
+      fail_text: "Deps update failed"
 post-checkout:
   commands:
     submodules:
       priority: 1
-      run: 'git submodule update --init --recursive &>/dev/null || :'
-      fail_text: 'Submodule update failed'
+      run: "git submodule update --init --recursive &>/dev/null || :"
+      fail_text: "Submodule update failed"
     notify:
       priority: 2
       run: |
@@ -147,7 +147,7 @@ post-checkout:
         grep -qE '^(package.json|bun\.lockb|.*lock\.json)$' <<< "$changed" && {
           printf "Dependencies changed. Run: bun install\n" >&2
         } || :
-      fail_text: 'Dep check failed'
+      fail_text: "Dep check failed"
 prepare-commit-msg:
   commands:
     ticket:
@@ -158,4 +158,4 @@ prepare-commit-msg:
           ticket="${BASH_REMATCH[2]}"
           grep -qF "$ticket" {1} || sed -i "1s/^/$ticket: /" {1}
         } || :
-      fail_text: 'Ticket insert failed'
+      fail_text: "Ticket insert failed"
