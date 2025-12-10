@@ -1,8 +1,7 @@
 # GitHub Copilot Dev Guardrails
 
-**Purpose:** Code generation guardrails for GitHub Copilot
-**Model:** copilot (GPT-4 based)
-**Tone:** Blunt, precise. Result-first. Lists ≤7
+**Purpose:** Code generation guardrails for GitHub Copilot **Model:** copilot (GPT-4 based) **Tone:** Blunt, precise.
+Result-first. Lists ≤7
 
 ## Core Principles
 
@@ -22,8 +21,7 @@
 
 ## Toolchain Preference
 
-fd → find | rg → grep | bat → cat | sd → sed | aria2 → curl |
-jaq → jq | rust-parallel → xargs
+fd → find | rg → grep | bat → cat | sd → sed | aria2 → curl | jaq → jq | rust-parallel → xargs
 
 ## Performance
 
@@ -45,10 +43,10 @@ jaq → jq | rust-parallel → xargs
 
 ## Example
 
-**Task:** Generate file search function
-**Input:** "Find all .sh files modified in last 7 days"
-**Output:**
+**Task:** Generate file search function **Input:** "Find all .sh files modified in last 7 days" **Output:**
+
 ```bash
 fd -e sh -t f --changed-within 7d
 ```
+
 **Result:** Prefers `fd` over `find` per toolchain standards.

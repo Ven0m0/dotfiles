@@ -2,7 +2,7 @@ id: bash-avoid-forks
 language: bash
 severity: warning
 message: Avoid unnecessary fork (use builtin/redirect instead)
-note: 'Useless cat, parameter expansion > sed, no subshells in loops, (( )) > let'
+note: "Useless cat, parameter expansion > sed, no subshells in loops, (( )) > let"
 rule:
   any:
     - kind: pipeline
@@ -31,7 +31,7 @@ id: bash-prefer-mapfile
 language: bash
 severity: info
 message: Use mapfile instead of while read (10-100x faster)
-note: 'mapfile -t array < file; Bash 4.0+'
+note: "mapfile -t array < file; Bash 4.0+"
 rule:
   kind: while_statement
   pattern: |
@@ -54,7 +54,7 @@ id: bash-local-vars
 language: bash
 severity: warning
 message: Use local for function variables (avoid polluting global scope)
-note: 'local var=value; declare -l lowercase; declare -u uppercase'
+note: "local var=value; declare -l lowercase; declare -u uppercase"
 rule:
   kind: assignment
   inside:

@@ -2,7 +2,7 @@ id: py-loop-performance
 language: python
 severity: warning
 message: Optimize loop pattern
-note: 'String concat: use list+join; Regex: precompile; Loops: use comprehension'
+note: "String concat: use list+join; Regex: precompile; Loops: use comprehension"
 rule:
   any:
     - kind: augmented_assignment
@@ -26,7 +26,7 @@ id: py-prefer-idioms
 language: python
 severity: info
 message: Use Python idiom for cleaner code
-note: 'f-strings > format(); dict.get() > if key in dict; set for membership; Path over os.path'
+note: "f-strings > format(); dict.get() > if key in dict; set for membership; Path over os.path"
 rule:
   any:
     - pattern: $STR.format($$$)
@@ -47,12 +47,12 @@ id: py-dataclass-slots
 language: python
 severity: info
 message: Add slots=True to dataclass (saves memory, faster attribute access)
-note: '@dataclass(slots=True) - Python 3.10+'
+note: "@dataclass(slots=True) - Python 3.10+"
 rule:
   kind: decorated_definition
   has:
     kind: decorator
-    pattern: '@dataclass'
+    pattern: "@dataclass"
     not:
-      regex: 'slots=True'
-fix: '@dataclass(slots=True)'
+      regex: "slots=True"
+fix: "@dataclass(slots=True)"
