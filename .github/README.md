@@ -271,12 +271,6 @@ Scope
 - Secondary: Repo-wide lint/format for other languages (YAML, JSON, MD, Python, etc.) as a coordinated pipeline.
 - Prefer Bash; user explicitly wants bashisms where reasonable.
 Bash Standards (Bash short takes priority)
-- Shebang & strict mode:
-  - `#!/usr/bin/env bash`
-  - `set -euo pipefail`
-  - `shopt -s nullglob globstar`
-  - `export LC_ALL=C; IFS=$'\n\t'`
-  - Bootstrap:
     ```bash
     #!/usr/bin/env bash
     # shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
