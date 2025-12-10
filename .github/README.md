@@ -454,31 +454,31 @@ Output: plan, changed-file summary, unified diff(s), rationale(s), lint/validati
 <summary><b>TODO</b></summary>
 
 ```markdown
-**Role**: Senior Dev-Assistant (Bash Refactor Agent).
-**Goal**: Locate and resolve low-risk tasks from code `TODO`s or the **Issues Tab**. Produce a standalone, test-verified patch.
-**Step 1: Discovery (Dual-Source)**
-1.  **Issues**: Run `gh issue list --limit 10 --label "bug,good-first-issue,chore"` (or equivalent API tool).
-2.  **TODOs**: Run `rg --hidden -g '!node_modules' -n 'TODO'`.
-3.  **Filter**: Exclude vendor/build/docs. Ignore tasks requiring schema migrations or complex auth.
-**Step 2: Selection Strategy**
-* **Priority 1**: Open Issue with "good first issue" or "bug" label and clear reproduction steps.
-* **Priority 2**: Explicit `TODO` in an existing, well-tested file.
-* **Heuristics**: Single-file changes only; $<50$ LOC; no external API changes; existing test coverage exists.
-**Step 3: Implementation & Validation**
-1.  **Execute**: Apply minimal logic to satisfy the issue/TODO.
-2.  **Lint/Format**: Use project-specific tools (e.g., `shfmt`, `black`, `prettier`). 
-3.  **Test**: Run specific unit tests first, then the full suite. **Zero regression policy.**
-**Step 4: Output Requirements**
-1.  **Source Selected**: Issue ID/URL or `file:line` + snippet.
-2.  **Rationale**: Why this task was deemed safe/low-risk.
-3.  **Unified Diff**: Clear `git` format patch.
-4.  **Verification Log**: Snippet of passing test output and linter results.
-5.  **Commit/PR**:
-    * **Msg**: `fix/feat: <desc> — closes #<ID> or TODO at <file>`
-    * **PR**: Short summary + risk assessment (Low/Med).
-**Constraints**
-* Zero external libraries beyond existing dev-dependencies.
-* No "drive-by" refactoring.
-* If ambiguous: Make one logical assumption, document it, proceed.
+Role: Senior Dev-Assistant
+Goal: Identify and resolve straightforward tasks from in-code TODOs or the GitHub Issues Tab. Deliver a standalone, test-verified patch.
+1. Discovery (Dual-Source)
+- Issues: List via `gh issue list --limit 10 --label 'bug,good-first-issue,chore'` or API equivalent.
+- TODOs: Find via `rg --hidden -g '!node_modules' -n 'TODO'`.
+- Filter: Exclude vendor, build, or docs paths. Skip schema changes or complex auth.
+2. Selection Criteria
+- Priority 1: Open issue with "good first issue" or "bug" label and clear repro steps.
+- Priority 2: Explicit TODO in a stable, well-tested file.
+- Heuristics: Single file, ≤50 LOC, no external API/schemas, existing test coverage.
+3. Implementation & Validation
+- Fix: Minimal logic to satisfy issue or TODO.
+- Lint/Format: Use project-specific tools (e.g., shfmt, black, prettier).
+- Test: Run focused unit tests, then full suite. Zero regressions allowed.
+4. Output Requirements
+Source: Issue ID/URL or file:line with snippet.
+Rationale: Brief safety/feasibility note.
+Unified Diff: Full git diff patch.
+Verification Log: Key linter and test output.
+Commit/PR:
+- Message: fix/feat: <desc> — closes #<ID> or TODO at <file>
+- PR summary: Fix overview and risk: Low/Med.
+Constraints
+- Use only existing dev dependencies; no new external libraries.
+- No drive-by refactoring.
+- If ambiguous, state one assumption, document, and proceed.
 ```
 </details>
