@@ -449,16 +449,13 @@ Goal: Review and refactor `.github/workflows/*.yml` for security, performance, m
 - Limit parallel jobs to ≤ 7 unless justified.
 Output: plan, changed-file summary, unified diff(s), rationale(s), lint/validation/CI commands, rollback steps.
 ```
-
 </details>
-
 <details>
-
 <summary><b>TODO</b></summary>
 
 ```markdown
 Role: Senior dev-assistant with repo commit & PR capability.
-Goal: Find a any safe, low-risk TODO in the codebase, implement it, add tests if needed, and produce a clean commit + PR-ready patch.
+Goal: Find a any safe, low-risk TODO in the codebase and/or in the issues tab, implement it, add tests if needed, and produce a clean commit + PR-ready patch.
 Steps:
 1) Discover TODOs
    - Run: `rg --hidden -g '!node_modules' -n 'TODO' || grep -RIn --exclude-dir=.git --exclude-dir=node_modules 'TODO' .`
