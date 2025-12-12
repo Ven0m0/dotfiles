@@ -1,6 +1,6 @@
-# ---------------------
+#######################
 # Git
-# ---------------------
+#######################
 .git/
 .git
 .github-personal-access-token
@@ -31,7 +31,6 @@ fishd.*
 .thumbnails/
 .antidote/
 .zcompcache/
-.zsh_sessions/
 .zcompdump*
 .zsh_history
 *.local.zsh
@@ -58,6 +57,7 @@ Videos/
 .config/gh/hosts.yml
 # Private SSH keys
 id_rsa
+id_rsa.pub
 id_dsa
 id_ecdsa
 id_ed25519
@@ -140,7 +140,6 @@ node_modules/
 vendor/
 go/
 jspm_packages/
-dependencies/composer/vendor
 target/
 build/
 dist/
@@ -167,7 +166,6 @@ venv/
 github-step-summary.md
 megalinter-reports/
 **/megalinter-reports/*
-mega-linter.report
 *megalinter_file_names_cspell.txt
 
 # ---------------------
@@ -177,7 +175,6 @@ mega-linter.report
 .ruff_cache/
 .eslintcache
 *.sqlite
-claude-runs/
 
 # GitHub Actions leftovers
 github_conf
