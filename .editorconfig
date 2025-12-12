@@ -2,9 +2,9 @@
 # Top-most EditorConfig file
 root = true
 
-# =============================================================================
+###############################################################################
 # Default Settings for All Files
-# =============================================================================
+###############################################################################
 [*]
 end_of_line = lf
 charset = utf-8
@@ -14,40 +14,27 @@ indent_style = space
 indent_size = 2
 tab_width = 2
 max_line_length = 120
-spaces_around_operators = true
-spaces_around_brackets = false
-quote_type = auto
-spelling_language = en
-shell_variant = auto
-keep_padding = false
-space_redirects = false
-switch_case_indent = false
-function_next_line = false
-binary_next_line = true
 
-# =============================================================================
+###############################################################################
 # Shell Scripts
-# =============================================================================
-[**.{sh,bash},bash_*,PKGBUILD,.bash*,.profile]
-shell_variant = bash
+###############################################################################
+# Bash / POSIX shell – keep in sync with bash refactor agent standards
+[**.{sh,bash},bash_*,PKGBUILD,.bash*]
 indent_style = space
 indent_size = 2
 tab_width = 2
-spaces_around_operators = true
-spaces_around_brackets = false
-keep_padding = false
-space_redirects = false
-switch_case_indent = false
-function_next_line = false
-binary_next_line = true
 
-[.{bashrc,bash_profile,bash_logout,zshrc,zshenv,zprofile}]
-shell_variant = bash
+# Explicit bash dotfiles
+[.{bashrc,bash_profile,bash_logout}]
+indent_style = space
+indent_size = 2
+
+# Zsh config
+[.{zshrc,zshenv,zprofile}]
 indent_style = space
 indent_size = 2
 
 [.profile,**.dash,.dashrc]
-shell_variant = posix
 indent_style = space
 indent_size = 2
 
@@ -61,9 +48,9 @@ indent_style = tab
 indent_size = 4
 end_of_line = crlf
 
-# =============================================================================
+###############################################################################
 # Programming Languages
-# =============================================================================
+###############################################################################
 # C/C++
 [**.{c,cc,cpp,cxx,h,hpp,hxx}]
 indent_style = space
@@ -97,7 +84,6 @@ indent_size = 4
 indent_style = space
 indent_size = 2
 max_line_length = 120
-quote_type = double
 
 # Ruby
 [**.rb,Gemfile,Rakefile]
@@ -114,12 +100,10 @@ max_line_length = 120
 [**.{js,mjs,cjs,jsx}]
 indent_style = space
 indent_size = 2
-quote_type = single
 
 [**.{ts,mts,cts,tsx}]
 indent_style = space
 indent_size = 2
-quote_type = single
 
 # PHP
 [**.php]
@@ -131,9 +115,9 @@ indent_size = 4
 indent_style = space
 indent_size = 4
 
-# =============================================================================
+###############################################################################
 # Configuration Files
-# =============================================================================
+###############################################################################
 # JSON
 [**.{json,json5,jsonc}]
 indent_style = space
@@ -169,9 +153,9 @@ indent_size = 2
 indent_style = space
 indent_size = 2
 
-# =============================================================================
+###############################################################################
 # Markup/Documentation
-# =============================================================================
+###############################################################################
 [**.{md,markdown}]
 indent_style = space
 indent_size = 2
@@ -185,11 +169,10 @@ trim_trailing_whitespace = false
 
 [**.{patch,diff}]
 trim_trailing_whitespace = false
-insert_final_newline = false
 
-# =============================================================================
+###############################################################################
 # Build Systems & Package Managers
-# =============================================================================
+###############################################################################
 # Makefiles (require tabs)
 [{Makefile,**.mk,.gitmodules}]
 indent_style = tab
@@ -223,20 +206,9 @@ indent_size = 2
 indent_style = space
 indent_size = 2
 
-# =============================================================================
-# Git & Version Control
-# =============================================================================
-[.git*]
-indent_style = space
-indent_size = 2
-
-[config,.gitconfig]
-indent_style = space
-indent_size = 2
-
-# =============================================================================
+###############################################################################
 # Editor/IDE Configs
-# =============================================================================
+###############################################################################
 [.editorconfig]
 indent_style = space
 indent_size = 2
@@ -250,12 +222,14 @@ indent_style = space
 indent_size = 2
 
 [*.{kt,kts}]
+indent_style = space
+indent_size = 2
 ktlint_code_style = intellij_idea
 ktlint_standard_no-wildcard-imports = disabled
 
-# =============================================================================
+###############################################################################
 # Special Cases
-# =============================================================================
+###############################################################################
 # Minified files
 [**.min.{js,css}]
 insert_final_newline = false
@@ -264,4 +238,3 @@ insert_final_newline = false
 [**.svg]
 indent_style = space
 indent_size = 2
-insert_final_newline = false
