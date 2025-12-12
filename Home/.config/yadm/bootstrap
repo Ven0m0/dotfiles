@@ -1,171 +1,103 @@
 #!/usr/bin/env bash
-# YADM Bootstrap Script for Subdirectory-Based Dotfiles
-# This script handles the deployment of dotfiles organized in Home/, etc/, usr/ subdirectories
-set -euo pipefail; shopt -s nullglob
-LC_ALL=C LANG=C
-
-# Helper functions
-has(){ command -v "$1" &>/dev/null; }
-info(){ printf '\e[1;34m==>\e[0m \e[1m%s\e[0m\n' "$*"; }
-success(){ printf '\e[1;32m==>\e[0m \e[1m%s\e[0m\n' "$*"; }
-warn(){ printf '\e[1;33m==> WARNING:\e[0m \e[1m%s\e[0m\n' "$*"; }
-error(){ printf '\e[1;31m==> ERROR:\e[0m \e[1m%s\e[0m\n' "$*" >&2; }
-die(){ error "$*"; exit 1; }
-
-# Determine repository directory
-REPO_DIR="$(yadm rev-parse --show-toplevel 2>/dev/null)" || REPO_DIR="${HOME}/.local/share/yadm/repo.git"
-[[ -d "$REPO_DIR" ]] || die "Repository directory not found: $REPO_DIR"
-
-info "YADM Bootstrap starting..."
-info "Repository: $REPO_DIR"
-
-# ============================================================================
-# 1. Deploy User-Level Dotfiles (Home/ → ~/)
-# ============================================================================
-cd "$HOME" || exit
-echo "Init submodules"
-yadm submodule update --recursive --init
-
-deploy_home_dotfiles() {
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
+info(){ printf '==> %s\n' "$*"; }
+warn(){ printf '==> WARNING: %s\n' "$*"; }
+die(){ printf '==> ERROR: %s\n' "$*" >&2; exit 1; }
+WORKTREE="$(yadm config core.worktree 2>/dev/null || printf '%s\n' "$HOME")"
+REPO_DIR="$WORKTREE"
+[[ -d $REPO_DIR ]] || die "Worktree not found: $REPO_DIR"
+info "YADM Bootstrap starting (worktree: $REPO_DIR)"
+yadm submodule update --recursive --init || warn "Submodules not initialized"
+deploy_home(){
   local home_dir="${REPO_DIR}/Home"
-  if [[ ! -d "$home_dir" ]]; then
-    warn "Home/ directory not found at: $home_dir"
-    return 0
-  fi
-  info "Deploying user dotfiles from Home/ → ~/"
+  [[ -d $home_dir ]] || { warn "Home/ not found: $home_dir"; return 0; }
+  info "Deploying Home/ → $HOME/"
   if has rsync; then
-    rsync -av --exclude='.git' --exclude='.gitignore' "${home_dir}/" "${HOME}/"
+    rsync -a --delete --exclude='.git' --exclude='.gitignore' "${home_dir}/" "${HOME}/"
   else
-    warn "rsync not available, using cp (install rsync for better deployment)"
+    warn "rsync missing; falling back to cp"
     cp -a "${home_dir}/." "${HOME}/"
   fi
-  success "User dotfiles deployed successfully"
 }
-
-# ============================================================================
-# 2. Install Base Dependencies
-# ============================================================================
-install_base_deps() {
+install_base_deps(){
   info "Installing base dependencies..."
   if has pacman; then
     local pac_cmd="sudo pacman"
     has paru && pac_cmd="paru"
     has yay && pac_cmd="yay"
-    $pac_cmd -Sq --needed --noconfirm \
-      git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf \
-      stow tuckr rsync || warn "Some packages may have failed to install"
+    $pac_cmd -Sq --needed --noconfirm git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf stow tuckr rsync || warn "Some packages may have failed to install"
   elif has apt-get; then
     sudo apt-get update -y
-    sudo apt-get install -y \
-      git curl zsh fd-find ripgrep bat jq fzf stow rsync || warn "Some packages may have failed"
-    # Install zoxide on Debian/Ubuntu
+    sudo apt-get install -y git curl zsh fd-find ripgrep bat jq fzf stow rsync || warn "Some packages may have failed"
     if ! has zoxide; then
-      curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash -s -- -y
+      warn "zoxide not packaged; install manually if desired"
     fi
   else
-    warn "Unknown package manager. Please install dependencies manually."
+    warn "Unknown package manager; install deps manually."
   fi
 }
-
-# ============================================================================
-# 3. Configure Shell and Environment
-# ============================================================================
-configure_shell() {
+configure_shell(){
   info "Configuring shell environment..."
   mkdir -p "${HOME}/.config" "${HOME}/bin" "${HOME}/.local/bin"
-  # Set Zsh as default shell if available
   if has zsh; then
-    local zsh_path
-    zsh_path="$(command -v zsh)"
-    if [[ "$SHELL" != "$zsh_path" ]]; then
-      info "Setting Zsh as default shell..."
-      chsh -s "$zsh_path" "$USER" 2>/dev/null || warn "Could not change shell. Run: chsh -s $zsh_path"
+    local zsh_path; zsh_path="$(command -v zsh)"
+    if [[ ${SHELL:-} != "$zsh_path" ]]; then
+      chsh -s "$zsh_path" "$USER" 2>/dev/null || warn "Could not change shell; run: chsh -s $zsh_path"
     fi
   fi
-  # Install starship preset if starship is available
-  if has starship && [[ ! -f ~/.config/starship.toml ]]; then
+  if has starship && [[ ! -f ${HOME}/.config/starship.toml ]]; then
     info "Installing Starship nerd-font preset..."
-    starship preset nerd-font-symbols -o ~/.config/starship.toml
+    starship preset nerd-font-symbols -o "${HOME}/.config/starship.toml"
   fi
-  # Add zoxide to .zshrc if needed
   if has zoxide; then
     local zshrc="${ZDOTDIR:-$HOME}/.zshrc"
-    if [[ -f "$zshrc" ]] && ! grep -q 'zoxide init' "$zshrc" 2>/dev/null; then
-      info "Adding zoxide integration to .zshrc..."
+    if [[ -f $zshrc ]] && ! grep -q 'zoxide init' "$zshrc" 2>/dev/null; then
       {
-        echo ''
-        echo '# zoxide - smarter cd command'
-        echo 'eval "$(zoxide init --cmd cd zsh)"'
+        printf '\n# zoxide - smarter cd command\n'
+        printf 'eval "$(zoxide init --cmd cd zsh)"\n'
       } >> "$zshrc"
     fi
   fi
 }
-
-# ============================================================================
-# 4. Deploy System Configs (etc/ usr/ → / via tuckr)
-# ============================================================================
-deploy_system_configs() {
+deploy_system_configs(){
   if ! has tuckr; then
-    warn "tuckr not installed. System configs (etc/, usr/) will not be deployed."
-    warn "Install tuckr and run: sudo tuckr link -d $REPO_DIR -t / etc usr"
+    warn "tuckr not installed; skipping etc/usr."
+    warn "Install tuckr then run: sudo tuckr link -d $REPO_DIR -t / etc usr"
     return 0
   fi
-  info "Deploying system configurations with tuckr..."
-  local hooks_file="${REPO_DIR}/hooks.toml"
+  local hooks_file="${REPO_DIR}/hooks.toml" pkg
   for pkg in etc usr; do
-    if [[ -d "${REPO_DIR}/${pkg}" ]]; then
-      info "Linking $pkg/ → /"
-      if [[ -f "$hooks_file" ]]; then
-        sudo tuckr link -d "$REPO_DIR" -t / -H "$hooks_file" "$pkg" || warn "Failed to link $pkg"
-      else
-        sudo tuckr link -d "$REPO_DIR" -t / "$pkg" || warn "Failed to link $pkg"
-      fi
-    else
-      warn "Directory not found: ${REPO_DIR}/${pkg}"
-    fi
+    local src="${REPO_DIR}/${pkg}"
+    [[ -d $src ]] || { warn "Missing dir: $src"; continue; }
+    info "Linking ${pkg}/ → /"
+    local cmd=(sudo tuckr link -d "$REPO_DIR" -t / "$pkg")
+    [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
+    "${cmd[@]}" || warn "Failed to link $pkg"
   done
-  success "System configurations deployed"
 }
-
-# ============================================================================
-# 5. OS/Host-Specific Configurations (yadm alternates)
-# ============================================================================
-setup_alternates() {
-  info "Processing yadm alternate files..."
+setup_alternates(){
+  info "Processing yadm alternates..."
   yadm alt 2>/dev/null || warn "No alternate files to process"
 }
-
-# ============================================================================
-# 6. Run Application-Specific Bootstraps
-# ============================================================================
-run_app_bootstraps() {
-  # Run the Home/.config/yadm/bootstrap if it exists
+run_app_bootstraps(){
   local home_bootstrap="${HOME}/.config/yadm/bootstrap"
-  if [[ -x "$home_bootstrap" ]]; then
-    info "Running application-specific bootstrap: $home_bootstrap"
-    "$home_bootstrap" || warn "Application bootstrap returned non-zero exit code"
-  fi
+  [[ -x $home_bootstrap ]] || return 0
+  info "Running nested bootstrap: $home_bootstrap"
+  "$home_bootstrap" || warn "Nested bootstrap returned non-zero"
 }
-
-# ============================================================================
-# Main Execution
-# ============================================================================
-main() {
-  deploy_home_dotfiles
+main(){
+  deploy_home
   install_base_deps
   configure_shell
   deploy_system_configs
   setup_alternates
   run_app_bootstraps
-  echo ""
-  success "✓ YADM Bootstrap completed successfully!"
-  echo ""
-  info "Next steps:"
-  info "  • Log out and back in to use Zsh as your default shell"
-  info "  • Run 'yadm status' to check your dotfiles status"
-  info "  • Run 'yadm-sync --help' to learn about syncing changes back to repo"
-  info "  • System configs require sudo: sudo tuckr link -d $REPO_DIR -t / etc usr"
-  echo ""
+  info "✓ YADM Bootstrap completed."
+  info "Validate /etc/fstab: sudo systemd-analyze verify /etc/fstab"
+  info "System configs (needs sudo): sudo tuckr link -d $REPO_DIR -t / etc usr"
 }
-
 main "$@"
