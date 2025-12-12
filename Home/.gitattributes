@@ -1,198 +1,97 @@
-#######################
-# Git
-#######################
-.git/
-.git
-.github-personal-access-token
-.gitconfig.local
+# Auto detect text files and normalize line endings to LF
+* text=auto eol=lf linguist-detectable
 
-# ---------------------
-# yadm
-# ---------------------
-# Ignore yadm state files but keep repository configuration
-.yadm/repo.git/
-.yadm/archive
-.yadm/encrypt
-.yadm/files.gpg
-# Keep repository .yadm/ configuration files
-!.yadm/bootstrap
-!.yadm/config
-!.yadm/hooks/
+###############################################################################
+# Shell Scripts
+###############################################################################
+*.sh          text eol=lf diff=bash
+*.bash        text eol=lf diff=bash
+*.zsh         text eol=lf
+*.fish        text eol=lf
+.bashrc       text eol=lf
+.bash_profile text eol=lf
+.bash_logout  text eol=lf
+.zshrc        text eol=lf
+.zprofile     text eol=lf
+.zshenv       text eol=lf
+.profile      text eol=lf
+*.bat         text eol=crlf
+*.cmd         text eol=crlf
+*.ps1         text eol=crlf
 
-# ---------------------
-# Dotfiles / shell history
-# ---------------------
-.*history
-*history
-*lesshst
-*-hst
-fishd.*
-.*hist
-.thumbnails/
-.antidote/
-.zcompcache/
-.zcompdump*
-.zsh_history
-*.local.zsh
-*.zwc
+###############################################################################
+# Programming Languages
+###############################################################################
+*.py   text diff=python
+*.py3  text diff=python
+*.js   diff=java
+*.lua  linguist-language=Lua
+*.nix  linguist-language=Nix
 
-# ---------------------
-# XDG user dirs
-# ---------------------
-Desktop/
-Documents/
-Downloads/
-Music/
-Pictures/
-Public/
-Templates/
-Videos/
+###############################################################################
+# Configuration & Data Formats
+###############################################################################
+*.json   diff=json
+*.jsonc  diff=json linguist-language=JSONC
+*.yaml   diff=yaml
+*.yml    diff=yaml
+*.toml   diff=toml linguist-language=TOML
+*.ron    linguist-language=RON
+*.xml    diff=xml
+*.html   diff=html
+*.css    diff=css
+*.md     text diff=markdown linguist-detectable linguist-documentation
+*.mdx    text diff=markdown linguist-detectable linguist-documentation
+*.txt    text linguist-documentation
+*.ini    text
+*.cfg    text
+*.conf   text
+*.service text
+*.rules  text
+*.csv    text eol=crlf
 
-# ---------------------
-# Security
-# ---------------------
-.gnupg/
-.ssh/
-.android/
-.config/gh/hosts.yml
-# Private SSH keys
-id_rsa
-id_rsa.pub
-id_dsa
-id_ecdsa
-id_ed25519
+###############################################################################
+# Binary Files
+###############################################################################
+# Images
+*.jpg  binary diff=exif
+*.jpeg binary diff=exif
+*.webp binary diff=exif
+*.avif binary diff=exif
+*.svg  text
 
-# ---------------------
-# Backups
-# ---------------------
-*.bak
-*.gho
-*.ori
-*.orig
-*.rej
-*.TAG
+# Archives
+*.7z  binary
+*.gz  binary
+*.tar binary
+*.tgz binary
+*.zip binary
 
-# ---------------------
-# Keep
-# ---------------------
-!.cargo/config.toml
-!.ssh/config
+# Fonts
+*.ttf binary
 
-# ---------------------
-# Logs / tmp
-# ---------------------
-*.log
-*.log.*
-log.*
-log/
-logs/
-log.txt
-*.old
-*.tmp
-tmp/
-*.kate-swp
-*swp.*
-token
-nohup.out
-.~lock.*
-*.lock
-*.lck
-.cache
-.nv/ComputeCache/
-npm-debug.log*
-/package-lock.json
-pids
-*.pid
-*.seed
-*.pid.lock
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+###############################################################################
+# Special Cases
+###############################################################################
+# Makefiles must use tabs
+Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
 
-# ---------------------
-# OS files
-# ---------------------
-.directory
-.Trash-*
-.Trashes
-.fuse_hidden*
-*~
-.nfs*
-.LSOverride
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-.DS_Store
+# Patches
+*.patch -text diff=patch
 
-# ---------------------
-# Binary / compiled files
-# ---------------------
-*.com
-*.dll
-*.exe
-*.o
-*.so
-__pycache__/
-.pytest_cache/
-*.py[cod]
-*.pyc
-*$py.class
-node_modules/
-vendor/
-go/
-jspm_packages/
-target/
-build/
-dist/
-.cargo/
-**/*.bk
-*.bk
-*.mutants.out*/
-.npm
-.eslintcache
-*.tgz
-result
-result-*
-*.rdb
-*.msi
-*.iso
-*.dmg
-*.deb
-venv/
-/.venv*/
+# Git files
+.gitignore     export-ignore
+.gitattributes export-ignore
+.gitkeep       export-ignore
+.editorconfig  text
 
-# ---------------------
-# Linter
-# ---------------------
-github-step-summary.md
-megalinter-reports/
-**/megalinter-reports/*
-*megalinter_file_names_cspell.txt
-
-# ---------------------
-# Other
-# ---------------------
-.idea
-.ruff_cache/
-.eslintcache
-*.sqlite
-
-# GitHub Actions leftovers
-github_conf
-
-# Sensitive files
-*.key
-*.pem
-*.credentials
-*.password
-*.secret
-apikeys.txt
-
-# ---------------------
-# VS Code
-# ---------------------
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+*.doc  diff=astextplain
+*.DOC  diff=astextplain
+*.docx diff=astextplain
+*.DOCX diff=astextplain
+*.dot  diff=astextplain
+*.DOT  diff=astextplain
+*.pdf  diff=astextplain
+*.PDF  diff=astextplain
+*.rtf  diff=astextplain
+*.RTF  diff=astextplain
