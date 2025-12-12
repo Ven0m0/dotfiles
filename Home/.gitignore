@@ -1,6 +1,6 @@
-# ---------------------
+#######################
 # Git
-# ---------------------
+#######################
 .git/
 .git
 .github-personal-access-token
@@ -31,12 +31,10 @@ fishd.*
 .thumbnails/
 .antidote/
 .zcompcache/
-.zsh_sessions/
 .zcompdump*
 .zsh_history
 *.local.zsh
 *.zwc
-*.zwc.old
 
 # ---------------------
 # XDG user dirs
@@ -54,10 +52,15 @@ Videos/
 # Security
 # ---------------------
 .gnupg/
-.gitconfig.local
 .ssh/
 .android/
 .config/gh/hosts.yml
+# Private SSH keys
+id_rsa
+id_rsa.pub
+id_dsa
+id_ecdsa
+id_ed25519
 
 # ---------------------
 # Backups
@@ -80,6 +83,7 @@ Videos/
 # ---------------------
 *.log
 *.log.*
+log.*
 log/
 logs/
 log.txt
@@ -101,6 +105,7 @@ pids
 *.pid
 *.seed
 *.pid.lock
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # ---------------------
 # OS files
@@ -135,13 +140,12 @@ node_modules/
 vendor/
 go/
 jspm_packages/
-dependencies/composer/vendor
 target/
 build/
 dist/
 .cargo/
-**/*.rs.bk
-**/*.rl.bk
+**/*.bk
+*.bk
 *.mutants.out*/
 .npm
 .eslintcache
@@ -153,18 +157,15 @@ result-*
 *.iso
 *.dmg
 *.deb
+venv/
+/.venv*/
 
 # ---------------------
 # Linter
 # ---------------------
-super-linter.report
-super-linter-output/
-custom-super-linter-output-directory-name/
-super-linter-github-actions-step-summary-output*
 github-step-summary.md
 megalinter-reports/
 **/megalinter-reports/*
-mega-linter.report
 *megalinter_file_names_cspell.txt
 
 # ---------------------
@@ -173,7 +174,6 @@ mega-linter.report
 .idea
 .ruff_cache/
 .eslintcache
-/package-lock.json
 *.sqlite
 
 # GitHub Actions leftovers
@@ -185,6 +185,7 @@ github_conf
 *.credentials
 *.password
 *.secret
+apikeys.txt
 
 # ---------------------
 # VS Code
