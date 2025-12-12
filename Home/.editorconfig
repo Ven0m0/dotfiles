@@ -76,9 +76,13 @@ indent_style = space
 indent_size = 2
 max_line_length = 120
 
-# XML / HTML / SVG
-[**.{xml,html,htm,svg}]
+# XML / HTML
+[**.{xml,html,htm}]
 indent_size = 4
+
+[**.svg]
+indent_style = space
+indent_size = 2
 
 ###############################################################################
 # Markup / Documentation
@@ -108,8 +112,3 @@ tab_width = 4
 # Minified files
 [**.min.{js,css}]
 insert_final_newline = false
-
-# SVG
-[**.svg]
-indent_style = space
-indent_size = 2
