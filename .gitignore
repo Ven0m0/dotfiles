@@ -1,14 +1,13 @@
 #######################
-# Git
+# Git / VCS
 #######################
 .git/
-.git
 .github-personal-access-token
 .gitconfig.local
 
-# ---------------------
+#######################
 # yadm
-# ---------------------
+#######################
 # Ignore yadm state files but keep repository configuration
 .yadm/repo.git/
 .yadm/archive
@@ -19,9 +18,9 @@
 !.yadm/config
 !.yadm/hooks/
 
-# ---------------------
+#######################
 # Dotfiles / shell history
-# ---------------------
+#######################
 .*history
 *history
 *lesshst
@@ -31,14 +30,15 @@ fishd.*
 .thumbnails/
 .antidote/
 .zcompcache/
+.zsh_sessions/
 .zcompdump*
 .zsh_history
 *.local.zsh
 *.zwc
 
-# ---------------------
-# XDG user dirs
-# ---------------------
+#######################
+# XDG user dirs (home)
+#######################
 Desktop/
 Documents/
 Downloads/
@@ -48,68 +48,76 @@ Public/
 Templates/
 Videos/
 
-# ---------------------
-# Security
-# ---------------------
+#######################
+# Security / secrets
+#######################
 .gnupg/
 .ssh/
 .android/
 .config/gh/hosts.yml
-# Private SSH keys
+
+# SSH keys
 id_rsa
 id_rsa.pub
 id_dsa
 id_ecdsa
 id_ed25519
 
-# ---------------------
-# Backups
-# ---------------------
+# Generic sensitive material
+*.key
+*.pem
+*.credentials
+*.password
+*.secret
+apikeys.txt
+
+#######################
+# Backups / temp artifacts
+#######################
 *.bak
 *.gho
 *.ori
 *.orig
 *.rej
 *.TAG
+*.old
+*.tmp
+*.bk
+**/*.bk
+*.kate-swp
+*swp.*
+.~lock.*
+*.lock
+*.lck
 
-# ---------------------
+#######################
 # Keep
-# ---------------------
+#######################
 !.cargo/config.toml
 !.ssh/config
 
-# ---------------------
-# Logs / tmp
-# ---------------------
+#######################
+# Logs / runtime
+#######################
 *.log
 *.log.*
 log.*
 log/
 logs/
 log.txt
-*.old
-*.tmp
 tmp/
-*.kate-swp
-*swp.*
 token
 nohup.out
-.~lock.*
-*.lock
-*.lck
-.cache
 .nv/ComputeCache/
-npm-debug.log*
-/package-lock.json
 pids
 *.pid
-*.seed
 *.pid.lock
+*.seed
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# ---------------------
-# OS files
-# ---------------------
+#######################
+# OS / Desktop cruft
+#######################
 .directory
 .Trash-*
 .Trashes
@@ -123,76 +131,127 @@ Desktop.ini
 $RECYCLE.BIN/
 .DS_Store
 
-# ---------------------
-# Binary / compiled files
-# ---------------------
-*.com
-*.dll
-*.exe
-*.o
-*.so
+#######################
+# Python
+#######################
 __pycache__/
 .pytest_cache/
 *.py[cod]
-*.pyc
 *$py.class
+.env
+.venv/
+.env.*/
+.venv*/
+
+#######################
+# Node / JS / TS
+#######################
 node_modules/
-vendor/
-go/
-jspm_packages/
-target/
-build/
-dist/
-.cargo/
-**/*.bk
-*.bk
-*.mutants.out*/
-.npm
+npm-debug.log*
+.babel.cache
 .eslintcache
+.stylelintcache
 *.tgz
-result
-result-*
+
+#######################
+# Java / Kotlin / JVM
+#######################
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.tar.gz
+hs_err_pid*
+*.iml
+.idea/
+out/
+.gradle/
+.gradle-cache/
+build/
+target/
+
+#######################
+# .NET / C# / F#
+#######################
+bin/
+obj/
+*.user
+*.suo
+*.pdb
+*.mdb
+
+#######################
+# C/C++ / Rust / Go / compiled
+#######################
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.com
+*.a
+*.lib
+*.lo
+*.la
 *.rdb
 *.msi
 *.iso
 *.dmg
 *.deb
-venv/
-/.venv*/
+*.rmeta
+*.rlib
+*.dSYM/
+# Rust
+target/
+*.mutants.out*/
+# Go
+go/
+*.test
+# Generic build / dist
+dist/
+result
+result-*
 
-# ---------------------
-# Linter
-# ---------------------
+#######################
+# PHP / Composer
+#######################
+vendor/
+composer.lock
+
+#######################
+# Nix / package managers
+#######################
+.npm/
+.cargo/
+.nix-gc-roots/
+.cache/
+
+#######################
+# Linter / QA
+#######################
 github-step-summary.md
 megalinter-reports/
 **/megalinter-reports/*
+mega-linter.report
 *megalinter_file_names_cspell.txt
-
-# ---------------------
-# Other
-# ---------------------
-.idea
 .ruff_cache/
-.eslintcache
-*.sqlite
-
-# GitHub Actions leftovers
 github_conf
 
-# Sensitive files
-*.key
-*.pem
-*.credentials
-*.password
-*.secret
-apikeys.txt
+#######################
+# Databases / misc
+#######################
+*.sqlite
+*.db
+*.rdb
 
-# ---------------------
-# VS Code
-# ---------------------
+#######################
+# Editors / IDEs
+#######################
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
+.idea/
