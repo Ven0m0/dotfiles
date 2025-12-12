@@ -111,9 +111,9 @@ nohup.out
 .nv/ComputeCache/
 pids
 *.pid
-*.pid.lock
 *.seed
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+false.*
 
 #######################
 # OS / Desktop cruft
@@ -139,8 +139,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 .env
-.venv/
 .env.*/
+.venv/
 .venv*/
 
 #######################
