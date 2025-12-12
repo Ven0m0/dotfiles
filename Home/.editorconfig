@@ -28,33 +28,6 @@ binary_next_line = true
 ###############################################################################
 # Shell Scripts
 ###############################################################################
-# Bash / POSIX shell – keep in sync with bash refactor agent standards
-[**.{sh,bash},bash_*,PKGBUILD,.bash*]
-indent_style = space
-indent_size = 2
-tab_width = 2
-shell_variant = bash
-spaces_around_operators = true
-spaces_around_brackets = false
-keep_padding = false
-space_redirects = false
-switch_case_indent = false
-function_next_line = false
-binary_next_line = true
-
-# Common shell dotfiles
-[.{bashrc,bash_profile,bash_logout,zshrc,zshenv,zprofile,.profile},**.dash,.dashrc]
-indent_style = space
-indent_size = 2
-shell_variant = bash
-spaces_around_operators = true
-spaces_around_brackets = false
-keep_padding = false
-space_redirects = false
-switch_case_indent = false
-function_next_line = false
-binary_next_line = true
-
 # Fish
 [**.{fish,fish_*},fishd.*,fish_*]
 indent_style = space
