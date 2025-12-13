@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR
+# shellcheck disable=SC2310
 set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t'
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
@@ -35,7 +36,9 @@ parse_args "$@"
 [[ $DRY_RUN == false ]] && { sudo -v || die "sudo access required"; }
 readonly DOTFILES_REPO="https://github.com/Ven0m0/dotfiles.git"
 readonly YADM_DIR="${HOME}/.local/share/yadm/repo.git"
-readonly WORKTREE="$(yadm config core.worktree 2>/dev/null || printf '%s\n' "$HOME")"
+readonly WORKTREE="$(
+  has yadm && yadm config core.worktree 2>/dev/null || printf '%s\n' "${HOME}"
+)"
 main(){
   install_packages
   setup_dotfiles
@@ -47,7 +50,9 @@ install_packages(){
   info "Installing packages..."
   local paru_opts=(--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade)
   local pkgs=(git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf yadm tuckr)
-  has paru || die "paru not found."
+  if ! has paru; then
+    die "paru not found."
+  fi
   if [[ $DRY_RUN == true ]]; then
     info "[DRY-RUN] Would install: ${pkgs[*]}"
     return 0
@@ -55,7 +60,9 @@ install_packages(){
   paru -Syuq "${paru_opts[@]}" "${pkgs[@]}" || die "Failed to install packages"
 }
 setup_dotfiles(){
-  has yadm || die "yadm not found."
+  if ! has yadm; then
+    die "yadm not found."
+  fi
   if [[ ! -d $YADM_DIR ]]; then
     info "Cloning dotfiles..."
     yadm clone --bootstrap "$DOTFILES_REPO" || die "Failed to clone dotfiles"
@@ -77,7 +84,10 @@ deploy_home(){
   fi
 }
 link_system_configs(){
-  has tuckr || { warn "tuckr not found; skipping etc/usr deploy"; return 0; }
+  if ! has tuckr; then
+    warn "tuckr not found; skipping etc/usr deploy"
+    return 0
+  fi
   local hooks_file="${WORKTREE}/hooks.toml" pkg
   for pkg in etc usr; do
     local src="${WORKTREE}/${pkg}"

@@ -3,38 +3,9 @@ on: workflow_dispatch
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: true
+permissions:
+  contents: write
 jobs:
   run:
-    name: Mise
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          token: ${{ secrets.PAT || github.token }}
-          fetch-depth: 0
-      - uses: jdx/mise-action@v3
-        with:
-          github_token: ${{ secrets.PAT || github.token }}
-          experimental: true
-          log_level: error
-          working_directory: HOME
-      - run: |
-          mise lock -y
-          if [[ $(mise which java) == java ]]; then
-            mise up -y
-          else
-            mise up -y --bump
-          fi
-      - name: Commit
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add .
-          git diff --staged --quiet || git commit -m "chore: mise updates"
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.PAT || github.token }}
-          branch: ${{ github.head_ref || github.ref || github.run_id }}
+    uses: Ven0m0/.github/.github/workflows/mise.yml@main
+    secrets: inherit

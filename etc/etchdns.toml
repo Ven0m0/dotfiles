@@ -52,8 +52,8 @@ blocked_ip_ranges = [
 # Username to drop privileges to after binding to sockets
 # If not set, privileges will not be dropped
 # Uncomment to enable privilege dropping
-user = "lucy"
-group = "lucy"
+# user = "etchdns"
+# group = "etchdns"
 # Directory to chroot to after binding to sockets
 # If not set, chroot will not be performed
 # Uncomment to enable chroot (ensure the directory exists and is properly set up)
