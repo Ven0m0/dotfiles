@@ -35,11 +35,11 @@ is_av1(){
 run_ffzap(){
   local list_file="$1"
   local ffmpeg_args="$2"
-  
+
   # ffzap template: {{dir}} preserves relative path, {{name}} is filename no ext
   # Note: verify your ffzap version supports {{dir}}. If not, this puts files in CWD.
   log "Engine: ffzap detected. Batch processing..."
-  
+
   # We pass the complex args. ffzap expects them as a single string.
   # The filter string inside ffmpeg_args is already quoted for bash.
   ffzap \
@@ -64,7 +64,7 @@ run_ffmpeg_loop(){
     out="${dir}/${base}${OUT_SUFFIX}.${TARGET_EXT}"
 
     log "Encoding: $src"
-    
+
     # Run in background
     (
       # shellcheck disable=SC2086
@@ -75,7 +75,7 @@ run_ffmpeg_loop(){
         [[ -f "$out" ]] && rm -f "$out"
       fi
     ) &
-    
+
     ((active_jobs++))
     if ((active_jobs >= MAX_JOBS)); then
       wait -n
@@ -87,7 +87,7 @@ run_ffmpeg_loop(){
 
 main(){
   local target="${1:-.}"
-  
+
   if ! has ffmpeg || ! has ffprobe; then
     err "Missing ffmpeg or ffprobe."
     exit 1
@@ -112,7 +112,7 @@ main(){
   for f in "${candidates[@]}"; do
     # Skip if output file
     if [[ "$f" == *"${OUT_SUFFIX}.${TARGET_EXT}" ]]; then continue; fi
-    
+
     # Check output existence
     local base="${f%.*}"
     local out="${base}${OUT_SUFFIX}.${TARGET_EXT}"
@@ -142,11 +142,11 @@ main(){
   # NOTE: The filter string is complex. 'scale=...' has single quotes.
   # We wrap the whole filter arg in double quotes for the command line.
   local filter_complex="scale='if(gt(iw,ih),min(1920,iw),-2)':'if(gt(iw,ih),-2,min(1920,ih))',deband"
-  
-  # Construct argument string. 
+
+  # Construct argument string.
   # For run_ffmpeg_loop: We rely on word splitting for flags, but quote the filter.
   # For run_ffzap: It takes one string.
-  
+
   local args="-c:v libsvtav1 -preset 3 -crf 32 -g 600 -pix_fmt yuv420p10le -svtav1-params film-grain=8:enable-qm=1:qm-min=0 -vf \"$filter_complex\" -c:a libopus -b:a 96k -ac 2 -rematrix_maxval 1.0 -map_metadata 0 -f mkv"
 
   # 4. Execute
@@ -155,7 +155,7 @@ main(){
     local list_file
     list_file=$(mktemp)
     printf '%s\n' "${valid_targets[@]}" > "$list_file"
-    
+
     run_ffzap "$list_file" "$args"
     rm -f "$list_file"
   else

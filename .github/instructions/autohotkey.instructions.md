@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: "AutoHotkey v2 scripting standards for Windows automation and gaming tools" applyTo: "\*\*/\*.ahk"
 

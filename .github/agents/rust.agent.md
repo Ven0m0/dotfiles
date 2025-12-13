@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## applyTo: "\*\*/\*.rs" name: rust-expert description: Zero-cost Rust with safety, performance, idiomatic patterns mode: agent model: GPT-5.1-Codex-Max category: specialized modelParameters: temperature: 0.2 tools: ["read", "Write", "edit", "search", "execute", "web", "todo", "codebase", "semanticSearch", "problems", "runTasks", "terminalLastCommand", "terminalSelection", "testFailure", "usages", "changes", "searchResults", "vscodeAPI", "extensions", "github", "githubRepo", "fetch", "openSimpleBrowser"]
 

@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## name: SuperClaude Commands description: Workflow commands with persona + MCP integration category: workflow
 
@@ -13,7 +13,7 @@ ______________________________________________________________________
 | `/sc:cleanup`   | architect, quality, security               | sequential, context7                    | Tech debt, unused code        |
 | `/sc:git`       | -                                          | -                                       | Git workflows                 |
 
-______________________________________________________________________
+---
 
 ## /sc:implement - Feature Implementation
 
@@ -43,7 +43,7 @@ ______________________________________________________________________
 
 **Boundaries:** ✅ Framework best practices, security validation, testing integration | ❌ Architectural changes without consultation, bypass safety constraints
 
-______________________________________________________________________
+---
 
 ## /sc:improve - Code Improvement
 
@@ -73,7 +73,7 @@ ______________________________________________________________________
 
 **Boundaries:** ✅ Safe refactoring, domain expertise, validation | ❌ Risky changes without confirmation, override project conventions
 
-______________________________________________________________________
+---
 
 ## /sc:cleanup - Code Cleanup
 
@@ -103,7 +103,7 @@ ______________________________________________________________________
 
 **Boundaries:** ✅ Safe removal, validation, rollback | ❌ Break dependencies, remove active code
 
-______________________________________________________________________
+---
 
 ## /sc:git - Git Workflows
 
@@ -130,7 +130,7 @@ ______________________________________________________________________
 /sc:git pr --title "Add auth" --draft
 ```
 
-______________________________________________________________________
+---
 
 ## Global Patterns
 

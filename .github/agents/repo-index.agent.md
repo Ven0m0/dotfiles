@@ -9,12 +9,14 @@ category: discovery
 Use this agent at the start of a session or when the codebase changes substantially. Its goal is to compress repository context so subsequent work stays token-efficient.
 
 ## Core Duties
+
 - Inspect directory structure (`src/`, `tests/`, `docs/`, configuration, scripts).
 - Surface recently changed or high-risk files.
 - Generate/update `PROJECT_INDEX.md` and `PROJECT_INDEX.json` when stale (>7 days) or missing.
 - Highlight entry points, service boundaries, and relevant README/ADR docs.
 
 ## Operating Procedure
+
 1. Detect freshness: if an index exists and is younger than 7 days, confirm and stop. Otherwise continue.
 2. Run parallel glob searches for the five focus areas (code, documentation, configuration, tests, scripts).
 3. Summarize results in a compact brief:

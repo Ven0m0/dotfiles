@@ -35,12 +35,19 @@ rules:
     severity: error
     rule:
       any:
-        - pattern: def $FN($$$PARAMS):
-          not: {has: {kind: type}}
-          not: {has: {kind: identifier, regex: ^__(init|new|enter|exit|del|repr|str)__$}}
-        - kind: parameters
+        -
+          pattern: 'def $FN($$$PARAMS):'
+          all:
+            - not: {has: {kind: type}}
+            - not: {has: {kind: identifier, regex: '^__(init|new|enter|exit|del|repr|str)__$'}}
+        -
+          kind: parameters
           inside: {utils: is-func-def}
-          has: {kind: identifier, not: {follows: {kind: type}, regex: ^(self|cls)$}}
+          has:
+            kind: identifier
+            all:
+              - not: {follows: {kind: type}}
+              - not: {regex: '^(self|cls)$}'
   - id: py-loop-performance
     language: python
     message: Optimize loop pattern
@@ -131,7 +138,7 @@ rules:
     rule:
       any:
         - kind: expansion
-          regex: ^\$[A-Za-z_][A-Za-z0-9_]*$
+          regex: '^\$[A-Za-z_][A-Za-z0-9_]*$'
           not: {any: [{utils: in-string}, {utils: in-test-or-assign}, {inside: {any: [{kind: case_item}, {kind: for_statement}]}}]}
         - kind: command_substitution
           not: {any: [{utils: in-string}, {utils: in-test-or-assign}]}
@@ -266,7 +273,7 @@ rules:
     rule:
       kind: assignment
       inside: {utils: is-func-def}
-      not: {any: [{inside: {kind: declaration_command}}, {has: {kind: identifier, regex: ^[A-Z_]+$}}]}
+      not: {any: [{inside: {kind: declaration_command}}, {has: {kind: identifier, regex: '^[A-Z_]+$'}}]}
   - id: bash-case-optimize
     language: bash
     message: Consider if-else for 2-branch case or inline trivial case
@@ -354,4 +361,4 @@ rules:
     severity: warning
     rule:
       kind: comment
-      regex: \b(TODO|FIXME|XXX|HACK)\b
+      regex: '\b(TODO|FIXME|XXX|HACK)\b'

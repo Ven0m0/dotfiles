@@ -57,7 +57,7 @@ cmd_trim() {
     done
 
     [ -z "$infile" ] && { echo "Input file (-i) required"; exit 1; }
-    
+
     # Logic to determine trim flag
     if [ "$mode" = "timestamp" ]; then
         trim_flag="-to $end"
@@ -94,11 +94,11 @@ cmd_norm() {
 
     [ -z "$infile" ] && { echo "Input file (-i) required"; exit 1; }
     outfile="${outfile:-${infile%.*}-normalized.mp4}"
-    
+
     echo "Analyzing loudness..."
     # First pass: analyze
     stats=$(ffmpeg -hide_banner -i "$infile" -af "loudnorm=I=-16:TP=-1.5:LRA=11:print_format=summary" -f null - 2>&1 | tail -n 12)
-    
+
     # Parse stats using awk (simplified from your original script)
     meas_I=$(echo "$stats" | awk '/Input Integrated:/ {print $3}')
     meas_TP=$(echo "$stats" | awk '/Input True Peak:/ {print $4}')
@@ -108,14 +108,14 @@ cmd_norm() {
 
     # Filter construction
     loudnorm_filter="loudnorm=I=-16:TP=-1.5:LRA=11:measured_I=$meas_I:measured_LRA=$meas_LRA:measured_TP=$meas_TP:measured_thresh=$meas_thresh:offset=$offset:linear=true"
-    
+
     if [ "$fade_len" != "0" ]; then
         # If fade requested (merges fade-normalize functionality)
         dur=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$infile")
         fade_out_st=$(echo "$dur - $fade_len" | bc)
         audio_filter="afade=t=in:st=0:d=$fade_len,afade=t=out:st=$fade_out_st:d=$fade_len,$loudnorm_filter"
         video_filter="fade=t=in:st=0:d=$fade_len,fade=t=out:st=$fade_out_st:d=$fade_len"
-        
+
         ffmpeg -hide_banner -v panic -stats -i "$infile" \
             -filter_complex "[0:v]$video_filter[v];[0:a]$audio_filter[a]" \
             -map "[v]" -map "[a]" \

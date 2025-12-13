@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: 'Guidelines for building Java base applications' applyTo: '\*\*/\*.java'
 
@@ -57,7 +57,7 @@ Below are concise, human-readable rules you can apply regardless of which static
 - Redundant casts — Remove unnecessary casts; prefer correct generic typing and let the compiler infer types where possible.
 - Reachable conditions — Avoid conditional expressions that are always true or false; they indicate bugs or dead code and should be corrected.
 
-For contributors who *do* use Sonar or SonarLint: the IDE/scan will show the specific rule key (for example, S2095 for resource leaks) and the affected file/line. Use that information to navigate to the exact location, then apply the recommended remediation.
+For contributors who _do_ use Sonar or SonarLint: the IDE/scan will show the specific rule key (for example, S2095 for resource leaks) and the affected file/line. Use that information to navigate to the exact location, then apply the recommended remediation.
 
 ### Common Code Smells
 

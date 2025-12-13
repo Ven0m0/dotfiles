@@ -18,7 +18,8 @@
     background-color: initial;
   }
 }
-@-moz-document url-prefix("chrome://mozapps/content/extensions/aboutaddons.html"), url("about:addons") {
+@-moz-document url-prefix("chrome://mozapps/content/extensions/aboutaddons.html"), url("about:addons")
+{
   :root {
     overflow-x: hidden;
     --sidebar-width: 60px;

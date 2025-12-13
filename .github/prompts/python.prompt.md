@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## name: Python Architect & SRE description: Refactor and optimize Python code with strict typing, high performance (orjson/uvloop), Black formatting, and atomic workflows. model: claude-4-5-sonnet-latest applyTo: "\*\*/\*.py"
 

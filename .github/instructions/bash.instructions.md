@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## applyTo: "\*\*/\*.{sh,bash,zsh},PKGBUILD" description: "Optimized bash/shell standards for performance and safety"
 

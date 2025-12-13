@@ -25,9 +25,9 @@ ln2_cmd(){
   op=${a[-2]}
   op1=${a[-3]}
   a=("${a[@]:0:${#a[@]}-3}")
-  
+
   [[ $op1 == -* ]] && { ln2_usage; return 2; }
-  
+
   case "$op" in
     '>') tgt=$op2; link=$op1 ;;
     '<') tgt=$op1; link=$op2 ;;
@@ -41,14 +41,14 @@ swap_cmd(){
   (($# == 2)) || { swap_usage; return 2; }
   local file_a="$1" file_b="$2" tmp
   [[ -e $file_a && -e $file_b ]] || die "Files not found"
-  
+
   if [[ -d $file_a ]]; then
     tmp="tmp.$$.dir"
     mkdir -p "$tmp"
   else
     tmp="$(mktemp)"
   fi
-  
+
   mv -- "$file_a" "$tmp" && mv -- "$file_b" "$file_a" && mv -- "$tmp" "$file_b"
   [[ -d $file_a ]] && rmdir "$tmp" 2>/dev/null || rm -f "$tmp"
 }
@@ -75,12 +75,12 @@ usb_cmd(){
 
   has lsblk || die "lsblk required"
   local -a lines names uuids fss labels mpts
-  
+
   # FIX: Use lsblk filter instead of regex on /dev/sd*
   # Only list partitions (part), excluding loop/rom devices
   mapfile -t lines < <(lsblk -pno NAME,UUID,FSTYPE,LABEL,MOUNTPOINT,TRAN,TYPE | \
     awk '$7=="part" && ($6=="usb" || $6=="sata" || $6=="nvme") {
-      name=$1; uuid=$2; fs=$3; label=$4; mp=$5; 
+      name=$1; uuid=$2; fs=$3; label=$4; mp=$5;
       printf "%s\t%s\t%s\t%s\t%s\n", name, (uuid?uuid:"-"), (fs?fs:"-"), (label?label:"-"), (mp?mp:"")
     }')
 
@@ -98,7 +98,7 @@ usb_cmd(){
   if has fzf; then
     pick="$(printf '%s\n' "$(seq 1 "${#lines[@]}")" "q" | fzf --prompt='Choose: ' --height=15 --no-info || :)"
   fi
-  
+
   [[ -z $pick ]] && read -r -p "Choose [1-${#lines[@]}/q]: " pick
   [[ $pick =~ ^[Qq]$ ]] && { log "exit"; return 0; }
   [[ $pick =~ ^[0-9]+$ ]] || { warn "invalid"; return 1; }
@@ -122,7 +122,7 @@ usb_cmd(){
       fi
     done
     [[ -z $free ]] && die "increase -n (no free slots)"
-    
+
     $SUDO mkdir -p "$free" || :
     # Try UUID mount first, fall back to device name
     if [[ $uuid != "-" ]]; then
@@ -155,9 +155,9 @@ sysz_cmd(){
   has fzf || die "fzf required"
   local PROG="sysz" VER=1.4.3 VERBOSE=false HIST="${SYSZ_HISTORY:-${XDG_CACHE_HOME:-$HOME/.cache}/sysz/history}"
   local -a MANAGERS STATES
-  
+
   ((EUID == 0)) && MANAGERS=(system) || MANAGERS=(user system)
-  
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -u|--user) MANAGERS=(user); shift ;;
@@ -202,11 +202,11 @@ sysz_cmd(){
   local -a UNITS KEY
   while :; do
     mapfile -t UNITS < <(sysz_list_units "${MANAGERS[@]}" "${STATES[@]}" | fzf --multi --ansi --expect=ctrl-r,ctrl-s --history="$HIST" --prompt="Units: " --header='? help' --bind "?:preview(echo '$(sysz_help_keys)')" --bind "ctrl-v:preview('$0' sysz _fzf_cat {})" --preview="'$0' sysz _fzf_preview {}" --preview-window=70%)
-    
+
     ((${#UNITS[@]})) || return 1
     KEY="${UNITS[0]}"
     UNITS=("${UNITS[@]:1}")
-    
+
     case "$KEY" in
       ctrl-r) sysz_daemon_reload; continue ;;
       ctrl-s) sysz_pick_states STATES; continue ;;
@@ -316,7 +316,7 @@ sysz_pick_commands(){
   while [[ $1 != "" && $1 != "--" ]]; do units+=("$1"); shift; done
   shift || :
   extra=("$@")
-  
+
   local MULTI=false ACTIVE LOAD UF CAN U PREVIEW PREVIEW_CMD
   if ((${#units[@]} > 1)); then
     MULTI=true
@@ -331,7 +331,7 @@ sysz_pick_commands(){
     CAN=$(sysz_show "$(sysz_manager "$U")" "${U##* }" CanReload)
     PREVIEW_CMD="'$0' sysz _fzf_preview '$U'"
   fi
-  
+
   mapfile -t cmds < <(
     echo status "${extra[*]}"
     [[ $MULTI == true || $ACTIVE == active ]] && printf '\033[0;31mrestart\033[0m %s\n' "${extra[*]}"
@@ -348,7 +348,7 @@ sysz_pick_commands(){
     echo edit "${extra[*]}"
     echo show "${extra[*]}"
   )
-  
+
   mapfile -t pick < <(printf '%s\n' "${cmds[@]}" | fzf --multi --ansi --no-info --prompt='Commands: ' --preview="$PREVIEW_CMD" --preview-window=80%)
   printf '%s\n' "${pick[@]}"
 }
@@ -358,7 +358,7 @@ sysz_exec(){
   local -a args=("$@")
   local run=(systemctl "$M")
   local base="${CMD%% *}"
-  
+
   case "$base" in
     journal) sysz_journal "$M" "$UNIT" -xe "${args[@]}"; return ;;
     follow) sysz_journal "$M" "$UNIT" -xef "${args[@]}"; return ;;
@@ -388,27 +388,27 @@ prsync_cmd(){
   [[ $1 == --parallel=* ]] && { par="${1##*=}"; shift; }
   [[ -n $par ]] || par="$(nproc 2>/dev/null || printf 10)"
   log "parallel=$par"
-  
+
   local TMP
   TMP=$(mktemp -d)
   trap 'rm -rf "$TMP"' EXIT
-  
+
   log "dry-run listing"
   rsync "$@" --out-format="%l %n" --no-v --dry-run 2>/dev/null | grep -vF "sending incremental file list" | sort -nr >"$TMP/all"
-  
+
   local total size
   total=$(wc -l <"$TMP/all")
   size=$(awk '{s+=$1}END{printf "%.0f",s}' <"$TMP/all")
-  
+
   log "$total files ($((size / 1024 ** 2)) MB)"
   ((total)) || { warn "none"; return 0; }
-  
+
   local i
   for ((i = 0; i < par; i++)); do : >"$TMP/chunk.$i"; done
-  
+
   local -a sum
   for ((i = 0; i < par; i++)); do sum[i]=0; done
-  
+
   local sz path idx=0
   while read -r sz path; do
     local mi=0 mv=${sum[0]} j
@@ -419,11 +419,11 @@ prsync_cmd(){
     printf '%s\n' "$path" >>"$TMP/chunk.$mi"
     ((++idx % 25000 == 0)) && log "distributed $idx"
   done <"$TMP/all"
-  
+
   for ((i = 1; i < par; i += 2)); do
     [[ -s "$TMP/chunk.$i" ]] && tac "$TMP/chunk.$i" >"$TMP/r" && mv "$TMP/r" "$TMP/chunk.$i" || :
   done
-  
+
   log "transferring"
   if has parallel; then
     find "$TMP" -name 'chunk.*' -print0 | parallel -0 -j "$par" -t -- rsync --files-from={} "$@"

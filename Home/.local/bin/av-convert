@@ -34,7 +34,7 @@ cmd_gif() {
             h) echo "Usage: $CMD_NAME gif -i input [-w width] [-f fps] -o output"; exit 0 ;;
         esac
     done
-    
+
     [ -z "$infile" ] && { echo "Input (-i) required"; exit 1; }
     outfile="${outfile:-${infile%.*}.gif}"
 
@@ -81,7 +81,7 @@ cmd_combine() {
 
     # Check mime type to see if input is image or video
     mime=$(file --mime-type -b "$infile")
-    
+
     case "$mime" in
         image/*)
             # Loop image to match audio duration

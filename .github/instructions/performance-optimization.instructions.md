@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## applyTo: "\*" description: "Performance optimization reference: frontend, backend, database best practices"
 
@@ -12,7 +12,7 @@ ______________________________________________________________________
 - **Set budgets**: Define limits (load time, latency, memory) and enforce with CI/CD
 - **Automate testing**: Catch performance regressions early
 
-______________________________________________________________________
+---
 
 ## Frontend
 
@@ -55,7 +55,7 @@ ______________________________________________________________________
 - Chrome DevTools Performance tab
 - Lighthouse, WebPageTest
 
-______________________________________________________________________
+---
 
 ## Backend
 
@@ -102,7 +102,7 @@ ______________________________________________________________________
 - Flame graphs (CPU), distributed tracing (OpenTelemetry, Jaeger)
 - Heap dumps, slow query logs
 
-______________________________________________________________________
+---
 
 ## Database
 
@@ -141,7 +141,7 @@ ______________________________________________________________________
 - Slow query logs, `EXPLAIN` plans
 - Connection pool stats, replication lag
 
-______________________________________________________________________
+---
 
 ## Infrastructure
 
@@ -173,7 +173,7 @@ ______________________________________________________________________
 - Tracing: OpenTelemetry, Jaeger, Zipkin
 - Logs: ELK stack, Loki
 
-______________________________________________________________________
+---
 
 ## Security & Performance
 
@@ -182,7 +182,7 @@ ______________________________________________________________________
 - Secure caching (don't cache sensitive data)
 - TLS/SSL overhead (HTTP/2, session resumption)
 
-______________________________________________________________________
+---
 
 ## Checklist
 

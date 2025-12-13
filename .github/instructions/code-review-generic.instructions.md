@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: 'Generic code review instructions that can be customized for any project using GitHub Copilot' applyTo: '\*\*' excludeAgent: ["coding-agent"]
 
@@ -68,19 +68,19 @@ When performing a code review, check for:
 ```javascript
 // ❌ BAD: Poor naming and magic numbers
 function calc(x, y) {
-    if (x > 100) return y * 0.15;
-    return y * 0.10;
+  if (x > 100) return y * 0.15;
+  return y * 0.1;
 }
 
 // ✅ GOOD: Clear naming and constants
 const PREMIUM_THRESHOLD = 100;
 const PREMIUM_DISCOUNT_RATE = 0.15;
-const STANDARD_DISCOUNT_RATE = 0.10;
+const STANDARD_DISCOUNT_RATE = 0.1;
 
 function calculateDiscount(orderTotal, itemPrice) {
-    const isPremiumOrder = orderTotal > PREMIUM_THRESHOLD;
-    const discountRate = isPremiumOrder ? PREMIUM_DISCOUNT_RATE : STANDARD_DISCOUNT_RATE;
-    return itemPrice * discountRate;
+  const isPremiumOrder = orderTotal > PREMIUM_THRESHOLD;
+  const discountRate = isPremiumOrder ? PREMIUM_DISCOUNT_RATE : STANDARD_DISCOUNT_RATE;
+  return itemPrice * discountRate;
 }
 ```
 
@@ -167,19 +167,19 @@ When performing a code review, verify test quality:
 
 ```typescript
 // ❌ BAD: Vague name and assertion
-test('test1', () => {
-    const result = calc(5, 10);
-    expect(result).toBeTruthy();
+test("test1", () => {
+  const result = calc(5, 10);
+  expect(result).toBeTruthy();
 });
 
 // ✅ GOOD: Descriptive name and specific assertion
-test('should calculate 10% discount for orders under $100', () => {
-    const orderTotal = 50;
-    const itemPrice = 20;
+test("should calculate 10% discount for orders under $100", () => {
+  const orderTotal = 50;
+  const itemPrice = 20;
 
-    const discount = calculateDiscount(orderTotal, itemPrice);
+  const discount = calculateDiscount(orderTotal, itemPrice);
 
-    expect(discount).toBe(2.00);
+  expect(discount).toBe(2.0);
 });
 ```
 
@@ -262,6 +262,7 @@ An attacker could manipulate the email parameter to execute arbitrary SQL comman
 potentially exposing or deleting all database data.
 
 **Suggested fix:**
+
 ```sql
 -- Instead of:
 query = "SELECT * FROM users WHERE email = '" + email + "'"
@@ -271,6 +272,7 @@ PreparedStatement stmt = conn.prepareStatement(
     "SELECT * FROM users WHERE email = ?"
 );
 stmt.setString(1, email);
+```
 ````
 
 **Reference:** OWASP SQL Injection Prevention Cheat Sheet

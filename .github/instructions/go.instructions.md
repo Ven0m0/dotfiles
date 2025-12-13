@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: "Go idiomatic practices and community standards" applyTo: "**/\*.go,**/go.mod,\*\*/go.sum"
 

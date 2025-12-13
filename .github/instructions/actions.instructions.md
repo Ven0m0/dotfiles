@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## applyTo: ".github/workflows/\*.yml" description: "GitHub Actions CI/CD best practices: secure, efficient workflows"
 
