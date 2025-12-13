@@ -5,24 +5,28 @@ message: Add type hints to function
 note: 'Use def fn(x: int) -> bool: for all public functions'
 rule:
   any:
-    - pattern: def $FN($$$PARAMS):
-      not:
-        has:
-          kind: type
-      not:
-        has:
-          kind: identifier
-          regex: ^__(init|new|enter|exit|del|repr|str)__$
-    - kind: parameters
+    -
+      pattern: 'def $FN($$$PARAMS):'
+      all:
+        - not:
+            has:
+              kind: type
+        - not:
+            has:
+              kind: identifier
+              regex: ^__(init|new|enter|exit|del|repr|str)__$
+    -
+      kind: parameters
       inside:
         kind: function_definition
       has:
         kind: identifier
-        not:
-          follows:
-            kind: type
-        not:
-          regex: ^(self|cls)$
+        all:
+          - not:
+              follows:
+                kind: type
+          - not:
+              regex: ^(self|cls)$
 ---
 id: py-unsafe-patterns
 language: python

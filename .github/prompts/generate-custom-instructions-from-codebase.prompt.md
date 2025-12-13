@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: 'Migration instructions generator for GitHub Copilot from code evolution analysis' agent: 'agent'
 
@@ -47,6 +47,7 @@ ${VALIDATION_REQUIRED="true|false"}
 # Copilot Migration Instructions
 
 ## Context
+
 - **Type**: ${MIGRATION_TYPE}
 - **From**: ${SOURCE_REFERENCE} → **To**: ${TARGET_REFERENCE}
 - **Date**: [DATE] | **Scope**: ${ANALYSIS_SCOPE}
@@ -54,29 +55,34 @@ ${VALIDATION_REQUIRED="true|false"}
 ## Transformation Rules
 
 ### 1. Mandatory (${AUTOMATION_LEVEL != "Conservative"})
+
 - **Old Pattern**: [CODE]
 - **New Pattern**: [CODE]
 - **Trigger**: [DETECTION]
 - **Action**: [TRANSFORMATION]
 
 ### 2. With Validation (${VALIDATION_REQUIRED == "true"})
+
 - **Detected**: [PATTERN]
 - **Suggested**: [NEW_APPROACH]
 - **Validation**: [CRITERIA]
 - **Alternatives**: [OPTIONS]
 
 ### 3. API Correspondences (${CHANGE_FOCUS == "API Changes"})
+
 | Old API | New API | Notes | Example |
-|---------|---------|-------|---------|
+| ------- | ------- | ----- | ------- |
 | [OLD]   | [NEW]   | [CHG] | [CODE]  |
 
 ### 4. New Patterns
+
 - **Pattern**: [NAME]
 - **Usage**: [WHEN]
 - **Implementation**: [HOW]
 - **Benefits**: [WHY]
 
 ### 5. Obsolete Patterns
+
 - **Obsolete**: [OLD_PATTERN]
 - **Avoid**: [REASONS]
 - **Alternative**: [NEW_PATTERN]
@@ -85,23 +91,28 @@ ${VALIDATION_REQUIRED="true|false"}
 ## File-Specific (${GENERATE_EXAMPLES == "true"})
 
 ### Config Files
+
 [TRANSFORMATION_EXAMPLES]
 
 ### Source Files
+
 [TRANSFORMATION_EXAMPLES]
 
 ### Test Files
+
 [TRANSFORMATION_EXAMPLES]
 
 ## Validation
 
 **Auto Control Points:**
+
 - Post-transformation verifications
 - Tests to run
 - Performance metrics
 - Compatibility checks
 
 **Manual Escalation:**
+
 - [COMPLEX_CASES]
 - [ARCHITECTURAL_DECISIONS]
 - [BUSINESS_IMPACTS]
@@ -109,12 +120,14 @@ ${VALIDATION_REQUIRED="true|false"}
 ## Monitoring
 
 **Metrics:**
+
 - % code auto-migrated
 - Manual validations required
 - Auto-transformation error rate
 - Avg migration time/file
 
 **Error Reporting:**
+
 - Feedback patterns
 - Exceptions
 - Instruction adjustments

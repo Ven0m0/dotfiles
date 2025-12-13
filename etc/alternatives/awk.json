@@ -1,4 +1,4 @@
 {
-	"path": "/usr/local/bin/awk",
-	"links": [{ "target": "/usr/bin/mawk", "priority": 1 }]
+  "path": "/usr/local/bin/awk",
+  "links": [{ "target": "/usr/bin/mawk", "priority": 1 }]
 }

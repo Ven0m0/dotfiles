@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: 'Transform lessons into domain-organized memory instructions. Syntax: `/remember [>domain [scope]] lesson`'
 
@@ -62,21 +62,18 @@ Result: **self-organizing, domain-driven knowledge base** growing smarter with e
 1. **Parse**: Extract domain (`>domain-name`) and scope (`global` default, or `user`|`workspace`|`ws`)
 
 1. **Glob + Read** existing files to understand domain structure:
-
    - Global: `<global-prompts>/memory.instructions.md`, `<global-prompts>/*-memory.instructions.md`, `<global-prompts>/*.instructions.md`
    - Workspace: `<workspace-instructions>/memory.instructions.md`, `<workspace-instructions>/*-memory.instructions.md`, `<workspace-instructions>/*.instructions.md`
 
 1. **Analyze** lesson from user input and chat session
 
 1. **Categorize**:
-
    - New gotcha/common mistake
    - Enhancement to existing section
    - New best practice
    - Process improvement
 
 1. **Determine target domain(s)**:
-
    - If `>domain-name` specified: request human input if typo suspected
    - Otherwise: intelligently match to domain (existing files + coverage gaps)
    - **Universal learnings:**
@@ -90,13 +87,11 @@ Result: **self-organizing, domain-driven knowledge base** growing smarter with e
 1. **Read domain files** - avoid redundancy, complement existing instructions/memories
 
 1. **Update or create**:
-
    - Update existing domain memory files
    - Create new domain memory files per structure
    - Update `applyTo` frontmatter if needed
 
 1. **Write** succinct, clear, actionable instructions:
-
    - Capture lesson succinctly
    - Extract general patterns (within domain) from specific instances
    - Positive reinforcement (correct patterns, not "don't"s)

@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## applyTo: '\*\*/.copilot-tracking/changes/\*.md' description: 'Instructions for implementing task plans with progressive tracking and change record - Brought to you by microsoft/edge-ai'
 
@@ -26,20 +26,17 @@ Implementation progress MUST be tracked in a corresponding changes files located
 1. **Process tasks in order** - Follow the plan sequence exactly, one task at a time
 
 1. **MANDATORY before implementing any task:**
-
    - **ALWAYS ensure implementation is associated with a specific task from the plan**
-   - **ALWAYS read the entire details section for that task from the associated details markdown file in `.copilot-tracking/details/**`**
+   - **ALWAYS read the entire details section for that task from the associated details markdown file in `.copilot-tracking/details/**`\*\*
    - **FULLY understand all implementation details before proceeding**
    - Gather any additional required context as needed
 
 1. **Implement the task completely with working code:**
-
    - Follow existing code patterns and conventions from the workspace
    - Create working functionality that meets all task requirements specified in the details
    - Include proper error handling, documentation, and follow best practices
 
 1. **Mark task complete and update changes tracking:**
-
    - Update plan file: change `[ ]` to `[x]` for completed task
    - **MANDATORY after completing EVERY task**: Update the changes file by appending to the appropriate Added, Modified, or Removed sections with relative file paths and one-sentence summary of what was implemented
    - **MANDATORY**: If any changes diverge from the task plan and details, specifically call out within the relevant section that the change was made outside of the plan and include the specific reason
@@ -151,6 +148,7 @@ Replace `{{ }}` with appropriate values. Create this file in `./.copilot-trackin
 
 ```markdown
 <!-- markdownlint-disable-file -->
+
 # Release Changes: {{task name}}
 
 **Related Plan**: {{plan-file-name}}

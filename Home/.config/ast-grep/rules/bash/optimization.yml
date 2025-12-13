@@ -2,7 +2,7 @@ id: bash-modern-tools
 language: bash
 severity: hint
 message: Consider modern alternative (if installed)
-note: 'fd→find (10-100x), rg→grep (10-100x), sd→sed, jaq→jq, zstd→xz, aria2c→curl/wget'
+note: "fd→find (10-100x), rg→grep (10-100x), sd→sed, jaq→jq, zstd→xz, aria2c→curl/wget"
 rule:
   kind: command
   any:
@@ -34,7 +34,7 @@ id: bash-parallel-jobs
 language: bash
 severity: hint
 message: Consider parallelizing independent tasks
-note: 'task1 & task2 & task3 & wait; or use GNU parallel'
+note: "task1 & task2 & task3 & wait; or use GNU parallel"
 rule:
   kind: list
   pattern: |
@@ -49,7 +49,7 @@ id: bash-case-optimize
 language: bash
 severity: hint
 message: Consider if-else for 2-branch case or inline trivial case
-note: 'Case shines with 4+ branches or complex patterns'
+note: "Case shines with 4+ branches or complex patterns"
 rule:
   kind: case_statement
   any:
@@ -57,27 +57,29 @@ rule:
         case $VAR in
           $PATTERN) $CMD ;;
         esac
-      not:
-        has:
-          kind: case_item
-          regex: '[\*\?\[]'
-      not:
-        inside:
-          any:
-            - kind: for_statement
-            - kind: while_statement
+      all:
+        - not:
+            has:
+              kind: case_item
+              regex: '[\*\?\[]'
+        - not:
+            inside:
+              any:
+                - kind: for_statement
+                - kind: while_statement
     - pattern: |
         case $VAR in
           $PATTERN1) $CMD1 ;;
           *) $CMD2 ;;
         esac
-      not:
-        has:
-          kind: case_item
-          regex: '^-[a-zA-Z]|--[a-z]'
-      not:
-        inside:
-          kind: while_statement
+      all:
+        - not:
+            has:
+              kind: case_item
+              regex: "^-[a-zA-Z]|--[a-z]"
+        - not:
+            inside:
+              kind: while_statement
 fix: |
   [[ $VAR == $PATTERN ]] && $CMD
   if [[ $VAR == $PATTERN1 ]]; then $CMD1; else $CMD2; fi

@@ -257,7 +257,7 @@ fz(){
       else
         mapfile -t files < <(find "$search_path" -type f 2>/dev/null | fzf -m --preview 'bat --color=always {}')
       fi
-      [[ ${#files[@]} -gt 0 ]] && "${EDITOR:-nano}" "${files[@]}" 
+      [[ ${#files[@]} -gt 0 ]] && "${EDITOR:-nano}" "${files[@]}"
       ;;
     parent)
       local dirs=()

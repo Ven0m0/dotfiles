@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## applyTo: '**/\*.ps1,**/\*.psm1' description: 'PowerShell cmdlet development and Windows automation best practices'
 

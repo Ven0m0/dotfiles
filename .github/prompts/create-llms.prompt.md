@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## agent: 'agent' description: 'Create llms.txt file from repository structure per https://llmstxt.org/' tools: ['changes', 'search/codebase', 'edit/editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'search/searchResults', 'runCommands/terminalLastCommand', 'runCommands/terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
 

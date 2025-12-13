@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: "Guidelines for creating high-quality custom instruction files for GitHub Copilot" applyTo: "\*\*/\*.instructions.md"
 
@@ -21,10 +21,13 @@ Every instruction file must include YAML frontmatter with the following fields:
 
 ```yaml
 ---
+
 description: "Brief description of the instruction purpose and scope"
-applyTo: "glob pattern for target files (e.g., **/*.ts, **/*.py)"
+applyTo: "glob pattern for target files (e.g., **/\*.ts, **/\*.py)"
+
 ---
-```
+
+````
 
 ### Frontmatter Guidelines
 
@@ -70,7 +73,7 @@ Provide concrete examples with clear labels:
 ### Bad Example
 
 \`\`\`language // Avoid this pattern code example here \`\`\`
-```
+````
 
 ### 4. Validation and Verification (Optional but Recommended)
 

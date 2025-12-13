@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## description: "Prompt for generating AGENTS.md for a repository" agent: "agent"
 
@@ -65,38 +65,46 @@ AGENTS.md is "README for agents" - provides AI coding agents with context and in
 # AGENTS.md
 
 ## Project Overview
+
 [Description, purpose, technologies]
 
 ## Setup Commands
+
 - Install: `[pkg mgr] install`
 - Start dev: `[cmd]`
 - Build: `[cmd]`
 
 ## Development Workflow
+
 - [Dev server startup]
 - [Hot reload/watch]
 - [Environment setup]
 
 ## Testing Instructions
+
 - Run all: `[cmd]`
 - Unit: `[cmd]`
 - Integration: `[cmd]`
 - Coverage: `[cmd]`
 
 ## Code Style
+
 - [Conventions, linting, formatting]
 - [File organization]
 
 ## Build and Deployment
+
 - [Build process, outputs]
 - [Environment-specific builds]
 - [Deployment commands]
 
 ## PR Guidelines
+
 - Title: [component] Brief description
 - Required: `[lint]`, `[test]`
 
 ## Notes
+
 - [Project-specific context, gotchas, performance]
 ```
 
@@ -104,17 +112,20 @@ AGENTS.md is "README for agents" - provides AI coding agents with context and in
 
 ```markdown
 ## Dev environment
+
 - `pnpm dlx turbo run where <project_name>` to jump to package
 - `pnpm install --filter <project_name>` to add to workspace
 - `pnpm create vite@latest <project_name> -- --template react-ts`
 
 ## Testing
+
 - CI plan in `.github/workflows`
 - `pnpm turbo run test --filter <project_name>`
 - Focus: `pnpm vitest run -t "<test name>"`
 - Run `pnpm lint --filter <project_name>` after moving files
 
 ## PR
+
 - Title: [<project_name>] <Title>
 - Run `pnpm lint` and `pnpm test` before commit
 ```

@@ -1,4 +1,4 @@
-______________________________________________________________________
+---
 
 ## applyTo: "\*\*/\*.py" description: "Python coding conventions and guidelines"
 
