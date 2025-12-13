@@ -1,5 +1,6 @@
 {
   "env": {
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4.5",
     "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
     "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
@@ -20,7 +21,6 @@
     "MAX_THINKING_TOKENS": "121393"
   },
   "includeCoAuthoredBy": false,
-  "alwaysThinkingEnabled": true,
   "permissions": {
     "allow": [
       "LS",
@@ -50,11 +50,9 @@
     ],
     "deny": [],
     "defaultMode": "bypassPermissions",
-    "additionalDirectories": ["//"]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "printf '[%s@%s %s]' \"$USER\" \"$(hostname -s)\" \"$(basename \"$PWD\")\""
+    "additionalDirectories": [
+      "//"
+    ]
   },
   "hooks": {
     "PreToolUse": [
@@ -173,7 +171,10 @@
       }
     ]
   },
-  "forceLoginMethod": "claudeai",
+  "statusLine": {
+    "type": "command",
+    "command": "printf '[%s@%s %s]' \"$USER\" \"$(hostname -s)\" \"$(basename \"$PWD\")\""
+  },
   "enabledPlugins": {
     "code-review-ai@claude-code-workflows": true,
     "full-stack-orchestration@claude-code-workflows": true,
@@ -187,6 +188,9 @@
     "git-pr-workflows@claude-code-workflows": true,
     "team-collaboration@claude-code-workflows": true,
     "dependency-management@claude-code-workflows": true,
-    "criticalthink@criticalthink": true
-  }
+    "criticalthink@criticalthink": true,
+    "claude-mem@thedotmack": true
+  },
+  "forceLoginMethod": "claudeai",
+  "alwaysThinkingEnabled": true
 }
