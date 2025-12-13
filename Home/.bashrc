@@ -1,4 +1,4 @@
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR
 [[ $- != *i* ]] && return
 
 #================================ [Helpers] ===================================

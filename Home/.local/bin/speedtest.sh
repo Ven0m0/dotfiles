@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR
 # speedtest-curl.sh - curl-only speedtest (ping-like, download, upload)
 # Usage: speedtest-curl.sh [-s server_url] [-d dl_mb] [-u ul_mb] [-n probes] [-U upload_url]
 set -euo pipefail; shopt -s nullglob globstar

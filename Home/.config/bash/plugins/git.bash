@@ -33,7 +33,7 @@ if has gh; then
   get_github_token(){ export GITHUB_TOKEN="$(gh auth token &>/dev/null)"; }
 fi
 # Git dotfiles
-alias dot="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
+alias dot='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 # Display git repository file structure as a tree
 alias git-tree="git ls-tree -r HEAD --name-only | tree --fromfile"
 # GitHub PR metadata quick view
@@ -51,9 +51,9 @@ gcommits(){
 }
 gh-cp(){
     usage(){ echo "Usage: gh cp <repo> <path> <dest>"; }
-    [][ $# -lt 3 ]] && { usage >&2; exit 1; }
-    repo="$1"; path="$2"; dest="$3"
-    dest_file="${3%/}/$(basename "$path")"
+    [[ $# -lt 3 ]] && { usage >&2; return 1; }
+    local repo="$1" path="$2" dest="$3" dest_file dest_dir
+    dest_file="${dest%/}/$(basename "$path")"
     if [[ ! -d "$dest" ]] && [[ $dest != */ ]]; then
       dest_file="$dest"
     fi

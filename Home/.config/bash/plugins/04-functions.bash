@@ -1,5 +1,5 @@
-# ~/.config/bash/plugins/04-functions.bash
 #!/usr/bin/env bash
+# ~/.config/bash/plugins/04-functions.bash
 #============================== [Functions] ===================================
 # --- Navigation & Directory
 mkcd(){ [[ -z $1 ]] && { printf "Usage: mkcd <dir>\n"; return 1; }; mkdir -p -- "$1" && cd -- "$1" || return 1; }
@@ -13,7 +13,7 @@ fs(){
   else
     local -a args=("$@")
     [[ $# -eq 0 ]] && { shopt -s nullglob; args=(.[!.]* ./*); shopt -u nullglob; }
-    [[ ${#args[@]} -gt 0 ]] && du -sbh -- "${args[@]}" &>/dev/null | sort -hr
+    [[ ${#args[@]} -gt 0 ]] && du -sbh -- "${args[@]}" 2>/dev/null | sort -hr
   fi
 }
 catt(){
@@ -58,7 +58,13 @@ extract(){
     *.deb) ar x "$f" ;;
     *) printf 'Unsupported format: %s\n' "$f" >&2; return 1 ;;
   esac
-  [[ $? -eq 0 ]] && printf 'Extracted: %s -> %s\n' "$f" "$out" || { printf 'Extraction failed for %s\n' "$f" >&2; return 1; }
+  local status=$?
+  if ((status == 0)); then
+    printf 'Extracted: %s -> %s\n' "$f" "$out"
+  else
+    printf 'Extraction failed for %s\n' "$f" >&2
+    return 1
+  fi
 }
 cr(){
   [[ $# -eq 0 ]] && { printf "Usage: cr <file_or_folder1> ...\n"; return 1; }
@@ -76,8 +82,22 @@ cr(){
 }
 
 # --- File Operations
-cpg(){ [[ -d $2 ]] && cp "$1" "$2" && cd "$2" || cp "$1" "$2"; }
-mvg(){ [[ -d $2 ]] && mv -- "$1" "$2" && cd -- "$2" || mv -- "$1" "$2"; }
+cpg(){
+  if [[ -d $2 ]]; then
+    cp "$1" "$2" || return 1
+    cd "$2" || return 1
+  else
+    cp "$1" "$2"
+  fi
+}
+mvg(){
+  if [[ -d $2 ]]; then
+    mv -- "$1" "$2" || return 1
+    cd -- "$2" || return 1
+  else
+    mv -- "$1" "$2"
+  fi
+}
 ftext(){
   if has rg; then rg -i --hidden --color=always --line-number "$@" | bat --paging=always --color=always
   else grep -iIHrn --color=always "$1" . | bat --paging=always; fi
@@ -90,6 +110,7 @@ fiximg(){
   local -a exts=(png jpg jpeg webp avif jxl)
   export GM_CMD GM_IDENTIFY
   export -f _strip_file_internal &>/dev/null
+  # shellcheck disable=SC2317
   _strip_file_internal(){
     local f="$1" tmp
     if [[ -n $("$GM_IDENTIFY" -format "%[EXIF:*]%[IPTC:*]%[Comment]" "$f" &>/dev/null) ]]; then
@@ -151,9 +172,9 @@ fz(){
       ;;
     dir|*)
       local dir
-      if has fdf; then dir=$(fdf "$search_path" -t d &>/dev/null | fzf +m --preview 'ls -lah {}')
-      elif has fd; then dir=$(fd -t d . "$search_path" &>/dev/null | fzf +m --preview 'ls -lah {}')
-      else dir=$(find "$search_path" -type d &>/dev/null | fzf +m --preview 'ls -lah {}'); fi
+      if has fdf; then dir=$(fdf "$search_path" -t d 2>/dev/null | fzf +m --preview 'ls -lah {}')
+      elif has fd; then dir=$(fd -t d . "$search_path" 2>/dev/null | fzf +m --preview 'ls -lah {}')
+      else dir=$(find "$search_path" -type d 2>/dev/null | fzf +m --preview 'ls -lah {}'); fi
       [[ -n $dir ]] && cd "$dir" || return 1
       ;;
   esac
@@ -166,8 +187,16 @@ ghpatch(){
   patch="$(mktemp)" || return 1
   trap 'rm -f "$patch"' EXIT
   if curl -sSfL "${url}.patch" -o "$patch"; then
-    git apply "$patch" && git add -A && git commit -m "Apply patch from ${url}" || { printf "❌ Patch failed\n"; return 1; }
-  else printf "❌ Failed to download patch\n"; return 1; fi
+    if git apply "$patch" && git add -A && git commit -m "Apply patch from ${url}"; then
+      :
+    else
+      printf "❌ Patch failed\n"
+      return 1
+    fi
+  else
+    printf "❌ Failed to download patch\n"
+    return 1
+  fi
 }
 ghf(){
   git rev-parse --is-inside-work-tree &>/dev/null || return

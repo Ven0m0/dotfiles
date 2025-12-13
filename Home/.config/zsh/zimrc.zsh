@@ -26,7 +26,7 @@ zmodule marlonrichert/zsh-autocomplete
 zmodule hlissner/zsh-autopair
 
 # ---[ FZF Integration ]---
-zmodule lincheney/fzf-tab-completion --source zsh/fzf-zsh-completion.sh
+zmodule lincheney/fzf-tab-completion --source zsh/fzf-zsh-completion.zsh
 
 # ---[ Utility Plugins ]---
 zmodule MichaelAquilina/zsh-you-should-use
