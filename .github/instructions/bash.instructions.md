@@ -1,71 +1,96 @@
 ---
 applyTo: "**/*.{sh,bash,zsh},PKGBUILD"
-description: "Compressed standards for Bash scripts."
+description: "Optimized bash/shell standards for performance and safety"
 ---
 
-# Bash Standards
+# Bash/Shell Standards
 
-Role: Bash Refactor Agent — full-repo shell codemod, fixer, and optimizer. Goal:
+**Role:** Shell script optimizer — safe codemods, performance, correctness.
+**Scope:** `*.sh`, `*.bash`, `*.zsh`, PKGBUILD, shell configs. Exclude: `.git`, `node_modules`, vendor.
 
-- Scan all bash/sh files using rg/ripgrep and apply a compact, safe codemod: normalize syntax, fix redirects, inline
-  trivial code, run linters/formatters, and emit standalone, deduped, fully optimized scripts. Scope (targets):
-- All `*.sh`,`*.bash`,`*.zsh`, and rc-like shell files, including PKGBUILDS, makepkg.conf, excluding `.git`,
-  `node_modules`, vendored/generated assets.
-- Prefer bash; user wants bashisms.
+## Core Rules
 
-Core rules:
+- **Format:** `shfmt -i 2 -bn -ci -ln bash`; max 1 empty line
+- **Lint:** `shellcheck --severity=error`; `shellharden --replace` when safe
+- **Safety:** `set -euo pipefail`; quote all vars `"${var}"`; no `eval`, `ls` parsing, backticks
+- **Perf:** Bash builtins > subshells; arrays/mapfile > loops; native expansion
+- **Directives:** User>Rules. Edit>Create. Minimal diff.
 
-- Formatting: `shfmt -i 2 -bn -ci -ln bash`; max 1 empty line, keep whitespace reasonably minimal
-- Linters: `shellcheck --severity=error`; `shellharden --replace` when safe.
-- Forbidden: `eval`, parsing `ls`, unquoted expansions, unnecessary subshells, runtime piping into shell.
-- Standalone: Avoid sourcing files; dedupe repeated logic; keep guard comments.
-- Inline case (`example) action1; action2 ;;`)
-- Performance: Prefer bashism's and shell native methods, replace slow loops/subshells with bash builtins (arrays,
-  mapfile, parameter expansion); limited `&` + `wait`.
-- Use printf's date instead of date (`date(){ local x="${1:-%d/%m/%y-%R}"; printf "%($x)T\n" '-1'; }`).
-- Use bash native methods instead of a useless cat (`fcat(){ printf '%s\n' "$(<${1})"; }`).
-- Use read instead of sleep when safe (`sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }`).
-- Start every script like this:
+## Script Template
 
 ```bash
 #!/usr/bin/env bash
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
-set -euo pipefail; shopt -s nullglob globstar
-export LC_ALL=C; IFS=$'\n\t'
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
-has(){ command -v -- "$1" &>/dev/null; }
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR
+set -euo pipefail
+shopt -s nullglob globstar
+export LC_ALL=C
+IFS=$'\n\t'
+s=${BASH_SOURCE[0]}
+[[ $s != /* ]] && s=$PWD/$s
+cd -P -- "${s%/*}"
+has() { command -v -- "$1" &>/dev/null; }
+
+# Cleanup handler
+cleanup() {
+  [[ -n "${TEMP_DIR:-}" && -d "$TEMP_DIR" ]] && rm -rf "$TEMP_DIR"
+}
+trap cleanup EXIT
+
+# Vars
+readonly SCRIPT_NAME="$(basename "$0")"
+TEMP_DIR=""
+
+# Functions
+main() {
+  TEMP_DIR="$(mktemp -d)"
+  # Main logic
+}
+
+main "$@"
 ```
 
-Codemod transformations:
+## Performance Optimizations
 
-1. Header/style normalization
-   - Convert `() {` → `(){` and enforce compact function form.
-   - Remove space in redirects: `> /dev/null` → `>/dev/null`.
-   - Collapse combined redirects: `>/dev/null 2>&1` and malformed `2&>1` → `&>/dev/null`.
-   - Always prefer `[[ ... ]]` over `[ ... ]`.
-   - Ensure explicit bash shebang on scripts containing bashisms.
-2. Inlining
-   - Inline small functions (≤6 non-empty lines, ≤2 call sites, no complex control flow).
-   - Inline short adjacent commands using `;` if clarity preserved.
-3. Safety guards
-   - Skip heredocs and single-quoted blocks.
-   - Skip ambiguous bracket conversions (arrays, arithmetic, regex-heavy lines).
-   - Flag blocks >50 tokens or repeated >3 lines; extract into atomic functions.
-   - Preserve behavior; smallest safe change wins.
-4. Deduplication
-   - On inlining or inlining sourced code, dedupe repeated blocks and emit a single canonical version.
-5. Linters/fixes
-   - Run `shellcheck`; auto-apply trivial fixes (quoting, redirs) when safe.
-   - Run `shellharden`; accept safe output or revert unsafe changes.
-   - Re-run linters; fail if remaining errors.
-6. Deliverables from Claude Code
-   - Short plan (3–6 bullets).
-   - Unified diff.
-   - Final standalone script(s).
-   - One-line risk note.
+```bash
+# Date (no fork)
+date() { local x="${1:-%d/%m/%y-%R}"; printf "%($x)T\n" '-1'; }
 
-Pipeline (per file):
+# Read file (no cat)
+fcat() { printf '%s\n' "$(<${1})"; }
 
-- Token-aware read; apply ordered transforms → shfmt → shellcheck → shellharden → re-check.
-- PR: Clean lint, atomic commits (fmt != logic), tests pass.
-- Create branch `codemod/bash/<timestamp>`; atomic commits per file.
+# Sleep without fork (when safe)
+sleepy() { read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }
+```
+
+## Transformations
+
+1. **Compact syntax:** `() {` → `(){`; `> file` → `>file`; `2>&1 >/dev/null` → `&>/dev/null`
+2. **Modernize:** `[ ... ]` → `[[ ... ]]` (when safe)
+3. **Inline:** Functions ≤6 lines, ≤2 call sites, no complex flow
+4. **Dedupe:** Extract repeated blocks >3 lines into functions
+5. **JSON/YAML:** Use `jq`/`yq` parsers, not grep/awk/sed
+
+## Forbidden Patterns
+
+- `eval` or runtime piping into shell
+- Unquoted expansions: `$var` → `"${var}"`
+- Parsing `ls` output
+- Unnecessary subshells: `$(cat file)` → `"$(<file)"`
+- Runtime sourcing external files (prefer standalone)
+
+## Error Handling
+
+- Validate params before execution
+- Use `mktemp` for temp files/dirs
+- Trap cleanup on EXIT
+- Clear error messages with context
+- `readonly` for immutable values
+
+## Deliverables
+
+- Unified diff
+- Final standalone script(s)
+- One-line risk note
+- Lint clean (shellcheck + shfmt)
+
+**Pipeline:** Transform → shfmt → shellcheck → shellharden → re-check → PR
