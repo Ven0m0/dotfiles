@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR
 set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t'
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
@@ -217,18 +217,27 @@ main(){
 
   check_deps || exit 1
 
-  # Run all processors
-  proc_yaml
-  proc_web
-  proc_shell
-  proc_fish
-  proc_toml
-  proc_python
-  proc_lua
-  proc_markdown
-  proc_actions
-  proc_xml
-  proc_ast_grep
+  local -a processors=(
+    proc_yaml
+    proc_web
+    proc_shell
+    proc_fish
+    proc_toml
+    proc_python
+    proc_lua
+    proc_markdown
+    proc_actions
+    proc_xml
+    proc_ast_grep
+  )
+
+  for proc in "${processors[@]}"; do
+    if declare -F "$proc" >/dev/null; then
+      "$proc"
+    else
+      warn "Skipping missing processor: $proc"
+    fi
+  done
 
   # Generate report
   print_table

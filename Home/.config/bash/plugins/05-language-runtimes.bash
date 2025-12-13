@@ -1,12 +1,12 @@
-# ~/.config/bash/plugins/05-language-runtimes.bash
 #!/usr/bin/env bash
+# ~/.config/bash/plugins/05-language-runtimes.bash
 #========================== [Language Runtimes] ===============================
 # --- Multi-language Manager (Mise)
 if has mise; then
   set +h
   # Cache mise activation to improve startup time
   MISE_CACHE="${BASH_CACHE_DIR}/mise_init.bash"
-  if [[ ! -f $MISE_CACHE || $(which mise) -nt $MISE_CACHE ]]; then
+  if [[ ! -f $MISE_CACHE || $(command -v mise) -nt $MISE_CACHE ]]; then
     mise activate bash >"$MISE_CACHE"
   fi
   source "$MISE_CACHE"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR
 # Interactive Deduplication Pipeline (Fclones -> Czkawka)
 # Usage: ./dedupe.sh <target_directory>
 set -euo pipefail; shopt -s nullglob globstar

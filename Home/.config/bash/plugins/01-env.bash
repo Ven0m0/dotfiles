@@ -1,5 +1,5 @@
-# ~/.config/bash/plugins/01-env.bash
 #!/usr/bin/env bash
+# ~/.config/bash/plugins/01-env.bash
 #============================= [Environment Vars] =============================
 # --- Tool Configuration
 export BASH_DEFAULT_TIMEOUT_MS=120000 BASH_MAX_OUTPUT_LENGTH=50000 BASH_MAX_TIMEOUT_MS=600000
@@ -14,7 +14,8 @@ export SDL_AUDIODRIVER=pulseaudio # kdenlive
 export LANG='C.UTF-8' TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M' GPG_TTY="$(tty)"
 # --- Editors
 has micro && export EDITOR='micro' MICRO_TRUECOLOR=1
-export EDITOR="${EDITOR:-nano}" GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR" FCEDIT="$EDITOR"
+export EDITOR="${EDITOR:-nano}"
+export GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR" FCEDIT="$EDITOR"
 if has code; then export VISUAL="code -w"
 elif has vscode; then export VISUAL="vscode -w"
 elif has kate; then export VISUAL="kate"
@@ -102,11 +103,15 @@ gamerun(){
     glthread) profile=glthread;shift;;
     software) profile=software;shift;;
     default) profile=default;shift;;
+    *) ;;
   esac
   case $profile in
-    sarek) _set_sarek;;glthread) _set_glthread;;software) _set_software;;
+    sarek) _set_sarek;;
+    glthread) _set_glthread;;
+    software) _set_software;;
+    *) ;;
   esac
-  while [[ ${1:-} =~ = ]];do export "$1";shift;done
+  while [[ ${1:-} =~ = ]];do export "${1?}";shift;done
   [[ $# -eq 0 ]] && { printf 'No program specified\n' >&2;return 1;}
   "$@"
 }

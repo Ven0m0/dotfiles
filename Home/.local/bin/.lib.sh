@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR
 # Common library functions for ~/.local/bin scripts
 # Source: source "${BASH_SOURCE%/*}/.lib.sh" 2>/dev/null || source ~/.local/bin/.lib.sh
 set -euo pipefail; shopt -s nullglob globstar

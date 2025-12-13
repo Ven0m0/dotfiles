@@ -1,5 +1,5 @@
-# ~/.config/bash/plugins/02-tools.bash
 #!/usr/bin/env bash
+# ~/.config/bash/plugins/02-tools.bash
 #======================== [Shell Enhancement Tools] ===========================
 # --- Zoxide (smart cd)
 if has zoxide; then
@@ -22,16 +22,30 @@ if has yazi; then
   }
 fi
 # --- Command correction/enhancement
-has thefuck && eval "$(thefuck --alias)" || :
-has pay-respects && eval "$(pay-respects bash)" || :
-has ast-grep && eval "$(ast-grep completions bash)" || :
+if has thefuck; then
+  eval "$(thefuck --alias)" || :
+fi
+if has pay-respects; then
+  eval "$(pay-respects bash)" || :
+fi
+if has ast-grep; then
+  eval "$(ast-grep completions bash)" || :
+fi
 # --- x-cmd (command-line toolkit)
 # https://github.com/x-cmd/x-cmd
 ifsource "$HOME/.x-cmd.root/X"
-alias startintent="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell am start $1"
-alias apkinstall="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X install -r $1"
-alias rmapp="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X uninstall $1"
-alias clearapp="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell pm clear $1"
+startintent(){
+  adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell am start "$@"
+}
+apkinstall(){
+  adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X install -r "$@"
+}
+rmapp(){
+  adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X uninstall "$@"
+}
+clearapp(){
+  adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell pm clear "$@"
+}
 
 # Rclone
 rmount(){

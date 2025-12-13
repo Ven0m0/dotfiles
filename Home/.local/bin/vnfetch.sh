@@ -20,7 +20,11 @@ hostname="${HOSTNAME:-$(</etc/hostname)}"
 userhost="$username@${hostname:-$(uname -n)}"
 . "/etc/os-release"
 OS="${NAME:-${PRETTY_NAME:-$(uname -o)}}"
-KERNEL="$(</proc/sys/kernel/osrelease 2>/dev/null || uname -r)"
+if [[ -r /proc/sys/kernel/osrelease ]]; then
+  KERNEL="$(< /proc/sys/kernel/osrelease)"
+else
+  KERNEL="$(uname -r)"
+fi
 # Uptime
 read -r rawSeconds _ </proc/uptime
 seconds=${rawSeconds%.*} uptime=""

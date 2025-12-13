@@ -1,4 +1,4 @@
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR
 export ZDOTDIR="$HOME/.config/zsh"
 export KEYTIMEOUT=1 SHELL_SESSIONS_DISABLE=1
 skip_global_compinit=1

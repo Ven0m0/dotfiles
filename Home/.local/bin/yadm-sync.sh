@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR
 set -euo pipefail; shopt -s nullglob globstar extglob
 export LC_ALL=C; IFS=$'\n\t'
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
@@ -10,7 +10,15 @@ log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 ok(){ printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
 readonly BLD=$'\e[1m' BLU=$'\e[34m' DEF=$'\e[0m'
 get_repo_dir(){
-  yadm rev-parse --show-toplevel &>/dev/null && yadm rev-parse --show-toplevel || [[ -d "${HOME}/.local/share/yadm/repo.git" ]] && echo "${HOME}/.local/share/yadm/repo.git" || die "Cannot determine yadm repository location"
+  if yadm rev-parse --show-toplevel &>/dev/null; then
+    yadm rev-parse --show-toplevel
+    return
+  fi
+  if [[ -d "${HOME}/.local/share/yadm/repo.git" ]]; then
+    echo "${HOME}/.local/share/yadm/repo.git"
+    return
+  fi
+  die "Cannot determine yadm repository location"
 }
 usage(){
   cat <<EOF
@@ -28,24 +36,33 @@ sync_pull(){
   local repo_dir home_dir dry_run="${1:-0}"
   repo_dir="$(get_repo_dir)"; home_dir="${repo_dir}/Home"
   [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
-  has rsync || die "rsync required"
+  if ! command -v rsync &>/dev/null; then
+    die "rsync required"
+  fi
   log "Syncing FROM repository TO home directory..."
   log "Source: $home_dir/"
   log "Target: $HOME/"
   local -a rsync_opts=(-av --exclude='.git' --exclude='.gitignore')
   [[ $dry_run == "1" ]] && rsync_opts+=(--dry-run)
   rsync "${rsync_opts[@]}" "${home_dir}/" "${HOME}/"
-  [[ $dry_run == "1" ]] && warn "DRY RUN - No files modified" || ok "Dotfiles deployed to home directory"
+  if [[ $dry_run == "1" ]]; then
+    warn "DRY RUN - No files modified"
+  else
+    ok "Dotfiles deployed to home directory"
+  fi
 }
 sync_push(){
   local repo_dir home_dir dry_run="${1:-0}"
   repo_dir="$(get_repo_dir)"; home_dir="${repo_dir}/Home"
   [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
-  has rsync || die "rsync required"
+  if ! command -v rsync &>/dev/null; then
+    die "rsync required"
+  fi
   log "Syncing FROM home directory TO repository..."
   log "Source: $HOME/"
   log "Target: $home_dir/"
-  local exclude_file=$(mktemp)
+  local exclude_file
+  exclude_file=$(mktemp)
   cat >"$exclude_file" <<'EXCLUDES'
 .cache
 .local/share
@@ -79,10 +96,12 @@ EXCLUDES
   [[ $dry_run == "1" ]] && warn "DRY RUN - Showing what would be synced..."
   local -a files_to_sync=()
   while IFS= read -r -d '' file; do
-    local rel_path="${file#${home_dir}/}" source_file="${HOME}/${rel_path}"
+    local rel_path source_file
+    rel_path="${file#"${home_dir}/"}"
+    source_file="${HOME}/${rel_path}"
     [[ -e $source_file ]] && files_to_sync+=("$rel_path")
   done < <(find "$home_dir" -type f -print0)
-  ((${#files_to_sync[@]}>0)) && printf '%s\n' "${files_to_sync[@]}"|rsync "${rsync_opts[@]}" "${HOME}/" "${home_dir}/"
+  ((${#files_to_sync[@]}>0)) && printf '%s\n' "${files_to_sync[@]}" | rsync "${rsync_opts[@]}" "${HOME}/" "${home_dir}/"
   rm -f "$exclude_file"
   if [[ $dry_run == "1" ]]; then
     warn "DRY RUN - No files modified"
@@ -99,18 +118,25 @@ sync_status(){
   local repo_dir home_dir
   repo_dir="$(get_repo_dir)"; home_dir="${repo_dir}/Home"
   [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
-  has rsync || die "rsync required"
+  if ! command -v rsync &>/dev/null; then
+    die "rsync required"
+  fi
   log "Checking differences..."
-  rsync -avn --delete --exclude='.git' "${home_dir}/" "${HOME}/"|grep -v '^sending\|^sent\|^total\|^$' || { ok "No differences - in sync!"; return 0; }
+  if ! rsync -avn --delete --exclude='.git' "${home_dir}/" "${HOME}/" | grep -v '^sending\|^sent\|^total\|^$'; then
+    ok "No differences - in sync!"
+  fi
 }
 sync_diff(){
   local repo_dir home_dir
   repo_dir="$(get_repo_dir)"; home_dir="${repo_dir}/Home"
   [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
-  has diff || die "diff command not found"
+  if ! command -v diff &>/dev/null; then
+    die "diff command not found"
+  fi
   log "Showing detailed differences..."
   while IFS= read -r -d '' file; do
-    local rel_path="${file#"${home_dir}"/}" source_file="${HOME}/${rel_path}"
+    local rel_path="${file#"${home_dir}"/}"
+    local source_file="${HOME}/${rel_path}"
     if [[ -f $source_file && -f $file ]]; then
       # Quick size/time check before spawning diff
       if [[ ! $source_file -ef $file ]] && { [[ $(stat -c%s "$source_file") -ne $(stat -c%s "$file") ]] || ! diff -q "$source_file" "$file" &>/dev/null; }; then

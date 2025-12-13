@@ -3,7 +3,7 @@ zdharma-continuum/fast-syntax-highlighting
 zsh-users/zsh-autosuggestions
 marlonrichert/zsh-autocomplete
 romkatv/powerlevel10k
-lincheney/fzf-tab-completion pick:zsh/fzf-zsh-completion.sh
+lincheney/fzf-tab-completion pick:zsh/fzf-zsh-completion.zsh
 hlissner/zsh-autopair
 MichaelAquilina/zsh-you-should-use
 romkatv/zsh-defer
