@@ -21,9 +21,12 @@ has btm && alias top='btm'
 has duf && alias df='duf'
 has dust && alias du='dust'
 has procs && alias ps='procs'
-killport(){ lsof -i ":$1" | grep LISTEN | awk '{print $2}' | xargs kill -9; }
+killport(){ lsof -sTCP:LISTEN -i ":$1" -t | xargs -r kill -9; }
 killname(){
-  for pid in $(ps -e | grep "$1" | awk '{print $1}'); do
+  local -a pids=()
+  mapfile -t pids < <(pgrep "$1")
+  [[ ${#pids[@]} -eq 0 ]] && { printf "No processes found matching '%s'\n" "$1"; return 1; }
+  for pid in "${pids[@]}"; do
     local process_name=$(ps -p "$pid" -o comm=)
     printf "Are you sure you want to kill process %s (%s)? [y/N]\n" "$pid" "$process_name"
     read -r response
@@ -45,7 +48,7 @@ alias systemctl-list='systemctl list-units --type=service --state=running'
 pactree(){
   if pacman -Qi "$1" &>/dev/null; then
     printf "Dependencies for %s:\n" "$1"
-    pacman -Qi "$1" | grep -E "(Depends|Required|Optional)" | cut -d: -f2 | tr -d ' ' | tr ',' '\n' | grep -v '^$' | sort -u
+    pacman -Qi "$1" | awk '/^(Depends|Required|Optional)/{print}' | cut -d: -f2 | tr -d ' ' | tr ',' '\n' | grep -v '^$' | sort -u
   else printf "package %s not installed\n" "$1"; fi
 }
 pacbig(){

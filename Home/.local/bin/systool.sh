@@ -110,14 +110,16 @@ usb_cmd(){
   local dev_name="${names[idx]}"
 
   if [[ -z $mp ]]; then
-    # Mount Logic
+    # Mount Logic - use associative array for O(1) lookup
     local k free=""
+    declare -A mounted_map
+    for mounted in "${mpts[@]}"; do mounted_map[$mounted]=1; done
     for ((k = 1; k <= cnt; k++)); do
-      local candidate="${base}${k}" used=0
-      for mounted in "${mpts[@]}"; do
-        [[ $mounted == "$candidate" ]] && { used=1; break; }
-      done
-      ((used == 0)) && { free="$candidate"; break; }
+      local candidate="${base}${k}"
+      if [[ -z ${mounted_map[$candidate]:-} ]]; then
+        free="$candidate"
+        break
+      fi
     done
     [[ -z $free ]] && die "increase -n (no free slots)"
     
@@ -268,7 +270,8 @@ sysz_sort(){
 }
 sysz_list(){
   local -a args=(--all --no-legend --full --plain --no-pager "$@")
-  (systemctl list-units "${args[@]}"; systemctl list-unit-files "${args[@]}") | sort -u -t ' ' -k1,1 | while read -r l; do
+  # Combine outputs efficiently with single sort
+  { systemctl list-units "${args[@]}" & systemctl list-unit-files "${args[@]}" & wait; } | sort -u -t ' ' -k1,1 | while read -r l; do
     local unit=${l%% *}
     [[ $l == *" active "* ]] && printf '\033[0;32m%s\033[0m\n' "$unit"
     [[ $l == *" failed "* ]] && printf '\033[0;31m%s\033[0m\n' "$unit"
