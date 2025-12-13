@@ -45,7 +45,13 @@ alias serve="python3 -m http.server"
 _pj(){
   [[ -z $1 ]] && { printf "%s\n" "No file path"; return; }
   if [[ $1 == "." ]]; then
-    for json_file_path in $(find . -name *.json); do
+    local -a json_files=()
+    if has fd; then
+      mapfile -t json_files < <(fd -e json -t f)
+    else
+      mapfile -t json_files < <(find . -name '*.json' -type f)
+    fi
+    for json_file_path in "${json_files[@]}"; do
       pretty_json=$(python3 -m json.tool "$json_file_path") && echo "$pretty_json" >"$json_file_path"
     done
   else pretty_json=$(python3 -m json.tool "$1") && echo "$pretty_json" >"$1"; fi

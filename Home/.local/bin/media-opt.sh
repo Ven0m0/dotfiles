@@ -111,8 +111,7 @@ optimize_worker(){
   # Compare & Replace
   if [[ $ok -eq 1 && -s $tmp ]]; then
     local os ns d p
-    os=$(stat -c%s "$f")
-    ns=$(stat -c%s "$tmp")
+    read -r os ns < <(stat -c '%s' "$f" "$tmp")
     if [[ $os -gt 0 && $ns -lt $os ]]; then
       d=$((os - ns)); p=$((d * 100 / os))
       if [[ $BACKUP -eq 1 ]]; then

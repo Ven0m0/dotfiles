@@ -103,15 +103,14 @@ fiximg(){
 # --- Process Management
 pk(){
   [[ $# -ne 1 ]] && { printf "Usage: pk <process_name>\n"; return 1; }
-  local pids
-  if has pgrep; then pids=$(pgrep -f "$1" | xargs)
-  else pids=$(ps aux | grep -F "$1" | grep -v grep | awk '{print $2}'); fi
-  [[ -z $pids ]] && { printf "❌ No processes found matching '%s'\n" "$1"; return 1; }
+  local -a pids=()
+  mapfile -t pids < <(pgrep -f "$1")
+  [[ ${#pids[@]} -eq 0 ]] && { printf "❌ No processes found matching '%s'\n" "$1"; return 1; }
   printf "🔍 Found processes:\n"
-  has pgrep && pgrep -af "$1" || ps aux | grep -F "$1" | grep -v grep
+  pgrep -af "$1"
   local confirm
   read -rp "❓ Kill these? (y/N): " confirm
-  [[ $confirm =~ ^[Yy]$ ]] && printf "%s" "$pids" | xargs kill -9 && printf "💀 Killed\n" || printf "❌ Cancelled\n"
+  [[ $confirm =~ ^[Yy]$ ]] && kill -9 "${pids[@]}" && printf "💀 Killed\n" || printf "❌ Cancelled\n"
 }
 fkill(){
   local pid fuzzy=$(has sk && printf "sk" || printf "fzf")
@@ -192,7 +191,7 @@ update_git_pull(){ git pull --rebase --autostash && git submodule update --init 
 gdbr(){
   git fetch --prune
   local grep_cmd=$(has rg && printf "rg" || printf "grep")
-  git branch -vv | $grep_cmd -F ': gone]' | awk '{print $1}' | xargs -r git branch -D
+  git branch -vv | "$grep_cmd" -F ': gone]' | awk '{print $1}' | xargs -r git branch -D
 }
 
 # --- Package Management (Arch)

@@ -111,9 +111,12 @@ sync_diff(){
   log "Showing detailed differences..."
   while IFS= read -r -d '' file; do
     local rel_path="${file#"${home_dir}"/}" source_file="${HOME}/${rel_path}"
-    if [[ -f $source_file && -f $file ]] && ! diff -q "$source_file" "$file" &>/dev/null; then
-      printf '\n%b%bDifferences in:%b %s\n%b━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%b\n' "$BLD" "$BLU" "$DEF" "$rel_path" "$BLD" "$DEF"
-      diff -u --color=always "$file" "$source_file" 2>/dev/null || :
+    if [[ -f $source_file && -f $file ]]; then
+      # Quick size/time check before spawning diff
+      if [[ ! $source_file -ef $file ]] && { [[ $(stat -c%s "$source_file") -ne $(stat -c%s "$file") ]] || ! diff -q "$source_file" "$file" &>/dev/null; }; then
+        printf '\n%b%bDifferences in:%b %s\n%b━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%b\n' "$BLD" "$BLU" "$DEF" "$rel_path" "$BLD" "$DEF"
+        diff -u --color=always "$file" "$source_file" 2>/dev/null || :
+      fi
     fi
   done < <(find "$home_dir" -type f -print0 2>/dev/null)
 }
