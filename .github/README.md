@@ -7,6 +7,7 @@
 - [Auto validated config files](.github/workflows/config-validate.yml)
 - [Auto shell check](.github/workflows/shellcheck.yml)
 - [Auto updated submodules](.github/workflows/update-git-submodules.yml)
+
 </details>
 <details>
 <summary><b>Arch scripts</b></summary>
@@ -14,12 +15,15 @@
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash
 ```
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash
 ```
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
 ```
+
 </details>
 <details>
 <summary><b>Useful Stuff</b></summary>
@@ -27,6 +31,7 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 - [https://dotfiles.github.io/](https://dotfiles.github.io/)
 - [https://terminal.sexy/](https://terminal.sexy/)
 - [https://wiki.archlinux.org/title/Git](https://wiki.archlinux.org/title/Git)
+
 </details>
 <details>
 <summary><b>Packages:</b></summary>
@@ -39,25 +44,31 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 - [Basher](https://www.basher.it/package)
 - [bpkg](https://bpkg.sh)
 - [x-cmd](https://www.x-cmd.com)
+
 <details>
 <summary><b>Install x-cmd</b></summary>
 
 bash:
+
 ```bash
 eval "$(curl -s https://get.x-cmd.com)"
 ```
+
 fish:
+
 ```sh
 curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$HOME/.x-cmd.root/bin/x-cmd fish --setup
 ```
+
 </details>
 </details>
 <details>
 <summary><b>Supported Linux Distributions</b></summary>
-   
+
 - [CachyOS](https://cachyos.org) specifically, but really any arch based distro is good
 - [DietPi](https://dietpi.com)
 - [Raspberry Pi OS](https://www.raspberrypi.com/software)
+
 </details>
 <details>
 <summary><b>Alternative frontends</b></summary>
@@ -70,9 +81,11 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 - [Imgur](https://rimgo.lunar.icu)
 
 **Search engines**
+
 - [DuckduckGo](https://duckduckgo.com)
 - [Searchxng](https://searx.dresden.network/) [Instances](https://searx.space)
 - [Brave search](https://search.brave.com)
+
 </details>
 
 ## **Quick prompts**
@@ -107,6 +120,7 @@ to clean; compressors: zstd→gzip→xz. Policy:
 - Normalize all config files; unify indentation, charset, EOL.
 - Ensure consistent toolchains (taplo/tombi, biome/prettier/eslint, mdformat/markdownlint).
 ```
+
 </details>
 <details>
 <summary><b>LLM files</b></summary>
@@ -161,6 +175,7 @@ lint-clean, CI-fail on missing/invalid. Discovery
 - Do not alter intent or semantics of existing prompts without explicit approval.
 - Keep templates minimal; prefer small PRs. If ambiguous, create ISSUE.md and stop.
 ```
+
 </details>
 <details>
 <summary><b>Bash short</b></summary>
@@ -214,6 +229,7 @@ Role: Bash Refactor Agent — full-repo shell codemod, fixer, and optimizer. Goa
 - PR: Clean lint, atomic commits (fmt != logic), tests pass.
 - Create branch `codemod/bash/<timestamp>`; atomic commits per file.
 ```
+
 </details>
 <details>
 <summary><b>AIO</b></summary>
@@ -329,6 +345,7 @@ Priorities (strict)
 - Do not change user-facing behavior without clear reason; when unsure, prefer formatting and safety-only changes.
 - Bash short rules are the tiebreaker for any contradictions about shell.
 ````
+
 </details>
 <details>
 <summary><b>Python</b></summary>
@@ -364,6 +381,7 @@ Do **not** output code immediately. Follow this process:
 2.  **Refactor**: Incremental, atomic changes.
 3.  **Verify**: Run linters/tests. Compare metrics (complexity, coverage) if possible.
 ```
+
 </details>
 <details>
 <summary><b>Javascript</b></summary>
@@ -406,6 +424,7 @@ Report, CI Gate.
 - Reproducible command sequence.
 - Output matrix (Files scanned vs. Errors found).
 ```
+
 </details>
 <details>
 <summary><b>Actions</b></summary>
@@ -452,6 +471,7 @@ Review and refactor `.github/workflows/*.yml` for security, performance, maintai
 - Limit parallel jobs to ≤ 7 unless justified. Output: plan, changed-file summary, unified diff(s), rationale(s),
   lint/validation/CI commands, rollback steps.
 ```
+
 </details>
 <details>
 <summary><b>TODO</b></summary>
@@ -478,4 +498,5 @@ Deliver a standalone, test-verified patch.
 - No drive-by refactoring.
 - If ambiguous, state one assumption, document, and proceed.
 ```
+
 </details>

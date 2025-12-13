@@ -1,7 +1,6 @@
----
-description: "Prompt for generating AGENTS.md for a repository"
-agent: "agent"
----
+______________________________________________________________________
+
+## description: "Prompt for generating AGENTS.md for a repository" agent: "agent"
 
 # Create AGENTS.md
 
@@ -21,29 +20,35 @@ AGENTS.md is "README for agents" - provides AI coding agents with context and in
 ## Essential Sections
 
 **Project Overview:**
+
 - Brief description, purpose
 - Architecture overview
 - Key technologies/frameworks
 
 **Setup Commands:**
+
 - Install dependencies, environment setup
 - Database setup (if applicable)
 
 **Development Workflow:**
+
 - Start dev server, build commands
 - Watch/hot-reload setup
 - Package manager specifics
 
 **Testing:**
+
 - Run tests (unit, integration, e2e)
 - Test file locations, coverage requirements
 - Run subset or specific areas
 
 **Code Style:**
+
 - Language conventions, linting/formatting rules
 - File organization, naming, imports
 
 **Build & Deployment:**
+
 - Build commands, outputs, environment configs
 - Deployment steps, CI/CD info
 
@@ -117,11 +122,11 @@ AGENTS.md is "README for agents" - provides AI coding agents with context and in
 ## Implementation
 
 1. **Analyze**: Languages, frameworks, package managers, build tools, testing, architecture
-2. **Identify workflows**: Check `package.json` scripts, Makefile, CI/CD configs, docs
-3. **Create sections**: Setup/dev commands, testing, code style, build/deploy
-4. **Exact commands**: Agents can execute directly
-5. **Test**: Ensure all commands work
-6. **Focus**: What agents need, not general info
+1. **Identify workflows**: Check `package.json` scripts, Makefile, CI/CD configs, docs
+1. **Create sections**: Setup/dev commands, testing, code style, build/deploy
+1. **Exact commands**: Agents can execute directly
+1. **Test**: Ensure all commands work
+1. **Focus**: What agents need, not general info
 
 ## Best Practices
 

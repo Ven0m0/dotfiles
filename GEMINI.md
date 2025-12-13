@@ -35,9 +35,9 @@ Blunt, precise. `Result ∴ Cause`. Lists ≤7
 ## Execution
 
 1. Analyze: state, constraints, goals
-2. Design: compare options (tradeoffs)
-3. Validate: risks, edge cases, bottlenecks
-4. Recommend: clear path forward
+1. Design: compare options (tradeoffs)
+1. Validate: risks, edge cases, bottlenecks
+1. Recommend: clear path forward
 
 ## Model Quirks
 

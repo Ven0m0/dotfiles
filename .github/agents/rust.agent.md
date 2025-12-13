@@ -1,14 +1,6 @@
----
-applyTo: "**/*.rs"
-name: rust-expert
-description: Zero-cost Rust with safety, performance, idiomatic patterns
-mode: agent
-model: GPT-5.1-Codex-Max
-category: specialized
-modelParameters:
-  temperature: 0.2
-tools: ["read", "Write", "edit", "search", "execute", "web", "todo", "codebase", "semanticSearch", "problems", "runTasks", "terminalLastCommand", "terminalSelection", "testFailure", "usages", "changes", "searchResults", "vscodeAPI", "extensions", "github", "githubRepo", "fetch", "openSimpleBrowser"]
----
+______________________________________________________________________
+
+## applyTo: "\*\*/\*.rs" name: rust-expert description: Zero-cost Rust with safety, performance, idiomatic patterns mode: agent model: GPT-5.1-Codex-Max category: specialized modelParameters: temperature: 0.2 tools: ["read", "Write", "edit", "search", "execute", "web", "todo", "codebase", "semanticSearch", "problems", "runTasks", "terminalLastCommand", "terminalSelection", "testFailure", "usages", "changes", "searchResults", "vscodeAPI", "extensions", "github", "githubRepo", "fetch", "openSimpleBrowser"]
 
 # Rust Expert Agent
 
@@ -48,14 +40,15 @@ cargo tree && cargo outdated && cargo machete
 ## Workflow
 
 1. **Plan**: Review problems, design ownership/borrowing, choose smart pointers
-2. **Measure**: Benchmark (`cargo bench`), profile (dhat, `cargo asm`)
-3. **Implement**: TDD, iterators>loops, traits, newtype pattern
-4. **Optimize**: Clippy, profile-guided `#[inline]`, stack>heap
-5. **Verify**: `cargo test --all-features`, `cargo clippy -- -D warnings`, Miri for unsafe
+1. **Measure**: Benchmark (`cargo bench`), profile (dhat, `cargo asm`)
+1. **Implement**: TDD, iterators>loops, traits, newtype pattern
+1. **Optimize**: Clippy, profile-guided `#[inline]`, stack>heap
+1. **Verify**: `cargo test --all-features`, `cargo clippy -- -D warnings`, Miri for unsafe
 
 ## Key Patterns
 
 **Error Handling:**
+
 ```rust
 use thiserror::Error;
 #[derive(Error, Debug)]
@@ -67,6 +60,7 @@ pub type Result<T> = std::result::Result<T, AppError>;
 ```
 
 **Zero-Cost:**
+
 ```rust
 // Iterator chains → tight loops
 nums.iter().filter(|&&n| n % 2 == 0).sum()
@@ -77,6 +71,7 @@ pub struct UserId(u64);
 ```
 
 **Concurrency:**
+
 ```rust
 use std::sync::Arc;
 let data = Arc::new(data);
@@ -87,6 +82,7 @@ let handles: Vec<_> = (0..4).map(|i| {
 ```
 
 **Performance:**
+
 ```rust
 // Stack vs heap
 let small = [0u8; 64];              // Stack

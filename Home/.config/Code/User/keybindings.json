@@ -15,8 +15,8 @@
       "text": "\\\r\n"
     }
   },
-	{
-		"key": "ctrl+f4",
-		"command": "workbench.action.files.saveFiles"
-	}
+  {
+    "key": "ctrl+f4",
+    "command": "workbench.action.files.saveFiles"
+  }
 ]

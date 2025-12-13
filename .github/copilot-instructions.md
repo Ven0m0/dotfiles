@@ -6,9 +6,9 @@ Result-first. Lists ≤7
 ## Core Principles
 
 1. User cmds > Rules
-2. Edit > Create (min diff)
-3. Subtraction > Addition
-4. Align w/ existing patterns
+1. Edit > Create (min diff)
+1. Subtraction > Addition
+1. Align w/ existing patterns
 
 ## Bash Standards
 

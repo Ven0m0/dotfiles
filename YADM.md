@@ -24,7 +24,7 @@ dotfiles/
 - **Git-friendly**: Clean repository with minimal clutter
 - **Portable**: Works across different systems
 
----
+______________________________________________________________________
 
 ## 🚀 Quick Start
 
@@ -41,10 +41,10 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/dotfiles/main/setup.sh | bas
 The bootstrap process will:
 
 1. ✅ Deploy dotfiles from `Home/` to `~/`
-2. ✅ Install base dependencies (git, zsh, starship, etc.)
-3. ✅ Configure shell environment
-4. ✅ Set up system configs (requires sudo for etc/, usr/)
-5. ✅ Process yadm alternate files
+1. ✅ Install base dependencies (git, zsh, starship, etc.)
+1. ✅ Configure shell environment
+1. ✅ Set up system configs (requires sudo for etc/, usr/)
+1. ✅ Process yadm alternate files
 
 ### Existing Installation
 
@@ -56,7 +56,7 @@ yadm pull && yadm bootstrap
 yadm-sync pull
 ```
 
----
+______________________________________________________________________
 
 ## 🔄 Daily Workflow
 
@@ -98,7 +98,7 @@ git commit -m "Update zsh configuration"
 yadm push
 ```
 
----
+______________________________________________________________________
 
 ## 🛠️ yadm-sync Command
 
@@ -148,7 +148,7 @@ git commit -m "Update bashrc and starship config"
 git push
 ```
 
----
+______________________________________________________________________
 
 ## 📋 Common Tasks
 
@@ -215,7 +215,7 @@ cd $(yadm rev-parse --show-toplevel)
 ./.yadm/bootstrap
 ```
 
----
+______________________________________________________________________
 
 ## 🎯 How It Works
 
@@ -263,7 +263,7 @@ sudo tuckr link -d /path/to/repo -t / etc
 # Creates: /etc/pacman.conf → /path/to/repo/etc/pacman.conf
 ```
 
----
+______________________________________________________________________
 
 ## 🔧 Advanced Usage
 
@@ -319,7 +319,7 @@ yadm sync-status    # Alias for: yadm-sync status
 yadm deploy         # Alias for: yadm bootstrap
 ```
 
----
+______________________________________________________________________
 
 ## 🐛 Troubleshooting
 
@@ -373,7 +373,7 @@ sudo tuckr link -d "$PWD" -t / etc
 sudo tuckr link -d "$PWD" -t / usr
 ```
 
----
+______________________________________________________________________
 
 ## 📚 Further Reading
 
@@ -382,18 +382,18 @@ sudo tuckr link -d "$PWD" -t / usr
 - **yadm Encryption**: [https://yadm.io/docs/encryption](https://yadm.io/docs/encryption)
 - **tuckr Documentation**: [https://github.com/RaphGL/tuckr](https://github.com/RaphGL/tuckr)
 
----
+______________________________________________________________________
 
 ## 🤝 Contributing
 
 When adding new dotfiles:
 
 1. Add them to the appropriate directory (`Home/`, `etc/`, `usr/`)
-2. Test deployment: `yadm-sync pull` or `yadm bootstrap`
-3. Commit with clear message
-4. Push to remote
+1. Test deployment: `yadm-sync pull` or `yadm bootstrap`
+1. Commit with clear message
+1. Push to remote
 
----
+______________________________________________________________________
 
 ## 📄 License
 

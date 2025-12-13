@@ -1,8 +1,6 @@
----
-agent: 'agent'
-description: 'Create llms.txt file from repository structure per https://llmstxt.org/'
-tools: ['changes', 'search/codebase', 'edit/editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'search/searchResults', 'runCommands/terminalLastCommand', 'runCommands/terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
----
+______________________________________________________________________
+
+## agent: 'agent' description: 'Create llms.txt file from repository structure per https://llmstxt.org/' tools: ['changes', 'search/codebase', 'edit/editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'search/searchResults', 'runCommands/terminalLastCommand', 'runCommands/terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
 
 # Create LLMs.txt from Repository
 
@@ -15,17 +13,20 @@ Create comprehensive `llms.txt` as LLM entry point to understand/navigate reposi
 ## Analysis Phase
 
 ### 1. Review Spec
+
 - Review https://llmstxt.org/ for compliance
 - Understand format structure/guidelines
 - Note markdown structure requirements
 
 ### 2. Repository Analysis
+
 - Examine complete repo structure
 - Identify purpose/scope
 - Catalog important directories
 - List key files for LLM understanding
 
 ### 3. Content Discovery
+
 - README files and locations
 - Documentation (`.md` in `/docs/`, `/spec/`)
 - Specification files
@@ -34,6 +35,7 @@ Create comprehensive `llms.txt` as LLM entry point to understand/navigate reposi
 - Existing documentation structure
 
 ### 4. Implementation Plan
+
 - Repository purpose/scope summary
 - Priority-ordered essential files
 - Secondary context files
@@ -42,23 +44,26 @@ Create comprehensive `llms.txt` as LLM entry point to understand/navigate reposi
 ## Format (per spec)
 
 1. **H1 Header**: Project name (required)
-2. **Blockquote Summary**: Brief description (optional, recommended)
-3. **Additional Details**: Markdown sections without headings for context
-4. **File List Sections**: H2 sections with markdown link lists
+1. **Blockquote Summary**: Brief description (optional, recommended)
+1. **Additional Details**: Markdown sections without headings for context
+1. **File List Sections**: H2 sections with markdown link lists
 
 ## Content Requirements
 
 **Required:**
+
 - Project name (H1)
 - Summary (blockquote)
 - Key files by category (H2 sections)
 
 **File Link Format:**
+
 ```
 [descriptive-name](relative-url): optional description
 ```
 
 **Section Organization (H2):**
+
 - **Documentation**: Core docs
 - **Specifications**: Technical specs/requirements
 - **Examples**: Sample code/usage
@@ -68,12 +73,14 @@ Create comprehensive `llms.txt` as LLM entry point to understand/navigate reposi
 ## Guidelines
 
 **Language/Style:**
+
 - Concise, clear, unambiguous
 - Avoid unexplained jargon
 - Write for humans + LLMs
 - Specific and informative descriptions
 
 **Include files that:**
+
 - Explain purpose/scope
 - Provide essential technical docs
 - Show usage examples/patterns
@@ -81,6 +88,7 @@ Create comprehensive `llms.txt` as LLM entry point to understand/navigate reposi
 - Contain config/setup instructions
 
 **Exclude:**
+
 - Implementation details only
 - Redundant information
 - Build artifacts/generated content
@@ -89,13 +97,14 @@ Create comprehensive `llms.txt` as LLM entry point to understand/navigate reposi
 ## Execution
 
 1. **Analyze**: Repo structure, main README, docs dirs, specs, examples, configs
-2. **Plan**: Purpose statement, summary blockquote, file grouping, prioritization, descriptions
-3. **Create**: File at repo root, follow spec format, valid relative links
-4. **Validate**: Spec compliance, valid links, effective LLM navigation, human+machine readable
+1. **Plan**: Purpose statement, summary blockquote, file grouping, prioritization, descriptions
+1. **Create**: File at repo root, follow spec format, valid relative links
+1. **Validate**: Spec compliance, valid links, effective LLM navigation, human+machine readable
 
 ## Quality Checklist
 
 **Format:**
+
 - ✅ H1 project name
 - ✅ Blockquote summary
 - ✅ H2 file list sections
@@ -104,6 +113,7 @@ Create comprehensive `llms.txt` as LLM entry point to understand/navigate reposi
 - ✅ Consistent formatting
 
 **Content:**
+
 - ✅ Clear, unambiguous language
 - ✅ Comprehensive essential file coverage
 - ✅ Logical organization
@@ -111,6 +121,7 @@ Create comprehensive `llms.txt` as LLM entry point to understand/navigate reposi
 - ✅ Effective LLM navigation
 
 **Compliance:**
+
 - ✅ https://llmstxt.org/ format
 - ✅ Required markdown structure
 - ✅ Optional sections appropriate
@@ -155,10 +166,10 @@ Create comprehensive `llms.txt` as LLM entry point to understand/navigate reposi
 ## Success Criteria
 
 1. Enable quick LLM understanding of repo purpose
-2. Clear navigation to essential docs
-3. Follow official spec exactly
-4. Comprehensive yet concise
-5. Serve humans + machines effectively
-6. Include all critical files
-7. Use clear, unambiguous language
-8. Organize logically for easy consumption
+1. Clear navigation to essential docs
+1. Follow official spec exactly
+1. Comprehensive yet concise
+1. Serve humans + machines effectively
+1. Include all critical files
+1. Use clear, unambiguous language
+1. Organize logically for easy consumption

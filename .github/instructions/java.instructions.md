@@ -1,14 +1,13 @@
----
-description: 'Guidelines for building Java base applications'
-applyTo: '**/*.java'
----
+______________________________________________________________________
+
+## description: 'Guidelines for building Java base applications' applyTo: '\*\*/\*.java'
 
 # Java Development
 
 ## General Instructions
 
 - First, prompt the user if they want to integrate static analysis tools (SonarQube, PMD, Checkstyle) into their project setup.
-  - If yes, document a recommended static-analysis setup. 
+  - If yes, document a recommended static-analysis setup.
     - Prefer SonarQube/SonarCloud (SonarLint in IDE + `sonar-scanner` in CI).
     - Create a Sonar project key.
     - Store the scanner token in CI secrets.
@@ -20,8 +19,8 @@ applyTo: '**/*.java'
   - If Sonar is unavailable:
     - Perform up to 3 troubleshooting checks:
       1. Verify project binding and token.
-      2. Ensure SonarScanner runs in CI.
-      3. Confirm SonarLint is installed and configured.
+      1. Ensure SonarScanner runs in CI.
+      1. Confirm SonarLint is installed and configured.
     - If still failing after 3 attempts:
       - Enable SpotBugs, PMD, or Checkstyle as CI fallbacks.
       - Open a short tracker issue documenting the blocker and next steps.

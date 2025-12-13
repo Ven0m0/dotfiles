@@ -1,7 +1,6 @@
----
-description: "Go idiomatic practices and community standards"
-applyTo: "**/*.go,**/go.mod,**/go.sum"
----
+______________________________________________________________________
+
+## description: "Go idiomatic practices and community standards" applyTo: "**/\*.go,**/go.mod,\*\*/go.sum"
 
 # Go Best Practices
 
@@ -19,23 +18,27 @@ Based on [Effective Go](https://go.dev/doc/effective_go), [Go Code Review Commen
 ## Naming
 
 **Packages:**
+
 - Lowercase, single-word, no underscores
 - Avoid `util`, `common`, `base`
 - Singular, not plural
 - **ONE** `package` declaration per file
 
 **Variables/Functions:**
+
 - mixedCaps or MixedCaps (camelCase)
 - Exported: Capital letter
 - Unexported: Lowercase
 - Avoid stuttering: `http.Server` not `http.HTTPServer`
 
 **Interfaces:**
+
 - Single-method: `-er` suffix (`Reader`, `Writer`)
 - Name after method (`Read` → `Reader`)
 - Keep small and focused
 
 **Constants:**
+
 - MixedCaps (exported) or mixedCaps (unexported)
 - Group related constants
 
@@ -57,6 +60,7 @@ type Reader interface {
 **Format:** `gofmt`, `goimports`
 
 **Early Return:**
+
 ```go
 // ✅ Good
 func process(data string) error {
@@ -111,6 +115,7 @@ if errors.As(err, &perr) {
 ## Concurrency
 
 **Goroutines:**
+
 ```go
 // Launch goroutines
 go func() {
@@ -130,6 +135,7 @@ wg.Wait()
 ```
 
 **Channels:**
+
 ```go
 // Buffered channel
 ch := make(chan int, 10)
@@ -148,6 +154,7 @@ for msg := range ch {
 ```
 
 **Context:**
+
 ```go
 func process(ctx context.Context, data string) error {
   // Check cancellation
@@ -167,6 +174,7 @@ defer cancel()
 ```
 
 **sync.Once:**
+
 ```go
 var (
   instance *Service
@@ -184,6 +192,7 @@ func GetService() *Service {
 ## Structs
 
 **Zero Value:**
+
 ```go
 type Config struct {
   Host    string
@@ -196,6 +205,7 @@ var cfg Config // Host="", Port=0, Enabled=false
 ```
 
 **Constructor:**
+
 ```go
 type Server struct {
   addr    string
@@ -211,6 +221,7 @@ func NewServer(addr string) *Server {
 ```
 
 **Embedding:**
+
 ```go
 type Base struct {
   ID   string
@@ -256,6 +267,7 @@ func Process(r Reader) (*Result, error) {
 ## Type Safety
 
 **Type Switches:**
+
 ```go
 func handle(v interface{}) {
   switch v := v.(type) {
@@ -270,6 +282,7 @@ func handle(v interface{}) {
 ```
 
 **Type Assertions:**
+
 ```go
 if str, ok := v.(string); ok {
   process(str)
@@ -323,6 +336,7 @@ func assertEqual(t *testing.T, got, want interface{}) {
 ## Performance
 
 **String Builder:**
+
 ```go
 // ✅ Efficient
 var b strings.Builder
@@ -339,6 +353,7 @@ for _, s := range strs {
 ```
 
 **Preallocate Slices:**
+
 ```go
 // ✅ Preallocate
 items := make([]Item, 0, len(data))
@@ -348,6 +363,7 @@ var items []Item
 ```
 
 **Sync.Pool:**
+
 ```go
 var bufPool = sync.Pool{
   New: func() interface{} {
@@ -366,6 +382,7 @@ func process() {
 ## Common Patterns
 
 **Functional Options:**
+
 ```go
 type Server struct {
   addr    string
@@ -396,6 +413,7 @@ srv := NewServer(":8080", WithTimeout(60*time.Second))
 ```
 
 **Worker Pool:**
+
 ```go
 func processJobs(jobs <-chan Job, results chan<- Result) {
   const numWorkers = 5
@@ -419,6 +437,7 @@ func processJobs(jobs <-chan Job, results chan<- Result) {
 ## Security
 
 **Input Validation:**
+
 ```go
 func sanitize(input string) (string, error) {
   if len(input) == 0 {
@@ -432,6 +451,7 @@ func sanitize(input string) (string, error) {
 ```
 
 **SQL Injection Prevention:**
+
 ```go
 // ✅ Use parameterized queries
 stmt, err := db.Prepare("SELECT * FROM users WHERE id = ?")
@@ -485,6 +505,7 @@ myapp/
 ```
 
 **Rules:**
+
 - `cmd/`: Application entrypoints
 - `internal/`: Private code (not importable)
 - `pkg/`: Public libraries

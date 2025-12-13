@@ -50,9 +50,7 @@
     ],
     "deny": [],
     "defaultMode": "bypassPermissions",
-    "additionalDirectories": [
-      "//"
-    ]
+    "additionalDirectories": ["//"]
   },
   "hooks": {
     "PreToolUse": [

@@ -1,7 +1,6 @@
----
-description: 'Rust coding conventions and idiomatic patterns'
-applyTo: '**/*.rs'
----
+______________________________________________________________________
+
+## description: 'Rust coding conventions and idiomatic patterns' applyTo: '\*\*/\*.rs'
 
 # Rust Best Practices
 
@@ -12,7 +11,7 @@ applyTo: '**/*.rs'
 - **Safety**: Ownership+borrowing > GC; no `.unwrap()` in prod; `Result<T,E>` for errors
 - **Performance**: Zero-cost abstractions; iterators > loops; stack > heap
 - **Idioms**: Traits for polymorphism; lifetimes for safety; `?` operator
-- **Format**: `cargo fmt`; Clippy strict (`-D warnings`); lines <100; 2-space indent
+- **Format**: `cargo fmt`; Clippy strict (`-D warnings`); lines \<100; 2-space indent
 - **Quality**: No warnings; comprehensive tests; rustdoc for public APIs
 
 ## Project Structure
@@ -29,6 +28,7 @@ pub use model::*;
 ```
 
 **Cargo.toml:**
+
 - Semantic versioning
 - Metadata: `description`, `license`, `repository`, `keywords`, `categories`
 - Feature flags for optional functionality
@@ -47,6 +47,7 @@ fn bad(data: String) -> String { data }
 ```
 
 **Smart Pointers:**
+
 - `Box<T>`: Heap allocation, single owner
 - `Rc<T>`: Shared ownership, single-threaded
 - `Arc<T>`: Shared ownership, multi-threaded
@@ -105,6 +106,7 @@ fn run<P: Processor>(p: &P, data: &str) -> P::Output {
 ## Patterns
 
 **Builder Pattern:**
+
 ```rust
 pub struct Config {
   host: String,
@@ -142,6 +144,7 @@ impl ConfigBuilder {
 ```
 
 **Newtype Pattern:**
+
 ```rust
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct UserId(u64);
@@ -153,6 +156,7 @@ impl UserId {
 ```
 
 **Iterator Chains:**
+
 ```rust
 // ✅ Idiomatic
 let evens: Vec<_> = (0..100)
@@ -172,12 +176,14 @@ for i in 0..100 {
 ## Performance
 
 **Stack vs Heap:**
+
 ```rust
 let small = [0u8; 64];              // Stack (fast)
 let large = vec![0u8; 1024*1024];   // Heap (necessary)
 ```
 
 **Zero-Copy:**
+
 ```rust
 // ✅ Borrow instead of clone
 fn process(data: &[u8]) -> usize { data.len() }
@@ -194,6 +200,7 @@ fn maybe_modify(data: &str, modify: bool) -> Cow<'_, str> {
 ```
 
 **Inline:**
+
 ```rust
 #[inline]
 pub fn hot_path(x: i32) -> i32 { x * 2 }
@@ -205,6 +212,7 @@ pub fn critical(x: i32) -> i32 { x + 1 }
 ## Concurrency
 
 **Channels:**
+
 ```rust
 use std::sync::mpsc;
 use std::thread;
@@ -217,6 +225,7 @@ let value = rx.recv().unwrap();
 ```
 
 **Async:**
+
 ```rust
 use tokio;
 
@@ -234,6 +243,7 @@ async fn fetch_data() -> Result<String> {
 ```
 
 **Rayon (Data Parallelism):**
+
 ```rust
 use rayon::prelude::*;
 
@@ -246,6 +256,7 @@ let sum: i32 = (0..1000000)
 ## Type Safety
 
 **Phantom Types:**
+
 ```rust
 use std::marker::PhantomData;
 
@@ -288,6 +299,7 @@ unsafe fn from_raw_parts(ptr: *const u8, len: usize) -> &'static [u8] {
 ```
 
 **Minimize unsafe:**
+
 - Use safe abstractions when possible
 - Isolate unsafe code in small functions
 - Document all safety invariants
@@ -321,6 +333,7 @@ mod tests {
 ```
 
 **Property Testing:**
+
 ```rust
 use proptest::prelude::*;
 
@@ -336,7 +349,7 @@ proptest! {
 
 ## Documentation
 
-```rust
+````rust
 /// Processes input data and returns transformed output.
 ///
 /// # Arguments
@@ -356,7 +369,7 @@ proptest! {
 pub fn process(input: &str) -> Result<String> {
   Ok(input.to_uppercase())
 }
-```
+````
 
 ## Toolchain
 

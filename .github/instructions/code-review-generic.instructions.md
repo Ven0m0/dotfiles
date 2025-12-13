@@ -1,8 +1,6 @@
----
-description: 'Generic code review instructions that can be customized for any project using GitHub Copilot'
-applyTo: '**'
-excludeAgent: ["coding-agent"]
----
+______________________________________________________________________
+
+## description: 'Generic code review instructions that can be customized for any project using GitHub Copilot' applyTo: '\*\*' excludeAgent: ["coding-agent"]
 
 # Generic Code Review Instructions
 
@@ -19,18 +17,21 @@ When performing a code review, respond in **English** (or specify your preferred
 When performing a code review, prioritize issues in the following order:
 
 ### 🔴 CRITICAL (Block merge)
+
 - **Security**: Vulnerabilities, exposed secrets, authentication/authorization issues
 - **Correctness**: Logic errors, data corruption risks, race conditions
 - **Breaking Changes**: API contract changes without versioning
 - **Data Loss**: Risk of data loss or corruption
 
 ### 🟡 IMPORTANT (Requires discussion)
+
 - **Code Quality**: Severe violations of SOLID principles, excessive duplication
 - **Test Coverage**: Missing tests for critical paths or new functionality
 - **Performance**: Obvious performance bottlenecks (N+1 queries, memory leaks)
 - **Architecture**: Significant deviations from established patterns
 
 ### 🟢 SUGGESTION (Non-blocking improvements)
+
 - **Readability**: Poor naming, complex logic that could be simplified
 - **Optimization**: Performance improvements without functional impact
 - **Best Practices**: Minor deviations from conventions
@@ -41,18 +42,19 @@ When performing a code review, prioritize issues in the following order:
 When performing a code review, follow these principles:
 
 1. **Be specific**: Reference exact lines, files, and provide concrete examples
-2. **Provide context**: Explain WHY something is an issue and the potential impact
-3. **Suggest solutions**: Show corrected code when applicable, not just what's wrong
-4. **Be constructive**: Focus on improving the code, not criticizing the author
-5. **Recognize good practices**: Acknowledge well-written code and smart solutions
-6. **Be pragmatic**: Not every suggestion needs immediate implementation
-7. **Group related comments**: Avoid multiple comments about the same topic
+1. **Provide context**: Explain WHY something is an issue and the potential impact
+1. **Suggest solutions**: Show corrected code when applicable, not just what's wrong
+1. **Be constructive**: Focus on improving the code, not criticizing the author
+1. **Recognize good practices**: Acknowledge well-written code and smart solutions
+1. **Be pragmatic**: Not every suggestion needs immediate implementation
+1. **Group related comments**: Avoid multiple comments about the same topic
 
 ## Code Quality Standards
 
 When performing a code review, check for:
 
 ### Clean Code
+
 - Descriptive and meaningful names for variables, functions, and classes
 - Single Responsibility Principle: each function/class does one thing well
 - DRY (Don't Repeat Yourself): no code duplication
@@ -62,6 +64,7 @@ When performing a code review, check for:
 - Code should be self-documenting; comments only when necessary
 
 ### Examples
+
 ```javascript
 // ❌ BAD: Poor naming and magic numbers
 function calc(x, y) {
@@ -82,6 +85,7 @@ function calculateDiscount(orderTotal, itemPrice) {
 ```
 
 ### Error Handling
+
 - Proper error handling at appropriate levels
 - Meaningful error messages
 - No silent failures or ignored exceptions
@@ -89,6 +93,7 @@ function calculateDiscount(orderTotal, itemPrice) {
 - Use appropriate error types/exceptions
 
 ### Examples
+
 ```python
 # ❌ BAD: Silent failure and generic error
 def process_user(user_id):
@@ -126,6 +131,7 @@ When performing a code review, check for security issues:
 - **Dependency Security**: Check for known vulnerabilities in dependencies
 
 ### Examples
+
 ```java
 // ❌ BAD: SQL injection vulnerability
 String query = "SELECT * FROM users WHERE email = '" + email + "'";
@@ -158,6 +164,7 @@ When performing a code review, verify test quality:
 - **Mock Appropriately**: Mock external dependencies, not domain logic
 
 ### Examples
+
 ```typescript
 // ❌ BAD: Vague name and assertion
 test('test1', () => {
@@ -188,6 +195,7 @@ When performing a code review, check for performance issues:
 - **Lazy Loading**: Load data only when needed
 
 ### Examples
+
 ```python
 # ❌ BAD: N+1 query problem
 users = User.query.all()
@@ -242,7 +250,8 @@ Explanation of the impact or reason for the suggestion.
 ### Example Comments
 
 #### Critical Issue
-```markdown
+
+````markdown
 **🔴 CRITICAL - Security: SQL Injection Vulnerability**
 
 The query on line 45 concatenates user input directly into the SQL string,
@@ -262,10 +271,11 @@ PreparedStatement stmt = conn.prepareStatement(
     "SELECT * FROM users WHERE email = ?"
 );
 stmt.setString(1, email);
-```
+````
 
 **Reference:** OWASP SQL Injection Prevention Cheat Sheet
-```
+
+````
 
 #### Important Issue
 ```markdown
@@ -289,8 +299,9 @@ test('should process full refund when order is cancelled', () => {
     expect(result.refundAmount).toBe(100);
     expect(result.status).toBe('refunded');
 });
-```
-```
+````
+
+````
 
 #### Suggestion
 ```markdown
@@ -317,7 +328,8 @@ if (!user || !user.isActive || !user.hasPermission('write')) {
     return;
 }
 // do something
-```
+````
+
 ```
 
 ## Review Checklist
@@ -416,3 +428,4 @@ This is a generic template. Customize this section with your project-specific in
 - **Build Tool**: [e.g., Gradle, Maven, npm, pip]
 - **Testing**: [e.g., JUnit 5, Jest, pytest]
 - **Code Style**: [e.g., follows Google Style Guide]
+```

@@ -1,7 +1,6 @@
----
-description: 'Migration instructions generator for GitHub Copilot from code evolution analysis'
-agent: 'agent'
----
+______________________________________________________________________
+
+## description: 'Migration instructions generator for GitHub Copilot from code evolution analysis' agent: 'agent'
 
 # Migration Instructions Generator
 
@@ -23,17 +22,20 @@ ${VALIDATION_REQUIRED="true|false"}
 ### Phase 1: Comparative Analysis
 
 **Structural Changes:**
+
 - Compare folder structure ${SOURCE_REFERENCE} → ${TARGET_REFERENCE}
 - Identify moved/renamed/deleted files
 - Analyze config file changes
 - Document dependency changes
 
 **Code Transformation:**
+
 - ${MIGRATION_TYPE == "Framework Version"}: API changes, new features, obsolete methods, syntax changes
 - ${MIGRATION_TYPE == "Architecture Refactoring"}: Pattern changes, new abstractions, responsibility reorg, data flows
 - ${MIGRATION_TYPE == "Technology Migration"}: Tech replacements, functional equivalences, API/syntax changes, configs
 
 **Pattern Extraction:**
+
 - Identify repetitive transformations
 - Analyze conversion rules (old → new)
 - Document exceptions/special cases
@@ -141,11 +143,12 @@ ${VALIDATION_REQUIRED="true|false"}
 ## Result
 
 Migration instructions enabling Copilot to:
+
 1. Auto-apply same transformations
-2. Maintain consistency with new conventions
-3. Avoid obsolete patterns
-4. Accelerate future migrations
-5. Reduce errors via automation
+1. Maintain consistency with new conventions
+1. Avoid obsolete patterns
+1. Accelerate future migrations
+1. Reduce errors via automation
 
 Transforms Copilot into intelligent migration assistant reproducing your evolution decisions consistently.
 

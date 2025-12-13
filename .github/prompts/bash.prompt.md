@@ -12,11 +12,11 @@
 ## Exec Steps
 
 1. **Find**: `fd -e sh -e bash -t f -H -E . git`
-2. **Lint**: `shellcheck --severity=style --format=diff ${files}`
-3. **Fmt**: `shfmt -i 2 -bn -s -ln bash -w ${files}`
-4. **Val**: Shebang (`#!/usr/bin/env bash`), Strict (`set -euo pipefail`), opts, traps.
-5. **Rep**: Count mods/fixes/issues; Risk: L/M/H.
-6. **Opt**: Replace external calls with builtins, modern tools (fd, rg, jaq, aria2), min subshell/forks, caching
+1. **Lint**: `shellcheck --severity=style --format=diff ${files}`
+1. **Fmt**: `shfmt -i 2 -bn -s -ln bash -w ${files}`
+1. **Val**: Shebang (`#!/usr/bin/env bash`), Strict (`set -euo pipefail`), opts, traps.
+1. **Rep**: Count mods/fixes/issues; Risk: L/M/H.
+1. **Opt**: Replace external calls with builtins, modern tools (fd, rg, jaq, aria2), min subshell/forks, caching
 
 ## Success ✅
 

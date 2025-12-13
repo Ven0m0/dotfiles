@@ -1,7 +1,6 @@
----
-applyTo: ".github/workflows/*.yml"
-description: "GitHub Actions CI/CD best practices: secure, efficient workflows"
----
+______________________________________________________________________
+
+## applyTo: ".github/workflows/\*.yml" description: "GitHub Actions CI/CD best practices: secure, efficient workflows"
 
 # GitHub Actions Best Practices
 
@@ -73,6 +72,7 @@ jobs:
 ```
 
 **Key Concepts:**
+
 - `runs-on`: `ubuntu-latest`, `windows-latest`, `macos-latest`, `self-hosted`
 - `needs`: Job dependencies (sequential execution)
 - `outputs`: Pass data between jobs
@@ -82,6 +82,7 @@ jobs:
 ## Security
 
 **Secrets:**
+
 ```yaml
 env:
   API_KEY: ${{ secrets.API_KEY }}
@@ -94,6 +95,7 @@ env:
 - Use `dependabot` for action updates
 
 **Action Pinning:**
+
 ```yaml
 # ✅ Pin to SHA (most secure)
 uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
@@ -106,6 +108,7 @@ uses: actions/checkout@main
 ```
 
 **Permissions:**
+
 ```yaml
 permissions:
   contents: read
@@ -127,6 +130,7 @@ permissions:
 ```
 
 **Common Caches:**
+
 - **Node.js**: `~/.npm`, `node_modules`
 - **Python**: `~/.cache/pip`, `~/.local/share/virtualenvs`
 - **Rust**: `~/.cargo`, `target/`
@@ -154,6 +158,7 @@ steps:
 ## Reusable Workflows
 
 **.github/workflows/build.yml:**
+
 ```yaml
 on:
   workflow_call:
@@ -173,6 +178,7 @@ jobs:
 ```
 
 **Caller:**
+
 ```yaml
 jobs:
   call-build:
@@ -194,6 +200,7 @@ jobs:
 ```
 
 **Features:**
+
 - Manual approvals (required reviewers)
 - Branch restrictions
 - Environment secrets
@@ -232,12 +239,14 @@ jobs:
 ```
 
 **Enable runner diagnostics:**
+
 - Set `ACTIONS_RUNNER_DEBUG=true` (repo secret)
 - Set `ACTIONS_STEP_DEBUG=true` (repo secret)
 
 ## Performance
 
 **Parallel Jobs:**
+
 ```yaml
 jobs:
   lint: { runs-on: ubuntu-latest, steps: [...] }
@@ -246,6 +255,7 @@ jobs:
 ```
 
 **Optimization:**
+
 - Cache dependencies
 - Use matrix for parallel tests
 - Minimize artifact size
@@ -255,17 +265,20 @@ jobs:
 ## Common Patterns
 
 **Skip CI:**
+
 ```yaml
 if: "!contains(github.event.head_commit.message, '[skip ci]')"
 ```
 
 **Version from package.json:**
+
 ```yaml
 - id: version
   run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 ```
 
 **Context Variables:**
+
 ```yaml
 ${{ github.actor }}          # User triggering workflow
 ${{ github.sha }}            # Commit SHA

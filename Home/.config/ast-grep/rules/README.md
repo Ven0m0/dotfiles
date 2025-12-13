@@ -212,8 +212,8 @@ needed.
 The directory structure uses the compact version (22 merged rules). If you need all 71 rules:
 
 1. Split each merged rule back into individual rules
-2. Or use monolithic config for granular control
-3. Or mix: keep some merged, split others
+1. Or use monolithic config for granular control
+1. Or mix: keep some merged, split others
 
 ## Performance
 
@@ -226,11 +226,11 @@ Directory structure has identical performance to monolithic config:
 ## Best Practices
 
 1. **Keep files focused**: One category per file (type-safety, performance, etc.)
-2. **Consistent naming**: `<language>/<category>.yml`
-3. **Document severity**: Explain why error vs warning vs info vs hint
-4. **Add examples**: Use `note:` field with concrete examples
-5. **Test fixes**: `fix:` fields should be tested before deployment
-6. **Version control**: Commit rule changes with descriptive messages
+1. **Consistent naming**: `<language>/<category>.yml`
+1. **Document severity**: Explain why error vs warning vs info vs hint
+1. **Add examples**: Use `note:` field with concrete examples
+1. **Test fixes**: `fix:` fields should be tested before deployment
+1. **Version control**: Commit rule changes with descriptive messages
 
 ## Quick Reference
 

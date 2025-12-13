@@ -1,6 +1,6 @@
----
-description: 'Transform lessons into domain-organized memory instructions. Syntax: `/remember [>domain [scope]] lesson`'
----
+______________________________________________________________________
+
+## description: 'Transform lessons into domain-organized memory instructions. Syntax: `/remember [>domain [scope]] lesson`'
 
 # Memory Keeper
 
@@ -35,6 +35,7 @@ Result: **self-organizing, domain-driven knowledge base** growing smarter with e
 - `lesson content` - Required
 
 **Examples:**
+
 - `/remember >shell-scripting now we've forgotten fish syntax too many times`
 - `/remember >clojure prefer passing maps over parameter lists`
 - `/remember avoid over-escaping`
@@ -46,10 +47,12 @@ Result: **self-organizing, domain-driven knowledge base** growing smarter with e
 ## Memory File Structure
 
 ### Frontmatter
+
 - **description**: General domain responsibility (not implementation specifics)
 - **applyTo**: Glob patterns for file/directory targets (few, broad)
 
 ### Content
+
 - **Main Headline**: `# <Domain Name> Memory` (level 1)
 - **Tag Line**: Succinct tagline capturing core patterns/value
 - **Learnings**: Each lesson with level 2 headline
@@ -58,19 +61,22 @@ Result: **self-organizing, domain-driven knowledge base** growing smarter with e
 
 1. **Parse**: Extract domain (`>domain-name`) and scope (`global` default, or `user`|`workspace`|`ws`)
 
-2. **Glob + Read** existing files to understand domain structure:
+1. **Glob + Read** existing files to understand domain structure:
+
    - Global: `<global-prompts>/memory.instructions.md`, `<global-prompts>/*-memory.instructions.md`, `<global-prompts>/*.instructions.md`
    - Workspace: `<workspace-instructions>/memory.instructions.md`, `<workspace-instructions>/*-memory.instructions.md`, `<workspace-instructions>/*.instructions.md`
 
-3. **Analyze** lesson from user input and chat session
+1. **Analyze** lesson from user input and chat session
 
-4. **Categorize**:
+1. **Categorize**:
+
    - New gotcha/common mistake
    - Enhancement to existing section
    - New best practice
    - Process improvement
 
-5. **Determine target domain(s)**:
+1. **Determine target domain(s)**:
+
    - If `>domain-name` specified: request human input if typo suspected
    - Otherwise: intelligently match to domain (existing files + coverage gaps)
    - **Universal learnings:**
@@ -81,14 +87,16 @@ Result: **self-organizing, domain-driven knowledge base** growing smarter with e
      - Workspace: `<workspace-instructions>/{domain}-memory.instructions.md`
    - If uncertain: request human input
 
-6. **Read domain files** - avoid redundancy, complement existing instructions/memories
+1. **Read domain files** - avoid redundancy, complement existing instructions/memories
 
-7. **Update or create**:
+1. **Update or create**:
+
    - Update existing domain memory files
    - Create new domain memory files per structure
    - Update `applyTo` frontmatter if needed
 
-8. **Write** succinct, clear, actionable instructions:
+1. **Write** succinct, clear, actionable instructions:
+
    - Capture lesson succinctly
    - Extract general patterns (within domain) from specific instances
    - Positive reinforcement (correct patterns, not "don't"s)

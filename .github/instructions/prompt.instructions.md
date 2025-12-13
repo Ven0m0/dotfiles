@@ -1,7 +1,6 @@
----
-description: "Guidelines for creating high-quality prompt files for GitHub Copilot"
-applyTo: "**/*.prompt.md"
----
+______________________________________________________________________
+
+## description: "Guidelines for creating high-quality prompt files for GitHub Copilot" applyTo: "\*\*/\*.prompt.md"
 
 # Copilot Prompt Files Guidelines
 

@@ -1,7 +1,6 @@
----
-applyTo: '**/*.ps1,**/*.psm1'
-description: 'PowerShell cmdlet development and Windows automation best practices'
----
+______________________________________________________________________
+
+## applyTo: '**/\*.ps1,**/\*.psm1' description: 'PowerShell cmdlet development and Windows automation best practices'
 
 # PowerShell Guidelines
 
@@ -228,6 +227,7 @@ function Connect-Service {
 ## Common Patterns
 
 **Splatting:**
+
 ```powershell
 $params = @{
   Path = 'C:\Temp'
@@ -238,6 +238,7 @@ Get-ChildItem @params
 ```
 
 **Calculated Properties:**
+
 ```powershell
 Get-Process | Select-Object Name, @{
   Name = 'MemoryMB'
@@ -246,6 +247,7 @@ Get-Process | Select-Object Name, @{
 ```
 
 **Hash Tables:**
+
 ```powershell
 $config = @{
   Server = 'prod-srv01'
@@ -258,6 +260,7 @@ $config = @{
 ## Windows-Specific
 
 **Registry:**
+
 ```powershell
 $regPath = 'HKLM:\SOFTWARE\MyApp'
 if (!(Test-Path $regPath)) {
@@ -267,6 +270,7 @@ Set-ItemProperty -Path $regPath -Name 'Version' -Value '1.0'
 ```
 
 **Services:**
+
 ```powershell
 Get-Service -Name 'MyService' |
   Where-Object {$_.Status -eq 'Running'} |
@@ -274,6 +278,7 @@ Get-Service -Name 'MyService' |
 ```
 
 **Event Logs:**
+
 ```powershell
 Get-EventLog -LogName Application -EntryType Error -Newest 10
 ```
