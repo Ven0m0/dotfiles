@@ -3,13 +3,14 @@
 # ========================================
 # Optimized mount options for different filesystems
 # https://wiki.archlinux.org/title/Fstab
+# <fs> <mountpoint> <type> <options> <dump> <pass>
 
 # ========================================
 # F2FS Filesystem
 # ========================================
 # Flash-Friendly File System optimized for flash storage
 # Options: compression, inline data, async discard, GC optimizations
-defaults,noatime,nodiratime,lazytime,compress_algorithm=zstd:3,compress_chksum,compress_cache,atgc,gc_merge,inline_xattr,inline_data,inline_dentry,background_gc=on,extent_cache,age_extent_cache,alloc_mode=reuse,discard=async,nat_bits,flush_merge 0 0
+# UUID=<uuid> /mnt/data f2fs defaults,noatime,nodiratime,lazytime,compress_algorithm=zstd:3,compress_chksum,compress_cache,atgc,gc_merge,inline_xattr,inline_data,inline_dentry,background_gc=on,extent_cache,age_extent_cache,alloc_mode=reuse,discard=async,nat_bits,flush_merge 0 0
 
 # ========================================
 # TMPFS (RAM-based filesystem)
@@ -22,23 +23,23 @@ tmpfs /tmp tmpfs defaults,noatime,lazytime,mode=1777 0 0
 # ========================================
 # Modern CoW filesystem with compression and snapshots
 # Options: zstd compression, SSD optimizations, async discard
-defaults,noatime,nodiratime,lazytime,space_cache=v2,ssd,discard=async,commit=120,compress=zstd:3,nofail,rw,user,exec 0 0
+# UUID=<uuid> /mnt/data btrfs defaults,noatime,nodiratime,lazytime,space_cache=v2,ssd,discard=async,commit=120,compress=zstd:3,nofail,rw,user,exec 0 0
 
 # ========================================
 # EXT4 Filesystem
 # ========================================
 # Traditional Linux filesystem with performance optimizations
 # Options: writeback mode, async journal commit, reduced barriers
-defaults,noatime,nodiratime,lazytime,commit=120,discard=async,data=writeback,journal_async_commit,nobh,barrier=0 0 0
+# UUID=<uuid> /mnt/data ext4 defaults,noatime,nodiratime,lazytime,commit=120,discard=async,data=writeback,journal_async_commit,nobh,barrier=0 0 0
 
 # ========================================
 # XFS Filesystem
 # ========================================
 # High-performance 64-bit journaling filesystem
 # NVME:
-defaults,noatime,nodiratime,lazytime,inode64,logbufs=8,logbsize=256k,allocsize=1m 0 0
+# UUID=<uuid> /mnt/data xfs defaults,noatime,nodiratime,lazytime,inode64,logbufs=8,logbsize=256k,allocsize=1m 0 0
 # SATA:
-defaults,noatime,nodiratime,lazytime,inode64,logbufs=8 0 0
+# UUID=<uuid> /mnt/data xfs defaults,noatime,nodiratime,lazytime,inode64,logbufs=8 0 0
 
 # ========================================
 # EXT4 Tuning Commands

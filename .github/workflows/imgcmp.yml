@@ -6,16 +6,10 @@ on:
       - main
   schedule:
     - cron: "0 0 * * 1" # Weekly build
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   imgcmp:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: 9sako6/imgcmp@v2.0.4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Check outputs
-        run: |
-          echo ${{ steps.imgcmp.outputs.pull-request-number }}
+    uses: Ven0m0/.github/.github/workflows/imgcmp.yml@main
+    secrets: inherit
