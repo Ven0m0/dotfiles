@@ -109,7 +109,7 @@
       "VideoHWDecode": 0,
       "VideoLevel": "auto",
       "VideoMultiPass": true,
-      "VideoOptionExtra": "film-grain=15:keyint=300:enable-qm=1:qm-min=0",
+      "VideoOptionExtra": "tune=0:film-grain=15:keyint=300:enable-qm=1:qm-min=0:scd=1",
       "VideoPasshtruHDRDynamicMetadata": "all",
       "VideoPreset": "4",
       "VideoProfile": "main",
