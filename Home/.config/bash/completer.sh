@@ -9,6 +9,7 @@ load_completion(){
   case "$kind" in
     eval) eval "$src" &>/dev/null ;;
     source | .) [[ -r ${src/#\~\//${HOME}/} ]] && . "${src/#\~\//${HOME}/}" &>/dev/null ;;
+    *) return 1 ;;
   esac
 }
 # --- System Completions

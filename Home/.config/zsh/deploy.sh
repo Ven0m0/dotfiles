@@ -10,8 +10,6 @@ IFS=$'\n\t'
 readonly ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 readonly BACKUP_DIR="$HOME/.zsh_backup_$(date +%s)"
 
-has(){ command -v -- "$1" &>/dev/null; }
-
 main(){
   printf '=== Zsh Config Deployment ===\n\n'
 
@@ -44,7 +42,7 @@ main(){
   fi
 
   # Verify zsh is available
-  if ! has zsh; then
+  if ! command -v -- zsh >/dev/null; then
     printf '\n⚠ Zsh not found. Install it:\n'
     printf '  Arch: sudo pacman -S zsh\n'
     printf '  Debian: sudo apt install zsh\n'
