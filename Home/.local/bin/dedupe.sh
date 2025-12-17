@@ -3,7 +3,7 @@
 # Interactive Deduplication Pipeline (Fclones -> Czkawka)
 # Usage: ./dedupe.sh <target_directory>
 set -euo pipefail; shopt -s nullglob globstar
-export LC_ALL=C; IFS=$'\n\t'
+IFS=$'\n\t' LC_ALL=C
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
 date(){ local x="${1:-%d/%m/%y-%R}"; printf "%($x)T\n" '-1'; }
 readonly TARGET="${1:-}"
