@@ -1,6 +1,7 @@
 ---
-
-## description: "AutoHotkey v2 scripting standards for Windows automation and gaming tools" applyTo: "\*\*/\*.ahk"
+description: "AutoHotkey v2 scripting standards for Windows automation and gaming tools" 
+applyTo: "*.ahk"
+---
 
 # AutoHotkey v2 Scripting Guidelines
 
