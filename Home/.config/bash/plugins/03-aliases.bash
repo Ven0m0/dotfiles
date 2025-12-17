@@ -1,5 +1,4 @@
 # ~/.config/bash/plugins/03-aliases.bash
-# ~/.config/bash/plugins/03-aliases.bash
 #================================= [Aliases] ==================================
 # Keep aliases enabled after sudo
 alias sudo='sudo ' sudo-rs='sudo-rs ' doas='doas '
