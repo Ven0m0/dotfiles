@@ -26,6 +26,9 @@ def parse_arguments():
     parser.add_argument("--grain", type=int, default=15, help="Film Grain Synthesis level (0-50, hides artifacts)")
     parser.add_argument("--audio-bitrate", type=str, default="128k", help="Opus audio bitrate (e.g., 128k, 192k)")
     
+    # NEW: Deinterlace Flag
+    parser.add_argument("--deinterlace", action="store_true", help="Fix 'weird lines' (combing) in older videos")
+    
     return parser.parse_args()
 
 def check_tools():
@@ -56,16 +59,27 @@ def get_files(source_dir):
 
 def build_ffmpeg_args(args):
     """Constructs the encoding arguments based on CLI inputs."""
-    # SVT-AV1 "Essential" Params: tune=0 (VQ), enable-qm=1 (Quantization Matrices)
+    
+    cmd_args = []
+    
+    # 1. Video Filters (Deinterlacing)
+    if args.deinterlace:
+        # bwdif is a high-quality deinterlacer.
+        cmd_args.extend(["-vf", "bwdif"])
+    
+    # 2. SVT-AV1 Params
+    # tune=0 (VQ), enable-qm=1 (Quantization Matrices)
     svt_params = f"tune=0:film-grain={args.grain}:enable-qm=1:qm-min=0:scd=1"
     
-    return [
+    cmd_args.extend([
         "-c:v", "libsvtav1",
         "-preset", str(args.preset),
         "-crf", str(args.crf),
         "-svtav1-params", svt_params,
         "-c:a", "libopus", "-b:a", args.audio_bitrate
-    ]
+    ])
+    
+    return cmd_args
 
 def convert_file(input_path, output_path, ffmpeg_args):
     # 1. Define Commands
@@ -87,7 +101,6 @@ def convert_file(input_path, output_path, ffmpeg_args):
     max_retries = 3
     
     for attempt in range(1, max_retries + 1):
-        # Prefer ffzap on first attempt if available, otherwise ffmpeg
         use_ffzap = (attempt == 1 and ffzap_cmd is not None)
         cmd = ffzap_cmd if use_ffzap else base_ffmpeg_cmd
         tool_name = "ffzap" if use_ffzap else "ffmpeg"
@@ -103,7 +116,6 @@ def convert_file(input_path, output_path, ffmpeg_args):
             
         except subprocess.CalledProcessError:
             print(" Failed!")
-            # If ffmpeg failed, wait a bit before retrying (disk I/O hiccup, etc.)
             if not use_ffzap:
                 time.sleep(3)
                 
@@ -124,6 +136,8 @@ def main():
     print(f"Source:  {source_dir}")
     print(f"Dest:    {dest_dir}")
     print(f"Profile: Preset {args.preset}, CRF {args.crf}, Grain {args.grain}")
+    if args.deinterlace:
+        print(f"Filters: Deinterlace (bwdif) ENABLED")
     print("-" * 40)
 
     print("Scanning files...")
@@ -139,7 +153,6 @@ def main():
     ffmpeg_args = build_ffmpeg_args(args)
 
     for i, input_path in enumerate(files):
-        # Create output path maintaining structure
         rel_path = input_path.relative_to(source_dir)
         output_path = dest_dir / rel_path.with_suffix(".mkv")
         
