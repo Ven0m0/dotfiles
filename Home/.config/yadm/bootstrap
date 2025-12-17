@@ -93,7 +93,7 @@ apply_konsave_profile(){
   [[ -f $profile_file ]] || { warn "Konsave profile not found: $profile_file"; return 0; }
   local profile_list=""
   if ! profile_list="$(konsave -l 2>/dev/null)"; then
-    warn "konsave -l failed; re-importing profile from ${profile_file}"
+    warn "konsave -l failed; will ensure ${profile_name} exists before applying"
   fi
   # Import when no profiles exist yet or the saved profile is missing.
   if [[ -z $profile_list ]] || ! grep -qw "$profile_name" <<<"$profile_list"; then
