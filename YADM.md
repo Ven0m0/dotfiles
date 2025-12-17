@@ -228,7 +228,7 @@ When you run `yadm bootstrap`, the following happens:
    └─> rsync Home/ → ~/
 
 2. Install Base Dependencies
-   └─> git, zsh, starship, fzf, etc.
+   └─> git, zsh, starship, fzf, konsave, etc.
 
 3. Configure Shell Environment
    ├─> Set Zsh as default shell
@@ -244,6 +244,8 @@ When you run `yadm bootstrap`, the following happens:
 6. Run Application Bootstraps
    └─> ~/.config/yadm/bootstrap
 ```
+
+If `konsave` is available, the bootstrap imports and applies the `main` profile from `main.knsv` so Plasma/KDE settings are restored automatically.
 
 ### Subdirectory Deployment
 

@@ -29,7 +29,7 @@ install_base_deps(){
     local pac_cmd="sudo pacman"
     has paru && pac_cmd="paru"
     has yay && pac_cmd="yay"
-    $pac_cmd -Sq --needed --noconfirm git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf stow tuckr rsync || warn "Some packages may have failed to install"
+    $pac_cmd -Sq --needed --noconfirm git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf stow tuckr rsync konsave || warn "Some packages may have failed to install"
   elif has apt-get; then
     sudo apt-get update -y
     sudo apt-get install -y git curl zsh fd-find ripgrep bat jq fzf stow rsync || warn "Some packages may have failed"
@@ -83,6 +83,18 @@ setup_alternates(){
   info "Processing yadm alternates..."
   yadm alt 2>/dev/null || warn "No alternate files to process"
 }
+apply_konsave_profile(){
+  local profile_file="${REPO_DIR}/main.knsv" profile_name="main"
+  if ! has konsave; then
+    warn "konsave not installed; skipping KDE profile import."
+    return 0
+  fi
+  [[ -f $profile_file ]] || { warn "Konsave profile not found: $profile_file"; return 0; }
+  if ! konsave -l 2>/dev/null | grep -qw "$profile_name"; then
+    konsave -i "$profile_file" || { warn "Failed to import Konsave profile"; return 0; }
+  fi
+  konsave -a "$profile_name" || warn "Failed to apply Konsave profile: $profile_name"
+}
 run_app_bootstraps(){
   local home_bootstrap="${HOME}/.config/yadm/bootstrap"
   [[ -x $home_bootstrap ]] || return 0
@@ -93,6 +105,7 @@ main(){
   deploy_home
   install_base_deps
   configure_shell
+  apply_konsave_profile
   deploy_system_configs
   setup_alternates
   run_app_bootstraps

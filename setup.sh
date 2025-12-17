@@ -49,7 +49,7 @@ main(){
 install_packages(){
   info "Installing packages..."
   local paru_opts=(--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade)
-  local pkgs=(git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf yadm tuckr)
+  local pkgs=(git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf yadm tuckr konsave)
   if ! has paru; then
     die "paru not found."
   fi
