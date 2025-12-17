@@ -94,7 +94,7 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 <summary><b>Lint/Format</b></summary>
 
 ```markdown
-Objective: Lint and format all files.  full tree conformance to .editorconfig; 2-space indent; zero remaining errors; non-zero exit on unresolved
+Objective: Lint and format all files. Ensure full tree conformance to .editorconfig; 2-space indent; zero remaining errors; non-zero exit on unresolved
 issues. Discovery: fd -tf -u -E .git -E node_modules -e <ext>; fallback: find. Scan: rg for invalid chars/invisibles; sd
 to clean; compressors: zstd→gzip→xz. Policy:
 
