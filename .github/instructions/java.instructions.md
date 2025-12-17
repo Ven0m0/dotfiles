@@ -1,6 +1,7 @@
 ---
-
-## description: 'Guidelines for building Java base applications' applyTo: '\*\*/\*.java'
+description: 'Guidelines for building Java base applications'
+applyTo: '**/*.java'
+---
 
 # Java Development
 

@@ -1,6 +1,7 @@
 ---
-
-## description: "Batch/CMD scripting standards for Windows utilities" applyTo: "\*\*/_.cmd, \*\*/_.bat"
+description: "Batch/CMD scripting standards for Windows utilities"
+applyTo: "**/*.cmd, **/*.bat"
+---
 
 # CMD/Batch Scripting Guidelines
 

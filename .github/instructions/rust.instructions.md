@@ -1,6 +1,7 @@
 ---
-
-## description: 'Rust coding conventions and idiomatic patterns' applyTo: '\*\*/\*.rs'
+description: 'Rust coding conventions and idiomatic patterns'
+applyTo: '**/*.rs'
+---
 
 # Rust Best Practices
 
