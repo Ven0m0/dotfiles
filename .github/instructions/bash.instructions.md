@@ -1,6 +1,7 @@
 ---
-
-## applyTo: "\*\*/\*.{sh,bash,zsh},PKGBUILD" description: "Optimized bash/shell standards for performance and safety"
+applyTo: "*.{sh,bash,zsh},PKGBUILD"
+description: "Optimized bash/shell standards for performance and safety"
+---
 
 # Bash/Shell Standards
 
