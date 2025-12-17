@@ -550,5 +550,11 @@ Deliver a standalone, test-verified patch.
 - No drive-by refactoring.
 - If ambiguous, state one assumption, document, and proceed.
 ```
+</details>
+<details>
+<summary><b>Tasks</b></summary>
 
+```markdown
+Find and refactor duplicated code. Identify and suggest improvements to slow or inefficient code
+```
 </details>
