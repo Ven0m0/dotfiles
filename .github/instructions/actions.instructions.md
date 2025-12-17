@@ -1,6 +1,7 @@
 ---
-
-## applyTo: ".github/workflows/\*.yml" description: "GitHub Actions CI/CD best practices: secure, efficient workflows"
+applyTo: ".github/workflows/*.yml"
+description: "GitHub Actions CI/CD best practices"
+---
 
 # GitHub Actions Best Practices
 
