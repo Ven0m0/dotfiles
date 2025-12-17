@@ -95,8 +95,11 @@ apply_konsave_profile(){
   if ! profile_list="$(konsave -l 2>/dev/null)"; then
     warn "konsave -l failed; will attempt to import profile if needed"
     needs_import=true
-  elif [[ -z $profile_list ]] || ! grep -qF "$profile_name" <<<"$profile_list"; then
+  else
     needs_import=true
+    if [[ -n $profile_list ]] && grep -qF "$profile_name" <<<"$profile_list"; then
+      needs_import=false
+    fi
   fi
   if [[ $needs_import == true ]]; then
     info "Importing Konsave profile (${profile_name}) from ${profile_file}"
@@ -115,8 +118,8 @@ main(){
   deploy_home
   install_base_deps
   configure_shell
-  apply_konsave_profile
   deploy_system_configs
+  apply_konsave_profile
   setup_alternates
   run_app_bootstraps
   info "✓ YADM Bootstrap completed."
