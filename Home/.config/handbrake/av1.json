@@ -35,7 +35,7 @@
       "InlineParameterSets": false,
       "MetadataPassthru": true,
       "Mp4iPodCompatible": false,
-      "Optimize": false,
+      "Optimize": true,
       "PictureAllowUpscaling": false,
       "PictureAutoCrop": true,
       "PictureBottomCrop": 0,
@@ -117,7 +117,7 @@
       "VideoQualityType": 1,
       "VideoScaler": "swscale",
       "VideoTune": "vq",
-      "VideoTurboMultiPass": false,
+      "VideoTurboMultiPass": true,
       "x264Option": "",
       "x264UseAdvancedOptions": false
     }
