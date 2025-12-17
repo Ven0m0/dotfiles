@@ -93,7 +93,7 @@ apply_konsave_profile(){
   [[ -f $profile_file ]] || { warn "Konsave profile not found: $profile_file"; return 0; }
   local profile_list; profile_list="$(konsave -l 2>/dev/null || true)"
   [[ -z $profile_list ]] && info "No existing Konsave profiles found; proceeding with import."
-  if ! grep -qw "$profile_name" <<<"$profile_list"; then
+  if [[ -z $profile_list ]] || ! grep -qw "$profile_name" <<<"$profile_list"; then
     konsave -i "$profile_file" || { warn "Failed to import Konsave profile"; return 0; }
   fi
   # Always apply to enforce the expected desktop profile during bootstrap.
