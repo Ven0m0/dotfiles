@@ -91,22 +91,26 @@ apply_konsave_profile(){
     return 0
   fi
   [[ -f $profile_file ]] || { warn "Konsave profile not found: $profile_file"; return 0; }
-  local profile_list="" needs_import=false
-  if ! profile_list="$(konsave -l 2>/dev/null)"; then
-    warn "konsave -l failed; will attempt to import profile if needed"
-    needs_import=true
-  else
-    needs_import=true
+  local profile_list="" profile_present=false
+  if profile_list="$(konsave -l 2>/dev/null)"; then
     if [[ -n $profile_list ]] && grep -qF "$profile_name" <<<"$profile_list"; then
-      needs_import=false
+      profile_present=true
+    fi
+  else
+    warn "konsave -l failed; will attempt to import profile if needed"
+  fi
+  if [[ $profile_present == false ]]; then
+    info "Importing Konsave profile (${profile_name}) from ${profile_file}"
+    if konsave -i "$profile_file"; then
+      profile_present=true
+    else
+      warn "Failed to import Konsave profile from $profile_file"
+      return 0
     fi
   fi
-  if [[ $needs_import == true ]]; then
-    info "Importing Konsave profile (${profile_name}) from ${profile_file}"
-    konsave -i "$profile_file" || { warn "Failed to import Konsave profile from $profile_file"; return 0; }
+  if [[ $profile_present == true ]]; then
+    konsave -a "$profile_name" || { warn "Failed to apply Konsave profile: $profile_name"; return 0; }
   fi
-  # Always apply to enforce the expected desktop profile during bootstrap.
-  konsave -a "$profile_name" || { warn "Failed to apply Konsave profile: $profile_name"; return 0; }
 }
 run_app_bootstraps(){
   local home_bootstrap="${HOME}/.config/yadm/bootstrap"
