@@ -91,12 +91,14 @@ apply_konsave_profile(){
     return 0
   fi
   [[ -f $profile_file ]] || { warn "Konsave profile not found: $profile_file"; return 0; }
-  local profile_list=""
+  local profile_list="" needs_import=false
   if ! profile_list="$(konsave -l 2>/dev/null)"; then
     warn "konsave -l failed; will attempt to import profile if needed"
+    needs_import=true
+  elif [[ -z $profile_list ]] || ! grep -qF "$profile_name" <<<"$profile_list"; then
+    needs_import=true
   fi
-  # Import when no profiles exist yet or the saved profile is missing.
-  if [[ -z $profile_list ]] || ! grep -qF "$profile_name" <<<"$profile_list"; then
+  if [[ $needs_import == true ]]; then
     info "Importing Konsave profile (${profile_name}) from ${profile_file}"
     konsave -i "$profile_file" || { warn "Failed to import Konsave profile from $profile_file"; return 0; }
   fi
