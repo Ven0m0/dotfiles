@@ -5,7 +5,6 @@
 set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t'
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
-has(){ command -v -- "$1" &>/dev/null; }
 date(){ local x="${1:-%d/%m/%y-%R}"; printf "%($x)T\n" '-1'; }
 readonly TARGET="${1:-}"
 readonly RPT_PREFIX="dedupe_report"
@@ -16,7 +15,10 @@ if [[ -z $TARGET || ! -d $TARGET ]]; then
   exit 1
 fi
 for tool in fclones czkawka-cli; do
-  has "$tool" || { printf "Error: %s is not installed.\n" "$tool" >&2; exit 1; }
+  if ! command -v -- "$tool" >/dev/null; then
+    printf "Error: %s is not installed.\n" "$tool" >&2
+    exit 1
+  fi
 done
 
 # --- Interaction ---

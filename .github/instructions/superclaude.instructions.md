@@ -1,6 +1,9 @@
 ---
-
-## name: SuperClaude Commands description: Workflow commands with persona + MCP integration category: workflow
+name: SuperClaude Commands
+description: Workflow commands with persona + MCP integration
+category: workflow
+applyTo: "*"
+---
 
 # SuperClaude Commands
 

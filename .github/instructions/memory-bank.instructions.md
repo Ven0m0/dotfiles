@@ -1,6 +1,7 @@
 ---
-
-## applyTo: "\*"
+description: "Coding standards, domain knowledge, and preferences that AI should follow."
+applyTo: "*"
+---
 
 Coding standards, domain knowledge, and preferences that AI should follow.
 

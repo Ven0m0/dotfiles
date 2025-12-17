@@ -1,6 +1,7 @@
 ---
-
-## applyTo: "\*" description: "Performance optimization reference: frontend, backend, database best practices"
+applyTo: "*"
+description: "Performance optimization reference: frontend, backend, database best practices"
+---
 
 # Performance Optimization
 

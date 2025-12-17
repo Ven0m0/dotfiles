@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
+# shellcheck disable=SC2317 # processors are invoked via dynamic dispatch
 set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t'
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
-has(){ command -v -- "$1" &>/dev/null; }
-
 # Exhaustive Lint & Format Script
 # Policy: 2-space indent, 120 char width, 0 errors
 # Pipeline: Format -> Lint/Fix -> Report
@@ -37,11 +36,15 @@ check_deps(){
   local -a opt=(taplo mdformat stylua selene ast-grep actionlint prettier)
 
   for tool in "${required[@]}"; do
-    has "$tool" || missing+=("$tool")
+    if ! command -v -- "$tool" >/dev/null; then
+      missing+=("$tool")
+    fi
   done
 
   for tool in "${opt[@]}"; do
-    has "$tool" || optional+=("$tool")
+    if ! command -v -- "$tool" >/dev/null; then
+      optional+=("$tool")
+    fi
   done
 
   if [[ ${#missing[@]} -gt 0 ]]; then
@@ -105,7 +108,7 @@ proc_yaml(){
 
   log "Processing YAML (${#files[@]} files)..."
 
-  if has yamlfmt; then
+  if command -v yamlfmt >/dev/null; then
     local yamlfmt_cfg=".yamlfmt"
     [[ ! -f $yamlfmt_cfg ]] && yamlfmt_cfg=".qlty/configs/.yamlfmt.yaml"
     local modified=0 errors=0
@@ -132,7 +135,7 @@ proc_yaml(){
     GROUP_ERRORS["$group"]=$errors
   fi
 
-  if has yamllint; then
+  if command -v yamllint >/dev/null; then
     local yamllint_cfg=".qlty/configs/.yamllint.yaml"
     local lint_errors=0
 
@@ -215,7 +218,11 @@ main(){
   log "Root: $PROJECT_ROOT"
   log ""
 
-  check_deps || exit 1
+  check_deps
+  deps_status=$?
+  if (( deps_status != 0 )); then
+    exit "$deps_status"
+  fi
 
   local -a processors=(
     proc_yaml

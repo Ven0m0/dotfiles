@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
 export LC_ALL=C LANG=C HOME="/home/${SUDO_USER:-$USER}"
-has(){ command -v -- "$1" &>/dev/null; }
 die(){ printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 
 check_requirements(){
   local -a missing=() reqs=(ping ip)
   for req in "${reqs[@]}"; do
-    has "$req" || missing+=("$req")
+    if ! command -v -- "$req" >/dev/null; then
+      missing+=("$req")
+    fi
   done
   ((${#missing[@]})) && die "Missing tools: ${missing[*]}"
 }
@@ -33,12 +34,14 @@ select_interface(){
 
 persist_mtu(){
   local iface=$1 mtu=$2
-  if has nmcli && [[ -n $(nmcli -t dev | grep "^$iface:") ]]; then
-    local conn
-    conn=$(nmcli -t -f NAME,DEVICE con show --active | awk -F: -v i="$iface" '$2==i{print $1}')
-    if [[ $conn ]]; then
-      sudo nmcli con mod "$conn" 802-3-ethernet.mtu "$mtu"
-      printf 'Persistent via NetworkManager: %s\n' "$conn"; return 0
+  if command -v -- nmcli >/dev/null; then
+    if nmcli -t dev | grep -q "^${iface}:"; then
+      local conn
+      conn=$(nmcli -t -f NAME,DEVICE con show --active | awk -F: -v i="$iface" '$2==i{print $1}')
+      if [[ -n $conn ]]; then
+        sudo nmcli con mod "$conn" 802-3-ethernet.mtu "$mtu"
+        printf 'Persistent via NetworkManager: %s\n' "$conn"; return 0
+      fi
     fi
   fi
   if [[ -d /etc/netplan ]] && compgen -G "/etc/netplan/*.yaml" >/dev/null; then
@@ -75,7 +78,12 @@ EOF
         sudo sed -i "/iface $iface inet/ a\    mtu $mtu" /etc/network/interfaces
       fi
       printf 'Persistent via /etc/network/interfaces\n'
-      sudo systemctl restart networking &>/dev/null || sudo ifdown "$iface" && sudo ifup "$iface" || :; return 0
+      if ! sudo systemctl restart networking &>/dev/null; then
+        if sudo ifdown "$iface"; then
+          sudo ifup "$iface" || :
+        fi
+      fi
+      return 0
     fi
   fi
   printf 'Manual persistence needed - no supported network manager found\n'
@@ -86,7 +94,9 @@ find_mtu_binary(){
   ipver=$(detect_ip_version "$srv")
   if [[ $ipver == "6" ]]; then
     overhead=48; ping_cmd="ping6"
-    has ping6 || die "ping6 not available for IPv6"
+    if ! command -v -- ping6 >/dev/null; then
+      die "ping6 not available for IPv6"
+    fi
   else
     overhead=28; ping_cmd="ping"
   fi
@@ -111,7 +121,9 @@ find_mtu_incremental(){
   ipver=$(detect_ip_version "$srv")
   if [[ $ipver == "6" ]]; then
     overhead=48; ping_cmd="ping6"
-    has ping6 || die "ping6 not available for IPv6"
+    if ! command -v -- ping6 >/dev/null; then
+      die "ping6 not available for IPv6"
+    fi
   else
     overhead=28; ping_cmd="ping"
   fi
