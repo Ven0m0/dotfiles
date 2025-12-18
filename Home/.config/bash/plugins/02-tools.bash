@@ -35,42 +35,25 @@ if has ast-grep; then
 fi
 # --- x-cmd (command-line toolkit)
 # https://github.com/x-cmd/x-cmd
-ifsource "$HOME/.x-cmd.root/X"
-startintent(){
-  adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell am start "$@"
-}
-apkinstall(){
-  adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X install -r "$@"
-}
-rmapp(){
-  adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X uninstall "$@"
-}
-clearapp(){
-  adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell pm clear "$@"
-}
-
+ifsource "${HOME}/.x-cmd.root/X"
+startintent(){ adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell am start "$@"; }
+apkinstall(){ adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X install -r "$@"; } 
+rmapp(){ adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X uninstall "$@"; }
+clearapp(){ adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell pm clear "$@"; }
 # Rclone
 rmount(){
-  mkdir -p ~/OneDrive
+  mkdir -p ~/OneDrive &>/dev/null
   rclone mount onedrive: ~/OneDrive \
-    --vfs-cache-mode full \
-    --vfs-cache-max-size 10G \
-    --vfs-cache-max-age 24h \
-    --dir-cache-time 1h \
-    --buffer-size 64M \
-    --vfs-read-chunk-size 32M \
-    --vfs-read-chunk-size-limit off \
-    --tpslimit 4 \
-    --daemon
+    --vfs-cache-mode full --vfs-cache-max-size 10G \
+    --vfs-cache-max-age 24h --dir-cache-time 1h \
+    --vfs-read-chunk-size 32M --vfs-read-chunk-size-limit off \
+    --buffer-size 64M \ --tpslimit 4 --daemon
 }
 rtrans(){
-  mkdir -p ~/OneDrive ~/Documents
+  mkdir -p ~/OneDrive ~/Documents &>/dev/null
   rclone copy ~/Documents onedrive:Documents \
-    --transfers 8 \
-    --checkers 16 \
-    --onedrive-chunk-size 128M \
-    --tpslimit 4 \
-    --progress
+    --transfers 8 --checkers 16 --onedrive-chunk-size 128M \
+    --tpslimit 4 --progress
 }
 # shellcheck disable=SC2139
 alias mount-drive="rclone mount onedrive: ~/OneDrive --vfs-cache-mode full --vfs-cache-max-size 10G --daemon"
