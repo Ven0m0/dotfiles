@@ -21,6 +21,6 @@ fi
 has gh && { gh tidy; gh poi; }
 git maintenance run --quiet --task=prefetch --task=gc --task=loose-objects --task=incremental-repack --task=pack-refs --task=reflog-expire --task=rerere-gc --task=worktree-prune &>/dev/null || :
 git clean -fdX
-git submodule update --init --remote --rebase --depth 1 --filter=blob:none 
+git -c protocol.file.allow=always submodule update --init --remote --rebase --depth 1 --filter=blob:none 
 git add -A
 git commit -q -m "Format & Lint" &>/dev/null && git push --recurse-submodules=on-demand --prune
