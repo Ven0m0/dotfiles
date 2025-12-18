@@ -31,7 +31,7 @@
 --extractor-args "youtube:player_client=default,tv_embedded,web_creator,player_skip=webpage,skip=translated_subs,comment_sort=top,fetch_pot=auto,use_ad_playback_context=true;youtubetab:skip"
 # ====== Formats ======
 -f "bv*[height<=1080]+ba[acodec=opus]/bv*[height<=1080]+ba/bv*+ba/b"
--S "vcodec:av01,vcodec:vp9,vcodec:hevc,acodec:opus,res,size,br,proto"
+-S "vcodec:av01,vcodec:vp9,vcodec:hevc,acodec:opus,res,abr~128,size,br,proto"
 --merge-output-format mkv
 --remux-video "opus/mkv"
 # ====== Metadata ======
