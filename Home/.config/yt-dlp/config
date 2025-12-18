@@ -5,44 +5,39 @@
 --windows-filenames
 --trim-filenames 75
 --cookies-from-browser "${BROWSER:-firefox}"
-
 # ====== JS runtimes (improves sites needing JS)
 --js-runtimes bun
---js-runtimes node
 --js-runtimes deno
+--js-runtimes node
 --js-runtimes quickjs
-
 # ====== SponsorBlock ======
 --sponsorblock-api https://sponsor.ajay.app
 --sponsorblock-remove all
-
 # ====== Downloading ======
 -o ~/Videos/%(title)s.%(ext)s
---buffer-size 2048 
+--buffer-size 16M
 --concurrent-fragments 8
 --fragment-retries 5
 --retries 5
---file-access-retries 10
---retry-sleep 3
+--file-access-retries 5
 --yes-playlist
 --lazy-playlist
 --hls-use-mpegts
 --no-check-certificates
 --downloader aria2c
---downloader-args "aria2c:--file-allocation=falloc --enable-http-keep-alive=true --enable-http-pipelining=true --max-connection-per-server=8 --min-split-size=5M --split=8 --disk-cache=64M --summary-interval=0"
+--downloader-args "aria2c:--file-allocation=falloc --event-poll=epoll --enable-http-keep-alive=true --enable-http-pipelining=true --http-accept-gzip=true --allow-overwrite=true --auto-file-renaming=false -x 10 -s10 -k 5M --max-tries=5 --retry-wait=2 --disk-cache=128M --summary-interval=0"
 --downloader "dash:native"
+# ====== Extractor tuning ======
 --extractor-args "youtube:player_client=default,tv_embedded,web_creator,player_skip=webpage,skip=translated_subs,comment_sort=top,fetch_pot=auto,use_ad_playback_context=true;youtubetab:skip"
-
-# ====== Formats (≥1080p; prefer AV1 > VP9 > HEVC; prefer Opus ≤128k) ======
--f "bv*[height>=1080]+ba[acodec=opus][abr<=130]/bv*[height>=1080]+ba/bv*+ba/b"
+# ====== Formats ======
+-f "bv*[height<=1080]+ba[acodec=opus]/bv*[height<=1080]+ba/bv*+ba/b"
 -S "vcodec:av01,vcodec:vp9,vcodec:hevc,acodec:opus,res,size,br,proto"
---merge-output-format "mkv" 
+--merge-output-format mkv
 --remux-video "opus/mkv"
-
 # ====== Metadata ======
 --embed-thumbnail
---convert-thumbnails "webp"
+--convert-thumbnails webp
 --embed-metadata
 --embed-chapters
 --parse-metadata "title:%(artist)s - %(title)s"
---replace-in-metadata title "[ _]" "-"
+--replace-in-metadata "title" "[ _]" "-"
