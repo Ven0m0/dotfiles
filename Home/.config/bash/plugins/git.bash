@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 has git || return
 gpush(){
   git maintenance run --auto --quiet; git add -A >/dev/null
