@@ -4,14 +4,10 @@
 # Source: source "${BASH_SOURCE%/*}/.lib.sh" 2>/dev/null || source ~/.local/bin/.lib.sh
 set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t'
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
-readonly LIB_DIR="${s%/*}"
-if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
-  cd -P -- "${LIB_DIR}"
-fi
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
 has(){ command -v -- "$1" &>/dev/null; }
-now(){ local fmt="${1:-%d/%m/%y-%R}"; printf "%(${fmt})T\n" '-1'; }
-fcat(){ printf '%s\n' "$(<"$1")"; }
+date(){ local x="${1:-%d/%m/%y-%R}"; printf "%($x)T\n" '-1'; }
+fcat(){ printf '%s\n' "$(<${1})"; }
 sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }
 die(){
   local code="${2:-1}"
@@ -35,4 +31,4 @@ BAT=$(has bat && printf bat || printf cat)
 SD=$(has sd && printf sd || printf sed)
 JQ=$(has jaq && printf jaq || has jq && printf jq || printf cat)
 ARIA2=$(has aria2c && printf aria2c || printf curl)
-export LIB_DIR FD RG BAT SD JQ ARIA2 RED GREEN YELLOW BLUE MAGENTA CYAN WHITE BOLD DIM RESET
+export FD RG BAT SD JQ ARIA2 RED GREEN YELLOW BLUE MAGENTA CYAN WHITE BOLD DIM RESET

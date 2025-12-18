@@ -3,18 +3,13 @@
 set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t'
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
-source "./.lib.sh"
+has(){ command -v -- "$1" &>/dev/null; }
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 for c in curl wget2 wget; do has "$c" && HTTP="$c" && break; done
 [[ -z ${HTTP:-} ]] && die "curl/wget required"
 for f in sk fzf; do has "$f" && FZF="$f" && break; done
 [[ -z ${FZF:-} ]] && die "sk/fzf required"
-get(){
-  case "$HTTP" in
-    curl) curl -fsL "$@" ;;
-    wget*) "$HTTP" -qO- "$@" ;;
-    *) die "Unsupported HTTP client: $HTTP" ;;
-  esac
-}
+get(){ case "$HTTP" in curl) curl -fsL "$@" ;; wget*) "$HTTP" -qO- "$@" ;; esac; }
 readonly CHT_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/cht_list" CHT_URL="cheat.sh"
 cache(){
   [[ -f $CHT_CACHE && -n "$(find "$CHT_CACHE" -mtime -7 2>/dev/null)" ]] && return
@@ -69,8 +64,4 @@ while getopts "sibruha" o; do
   esac
 done
 shift $((OPTIND - 1))
-if [[ $# -eq 0 ]]; then
-  browse
-else
-  query "$@"
-fi
+[[ $# -eq 0 ]] && browse || query "$@"
