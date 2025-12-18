@@ -1,48 +1,48 @@
-#======General======
+# ====== General ======
+--progress
 --mtime
---progress 
---restrict-filenames 
+--restrict-filenames
 --windows-filenames
 --trim-filenames 75
---cookies-from-browser '${BROWSER:-firefox}::kwallet'
---sponsorblock-api “https://sponsor.ajay.app” 
---sponsorblock-remove “all” 
+--cookies-from-browser "${BROWSER:-firefox}"
 
-#======Downloading======
+# ====== JS runtimes (improves sites needing JS)
+--js-runtimes bun
+--js-runtimes node
+--js-runtimes deno
+--js-runtimes quickjs
+
+# ====== SponsorBlock ======
+--sponsorblock-api https://sponsor.ajay.app
+--sponsorblock-remove all
+
+# ====== Downloading ======
 -o ~/Videos/%(title)s.%(ext)s
--N 8
 --buffer-size 2048 
--R 3
---yes-playlist 
---lazy-playlist 
+--concurrent-fragments 8
+--fragment-retries 5
+--retries 5
+--file-access-retries 10
+--retry-sleep 3
+--yes-playlist
+--lazy-playlist
 --hls-use-mpegts
 --no-check-certificates
 --downloader aria2c
---downloader-args "aria2c:--file-allocation=falloc --event-poll=epoll --optimize-concurrent-downloads=true --http-accept-gzip=true --enable-http-keep-alive=true --enable-http-pipelining=true --disk-cache=64M -j16 -x4 -s8 -k10M"
+--downloader-args "aria2c:--file-allocation=falloc --enable-http-keep-alive=true --enable-http-pipelining=true --max-connection-per-server=8 --min-split-size=5M --split=8 --disk-cache=64M --summary-interval=0"
 --downloader "dash:native"
---extractor-args "youtube:player_client=default,tv_embedded,web_creator,player_skip=webpage,skip=translated_subs,comment_sort=top,fetch_pot=auto,use_ad_playback_context=true;youtubetab:skip;soundcloud:formats=http_opus,hls_opus,http_aac,hls_aac,http_mp3,hls_mp3"
+--extractor-args "youtube:player_client=default,tv_embedded,web_creator,player_skip=webpage,skip=translated_subs,comment_sort=top,fetch_pot=auto,use_ad_playback_context=true;youtubetab:skip"
 
-#======Metadata======
---embed-thumbnail 
---convert-thumbnails “webp” 
---embed-metadata 
+# ====== Formats (≥1080p; prefer AV1 > VP9 > HEVC; prefer Opus ≤128k) ======
+-f "bv*[height>=1080]+ba[acodec=opus][abr<=130]/bv*[height>=1080]+ba/bv*+ba/b"
+-S "vcodec:av01,vcodec:vp9,vcodec:hevc,acodec:opus,res,size,br,proto"
+--merge-output-format "mkv" 
+--remux-video "opus/mkv"
+
+# ====== Metadata ======
+--embed-thumbnail
+--convert-thumbnails "webp"
+--embed-metadata
 --embed-chapters
 --parse-metadata "title:%(artist)s - %(title)s"
---replace-in-metadata "title" "[ _]" "-"
-
-#======Formats======
--x
---audio-format “opus” 
---audio-quality “128k”
---remux-video "opus/mkv" 
---merge-output-format mkv
-
--f "bv*+ba/b"
--f "bv*[height<=1080,[fps<=60],vcodec~='^av1|vp9|h265']+ba/b[height<=1080] / (bv*+ba/b)" 
--S "hasvid,hasaud,res:1080,vcodec:av1,acodec:opus,quality,size,fps,proto"
-
-#======Misc======
---js-runtimes bun
---js-runtimes deno 
---js-runtimes quickjs
---js-runtimes node
+--replace-in-metadata title "[ _]" "-"
