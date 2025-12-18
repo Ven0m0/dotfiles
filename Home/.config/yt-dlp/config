@@ -1,0 +1,54 @@
+#======General======
+--mtime
+--progress 
+--restrict-filenames 
+--windows-filenames
+--trim-filenames 75
+--cookies-from-browser '${BROWSER:-firefox}::kwallet'
+--sponsorblock-api “https://sponsor.ajay.app” 
+--sponsorblock-remove “all” 
+
+#======Downloading======
+-o ~/Videos/%(title)s.%(ext)s
+-N 8
+--buffer-size 2048 
+-R 3
+--yes-playlist 
+--lazy-playlist 
+--hls-use-mpegts
+--no-check-certificates
+
+--downloader “libaria2c.so”
+--downloader aria2c
+
+--downloader-args "aria2c:--file-allocation=falloc:--event-poll=epoll:--optimize-concurrent-downloads=true:--http-accept-gzip=true:--enable-http-keep-alive=true:--enable-http-pipelining=true:--disk-cache=64M:--max-concurrent-downloads=16:--max-connection-per-server=4:--split=8:--min-split-size=10M"
+--downloader "dash:native"
+
+#======Metadata======
+--embed-thumbnail 
+--convert-thumbnails “webp” 
+--embed-metadata 
+--embed-chapters
+--parse-metadata "title:%(artist)s - %(title)s"
+--replace-in-metadata "title" "[ _]" "-"
+
+--extractor-args 
+
+
+#======Formats======
+-x
+--audio-format “opus” 
+--audio-quality “128k”
+
+--remux-video "opus/mkv" 
+--merge-output-format mkv
+
+-f "bv*+ba/b"
+-f "bv*[height<=1080,[fps<=60],vcodec~='^av1|vp9|h265']+ba/b[height<=1080] / (bv*+ba/b)" 
+-S "hasvid,hasaud,res:1080,vcodec:av1,acodec:opus,quality,size,fps,proto"
+
+#======Misc======
+--js-runtimes bun
+--js-runtimes deno 
+--js-runtimes quickjs
+--js-runtimes node
