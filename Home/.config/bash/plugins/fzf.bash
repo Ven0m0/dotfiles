@@ -1,6 +1,5 @@
-#=================================== [FZF] ====================================
+#!/usr/bin/env bash
 has fzf || return
-
 # --- FZF Configuration
 has fd && export FZF_DEFAULT_COMMAND='fd -tf -HI -S +10k --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
