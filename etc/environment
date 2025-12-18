@@ -1,9 +1,4 @@
 # ========================================
-# System-wide Environment Variables
-# ========================================
-# These variables are set for all users and processes
-
-# ========================================
 # Privacy and Telemetry
 # ========================================
 # Disable telemetry and tracking for various tools
@@ -16,38 +11,29 @@ DISABLE_ERROR_REPORTING=1
 # ========================================
 # Memory Allocators
 # ========================================
-# Jemalloc configuration
 MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
 _RJEM_MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
-
-# Mimalloc configuration
 # https://github.com/microsoft/mimalloc/blob/main/docs/environment.html
 MIMALLOC_VERBOSE=0
 MIMALLOC_SHOW_ERRORS=0
 MIMALLOC_ALLOW_LARGE_OS_PAGES=1
-
-# GLIBC malloc tuning
 GLIBC_TUNABLES="glibc.malloc.hugetlb=1"
+URUNTIME_PRELOAD=1
+OPTIMIZE_LAUNCH=1
 
 # ========================================
 # Programming Languages
 # ========================================
-# Python optimizations
 PYTHONOPTIMIZE=2
 PYTHON_JIT=1
-
-# Rust logging (disabled for performance)
+PYTHON_LEAVE_PIP=1
+PYENV_VIRTUALENV_DISABLE_PROMPT=1
 RUST_LOG=off
-
-# Cargo (Rust package manager) optimizations
 CARGO_HTTP_MULTIPLEXING=true
 CARGO_NET_GIT_FETCH_WITH_CLI=true
-
-# Git optimizations
 GITOXIDE_CORE_MULTIPACKINDEX=true
-
-CMAKE_SKIP_INSTALL_RPATH=YES
 CMAKE_BUILD_TYPE=Release
+CMAKE_SKIP_INSTALL_RPATH=YES
 
 # ========================================
 # Compression
@@ -61,11 +47,11 @@ ZSTD_NBTHREADS=0
 # KWin compositor settings
 KWIN_TRIPLE_BUFFER=0
 KWIN_DRM_NO_AMS=0
-
-# Qt High-DPI settings
 QT_ENABLE_HIGHDPI_SCALING=1
 QT_AUTO_SCREEN_SCALE_FACTOR=1
+QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 QSG_NO_VSYNC=1
+SYSTEMD_SERVICE_FILE_WATCHERS=disabled
 
 # ========================================
 # Electron Applications
@@ -81,7 +67,6 @@ ELECTRON_ENABLE_STACK_DUMPING=false
 GPU_USE_SYNC_OBJECTS=1
 SHARED_MEMORY=1
 CPU_LIMIT=0
-
 # VA-API (Video Acceleration API)
 GST_VAAPI_ALL_DRIVERS=1
 
@@ -89,8 +74,6 @@ GST_VAAPI_ALL_DRIVERS=1
 # NVIDIA Graphics
 # ========================================
 # https://github.com/elFarto/nvidia-vaapi-driver#environment-variables
-
-# Mesa debugging (disabled for performance)
 MESA_DEBUG=0
 MESA_NO_ERROR=1
 
@@ -106,20 +89,16 @@ __GL_SHADER_DISK_CACHE=1
 # Gaming (Proton/Wine)
 # ========================================
 # https://wiki.cachyos.org/configuration/gaming
-
-# Proton (Steam compatibility layer)
+# Proton
 PROTON_ENABLE_WAYLAND=1
 PROTON_NO_WM_DECORATION=1
 PROTON_PREFER_SDL_INPUT=1
 PROTON_LOG=0
-
 # Wine settings
 WINE_NO_WM_DECORATION=1
 WINE_PREFER_SDL_INPUT=1
 WINEFSYNC=1
 WINEESYNC=1
-
-# Ray tracing support
 # https://wiki.archlinux.org/title/Hardware_raytracing
 PROTON_ENABLE_NVAPI=1
 PROTON_ENABLE_NGX_UPDATER=1
