@@ -2,8 +2,10 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    labels: []
     schedule:
       interval: "weekly"
+      day: "monday"
     groups:
       github-actions-all:
         patterns:
@@ -11,6 +13,7 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    open-pull-requests-limit: 5
   - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
