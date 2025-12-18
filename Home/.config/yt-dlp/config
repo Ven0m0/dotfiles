@@ -20,7 +20,6 @@
 --downloader aria2c
 --downloader-args "aria2c:--file-allocation=falloc --event-poll=epoll --optimize-concurrent-downloads=true --http-accept-gzip=true --enable-http-keep-alive=true --enable-http-pipelining=true --disk-cache=64M -j16 -x4 -s8 -k10M"
 --downloader "dash:native"
-
 --extractor-args "youtube:player_client=default,tv_embedded,web_creator,player_skip=webpage,skip=translated_subs,comment_sort=top,fetch_pot=auto,use_ad_playback_context=true;youtubetab:skip;soundcloud:formats=http_opus,hls_opus,http_aac,hls_aac,http_mp3,hls_mp3"
 
 #======Metadata======
