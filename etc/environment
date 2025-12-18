@@ -46,6 +46,9 @@ CARGO_NET_GIT_FETCH_WITH_CLI=true
 # Git optimizations
 GITOXIDE_CORE_MULTIPACKINDEX=true
 
+CMAKE_SKIP_INSTALL_RPATH=YES
+CMAKE_BUILD_TYPE=Release
+
 # ========================================
 # Compression
 # ========================================
