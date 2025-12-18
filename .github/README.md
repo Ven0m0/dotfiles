@@ -552,6 +552,13 @@ Deliver a standalone, test-verified patch.
 ```
 </details>
 <details>
+<summary><b>TODO short</b></summary>
+
+```markdown
+Identify and resolve straightforward tasks from in-code TODOs or the GitHub Issues Tab.
+```
+</details>
+<details>
 <summary><b>Tasks</b></summary>
 
 ```markdown
