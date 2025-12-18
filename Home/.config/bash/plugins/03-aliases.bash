@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ~/.config/bash/plugins/03-aliases.bash
 #================================= [Aliases] ==================================
 # Keep aliases enabled after sudo
