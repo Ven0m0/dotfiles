@@ -17,12 +17,11 @@
 --lazy-playlist 
 --hls-use-mpegts
 --no-check-certificates
-
---downloader “libaria2c.so”
 --downloader aria2c
-
 --downloader-args "aria2c:--file-allocation=falloc:--event-poll=epoll:--optimize-concurrent-downloads=true:--http-accept-gzip=true:--enable-http-keep-alive=true:--enable-http-pipelining=true:--disk-cache=64M:--max-concurrent-downloads=16:--max-connection-per-server=4:--split=8:--min-split-size=10M"
 --downloader "dash:native"
+
+--extractor-args "youtube:player_client=default,tv_embedded,web_creator,player_skip,skip=translated_subs"
 
 #======Metadata======
 --embed-thumbnail 
@@ -32,14 +31,10 @@
 --parse-metadata "title:%(artist)s - %(title)s"
 --replace-in-metadata "title" "[ _]" "-"
 
---extractor-args 
-
-
 #======Formats======
 -x
 --audio-format “opus” 
 --audio-quality “128k”
-
 --remux-video "opus/mkv" 
 --merge-output-format mkv
 
