@@ -3,7 +3,7 @@
 set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t'
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
-has(){ command -v -- "$1" &>/dev/null; }
+source "./.lib.sh"
 readonly AUTOSTART_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/autostart"
 [[ ${1:-} == -h ]] && { sed "1,2d;s/^# //;s/^#$/ /;/^$/q" "$0"; exit 0; }
 mkdir -p "$AUTOSTART_DIR"
@@ -13,9 +13,9 @@ if [[ $# -gt 0 ]]; then
   files=("$@")
 else
   if has fd; then
-    mapfile -t files < <(fd -t f --base-path "$AUTOSTART_DIR"|fzf --prompt='autostart: ' --preview='cat {}' -m --header='enter:confirm')
+    mapfile -t files < <(fd -t f .|fzf --prompt='autostart: ' --preview='cat {}' -m --header='enter:confirm')
   else
-    mapfile -t files < <(find "$AUTOSTART_DIR" -type f -exec basename {} \;|fzf --prompt='autostart: ' --preview='cat {}' -m --header='enter:confirm')
+    mapfile -t files < <(find . -type f -printf '%f\n'|fzf --prompt='autostart: ' --preview='cat {}' -m --header='enter:confirm')
   fi
 fi
 [[ ${#files[@]} -eq 0 ]] && { printf 'No files selected.\n' >&2; exit 1; }

@@ -3,11 +3,12 @@
 set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t'
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
-has(){ command -v -- "$1" &>/dev/null; }
 
 pr_sha(){
-  local pr_number="$1"
-  git ls-remote 2>/dev/null|grep "pull/${pr_number}/head"|awk '{print $1}'
+  local pr_number="$1" sha
+  read -r sha _ < <(git ls-remote origin "refs/pull/${pr_number}/head")
+  [[ -n $sha ]] || { printf 'Unable to resolve PR #%s\n' "$pr_number" >&2; return 1; }
+  printf '%s\n' "$sha"
 }
 
 pr_numbers_to_md(){
@@ -17,7 +18,10 @@ pr_numbers_to_md(){
 }
 
 default_branch(){
-  git remote show origin|grep 'HEAD branch'|awk '{print $NF}'
+  local head
+  head=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null) \
+    || head=$(git remote show origin | awk '/HEAD branch/ {print $NF; exit}')
+  printf '%s\n' "${head#origin/}"
 }
 
 current_date=$(date +%Y-%m-%d)

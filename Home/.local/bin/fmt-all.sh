@@ -3,7 +3,7 @@
 set -euo pipefail; shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
-has(){ command -v -- "$1" &>/dev/null; }
+source "./.lib.sh"
 has git || exit 1
 git add -A
 # Find all .git folders except in the main folder and delete them
