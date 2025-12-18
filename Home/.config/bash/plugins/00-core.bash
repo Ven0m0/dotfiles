@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ~/.config/bash/plugins/00-core.bash
 #================================== [Core] ====================================
 # --- History
