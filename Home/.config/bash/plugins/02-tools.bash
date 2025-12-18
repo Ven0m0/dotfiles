@@ -21,6 +21,8 @@ if has yazi; then
     rm -f "$tmp_file"
   }
 fi
+# --- fclones
+has fclones && eval "$(fclones complete bash 2>/dev/null)" &>/dev/null
 # --- Command correction/enhancement
 if has thefuck; then
   eval "$(thefuck --alias)" || :
