@@ -9,7 +9,7 @@ fi
 # --- Zellij (terminal multiplexer)
 if has zellij; then
   eval "$(zellij setup --generate-auto-start bash &>/dev/null)" || :
-  ifsource "$HOME/.config/bash/completions/zellij.bash"
+  ifsource "${HOME}/.config/bash/completions/zellij.bash"
 fi
 if has yazi; then
   y(){
