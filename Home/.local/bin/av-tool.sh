@@ -2,7 +2,6 @@
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
 set -euo pipefail; shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C
-
 has(){ command -v -- "$1" &>/dev/null; }
 die(){ printf '%s\n' "$1" >&2; exit "${2:-1}"; }
 
@@ -21,8 +20,8 @@ EOF
 }
 
 check_deps(){
-  local -a req=(ffmpeg ffprobe file)
-  local m=()
+  local -a req=(ffmpeg ffprobe file) m=()
+  local t
   for t in "${req[@]}"; do has "$t" || m+=("$t"); done
   ((${#m[@]})) && die "Missing deps: ${m[*]}"
 }
@@ -136,8 +135,6 @@ cmd_norm(){
   done
   [[ -z $infile ]] && die "Input (-i) required"
   outfile=${outfile:-${infile%.*}-normalized.mp4}
-  log(){ printf '%s\n' "$@" >&2; }
-  log "Analyzing loudness..."
   local stats; stats=$(ffmpeg -hide_banner -loglevel error -i "$infile" -af "loudnorm=I=-16:TP=-1.5:LRA=11:print_format=summary" -f null - 2>&1 | tail -n 12)
   local meas_I meas_TP meas_LRA meas_thresh offset
   meas_I=$(awk '/Input Integrated:/{print $3}' <<<"$stats")
