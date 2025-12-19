@@ -1,4 +1,4 @@
-name: Autofix merge conflict
+name: autofix.ci
 on:
   workflow_dispatch:
 concurrency:
@@ -14,3 +14,5 @@ jobs:
       - uses: actions/checkout@v6
       - name: autofix.ci
         uses: autofix-ci/action@v1.3.2
+        with:
+          fail-fast: false
