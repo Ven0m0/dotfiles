@@ -62,8 +62,11 @@ cmd_whitespace(){
     [[ $do_cr -eq 1 ]] && grep -q $'\r' "$f" && { file_issues+=("crlf");sed_script+='s/\r//g;';}
     [[ $check -eq 0 && -n $sed_script ]] && { sed -i "$sed_script" "$f";dirty=1;}
     if [[ $do_unicode -eq 1 ]] && has perl;then
-      if ! perl -ne 'exit 1 if /[\x{00A0}\x{202F}\x{200B}\x{00AD}]/' "$f";then
-        if [[ $check -eq 1 ]];then perl -CS -ne 'if(/[\x{00A0}\x{202F}\x{200B}\x{00AD}]/){print "issue\n"; exit}' "$f"|grep -q "issue" && file_issues+=("unicode");else perl -CS -0777 -i -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g' "$f";dirty=1;file_issues+=("unicode");fi
+      if perl -ne 'exit 1 if /[\x{00A0}\x{202F}\x{200B}\x{00AD}]/' "$f";then
+        :
+      else
+        file_issues+=("unicode")
+        [[ $check -eq 0 ]] && { perl -CS -0777 -i -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g' "$f"; dirty=1; }
       fi
     fi
     [[ $do_eof -eq 1 && -s $f ]] && [[ -n "$(tail -c 1 "$f")" ]] && { file_issues+=("no-eof-newline");[[ $check -eq 0 ]] && { echo >>"$f";dirty=1;};}
