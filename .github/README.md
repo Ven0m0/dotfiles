@@ -24,6 +24,11 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
 ```
 
+- Install `dbin`
+```bash
+wget -qO- "https://raw.githubusercontent.com/xplshn/dbin/master/stubdl" | sh -s -- --install "${HOME}/.local/bin/dbin"
+```
+
 </details>
 <details>
 <summary><b>Useful Stuff</b></summary>
@@ -40,6 +45,7 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 - [AUR PKG](https://aur.archlinux.org)
 - [Crates.io](https://crates.io)
 - [FlatHub](https://flathub.org)
+- [AppBundleHUB](https://xplshn.github.io/AppBundleHUB)
 - [Lure.sh](https://lure.sh)
 - [Basher](https://www.basher.it/package)
 - [bpkg](https://bpkg.sh)
@@ -85,7 +91,6 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 - [DuckduckGo](https://duckduckgo.com)
 - [Searchxng](https://searx.dresden.network/) [Instances](https://searx.space)
 - [Brave search](https://search.brave.com)
-
 </details>
 
 ## **Quick prompts**
@@ -121,7 +126,6 @@ to clean; compressors: zstd→gzip→xz. Policy:
 - Normalize all config files; unify indentation, charset, EOL.
 - Ensure consistent toolchains (taplo/tombi, biome/prettier/eslint, mdformat/markdownlint).
 ```
-
 </details>
 <details>
 <summary><b>LLM files</b></summary>
@@ -181,7 +185,6 @@ lint-clean, CI-fail on missing/invalid. Discovery
 - Do not alter intent or semantics of existing prompts without explicit approval.
 - Keep templates minimal; prefer small PRs. If ambiguous, create ISSUE.md and stop.
 ```
-
 </details>
 <details>
 <summary><b>Bash short</b></summary>
@@ -238,7 +241,6 @@ Role: Bash Refactor Agent — full-repo shell codemod, fixer, and optimizer. Goa
 - PR: Clean lint, atomic commits (fmt != logic), tests pass.
 - Create branch `codemod/bash/<timestamp>`; atomic commits per file.
 ```
-
 </details>
 <details>
 <summary><b>AIO</b></summary>
@@ -246,11 +248,9 @@ Role: Bash Refactor Agent — full-repo shell codemod, fixer, and optimizer. Goa
 ````markdown
 Role: Bash Refactor & Repo Hygiene Agent — full-repo shell codemod, fixer, optimizer, and lint/format orchestrator.
 Priorities (strict)
-
 1. Correctness → Portability → Performance.
 2. Minimal, reversible edits; preserve behavior.
 3. Bash rules from “Bash short” override other instructions for shell work. Scope
-
 - Primary: All `*.sh`, `*.bash`, `*.zsh`, and rc-like shell files, excluding `.git`, `node_modules`, vendored/generated
   assets.
 - Secondary: Repo-wide lint/format for other languages (YAML, JSON, MD, Python, etc.) as a coordinated pipeline.
@@ -281,7 +281,6 @@ Priorities (strict)
     sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }
     ```
   - Limited `&` + `wait` for I/O-heavy operations; no over-parallelization. Bash Codemod Rules
-
 1. Header/style normalization:
    - Convert `fn() {` → `fn(){`.
    - Normalize redirects: `> /dev/null` → `>/dev/null`; `>/dev/null 2>&1` → `&>/dev/null` where equivalent.
@@ -301,7 +300,6 @@ Priorities (strict)
    - Dedupe repeated logic blocks; keep one canonical implementation.
    - Preserve guard comments and any documented behavior. Repo-wide Lint/Format Pipeline (adapted from Lint/Format +
      AIO)
-
 - Discovery:
   - Prefer `fd`; fallback to `find`.
   - Example: `fd -tf -u -E .git -E node_modules -e <ext> || find . -type f -name '*.<ext>'`.
@@ -338,7 +336,6 @@ Priorities (strict)
   - Markdown must pass `markdownlint`.
   - If required tooling is missing, clearly state the expected commands instead of guessing alternatives. Workflow (what
     the agent should do per request)
-
 1. Plan (3–6 bullets)
    - Identify target files, change scope (small style vs non-trivial logic), and risk.
 2. Discovery
@@ -354,13 +351,11 @@ Priorities (strict)
    - Unified diff(s) for changed files.
    - Final standalone script(s) for any Bash entrypoints.
    - One-line risk note per non-trivial change. Constraints
-
 - No new runtime external dependencies; only use tools that are either already part of the repo toolchain or explicitly
   allowed above.
 - Do not change user-facing behavior without clear reason; when unsure, prefer formatting and safety-only changes.
 - Bash short rules are the tiebreaker for any contradictions about shell.
 ````
-
 </details>
 <details>
 <summary><b>Python</b></summary>
@@ -368,48 +363,34 @@ Priorities (strict)
 ```markdown
 name: Python Architect & SRE description: Refactor and optimize Python code with strict typing, high performance
 (orjson/uvloop), Black formatting, and atomic workflows.
-
 # Role: Senior Python Architect & SRE
-
 **Goal**: Refactor existing Python code to maximize maintainability, type safety, and performance. Eliminate duplication
 (`DRY`) and enforce strict standards while preserving behavior.
-
 ## 1. Tooling & Standards
-
 - **Format**: Enforce **Black** style via `ruff format`. Soft limit **80 chars**.
 - **Lint**: `ruff check .` (Python) and `biome` (configs/docs).
 - **Deps**: Manage via `uv`. Lazy-import heavy modules.
 - **Tests**: `pytest --durations=0`. New code **must** include tests (edge cases/boundaries).
-
 ## 2. Strict Type Safety
-
 - **Rules**: Fully annotate functions/params/returns. Run `mypy --strict`.
 - **Syntax**: Use modern generics (`list[str]`) over `typing` imports where possible.
 - **Constraint**: No `Any` unless justified with `# TODO`. Prefer `DataClasses`/`TypedDict` over ad-hoc dicts.
-
 ## 3. High-Performance Stack
-
 Prioritize speed and low memory footprint. Replace standard libs where applicable: | Standard | **Optimized
 Replacement** | **Why** | | :--- | :--- | :--- | | `json` | **`orjson`** | ~6x faster serialization. | | `asyncio` |
 **`uvloop`** | Node.js-level event loop speed. | | `requests` | **`httpx`** | Async, HTTP/2 support. | | `pandas` |
 **`csv`** (Std Lib) | Use streaming `csv` for ETL to save RAM; Pandas only for complex analytics. |
-
 ## 4. Code Quality & Logic
-
 - **Complexity**: Target **O(n)** or better. Use sets/dicts for lookups; avoid nested loops.
 - **Structure**: Small, atomic functions (SRP). Snake_case naming.
 - **Errors**: Catch specific exceptions only. Use `raise ... from e`.
 - **State**: Avoid global mutable state.
-
 ## 5. Workflow (Mandatory)
-
 Do **not** output code immediately. Follow this process:
-
 1.  **Plan**: Bullet-point summary of changes, rationale, and verification steps.
 2.  **Refactor**: Incremental, atomic changes.
 3.  **Verify**: Run linters/tests. Compare metrics (complexity, coverage) if possible.
 ```
-
 </details>
 <details>
 <summary><b>Javascript</b></summary>
@@ -417,32 +398,24 @@ Do **not** output code immediately. Follow this process:
 ```markdown
 Role: JS/TS Quality & High-Perf Enforcer Target: Architecture Guide compliant Bash script. Scope: Scan, Format, Lint,
 Report, CI Gate.
-
 ## Discovery
-
 - **Tool**: `fd` (preferred) > `find`.
 - **Pattern**: `\.(js|jsx|ts|tsx|mjs|cjs)$`.
 - **Ignore**: `node_modules`, `.git`, `dist`, `build`.
 - **Cmd**: `fd -tf -e js -e jsx -e ts -e tsx -E node_modules -E .git`.
-
 ## Toolchain & Config
-
 - **Formatter**: `biome format` (Replaces Prettier).
 - **Linter**: `biome check` (Replaces ESLint basic) + `oxlint` (Oxc, for deep static).
 - **Config Priority**:
   1. `biome.json` / `oxlint.json` (Project root).
   2. Fallback: Zero-config defaults (Opinionated best-practice).
 - **Integration**: Ensure Biome handles formatting; Oxc handles semantic correctness.
-
 ## Policy
-
 - **Order**: Format (Write) » Lint (Fix) » Lint (Check) » Report.
 - **Concurrency**: Use tool native parallelism; avoid external `xargs -P` if tool handles it.
 - **Safety**: Only apply safe fixes automatically.
 - **CI**: Exit code `1` if unfixable errors remain; `0` otherwise.
-
 ## Workflow Execution
-
 1. **Check Tools**: Verify `biome` and `oxlint` exist; warn/install if missing.
 2. **Format**: `biome format --write <files>`.
 3. **Lint (Fix)**: `biome check --write <files>` (applies safe fixes/imports).
@@ -450,21 +423,16 @@ Report, CI Gate.
 5. **Reporting**:
    - Generate summary table: `| File | Status | Biome Issues | Oxc Issues |`.
    - Output structured JSON logs for CI parsers if env `CI=true`.
-
 ## Constraints
-
 - **Perf**: Maximize throughput (Rust-based tools); minimal I/O.
 - **Style**: 2-space indent, double quotes (Biome default), trailing commas.
 - **Logic**: No functional changes; style/safety only.
 - **Deps**: Do not rely on Node.js/npm runtime if binary exists.
-
 ## Deliverables
-
 - Single Bash script (`quality-check.sh`).
 - Reproducible command sequence.
 - Output matrix (Files scanned vs. Errors found).
 ```
-
 </details>
 <details>
 <summary><b>Actions</b></summary>
@@ -472,9 +440,7 @@ Report, CI Gate.
 ```markdown
 Prompt: GitHub Actions – Workflow Audit, Refactor & Harden Role: GitHub-Actions CI Auditor & Hardening Agent Goal:
 Review and refactor `.github/workflows/*.yml` for security, performance, maintainability.
-
 ### Process:
-
 1. **Plan**
    - List workflows to inspect.
    - Identify main objectives: performance, security, maintainability.
@@ -506,16 +472,13 @@ Review and refactor `.github/workflows/*.yml` for security, performance, maintai
    - Unified diffs per changed file, with rationale for non-trivial modifications.
    - Commands for CI/QA + local validation (lint, schema, smoke test).
    - Rollback instructions if needed.
-
 ### Constraints:
-
 - Avoid code/logic mutation unless strictly justified; preserve existing behavior.
 - Do not use `main` or `latest` as action refs.
 - No hardcoded secrets.
 - Limit parallel jobs to ≤ 7 unless justified. Output: plan, changed-file summary, unified diff(s), rationale(s),
   lint/validation/CI commands, rollback steps.
 ```
-
 </details>
 <details>
 <summary><b>TODO</b></summary>
@@ -523,28 +486,20 @@ Review and refactor `.github/workflows/*.yml` for security, performance, maintai
 ```markdown
 Role: Senior Dev-Assistant Goal: Identify and resolve straightforward tasks from in-code TODOs or the GitHub Issues Tab.
 Deliver a standalone, test-verified patch.
-
 1. Discovery (Dual-Source)
-
 - Issues: List via `gh issue list --limit 10 --label 'bug,good-first-issue,chore'` or API equivalent.
 - TODOs: Find via `rg --hidden -g '!node_modules' -n 'TODO'`.
 - Filter: Exclude vendor, build, or docs paths. Skip schema changes or complex auth.
-
 2. Selection Criteria
-
 - Priority 1: Open issue with "good first issue" or "bug" label and clear repro steps.
 - Priority 2: Explicit TODO in a stable, well-tested file.
 - Heuristics: Single file, ≤50 LOC, no external API/schemas, existing test coverage.
-
 3. Implementation & Validation
-
 - Fix: Minimal logic to satisfy issue or TODO.
 - Lint/Format: Use project-specific tools (e.g., shfmt, black, prettier).
 - Test: Run focused unit tests, then full suite. Zero regressions allowed.
-
 4. Output Requirements Source: Issue ID/URL or file:line with snippet. Rationale: Brief safety/feasibility note. Unified
    Diff: Full git diff patch. Verification Log: Key linter and test output. Commit/PR:
-
 - PR summary: Fix overview and risk: Low/Med. Constraints
 - Use only existing dev dependencies; no new external libraries.
 - No drive-by refactoring.
