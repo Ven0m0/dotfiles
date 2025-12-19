@@ -9,6 +9,12 @@ hrtf-mode = full
 # Disable in-game spatialization (let OpenAL handle it)
 cf_level = 0
 
+# High quality resampling
+resampler = bsinc24
+
+# Disable CPU-intensive spatialization (conflicts with HRTF)
+stereo-encoding = panpot
+
 [alsa]
 # ALSA-specific settings
 device = default
