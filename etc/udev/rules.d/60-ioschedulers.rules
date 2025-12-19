@@ -11,4 +11,7 @@ ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", ATTR{queu
 ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
 
 # NVMe SSD
-ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="kyber", ATTR{queue/nr_requests}="1024", ATTR{queue/read_ahead_kb}="512", ATTR{queue/iostats}="0"
+ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none", ATTR{queue/nr_requests}="1024", ATTR{queue/read_ahead_kb}="512", ATTR{queue/iostats}="0"
+
+# Increase read-ahead for gaming
+ACTION=="add|change", KERNEL=="sd[a-z]|nvme[0-9]*", ATTR{bdi/read_ahead_kb}="1024"
