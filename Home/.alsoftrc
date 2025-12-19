@@ -1,6 +1,32 @@
-# https://wiki.archlinux.org/title/Gaming
+# OpenAL Soft Configuration
+# https://wiki.archlinux.org/title/Gaming#OpenAL
+
+[general]
+# Enable HRTF for 3D positional audio
 hrtf = true
-dsp_slow_cpu 1 # Disable in-game spatialiazation
-snd_spatialize_roundrobin 1 # Disable spatialization 1.0*100% of sounds
-dsp_enhance_stereo 0 # Disable DSP sound effects. You may want to leave this on, if you find it does not interfere with your perception of the sound effects.
-snd_pitchquality 1 # Use high quality sounds
+hrtf-mode = full
+
+# Disable in-game spatialization (let OpenAL handle it)
+cf_level = 0
+
+[alsa]
+# ALSA-specific settings
+device = default
+allow-resampler = true
+
+[pulse]
+# PulseAudio settings
+allow-moves = false
+adjust-latency = true
+
+[jack]
+# JACK settings (if used)
+rt-mix = true
+
+[reverb]
+# Disable reverb for lower CPU usage
+boost = 0.0
+
+[effects]
+# Disable effects processing for performance
+enabled = false
