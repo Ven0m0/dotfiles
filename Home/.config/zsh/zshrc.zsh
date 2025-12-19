@@ -156,6 +156,9 @@ has bat && alias cat='bat --style=plain --paging=never'
 has rg && alias grep='rg'
 has fd && alias find='fd'
 
+alias ffmpeg="ffmpeg -hide_banner"
+alias ffprobe="ffprobe -hide_banner"
+
 # Common shortcuts
 alias -g ...='../..'
 alias -g ....='../../..'
@@ -177,6 +180,16 @@ zimupdate(){ zimfw update && zimfw upgrade; }
 # ---[ Keybindings ]---
 bindkey -e  # Emacs mode
 bindkey '^[[Z' reverse-menu-complete  # Shift+Tab
+
+# Bash-like shortcuts
+bindkey '^[[1;5C' forward-word  # Ctrl + Right
+bindkey '^[[1;5D' backward-word # Ctrl + Left
+# ^w for delete backward until a space
+# ^backspace for delete backward until a word delimiter
+autoload -U select-word-style
+select-word-style bash
+bindkey '^W' backward-delete-word
+bindkey '^H' backward-kill-word
 
 # ---[ Theme (Powerlevel10k) ]---
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
