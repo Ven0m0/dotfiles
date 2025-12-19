@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-set -euo pipefail; shopt -s nullglob globstar
-export LC_ALL=C; IFS=$'\n\t'
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
-has(){ command -v -- "$1" &>/dev/null; }
-readonly VERSION="3.0.0" BLD=$'\e[1m' GRN=$'\e[32m' BLU=$'\e[34m' YLW=$'\e[33m' CYN=$'\e[96m' RED=$'\e[31m' DEF=$'\e[0m'
-die(){ printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2; exit "${2:-1}"; }
-need(){ has "$1" || die "Required: $1"; }
+# shellcheck source=../lib/bash-common.sh
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
+source "${s%/bin/*}/lib/bash-common.sh"
+init_strict
+cd -P -- "${s%/*}"
+readonly VERSION="3.0.0" BLD=$C_BOLD GRN=$C_GREEN BLU=$C_BLUE YLW=$C_YELLOW CYN=$C_CYAN RED=$C_RED DEF=$C_RESET
 has jaq && JQ=jaq || has jq && JQ=jq || JQ=''
 VERBOSE=false
 usage(){

@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2310
+# shellcheck source=../lib/bash-common.sh
 # onedrive_log - Colorized OneDrive sync log viewer
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
-export LC_ALL=C LANG=C
-has(){ command -v "$1" &>/dev/null; }
-die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
+source "${s%/bin/*}/lib/bash-common.sh"
+init_strict
 # Check dependencies
-if ! has journalctl; then
-  die "journalctl is required"
-fi
-if ! has sed; then
-  die "sed is required"
-fi
+req journalctl
+req sed
 # Optional dependencies
 if ! has ag && ! has grep; then
   die "ag or grep is required"
@@ -27,11 +23,11 @@ else
   filter_cmd=(grep -vF 'Remaining free space')
 fi
 
-# Color definitions using tput for portability
-readonly blue=$(tput setaf 4 2>/dev/null || printf '')
-readonly magenta=$(tput setaf 5 2>/dev/null || printf '')
-readonly yellow=$(tput setaf 3 2>/dev/null || printf '')
-readonly normal=$(tput sgr0 2>/dev/null || printf '')
+# Color definitions - use ANSI directly (faster than tput)
+readonly blue=$C_BLUE
+readonly magenta=$C_MAGENTA
+readonly yellow=$C_YELLOW
+readonly normal=$C_RESET
 unit="${1:-onedrive}"
 # Stream journal output with colorization
 # Use -F for fixed-string matching (faster than regex)

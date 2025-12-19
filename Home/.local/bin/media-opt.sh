@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-set -euo pipefail; shopt -s nullglob globstar
-export LC_ALL=C; IFS=$'\n\t'
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
-has(){ command -v -- "$1" &>/dev/null; }
+# shellcheck source=../lib/bash-common.sh
 # media-opt.sh - Batch media optimization with AV1/WebP support
 # Optimized for performance using xargs -P and fd
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
+source "${s%/bin/*}/lib/bash-common.sh"
+init_strict
+cd -P -- "${s%/*}"
 export HOME="/home/${SUDO_USER:-$USER}"
 # Config
 : "${JOBS:=$(nproc 2>/dev/null || printf 4)}"
