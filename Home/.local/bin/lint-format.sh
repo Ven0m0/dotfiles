@@ -8,39 +8,42 @@ log(){ printf '%s\n' "$@" >&2; }
 die(){ printf '%s\n' "$1" >&2; exit "${2:-1}"; }
 
 usage(){
-  cat <<'EOF'
-lint-all.sh [-p|--path DIR] [--jobs N] [--lint-only|--minify-only] [--dry-run] [--help]
-  -p|--path DIR     Target root (default: $PWD)
-  -j|--jobs N       Parallel jobs (default: nproc or 4)
-  --lint-only       Only lint/format
-  --minify-only     Only minify/compact
-  --dry-run         Lint only; skip mutating format/minify steps
-  --help            Show this
-EOF
+  msg "Usage: lint-all.sh [--path DIR] [--jobs N] [--lint-only|--minify-only] [--dry-run] [--stdin-format N] [--help]"
+  msg "  --path|-p DIR     Target root (default: \$PWD)"
+  msg "  --jobs|-j N       Parallel jobs (default: nproc or 4)"
+  msg "  --lint-only       Run lint/format only"
+  msg "  --minify-only     Run minify/compact only"
+  msg "  --dry-run         Skip mutating format/minify; still lint"
+  msg "  --stdin-format N  Read stdin, replace tabs with N spaces, squeeze blank runs, then exit"
+  msg "  --help            Show this help"
 }
-# defaults
+
 root=$PWD
 jobs=$(nproc 2>/dev/null||printf 4)
 do_lint=true
 do_minify=true
 dry_run=false
+stdin_indent=
+
 while (($#)); do
   case $1 in
-    -p|--path) shift; root=${1:-$root};;
-    -j|--jobs) shift; jobs=${1:-$jobs};;
-    --lint-only) do_minify=false;;
-    --minify-only) do_lint=false;;
-    --dry-run) dry_run=true;;
-    --help) usage; exit 0;;
-    *) die "Unknown arg: $1";;
+    -p|--path) shift; root=${1:-$root} ;;
+    -j|--jobs) shift; jobs=${1:-$jobs} ;;
+    --lint-only) do_minify=false ;;
+    --minify-only) do_lint=false ;;
+    --dry-run) dry_run=true ;;
+    --stdin-format) shift; stdin_indent=${1:-} ;;
+    --help) usage; exit 0 ;;
+    *) die "Unknown arg: $1" ;;
   esac
-  shift
+  shift || break
 done
-# repo-relative resolve
-s=${BASH_SOURCE[0]}
-[[ $s != /* ]] && s=$PWD/$s
-cd -P -- "${s%/*}"
+
+# Resolve script dir for relative configs
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+
 has_parallel(){ has parallel || has xargs; }
+
 run_parallel(){
   local fn=$1; shift
   (($#==0)) && return 0
@@ -52,102 +55,104 @@ run_parallel(){
     local f; for f in "$@"; do "$fn" "$f" || :; done
   fi
 }
-# dependency gates
+
 check_deps(){
   local -a miss=() opt=()
   if $do_lint; then
     local -a req=(shfmt shellcheck yamlfmt yamllint ruff markdownlint)
-    local -a may=(taplo stylua selene actionlint biome)
+    local -a maybe=(taplo stylua selene actionlint biome)
     local t
     for t in "${req[@]}"; do has "$t" || miss+=("$t"); done
-    for t in "${may[@]}"; do has "$t" || opt+=("$t"); done
+    for t in "${maybe[@]}"; do has "$t" || opt+=("$t"); done
   fi
-  if $do_minify; then
-    has minify || has bunx || has npx || miss+=(minify/bun/node)
-    has jaq || has jq || has minify || miss+=(jaq/jq/minify)
-    has qpdf || has gs || miss+=(qpdf/gs)
-    has awk || miss+=(awk)
-    has xmllint || has minify || miss+=(xmllint/minify)
-  end
   if ((${#miss[@]})); then
-    die "Missing deps: ${miss[*]}"
+    die "Missing required tools: ${miss[*]}"
   fi
   ((${#opt[@]})) && log "Optional missing: ${opt[*]}"
 }
-# file discovery
+
+# stdin formatter (merged format.sh)
+format_stdin(){
+  local indent=${1:-2}
+  [[ $indent =~ ^[0-9]+$ ]] || die "indent must be numeric"
+  local spaces; spaces=$(printf "%${indent}s" "")
+  local empty_seen=0 line
+  while IFS= read -r line || [[ -n $line ]]; do
+    line="${line//$'\t'/$spaces}"
+    if [[ -z $line ]]; then
+      empty_seen=1
+    else
+      ((empty_seen)) && printf '\n'
+      printf '%s\n' "$line"
+      empty_seen=0
+    fi
+  done
+}
+
+if [[ -n ${stdin_indent:-} ]]; then
+  format_stdin "$stdin_indent"
+  exit 0
+fi
+
+# discovery
 excludes=(-E .git -E node_modules -E dist -E build -E target -E .cache -E __pycache__ -E .venv -E vendor -E .npm)
 find_fd(){
   local -a exts=("$@")
-  local cmd
   if has fd; then
-    cmd=(fd -H -t f "${excludes[@]}" . "$root")
-    "${cmd[@]}" "${exts[@]/#/-e}" 2>/dev/null || true
+    fd -H -t f "${excludes[@]}" "${exts[@]/#/-e}" . "$root" 2>/dev/null || true
   else
     local -a find_ex=()
     for p in .git node_modules dist build target .cache __pycache__ .venv vendor .npm; do
       find_ex+=(! -path "*/$p/*")
     done
-    find "$root" -type f \( "${exts[0]/#/-name *.}" \) "${find_ex[@]}" 2>/dev/null || true
+    local first=1 args=()
+    for ext in "${exts[@]}"; do
+      if ((first)); then args=(-name "*.${ext}"); first=0; else args+=(-o -name "*.${ext}"); fi
+    done
+    find "$root" -type f \( "${args[@]}" \) "${find_ex[@]}" 2>/dev/null || true
   fi
 }
-# lint/format functions
-fmt_shell(){
-  local f=$1
-  $dry_run || shfmt -w "$f"
-  shellcheck "$f"
-}
-fmt_yaml(){
-  local f=$1 cfg=".yamlfmt"
-  [[ ! -f $cfg ]] && cfg=".qlty/configs/.yamlfmt.yaml"
-  $dry_run || yamlfmt -conf "$cfg" "$f"
-  yamllint -c ".qlty/configs/.yamllint.yaml" -f parsable "$f"
-}
-fmt_python(){
-  local f=$1
-  $dry_run || ruff format "$f"
-  ruff check "$f"
-}
-fmt_markdown(){
-  local f=$1
-  markdownlint "$f"
-}
-fmt_toml(){
-  local f=$1
-  if has taplo; then $dry_run || taplo fmt "$f"; fi
-}
-fmt_lua(){
-  local f=$1
-  if has stylua; then $dry_run || stylua "$f"; fi
-  if has selene; then selene "$f"; fi
-}
-fmt_actions(){
-  local f=$1
-  if has actionlint; then actionlint -ignore SC2086 -shellcheck-shell=bash -oneline "$f"; fi
-}
-lint_stage(){
-  local -a sh_files yaml_files py_files md_files toml_files lua_files act_files
-  mapfile -t sh_files < <(find_fd sh bash zsh)
-  mapfile -t yaml_files < <(find_fd yml yaml)
-  mapfile -t py_files < <(find_fd py)
-  mapfile -t md_files < <(find_fd md markdown)
-  mapfile -t toml_files < <(find_fd toml)
-  mapfile -t lua_files < <(find_fd lua)
-  mapfile -t act_files < <(find_fd yml yaml | grep -E '/\.github/workflows/[^/]+\.y[a]?ml$' || true)
 
-  local -i errs=0
-  run_parallel fmt_shell "${sh_files[@]}" || ((errs++))
-  run_parallel fmt_yaml "${yaml_files[@]}" || ((errs++))
-  run_parallel fmt_python "${py_files[@]}" || ((errs++))
-  run_parallel fmt_markdown "${md_files[@]}" || ((errs++))
-  run_parallel fmt_toml "${toml_files[@]}" || :
-  run_parallel fmt_lua "${lua_files[@]}" || :
-  run_parallel fmt_actions "${act_files[@]}" || ((errs++))
-  return "$errs"
+# summaries
+lint_errors=0
+
+# lint/format processors
+fmt_shell(){ $dry_run || shfmt -w "$1"; shellcheck "$1"; }
+fmt_yaml(){
+  local cfg=".yamlfmt"
+  [[ ! -f $cfg ]] && cfg=".qlty/configs/.yamlfmt.yaml"
+  $dry_run || yamlfmt -conf "$cfg" "$1"
+  yamllint -c ".qlty/configs/.yamllint.yaml" -f parsable "$1"
 }
-# minifiers
+fmt_python(){ $dry_run || ruff format "$1"; ruff check "$1"; }
+fmt_markdown(){ markdownlint "$1"; }
+fmt_toml(){ has taplo && { $dry_run || taplo fmt "$1"; }; }
+fmt_lua(){ has stylua && { $dry_run || stylua "$1"; }; has selene && selene "$1"; }
+fmt_actions(){ has actionlint && actionlint -ignore SC2086 -shellcheck-shell=bash -oneline "$1"; }
+
+lint_stage(){
+  local -a sh yaml py md toml lua act
+  mapfile -t sh < <(find_fd sh bash zsh)
+  mapfile -t yaml < <(find_fd yml yaml)
+  mapfile -t py < <(find_fd py)
+  mapfile -t md < <(find_fd md markdown)
+  mapfile -t toml < <(find_fd toml)
+  mapfile -t lua < <(find_fd lua)
+  mapfile -t act < <(find_fd yml yaml | grep -E '/\.github/workflows/[^/]+\.ya?ml$' || true)
+  run_parallel fmt_shell "${sh[@]}" || ((lint_errors++))
+  run_parallel fmt_yaml "${yaml[@]}" || ((lint_errors++))
+  run_parallel fmt_python "${py[@]}" || ((lint_errors++))
+  run_parallel fmt_markdown "${md[@]}" || ((lint_errors++))
+  run_parallel fmt_toml "${toml[@]}" || :
+  run_parallel fmt_lua "${lua[@]}" || :
+  run_parallel fmt_actions "${act[@]}" || ((lint_errors++))
+}
+
+# minifiers/formatters
 ok(){ printf 'v %s (%d -> %d%s)\n' "${1##*/}" "$2" "$3" "${4:+, $4}"; }
 skip(){ printf 'o %s (%s)\n' "${1##*/}" "$2"; }
 fail(){ printf 'x %s (%s)\n' "${1##*/}" "$2" >&2; return 1; }
+
 min_css(){
   local f=$1 tmp out in
   [[ $f =~ \.min\.css$ ]] && return 0
@@ -159,15 +164,13 @@ min_css(){
   out=$(wc -c <"$tmp"); mv -f "$tmp" "$f"; ok "$f" "$in" "$out"
 }
 min_html(){
-  local f=$1 tmp out in
-  in=$(wc -c <"$f"); tmp=$(mktemp)
+  local f=$1 tmp out in; in=$(wc -c <"$f"); tmp=$(mktemp)
   if has minify; then minify --type html -o "$tmp" "$f" &>/dev/null || { rm -f "$tmp"; return 1; }
   else skip "$f" "minify missing"; rm -f "$tmp"; return 0; fi
   out=$(wc -c <"$tmp"); mv -f "$tmp" "$f"; ok "$f" "$in" "$out"
 }
 min_json(){
-  local f=$1 tmp out in
-  [[ $f =~ \.min\.json$|package(-lock)?\.json$ ]] && return 0
+  local f=$1 tmp out in; [[ $f =~ \.min\.json$|package(-lock)?\.json$ ]] && return 0
   in=$(wc -c <"$f"); tmp=$(mktemp)
   if has jaq; then jaq -c . "$f" >"$tmp" 2>/dev/null || { rm -f "$tmp"; return 1; }
   elif has jq; then jq -c . "$f" >"$tmp" 2>/dev/null || { rm -f "$tmp"; return 1; }
@@ -176,8 +179,7 @@ min_json(){
   out=$(wc -c <"$tmp"); mv -f "$tmp" "$f"; ok "$f" "$in" "$out"
 }
 min_xml(){
-  local f=$1 tmp out in
-  [[ $f =~ \.min\.xml$ ]] && return 0
+  local f=$1 tmp out in; [[ $f =~ \.min\.xml$ ]] && return 0
   in=$(wc -c <"$f"); tmp=$(mktemp)
   if has minify; then minify --type xml -o "$tmp" "$f" &>/dev/null || { rm -f "$tmp"; return 1; }
   elif has xmllint; then xmllint --noblanks "$f" >"$tmp" 2>/dev/null || { rm -f "$tmp"; return 1; }
@@ -189,8 +191,7 @@ min_pdf(){
   [[ $f =~ \.min\.pdf$ ]] && return 0
   tmp=$(mktemp --suffix=.pdf); in=$(wc -c <"$f")
   if has pdfinfo; then
-    local prod
-    prod=$(pdfinfo "$f" 2>/dev/null|grep -F Producer||:)
+    local prod; prod=$(pdfinfo "$f" 2>/dev/null|grep -F Producer||:)
     [[ $prod =~ Ghostscript|cairo ]] && { skip "$f" "already optimized"; rm -f "$tmp"; return 0; }
   fi
   if has qpdf && qpdf --linearize --object-streams=generate --compress-streams=y --recompress-flate "$f" "$tmp" &>/dev/null; then
@@ -212,8 +213,7 @@ fmt_yaml_min(){
   out=$(wc -c <"$tmp"); mv -f "$tmp" "$f"; ok "$f" "$in" "$out"
 }
 fmt_ini(){
-  local f=$1 tmp out in
-  in=$(wc -c <"$f"); tmp=$(mktemp)
+  local f=$1 tmp out in; in=$(wc -c <"$f"); tmp=$(mktemp)
   awk 'function t(s){gsub(/^[ \t]+|[ \t]+$/,"",s);return s}
        /^[ \t]*([;#]|$)/{print;next}
        /^[ \t]*\[/{print t($0);next}
@@ -222,13 +222,13 @@ fmt_ini(){
   out=$(wc -c <"$tmp"); mv -f "$tmp" "$f"; ok "$f" "$in" "$out"
 }
 fmt_conf(){
-  local f=$1 tmp out in
-  in=$(wc -c <"$f"); tmp=$(mktemp)
+  local f=$1 tmp out in; in=$(wc -c <"$f"); tmp=$(mktemp)
   awk 'BEGIN{FS=" +"}
        /^[ \t]*([#;]|$)/{print;next}
        {gsub(/^[ \t]+|[ \t]+$/,""); sub(/[ \t]+/," "); print}' "$f" >"$tmp" || { rm -f "$tmp"; return 1; }
   out=$(wc -c <"$tmp"); mv -f "$tmp" "$f"; ok "$f" "$in" "$out"
 }
+
 minify_stage(){
   local -a css html json xml pdf yaml ini conf
   mapfile -t css < <(find_fd css | grep -v '\.min\.css$' || true)
@@ -248,11 +248,11 @@ minify_stage(){
   run_parallel fmt_ini "${ini[@]}"
   run_parallel fmt_conf "${conf[@]}"
 }
+
 main(){
   check_deps
-  local -i lint_err=0
-  $do_lint && lint_stage || lint_err=$?
+  $do_lint && lint_stage
   $do_minify && ! $dry_run && minify_stage
-  if ((lint_err>0)); then die "lint errors: $lint_err"; fi
+  ((lint_errors>0)) && die "lint errors: $lint_errors"
 }
 main "$@"
