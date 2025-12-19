@@ -24,9 +24,14 @@ curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cac
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
 ```
 
-- Install `dbin`
+- Install [dbin](https://github.com/xplshn/dbin)
 ```bash
 wget -qO- "https://raw.githubusercontent.com/xplshn/dbin/master/stubdl" | sh -s -- --install "${HOME}/.local/bin/dbin"
+```
+
+- Install [AM](https://github.com/ivan-hc/AM)
+```bash
+wget -q https://raw.githubusercontent.com/ivan-hc/AM/main/AM-INSTALLER && chmod a+x ./AM-INSTALLER && ./AM-INSTALLER && rm ./AM-INSTALLER
 ```
 
 </details>
