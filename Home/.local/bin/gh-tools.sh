@@ -14,6 +14,7 @@ COMMANDS:
   asset OWNER/REPO PATTERN     Download release asset
   install OWNER/REPO           Interactive install from release
   maint [MODE] [OPTIONS]       Git repository maintenance
+  combine-prs PR1 [PR2...]     Combine dependabot PRs
   -h, --help                   Show help
 ASSET OPTIONS:
   -r TAG          Specific release (default: latest)
@@ -188,6 +189,47 @@ cmd_maint(){
     fi
   fi
 }
+
+cmd_combine_prs(){
+  need git
+  need gh
+  [[ $# -gt 0 ]] || die "Usage: gh-tools combine-prs PR1 [PR2...]"
+  local pr_sha pr_number head_sha current_date current_date_tight branch_name default_branch pr_body
+  pr_sha(){
+    local pr_number="$1" sha
+    read -r sha _ < <(git ls-remote origin "refs/pull/${pr_number}/head")
+    [[ -n $sha ]] || { printf 'Unable to resolve PR #%s\n' "$pr_number" >&2; return 1; }
+    printf '%s\n' "$sha"
+  }
+  pr_numbers_to_md(){
+    for pr_number in "$@"; do
+      printf '* #%s\n' "$pr_number"
+    done
+  }
+  default_branch(){
+    local head
+    head=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null) \
+      || head=$(git remote show origin | awk '/HEAD branch/ {print $NF; exit}')
+    printf '%s\n' "${head#origin/}"
+  }
+  current_date=$(date +%Y-%m-%d)
+  current_date_tight=$(date +%Y%m%d)
+  branch_name="dependabot-${current_date_tight}"
+  default_branch=$(default_branch)
+  git fetch
+  git checkout -b "$branch_name" "origin/$default_branch"
+  for pr_number in "$@"; do
+    head_sha=$(pr_sha "$pr_number")
+    git rev-list --reverse "origin/${default_branch}..${head_sha}"|git cherry-pick --stdin --allow-empty
+  done
+  git push origin "$branch_name" --set-upstream
+  pr_body="
+Cherry picked combination of:
+$(pr_numbers_to_md "$@")
+"
+  gh pr create --title "Dependabot updates from ${current_date}" --body "$pr_body"
+}
+
 main(){
   local cmd="${1:-}"
   shift||:
@@ -195,6 +237,7 @@ main(){
     asset) cmd_asset "$@";;
     install) cmd_install "$@";;
     maint) cmd_maint "$@";;
+    combine-prs) cmd_combine_prs "$@";;
     -h|--help|help|"") usage;;
     *) die "Unknown: $cmd";;
   esac
