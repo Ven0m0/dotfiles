@@ -1,53 +1,237 @@
 {
-    "rules": [
-        {
-            "pattern": {
-                "feature": "true",
-                "matches": ""
-            },
-            "profile": "Main"
-        },
-        {
-            "pattern": {
-                "feature": "true",
-                "matches": ""
-            },
-            "profile": "Main"
-        }
-    ],
-    "profiles": [
-        {
-            "name": "Main",
-            "settings": [
-                {
-                    "key": "GLAllowUnofficialProtocol",
-                    "value": true
-                },
-                {
-                    "key": "GLShaderDiskCache",
-                    "value": true
-                },
-                {
-                    "key": "GLThreadedOptimizations",
-                    "value": true
-                },
-                {
-                    "key": "GLSortFbconfigs",
-                    "value": true
-                },
-                {
-                    "key": "GLYield",
-                    "value": "USLEEP"
-                },
-                {
-                    "key": "GLIgnoreGLSLExtReqs",
-                    "value": true
-                },
-                {
-                    "key": "GLSyncToVblank",
-                    "value": false
-                }
-            ]
-        }
-    ]
+  "rules": [
+    {
+      "pattern": {"feature": "true", "matches":  ""},
+      "profile": "Main"
+    },
+    {
+      "pattern": {"feature":  "dxvk", "matches": "*"},
+      "profile": "DXVK"
+    },
+    {
+      "pattern":  {"feature": "gamemode", "matches": "*"},
+      "profile": "Gaming"
+    },
+    {
+      "pattern": {"feature": "true", "matches": "steam"},
+      "profile": "Gaming"
+    },
+    {
+      "pattern": {"feature": "true", "matches": "lutris"},
+      "profile": "Gaming"
+    },
+    {
+      "pattern": {"feature":  "true", "matches": "wine*"},
+      "profile": "DXVK"
+    },
+    {
+      "pattern":  {"feature": "true", "matches": "retroarch"},
+      "profile": "Emulator"
+    },
+    {
+      "pattern": {"feature": "true", "matches": "dolphin-emu"},
+      "profile": "Emulator"
+    },
+    {
+      "pattern": {"feature": "true", "matches": "pcsx2"},
+      "profile": "Emulator"
+    },
+    {
+      "pattern": {"feature": "true", "matches": "rpcs3"},
+      "profile":  "Emulator"
+    },
+    {
+      "pattern":  {"feature": "true", "matches": "firefox"},
+      "profile": "Browser"
+    },
+    {
+      "pattern": {"feature": "true", "matches": "chromium"},
+      "profile": "Browser"
+    },
+    {
+      "pattern": {"feature": "true", "matches": "chrome"},
+      "profile": "Browser"
+    },
+    {
+      "pattern": {"feature": "true", "matches": "blender"},
+      "profile": "Workstation"
+    },
+    {
+      "pattern": {"feature":  "true", "matches": "davinci-resolve"},
+      "profile": "Workstation"
+    },
+    {
+      "pattern": {"feature": "true", "matches":  "obs"},
+      "profile": "Streaming"
+    }
+  ],
+  "profiles":  [
+    {
+      "name": "Main",
+      "settings": [
+        {"key": "GLAllowUnofficialProtocol", "value": true},
+        {"key": "GLShaderDiskCache", "value": true},
+        {"key": "GLShaderDiskCacheSize", "value": 2048},
+        {"key": "GLThreadedOptimizations", "value": true},
+        {"key": "GLSortFbconfigs", "value": true},
+        {"key": "GLYield", "value":  "USLEEP"},
+        {"key": "GLIgnoreGLSLExtReqs", "value": true},
+        {"key": "GLSyncToVblank", "value": false},
+        {"key": "GLConformantBlitFramebufferScissor", "value": true},
+        {"key": "GLAllowFXAAUsage", "value": true},
+        {"key": "GLWriteTextSection", "value": true},
+        {"key": "GLGSYNCAllowed", "value": true},
+        {"key": "GLVRRAllowed", "value": true},
+        {"key": "PowerMizerMode", "value": 1},
+        {"key": "PowerMizerDefault", "value": 1},
+        {"key": "PowerMizerDefaultAC", "value": 1}
+      ]
+    },
+    {
+      "name":  "Gaming",
+      "settings": [
+        {"key": "GLAllowUnofficialProtocol", "value": true},
+        {"key": "GLShaderDiskCache", "value": true},
+        {"key": "GLShaderDiskCacheSize", "value": 4096},
+        {"key": "GLShaderDiskCachePath", "value": "/tmp/nv_shader_cache"},
+        {"key": "GLThreadedOptimizations", "value": true},
+        {"key": "GLSortFbconfigs", "value": true},
+        {"key": "GLYield", "value": "NOTHING"},
+        {"key": "GLIgnoreGLSLExtReqs", "value": true},
+        {"key": "GLSyncToVblank", "value":  false},
+        {"key": "GLConformantBlitFramebufferScissor", "value": true},
+        {"key": "GLAllowFXAAUsage", "value": true},
+        {"key": "GLWriteTextSection", "value": true},
+        {"key": "GLGSYNCAllowed", "value": true},
+        {"key": "GLVRRAllowed", "value": true},
+        {"key": "PowerMizerMode", "value": 1},
+        {"key": "PowerMizerLevel", "value": 0},
+        {"key": "PowerMizerDefault", "value":  1},
+        {"key": "PowerMizerDefaultAC", "value": 1},
+        {"key": "GLAllowFlipAhead", "value": 0},
+        {"key": "GLDoom3", "value": false},
+        {"key": "GLExtensionStringVersion", "value": 2},
+        {"key": "GLSLVersion", "value": 460},
+        {"key": "TextureClamping", "value": 1},
+        {"key": "TextureFilteringQuality", "value": 10},
+        {"key": "TextureLOD", "value": 1},
+        {"key": "AnisoLevel", "value": 16},
+        {"key": "AAMode", "value": 0},
+        {"key": "AALines", "value": 0},
+        {"key": "FSAAAppControlled", "value": 1},
+        {"key": "FSAAAppEnhanced", "value": 0},
+        {"key": "LogAniso", "value": 4},
+        {"key": "MaxFramesAllowed", "value": 1},
+        {"key": "PreferMaxPerf", "value": 1},
+        {"key": "PreRenderLimit", "value": 1},
+        {"key": "TearFree", "value": 0},
+        {"key": "TripleBuffer", "value": 0},
+        {"key": "VRRMode", "value": 1}
+      ]
+    },
+    {
+      "name": "DXVK",
+      "settings": [
+        {"key": "GLAllowUnofficialProtocol", "value": true},
+        {"key": "GLShaderDiskCache", "value": true},
+        {"key": "GLShaderDiskCacheSize", "value": 8192},
+        {"key": "GLShaderDiskCachePath", "value": "/tmp/nv_dxvk_cache"},
+        {"key": "GLThreadedOptimizations", "value": true},
+        {"key": "GLSortFbconfigs", "value": true},
+        {"key": "GLYield", "value":  "NOTHING"},
+        {"key": "GLIgnoreGLSLExtReqs", "value": true},
+        {"key": "GLSyncToVblank", "value":  false},
+        {"key": "GLWriteTextSection", "value": true},
+        {"key": "GLGSYNCAllowed", "value": true},
+        {"key": "GLVRRAllowed", "value": true},
+        {"key": "PowerMizerMode", "value": 1},
+        {"key": "PowerMizerLevel", "value": 0},
+        {"key": "PowerMizerDefault", "value": 1},
+        {"key": "GLAllowFlipAhead", "value": 0},
+        {"key": "GLExtensionStringVersion", "value":  2},
+        {"key": "AnisoLevel", "value": 16},
+        {"key": "AAMode", "value": 0},
+        {"key": "MaxFramesAllowed", "value":  1},
+        {"key": "PreferMaxPerf", "value": 1},
+        {"key": "PreRenderLimit", "value": 1},
+        {"key": "TearFree", "value": 0},
+        {"key": "TripleBuffer", "value": 0},
+        {"key": "VRRMode", "value": 1},
+        {"key": "VKPipelineCache", "value": true},
+        {"key": "VKShaderCache", "value": true}
+      ]
+    },
+    {
+      "name": "Emulator",
+      "settings":  [
+        {"key": "GLShaderDiskCache", "value":  true},
+        {"key": "GLShaderDiskCacheSize", "value": 2048},
+        {"key": "GLThreadedOptimizations", "value":  true},
+        {"key": "GLYield", "value": "NOTHING"},
+        {"key": "GLSyncToVblank", "value":  false},
+        {"key": "GLGSYNCAllowed", "value": true},
+        {"key": "GLVRRAllowed", "value": true},
+        {"key": "PowerMizerMode", "value": 1},
+        {"key": "PowerMizerLevel", "value": 0},
+        {"key": "MaxFramesAllowed", "value":  1},
+        {"key": "PreRenderLimit", "value": 1},
+        {"key": "TearFree", "value": 0},
+        {"key": "TripleBuffer", "value":  0},
+        {"key": "VRRMode", "value": 1},
+        {"key": "AnisoLevel", "value": 16},
+        {"key": "TextureFilteringQuality", "value": 10}
+      ]
+    },
+    {
+      "name": "Browser",
+      "settings": [
+        {"key": "GLShaderDiskCache", "value":  true},
+        {"key": "GLThreadedOptimizations", "value":  false},
+        {"key": "GLYield", "value": "USLEEP"},
+        {"key": "GLSyncToVblank", "value": true},
+        {"key": "PowerMizerMode", "value":  0},
+        {"key": "PreRenderLimit", "value": 2},
+        {"key": "TearFree", "value": 1},
+        {"key": "TripleBuffer", "value": 1},
+        {"key": "AAMode", "value": 2},
+        {"key": "TextureFilteringQuality", "value": 15}
+      ]
+    },
+    {
+      "name": "Workstation",
+      "settings":  [
+        {"key": "GLShaderDiskCache", "value": true},
+        {"key": "GLShaderDiskCacheSize", "value": 4096},
+        {"key": "GLThreadedOptimizations", "value": true},
+        {"key": "GLYield", "value": "USLEEP"},
+        {"key": "GLSyncToVblank", "value": true},
+        {"key": "GLConformantBlitFramebufferScissor", "value": true},
+        {"key": "PowerMizerMode", "value":  1},
+        {"key": "PowerMizerLevel", "value": 0},
+        {"key": "PreRenderLimit", "value": 3},
+        {"key": "TearFree", "value": 1},
+        {"key": "TripleBuffer", "value":  1},
+        {"key": "AAMode", "value": 4},
+        {"key": "AnisoLevel", "value": 16},
+        {"key": "TextureFilteringQuality", "value": 20},
+        {"key": "FSAAAppEnhanced", "value": 1}
+      ]
+    },
+    {
+      "name": "Streaming",
+      "settings": [
+        {"key": "GLShaderDiskCache", "value":  true},
+        {"key": "GLThreadedOptimizations", "value":  true},
+        {"key": "GLYield", "value": "USLEEP"},
+        {"key": "GLSyncToVblank", "value": true},
+        {"key": "PowerMizerMode", "value":  1},
+        {"key": "PowerMizerLevel", "value":  0},
+        {"key": "PreRenderLimit", "value": 1},
+        {"key": "TearFree", "value": 1},
+        {"key": "TripleBuffer", "value":  0},
+        {"key": "PreferMaxPerf", "value":  1},
+        {"key": "GLWriteTextSection", "value": true}
+      ]
+    }
+  ]
 }
