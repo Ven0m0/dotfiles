@@ -71,7 +71,6 @@ check_deps(){
   ((${#opt[@]})) && log "Optional missing: ${opt[*]}"
 }
 
-# stdin formatter (merged format.sh)
 format_stdin(){
   local indent=${1:-2}
   [[ $indent =~ ^[0-9]+$ ]] || die "indent must be numeric"
@@ -113,10 +112,8 @@ find_fd(){
   fi
 }
 
-# summaries
 lint_errors=0
 
-# lint/format processors
 fmt_shell(){ $dry_run || shfmt -w "$1"; shellcheck "$1"; }
 fmt_yaml(){
   local cfg=".yamlfmt"
@@ -148,7 +145,6 @@ lint_stage(){
   run_parallel fmt_actions "${act[@]}" || ((lint_errors++))
 }
 
-# minifiers/formatters
 ok(){ printf 'v %s (%d -> %d%s)\n' "${1##*/}" "$2" "$3" "${4:+, $4}"; }
 skip(){ printf 'o %s (%s)\n' "${1##*/}" "$2"; }
 fail(){ printf 'x %s (%s)\n' "${1##*/}" "$2" >&2; return 1; }
