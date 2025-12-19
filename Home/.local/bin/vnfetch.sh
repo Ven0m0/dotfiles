@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
-export LC_ALL=C LANG=C
+# shellcheck source=../lib/bash-common.sh
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
+source "${s%/bin/*}/lib/bash-common.sh"
+init_strict
 # vnfetch (ven0m0-fetch), for Arch/Debian based distros
 # Heavily overoptimized bash fetch
 # Credit:
