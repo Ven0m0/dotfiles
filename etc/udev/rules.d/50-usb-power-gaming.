@@ -1,0 +1,64 @@
+# Disable USB autosuspend for gaming peripherals
+# Keep power saving enabled for unused ports/devices
+
+# ========================================
+# Gaming Mice (disable autosuspend)
+# ========================================
+# Logitech (common gaming mice)
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c08[0-9a-f]", TEST=="power/control", ATTR{power/control}="on"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c53[0-9a-f]", TEST=="power/control", ATTR{power/control}="on"
+
+# Razer
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="1532", TEST=="power/control", ATTR{power/control}="on"
+
+# Corsair
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="1b1c", TEST=="power/control", ATTR{power/control}="on"
+
+# SteelSeries
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="1038", TEST=="power/control", ATTR{power/control}="on"
+
+# Glorious (Model O/D)
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="258a", TEST=="power/control", ATTR{power/control}="on"
+
+# ========================================
+# Gaming Keyboards (disable autosuspend)
+# ========================================
+# Mechanical keyboards with RGB/macros
+ACTION=="add", SUBSYSTEM=="usb", ATTR{interface}=="*Gaming*", TEST=="power/control", ATTR{power/control}="on"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{interface}=="*Mechanical*", TEST=="power/control", ATTR{power/control}="on"
+
+# ========================================
+# Game Controllers (disable autosuspend)
+# ========================================
+# Xbox controllers
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="045e", ATTR{idProduct}=="02[0-9a-f][0-9a-f]", TEST=="power/control", ATTR{power/control}="on"
+
+# PlayStation controllers
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="054c", TEST=="power/control", ATTR{power/control}="on"
+
+# Nintendo Switch Pro Controller
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="057e", ATTR{idProduct}=="2009", TEST=="power/control", ATTR{power/control}="on"
+
+# ========================================
+# VR Headsets (disable autosuspend)
+# ========================================
+# Valve Index
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="28de", TEST=="power/control", ATTR{power/control}="on"
+
+# Meta Quest
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="2833", TEST=="power/control", ATTR{power/control}="on"
+
+# HTC Vive
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0bb4", ATTR{idProduct}=="2c87", TEST=="power/control", ATTR{power/control}="on"
+
+# ========================================
+# USB Hubs with Peripherals (disable autosuspend)
+# ========================================
+# Powered hubs with gaming devices
+ACTION=="add", SUBSYSTEM=="usb", ATTR{bDeviceClass}=="09", ATTR{bMaxPower}=="0", TEST=="power/control", ATTR{power/control}="on"
+
+# ========================================
+# Allow autosuspend for everything else
+# ========================================
+# Bluetooth adapters, webcams, card readers, etc.  will auto-suspend after 2s
+# This is controlled by usbcore.autosuspend=2 kernel parameter
