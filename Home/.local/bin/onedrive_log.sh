@@ -27,11 +27,11 @@ else
   filter_cmd=(grep -vF 'Remaining free space')
 fi
 
-# Color definitions using tput for portability
-readonly blue=$(tput setaf 4 2>/dev/null || printf '')
-readonly magenta=$(tput setaf 5 2>/dev/null || printf '')
-readonly yellow=$(tput setaf 3 2>/dev/null || printf '')
-readonly normal=$(tput sgr0 2>/dev/null || printf '')
+# Color definitions using ANSI escape codes (faster than tput)
+readonly blue=$'\e[34m'
+readonly magenta=$'\e[35m'
+readonly yellow=$'\e[33m'
+readonly normal=$'\e[0m'
 unit="${1:-onedrive}"
 # Stream journal output with colorization
 # Use -F for fixed-string matching (faster than regex)

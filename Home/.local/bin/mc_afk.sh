@@ -60,8 +60,10 @@ click_right_once(){
   esac
 }
 start_fish(){
-  if is_running "$(cat "$PID_FISH" 2>/dev/null)"; then
-    log "Fishing already running (pid $(cat "$PID_FISH"))."
+  local pid=""
+  [[ -f $PID_FISH ]] && pid=$(<"$PID_FISH")
+  if is_running "${pid}"; then
+    log "Fishing already running (pid ${pid})."
     return
   fi
   ( while :; do
@@ -76,8 +78,8 @@ start_fish(){
   log "Fishing started (pid $!)."
 }
 stop_fish(){
-  local p
-  p=$(cat "$PID_FISH" 2>/dev/null || true)
+  local p=""
+  [[ -f $PID_FISH ]] && p=$(<"$PID_FISH")
   if is_running "$p"; then
     kill "$p" && rm -f "$PID_FISH"
     log "Fishing stopped."
@@ -87,8 +89,10 @@ stop_fish(){
   fi
 }
 start_eat(){
-  if is_running "$(cat "$PID_EAT" 2>/dev/null)"; then
-    log "Eating timer already running (pid $(cat "$PID_EAT"))."
+  local pid=""
+  [[ -f $PID_EAT ]] && pid=$(<"$PID_EAT")
+  if is_running "${pid}"; then
+    log "Eating timer already running (pid ${pid})."
     return
   fi
   ( while :; do
@@ -107,8 +111,8 @@ start_eat(){
 }
 
 stop_eat(){
-  local p
-  p=$(cat "$PID_EAT" 2>/dev/null || true)
+  local p=""
+  [[ -f $PID_EAT ]] && p=$(<"$PID_EAT")
   if is_running "$p"; then
     kill "$p" && rm -f "$PID_EAT"
     log "Eating timer stopped."
@@ -118,9 +122,9 @@ stop_eat(){
   fi
 }
 status(){
-  local pf pe
-  pf=$(cat "$PID_FISH" 2>/dev/null || true)
-  pe=$(cat "$PID_EAT" 2>/dev/null || true)
+  local pf="" pe=""
+  [[ -f $PID_FISH ]] && pf=$(<"$PID_FISH")
+  [[ -f $PID_EAT ]] && pe=$(<"$PID_EAT")
   if is_running "$pf"; then log "Fishing: running (pid $pf)"; else log "Fishing: stopped"; fi
   if is_running "$pe"; then log "Eating: running (pid $pe)"; else log "Eating: stopped"; fi
 }
@@ -135,10 +139,18 @@ cmd="${1:-}"
 case "$cmd" in
   fish-start)   start_fish ;;
   fish-stop)    stop_fish ;;
-  fish-toggle)  is_running "$(cat "$PID_FISH" 2>/dev/null || true)" && stop_fish || start_fish ;;
+  fish-toggle)  
+    local pid=""
+    [[ -f $PID_FISH ]] && pid=$(<"$PID_FISH")
+    is_running "${pid}" && stop_fish || start_fish
+    ;;
   eat-start)    start_eat ;;
   eat-stop)     stop_eat ;;
-  eat-toggle)   is_running "$(cat "$PID_EAT" 2>/dev/null || true)" && stop_eat || start_eat ;;
+  eat-toggle)   
+    local pid=""
+    [[ -f $PID_EAT ]] && pid=$(<"$PID_EAT")
+    is_running "${pid}" && stop_eat || start_eat
+    ;;
   stop-all)     stop_fish; stop_eat ;;
   status)       status ;;
   *)            usage ;;
