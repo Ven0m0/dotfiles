@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-# shellcheck source=../lib/bash-common.sh
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
-source "${s%/bin/*}/lib/bash-common.sh"
-init_strict
-cd -P -- "${s%/*}"
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
 sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }
 systemctl is-active --quiet bluetooth.service || {
   printf "Bluetooth service not running, starting...\n"

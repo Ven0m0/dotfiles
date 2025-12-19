@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-# shellcheck source=../lib/bash-common.sh
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
-source "${s%/bin/*}/lib/bash-common.sh"
-init_strict
+set -euo pipefail; shopt -s nullglob globstar
+IFS=$'\n\t' LC_ALL=C
+has(){ command -v -- "$1" &>/dev/null; }
+die(){ printf '%s\n' "$1" >&2; exit "${2:-1}"; }
 
 usage_main(){
   cat <<'EOF'

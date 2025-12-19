@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-# shellcheck source=../lib/bash-common.sh
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
-source "${s%/bin/*}/lib/bash-common.sh"
-init_strict
-shopt -s dotglob
-cd -P -- "${s%/*}"
-readonly BLD=$C_BOLD GRN=$C_GREEN RED=$C_RED YLW=$C_YELLOW DEF=$C_RESET
-err(){ printf '%b✗%b %s\n' "$RED" "$DEF" "$*"; }
+set -euo pipefail; shopt -s nullglob globstar dotglob
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
+readonly BLD=$'\e[1m' GRN=$'\e[32m' RED=$'\e[31m' YLW=$'\e[33m' DEF=$'\e[0m'
+die(){ printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2; exit 1; }
+log(){ printf '%b==>%b %s\n' "${BLD}" "$DEF" "$*"; }
+ok(){ printf '%b✓%b %s\n' "${GRN}" "$DEF" "$*"; }
+err(){ printf '%b✗%b %s\n' "${RED}" "$DEF" "$*"; }
 usage(){
   cat <<EOF
 sanitize - File sanitization utilities

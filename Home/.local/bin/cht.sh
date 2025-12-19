@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-# shellcheck source=../lib/bash-common.sh
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
-source "${s%/bin/*}/lib/bash-common.sh"
-init_strict
-cd -P -- "${s%/*}"
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
+die(){ printf 'Error: %s\n' "$*" >&2; exit 1; }
 for c in curl wget2 wget; do has "$c" && HTTP="$c" && break; done
 [[ -z ${HTTP:-} ]] && die "curl/wget required"
 for f in sk fzf; do has "$f" && FZF="$f" && break; done

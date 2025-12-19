@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# shellcheck source=../lib/bash-common.sh
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
-source "${s%/bin/*}/lib/bash-common.sh"
-init_strict
+set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
+export LC_ALL=C LANG=C
+die(){ printf '%s\n' "$*" >&2;exit 1;}
+has(){ command -v "$1" &>/dev/null;}
+req(){ has "$1"||die "missing: $1";}
 img_opt(){ case $1 in *.png) has oxipng && oxipng -q -o2 "$1"||has optipng && optipng -q "$1";;*.jpg|*.jpeg) has jpegoptim && jpegoptim -q -s "$1";;esac;}
 repack_zip(){ local f=$1 t=${f%.*}-opt.${f##*.} d=$(mktemp -d);unzip -q "$f" -d "$d";(cd "$d" && zip -9 -q -r "../$t" .);rm -rf "$d";printf '%s\n' "$t";}
 repack_zstd(){ local f=$1 t=${f%.*}-zstd.${f##*.} d=$(mktemp -d);unzip -q "$f" -d "$d";(cd "$d" && zip --compression-method zstd -q -r "../$t" .);rm -rf "$d";printf '%s\n' "$t";}

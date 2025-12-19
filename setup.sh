@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
 # shellcheck disable=SC2310
-# shellcheck source=Home/.local/lib/bash-common.sh
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
-source "${s%/*}/Home/.local/lib/bash-common.sh"
-init_strict
-cd -P -- "${s%/*}"
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
 DRY_RUN=false
 VERBOSE=true
+has(){ command -v -- "$1" &>/dev/null; }
+log(){ printf '%s\n' "$*"; }
+info(){ log "==> $*"; }
+warn(){ log "==> WARNING: $*"; }
+die(){ log "==> ERROR: $*" >&2; exit "${2:-1}"; }
 parse_args(){
   while [[ $# -gt 0 ]]; do
     case "$1" in

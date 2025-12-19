@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# shellcheck source=../lib/bash-common.sh
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
-source "${s%/bin/*}/lib/bash-common.sh"
-init_strict
-readonly RED=$C_RED GRN=$C_GREEN YLW=$C_YELLOW DEF=$C_RESET
+set -euo pipefail;shopt -s nullglob globstar;IFS=$'\n\t'
+export LC_ALL=C LANG=C
+RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' DEF=$'\e[0m'
+has(){ command -v "$1" &>/dev/null;}
+die(){ printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2;exit 1;}
+log(){ printf '%b%s%b\n' "$GRN" "$*" "$DEF";}
+warn(){ printf '%b%s%b\n' "$YLW" "$*" "$DEF";}
 usage(){
   cat <<'EOF'
 Usage: shopt [-rfmscCvh] [-o FILE] [-p PERM] [-e EXT] [-V VARIANT] <file_or_dir>

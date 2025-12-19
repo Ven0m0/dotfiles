@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-# shellcheck source=../lib/bash-common.sh
 # speedtest-curl.sh - curl-only speedtest (ping-like, download, upload)
 # Usage: speedtest-curl.sh [-s server_url] [-d dl_mb] [-u ul_mb] [-n probes] [-U upload_url]
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s
-source "${s%/bin/*}/lib/bash-common.sh"
-init_strict
-cd -P -- "${s%/*}"
+set -euo pipefail; shopt -s nullglob globstar
+export LC_ALL=C; IFS=$'\n\t'
+s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+has(){ command -v -- "$1" &>/dev/null; }
 has curl || { printf 'curl required\n'; exit 1; }
 CURL=$(command -v curl)
 
