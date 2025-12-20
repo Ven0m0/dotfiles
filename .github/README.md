@@ -8,25 +8,31 @@
 - [Auto updated submodules](.github/workflows/update-git-submodules.yml)
 </details>
 <details>
-<summary><b>Arch scripts</b></summary>
+<summary><b>Scripts</b></summary>
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash
-```
-```bash
-curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash
-```
-```bash
-curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
-```
 - Install [dbin](https://github.com/xplshn/dbin)
 ```bash
-wget -qO- "https://raw.githubusercontent.com/xplshn/dbin/master/stubdl" | sh -s -- --install "${HOME}/.local/bin/dbin"
+curl -sfLO "https://raw.githubusercontent.com/xplshn/dbin/master/stubdl" | bash -s -- --install "${HOME}/.local/bin/dbin"
+# or
+wget -qO- "https://raw.githubusercontent.com/xplshn/dbin/master/stubdl" | bash -s -- --install "${HOME}/.local/bin/dbin"
 ```
 - Install [AM](https://github.com/ivan-hc/AM)
 ```bash
-wget -q https://raw.githubusercontent.com/ivan-hc/AM/main/AM-INSTALLER && chmod a+x ./AM-INSTALLER && ./AM-INSTALLER && rm ./AM-INSTALLER
+curl -sfLO "https://raw.githubusercontent.com/ivan-hc/AM/main/AM-INSTALLER" && chmod a+x ./AM-INSTALLER && ./AM-INSTALLER && rm ./AM-INSTALLER
+# or
+wget -q "https://raw.githubusercontent.com/ivan-hc/AM/main/AM-INSTALLER" && chmod a+x ./AM-INSTALLER && ./AM-INSTALLER && rm ./AM-INSTALLER****
 ```
+- Install [x-cmd](https://www.x-cmd.com)
+
+bash:
+```bash
+eval "$(curl -s https://get.x-cmd.com)"
+```
+fish:
+```sh
+curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$HOME/.x-cmd.root/bin/x-cmd fish --setup
+```
+</details>
 </details>
 <details>
 <summary><b>Useful Stuff</b></summary>
@@ -38,27 +44,18 @@ wget -q https://raw.githubusercontent.com/ivan-hc/AM/main/AM-INSTALLER && chmod 
 <details>
 <summary><b>Packages:</b></summary>
 
+- [Archwiki_software list](https://wiki.archlinux.org/title/Category:Lists_of_software)
 - [Arch PKG](https://archlinux.org/packages)
 - [AUR PKG](https://aur.archlinux.org)
+- [CachyOS](https://packages.cachyos.org) **|** [PKGBUILDs](https://github.com/CachyOS/CachyOS-PKGBUILDS)
 - [Crates.io](https://crates.io)
 - [FlatHub](https://flathub.org)
+- [AppImages](https://portable-linux-apps.github.io/apps)
 - [AppBundleHUB](https://xplshn.github.io/AppBundleHUB)
 - [Lure.sh](https://lure.sh)
 - [Basher](https://www.basher.it/package)
 - [bpkg](https://bpkg.sh)
-- [x-cmd](https://www.x-cmd.com)
-<details>
-<summary><b>Install x-cmd</b></summary>
-
-bash:
-```bash
-eval "$(curl -s https://get.x-cmd.com)"
-```
-fish:
-```sh
-curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$HOME/.x-cmd.root/bin/x-cmd fish --setup
-```
-</details>
+- [Nix](https://github.com/NixOS/nix) ***|*** [Home-manager](https://github.com/nix-community/home-manager) **|** [Nixpkgs](https://github.com/NixOS/nixpkgs) **|** [NUR](https://github.com/nix-community/NUR)
 </details>
 <details>
 <summary><b>Supported Linux Distributions</b></summary>
