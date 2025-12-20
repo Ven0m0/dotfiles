@@ -1,6 +1,6 @@
 hide-mouse-cursor-when-typing = false
 use-fork = true
-confirm-before-quit = true
+confirm-before-quit = false
 
 [bell]
 visual = false
