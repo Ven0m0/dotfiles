@@ -1,5 +1,4 @@
 # `Dotfiles`
-
 <details>
 <summary><b>Features</b></summary>
 
@@ -7,7 +6,6 @@
 - [Auto validated config files](.github/workflows/config-validate.yml)
 - [Auto shell check](.github/workflows/shellcheck.yml)
 - [Auto updated submodules](.github/workflows/update-git-submodules.yml)
-
 </details>
 <details>
 <summary><b>Arch scripts</b></summary>
@@ -15,25 +13,20 @@
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Updates.sh | bash
 ```
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Clean.sh | bash
 ```
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ven0m0/Linux-OS/refs/heads/main/Cachyos/Rank.sh | bash
 ```
-
 - Install [dbin](https://github.com/xplshn/dbin)
 ```bash
 wget -qO- "https://raw.githubusercontent.com/xplshn/dbin/master/stubdl" | sh -s -- --install "${HOME}/.local/bin/dbin"
 ```
-
 - Install [AM](https://github.com/ivan-hc/AM)
 ```bash
 wget -q https://raw.githubusercontent.com/ivan-hc/AM/main/AM-INSTALLER && chmod a+x ./AM-INSTALLER && ./AM-INSTALLER && rm ./AM-INSTALLER
 ```
-
 </details>
 <details>
 <summary><b>Useful Stuff</b></summary>
@@ -41,7 +34,6 @@ wget -q https://raw.githubusercontent.com/ivan-hc/AM/main/AM-INSTALLER && chmod 
 - [https://dotfiles.github.io/](https://dotfiles.github.io/)
 - [https://terminal.sexy/](https://terminal.sexy/)
 - [https://wiki.archlinux.org/title/Git](https://wiki.archlinux.org/title/Git)
-
 </details>
 <details>
 <summary><b>Packages:</b></summary>
@@ -55,22 +47,17 @@ wget -q https://raw.githubusercontent.com/ivan-hc/AM/main/AM-INSTALLER && chmod 
 - [Basher](https://www.basher.it/package)
 - [bpkg](https://bpkg.sh)
 - [x-cmd](https://www.x-cmd.com)
-
 <details>
 <summary><b>Install x-cmd</b></summary>
 
 bash:
-
 ```bash
 eval "$(curl -s https://get.x-cmd.com)"
 ```
-
 fish:
-
 ```sh
 curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$HOME/.x-cmd.root/bin/x-cmd fish --setup
 ```
-
 </details>
 </details>
 <details>
@@ -79,7 +66,6 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 - [CachyOS](https://cachyos.org) specifically, but really any arch based distro is good
 - [DietPi](https://dietpi.com)
 - [Raspberry Pi OS](https://www.raspberrypi.com/software)
-
 </details>
 <details>
 <summary><b>Alternative frontends</b></summary>
@@ -91,15 +77,13 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 - [Redlib reddit](https://lr.ptr.moe)
 - [Imgur](https://rimgo.lunar.icu)
 
-**Search engines**
-
+**Search engines*:*
 - [DuckduckGo](https://duckduckgo.com)
 - [Searchxng](https://searx.dresden.network/) [Instances](https://searx.space)
 - [Brave search](https://search.brave.com)
 </details>
 
 ## **Quick prompts**
-
 <details>
 <summary><b>Lint/Format</b></summary>
 
@@ -107,7 +91,6 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 Objective: Lint and format all files. Ensure full tree conformance to .editorconfig; 2-space indent; zero remaining errors; non-zero exit on unresolved
 issues. Discovery: fd -tf -u -E .git -E node_modules -e <ext>; fallback: find. Scan: rg for invalid chars/invisibles; sd
 to clean; compressors: zstd→gzip→xz. Policy:
-
 - Format before lint.
 - Only use safe write modes (--write/--apply/--fix/-w).
 - Batch file lists; minimal forks; xargs -P for parallel.
@@ -138,17 +121,14 @@ to clean; compressors: zstd→gzip→xz. Policy:
 ```markdown
 Role: LLM MD File Optimizer — ensure CLAUDE.MD, GEMINI.MD, copilot-instructions.md exist, minimal, consistent,
 lint-clean, CI-fail on missing/invalid. Discovery
-
 - Find candidate files: `fd -H -I -E .git -e md || find . -name '*.md'`
 - Locate targets: `rg -nS 'CLAUDE|GEMINI|copilot' || :` Tools (preferred → fallback)
 - fd → find; rg → grep; shfmt; markdownlint; shfmt (code blocks). Preflight checks (must run)
-
 1. Encoding/clean: `file -bi <file>` → UTF-8, strip BOM; `rg -nU '\p{Cc}' || :` → no control chars.
 2. Invisibles: `rg -nU '\p{C}' || :` and `sd '  +$' ''` (strip trailing spaces).
 3. Line width: wrap/soft-fail >80 cols; enforce ≤80 cols where reasonable.
 4. Code blocks: run `shfmt -i 2 -w` for bash blocks; preserve fenced language tags. Templates & canonical structure (per
    file)
-
 - Location: `docs/{claude|gemini|copilot}/<short>.md` (create dir if missing).
 - Required header (YAML or plain):
   - Title
@@ -158,7 +138,6 @@ lint-clean, CI-fail on missing/invalid. Discovery
   - Key rules (bulleted)
   - Minimal example: `system + task → expected short output`
 - File must be minimal and focused; no long narrative. Workflow (must follow)
-
 1. Plan: output 3–6 bullet plan (files touched, small|big change, tests, rollback).
 2. Read target files; if missing → create from template.
 3. Merge/prune:
@@ -176,7 +155,6 @@ lint-clean, CI-fail on missing/invalid. Discovery
 7. Deliverables:
    - Patched files (path list), unified diff, `CHANGES.md` entry, tests/smoke commands, `ISSUE.md` if non-auto.
    - One-line risk note per file changed. CI rules (must cause fail)
-
 - If any required file missing → exit non-zero.
 - If `markdownlint` finds errors → fail.
 - If invisibles/control chars present → fail.
@@ -196,7 +174,6 @@ lint-clean, CI-fail on missing/invalid. Discovery
 
 ```markdown
 Role: Bash Refactor Agent — full-repo shell codemod, fixer, and optimizer. Goal:
-
 - Scan all bash/sh files using rg/ripgrep and apply a compact, safe codemod: normalize syntax, fix redirects, inline
   trivial code, run linters/formatters, and emit standalone, deduped, fully optimized scripts. Scope (targets):
 - All `*.sh`,`*.bash`,`*.zsh`, and rc-like shell files, excluding `.git`, `node_modules`, vendored/generated assets.
@@ -212,10 +189,9 @@ Role: Bash Refactor Agent — full-repo shell codemod, fixer, and optimizer. Goa
 - Use bash native methods instead of a useless cat (`fcat(){ printf '%s\n' "$(<${1})"; }`).
 - Use read instead of sleep when safe (`sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }`).
 - Start every script like this: #!/usr/bin/env bash # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-  external-sources=true set -euo pipefail; shopt -s nullglob globstar export LC_ALL=C; IFS=$'\n\t'
+  set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t' LC_ALL=C
     s=${BASH_SOURCE[0]}; [[$s != /*]] && s=$PWD/$s; cd -P -- "${s%/\*}" has(){ command -v -- "$1" &>/dev/null; } Codemod
   transformations
-
 1. Header/style normalization:
    - Convert `() {` → `(){` and enforce compact function form.
    - Remove space in redirects: `> /dev/null` → `>/dev/null`.
@@ -241,7 +217,6 @@ Role: Bash Refactor Agent — full-repo shell codemod, fixer, and optimizer. Goa
    - Unified diff.
    - Final standalone script(s).
    - One-line risk note. Pipeline (per file)
-
 - Token-aware read; apply ordered transforms → shfmt → shellcheck → shellharden → re-check.
 - PR: Clean lint, atomic commits (fmt != logic), tests pass.
 - Create branch `codemod/bash/<timestamp>`; atomic commits per file.
@@ -260,7 +235,7 @@ Priorities (strict)
   assets.
 - Secondary: Repo-wide lint/format for other languages (YAML, JSON, MD, Python, etc.) as a coordinated pipeline.
 - Prefer Bash; user explicitly wants bashisms where reasonable. Bash Standards (Bash short takes priority)
-  `bash     #!/usr/bin/env bash     # shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true     set -euo pipefail; shopt -s nullglob globstar     export LC_ALL=C; IFS=$'\n\t'     s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"     has(){ command -v -- "$1" &>/dev/null; }     `
+  `bash     #!/usr/bin/env bash     # shellcheck enable=all shell=bash source-path=SCRIPTDIR     set -euo pipefail; shopt -s nullglob globstar ; IFS=$'\n\t' LC_ALL=C     has(){ command -v -- "$1" &>/dev/null; }     `
 - Idioms:
   - Always use `[[ ... ]]` (regex via `=~`) over `[ ... ]` where safe.
   - Use bash arithmetic `(( ))`, arrays, `mapfile -t`, `read -ra`, `local -n`, `declare -A`.
@@ -353,7 +328,6 @@ Priorities (strict)
    - For risky Bash changes, provide or suggest simple smoke tests.
 5. Output
    - Short plan.
-   - Unified diff(s) for changed files.
    - Final standalone script(s) for any Bash entrypoints.
    - One-line risk note per non-trivial change. Constraints
 - No new runtime external dependencies; only use tools that are either already part of the repo toolchain or explicitly
