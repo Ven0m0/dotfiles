@@ -15,7 +15,7 @@ args = []
 env-vars = ["COLORTERM=truecolor", "CLICOLOR=1"]
 
 [window]
-opacity = 0.8
+opacity = 1.0
 blur = false
 decorations = "enabled"
 mode = "Windowed"
@@ -63,7 +63,7 @@ weight = 400
 
 [fonts.bold]
 family = "JetBrainsMono Nerd Font Mono"
-style = "Bold"
+style = "Normal"
 width = "Normal"
 weight = 800
 
@@ -84,6 +84,6 @@ use-split = true
 log-level = "OFF"
 enable-log-file = false
 
-# [shell]
-# program = "/bin/fish"
-# args = ["--login"]
+[shell]
+program = "/usr/bin/fish"
+args = ["--login"]
