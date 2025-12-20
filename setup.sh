@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR
-# shellcheck disable=SC2310
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR disable=SC2310
 set -euo pipefail; shopt -s nullglob globstar
-export LC_ALL=C; IFS=$'\n\t'
+IFS=$'\n\t' LC_ALL=C
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
 DRY_RUN=false
 VERBOSE=true
