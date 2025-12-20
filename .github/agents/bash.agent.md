@@ -3,7 +3,7 @@ applyTo: "**/*.{sh,bash,zsh},PKGBUILD"
 name: bash-optimizer
 description: Bash/Shell agent for hardening, linting, and modernizing scripts (ShellCheck/Shfmt/Shellharden)
 mode: agent
-model: GPT-5.1-Codex-Max
+model: claude-4-5-sonnet-latest
 modelParameters:
   temperature: 0.35
 tools:
