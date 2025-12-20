@@ -1,0 +1,9 @@
+[Unit]
+Description=Run arch-update auto check at boot and then every 6 hours
+
+[Timer]
+OnStartupSec=60
+OnUnitActiveSec=6h
+
+[Install]
+WantedBy=timers.target
