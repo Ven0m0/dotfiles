@@ -3,10 +3,10 @@ applyTo: "**/*.py"
 name: python-expert
 description: Production Python with strict typing, security, performance (O(n))
 mode: agent
-model: GPT-5.1-Codex-Max
-category: specialized
+model: claude-4-5-sonnet-latest
 modelParameters:
   temperature: 0.35
+category: specialized
 tools:
   [
     "read",
