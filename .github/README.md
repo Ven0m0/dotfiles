@@ -37,6 +37,13 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 <details>
 <summary><b>Useful Stuff</b></summary>
 
+**Tools**
+- [Wormhole file sharing](https://wormhole.app)
+- [Online tools](https://tools.waytolearnx.com/en)
+- [FFMPEG flag generator](https://alfg.github.io/ffmpeg-commander)
+- CCT: `curl -fsSL https://christitus.com/linuxdev | bash`
+
+**Wikis**
 - [https://dotfiles.github.io/](https://dotfiles.github.io/)
 - [https://terminal.sexy/](https://terminal.sexy/)
 - [https://wiki.archlinux.org/title/Git](https://wiki.archlinux.org/title/Git)
@@ -60,7 +67,10 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 <details>
 <summary><b>Supported Linux Distributions</b></summary>
 
-- [CachyOS](https://cachyos.org) specifically, but really any arch based distro is good
+- [CachyOS](https://cachyos.org)
+- [EndeavourOS](https://endeavouros.com)
+- [Nobara](https://nobaraproject.org)
+- [Bazzite](https://bazzite.gg)
 - [DietPi](https://dietpi.com)
 - [Raspberry Pi OS](https://www.raspberrypi.com/software)
 </details>
@@ -74,7 +84,7 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 - [Redlib reddit](https://lr.ptr.moe)
 - [Imgur](https://rimgo.lunar.icu)
 
-**Search engines*:*
+**Search engines:**
 - [DuckduckGo](https://duckduckgo.com)
 - [Searchxng](https://searx.dresden.network/) [Instances](https://searx.space)
 - [Brave search](https://search.brave.com)
