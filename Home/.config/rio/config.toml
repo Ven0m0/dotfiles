@@ -32,7 +32,7 @@ ime-cursor-positioning = true
 
 [fonts]
 family = "JetBrainsMono Nerd Font Mono"
-size = 13
+size = 12
 features = ["zero", "calt", "liga", "ss01", "ss02", "ss19", "ss20"]
 hinting = true
 
@@ -49,6 +49,7 @@ family = "Noto Color Emoji"
 
 [scroll]
 multiplier = 2.5
+divider = 1.0
 
 [navigation]
 mode = "bookmark"
