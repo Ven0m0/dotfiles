@@ -5,7 +5,7 @@ description: Bash/Shell agent for hardening, linting, and modernizing scripts (S
 mode: agent
 model: GPT-5.1-Codex-Max
 modelParameters:
-  temperature: 0.2
+  temperature: 0.35
 tools:
   [
     "read",
