@@ -1,5 +1,5 @@
 hide-mouse-cursor-when-typing = false
-use-fork = true
+use-fork = false
 confirm-before-quit = false
 
 [bell]
@@ -25,17 +25,16 @@ performance = "High"
 backend = "Automatic"
 disable-unfocused-render = false
 disable-occluded-render = true
-target-fps = 120
-strategy = "events"
+target-fps = 60
 
 [keyboard]
-use-kitty-keyboard-protocol = true
-ime-cursor-positioning = true
+use-kitty-keyboard-protocol = false
+ime-cursor-positioning = false
 disable-ctlseqs-alt = false
 
 [fonts]
 family = "JetBrainsMono Nerd Font Mono"
-size = 12
+size = 13
 features = ["zero", "calt", "liga", "ss01", "ss02", "ss19", "ss20"]
 hinting = true
 use-drawable-chars = true
@@ -71,7 +70,7 @@ weight = 800
 family = "Noto Color Emoji"
 
 [scroll]
-multiplier = 3.0
+multiplier = 2.0
 divider = 1.0
 
 [navigation]
