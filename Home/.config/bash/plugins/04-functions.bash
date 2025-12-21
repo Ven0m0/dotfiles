@@ -36,6 +36,8 @@ vcode(){
   done
 }
 
+prettypath(){ echo "${PATH//:/$'\n'}"; }
+
 # --- Archive Management
 extract(){
   [[ $# -lt 1 ]] && { printf 'Usage: extract FILE [OUT_DIR]\n' >&2; return 1; }
