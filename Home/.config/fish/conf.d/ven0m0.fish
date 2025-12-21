@@ -48,6 +48,21 @@ if test "$TERM" = xterm-ghostty -a -e "$GHOSTTY_RESOURCES_DIR/shell-integration/
     source "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
 end
 
+## Enable Wayland support for different applications
+if test "$XDG_SESSION_TYPE" = "wayland"
+    set -gx WAYLAND 1
+    set -gx QT_QPA_PLATFORM 'wayland;xcb'
+    set -gx GDK_BACKEND 'wayland,x11'
+    set -gx MOZ_DBUS_REMOTE 1
+    set -gx MOZ_ENABLE_WAYLAND 1
+    set -gx _JAVA_AWT_WM_NONREPARENTING 1
+    set -gx BEMENU_BACKEND wayland
+    set -gx CLUTTER_BACKEND wayland
+    set -gx ECORE_EVAS_ENGINE wayland_egl
+    set -gx ELM_ENGINE wayland_egl
+    set -gx ELECTRON_OZONE_PLATFORM_HINT wayland
+end
+
 # Async prompt
 set -U async_prompt_functions fish_prompt # fish_right_prompt
 set -U async_prompt_enable 1
