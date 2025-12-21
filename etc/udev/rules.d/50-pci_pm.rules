@@ -4,3 +4,5 @@ SUBSYSTEM=="pci", ATTR{vendor}=="0x1234", ATTR{device}=="0x1234", ATTR{power/con
 
 SUBSYSTEM=="pci", ATTR{power/control}="auto"
 LABEL="pci_pm_end"
+
+ACTION=="add", SUBSYSTEM=="usb", ATTR{product}!="*Mouse", ATTR{product}!="*Keyboard", TEST=="power/control", ATTR{power/control}="auto"
