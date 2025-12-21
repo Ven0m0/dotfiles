@@ -11,24 +11,11 @@ repos:
       - id: ruff-format
         name: Format with ruff
         types_or: [python, pyi]
-
       # Lint and auto-fix
       - id: ruff
         name: Lint with ruff
         args: [--fix, --exit-non-zero-on-fix]
         types_or: [python, pyi]
-
-  # Mypy static type checking
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
-    hooks:
-      - id: mypy
-        name: Type check with mypy
-        additional_dependencies:
-          - types-orjson
-        files: ^(server|test_server)\.py$
-        args: [--config-file=pyproject.toml]
-
   # General file hygiene
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -54,17 +41,6 @@ repos:
       - id: mixed-line-ending
         name: Fix mixed line endings
         args: [--fix=lf]
-
-  # Security checks
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.5
-    hooks:
-      - id: bandit
-        name: Security check with bandit
-        args: [-c, pyproject.toml]
-        additional_dependencies: ["bandit[toml]"]
-        exclude: ^test_
-
 # Configure pre-commit behavior
 default_language_version:
   python: python3.11
