@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 has git || return
+export GH_BROWSER=firefox
 gpush(){
   git maintenance run --auto --quiet; git add -A >/dev/null
   git commit -q -m "${1:-Update}" && LC_ALL=C git push --recurse-submodules=on-demand --prune
