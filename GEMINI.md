@@ -5,7 +5,7 @@ Blunt, precise. `Result ∴ Cause`. Lists ≤7
 
 ## Model & Capabilities
 
-- **Model:** gemini-2.5
+- **Model:** gemini-3.0
 - **Vision:** Yes (multimodal analysis)
 
 ## Safety & Accuracy
