@@ -94,7 +94,7 @@ trim_trailing_whitespace = false
 [**.{rst,txt}]
 trim_trailing_whitespace = false
 
-[**.{patch,diff}]
+[*.{patch,.diff,.patch.*}]
 trim_trailing_whitespace = false
 
 ###############################################################################
