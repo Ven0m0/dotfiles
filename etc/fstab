@@ -16,7 +16,8 @@
 # TMPFS (RAM-based filesystem)
 # ========================================
 # Temporary filesystem in RAM for /tmp
-tmpfs /tmp tmpfs defaults,noatime,lazytime,mode=1777 0 0
+# noswap
+tmpfs /tmp tmpfs defaults,noatime,lazytime,huge=within_size,mode=1777 0 0
 
 # ========================================
 # Btrfs Filesystem
