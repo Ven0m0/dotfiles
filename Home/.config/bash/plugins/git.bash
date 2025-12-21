@@ -29,9 +29,12 @@ gctl(){
 # Lazy-load: only fetch token when needed, not on every shell startup
 if has gh; then
   # Setup git to use gh for authentication (one-time config)
-  gh auth setup-git &>/dev/null
+  gh auth setup-git 2>/dev/null
   # Define lazy function to get token only when GITHUB_TOKEN is accessed
-  get_github_token(){ export GITHUB_TOKEN="$(gh auth token &>/dev/null)"; }
+  get_github_token(){ 
+    export GITHUB_TOKEN="${GITHUB_TOKEN:-GH_TOKEN}"
+    [[ -z GITHUB_TOKEN ]] && export GITHUB_TOKEN="$(gh auth token 2>/dev/null)"
+  }
 fi
 # Git dotfiles
 alias dot='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
