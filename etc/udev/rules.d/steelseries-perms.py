@@ -15,7 +15,6 @@ _IOC_SIZESHIFT = _IOC_TYPESHIFT + _IOC_TYPEBITS
 _IOC_DIRSHIFT = _IOC_SIZESHIFT + _IOC_SIZEBITS
 _IOC_READ = 2
 
-
 def _IOC(dir, type, nr, size):
     return (
         (dir << _IOC_DIRSHIFT)
@@ -23,21 +22,16 @@ def _IOC(dir, type, nr, size):
         | (nr << _IOC_NRSHIFT)
         | (size << _IOC_SIZESHIFT)
     )
-
-
 def _IOR(type, nr, size):
     return _IOC(_IOC_READ, type, nr, size)
 
-
 HID_MAX_DESCRIPTOR_SIZE = 4096
-
 
 class hidraw_report_descriptor(ctypes.Structure):
     _fields_ = [
         ("size", ctypes.c_uint),
         ("value", ctypes.c_uint8 * HID_MAX_DESCRIPTOR_SIZE),
     ]
-
 
 HIDIOCGRDESCSIZE = _IOR("H", 0x01, ctypes.sizeof(ctypes.c_int))
 HIDIOCGRDESC = _IOR("H", 0x02, ctypes.sizeof(hidraw_report_descriptor))
