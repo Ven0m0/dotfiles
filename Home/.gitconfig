@@ -1,151 +1,208 @@
 [user]
- name = Ven0m0
- email = ven0m0.wastaken@gmail.com
+  name = Ven0m0
+  email = ven0m0.wastaken@gmail.com
 [core]
- excludesfile = ~/.gitignore
- attributesfile = ~/.gitattributes
- pager = delta
- whitespace = fix,-indent-with-non-tab,trailing-space,space-before-tab,cr-at-eol
- editor = $EDITOR
- autocrlf = input
- eol = native
- compression = 6
- fsyncMethod = batch
- deltaBaseCacheLimit = 1g
- untrackedCache = true
- symlinks = true
+  excludesfile = ~/.gitignore
+  attributesfile = ~/.gitattributes
+  pager = delta
+  whitespace = fix,-indent-with-non-tab,traili ng-space,space-before-tab,cr-at-eol
+  editor = $EDITOR
+  autocrlf = input
+  eol = native
+  compression = 6
+  fsyncMethod = batch
+  deltaBaseCacheLimit = 1g
+  untrackedCache = true
+  symlinks = true
   commitGraph = true
   preloadindex = true
   abbrev = 12
+  fileMode = true
 [init]
- defaultBranch = main
+  defaultBranch = main
 [alias]
- st = status
- unstage = reset HEAD --
- lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
- last = log -1 HEAD
- hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
- df = diff
- dc = diff --cached
+  st = status
+  unstage = reset HEAD --
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  last = log -1 HEAD
+  hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+  df = diff
+  dc = diff --cached
   addall = add --all
   rbmain = pull --rebase origin main
   pushf = push --force-with-lease
   commitm = commit -m
- amend = commit --amend --no-edit
- undo = reset --soft HEAD~1
+  amend = commit --amend --no-edit
+  undo = reset --soft HEAD~1
   discard = checkout --
- cleanup = !git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d
- dot = !--git-dir=$HOME/.dotfiles --work-tree=$HOME
+  cleanup = !git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d
+  sub = submodule update --init --recursive --remote -r
+  dot = !--git-dir=$HOME/.dotfiles --work-tree=$HOME
 [color]
- ui = auto
+  ui = auto
 [push]
- default = current
- autoSetupRemote = true
- recurseSubmodules = on-demand
- followTags = true
+  default = current
+  autoSetupRemote = true
+  recurseSubmodules = on-demand
+  followTags = true
 [pull]
- ff = only
- rebase = true
+  ff = only
+  rebase = true
 [fetch]
- all = true
- prune = true
- pruneTags = true
- parallel = 0
- recurseSubmodules = on-demand
- negotiationAlgorithm = skipping
+  all = true
+  prune = true
+  pruneTags = true
+  parallel = 0
+  recurseSubmodules = on-demand
+  negotiationAlgorithm = skipping
+[clone]
+  filterSubmodules = true
 [pack]
- threads = 0
+  threads = 0
   compression = 6
+  indexVersion = 2
   useSparse = true
   useBitmaps = true
- writeBitmapHashCache = true
- deltaCacheSize = 512m
+  writeBitmapHashCache = true
+  deltaCacheSize = 512m
   window = 128
   depth = 256
 [rebase]
- autoSquash = true
- autoStash = true
- updateRefs = true
- missingCommitsCheck = true
+  autoSquash = true
+  autoStash = true
+  updateRefs = true
+  missingCommitsCheck = true
+  abbreviateCommands = true
+  backend = merge
 [gc]
- auto = 256
- autoPackLimit = 50
- packRefs = true
- aggressive = true
-  writeCommitGraph = true
-  pruneExpire = 2.weeks.ago
+  auto = 256
+  autoPackLimit = 50
+  packRefs = true
+  aggressive = false
+  aggressiveDepth = 250
+  aggressiveWindow = 250
+  pruneExpire = 7.days.ago
+  reflogExpire = 7.days.ago
+  reflogExpireUnreachable = 0
+  repackFilter = blob:none
 [index]
- threads = 0
- version = 4
- skipHash = true
+  threads = 0
+  version = 4
+  skipHash = true
+[submodule]
+  fetchJobs = 0
 [checkout]
   guess = true
 [rebase]
   autoStash = true
 [rerere]
- enabled = true
- autoupdate = true
+  enabled = true
+  autoupdate = true
+[receive]
+  autogc = true
+  shallowUpdate = true
 [http]
- version = HTTP/2
- postBuffer = 104857600
- followRedirects = true
+  version = HTTP/2
+  postBuffer = 104857600
+  followRedirects = true
   maxRequests = 10
 [help]
- autoCorrect = prompt
+   autoCorrect = prompt
 [delta]
-  navigate = true
-  side-by-side = true
- line-numbers = true
   hyperlinks = true
- hunk-header-style = omit
+  features = decorations
+  line-numbers = true
+  decorations = true
+  navigate = true
+  hunk-header-style = omit
 [diff]
- tool = vscode
- algorithm = histogram
- colorMoved = dimmed_zebra
+  tool = vscode
+  external = difft
+  algorithm = histogram
+  colorMoved = plain
+  renames = copies
   colorMovedWS = allow-indentation-change
   context = 5
+  suppressBlankEmpty = true
+  compactionHeuristic = true
+  mnemonicprefix = true
 [difftool]
  prompt = false
 [difftool "vscode"]
  cmd = code --wait --diff $LOCAL $REMOTE
+[diff-so-fancy]
+  markEmptyLines = false
+  stripLeadingSymbols = true
+[icdiff]
+  options = --line-numbers
 [merge]
- conflictStyle = zdiff3
- tool = vscode
+  conflictStyle = zdiff3
+  tool = vscode
   stat = true
+  summary = true
 [mergetool]
- prompt = false
- keepBackup = false
- hideResolved = true
+  prompt = false
+  keepBackup = false
+  hideResolved = true
 [mergetool "vscode"]
- cmd = code --wait $MERGED
- useAutoMerge = true
+  cmd = code --wait $MERGED
+  useAutoMerge = true
+[mergetool "meld"]
+  useAutoMerge = true
+[gui]
+  fastCopyBlame = true
+  pruneDuringFetch = true
+  encoding = utf-8
 [feature]
- manyFiles = true
+  manyFiles = true
 [status]
- short = false
- submoduleSummary = true
- showUntrackedFiles = all
+  short = false
+  submoduleSummary = true
+  showUntrackedFiles = all
+  aheadBehind = true
 [commit]
- verbose = true
+  verbose = true
 [branch]
- sort = -committerdate
+  sort = -committerdate
+[help]
+  autoCorrect = 1
+[apply]
+  whitespace = fix
 [credential]
- helper = store
+  helper = store
 [credential "https://github.com"]
- helper = gh auth git-credential
+  helper = gh auth git-credential
 [credential "https://gist.github.com"]
- helper = gh auth git-credential
+  helper = gh auth git-credential
 [filter "lfs"]
- process = git-lfs filter-process
+  process = git-lfs filter-process
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
 [tag]
- sort = version:refname
+  sort = version:refname
 [protocol]
   version = 2
 [protocol "file"]
- allow = always
+  allow = always
 [maintenance]
   strategy = incremental
+[maintenance "prefetch"]
+  enabled = true
+[maintenance "gc"]
+  enabled = true
+[maintenance "loose-objects"]
+  enabled = true
+[maintenance "incremental-repack"]
+  enabled = true
+[maintenance "pack-refs"]
+  enabled = true
+[maintenance "reflog-expire"]
+  enabled = true
+[maintenance "rerere-gc"]
+  enabled = true
+[maintenance "worktree-prune"]
+  enabled = true
 [include]
- path = ~/.gitconfig.local
+  path = ~/.gitconfig.local
+[remote "origin"]
+	 mirror = false
