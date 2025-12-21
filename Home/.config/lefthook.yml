@@ -1,16 +1,18 @@
+assert_lefthook_installed: true
+skip_lfs:  true
 skip_output:  [meta, execution]
 output:  [summary, skips]
 colors: true
-no_tty:  false
+no_tty: false
 min_version: 1.5.0
 
 pre-commit:
   parallel: true
   commands:
-    shell-format: 
+    shell-format:
       priority: 1
       glob: "*.{sh,bash,zsh}"
-      run:  |
+      run: |
         command -v shfmt &>/dev/null || { printf "shfmt not installed, skipping format\n" >&2; exit 0; }
         command -v shellcheck &>/dev/null || { printf "shellcheck not installed, skipping lint\n" >&2; exit 0; }
         shfmt -w -i 2 -bn -ci -sr {staged_files}
@@ -29,11 +31,22 @@ pre-commit:
         yamlfmt {staged_files} && yamllint -s {staged_files}
         git add {staged_files}
       stage_fixed: true
-      fail_text:  "YAML lint failed"
+      fail_text: "YAML lint failed"
+
+    toml-lint: 
+      priority: 3
+      glob: "*.toml"
+      run: |
+        command -v taplo &>/dev/null || { printf "taplo not installed, skipping\n" >&2; exit 0; }
+        taplo format {staged_files}
+        taplo lint {staged_files}
+        git add {staged_files}
+      stage_fixed: true
+      fail_text: "TOML lint failed"
 
     json-validate:
-      priority:  3
-      glob: "*. {json,jsonc,json5}"
+      priority: 4
+      glob: "*.{json,jsonc,json5}"
       run: |
         if command -v jaq &>/dev/null; then
           jcmd=jaq
@@ -44,55 +57,58 @@ pre-commit:
           exit 0
         fi
         for f in {staged_files}; do
-          "$jcmd" -e . "$f" &>/dev/null || { printf "Invalid: %s\n" "$f" >&2; exit 1; }
+          "$jcmd" -e .  "$f" &>/dev/null || { printf "Invalid:  %s\n" "$f" >&2; exit 1; }
         done
       fail_text: "JSON invalid"
 
     aglint:
-      priority: 4
+      priority: 5
       glob: "*.txt"
       run: |
         command -v bunx &>/dev/null || { printf "bun not installed, skipping AGLint\n" >&2; exit 0; }
-        [[ -f .aglintrc.yml ]] || { printf ".aglintrc. yml not found, skipping AGLint\n" >&2; exit 0; }
+        [[ -f .aglintrc.yml ]] || { printf ". aglintrc.yml not found, skipping AGLint\n" >&2; exit 0; }
         bunx @adguard/aglint {staged_files}
       fail_text: "AGLint validation failed"
 
-    biome: 
-      priority: 5
-      glob: "*.{js,ts,cjs,mjs,d. cts,d.mts,jsx,tsx,json,jsonc}"
+    biome:
+      priority: 6
+      glob: "*.{js,ts,cjs,mjs,d.cts,d. mts,jsx,tsx,json,jsonc}"
       run: |
         command -v biome &>/dev/null || { printf "biome not installed, skipping\n" >&2; exit 0; }
-        cfg="${HOME}/. config/biome.json"
+        cfg="${HOME}/.config/biome. json"
         [[ -r "$cfg" ]] || cfg="${HOME}/biome.json"
         BIOME_CONFIG_PATH="$cfg" biome check --write --skip-parse-errors --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files} || :
         git add {staged_files}
       stage_fixed:  true
-      fail_text:  "Biome failed"
+      fail_text: "Biome failed"
 
     markdown-lint:
-      priority:  6
-      glob: "*. {md,markdown}"
-      run: |
+      priority: 7
+      glob: "*.{md,markdown}"
+      run:  |
         command -v bunx &>/dev/null || { printf "bun not installed, skipping\n" >&2; exit 0; }
-        bunx markdownlint {staged_files}
-      fail_text:  "Markdown lint failed"
+        [[ -f .markdownlint-cli2.jsonc ]] || { printf ".markdownlint-cli2.jsonc not found, skipping with config\n" >&2; }
+        bunx markdownlint-cli2 --fix {staged_files} || bunx markdownlint-cli2 {staged_files}
+        git add {staged_files}
+      stage_fixed: true
+      fail_text: "Markdown lint failed"
 
     normalize: 
-      priority: 7
+      priority: 8
       glob: "*"
-      exclude:  "\\.(png|jpe? g|gif|webp|ico|svg|woff2? |ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
+      exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2? |ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         for f in {staged_files}; do
           sed -i. bak 's/[[:space:]]*$//; s/\xE2\x80\x8B//g; s/\xE2\x80\x8C//g; s/\xE2\x80\x8D//g; s/\xE2\x80\xAF//g; s/\xC2\xAD//g; s/\xEF\xBB\xBF//g; s/\r$//' "$f"
           rm -f "${f}.bak"
         done
-        command -v dos2unix &>/dev/null && dos2unix -q {staged_files} 2>/dev/null || :
+        command -v dos2unix &>/dev/null && dos2unix -q {staged_files} 2>/dev/null || : 
         git add {staged_files}
       stage_fixed: true
-      fail_text:  "Normalize failed"
+      fail_text: "Normalize failed"
 
-    security:
-      priority: 8
+    security: 
+      priority: 9
       run: |
         command -v rg &>/dev/null || { printf "ripgrep not installed, skipping security scan\n" >&2; exit 0; }
         files=$(printf '%s\n' {staged_files} | grep -vE '(test|spec|fixture|mock|example|sample|__tests__|\. test\.|\.spec\.|/tests? /)' || :)
@@ -104,11 +120,11 @@ pre-commit:
           -e 'xox[baprs]-[0-9]{10,13}-[0-9]{10,13}-[0-9a-zA-Z]{24,}' \
           -e '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' \
           -e '^(<{7}|={7}|>{7})[^<>=]' \
-          && { printf "Security issue detected (secrets/merge conflicts)\n" >&2; exit 1; } || : 
+          && { printf "Security issue detected (secrets/merge conflicts)\n" >&2; exit 1; } || :
       fail_text: "Security check failed"
 
     gha-lint:
-      priority: 9
+      priority: 10
       glob: ". github/workflows/*.{yml,yaml}"
       run:  |
         command -v actionlint &>/dev/null || { printf "actionlint not installed, skipping\n" >&2; exit 0; }
@@ -116,40 +132,40 @@ pre-commit:
       fail_text: "GHA lint failed"
 
     build-userscripts:
-      priority:  10
+      priority: 11
       run: |
-        [[ -f package.json ]] && grep -q '"build: userscripts"' package.json || exit 0
-        bun run build: userscripts || : 
+        [[ -f package. json ]] && grep -q '"build: userscripts"' package.json || exit 0
+        bun run build:userscripts || : 
       fail_text: "Build userscripts failed"
 
     branch-protect:
-      priority: 11
+      priority: 12
       run: |
         branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
         [[ "$branch" =~ ^(main|master)$ ]] && { printf "Direct commits to %s blocked\n" "$branch" >&2; exit 1; } || :
       fail_text: "Protected branch"
 
 commit-msg:
-  commands:
-    conventional:
+  commands: 
+    conventional: 
       priority: 1
       run: |
         grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}' {1} || {
-          printf "Use Conventional Commits:  type(scope? ): subject\n" >&2; exit 1
+          printf "Use Conventional Commits: type(scope? ): subject\n" >&2; exit 1
         }
         subject=$(head -n1 {1})
         (( ${#subject} > 72 )) && { printf "Subject >72 chars (%d)\n" "${#subject}" >&2; exit 1; } || :
         grep -qEi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP/TODO\n" >&2; exit 1; } || :
       fail_text: "Commit format invalid"
 
-pre-push: 
+pre-push:
   parallel: true
-  commands: 
-    test:
-      priority:  1
+  commands:
+    test: 
+      priority: 1
       run: |
         [[ -f Makefile ]] && { make test &>/dev/null; exit 0; }
-        [[ -f package.json ]] && { bun test &>/dev/null; exit 0; }
+        [[ -f package. json ]] && { bun test &>/dev/null; exit 0; }
         [[ -f Cargo.toml ]] && { cargo test -q &>/dev/null; exit 0; }
         exit 0
       fail_text:  "Tests failed"
@@ -167,10 +183,10 @@ pre-push:
     audit:
       priority: 3
       run: |
-        [[ -f package. json ]] && { bun audit || bun x npm audit --production --audit-level=high; } || :
-        [[ -f Cargo.toml ]] && command -v cargo-audit &>/dev/null && cargo audit || : 
+        [[ -f package.json ]] && { bun audit || bun x npm audit --production --audit-level=high; } || :
+        [[ -f Cargo.toml ]] && command -v cargo-audit &>/dev/null && cargo audit || :
         exit 0
-      fail_text: "Audit failed"
+      fail_text:  "Audit failed"
 
 post-merge:
   commands:
@@ -178,7 +194,7 @@ post-merge:
       priority: 1
       run: |
         [[ -f bun.lockb || -f package-lock.json ]] && bun install --frozen-lockfile --production 2>/dev/null || : 
-        [[ -f Cargo.lock ]] && cargo fetch &>/dev/null || :
+        [[ -f Cargo. lock ]] && cargo fetch &>/dev/null || :
         exit 0
       fail_text: "Deps update failed"
 
@@ -186,20 +202,20 @@ post-checkout:
   commands: 
     submodules:
       priority: 1
-      run:  "git submodule update --init --recursive &>/dev/null || :"
+      run: "git submodule update --init --recursive &>/dev/null || :"
       fail_text:  "Submodule update failed"
 
     notify:
-      priority:  2
-      run:  |
+      priority: 2
+      run: |
         changed=$(git diff HEAD@{1} HEAD --name-only)
-        grep -qE '^(package. json|bun\. lockb|.*lock\.json)$' <<< "$changed" && {
+        grep -qE '^(package. json|bun\. lockb|.*lock\. json)$' <<< "$changed" && {
           printf "Dependencies changed.  Run: bun install\n" >&2
-        } || : 
+        } || :
       fail_text: "Dep check failed"
 
 prepare-commit-msg:
-  commands: 
+  commands:
     ticket:
       priority: 1
       run: |
