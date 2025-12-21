@@ -115,6 +115,7 @@ rustflags=[
 rustflags=["-C", "target-feature=-crt-static"]
 
 [target.aarch64-linux-android]
+linker = "aarch64-linux-android-clang"
 rustflags=["-C", "link-arg=-fuse-ld=lld"]
 
 [target.aarch64-unknown-linux-gnu]
