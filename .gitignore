@@ -2,6 +2,7 @@
 # Git / VCS
 #######################
 .git/
+/*.git
 .github-personal-access-token
 .gitconfig.local
 
