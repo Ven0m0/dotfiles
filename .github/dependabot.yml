@@ -4,8 +4,7 @@ updates:
     directory: "/"
     labels: []
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: "daily"
     groups:
       github-actions-all:
         patterns:
