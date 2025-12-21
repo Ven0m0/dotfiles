@@ -70,10 +70,12 @@ function qcd
 end
 abbr -a qcd --position command --regex 'q+' --function qcd
 
-alias sudo='sudo '
-alias doas='doas '
+alias sudo='sudo-rs '
 alias sudo-rs='sudo-rs '
+alias doas='doas '
 alias mkdir='mkdir -pv '
 alias ed='$EDITOR '
 alias ping='ping -c 4'
 alias cls='clear'
+
+alias update='sudo rm /var/lib/pacman/db.lck; and paru -Syu --skipreview --noconfirm'
