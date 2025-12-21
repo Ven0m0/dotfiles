@@ -58,10 +58,12 @@
 *.svg text
 
 # Archives
+*.gpg binary
 *.7z binary
 *.gz binary
 *.tgz binary
 *.tar binary
+*.tar.* binary
 *.zip binary
 *.zstd binary
 *.ttf binary
@@ -73,7 +75,11 @@
 Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
 
 # Patches as raw patches; don't normalize line endings
-*.patch -text diff=patch
+*.diff binary diff=patch linguist-language=Diff
+*.patch binary diff=patch linguist-language=Diff
+*.patch32   binary diff=patch linguist-language=Diff
+*.patch64   binary diff=patch linguist-language=Diff
+*.patch.*   binary diff=patch linguist-language=Diff
 
 ###############################################################################
 # Git / repo files
