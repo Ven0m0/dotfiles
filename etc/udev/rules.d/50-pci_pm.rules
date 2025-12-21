@@ -1,0 +1,6 @@
+# https://wiki.archlinux.org/title/Power_management#PCI_Runtime_Power_Management
+# blacklist for pci runtime power management
+SUBSYSTEM=="pci", ATTR{vendor}=="0x1234", ATTR{device}=="0x1234", ATTR{power/control}="on", GOTO="pci_pm_end"
+
+SUBSYSTEM=="pci", ATTR{power/control}="auto"
+LABEL="pci_pm_end"
