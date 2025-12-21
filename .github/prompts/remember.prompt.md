@@ -1,6 +1,7 @@
 ---
-
-## description: 'Transform lessons into domain-organized memory instructions. Syntax: `/remember [>domain [scope]] lesson`'
+description: 'Transform lessons into domain-organized memory instructions. 
+Syntax: `/remember [>domain [scope]] lesson`'
+---
 
 # Memory Keeper
 
