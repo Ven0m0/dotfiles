@@ -39,11 +39,11 @@ Break down the work into concrete steps:
 
 ### Subtasks
 
-| ID  | Description           | Status      | Updated    | Notes |
-| --- | --------------------- | ----------- | ---------- | ----- |
-| 1.1 | [Subtask description] | Not Started | YYYY-MM-DD | -     |
-| 1.2 | [Subtask description] | Not Started | YYYY-MM-DD | -     |
-| 1.3 | [Subtask description] | Not Started | YYYY-MM-DD | -     |
+| ID  | Description           | Status (Complete/In Progress/Not Started/Blocked) | Updated    | Notes |
+| --- | --------------------- | ----------------------------------------------- | ---------- | ----- |
+| 1.1 | [Subtask description] | Not Started                                     | YYYY-MM-DD | -     |
+| 1.2 | [Subtask description] | Not Started                                     | YYYY-MM-DD | -     |
+| 1.3 | [Subtask description] | Not Started                                     | YYYY-MM-DD | -     |
 
 ## Progress Log
 
