@@ -75,8 +75,9 @@ List any dependencies on other work:
 
 | Risk                | Likelihood | Impact | Mitigation                |
 | ------------------- | ---------- | ------ | ------------------------- |
-| [Risk description]  | Low/Med/Hi | Low/Med/Hi | [Mitigation strategy] |
+| [Risk description]  | Low        | High   | [Mitigation strategy]     |
 
+Use **Low**, **Medium**, or **High** for the Likelihood and Impact values.
 ## Related Issues
 
 Link related issues, PRs, or documentation here.
