@@ -2,19 +2,19 @@
   "config": {
     "default": true,
     "MD013": {
-      "line_length": 120,
+      "line_length": 100,
+      "code_blocks": false,
       "tables": false
     },
     "MD033": false,
-    "MD041": false
+    "MD041": false,
+    "MD046": false
   },
-  "globs": [
-    "**/*. {md,markdown}"
-  ],
+  "globs": ["**/*.md"],
   "ignores": [
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/build/**",
-    "**/.cache/**"
+    "node_modules/**",
+    "dist/**",
+    "Filters/**",
+    "lists/mirror/**"
   ]
 }
