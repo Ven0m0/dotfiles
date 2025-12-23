@@ -143,5 +143,5 @@ depends = ["cargocache", "uvcache", "misecache"]
 run = "rm -rf ~/.cache/* || :"
 
 [task.up]
-description = "Clean mise cache"
+description = "Update mise tools"
 run = "mise prune -yq || :; mise up -y || :"
