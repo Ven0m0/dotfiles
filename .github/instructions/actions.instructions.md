@@ -14,15 +14,15 @@ on:
   pull_request: { branches: [main] }
   workflow_dispatch: 
     inputs:
-      environment:
+      environment: 
         type: choice
         options: [staging, production]
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: true
-permissions:
+permissions: 
   contents: read
-  packages: write
+  packages:  write
 ```
 
 **Triggers:** `push`, `pull_request`, `workflow_dispatch` (manual), `schedule` (cron), `repository_dispatch`, `workflow_call` (reusable)
@@ -36,16 +36,15 @@ permissions:
 ```yaml
 jobs:
   build:
-    runs-on: ubuntu-latest # Prefer for most workloads (pre-installed tools)
-    # runs-on: ubuntu-latest-4-cores # For parallel builds
-    # runs-on: ubuntu-latest-8-cores # For heavy compilation
+    runs-on:  ubuntu-latest # Default:  full tooling (git, curl, jq, node, python, docker)
+    # runs-on: ubuntu-22.04 # Explicit version pin
 ```
 
 **Rules:**
-- Use `ubuntu-latest` (includes:  git, curl, jq, node, python, docker, buildx)
-- Check [preinstalled software](https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md) before installing tools
-- Avoid `ubuntu-22.04-slim` unless minimizing attack surface
-- Use larger cores for CPU-bound tasks (matrix tests, compilation)
+- Use `ubuntu-latest` for most workloads (preinstalled:  git, curl, jq, node, python, docker, buildx)
+- Check [preinstalled software](https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md) before installing
+- Pin to `ubuntu-22.04` or `ubuntu-24.04` only if reproducibility required
+- Use `windows-latest` or `macos-latest` for platform-specific tests
 
 ## Jobs
 
@@ -54,7 +53,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      artifact_path: ${{ steps.package.outputs.path }}
+      artifact_path:  ${{ steps.package.outputs. path }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -66,16 +65,14 @@ jobs:
           echo "path=dist.zip" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:  { name: build, path: dist.zip }
-
   test:
     runs-on: ubuntu-latest
-    needs:  build
+    needs: build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v4
-        with: { name: build }
+        with: { name:  build }
       - run: npm test
-
   deploy:
     runs-on: ubuntu-latest
     needs: [build, test]
@@ -83,7 +80,7 @@ jobs:
     environment:  production
     steps:
       - uses: actions/download-artifact@v4
-      - run: echo "Deploy ${{ needs.build.outputs.artifact_path }}"
+      - run: echo "Deploy ${{ needs.build. outputs.artifact_path }}"
 ```
 
 **Key Concepts:**
@@ -113,10 +110,8 @@ env:
 ```yaml
 # ✅ Pin to SHA (most secure)
 uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-
 # ✅ Pin to major version
-uses: actions/checkout@v4
-
+uses: actions/checkout@v6
 # ❌ Never use
 uses: actions/checkout@main
 ```
@@ -127,7 +122,7 @@ uses: actions/checkout@main
 permissions:
   contents: read
   issues: write
-  pull-requests:  write
+  pull-requests: write
   packages: write
 ```
 
@@ -140,11 +135,10 @@ permissions:
 find . -name "*.sh" -exec shellcheck {} +
 grep -rn "TODO" src/
 jq '. version' package.json
-
 # ❌ Avoid installing Rust alternatives in workflows
 # fd, rg, sd, jaq, bat add 15-60s install overhead
 # - uses: taiki-e/install-action@v2
-#   with: { tool: fd-find, ripgrep, sd, jaq }
+#   with: { tool:  fd-find, ripgrep, sd, jaq }
 ```
 
 **Check before installing:**
@@ -158,10 +152,10 @@ jq '. version' package.json
 ```
 
 **Toolchain hierarchy (CI):**
-- `find` > `fd` (fd install:  ~20s, gain: <1s on most repos)
+- `find` > `fd` (fd install: ~20s, gain: <1s on most repos)
 - `grep` > `rg` (rg install: ~30s, gain: ~2s on large repos)
 - `jq` > `jaq` (jaq install: ~15s, gain: <0.5s)
-- `sed` > `sd` (sd install: ~20s, gain: <0.5s)
+- `sed` > `sd` (sd install: ~20s, gain:  <0.5s)
 
 **When to install:**
 - Tool not preinstalled (`shfmt`, `shellcheck` via action)
@@ -171,17 +165,17 @@ jq '. version' package.json
 ## Caching
 
 ```yaml
-- uses: actions/cache@v4
+- uses: actions/cache@v5
   with: 
     path: |
-      ~/.npm
+      ~/. npm
       node_modules
     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     restore-keys: ${{ runner.os }}-node-
 ```
 
 **Common Caches:**
-- **Node.js**: `~/.npm`, `node_modules` (use `cache:  npm` in setup-node)
+- **Node.js**:  `~/.npm`, `node_modules` (use `cache: npm` in setup-node)
 - **Python**: `~/.cache/pip`, `~/.local/share/virtualenvs`
 - **Rust**: `~/.cargo`, `target/`
 - **Go**: `~/go/pkg/mod`
@@ -196,7 +190,7 @@ jq '. version' package.json
 
 ```yaml
 strategy:
-  matrix:
+  matrix: 
     os: [ubuntu-latest, windows-latest, macos-latest]
     node:  [18, 20, 22]
     exclude:
@@ -204,7 +198,6 @@ strategy:
         node: 18
   fail-fast: false
   max-parallel: 4
-
 runs-on:  ${{ matrix.os }}
 steps:
   - uses: actions/setup-node@v4
@@ -213,7 +206,7 @@ steps:
 
 ## Reusable Workflows
 
-**.github/workflows/build. yml:**
+**.github/workflows/build.yml:**
 
 ```yaml
 on:
@@ -222,10 +215,9 @@ on:
       environment:
         required: true
         type: string
-    secrets:
-      api_token: 
+    secrets: 
+      api_token:
         required: true
-
 jobs: 
   build:
     runs-on: ubuntu-latest
@@ -240,16 +232,16 @@ jobs:
   call-build: 
     uses: ./.github/workflows/build.yml
     with: { environment: production }
-    secrets: { api_token: ${{ secrets. API_TOKEN }} }
+    secrets: { api_token: ${{ secrets.API_TOKEN }} }
 ```
 
 ## Environments
 
 ```yaml
 jobs:
-  deploy:
+  deploy: 
     environment:
-      name: production
+      name:  production
       url: https://prod.example.com
     steps:
       - run: echo "Deploying to ${{ github.event.inputs. environment }}"
@@ -270,7 +262,6 @@ jobs:
     name: coverage-report
     path: coverage/
     retention-days: 30
-
 # Download
 - uses: actions/download-artifact@v4
   with: { name: coverage-report }
@@ -280,17 +271,17 @@ jobs:
 
 ```yaml
 # Enable debug logging
-- run: echo "::debug::Debug message"
+- run: echo "::debug:: Debug message"
 
 # Set output
 - run: echo "version=1.0.0" >> "$GITHUB_OUTPUT"
-  id: version
+  id:  version
 
 # Error annotation
-- run: echo "::error file=app.js,line=10::Syntax error"
+- run: echo "::error file=app.js,line=10:: Syntax error"
 
 # Warning
-- run: echo "::warning::Deprecated API usage"
+- run: echo "::warning:: Deprecated API usage"
 ```
 
 **Enable runner diagnostics:**
@@ -305,11 +296,11 @@ jobs:
 jobs:
   lint:  { runs-on: ubuntu-latest, steps: [...] }
   test: { runs-on: ubuntu-latest, steps: [...] }
-  build: { runs-on:  ubuntu-latest, needs: [lint, test], steps:  [...] }
+  build: { runs-on:  ubuntu-latest, needs: [lint, test], steps: [...] }
 ```
 
 **Optimization:**
-- Cache dependencies (use `cache: ` in setup actions)
+- Cache dependencies (use `cache:` in setup actions)
 - Use matrix for parallel tests
 - Minimize artifact size (compress, exclude unnecessary files)
 - Skip CI on docs changes:  `paths-ignore: ['docs/**', '*.md']`
@@ -326,7 +317,7 @@ jobs:
 **Skip CI:**
 
 ```yaml
-if: "!contains(github.event.head_commit.message, '[skip ci]')"
+if: "!contains(github.event.head_commit. message, '[skip ci]')"
 ```
 
 **Check tool exists:**
@@ -351,25 +342,25 @@ if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
 ```yaml
 ${{ github.actor }}          # User triggering workflow
-${{ github. sha }}            # Commit SHA
-${{ github.ref }}            # Branch ref
+${{ github.sha }}            # Commit SHA
+${{ github. ref }}            # Branch ref
 ${{ github.event_name }}     # Event type
-${{ runner.os }}             # OS (Linux, Windows, macOS)
+${{ runner. os }}             # OS (Linux, Windows, macOS)
 ```
 
 ## Docker
 
 ```yaml
 - uses: docker/setup-buildx-action@v3
-- uses: docker/login-action@v3
+- uses:  docker/login-action@v3
   with:
-    registry: ghcr.io
+    registry:  ghcr.io
     username: ${{ github.actor }}
-    password: ${{ secrets.GITHUB_TOKEN }}
-- uses: docker/build-push-action@v6
+    password: ${{ secrets. GITHUB_TOKEN }}
+- uses:  docker/build-push-action@v6
   with:
-    push:  true
-    tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
+    push: true
+    tags: ghcr.io/${{ github. repository }}:${{ github.sha }}
     cache-from: type=gha
     cache-to: type=gha,mode=max
 ```
@@ -379,13 +370,11 @@ ${{ runner.os }}             # OS (Linux, Windows, macOS)
 ```yaml
 - name: Unit tests
   run: npm test -- --coverage
-
 - name: Upload coverage
   uses: codecov/codecov-action@v4
-  with:
-    token: ${{ secrets.CODECOV_TOKEN }}
-    files: ./coverage/lcov.info
-
+  with: 
+    token: ${{ secrets. CODECOV_TOKEN }}
+    files: ./coverage/lcov. info
 - name: E2E tests
   run: npx playwright test
   env:
@@ -397,7 +386,7 @@ ${{ runner.os }}             # OS (Linux, Windows, macOS)
 - [ ] Pin actions to SHA or major version
 - [ ] Use GitHub Secrets for sensitive data
 - [ ] Set explicit permissions (least privilege)
-- [ ] Cache dependencies via setup action `cache: ` parameter
+- [ ] Cache dependencies via setup action `cache:` parameter
 - [ ] Use concurrency for resource management
 - [ ] Add environment protection rules
 - [ ] Enable branch protection
