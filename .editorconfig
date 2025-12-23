@@ -19,32 +19,31 @@ space_redirects = false
 switch_case_indent = true
 function_next_line = false
 binary_next_line = true
+quote_type = double
 
 # Shell Scripts
 # Fish
 [*.{fish,fish_*},fishd.*,fish_*]
-indent_style = space
 indent_size = 4
-tab_width = 2
 
 # Windows shell scripts
 [*.{bat,cmd,ps1,psm1}]
 indent_style = tab
 indent_size = 4
-tab_width = 2
 end_of_line = crlf
+
+# Python
+[*.py]
+indent_size = 4
 
 # C/C++
 [*.{c,cc,cpp,cxx,h,hpp,hxx}]
-indent_style = space
 indent_size = 4
 max_line_length = 100
 
 # C#, Java, PHP, Perl
 [*.{cs,java,php,pl,pm}]
-indent_style = space
 indent_size = 4
-max_line_length = 120
 
 # Go (requires tabs)
 [*.go,go.mod,go.sum]
@@ -54,39 +53,29 @@ tab_width = 4
 
 # Rust & Zig
 [*.{rs,zig}]
-indent_style = space
 indent_size = 4
-
-# JSON, YAML, TOML
-[*.{json,json5,jsonc,yml,yaml,toml}]
-indent_style = space
-indent_size = 2
-max_line_length = 120
 
 # XML / HTML
 [*.{xml,html,htm}]
 indent_size = 4
 
-[*.svg]
-indent_style = space
-indent_size = 2
-
 [*.{md,markdown}]
 max_line_length = 100
 trim_trailing_whitespace = false
 
-[**.{rst,txt}]
+[*.{patch,diff}]
 trim_trailing_whitespace = false
 
-[*.{patch,.diff,.patch.*}]
-trim_trailing_whitespace = false
+# Minified files
+[*.min.{js,css,txt}]
+insert_final_newline = false
 
 # Makefiles (require tabs)
-[{Makefile,**.mk,.gitmodules}]
+[Makefile,*.mk]
 indent_style = tab
 indent_size = 4
 tab_width = 4
 
-# Minified files
-[**.min.{js,css}]
-insert_final_newline = false
+# Lock files
+[{bun.lockb,package-lock.json}]
+insert_final_newline = true
