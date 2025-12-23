@@ -1,11 +1,11 @@
 {
   "rules": [
     {
-      "pattern": {"feature": "true", "matches":  ""},
+      "pattern": {"feature": "true", "matches": ""},
       "profile": "Main"
     },
     {
-      "pattern": {"feature":  "dxvk", "matches": "*"},
+      "pattern": {"feature": "dxvk", "matches": "*"},
       "profile": "DXVK"
     },
     {
@@ -25,11 +25,11 @@
       "profile": "DXVK"
     },
     {
-      "pattern":  {"feature": "true", "matches": "retroarch"},
+      "pattern": {"feature": "true", "matches": "retroarch"},
       "profile": "Emulator"
     },
     {
-      "pattern": {"feature": "true", "matches": "dolphin-emu"},
+      "pattern": {"feature": "true", "matches":  "dolphin-emu"},
       "profile": "Emulator"
     },
     {
@@ -37,11 +37,11 @@
       "profile": "Emulator"
     },
     {
-      "pattern": {"feature": "true", "matches": "rpcs3"},
-      "profile":  "Emulator"
+      "pattern": {"feature": "true", "matches":  "rpcs3"},
+      "profile": "Emulator"
     },
     {
-      "pattern":  {"feature": "true", "matches": "firefox"},
+      "pattern": {"feature": "true", "matches": "firefox"},
       "profile": "Browser"
     },
     {
@@ -53,19 +53,59 @@
       "profile": "Browser"
     },
     {
-      "pattern": {"feature": "true", "matches": "blender"},
+      "pattern":  {"feature": "true", "matches": "blender"},
       "profile": "Workstation"
     },
     {
-      "pattern": {"feature":  "true", "matches": "davinci-resolve"},
+      "pattern": {"feature": "true", "matches":  "davinci-resolve"},
       "profile": "Workstation"
     },
     {
       "pattern": {"feature": "true", "matches":  "obs"},
-      "profile": "Streaming"
+      "profile":  "Streaming"
+    },
+    {
+      "pattern":  {
+        "op": "or",
+        "sub": [
+          {"feature": "procname", "matches": "obs"},
+          {"feature": "procname", "matches":  "Discord"},
+          {"feature":  "procname", "matches": "discord"},
+          {"feature": "procname", "matches": "DiscordCanary"},
+          {"feature": "procname", "matches":  "vesktop"},
+          {"feature": "procname", "matches":  "simplescreenrecorder"},
+          {"feature": "procname", "matches": "gpu-screen-recorder"},
+          {"feature": "procname", "matches": "spectacle"},
+          {"feature": "procname", "matches": "webcord"}
+        ]
+      },
+      "profile": "CudaNoStablePerfLimit"
+    },
+    {
+      "pattern":  {
+        "op": "or",
+        "sub": [
+          {"feature": "procname", "matches": "Proton Pass"},
+          {"feature": "procname", "matches": "Proton Mail"},
+          {"feature":  "procname", "matches": "vesktop"},
+          {"feature":  "procname", "matches": "discord"},
+          {"feature": "procname", "matches": "DiscordCanary"},
+          {"feature": "procname", "matches": "spotify"},
+          {"feature": "procname", "matches":  "chromium"},
+          {"feature": "procname", "matches":  "chrome"},
+          {"feature":  "procname", "matches": "ghostty"},
+          {"feature":  "procname", "matches": "webcord"},
+          {"feature":  "procname", "matches": "brave"},
+          {"feature": "procname", "matches": "firefox"},
+          {"feature": "procname", "matches": "alacritty"},
+          {"feature":  "procname", "matches": "konsole"},
+          {"feature":  "procname", "matches": "niri"}
+        ]
+      },
+      "profile": "No VidMem Reuse"
     }
   ],
-  "profiles":  [
+  "profiles": [
     {
       "name": "Main",
       "settings": [
@@ -73,9 +113,9 @@
         {"key": "GLShaderDiskCache", "value": true},
         {"key": "GLShaderDiskCacheSize", "value": 2048},
         {"key": "GLThreadedOptimizations", "value": true},
-        {"key": "GLSortFbconfigs", "value": true},
-        {"key": "GLYield", "value":  "USLEEP"},
-        {"key": "GLIgnoreGLSLExtReqs", "value": true},
+        {"key": "GLSortFbconfigs", "value":  true},
+        {"key": "GLYield", "value": "USLEEP"},
+        {"key": "GLIgnoreGLSLExtReqs", "value":  true},
         {"key": "GLSyncToVblank", "value": false},
         {"key": "GLConformantBlitFramebufferScissor", "value": true},
         {"key": "GLAllowFXAAUsage", "value": true},
@@ -88,7 +128,7 @@
       ]
     },
     {
-      "name":  "Gaming",
+      "name": "Gaming",
       "settings": [
         {"key": "GLAllowUnofficialProtocol", "value": true},
         {"key": "GLShaderDiskCache", "value": true},
@@ -96,35 +136,35 @@
         {"key": "GLShaderDiskCachePath", "value": "/tmp/nv_shader_cache"},
         {"key": "GLThreadedOptimizations", "value": true},
         {"key": "GLSortFbconfigs", "value": true},
-        {"key": "GLYield", "value": "NOTHING"},
+        {"key":  "GLYield", "value":  "NOTHING"},
         {"key": "GLIgnoreGLSLExtReqs", "value": true},
         {"key": "GLSyncToVblank", "value":  false},
         {"key": "GLConformantBlitFramebufferScissor", "value": true},
-        {"key": "GLAllowFXAAUsage", "value": true},
+        {"key":  "GLAllowFXAAUsage", "value": true},
         {"key": "GLWriteTextSection", "value": true},
         {"key": "GLGSYNCAllowed", "value": true},
-        {"key": "GLVRRAllowed", "value": true},
+        {"key":  "GLVRRAllowed", "value": true},
         {"key": "PowerMizerMode", "value": 1},
         {"key": "PowerMizerLevel", "value": 0},
         {"key": "PowerMizerDefault", "value":  1},
-        {"key": "PowerMizerDefaultAC", "value": 1},
+        {"key":  "PowerMizerDefaultAC", "value": 1},
         {"key": "GLAllowFlipAhead", "value": 0},
         {"key": "GLDoom3", "value": false},
         {"key": "GLExtensionStringVersion", "value": 2},
-        {"key": "GLSLVersion", "value": 460},
-        {"key": "TextureClamping", "value": 1},
+        {"key": "GLSLVersion", "value":  460},
+        {"key":  "TextureClamping", "value": 1},
         {"key": "TextureFilteringQuality", "value": 10},
         {"key": "TextureLOD", "value": 1},
         {"key": "AnisoLevel", "value": 16},
         {"key": "AAMode", "value": 0},
         {"key": "AALines", "value": 0},
-        {"key": "FSAAAppControlled", "value": 1},
+        {"key": "FSAAAppControlled", "value":  1},
         {"key": "FSAAAppEnhanced", "value": 0},
         {"key": "LogAniso", "value": 4},
         {"key": "MaxFramesAllowed", "value": 1},
         {"key": "PreferMaxPerf", "value": 1},
         {"key": "PreRenderLimit", "value": 1},
-        {"key": "TearFree", "value": 0},
+        {"key": "TearFree", "value":  0},
         {"key": "TripleBuffer", "value": 0},
         {"key": "VRRMode", "value": 1}
       ]
@@ -132,15 +172,15 @@
     {
       "name": "DXVK",
       "settings": [
-        {"key": "GLAllowUnofficialProtocol", "value": true},
+        {"key":  "GLAllowUnofficialProtocol", "value": true},
         {"key": "GLShaderDiskCache", "value": true},
-        {"key": "GLShaderDiskCacheSize", "value": 8192},
+        {"key":  "GLShaderDiskCacheSize", "value": 8192},
         {"key": "GLShaderDiskCachePath", "value": "/tmp/nv_dxvk_cache"},
         {"key": "GLThreadedOptimizations", "value": true},
         {"key": "GLSortFbconfigs", "value": true},
-        {"key": "GLYield", "value":  "NOTHING"},
-        {"key": "GLIgnoreGLSLExtReqs", "value": true},
-        {"key": "GLSyncToVblank", "value":  false},
+        {"key":  "GLYield", "value":  "NOTHING"},
+        {"key": "GLIgnoreGLSLExtReqs", "value":  true},
+        {"key": "GLSyncToVblank", "value": false},
         {"key": "GLWriteTextSection", "value": true},
         {"key": "GLGSYNCAllowed", "value": true},
         {"key": "GLVRRAllowed", "value": true},
@@ -149,43 +189,43 @@
         {"key": "PowerMizerDefault", "value": 1},
         {"key": "GLAllowFlipAhead", "value": 0},
         {"key": "GLExtensionStringVersion", "value":  2},
-        {"key": "AnisoLevel", "value": 16},
+        {"key":  "AnisoLevel", "value": 16},
         {"key": "AAMode", "value": 0},
         {"key": "MaxFramesAllowed", "value":  1},
-        {"key": "PreferMaxPerf", "value": 1},
+        {"key":  "PreferMaxPerf", "value": 1},
         {"key": "PreRenderLimit", "value": 1},
         {"key": "TearFree", "value": 0},
         {"key": "TripleBuffer", "value": 0},
         {"key": "VRRMode", "value": 1},
         {"key": "VKPipelineCache", "value": true},
-        {"key": "VKShaderCache", "value": true}
+        {"key":  "VKShaderCache", "value": true}
       ]
     },
     {
       "name": "Emulator",
       "settings":  [
-        {"key": "GLShaderDiskCache", "value":  true},
-        {"key": "GLShaderDiskCacheSize", "value": 2048},
+        {"key": "GLShaderDiskCache", "value": true},
+        {"key":  "GLShaderDiskCacheSize", "value": 2048},
         {"key": "GLThreadedOptimizations", "value":  true},
         {"key": "GLYield", "value": "NOTHING"},
-        {"key": "GLSyncToVblank", "value":  false},
+        {"key":  "GLSyncToVblank", "value":  false},
         {"key": "GLGSYNCAllowed", "value": true},
-        {"key": "GLVRRAllowed", "value": true},
+        {"key":  "GLVRRAllowed", "value": true},
         {"key": "PowerMizerMode", "value": 1},
         {"key": "PowerMizerLevel", "value": 0},
         {"key": "MaxFramesAllowed", "value":  1},
-        {"key": "PreRenderLimit", "value": 1},
+        {"key":  "PreRenderLimit", "value": 1},
         {"key": "TearFree", "value": 0},
         {"key": "TripleBuffer", "value":  0},
-        {"key": "VRRMode", "value": 1},
+        {"key":  "VRRMode", "value": 1},
         {"key": "AnisoLevel", "value": 16},
-        {"key": "TextureFilteringQuality", "value": 10}
+        {"key": "TextureFilteringQuality", "value":  10}
       ]
     },
     {
       "name": "Browser",
       "settings": [
-        {"key": "GLShaderDiskCache", "value":  true},
+        {"key": "GLShaderDiskCache", "value": true},
         {"key": "GLThreadedOptimizations", "value":  false},
         {"key": "GLYield", "value": "USLEEP"},
         {"key": "GLSyncToVblank", "value": true},
@@ -201,17 +241,17 @@
       "name": "Workstation",
       "settings":  [
         {"key": "GLShaderDiskCache", "value": true},
-        {"key": "GLShaderDiskCacheSize", "value": 4096},
+        {"key":  "GLShaderDiskCacheSize", "value": 4096},
         {"key": "GLThreadedOptimizations", "value": true},
         {"key": "GLYield", "value": "USLEEP"},
         {"key": "GLSyncToVblank", "value": true},
         {"key": "GLConformantBlitFramebufferScissor", "value": true},
         {"key": "PowerMizerMode", "value":  1},
-        {"key": "PowerMizerLevel", "value": 0},
+        {"key":  "PowerMizerLevel", "value": 0},
         {"key": "PreRenderLimit", "value": 3},
         {"key": "TearFree", "value": 1},
         {"key": "TripleBuffer", "value":  1},
-        {"key": "AAMode", "value": 4},
+        {"key":  "AAMode", "value": 4},
         {"key": "AnisoLevel", "value": 16},
         {"key": "TextureFilteringQuality", "value": 20},
         {"key": "FSAAAppEnhanced", "value": 1}
@@ -221,17 +261,26 @@
       "name": "Streaming",
       "settings": [
         {"key": "GLShaderDiskCache", "value":  true},
-        {"key": "GLThreadedOptimizations", "value":  true},
+        {"key": "GLThreadedOptimizations", "value": true},
         {"key": "GLYield", "value": "USLEEP"},
         {"key": "GLSyncToVblank", "value": true},
         {"key": "PowerMizerMode", "value":  1},
-        {"key": "PowerMizerLevel", "value":  0},
+        {"key":  "PowerMizerLevel", "value": 0},
         {"key": "PreRenderLimit", "value": 1},
         {"key": "TearFree", "value": 1},
-        {"key": "TripleBuffer", "value":  0},
+        {"key": "TripleBuffer", "value": 0},
         {"key": "PreferMaxPerf", "value":  1},
-        {"key": "GLWriteTextSection", "value": true}
+        {"key":  "GLWriteTextSection", "value": true}
       ]
+    },
+    {
+      "name": "CudaNoStablePerfLimit",
+      "settings": [
+        ["0x166c5e", 0]
+      ]
+    },
+    {
+      "name": "No VidMem Reuse"
     }
   ]
 }
