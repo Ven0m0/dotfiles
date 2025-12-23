@@ -1,10 +1,5 @@
-# EditorConfig: https://editorconfig.org
-# Top-most EditorConfig file
 root = true
 
-###############################################################################
-# Default Settings for All Files
-###############################################################################
 [*]
 end_of_line = lf
 charset = utf-8
@@ -25,70 +20,59 @@ switch_case_indent = true
 function_next_line = false
 binary_next_line = true
 
-###############################################################################
 # Shell Scripts
-###############################################################################
 # Fish
-[**.{fish,fish_*},fishd.*,fish_*]
+[*.{fish,fish_*},fishd.*,fish_*]
 indent_style = space
 indent_size = 4
 tab_width = 2
 
 # Windows shell scripts
-[**.{bat,cmd,ps1,psm1}]
+[*.{bat,cmd,ps1,psm1}]
 indent_style = tab
 indent_size = 4
 tab_width = 2
 end_of_line = crlf
 
-###############################################################################
-# Programming Languages
-###############################################################################
 # C/C++
-[**.{c,cc,cpp,cxx,h,hpp,hxx}]
+[*.{c,cc,cpp,cxx,h,hpp,hxx}]
 indent_style = space
 indent_size = 4
 max_line_length = 100
 
 # C#, Java, PHP, Perl
-[**.{cs,java,php,pl,pm}]
+[*.{cs,java,php,pl,pm}]
 indent_style = space
 indent_size = 4
 max_line_length = 120
 
 # Go (requires tabs)
-[**.go,go.mod,go.sum]
+[*.go,go.mod,go.sum]
 indent_style = tab
 indent_size = 4
 tab_width = 4
 
 # Rust & Zig
-[**.{rs,zig}]
+[*.{rs,zig}]
 indent_style = space
 indent_size = 4
 
-###############################################################################
-# Configuration / Data Files
-###############################################################################
 # JSON, YAML, TOML
-[**.{json,json5,jsonc,yml,yaml,toml}]
+[*.{json,json5,jsonc,yml,yaml,toml}]
 indent_style = space
 indent_size = 2
 max_line_length = 120
 
 # XML / HTML
-[**.{xml,html,htm}]
+[*.{xml,html,htm}]
 indent_size = 4
 
-[**.svg]
+[*.svg]
 indent_style = space
 indent_size = 2
 
-###############################################################################
-# Markup / Documentation
-###############################################################################
-[**.{md,markdown}]
-max_line_length = 88
+[*.{md,markdown}]
+max_line_length = 100
 trim_trailing_whitespace = false
 
 [**.{rst,txt}]
@@ -97,18 +81,12 @@ trim_trailing_whitespace = false
 [*.{patch,.diff,.patch.*}]
 trim_trailing_whitespace = false
 
-###############################################################################
-# Build Systems & Package Managers
-###############################################################################
 # Makefiles (require tabs)
 [{Makefile,**.mk,.gitmodules}]
 indent_style = tab
 indent_size = 4
 tab_width = 4
 
-###############################################################################
-# Special Cases
-###############################################################################
 # Minified files
 [**.min.{js,css}]
 insert_final_newline = false
