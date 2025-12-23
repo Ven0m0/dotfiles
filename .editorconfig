@@ -21,7 +21,7 @@ spaces_around_operators = true
 spaces_around_brackets = false
 keep_padding = false
 space_redirects = false
-switch_case_indent = false
+switch_case_indent = true
 function_next_line = false
 binary_next_line = true
 
