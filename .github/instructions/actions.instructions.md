@@ -10,18 +10,16 @@ description: "GitHub Actions CI/CD best practices"
 ```yaml
 name: CI/CD Pipeline
 on:
-  push:  { branches: [main, develop] }
+  push: { branches: [main, develop] }
   pull_request: { branches: [main] }
   workflow_dispatch: 
     inputs:
       environment:
         type: choice
         options: [staging, production]
-
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   packages: write
