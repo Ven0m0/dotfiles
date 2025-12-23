@@ -122,16 +122,26 @@ CMAKE_GENERATOR = "Ninja"
 GITOXIDE_CORE_MULTIPACKINDEX = "true"
 
 # Task definitions
-[tasks.clean]
+[tasks.cargocache]
 description = "Clean cargo and cache directories"
-depends = ["cleancache"]
 run = "cargo cache -efg || :; cargo clean || :"
-
-[tasks.cleancache]
-description = "Clean system cache"
-run = "rm -rf ~/.cache/* || :; mise cache c -y"
 hide = true
 
-[tasks.update]
-description = "Update all mise tools"
-run = "mise up -y || :; mise prune -y || :"
+[tasks.uvcache]
+description = "Clean cargo and cache directories"
+run = "uv cache clear -q || :"
+hide = true
+
+[tasks.misecache]
+description = "Clean mise cache"
+run = "mise cache c -yq || :; mise prune -yq || :"
+hide = true
+
+[tasks.clean]
+description = "Clean cache"
+depends = ["cargocache", "uvcache", "misecache"]
+run = "rm -rf ~/.cache/* || :"
+
+[task.up]
+description = "Clean mise cache"
+run = "mise prune -yq || :; mise up -y || :"
