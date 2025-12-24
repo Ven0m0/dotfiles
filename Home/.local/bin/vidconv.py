@@ -32,6 +32,7 @@ from typing import Final, TypeAlias
 # ─────────────────────────────────────────────────────────────────────────────
 # Constants & Types
 # ─────────────────────────────────────────────────────────────────────────────
+
 PathList: TypeAlias = list[Path]
 
 VIDEO_EXTS: Final[frozenset[str]] = frozenset({
@@ -51,6 +52,7 @@ C_CYAN: Final[str] = '\033[36m'
 C_RESET: Final[str] = '\033[0m'
 C_BOLD: Final[str] = '\033[1m'
 
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Format Presets
 # ─────────────────────────────────────────────────────────────────────────────
@@ -63,6 +65,7 @@ class FormatPreset:
     params: tuple[tuple[str, str | None], ...]
     is_video: bool = True
     container: str = 'mkv'
+
 
 PRESETS: Final[dict[str, FormatPreset]] = {
     'av1': FormatPreset(
@@ -138,6 +141,7 @@ PRESETS: Final[dict[str, FormatPreset]] = {
     ),
 }
 
+
 @dataclass(slots=True)
 class EncodingConfig:
     """Runtime encoding configuration."""
@@ -164,6 +168,7 @@ class EncodingConfig:
     audio_channels: int = 2           # Stereo downmix
     # Extra
     extra_params: list[str] = field(default_factory=list)
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Logging Utilities
@@ -209,6 +214,7 @@ class Logger:
         if not self.quiet:
             print()
 
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Tool Detection
 # ─────────────────────────────────────────────────────────────────────────────
@@ -216,6 +222,7 @@ class Logger:
 def has_cmd(name: str) -> bool:
     """Check if command exists (cached)."""
     return shutil.which(name) is not None
+
 
 def check_required_tools(backend: str) -> list[str]:
     """Verify required tools are installed. Returns missing tools."""
@@ -229,6 +236,7 @@ def check_required_tools(backend: str) -> list[str]:
             missing.append('ffmpeg')
 
     return missing
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # File Discovery
@@ -245,6 +253,7 @@ def find_files_glob(patterns: list[str], extensions: frozenset[str]) -> PathList
             if path.is_file() and path.suffix.lower() in extensions:
                 files.append(path)
     return files
+
 
 def find_files_recursive(source_dir: Path, extensions: frozenset[str]) -> PathList:
     """Recursively find media files using fd or os.walk fallback."""
@@ -274,6 +283,7 @@ def find_files_recursive(source_dir: Path, extensions: frozenset[str]) -> PathLi
                 files.append(path)
 
     return files
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # FFmpeg Backend
@@ -374,6 +384,7 @@ def build_ffmpeg_params(
 
     return params
 
+
 def run_ffmpeg(
     input_path: Path,
     output_path: Path,
@@ -399,6 +410,7 @@ def run_ffmpeg(
         return True
     except subprocess.CalledProcessError:
         return False
+
 
 def convert_ffmpeg(
     input_path: Path,
@@ -429,6 +441,7 @@ def convert_ffmpeg(
             time.sleep(2)
 
     return False
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # HandBrake Backend
@@ -519,6 +532,7 @@ def convert_handbrake(
             log.error(f"  HandBrake error: {e.stderr.decode() if e.stderr else 'unknown'}")
         return False
 
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Output Path Generation
 # ─────────────────────────────────────────────────────────────────────────────
@@ -558,6 +572,7 @@ def generate_output_path(
 
     return input_path.with_name(new_name)
 
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Main Conversion Logic
 # ─────────────────────────────────────────────────────────────────────────────
@@ -571,6 +586,7 @@ class ConversionStats:
     total_input_bytes: int = 0
     total_output_bytes: int = 0
     failures: list[str] = field(default_factory=list)
+
 
 def process_file(
     input_path: Path,
@@ -619,6 +635,7 @@ def process_file(
             log.warn(f"  Output larger than input, keeping original")
 
     return True, input_size, output_size
+
 
 def run_conversion(
     files: PathList,
@@ -705,6 +722,7 @@ def run_conversion(
     log.progress_done()
     return stats
 
+
 def print_summary(stats: ConversionStats, log: Logger) -> None:
     """Print conversion summary."""
     print()
@@ -727,6 +745,7 @@ def print_summary(stats: ConversionStats, log: Logger) -> None:
             log.error(f"  - {f}")
 
     log.info("═" * 50)
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CLI
@@ -873,6 +892,7 @@ Examples:
     parser.add_argument('--silent', action='store_true', help='Suppress all output except errors')
 
     return parser.parse_known_args()
+
 
 def main() -> int:
     """Main entry point."""
