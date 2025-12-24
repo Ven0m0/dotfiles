@@ -24,14 +24,7 @@ tmpfs /tmp tmpfs defaults,noatime,lazytime,huge=within_size,mode=1777 0 0
 # ========================================
 # Modern CoW filesystem with compression and snapshots
 # Options: zstd compression, SSD optimizations, async discard
-# UUID=<uuid> /mnt/data btrfs defaults,noatime,lazytime,space_cache=v2,ssd,commit=120,compress=zstd:3 0 0
-
-# ========================================
-# EXT4 Filesystem
-# ========================================
-# Traditional Linux filesystem with performance optimizations
-# Options: writeback mode, async journal commit, reduced barriers
-# UUID=<uuid> /mnt/data ext4 defaults,noatime,lazytime,commit=120,discard=async,data=writeback,journal_async_commit,nobh,barrier=0 0 0
+# UUID=<uuid> /mnt/data btrfs defaults,nofail,rw,exec,user,noatime,lazytime,space_cache=v2,ssd,commit=120,compress=zstd:3 0 0
 
 # ========================================
 # XFS Filesystem
@@ -41,6 +34,13 @@ tmpfs /tmp tmpfs defaults,noatime,lazytime,huge=within_size,mode=1777 0 0
 # UUID=<uuid> /mnt/data xfs defaults,noatime,lazytime,inode64,logbufs=8,logbsize=256k,allocsize=1m 0 0
 # SATA:
 # UUID=<uuid> /mnt/data xfs defaults,noatime,lazytime,inode64,logbufs=8 0 0
+
+# ========================================
+# EXT4 Filesystem
+# ========================================
+# Traditional Linux filesystem with performance optimizations
+# Options: writeback mode, async journal commit, reduced barriers
+# UUID=<uuid> /mnt/data ext4 defaults,noatime,lazytime,commit=120,data=writeback,journal_async_commit,nobh,barrier=0 0 0
 
 # ========================================
 # EXT4 Tuning CCommands# ========================================
