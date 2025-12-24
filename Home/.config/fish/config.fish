@@ -29,3 +29,9 @@ init_tool starship "starship init fish"
 init_tool zoxide "zoxide init --cmd cd fish"
 init_tool mise "mise activate fish"
 init_tool zellij "zellij setup --generate-auto-start fish"
+
+# SSH agent
+set -gx SSH_AUTH_SOCK ~/.ssh/ssh-agent.sock
+if not test -e $SSH_AUTH_SOCK
+    eval (ssh-agent -c -s)
+end
