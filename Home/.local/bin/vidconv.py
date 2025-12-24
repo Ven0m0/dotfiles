@@ -4,16 +4,21 @@ Unified Video/Audio Converter - Merge of av1.py, bulk_handbrake.py, robust_conve
 
 Backends: ffmpeg (primary), ffzap (wrapper), HandBrakeCLI (optional)
 Formats: av1, x264, mp3, opus, flac, wav
-Features: batch, recursive, retry, deinterlace, grain synthesis, size reporting
+Features:
+  - Batch/recursive processing with directory structure preservation
+  - Smart scaling: --max-dim limits max dimension, no upscale, aspect preserved
+  - 10-bit output (yuv420p10le), film grain synthesis, fast-decode
+  - Filters: deinterlace, denoise, deblock, deband, rotate, crop, scale
+  - Retry logic, size reporting, metadata preservation
 
 Usage:
-    vidconv av1 *.mp4                    # Compress to AV1
-    vidconv x264 --crf 20 video.mkv      # H.264 with custom CRF
-    vidconv flac **/*.wav --delete       # Convert WAV to FLAC, remove originals
-    vidconv av1 -r /source -o /dest      # Recursive directory mode
-    vidconv av1 --backend handbrake ...  # Use HandBrakeCLI
+    vidconv av1 *.mp4                            # Compress to AV1
+    vidconv av1 --max-dim 1920 *.mp4             # Limit to 1080p max
+    vidconv av1 -i /videos -o /output            # Directory mode
+    vidconv av1 --deinterlace bwdif --deband old.avi
 """
 from __future__ import annotations
+
 import argparse
 import os
 import shutil
@@ -27,7 +32,6 @@ from typing import Final, TypeAlias
 # ─────────────────────────────────────────────────────────────────────────────
 # Constants & Types
 # ─────────────────────────────────────────────────────────────────────────────
-
 PathList: TypeAlias = list[Path]
 
 VIDEO_EXTS: Final[frozenset[str]] = frozenset({
@@ -68,12 +72,17 @@ PRESETS: Final[dict[str, FormatPreset]] = {
             ('-c:v', 'libsvtav1'),
             ('-crf', '{crf}'),
             ('-preset', '{preset}'),
-            ('-svtav1-params', 'tune=0:film-grain={grain}:enable-qm=1:qm-min=0:scd=1'),
+            ('-g', '{keyint}'),
+            ('-pix_fmt', '{pix_fmt}'),
+            ('-svtav1-params', 'tune=0:film-grain={grain}:enable-qm=1:qm-min=0:scd=1{fast_decode}'),
             ('-c:a', 'libopus'),
             ('-b:a', '{audio_bitrate}'),
+            ('-ac', '{audio_channels}'),
+            ('-rematrix_maxval', '1.0'),
             ('-vbr', 'on'),
+            ('-map_metadata', '0'),
         ),
-        container='mp4',
+        container='mkv',
     ),
     'x264': FormatPreset(
         name='x264',
@@ -137,7 +146,23 @@ class EncodingConfig:
     grain: int = 15
     audio_bitrate: str = '128k'
     quality: int = 0  # For MP3 VBR
-    deinterlace: bool = False
+    # Advanced video options
+    max_dim: int | None = None        # Max dimension (smart scale, no upscale)
+    pix_fmt: str = 'yuv420p10le'      # 10-bit by default
+    keyint: int = 300                 # Keyframe interval
+    fast_decode: bool = True          # SVT-AV1 fast-decode
+    deband: bool = False              # Deband filter
+    # Video filters
+    deinterlace: str | None = None    # off, bwdif, yadif, decomb
+    denoise: str | None = None        # off, nlmeans, hqdn3d
+    denoise_strength: str = 'light'   # ultralight, light, medium, strong
+    deblock: str | None = None        # off, qp=N:mode=N
+    rotate: int = 0                   # 0, 90, 180, 270
+    crop: str | None = None           # W:H:X:Y or auto
+    scale: str | None = None          # WxH or -1:720 (keep aspect)
+    # Audio options
+    audio_channels: int = 2           # Stereo downmix
+    # Extra
     extra_params: list[str] = field(default_factory=list)
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -184,7 +209,6 @@ class Logger:
         if not self.quiet:
             print()
 
-
 # ─────────────────────────────────────────────────────────────────────────────
 # Tool Detection
 # ─────────────────────────────────────────────────────────────────────────────
@@ -192,7 +216,6 @@ class Logger:
 def has_cmd(name: str) -> bool:
     """Check if command exists (cached)."""
     return shutil.which(name) is not None
-
 
 def check_required_tools(backend: str) -> list[str]:
     """Verify required tools are installed. Returns missing tools."""
@@ -206,7 +229,6 @@ def check_required_tools(backend: str) -> list[str]:
             missing.append('ffmpeg')
 
     return missing
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # File Discovery
@@ -223,7 +245,6 @@ def find_files_glob(patterns: list[str], extensions: frozenset[str]) -> PathList
             if path.is_file() and path.suffix.lower() in extensions:
                 files.append(path)
     return files
-
 
 def find_files_recursive(source_dir: Path, extensions: frozenset[str]) -> PathList:
     """Recursively find media files using fd or os.walk fallback."""
@@ -254,7 +275,6 @@ def find_files_recursive(source_dir: Path, extensions: frozenset[str]) -> PathLi
 
     return files
 
-
 # ─────────────────────────────────────────────────────────────────────────────
 # FFmpeg Backend
 # ─────────────────────────────────────────────────────────────────────────────
@@ -265,10 +285,70 @@ def build_ffmpeg_params(
 ) -> list[str]:
     """Build ffmpeg parameter list from preset and config."""
     params: list[str] = []
+    filters: list[str] = []
 
-    # Deinterlace filter (video only)
-    if config.deinterlace and preset.is_video:
-        params.extend(['-vf', 'bwdif'])
+    # Build video filter chain
+    if preset.is_video:
+        # Deinterlace (apply early in chain)
+        if config.deinterlace and config.deinterlace != 'off':
+            if config.deinterlace == 'bwdif':
+                filters.append('bwdif=mode=send_frame:parity=auto:deint=all')
+            elif config.deinterlace == 'yadif':
+                filters.append('yadif=mode=send_frame:parity=auto:deint=all')
+            elif config.deinterlace == 'decomb':
+                filters.append('yadif=mode=send_field:parity=auto')
+
+        # Denoise
+        if config.denoise and config.denoise != 'off':
+            strength_map = {
+                'ultralight': 2, 'light': 4, 'medium': 6, 'strong': 8,
+            }
+            if config.denoise == 'nlmeans':
+                h_val = strength_map.get(config.denoise_strength, 4)
+                filters.append(f'nlmeans=h={h_val}')
+            elif config.denoise == 'hqdn3d':
+                filters.append(f'hqdn3d={strength_map.get(config.denoise_strength, 4)}')
+
+        # Deblock
+        if config.deblock and config.deblock != 'off':
+            filters.append(f'deblock={config.deblock}')
+
+        # Rotate
+        if config.rotate:
+            rot_map = {90: 'transpose=1', 180: 'transpose=1,transpose=1', 270: 'transpose=2'}
+            if config.rotate in rot_map:
+                filters.append(rot_map[config.rotate])
+
+        # Crop (before scale)
+        if config.crop and config.crop != 'off':
+            if config.crop == 'auto':
+                filters.append('cropdetect=24:16:0')
+            else:
+                filters.append(f'crop={config.crop}')
+
+        # Smart scaling: max dimension, no upscale, aspect-ratio preserved
+        # Handles landscape (1920x1080), portrait (1080x1920), and smaller videos
+        if config.max_dim:
+            m = config.max_dim
+            # If width > height (landscape): limit width to min(max_dim, original)
+            # If height > width (portrait): limit height to min(max_dim, original)
+            # -2 ensures divisible by 2 for encoding
+            scale_expr = (
+                f"scale='if(gt(iw,ih),min({m},iw),-2)':'if(gt(iw,ih),-2,min({m},ih))'"
+                ":flags=lanczos"
+            )
+            filters.append(scale_expr)
+        elif config.scale:
+            # Manual scale override
+            filters.append(f'scale={config.scale}:flags=lanczos')
+
+        # Deband (apply late, after scaling)
+        if config.deband:
+            filters.append('deband')
+
+    # Apply filter chain
+    if filters:
+        params.extend(['-vf', ','.join(filters)])
 
     # Format parameters with config values
     fmt_map = {
@@ -277,6 +357,10 @@ def build_ffmpeg_params(
         'grain': str(config.grain),
         'audio_bitrate': config.audio_bitrate,
         'quality': str(config.quality),
+        'keyint': str(config.keyint),
+        'pix_fmt': config.pix_fmt,
+        'audio_channels': str(config.audio_channels),
+        'fast_decode': ':fast-decode=1' if config.fast_decode else '',
     }
 
     for key, val in preset.params:
@@ -289,7 +373,6 @@ def build_ffmpeg_params(
     params.extend(config.extra_params)
 
     return params
-
 
 def run_ffmpeg(
     input_path: Path,
@@ -316,7 +399,6 @@ def run_ffmpeg(
         return True
     except subprocess.CalledProcessError:
         return False
-
 
 def convert_ffmpeg(
     input_path: Path,
@@ -348,7 +430,6 @@ def convert_ffmpeg(
 
     return False
 
-
 # ─────────────────────────────────────────────────────────────────────────────
 # HandBrake Backend
 # ─────────────────────────────────────────────────────────────────────────────
@@ -358,16 +439,70 @@ def convert_handbrake(
     output_path: Path,
     preset_file: Path | None,
     preset_name: str,
+    config: EncodingConfig,
     log: Logger,
 ) -> bool:
-    """Convert using HandBrakeCLI."""
+    """Convert using HandBrakeCLI with filter support."""
     cmd = ['HandBrakeCLI']
 
     if preset_file and preset_file.exists():
         cmd.extend(['--preset-import-file', str(preset_file), '-Z', preset_name])
     else:
-        # Use built-in preset
-        cmd.extend(['-Z', preset_name])
+        # Use built-in preset or manual settings
+        cmd.extend([
+            '-e', 'svt_av1',
+            '-q', str(config.crf),
+            '--encoder-preset', str(config.preset),
+            '-E', 'opus',
+            '-B', config.audio_bitrate.rstrip('k'),
+        ])
+
+    # HandBrake native filters
+    if config.deinterlace and config.deinterlace != 'off':
+        # HandBrake: --deinterlace=<mode> (off, fast, slow, slower, bob, skip-spatial, eedi2, eedi2bob)
+        hb_deint_map = {'bwdif': 'slow', 'yadif': 'fast', 'decomb': 'slower'}
+        mode = hb_deint_map.get(config.deinterlace, 'slow')
+        cmd.extend(['--deinterlace', mode])
+
+    if config.denoise and config.denoise != 'off':
+        # HandBrake: --denoise=<filter> (off, nlmeans, hqdn3d)
+        # --denoise-preset=<preset> (ultralight, light, medium, strong)
+        cmd.extend(['--denoise', config.denoise])
+        cmd.extend(['--denoise-preset', config.denoise_strength])
+
+    if config.deblock and config.deblock != 'off':
+        # HandBrake: --deblock=<tune>:<strength> (pp7, weak, medium, strong)
+        cmd.extend(['--deblock', config.deblock])
+
+    if config.rotate:
+        # HandBrake: --rotate=<angle>
+        cmd.extend(['--rotate', f'angle={config.rotate}'])
+
+    if config.crop and config.crop != 'off':
+        if config.crop == 'auto':
+            cmd.append('--auto-crop')
+        else:
+            # Format: top:bottom:left:right
+            cmd.extend(['--crop', config.crop])
+
+    if config.scale:
+        # HandBrake: --width / --height or --maxWidth / --maxHeight
+        if 'x' in config.scale:
+            w, h = config.scale.split('x')
+            if w != '-1':
+                cmd.extend(['--width', w])
+            if h != '-1':
+                cmd.extend(['--height', h])
+        elif ':' in config.scale:
+            w, h = config.scale.split(':')
+            if w != '-1':
+                cmd.extend(['--width', w])
+            if h != '-1':
+                cmd.extend(['--height', h])
+    elif config.max_dim:
+        # Smart scale: limit max dimension, no upscale
+        cmd.extend(['--maxWidth', str(config.max_dim)])
+        cmd.extend(['--maxHeight', str(config.max_dim)])
 
     cmd.extend(['-i', str(input_path), '-o', str(output_path)])
 
@@ -379,9 +514,10 @@ def convert_handbrake(
             stderr=subprocess.PIPE,
         )
         return True
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as e:
+        if not log.quiet:
+            log.error(f"  HandBrake error: {e.stderr.decode() if e.stderr else 'unknown'}")
         return False
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Output Path Generation
@@ -422,7 +558,6 @@ def generate_output_path(
 
     return input_path.with_name(new_name)
 
-
 # ─────────────────────────────────────────────────────────────────────────────
 # Main Conversion Logic
 # ─────────────────────────────────────────────────────────────────────────────
@@ -436,7 +571,6 @@ class ConversionStats:
     total_input_bytes: int = 0
     total_output_bytes: int = 0
     failures: list[str] = field(default_factory=list)
-
 
 def process_file(
     input_path: Path,
@@ -454,19 +588,13 @@ def process_file(
     """
     input_size = input_path.stat().st_size
 
-    # Skip if output already has target suffix
-    if output_path.name == input_path.name or input_path.name.endswith(f".{preset.container}"):
-        stem_check = f"{input_path.stem}."
-        if output_path.stem.startswith(stem_check[:-1]) and output_path.suffix == f".{preset.container}":
-            pass  # Proceed
-
     log.info(f"  {input_path.name} → {output_path.name}")
 
     # Convert
     if backend == 'handbrake':
         success = convert_handbrake(
             input_path, output_path,
-            handbrake_preset_file, handbrake_preset_name, log
+            handbrake_preset_file, handbrake_preset_name, config, log
         )
     else:
         success = convert_ffmpeg(input_path, output_path, preset, config, log)
@@ -492,7 +620,6 @@ def process_file(
 
     return True, input_size, output_size
 
-
 def run_conversion(
     files: PathList,
     preset: FormatPreset,
@@ -510,9 +637,35 @@ def run_conversion(
     total = len(files)
 
     log.info(f"Processing {total} files...")
-    log.info(f"Backend: {backend}, Format: {preset.name}, CRF: {config.crf}, Preset: {config.preset}")
+    log.info(f"Backend: {backend}, Format: {preset.name} (.{preset.container})")
+    if preset.is_video:
+        log.info(f"Video: CRF {config.crf}, Preset {config.preset}, Grain {config.grain}, {config.pix_fmt}")
+    log.info(f"Audio: {config.audio_bitrate}, {config.audio_channels}ch")
+
+    # Show active filters
+    filters_active: list[str] = []
+    if config.max_dim:
+        filters_active.append(f"max-dim={config.max_dim}")
     if config.deinterlace:
-        log.info("Deinterlace: enabled")
+        filters_active.append(f"deinterlace={config.deinterlace}")
+    if config.denoise:
+        filters_active.append(f"denoise={config.denoise}:{config.denoise_strength}")
+    if config.deblock:
+        filters_active.append(f"deblock={config.deblock}")
+    if config.deband:
+        filters_active.append("deband")
+    if config.rotate:
+        filters_active.append(f"rotate={config.rotate}")
+    if config.crop:
+        filters_active.append(f"crop={config.crop}")
+    if config.scale:
+        filters_active.append(f"scale={config.scale}")
+    if filters_active:
+        log.info(f"Filters: {', '.join(filters_active)}")
+
+    if source_root and output_dir:
+        log.info(f"Input:  {source_root}")
+        log.info(f"Output: {output_dir}")
     print()
 
     for i, input_path in enumerate(files, 1):
@@ -552,7 +705,6 @@ def run_conversion(
     log.progress_done()
     return stats
 
-
 def print_summary(stats: ConversionStats, log: Logger) -> None:
     """Print conversion summary."""
     print()
@@ -576,7 +728,6 @@ def print_summary(stats: ConversionStats, log: Logger) -> None:
 
     log.info("═" * 50)
 
-
 # ─────────────────────────────────────────────────────────────────────────────
 # CLI
 # ─────────────────────────────────────────────────────────────────────────────
@@ -589,11 +740,15 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  vidconv av1 *.mp4                      # Compress videos to AV1
-  vidconv x264 --crf 20 video.mkv        # H.264 with custom CRF
-  vidconv flac **/*.wav --delete         # WAV→FLAC, remove originals
-  vidconv av1 -r /src -o /dst            # Recursive directory mode
-  vidconv av1 --backend handbrake ...    # Use HandBrakeCLI
+  vidconv av1 *.mp4                            # Compress videos to AV1 (MKV)
+  vidconv av1 --max-dim 1920 *.mp4             # Limit to 1080p (no upscale)
+  vidconv av1 --max-dim 1920 --deband *.mp4    # 1080p + deband
+  vidconv x264 --crf 20 video.mkv              # H.264 with custom CRF
+  vidconv flac **/*.wav --delete               # WAV→FLAC, remove originals
+  vidconv av1 -i /src -o /dst                  # Directory mode, preserve structure
+  vidconv av1 --deinterlace bwdif old.avi      # Fix interlaced video
+  vidconv av1 --denoise nlmeans --max-dim 1280 noisy.mp4  # 720p + denoise
+  vidconv av1 --backend handbrake ...          # Use HandBrakeCLI
 """,
     )
 
@@ -613,16 +768,16 @@ Examples:
 
     # Directory mode
     parser.add_argument(
-        '-r', '--recursive',
+        '-i', '--input-dir',
         type=Path,
         metavar='DIR',
-        help='Recursively process directory',
+        help='Input directory (recursive, preserves structure)',
     )
     parser.add_argument(
-        '-o', '--output',
+        '-o', '--output-dir',
         type=Path,
         metavar='DIR',
-        help='Output directory (required with -r)',
+        help='Output directory',
     )
 
     # Backend
@@ -639,16 +794,74 @@ Examples:
     parser.add_argument('--grain', type=int, default=15, help='Film grain synthesis 0-50 (default: 15)')
     parser.add_argument('--audio-bitrate', default='128k', help='Audio bitrate (default: 128k)')
     parser.add_argument('--quality', type=int, default=0, help='MP3 VBR quality 0-9 (default: 0)')
-    parser.add_argument('--deinterlace', action='store_true', help='Apply deinterlace filter')
+
+    # Advanced video options
+    vgrp = parser.add_argument_group('video')
+    vgrp.add_argument(
+        '--max-dim', type=int, metavar='PX',
+        help='Max dimension (smart scale, no upscale). E.g., 1920 for 1080p',
+    )
+    vgrp.add_argument(
+        '--pix-fmt', default='yuv420p10le',
+        help='Pixel format (default: yuv420p10le for 10-bit)',
+    )
+    vgrp.add_argument('--keyint', type=int, default=300, help='Keyframe interval (default: 300)')
+    vgrp.add_argument('--no-fast-decode', action='store_true', help='Disable SVT-AV1 fast-decode')
+    vgrp.add_argument('--deband', action='store_true', help='Apply deband filter')
+    vgrp.add_argument('--audio-channels', type=int, default=2, help='Audio channels (default: 2)')
+
+    # Video filters
+    fgrp = parser.add_argument_group('filters')
+    fgrp.add_argument(
+        '--deinterlace',
+        choices=['off', 'bwdif', 'yadif', 'decomb'],
+        default=None,
+        help='Deinterlace filter (fixes combing artifacts)',
+    )
+    fgrp.add_argument(
+        '--denoise',
+        choices=['off', 'nlmeans', 'hqdn3d'],
+        default=None,
+        help='Denoise filter',
+    )
+    fgrp.add_argument(
+        '--denoise-strength',
+        choices=['ultralight', 'light', 'medium', 'strong'],
+        default='light',
+        help='Denoise strength (default: light)',
+    )
+    fgrp.add_argument(
+        '--deblock',
+        metavar='PARAMS',
+        help='Deblock filter (e.g., "weak" or "5:5")',
+    )
+    fgrp.add_argument(
+        '--rotate',
+        type=int,
+        choices=[0, 90, 180, 270],
+        default=0,
+        help='Rotate video (degrees)',
+    )
+    fgrp.add_argument(
+        '--crop',
+        metavar='W:H:X:Y',
+        help='Crop video (or "auto" for auto-detect)',
+    )
+    fgrp.add_argument(
+        '--scale',
+        metavar='WxH',
+        help='Scale video (e.g., "1920x1080" or "-1:720" for auto-width)',
+    )
 
     # HandBrake options
-    parser.add_argument(
+    hgrp = parser.add_argument_group('handbrake')
+    hgrp.add_argument(
         '--hb-preset-file',
         type=Path,
         default=Path.home() / '.config/ghb/main.json',
         help='HandBrake preset JSON file',
     )
-    parser.add_argument(
+    hgrp.add_argument(
         '--hb-preset-name',
         default='main',
         help='HandBrake preset name (default: main)',
@@ -661,23 +874,22 @@ Examples:
 
     return parser.parse_known_args()
 
-
 def main() -> int:
     """Main entry point."""
     args, extra = parse_args()
     log = Logger(args.quiet, args.silent)
 
     # Validate inputs
-    if args.recursive and args.files:
-        log.error("Cannot use both --recursive and file arguments")
+    if args.input_dir and args.files:
+        log.error("Cannot use both --input-dir and file arguments")
         return 1
 
-    if not args.recursive and not args.files:
-        log.error("Provide files or use --recursive")
+    if not args.input_dir and not args.files:
+        log.error("Provide files or use --input-dir")
         return 1
 
-    if args.recursive and not args.output:
-        log.error("--output required with --recursive")
+    if args.input_dir and not args.output_dir:
+        log.error("--output-dir required with --input-dir")
         return 1
 
     # Check tools
@@ -694,7 +906,19 @@ def main() -> int:
         grain=args.grain,
         audio_bitrate=args.audio_bitrate,
         quality=args.quality,
+        max_dim=args.max_dim,
+        pix_fmt=args.pix_fmt,
+        keyint=args.keyint,
+        fast_decode=not args.no_fast_decode,
+        deband=args.deband,
+        audio_channels=args.audio_channels,
         deinterlace=args.deinterlace,
+        denoise=args.denoise,
+        denoise_strength=args.denoise_strength,
+        deblock=args.deblock,
+        rotate=args.rotate,
+        crop=args.crop,
+        scale=args.scale,
         extra_params=extra,
     )
 
@@ -702,15 +926,17 @@ def main() -> int:
     extensions = VIDEO_EXTS if preset.is_video else AUDIO_EXTS
 
     # Find files
-    if args.recursive:
-        source_root = args.recursive.resolve()
+    if args.input_dir:
+        source_root = args.input_dir.resolve()
         if not source_root.exists():
             log.error(f"Source directory does not exist: {source_root}")
             return 1
         files = find_files_recursive(source_root, extensions)
+        output_dir = args.output_dir.resolve()
     else:
         source_root = None
         files = find_files_glob(args.files, extensions)
+        output_dir = args.output_dir.resolve() if args.output_dir else None
 
     if not files:
         log.warn("No files found")
@@ -723,7 +949,7 @@ def main() -> int:
         config=config,
         backend=args.backend,
         log=log,
-        output_dir=args.output,
+        output_dir=output_dir,
         source_root=source_root,
         delete_original=args.delete,
         handbrake_preset_file=args.hb_preset_file,
@@ -732,7 +958,6 @@ def main() -> int:
 
     print_summary(stats, log)
     return 1 if stats.failed else 0
-
 
 if __name__ == '__main__':
     sys.exit(main())
