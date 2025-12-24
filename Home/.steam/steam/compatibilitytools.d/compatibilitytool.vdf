@@ -1,0 +1,13 @@
+"compatibilitytools"
+{
+  "compat_tools"
+  {
+    "Steam-Play-None" // Internal name of this tool
+    {
+      "install_path" "."
+      "display_name" "Steam-Play-None"
+      "from_oslist"  "linux"
+      "to_oslist"    "linux"
+    }
+  }
+}
