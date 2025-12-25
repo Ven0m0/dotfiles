@@ -3,36 +3,36 @@
 
 [general]
 # Enable HRTF for 3D positional audio
-hrtf = true
-hrtf-mode = full
+hrtf=true
+hrtf-mode=full
 
 # Disable in-game spatialization (let OpenAL handle it)
-cf_level = 0
+cf_level=0
 
 # High quality resampling
-resampler = bsinc24
+resampler=bsinc24
 
 # Disable CPU-intensive spatialization (conflicts with HRTF)
-stereo-encoding = panpot
+stereo-encoding=panpot
 
 [alsa]
 # ALSA-specific settings
-device = default
-allow-resampler = true
+device=default
+allow-resampler=true
 
 [pulse]
 # PulseAudio settings
-allow-moves = false
-adjust-latency = true
+allow-moves=true
+adjust-latency=true
 
 [jack]
 # JACK settings (if used)
-rt-mix = true
+rt-mix=true
 
 [reverb]
 # Disable reverb for lower CPU usage
-boost = 0.0
+boost=0.0
 
 [effects]
 # Disable effects processing for performance
-enabled = false
+enabled=false
