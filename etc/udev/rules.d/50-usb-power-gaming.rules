@@ -33,9 +33,6 @@ ACTION=="add", SUBSYSTEM=="usb", ATTR{interface}=="*Mechanical*", TEST=="power/c
 # Xbox controllers
 ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="045e", ATTR{idProduct}=="02[0-9a-f][0-9a-f]", TEST=="power/control", ATTR{power/control}="on"
 
-# Nintendo Switch Pro Controller
-ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="057e", ATTR{idProduct}=="2009", TEST=="power/control", ATTR{power/control}="on"
-
 # PlayStation controllers
 ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="054c", TEST=="power/control", ATTR{power/control}="on"
 
