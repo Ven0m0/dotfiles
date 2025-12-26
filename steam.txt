@@ -1,3 +1,3 @@
-# TODO: configure steam
-
+# Steam Launch Options
+# Basic Wine configuration for compatibility
 WINEDLLOVERRIDES="winhttp=n,b" %command%
