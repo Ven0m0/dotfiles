@@ -7,7 +7,7 @@ Terminal=false
 Type=Application
 Categories=Network;FileTransfer;Game;
 MimeType=x-scheme-handler/steam;x-scheme-handler/steamlink;
-Actions=Store;Community;Library;Servers;Screenshots;News;Settings;BigPicture;Friends;
+Actions=Store;Community;Library;News;Settings;BigPicture;Friends;
 PrefersNonDefaultGPU=true
 X-KDE-RunOnDiscreteGpu=true
 
@@ -26,10 +26,6 @@ Exec=/usr/bin/steam steam://open/games
 [Desktop Action Servers]
 Name=Servers
 Exec=/usr/bin/steam steam://open/servers
-
-[Desktop Action Screenshots]
-Name=Screenshots
-Exec=/usr/bin/steam steam://open/screenshots
 
 [Desktop Action News]
 Name=News
