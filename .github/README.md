@@ -506,3 +506,9 @@ Identify and resolve straightforward tasks from in-code TODOs or the GitHub Issu
 Find and refactor duplicated code. Identify and suggest improvements to slow or inefficient code
 ```
 </details>
+<details>
+<summary><b>Deps</b></summary>
+```markdown
+Analyze the dependencies for outdated packages, security vulnerabilities, or unnecessary bloat and apply changes.
+```
+</details>
