@@ -13,8 +13,6 @@ gix = true
 go_skip_checksum = true
 cache_prune_age = "7d"
 http_timeout = "30s"
-trusted_config_paths = ["~"]
-task_output = "prefix"
 disable_default_shorthands = false
 status = { missing_tools = "if_other_versions_installed", show_env = false, show_tools = false }
 
@@ -51,7 +49,7 @@ java = "oracle-graalvm"
 # Image & media tools
 "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
 "cargo:image-optimizer" = "latest"
-"cargo:imgc" = "latest"
+#"cargo:imgc" = "latest"
 "cargo:ffzap" = "latest"
 # Cargo utilities
 "cargo:cargo-alias-exec" = "latest"
@@ -63,8 +61,6 @@ java = "oracle-graalvm"
 cpz = "latest"
 rmz = "latest"
 "cargo:vicut" = "latest"
-"cargo:frep" = "latest"
-"cargo:ripunzip" = "latest"
 "cargo:filerefine" = "latest"
 "cargo:https://github.com/fthomys/update-alternatives" = "latest"
 "cargo:roxide" = "latest"
@@ -78,11 +74,9 @@ rmz = "latest"
 #"cargo:etchdns" = "latest"
 "cargo:appInstalleR" = "latest"
 "cargo:zap-rs" = "latest"
-
 # Development & formatting
-lefthook = "latest"
+#lefthook = "latest"
 minify = "latest"
-oxlint = "latest"
 #"npm:@adguard/aglint" = "latest"
 #"npm:@adguard/dead-domains-linter" = "latest"
 #"npm:@adguard/hostlist-compiler" = "latest"
@@ -120,28 +114,3 @@ CMAKE_BUILD_TYPE = "Release"
 CMAKE_SKIP_INSTALL_RPATH = "YES"
 CMAKE_GENERATOR = "Ninja"
 GITOXIDE_CORE_MULTIPACKINDEX = "true"
-
-# Task definitions
-[tasks.cargocache]
-description = "Clean cargo and cache directories"
-run = "cargo cache -efg || :; cargo clean || :"
-hide = true
-
-[tasks.uvcache]
-description = "Clean cargo and cache directories"
-run = "uv cache clear -q || :"
-hide = true
-
-[tasks.misecache]
-description = "Clean mise cache"
-run = "mise cache c -yq || :; mise prune -yq || :"
-hide = true
-
-[tasks.clean]
-description = "Clean cache"
-depends = ["cargocache", "uvcache", "misecache"]
-run = "rm -rf ~/.cache/* || :"
-
-[task.up]
-description = "Update mise tools"
-run = "mise prune -yq || :; mise up -y || :"
