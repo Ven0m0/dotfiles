@@ -261,7 +261,9 @@
   enabled = true
 [maintenance "worktree-prune"]
   enabled = true
-[include]
-  path = ~/. gitconfig.local
 [gpg]
   program = gpg
+[safe]
+	directory = *
+[remote "origin"]
+	prune = true
