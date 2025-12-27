@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 # https://github.com/graysky2/auto-reencode
 # Run in the dir containing the target files you wish to convert to x264.
 # There are no arguments.
@@ -7,13 +8,15 @@
 
 export BLD="\e[01m" RED="\e[01;31m" BLU="\e[01;34m" NRM="\e[00m"
 
-command -v ffmpeg >/dev/null 2>&1 || {
-echo -e "${BLD}${RED}I require ffmpeg but it's not installed. Aborting.${NRM}" >&2
-exit 1; }
+command -v ffmpeg &>/dev/null || {
+  echo -e "${BLD}${RED}I require ffmpeg but it's not installed. Aborting.${NRM}" >&2
+  exit 1
+}
 
-command -v mediainfo >/dev/null 2>&1 || {
-echo "${BLD}${RED}I require mediainfo but it's not installed. Aborting.${NRM}" >&2
-exit 1; }
+command -v mediainfo &>/dev/null || {
+  echo -e "${BLD}${RED}I require mediainfo but it's not installed. Aborting.${NRM}" >&2
+  exit 1
+}
 
 pass1() {
   # For syntax, see: https://trac.ffmpeg.org/wiki/Encode/H.264

@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
+
 export STEAM_RUNTIME=0 STEAM_RUNTIME_HEAVY=0
 # Workaround for dbus fatal termination related coredumps (SIGABRT)
 # https://github.com/ValveSoftware/steam-for-linux/issues/4464
