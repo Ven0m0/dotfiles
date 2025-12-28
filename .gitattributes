@@ -1,33 +1,27 @@
-# Normalize line endings and mark most files as text
 * text=auto eol=lf linguist-detectable
 
-###############################################################################
 # Shell / scripts
-###############################################################################
 *.sh text eol=lf diff=bash
 *.bash text eol=lf diff=bash
-*.zsh text eol=lf diff=bash
 .bashrc text eol=lf diff=bash
+*.zsh text eol=lf diff=bash
 .zshrc text eol=lf diff=bash
 
 # Windows shell scripts keep CRLF
 *.bat text eol=crlf
 *.cmd text eol=crlf
 *.ps1 text eol=crlf
+*.psm1 text eol=crlf
 *.ahk text eol=crlf
 
-###############################################################################
 # Programming languages
-###############################################################################
 *.py text diff=python
 *.py3 text diff=python
 *.js text diff=java
 *.lua text linguist-language=Lua
 *.nix text linguist-language=Nix
 
-###############################################################################
 # Configuration & data formats
-###############################################################################
 *.json text diff=json linguist-language=JSON
 *.jsonc text diff=json linguist-language=JSONC
 *.yaml text diff=yaml linguist-language=YAML
@@ -39,22 +33,21 @@
 *.css text diff=css
 *.md text diff=markdown linguist-detectable linguist-documentation
 *.mdx text diff=markdown linguist-detectable linguist-documentation
-
 *.txt text linguist-documentation
-# CSVs as text but with CRLF (common on Windows exports)
 *.csv text eol=crlf
+*.doc diff=astextplain
+*.docx diff=astextplain
+*.dot diff=astextplain
+*.pdf diff=astextplain
+*.rtf diff=astextplain
 
-###############################################################################
-# Images & binary blobs
-###############################################################################
-# Raster images with exif diff
+# Images
 *.jpg binary diff=exif
 *.jpeg binary diff=exif
+*.png binary diff=exif
 *.webp binary diff=exif
 *.avif binary diff=exif
 *.jxl binary diff=exif
-
-# SVGs are text; let linguist handle them
 *.svg text
 
 # Archives
@@ -68,30 +61,20 @@
 *.zstd binary
 *.ttf binary
 
-###############################################################################
 # Build / tooling specifics
-###############################################################################
-# Makefiles must use tabs; relax some whitespace warnings
 Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
-
-# Patches as raw patches; don't normalize line endings
 *.diff binary diff=patch linguist-language=Diff
 *.patch binary diff=patch linguist-language=Diff
 *.patch32   binary diff=patch linguist-language=Diff
 *.patch64   binary diff=patch linguist-language=Diff
 *.patch.*   binary diff=patch linguist-language=Diff
 
-###############################################################################
-# Git / repo files
-###############################################################################
-.gitignore export-ignore
-.ignore export-ignore
+# Visual Studio
+*.dsp text eol=crlf
+*.dsw text eol=crlf
+*.manifest text eol=crlf
 
-###############################################################################
-# Office / docs treated as text for diffing
-###############################################################################
-*.doc diff=astextplain
-*.docx diff=astextplain
-*.dot diff=astextplain
-*.pdf diff=astextplain
-*.rtf diff=astextplain
+# Git / repo files
+.gitignore export-ignore
+.gitkeep export-ignore
+.ignore export-ignore
