@@ -244,6 +244,7 @@ github_conf
 #######################
 *.sqlite
 *.db
+!modprobed.db
 *.rdb
 
 #######################
