@@ -33,6 +33,7 @@
 *.css text diff=css
 *.md text diff=markdown linguist-detectable linguist-documentation
 *.mdx text diff=markdown linguist-detectable linguist-documentation
+*.markdown text diff=markdown linguist-detectable linguist-documentation
 *.txt text linguist-documentation
 *.csv text eol=crlf
 *.doc diff=astextplain
