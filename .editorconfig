@@ -9,31 +9,32 @@ indent_style = space
 indent_size = 2
 tab_width = 2
 max_line_length = 120
-ktlint_code_style = intellij_idea
-ktlint_standard_no-wildcard-imports = disabled
+quote_type = double
+spelling_language = en
 shell_variant = bash
 spaces_around_operators = true
 spaces_around_brackets = false
+binary_next_line = true
+switch_case_indent = true
 keep_padding = false
 space_redirects = false
-switch_case_indent = true
 function_next_line = false
-binary_next_line = true
-quote_type = double
 
-# Shell Scripts
 # Fish
 [*.{fish,fish_*},fishd.*,fish_*]
 indent_size = 4
 
-# Windows shell scripts
+# Win shell scripts
 [*.{bat,cmd,ps1,psm1}]
 indent_style = tab
 indent_size = 4
 end_of_line = crlf
 
+[.ahk]
+end_of_line = crlf
+
 # Python
-[*.py]
+[*.{py,pyw,pyi}]
 indent_size = 4
 
 # C/C++
@@ -65,8 +66,11 @@ trim_trailing_whitespace = false
 
 [*.{patch,diff}]
 trim_trailing_whitespace = false
+insert_final_newline = false
 
-# Minified files
+[*.{rst,txt}]
+trim_trailing_whitespace = false
+
 [*.min.{js,css,txt}]
 insert_final_newline = false
 
@@ -79,3 +83,6 @@ tab_width = 4
 # Lock files
 [{bun.lockb,package-lock.json}]
 insert_final_newline = true
+
+[*.svg]
+insert_final_newline = false
