@@ -12,7 +12,7 @@ get_repo_dir(){
   if yadm rev-parse --show-toplevel &>/dev/null; then
     yadm rev-parse --show-toplevel
   elif [[ -d "${HOME}/.local/share/yadm/repo.git" ]]; then
-    echo "${HOME}/.local/share/yadm/repo.git"
+    echo "${HOME}"
   elif git rev-parse --show-toplevel &>/dev/null; then
     git rev-parse --show-toplevel
   else
