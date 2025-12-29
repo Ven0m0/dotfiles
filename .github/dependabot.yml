@@ -2,7 +2,6 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
-    labels: []
     schedule:
       interval: "daily"
     groups:
@@ -12,7 +11,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
-    open-pull-requests-limit: 10
   - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
@@ -37,6 +35,8 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    allow:
+      - dependency-type: "all"
   - package-ecosystem: "uv"
     directory: "/"
     schedule:
@@ -50,6 +50,8 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    allow:
+      - dependency-type: "all"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
