@@ -21,7 +21,7 @@ set -gx COLORTERM truecolor
 set -gx FZF_DEFAULT_COMMAND 'fd -tf -H --size +1k'
 set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
 
-fish_add_path ~/bun/bin ~/.local/bin /usr/local/bin ~/bin ~/.bin
+fish_add_path ~/bun/bin $HOME/.local/bin/ /usr/local/bin $HOME/bin $HOME/.bin /usr/lib/ccache/bin/ $HOME/.cargo/bin/
 
 # Tool Initializations
 init_tool fzf "fzf --fish"
