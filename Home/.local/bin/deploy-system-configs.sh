@@ -52,7 +52,10 @@ PACKAGES=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help) usage; exit 0 ;;
-    -d|--dir) shift; REPO_DIR="${1:-}" ;;
+    -d|--dir)
+      if [[ -z ${2:-} ]]; then die "Option '$1' requires an argument."; fi
+      REPO_DIR="$2"; shift
+      ;;
     -u|--unlink) UNLINK=true ;;
     -*) die "Unknown option: $1" ;;
     *) PACKAGES+=("$1") ;;
