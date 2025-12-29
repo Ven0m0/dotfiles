@@ -1,6 +1,6 @@
 # usr/ - System-Wide User Programs
 
-This directory contains system-wide binaries and libraries deployed to `/usr` using `tuckr`.
+This directory contains system-wide binaries and libraries deployed to `/usr` using `tuckr` or `stow`.
 
 ## Structure
 
