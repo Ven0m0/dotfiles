@@ -68,7 +68,7 @@ configure_shell(){
   fi
 }
 deploy_system_configs(){
-  local pkg use_tuckr=true
+  local pkg
   if has tuckr; then
     info "Using tuckr for system config deployment"
     local hooks_file="${REPO_DIR}/hooks.toml"
