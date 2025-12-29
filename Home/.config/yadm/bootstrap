@@ -30,7 +30,7 @@ install_base_deps(){
     has paru && pac_cmd="paru"
     has yay && pac_cmd="yay"
     # Try tuckr first, fall back to stow if unavailable
-    if ! $pac_cmd -Sq --needed --noconfirm git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf tuckr rsync konsave 2>/dev/null; then
+    if ! $pac_cmd -Sq --needed --noconfirm git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf tuckr rsync konsave; then
       warn "tuckr install failed, installing stow as fallback"
       $pac_cmd -Sq --needed --noconfirm git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf stow rsync konsave || warn "Some packages may have failed to install"
     fi
