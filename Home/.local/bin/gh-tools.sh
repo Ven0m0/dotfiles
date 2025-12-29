@@ -6,11 +6,9 @@ die() { printf '\e[31mERROR: %s\e[0m\n' "$*" >&2; exit 1; }
 has() { command -v "$1" >/dev/null; }
 need() { has "$1" || die "Missing dependency: $1"; }
 log() { printf '\e[34m:: %s\e[0m\n' "$*"; }
-
 # --- Dependencies ---
 need gh; need git
 JQ="jq"; has jaq && JQ="jaq"
-
 # --- Subcommands ---
 cmd_asset() {
   local repo="${1:-}" pattern="${2:-}" tag="" out=""
