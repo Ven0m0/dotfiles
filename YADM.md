@@ -8,8 +8,8 @@ clean, hierarchical folder structure.
 ```
 dotfiles/
 ├── Home/           # User-level dotfiles (~/.*)  [Managed by yadm]
-├── etc/            # System configs (/etc/*)     [Managed by tuckr]
-├── usr/            # System configs (/usr/*)     [Managed by tuckr]
+├── etc/            # System configs (/etc/*)     [Managed by tuckr/stow]
+├── usr/            # System configs (/usr/*)     [Managed by tuckr/stow]
 ├── .yadm/          # YADM configuration
 │   ├── bootstrap   # Main bootstrap script
 │   └── config      # Repository-wide yadm config
@@ -20,9 +20,10 @@ dotfiles/
 
 - **Separation of concerns**: User configs vs. system configs
 - **Easy to understand**: Mirrors Linux filesystem structure
-- **Flexible deployment**: yadm for user files, tuckr for system files
+- **Flexible deployment**: yadm for user files, tuckr/stow for system files
 - **Git-friendly**: Clean repository with minimal clutter
 - **Portable**: Works across different systems
+- **Fallback support**: Automatically uses stow if tuckr is unavailable
 
 ---
 
@@ -169,7 +170,7 @@ yadm push
 
 ### Update System Configs (etc/, usr/)
 
-System configs are managed separately with **tuckr**:
+System configs are managed separately with **tuckr** (or **stow** as fallback):
 
 ```bash
 # Navigate to repository
@@ -184,8 +185,14 @@ git commit -m "Update pacman configuration"
 git push
 
 # Re-link system configs (creates symlinks)
-sudo tuckr link -d $(yadm rev-parse --show-toplevel) -t / etc
-sudo tuckr link -d $(yadm rev-parse --show-toplevel) -t / usr
+# Option 1: Using tuckr (preferred)
+sudo tuckr link -d $(yadm rev-parse --show-toplevel) -t / etc usr
+
+# Option 2: Using stow (fallback)
+cd $(yadm rev-parse --show-toplevel) && sudo stow -t / etc usr
+
+# Option 3: Using helper script (auto-detects tuckr/stow)
+sudo deploy-system-configs
 ```
 
 ### Check Repository Status
@@ -256,14 +263,24 @@ Unlike traditional yadm setups where dotfiles are at the repository root, this r
 
 The `.yadm/bootstrap` script handles this deployment automatically using rsync.
 
-### System Configs with Tuckr
+### System Configs with Tuckr or Stow
 
-System-level configs (`/etc`, `/usr`) require root permissions and are managed with **tuckr**:
+System-level configs (`/etc`, `/usr`) require root permissions and are managed with **tuckr** or **stow**:
 
 ```bash
+# Using tuckr (preferred - supports hooks)
 sudo tuckr link -d /path/to/repo -t / etc
 # Creates: /etc/pacman.conf → /path/to/repo/etc/pacman.conf
+
+# Using stow (fallback - widely available)
+cd /path/to/repo && sudo stow -t / etc
+# Creates: /etc/pacman.conf → /path/to/repo/etc/pacman.conf
+
+# Using helper script (auto-detects best tool)
+sudo deploy-system-configs etc usr
 ```
+
+The bootstrap script automatically detects which tool is available and uses it accordingly.
 
 ---
 
@@ -366,13 +383,24 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 ### System configs not applying
 
 ```bash
-# Install tuckr
+# Option 1: Install tuckr (preferred)
 paru -S tuckr  # Arch/AUR
+
+# Option 2: Install stow (fallback, widely available)
+paru -S stow       # Arch
+sudo apt install stow  # Debian/Ubuntu
 
 # Re-link system configs with sudo
 cd $(yadm rev-parse --show-toplevel)
-sudo tuckr link -d "$PWD" -t / etc
-sudo tuckr link -d "$PWD" -t / usr
+
+# Using tuckr:
+sudo tuckr link -d "$PWD" -t / etc usr
+
+# OR using stow:
+sudo stow -t / etc usr
+
+# OR using helper script (auto-detects):
+sudo deploy-system-configs
 ```
 
 ---

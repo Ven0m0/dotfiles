@@ -29,7 +29,11 @@ install_base_deps(){
     local pac_cmd="sudo pacman"
     has paru && pac_cmd="paru"
     has yay && pac_cmd="yay"
-    $pac_cmd -Sq --needed --noconfirm git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf stow tuckr rsync konsave || warn "Some packages may have failed to install"
+    # Try tuckr first, fall back to stow if unavailable
+    if ! $pac_cmd -Sq --needed --noconfirm git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf tuckr rsync konsave; then
+      warn "tuckr install failed, installing stow as fallback"
+      $pac_cmd -Sq --needed --noconfirm git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf stow rsync konsave || warn "Some packages may have failed to install"
+    fi
   elif has apt-get; then
     sudo apt-get update -y
     sudo apt-get install -y git curl zsh fd-find ripgrep bat jq fzf stow rsync || warn "Some packages may have failed"
@@ -64,20 +68,34 @@ configure_shell(){
   fi
 }
 deploy_system_configs(){
-  if ! has tuckr; then
-    warn "tuckr not installed; skipping etc/usr."
-    warn "Install tuckr then run: sudo tuckr link -d $REPO_DIR -t / etc usr"
+  local pkg
+  if has tuckr; then
+    info "Using tuckr for system config deployment"
+    local hooks_file="${REPO_DIR}/hooks.toml"
+    for pkg in etc usr; do
+      local src="${REPO_DIR}/${pkg}"
+      [[ -d $src ]] || { warn "Missing dir: $src"; continue; }
+      info "Linking ${pkg}/ → / (tuckr)"
+      local cmd=(sudo tuckr link -d "$REPO_DIR" -t / "$pkg")
+      [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
+      "${cmd[@]}" || warn "Failed to link $pkg"
+    done
+  elif has stow; then
+    info "tuckr not found, using stow as fallback"
+    for pkg in etc usr; do
+      local src="${REPO_DIR}/${pkg}"
+      [[ -d $src ]] || { warn "Missing dir: $src"; continue; }
+      info "Linking ${pkg}/ → / (stow)"
+      (cd "$REPO_DIR" && sudo stow -t / -d . "$pkg") || warn "Failed to stow $pkg"
+    done
+  else
+    warn "Neither tuckr nor stow installed; skipping etc/usr deployment."
+    warn "Install tuckr: paru -S tuckr"
+    warn "  OR stow: paru -S stow"
+    warn "Then run: sudo tuckr link -d $REPO_DIR -t / etc usr"
+    warn "      OR: cd $REPO_DIR && sudo stow -t / etc usr"
     return 0
   fi
-  local hooks_file="${REPO_DIR}/hooks.toml" pkg
-  for pkg in etc usr; do
-    local src="${REPO_DIR}/${pkg}"
-    [[ -d $src ]] || { warn "Missing dir: $src"; continue; }
-    info "Linking ${pkg}/ → /"
-    local cmd=(sudo tuckr link -d "$REPO_DIR" -t / "$pkg")
-    [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
-    "${cmd[@]}" || warn "Failed to link $pkg"
-  done
 }
 setup_alternates(){
   info "Processing yadm alternates..."
