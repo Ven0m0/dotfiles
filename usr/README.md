@@ -14,7 +14,7 @@ usr/
 
 ## Deployment
 
-These files are symlinked to `/usr` using tuckr:
+These files are symlinked to `/usr` using `tuckr` or `stow`:
 
 ```bash
 sudo tuckr link -d $(yadm rev-parse --show-toplevel) -t / usr
