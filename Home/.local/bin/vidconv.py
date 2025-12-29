@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unified video/audio converter with SVT-AV1, x264, opus, flac, mp3, wav support."""
+"""Unified video/audio converter with SVT-AV1, VP9, H.265, x264 support."""
 import argparse
 import os
 import shutil
@@ -12,7 +12,8 @@ from typing import Final
 
 # ─── Constants ───
 VIDEO_EXTS: Final = frozenset({'.mp4','.mkv','.m4v','.avi','.mov','.ts','.flv','.wmv','.webm'})
-AUDIO_EXTS: Final = frozenset({'.wav','.flac','.mp3','.ogg','.opus','.m4a','.aac','.wma'})
+AUDIO_EXTS: Final = frozenset({'.mp3','.ogg','.opus','.m4a','.aac','.wma'})
+PASSTHROUGH_EXTS: Final = frozenset({'.wav','.flac'})
 C_RED: Final = '\033[31m'
 C_GREEN: Final = '\033[32m'
 C_YELLOW: Final = '\033[33m'
@@ -30,34 +31,49 @@ class Preset:
 PRESETS: Final = {
   'av1': Preset('av1', '.av1-crf{crf}', (
     ('-c:v','libsvtav1'), ('-crf','{crf}'), ('-preset','{preset}'), ('-g','{keyint}'),
-    ('-pix_fmt','{pix_fmt}'), ('-svtav1-params','tune=0:film-grain={grain}:enable-qm=1:qm-min=0:scd=1{fast_decode}'),
+    ('-pix_fmt','{pix_fmt}'),
+    ('-svtav1-params','tune=0:film-grain={grain}:enable-qm=1:qm-min=0:enable-variance-boost=1:tf-strength=1:sharpness=-2:tile-columns=1:tile-rows=0:enable-dlf=2:scd=1{fast_decode}'),
     ('-c:a','libopus'), ('-b:a','{audio_bitrate}'), ('-ac','{audio_channels}'),
-    ('-rematrix_maxval','1.0'), ('-vbr','on'), ('-map_metadata','0'),
+    ('-rematrix_maxval','1.0'), ('-vbr','on'), ('-map_metadata','0'), ('-sn',None),
+  ), ext='mkv'),
+  'vp9': Preset('vp9', '.vp9-crf{crf}', (
+    ('-c:v','libvpx-vp9'), ('-crf','{crf}'), ('-b:v','0'),
+    ('-cpu-used','{preset}'), ('-row-mt','1'), ('-g','{keyint}'),
+    ('-pix_fmt','{pix_fmt}'),
+    ('-c:a','libopus'), ('-b:a','{audio_bitrate}'), ('-ac','{audio_channels}'),
+    ('-rematrix_maxval','1.0'), ('-vbr','on'), ('-map_metadata','0'), ('-sn',None),
+  ), ext='webm'),
+  'h265': Preset('h265', '.h265-crf{crf}', (
+    ('-c:v','libx265'), ('-crf','{crf}'), ('-preset','{preset_name}'),
+    ('-x265-params','log-level=error'),
+    ('-pix_fmt','{pix_fmt}'),
+    ('-c:a','libopus'), ('-b:a','{audio_bitrate}'), ('-ac','{audio_channels}'),
+    ('-rematrix_maxval','1.0'), ('-vbr','on'), ('-map_metadata','0'), ('-sn',None),
   ), ext='mkv'),
   'x264': Preset('x264', '.x264-crf{crf}', (
     ('-c:v','libx264'), ('-crf','{crf}'), ('-preset','{preset_name}'),
     ('-c:a','aac'), ('-b:a','{audio_bitrate}'),
+    ('-map_metadata','0'), ('-sn',None),
   ), ext='mp4'),
-  'mp3': Preset('mp3', '.v{quality}', (('-c:a','libmp3lame'), ('-q:a','{quality}')), False, 'mp3'),
-  'opus': Preset('opus', '.{audio_bitrate}', (('-c:a','libopus'), ('-b:a','{audio_bitrate}'), ('-vbr','on')), False, 'opus'),
-  'flac': Preset('flac', '', (('-c:a','flac'), ('-compression_level','8')), False, 'flac'),
-  'wav': Preset('wav', '', (('-c:a','pcm_s16le'),), False, 'wav'),
+  'opus': Preset('opus', '.{audio_bitrate}', (
+    ('-c:a','libopus'), ('-b:a','{audio_bitrate}'), ('-vbr','on'),
+  ), False, 'opus'),
 }
 
 @dataclass(slots=True)
 class Config:
-  crf: int = 28
-  preset: int = 6
+  crf: int = 26
+  preset: int = 3
   preset_name: str = 'slow'
-  grain: int = 15
+  grain: int = 6
   audio_bitrate: str = '128k'
   audio_channels: int = 2
-  quality: int = 0
-  max_dim: int | None = None
+  max_dim: tuple[int, int] = (1920, 1080)
   pix_fmt: str = 'yuv420p10le'
-  keyint: int = 300
-  fast_decode: bool = True
-  deband: bool = False
+  keyint: int = 600
+  fast_decode: bool = False
+  default_denoise: bool = True
+  default_deband: bool = True
   deinterlace: str | None = None
   denoise: str | None = None
   denoise_strength: str = 'light'
@@ -131,22 +147,28 @@ def build_filters(cfg: Config, is_video: bool) -> list[str]:
          'yadif':'yadif=mode=send_frame:parity=auto:deint=all',
          'decomb':'yadif=mode=send_field:parity=auto'}
     if cfg.deinterlace in m: filters.append(m[cfg.deinterlace])
-  if cfg.denoise and cfg.denoise != 'off':
-    h = {'ultralight':2,'light':4,'medium':6,'strong':8}.get(cfg.denoise_strength, 4)
-    if cfg.denoise == 'nlmeans': filters.append(f'nlmeans=h={h}')
-    elif cfg.denoise == 'hqdn3d': filters.append(f'hqdn3d={h}')
+  if cfg.default_denoise or (cfg.denoise and cfg.denoise != 'off'):
+    if cfg.denoise == 'nlmeans':
+      h = {'ultralight':2,'light':4,'medium':6,'strong':8}.get(cfg.denoise_strength, 4)
+      filters.append(f'nlmeans=h={h}')
+    elif cfg.denoise == 'hqdn3d':
+      h = {'ultralight':2,'light':4,'medium':6,'strong':8}.get(cfg.denoise_strength, 4)
+      filters.append(f'hqdn3d={h}')
+    else:
+      filters.append('hqdn3d=1.5:1.5:6:6')
   if cfg.deblock and cfg.deblock != 'off': filters.append(f'deblock={cfg.deblock}')
   if cfg.rotate:
     rm = {90:'transpose=1', 180:'transpose=1,transpose=1', 270:'transpose=2'}
     if cfg.rotate in rm: filters.append(rm[cfg.rotate])
   if cfg.crop and cfg.crop != 'off':
     filters.append('cropdetect=24:16:0' if cfg.crop == 'auto' else f'crop={cfg.crop}')
-  if cfg.max_dim:
-    m = cfg.max_dim
-    filters.append(f"scale='if(gt(iw,ih),min({m},iw),-2)':'if(gt(iw,ih),-2,min({m},ih))':flags=lanczos")
-  elif cfg.scale:
+  if cfg.scale:
     filters.append(f'scale={cfg.scale}:flags=lanczos')
-  if cfg.deband: filters.append('deband')
+  elif cfg.max_dim:
+    w, h = cfg.max_dim
+    filters.append(f"scale='if(gte(iw,ih),min({w},iw),-2)':'if(gte(iw,ih),-2,min({h},ih))':flags=lanczos")
+  if cfg.default_deband: filters.append('deband')
+  filters.append(f'format={cfg.pix_fmt}')
   return filters
 
 def build_params(preset: Preset, cfg: Config) -> list[str]:
@@ -154,7 +176,7 @@ def build_params(preset: Preset, cfg: Config) -> list[str]:
   params = ['-vf', ','.join(filters)] if filters else []
   fmt = {
     'crf': str(cfg.crf), 'preset': str(cfg.preset), 'preset_name': cfg.preset_name,
-    'grain': str(cfg.grain), 'audio_bitrate': cfg.audio_bitrate, 'quality': str(cfg.quality),
+    'grain': str(cfg.grain), 'audio_bitrate': cfg.audio_bitrate,
     'keyint': str(cfg.keyint), 'pix_fmt': cfg.pix_fmt, 'audio_channels': str(cfg.audio_channels),
     'fast_decode': ':fast-decode=1' if cfg.fast_decode else '',
   }
@@ -168,7 +190,8 @@ def run_ffmpeg(inp: Path, out: Path, params: list[str], quiet: bool, use_ffzap: 
   if use_ffzap and has('ffzap'):
     cmd = ['ffzap', '-i', str(inp), '-o', str(out)] + params
   else:
-    cmd = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error' if quiet else 'warning',
+    cmd = ['ffmpeg', '-y', '-hide_banner', '-nostdin',
+           '-v', 'fatal', '-loglevel', 'error', '-stats' if not quiet else '-nostats',
            '-i', str(inp)] + params + [str(out)]
   try:
     if quiet:
@@ -195,7 +218,7 @@ def convert(inp: Path, out: Path, preset: Preset, cfg: Config, log: Log, retries
 
 def gen_out_path(inp: Path, preset: Preset, cfg: Config, out_dir: Path | None, src_root: Path | None) -> Path:
   fmt = {'crf':str(cfg.crf), 'preset':str(cfg.preset), 'grain':str(cfg.grain),
-         'audio_bitrate':cfg.audio_bitrate, 'quality':str(cfg.quality)}
+         'audio_bitrate':cfg.audio_bitrate}
   suffix = ''.join(c for c in preset.suffix.format(**fmt) if c.isalnum() or c in '._-+')
   new_name = f"{inp.stem}{suffix}.{preset.ext}"
   if out_dir:
@@ -231,17 +254,19 @@ def run_batch(files: list[Path], preset: Preset, cfg: Config, log: Log,
   total = len(files)
   log.info(f"Processing {total} files")
   log.info(f"Format: {preset.name} (.{preset.ext}), CRF {cfg.crf}, Preset {cfg.preset}, Grain {cfg.grain}")
-  log.info(f"Audio: {cfg.audio_bitrate}, {cfg.audio_channels}ch")
-  filters: list[str] = []
-  if cfg.max_dim: filters.append(f"max-dim={cfg.max_dim}")
-  if cfg.deinterlace: filters.append(f"deinterlace={cfg.deinterlace}")
-  if cfg.denoise: filters.append(f"denoise={cfg.denoise}:{cfg.denoise_strength}")
-  if cfg.deblock: filters.append(f"deblock={cfg.deblock}")
-  if cfg.deband: filters.append("deband")
-  if cfg.rotate: filters.append(f"rotate={cfg.rotate}")
-  if cfg.crop: filters.append(f"crop={cfg.crop}")
-  if cfg.scale: filters.append(f"scale={cfg.scale}")
-  if filters: log.info(f"Filters: {', '.join(filters)}")
+  if preset.is_video:
+    log.info(f"Audio: {cfg.audio_bitrate}, {cfg.audio_channels}ch")
+    filters: list[str] = []
+    if cfg.max_dim: filters.append(f"max-dim={cfg.max_dim[0]}x{cfg.max_dim[1]}")
+    if cfg.default_denoise: filters.append("denoise=hqdn3d:1.5:1.5:6:6")
+    if cfg.deinterlace: filters.append(f"deinterlace={cfg.deinterlace}")
+    if cfg.denoise: filters.append(f"denoise={cfg.denoise}:{cfg.denoise_strength}")
+    if cfg.deblock: filters.append(f"deblock={cfg.deblock}")
+    if cfg.default_deband: filters.append("deband")
+    if cfg.rotate: filters.append(f"rotate={cfg.rotate}")
+    if cfg.crop: filters.append(f"crop={cfg.crop}")
+    if cfg.scale: filters.append(f"scale={cfg.scale}")
+    if filters: log.info(f"Filters: {', '.join(filters)}")
   if src_root and out_dir:
     log.info(f"Input:  {src_root}")
     log.info(f"Output: {out_dir}")
@@ -288,37 +313,37 @@ def print_summary(stats: Stats, log: Log) -> None:
 def parse_args() -> tuple[argparse.Namespace, list[str]]:
   p = argparse.ArgumentParser(
     prog='vidconv',
-    description='Unified video/audio converter',
+    description='Unified video/audio converter (Priority: av1→vp9→h265→x264)',
     formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog="""Examples:
-  vidconv av1 *.mp4                      # Compress to AV1
-  vidconv av1 --max-dim 1920 *.mp4       # Limit to 1080p (no upscale)
+  vidconv av1 *.mp4                      # Compress to AV1 (default: 1080p, denoise, deband)
+  vidconv av1 --max-dim 1280 720 *.mp4   # Limit to 720p
   vidconv av1 -i /src -o /dst            # Directory mode, preserve structure
   vidconv av1 --deinterlace bwdif old.avi  # Fix interlaced video
-  vidconv flac **/*.wav --delete         # WAV→FLAC, remove originals
-  vidconv x264 --crf 20 video.mkv        # H.264 custom CRF
+  vidconv opus **/*.mp3 --delete         # MP3→Opus, remove originals
+  vidconv vp9 --crf 30 video.mkv         # VP9 with custom CRF
 """
   )
   p.add_argument('format', choices=list(PRESETS.keys()), help='Output format')
   p.add_argument('files', nargs='*', help='Input files (glob patterns)')
   p.add_argument('-i', '--input-dir', type=Path, metavar='DIR', help='Input directory (recursive)')
   p.add_argument('-o', '--output-dir', type=Path, metavar='DIR', help='Output directory')
-  p.add_argument('--crf', type=int, default=28, help='Video CRF (default: 28)')
-  p.add_argument('--preset', type=int, default=6, help='SVT-AV1 preset 0-13 (default: 6)')
-  p.add_argument('--preset-name', default='slow', help='x264 preset name (default: slow)')
-  p.add_argument('--grain', type=int, default=15, help='Film grain 0-50 (default: 15)')
+  p.add_argument('--crf', type=int, default=26, help='Video CRF (default: 26)')
+  p.add_argument('--preset', type=int, default=3, help='SVT-AV1/VP9 preset (default: 3)')
+  p.add_argument('--preset-name', default='slow', help='x264/x265 preset name (default: slow)')
+  p.add_argument('--grain', type=int, default=6, help='Film grain 0-50 (default: 6)')
   p.add_argument('--audio-bitrate', default='128k', help='Audio bitrate (default: 128k)')
-  p.add_argument('--quality', type=int, default=0, help='MP3 VBR quality 0-9 (default: 0)')
   v = p.add_argument_group('video')
-  v.add_argument('--max-dim', type=int, metavar='PX', help='Max dimension, no upscale (e.g., 1920)')
+  v.add_argument('--max-dim', type=int, nargs=2, metavar=('W','H'), default=[1920,1080], help='Max dimensions (default: 1920 1080)')
   v.add_argument('--pix-fmt', default='yuv420p10le', help='Pixel format (default: yuv420p10le)')
-  v.add_argument('--keyint', type=int, default=300, help='Keyframe interval (default: 300)')
-  v.add_argument('--no-fast-decode', action='store_true', help='Disable SVT-AV1 fast-decode')
-  v.add_argument('--deband', action='store_true', help='Apply deband filter')
+  v.add_argument('--keyint', type=int, default=600, help='Keyframe interval (default: 600)')
+  v.add_argument('--fast-decode', action='store_true', help='Enable SVT-AV1 fast-decode')
+  v.add_argument('--no-denoise', action='store_true', help='Disable default denoise')
+  v.add_argument('--no-deband', action='store_true', help='Disable default deband')
   v.add_argument('--audio-channels', type=int, default=2, help='Audio channels (default: 2)')
   f = p.add_argument_group('filters')
   f.add_argument('--deinterlace', choices=['off','bwdif','yadif','decomb'], help='Deinterlace filter')
-  f.add_argument('--denoise', choices=['off','nlmeans','hqdn3d'], help='Denoise filter')
+  f.add_argument('--denoise', choices=['off','nlmeans','hqdn3d'], help='Custom denoise filter')
   f.add_argument('--denoise-strength', choices=['ultralight','light','medium','strong'], default='light')
   f.add_argument('--deblock', metavar='PARAMS', help='Deblock filter (e.g., "weak")')
   f.add_argument('--rotate', type=int, choices=[0,90,180,270], default=0, help='Rotate degrees')
@@ -347,19 +372,25 @@ def main() -> int:
   preset = PRESETS[args.format]
   cfg = Config(
     crf=args.crf, preset=args.preset, preset_name=args.preset_name, grain=args.grain,
-    audio_bitrate=args.audio_bitrate, audio_channels=args.audio_channels, quality=args.quality,
-    max_dim=args.max_dim, pix_fmt=args.pix_fmt, keyint=args.keyint,
-    fast_decode=not args.no_fast_decode, deband=args.deband,
+    audio_bitrate=args.audio_bitrate, audio_channels=args.audio_channels,
+    max_dim=tuple(args.max_dim), pix_fmt=args.pix_fmt, keyint=args.keyint,
+    fast_decode=args.fast_decode,
+    default_denoise=not args.no_denoise, default_deband=not args.no_deband,
     deinterlace=args.deinterlace, denoise=args.denoise, denoise_strength=args.denoise_strength,
     deblock=args.deblock, rotate=args.rotate, crop=args.crop, scale=args.scale, extra=extra,
   )
-  exts = VIDEO_EXTS if preset.is_video else AUDIO_EXTS
+  if preset.is_video:
+    exts = VIDEO_EXTS
+  else:
+    exts = AUDIO_EXTS | PASSTHROUGH_EXTS
   if args.input_dir:
     src_root = args.input_dir.resolve()
     if not src_root.exists():
       log.err(f"Source directory does not exist: {src_root}")
       return 1
     files = find_files(src_root, exts)
+    if args.format == 'opus':
+      files = [f for f in files if f.suffix.lower() not in PASSTHROUGH_EXTS]
     out_dir = args.output_dir.resolve()
   else:
     import glob
@@ -369,6 +400,8 @@ def main() -> int:
       for p in glob.glob(str(Path(pat).expanduser()), recursive=True):
         path = Path(p)
         if path.is_file() and path.suffix.lower() in exts:
+          if args.format == 'opus' and path.suffix.lower() in PASSTHROUGH_EXTS:
+            continue
           files.append(path)
     out_dir = args.output_dir.resolve() if args.output_dir else None
   if not files:
