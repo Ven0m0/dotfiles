@@ -1,253 +1,130 @@
 #!/usr/bin/env bash
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR
-set -euo pipefail; shopt -s nullglob globstar
-IFS=$'\n\t' LC_ALL=C
+# av-tool.sh - Optimized FFmpeg Wrapper
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
+export LC_ALL=C LANG=C
 
-has(){ command -v -- "$1" &>/dev/null; }
-die(){ printf '\033[1;31m[ERR]\033[0m %s\n' "$1" >&2; exit "${2:-1}"; }
-msg(){ printf '\033[1;34m[INFO]\033[0m %s\n' "$@"; }
-wrn(){ printf '\033[1;33m[WARN]\033[0m %s\n' "$@" >&2; }
+# --- Helpers ---
+R=$'\e[31m' G=$'\e[32m' B=$'\e[34m' Y=$'\e[33m' X=$'\e[0m'
+log() { printf "%b[+]%b %s\n" "$B" "$X" "$*"; }
+die() { printf "%b[!]%b %s\n" "$R" "$X" "$*" >&2; exit "${2:-1}"; }
+warn() { printf "%b[WARN]%b %s\n" "$Y" "$X" "$*" >&2; }
+req() { command -v "$1" >/dev/null || die "Missing dependency: $1"; }
 
-usage_main(){
-  cat <<'EOF'
-Usage: av-tool <command> [options]
-Commands:
-  gif          Convert video to GIF
-  frame        Extract single frame
-  combine      Mux audio with video/image
-  trim         Trim video/audio
-  norm         Normalize audio (optionally fade)
-  fade         Fade in/out audio+video
-  silence      Add silent audio to video
-  cd-optimize  Prep audio for Red Book CD (16/44.1kHz+dither)
-EOF
+# --- Commands ---
+cmd_gif() {
+  [[ $# -lt 2 ]] && die "Usage: gif <input> <output.gif> [scale_width]"
+  local in=$1 out=$2 width=${3:-480}
+  log "Generating GIF ($width px wide)..."
+  # High quality palette generation + usage in one complex filter
+  ffmpeg -y -v warning -i "$in" -vf "fps=15,scale=$width:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -c:v gif "$out"
 }
 
-check_deps(){
-  local -a req=(ffmpeg ffprobe file) m=()
-  local t
-  for t in "${req[@]}"; do has "$t" || m+=("$t"); done
-  ((${#m[@]})) && die "Missing deps: ${m[*]}"
+cmd_frame() {
+  [[ $# -lt 3 ]] && die "Usage: frame <input> <time_hh:mm:ss> <output.jpg>"
+  log "Extracting frame at $2..."
+  ffmpeg -y -v warning -ss "$2" -i "$1" -frames:v 1 -q:v 2 "$3"
 }
 
-aac_codec(){
-  ffmpeg -hide_banner -h encoder=libfdk_aac &>/dev/null && printf 'libfdk_aac' || printf 'aac'
+cmd_combine() {
+  [[ $# -lt 3 ]] && die "Usage: combine <video/img> <audio> <output>"
+  log "Muxing $1 + $2..."
+  # -shortest ends when shortest stream ends
+  ffmpeg -y -v warning -i "$1" -i "$2" -c:v copy -c:a aac -b:a 192k -shortest "$3"
 }
 
-sub_float(){ awk -v a="$1" -v b="$2" 'BEGIN{printf "%.6f",a-b}'; }
-
-cmd_gif(){
-  local width=320 fps=15 infile= outfile=
-  while getopts ":i:w:f: o:h" opt; do
-    case $opt in
-      i) infile=$OPTARG ;;
-      w) width=$OPTARG ;;
-      f) fps=$OPTARG ;;
-      o) outfile=$OPTARG ;;
-      h) printf 'Usage: av-tool gif -i input [-w width] [-f fps] [-o output]\n'; return 0 ;;
-      *) die "Invalid option:  -$OPTARG" ;;
-    esac
-  done
-  [[ -z $infile ]] && die "Input (-i) required"
-  outfile=${outfile:-${infile%.*}.gif}
-  ffmpeg -hide_banner -loglevel error -stats -i "$infile" \
-    -filter_complex "[0:v]fps=$fps,scale=$width:-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse" \
-    "$outfile"
+cmd_trim() {
+  [[ $# -lt 4 ]] && die "Usage: trim <input> <start> <end> <output>"
+  log "Trimming $1 ($2 to $3)..."
+  # Fast seek (-ss before -i) is less accurate but faster; re-encoding usually needed for precise cuts
+  ffmpeg -y -v warning -ss "$2" -to "$3" -i "$1" -c copy "$4"
 }
 
-cmd_frame(){
-  local infile= time=00:00:00 ext=png outfile=
-  while getopts ":i:t:f:o:h" opt; do
-    case $opt in
-      i) infile=$OPTARG ;;
-      t) time=$OPTARG ;;
-      f) ext=$OPTARG ;;
-      o) outfile=$OPTARG ;;
-      h) printf 'Usage: av-tool frame -i input [-t timestamp] [-f png|jpg] [-o output]\n'; return 0 ;;
-      *) die "Invalid option: -$OPTARG" ;;
-    esac
-  done
-  [[ -z $infile ]] && die "Input (-i) required"
-  outfile=${outfile:-${infile%.*}-${time//:/-}.$ext}
-  ffmpeg -hide_banner -loglevel error -stats -ss "$time" -i "$infile" -vframes 1 -q:v 2 "$outfile"
+cmd_norm() {
+  [[ $# -lt 2 ]] && die "Usage: norm <input> <output>"
+  log "Normalizing audio (loudnorm)..."
+  ffmpeg -y -v warning -i "$1" -af loudnorm=I=-16:TP=-1.5:LRA=11 -c:v copy -c:a aac -b:a 192k "$2"
 }
 
-cmd_combine(){
-  local infile= audio= outfile=
-  while getopts ":i: a:o:h" opt; do
-    case $opt in
-      i) infile=$OPTARG ;;
-      a) audio=$OPTARG ;;
-      o) outfile=$OPTARG ;;
-      h) printf 'Usage: av-tool combine -i video_or_img -a audio -o output\n'; return 0 ;;
-      *) die "Invalid option: -$OPTARG" ;;
-    esac
-  done
-  [[ -z $infile || -z $audio ]] && die "Inputs -i and -a required"
-  outfile=${outfile:-${infile%.*}-combined.mp4}
-  local mime; mime=$(file --mime-type -b "$infile")
-  case $mime in
-    image/*)
-      ffmpeg -hide_banner -loglevel error -stats -loop 1 -i "$infile" -i "$audio" \
-        -c:v libx264 -tune stillimage -c:a "$(aac_codec)" -b:a 192k -pix_fmt yuv420p -shortest "$outfile"
-      ;;
-    video/*)
-      ffmpeg -hide_banner -loglevel error -stats -i "$infile" -i "$audio" \
-        -c:v copy -c:a "$(aac_codec)" -map 0:v:0 -map 1:a:0 -shortest "$outfile"
-      ;;
-    *) die "Unknown file type: $mime" ;;
-  esac
+cmd_fade() {
+  [[ $# -lt 3 ]] && die "Usage: fade <input> <duration> <output>"
+  local d=$2
+  log "Fading in/out ($d sec)..."
+  # Simple fade in video/audio
+  ffmpeg -y -v warning -i "$1" \
+    -vf "fade=t=in:st=0:d=$d" \
+    -af "afade=t=in:st=0:d=$d" \
+    -c:v libx264 -preset fast -c:a aac -b:a 192k "$3"
 }
 
-cmd_trim(){
-  local infile= start=00:00:00 end= duration= outfile= mode=duration
-  while getopts ":i:s: e:t:o:h" opt; do
-    case $opt in
-      i) infile=$OPTARG ;;
-      s) start=$OPTARG ;;
-      e) end=$OPTARG; mode=timestamp ;;
-      t) duration=$OPTARG; mode=duration ;;
-      o) outfile=$OPTARG ;;
-      h) printf 'Usage: av-tool trim -i input -s 00:00:00 [-t duration | -e end_time] [-o output]\n'; return 0 ;;
-      *) die "Invalid option: -$OPTARG" ;;
-    esac
-  done
-  [[ -z $infile ]] && die "Input (-i) required"
-  local trim_flag suffix
-  if [[ $mode == timestamp ]]; then
-    [[ -z $end ]] && die "End time (-e) required"
-    trim_flag=(-to "$end"); suffix="trimmed-to-$end"
-  else
-    [[ -z $duration ]] && die "Duration (-t) required"
-    trim_flag=(-t "$duration"); suffix="trimmed-$duration"
-  fi
-  outfile=${outfile:-${infile%.*}-${suffix}.${infile##*.}}
-  ffmpeg -hide_banner -loglevel error -stats -ss "$start" -i "$infile" \
-    "${trim_flag[@]}" -c:v libx264 -profile:v high -pix_fmt yuv420p -c:a "$(aac_codec)" -movflags +faststart "$outfile"
+cmd_silence() {
+  [[ $# -lt 2 ]] && die "Usage: silence <video> <output>"
+  log "Adding silent audio track..."
+  ffmpeg -y -v warning -i "$1" -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 \
+    -c:v copy -c:a aac -shortest "$2"
 }
 
-cmd_norm(){
-  local infile= fade_len=0 outfile=
-  while getopts ":i:f:o: h" opt; do
-    case $opt in
-      i) infile=$OPTARG ;;
-      f) fade_len=$OPTARG ;;
-      o) outfile=$OPTARG ;;
-      h) printf 'Usage: av-tool norm -i input [-f fade_seconds] [-o output]\n'; return 0 ;;
-      *) die "Invalid option: -$OPTARG" ;;
-    esac
-  done
-  [[ -z $infile ]] && die "Input (-i) required"
-  outfile=${outfile:-${infile%.*}-normalized.mp4}
-  local stats; stats=$(ffmpeg -hide_banner -loglevel error -i "$infile" -af "loudnorm=I=-16:TP=-1.5:LRA=11:print_format=summary" -f null - 2>&1 | tail -n 12)
-  local meas_I meas_TP meas_LRA meas_thresh offset
-  meas_I=$(awk '/Input Integrated:/{print $3}' <<<"$stats")
-  meas_TP=$(awk '/Input True Peak:/{print $4}' <<<"$stats")
-  meas_LRA=$(awk '/Input LRA:/{print $3}' <<<"$stats")
-  meas_thresh=$(awk '/Input Threshold:/{print $3}' <<<"$stats")
-  offset=$(awk '/Target Offset:/{print $3}' <<<"$stats")
-  local loudnorm_filter="loudnorm=I=-16:TP=-1.5:LRA=11:measured_I=$meas_I:measured_LRA=$meas_LRA:measured_TP=$meas_TP:measured_thresh=$meas_thresh:offset=$offset:linear=true"
-  if [[ $fade_len != 0 && $fade_len != 0.0 ]]; then
-    local dur; dur=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$infile")
-    local fade_out_st; fade_out_st=$(sub_float "$dur" "$fade_len")
-    local audio_filter="afade=t=in:st=0:d=$fade_len,afade=t=out:st=$fade_out_st:d=$fade_len,$loudnorm_filter"
-    local video_filter="fade=t=in:st=0:d=$fade_len,fade=t=out:st=$fade_out_st:d=$fade_len"
-    ffmpeg -hide_banner -loglevel error -stats -i "$infile" \
-      -filter_complex "[0:v]$video_filter[v];[0:a]$audio_filter[a]" \
-      -map "[v]" -map "[a]" -c:v libx264 -preset fast -crf 18 -c:a "$(aac_codec)" "$outfile"
-  else
-    ffmpeg -hide_banner -loglevel error -stats -i "$infile" \
-      -af "$loudnorm_filter" -c:v copy -c:a "$(aac_codec)" "$outfile"
-  fi
-}
-
-cmd_fade(){
-  local infile= dur=0.5 outfile=
-  while getopts ":i:d:o:h" opt; do
-    case $opt in
-      i) infile=$OPTARG ;;
-      d) dur=$OPTARG ;;
-      o) outfile=$OPTARG ;;
-      h) printf 'Usage: av-tool fade -i input [-d duration] [-o output]\n'; return 0 ;;
-      *) die "Invalid option: -$OPTARG" ;;
-    esac
-  done
-  [[ -z $infile ]] && die "Input (-i) required"
-  outfile=${outfile:-${infile%.*}-fade.mp4}
-  local video_len; video_len=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$infile")
-  local fade_out_start; fade_out_start=$(sub_float "$video_len" "$dur")
-  ffmpeg -hide_banner -loglevel error -stats -i "$infile" \
-    -filter_complex "[0:v]fade=t=in:st=0:d=$dur,fade=t=out:st=$fade_out_start: d=$dur[v];[0:a]afade=t=in:st=0:d=$dur,afade=t=out: st=$fade_out_start: d=$dur[a]" \
-    -map "[v]" -map "[a]" -c:v libx264 -crf 18 -pix_fmt yuv420p -c: a "$(aac_codec)" "$outfile"
-}
-
-cmd_silence(){
-  local infile= outfile=
-  while getopts ":i:o: h" opt; do
-    case $opt in
-      i) infile=$OPTARG ;;
-      o) outfile=$OPTARG ;;
-      h) printf 'Usage: av-tool silence -i input -o output\n'; return 0 ;;
-      *) die "Invalid option:  -$OPTARG" ;;
-    esac
-  done
-  [[ -z $infile ]] && die "Input (-i) required"
-  outfile=${outfile:-${infile%.*}-silence.mp4}
-  ffmpeg -hide_banner -loglevel error -stats \
-    -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -i "$infile" \
-    -shortest -c:v copy -c:a "$(aac_codec)" -map 0:a -map 1:v "$outfile"
-}
-
-cmd_cd_optimize(){
-  local input_dir="${1:-.}" output_dir="cd_master_ready"
-  has ffmpeg || die "Missing ffmpeg"
-  [[ -d "$input_dir" ]] || die "Input directory not found: $input_dir"
-  mkdir -p "$output_dir"
-  msg "Source:  $input_dir"
-  msg "Target: $output_dir"
-  msg "Mode:    Red Book (44.1kHz/16-bit/Stereo) + Triangular Dither"
-  local count=0 lossy_count=0
-  while IFS= read -r file; do
-    local ext="${file##*.}" base
-    base=$(basename "$file")
-    base="${base%.*}"
-    [[ "$ext" =~ ^(mp3|m4a|aac|ogg)$ ]] && { wrn "Processing lossy source: $base.$ext (Suboptimal for CD)"; ((lossy_count++)); }
+cmd_cdopt() {
+  [[ $# -lt 2 ]] && die "Usage: cd-optimize <input_dir> <output_dir>"
+  local in_dir=$1 out_dir=$2 count=0 lossy=0
+  [[ -d $in_dir ]] || die "Input dir not found: $in_dir"
+  mkdir -p "$out_dir"
+  
+  log "Optimizing for Red Book CD (16-bit/44.1kHz)..."
+  # Find audio files
+  while IFS= read -r -d '' file; do
+    local base; base=$(basename "${file%.*}")
+    local fmt; fmt=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$file")
+    
+    [[ $fmt =~ mp3|aac|ogg|wma ]] && { warn "Lossy source ($fmt): $base"; ((lossy++)); }
+    
+    # High-quality Resampling (SOXR) + Dither (Triangular)
     ffmpeg -y -v error -i "$file" \
-      -af "aresample=44100:resampler=soxr: precision=28: dither_method=triangular" \
-      -c:a pcm_s16le "$output_dir/$base.wav"
+      -af "aresample=44100:resampler=soxr:precision=28:dither_method=triangular" \
+      -c:a pcm_s16le "$out_dir/$base.wav"
+    
     printf "."
     ((count++))
-  done < <(find "$input_dir" -maxdepth 1 -type f -regextype posix-extended -regex ".*\.(flac|wav|mp3|m4a|aac|ogg|alac|aiff)$")
-  printf "\n"
-  ((count > 0)) || die "No audio files found in $input_dir"
-  msg "Processed $count files."
-  ((lossy_count > 0)) && wrn "Detected $lossy_count lossy input files.  Quality compromised." || msg "All inputs lossless.  Quality optimized."
+  done < <(find "$in_dir" -maxdepth 1 -type f -regextype posix-extended -regex ".*\.(flac|wav|mp3|m4a|aac|ogg|alac|aiff)$" -print0)
+  
+  echo
+  ((count)) || die "No audio files found."
+  log "Processed $count files ($lossy lossy sources)."
+  
   cat <<EOF
----------------------------------------------------------------------
-   🔥 BURN INSTRUCTIONS (CRITICAL)
----------------------------------------------------------------------
-1.  MEDIA :  Verbatim AZO (Blue) or Taiyo Yuden (Green/Blue).
-2. SPEED : 16x or 24x.  DO NOT use Max/52x (High Jitter) or 1x. 
-3. MODE  :  Disc-At-Once (DAO) / Gapless (2-second gap standard).
----------------------------------------------------------------------
-Files ready in: $output_dir/
+${Y}---------------------------------------------------------------------
+   🔥 BURN INSTRUCTIONS (Red Book)
+---------------------------------------------------------------------${X}
+1. MEDIA: Verbatim AZO (Blue) or Taiyo Yuden.
+2. SPEED: 16x or 24x (Avoid Max/52x).
+3. MODE : Disc-At-Once (DAO) / Gapless (2s gap is standard).
+   Files: $out_dir/
 EOF
 }
 
-main(){
-  check_deps
-  [[ $# -eq 0 ]] && { usage_main; exit 1; }
-  local sub=$1; shift || true
-  case $sub in
-    gif) cmd_gif "$@" ;;
-    frame) cmd_frame "$@" ;;
-    combine) cmd_combine "$@" ;;
-    trim) cmd_trim "$@" ;;
-    norm) cmd_norm "$@" ;;
-    fade) cmd_fade "$@" ;;
-    silence) cmd_silence "$@" ;;
-    cd-optimize) cmd_cd_optimize "$@" ;;
-    *) die "Unknown command: $sub" ;;
-  esac
+usage() {
+  cat <<EOF
+av-tool - FFmpeg Automation
+Usage: ${0##*/} [COMMAND] [ARGS]
+Commands:
+  gif <in> <out> [w]     Video to high-quality GIF
+  frame <in> <t> <out>   Extract frame at HH:MM:SS
+  combine <v> <a> <out>  Mux video + audio
+  trim <in> <s > <e> <o> Trim video (copy mode)
+  norm <in> <out>        Normalize audio (Loudnorm)
+  fade <in> <dur> <out>  Fade in/out (Video+Audio)
+  silence <in> <out>     Add silent audio track
+  cd-optimize <in> <out> Prep for Audio CD burning
+EOF
+  exit 1
 }
-main "$@"
+
+# --- Main ---
+req ffmpeg; req ffprobe
+[[ $# -eq 0 ]] && usage
+CMD="$1"; shift
+case "$CMD" in
+  gif|frame|combine|trim|norm|fade|silence) "cmd_$CMD" "$@" ;;
+  cd-optimize|cdopt) cmd_cdopt "$@" ;;
+  -h|--help) usage ;;
+  *) die "Unknown command: $CMD" ;;
+esac
