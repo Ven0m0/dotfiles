@@ -2,20 +2,24 @@
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
 set -euo pipefail; shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C
+
 has(){ command -v -- "$1" &>/dev/null; }
-die(){ printf '%s\n' "$1" >&2; exit "${2:-1}"; }
+die(){ printf '\033[1;31m[ERR]\033[0m %s\n' "$1" >&2; exit "${2:-1}"; }
+msg(){ printf '\033[1;34m[INFO]\033[0m %s\n' "$@"; }
+wrn(){ printf '\033[1;33m[WARN]\033[0m %s\n' "$@" >&2; }
 
 usage_main(){
   cat <<'EOF'
 Usage: av-tool <command> [options]
 Commands:
-  gif       Convert video to GIF
-  frame     Extract single frame
-  combine   Mux audio with video/image
-  trim      Trim video/audio
-  norm      Normalize audio (optionally fade)
-  fade      Fade in/out audio+video
-  silence   Add silent audio to video
+  gif          Convert video to GIF
+  frame        Extract single frame
+  combine      Mux audio with video/image
+  trim         Trim video/audio
+  norm         Normalize audio (optionally fade)
+  fade         Fade in/out audio+video
+  silence      Add silent audio to video
+  cd-optimize  Prep audio for Red Book CD (16/44.1kHz+dither)
 EOF
 }
 
@@ -34,14 +38,14 @@ sub_float(){ awk -v a="$1" -v b="$2" 'BEGIN{printf "%.6f",a-b}'; }
 
 cmd_gif(){
   local width=320 fps=15 infile= outfile=
-  while getopts ":i:w:f:o:h" opt; do
+  while getopts ":i:w:f: o:h" opt; do
     case $opt in
       i) infile=$OPTARG ;;
       w) width=$OPTARG ;;
       f) fps=$OPTARG ;;
       o) outfile=$OPTARG ;;
       h) printf 'Usage: av-tool gif -i input [-w width] [-f fps] [-o output]\n'; return 0 ;;
-      *) die "Invalid option: -$OPTARG" ;;
+      *) die "Invalid option:  -$OPTARG" ;;
     esac
   done
   [[ -z $infile ]] && die "Input (-i) required"
@@ -70,7 +74,7 @@ cmd_frame(){
 
 cmd_combine(){
   local infile= audio= outfile=
-  while getopts ":i:a:o:h" opt; do
+  while getopts ":i: a:o:h" opt; do
     case $opt in
       i) infile=$OPTARG ;;
       a) audio=$OPTARG ;;
@@ -97,7 +101,7 @@ cmd_combine(){
 
 cmd_trim(){
   local infile= start=00:00:00 end= duration= outfile= mode=duration
-  while getopts ":i:s:e:t:o:h" opt; do
+  while getopts ":i:s: e:t:o:h" opt; do
     case $opt in
       i) infile=$OPTARG ;;
       s) start=$OPTARG ;;
@@ -124,7 +128,7 @@ cmd_trim(){
 
 cmd_norm(){
   local infile= fade_len=0 outfile=
-  while getopts ":i:f:o:h" opt; do
+  while getopts ":i:f:o: h" opt; do
     case $opt in
       i) infile=$OPTARG ;;
       f) fade_len=$OPTARG ;;
@@ -173,18 +177,18 @@ cmd_fade(){
   local video_len; video_len=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$infile")
   local fade_out_start; fade_out_start=$(sub_float "$video_len" "$dur")
   ffmpeg -hide_banner -loglevel error -stats -i "$infile" \
-    -filter_complex "[0:v]fade=t=in:st=0:d=$dur,fade=t=out:st=$fade_out_start:d=$dur[v];[0:a]afade=t=in:st=0:d=$dur,afade=t=out:st=$fade_out_start:d=$dur[a]" \
-    -map "[v]" -map "[a]" -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a "$(aac_codec)" "$outfile"
+    -filter_complex "[0:v]fade=t=in:st=0:d=$dur,fade=t=out:st=$fade_out_start: d=$dur[v];[0:a]afade=t=in:st=0:d=$dur,afade=t=out: st=$fade_out_start: d=$dur[a]" \
+    -map "[v]" -map "[a]" -c:v libx264 -crf 18 -pix_fmt yuv420p -c: a "$(aac_codec)" "$outfile"
 }
 
 cmd_silence(){
   local infile= outfile=
-  while getopts ":i:o:h" opt; do
+  while getopts ":i:o: h" opt; do
     case $opt in
       i) infile=$OPTARG ;;
       o) outfile=$OPTARG ;;
       h) printf 'Usage: av-tool silence -i input -o output\n'; return 0 ;;
-      *) die "Invalid option: -$OPTARG" ;;
+      *) die "Invalid option:  -$OPTARG" ;;
     esac
   done
   [[ -z $infile ]] && die "Input (-i) required"
@@ -192,6 +196,42 @@ cmd_silence(){
   ffmpeg -hide_banner -loglevel error -stats \
     -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -i "$infile" \
     -shortest -c:v copy -c:a "$(aac_codec)" -map 0:a -map 1:v "$outfile"
+}
+
+cmd_cd_optimize(){
+  local input_dir="${1:-.}" output_dir="cd_master_ready"
+  has ffmpeg || die "Missing ffmpeg"
+  [[ -d "$input_dir" ]] || die "Input directory not found: $input_dir"
+  mkdir -p "$output_dir"
+  msg "Source:  $input_dir"
+  msg "Target: $output_dir"
+  msg "Mode:    Red Book (44.1kHz/16-bit/Stereo) + Triangular Dither"
+  local count=0 lossy_count=0
+  while IFS= read -r file; do
+    local ext="${file##*.}" base
+    base=$(basename "$file")
+    base="${base%.*}"
+    [[ "$ext" =~ ^(mp3|m4a|aac|ogg)$ ]] && { wrn "Processing lossy source: $base.$ext (Suboptimal for CD)"; ((lossy_count++)); }
+    ffmpeg -y -v error -i "$file" \
+      -af "aresample=44100:resampler=soxr: precision=28: dither_method=triangular" \
+      -c:a pcm_s16le "$output_dir/$base.wav"
+    printf "."
+    ((count++))
+  done < <(find "$input_dir" -maxdepth 1 -type f -regextype posix-extended -regex ".*\.(flac|wav|mp3|m4a|aac|ogg|alac|aiff)$")
+  printf "\n"
+  ((count > 0)) || die "No audio files found in $input_dir"
+  msg "Processed $count files."
+  ((lossy_count > 0)) && wrn "Detected $lossy_count lossy input files.  Quality compromised." || msg "All inputs lossless.  Quality optimized."
+  cat <<EOF
+---------------------------------------------------------------------
+   🔥 BURN INSTRUCTIONS (CRITICAL)
+---------------------------------------------------------------------
+1.  MEDIA :  Verbatim AZO (Blue) or Taiyo Yuden (Green/Blue).
+2. SPEED : 16x or 24x.  DO NOT use Max/52x (High Jitter) or 1x. 
+3. MODE  :  Disc-At-Once (DAO) / Gapless (2-second gap standard).
+---------------------------------------------------------------------
+Files ready in: $output_dir/
+EOF
 }
 
 main(){
@@ -206,6 +246,7 @@ main(){
     norm) cmd_norm "$@" ;;
     fade) cmd_fade "$@" ;;
     silence) cmd_silence "$@" ;;
+    cd-optimize) cmd_cd_optimize "$@" ;;
     *) die "Unknown command: $sub" ;;
   esac
 }
