@@ -57,7 +57,7 @@ install_packages(){
     return 0
   fi
   # Try installing with tuckr first
-  if ! paru -Syuq "${paru_opts[@]}" "${pkgs[@]}" tuckr 2>/dev/null; then
+  if ! paru -Syuq "${paru_opts[@]}" "${pkgs[@]}" tuckr; then
     warn "tuckr install failed, using stow as fallback"
     paru -Syuq "${paru_opts[@]}" "${pkgs[@]}" stow || die "Failed to install packages"
   fi
