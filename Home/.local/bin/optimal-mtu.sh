@@ -1,76 +1,66 @@
 #!/usr/bin/env bash
-set -euo pipefail; shopt -s nullglob; IFS=$'\n\t' LC_ALL=C
+set -euo pipefail; IFS=$'\n\t'
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 
-check_deps() {
-  local reqs=(ping ip awk grep sed)
-  for r in "${reqs[@]}"; do command -v "$r" >/dev/null || die "Missing: $r"; done
-}
+# Dependency check: ping and ip (iproute2) are standard on Arch/Debian base
+command -v ping >/dev/null && command -v ip >/dev/null || die "Missing 'ping' or 'ip'"
 select_iface() {
-  local -a ifaces; mapfile -t ifaces < <(ip -br link | awk '$1!~/(lo|veth|docker|br-)/{print $1}')
-  ((${#ifaces[@]})) || die "No interfaces found"
-  ((${#ifaces[@]} == 1)) && { echo "${ifaces[0]}"; return; }
-  echo "Interfaces: "; for i in "${!ifaces[@]}"; do echo "$((i+1))) ${ifaces[$i]}"; done
-  read -rp "Select [1-${#ifaces[@]}]: " n
-  [[ $n =~ ^[0-9]+$ && $n -ge 1 && $n -le ${#ifaces[@]} ]] || die "Invalid"
-  echo "${ifaces[$((n-1))]}"
+  local -a list; mapfile -t list < <(ip -br link | awk '$1!~/(lo|veth|docker|br-)/{print $1}')
+  ((${#list[@]})) || die "No interfaces found"
+  ((${#list[@]} == 1)) && { echo "${list[0]}"; return; }
+  echo "Select interface:"; for i in "${!list[@]}"; do echo "$((i+1))) ${list[$i]}"; done
+  read -rp "#? " n; [[ $n =~ ^[0-9]+$ && $n -le ${#list[@]} ]] || die "Invalid"
+  echo "${list[$((n-1))]}"
 }
 persist() {
   local iface=$1 mtu=$2
+  # 1. NetworkManager (Common on Arch/Debian Desktops)
   if command -v nmcli >/dev/null && nmcli -t dev | grep -q "^${iface}:"; then
     local c; c=$(nmcli -t -f NAME,DEVICE con show --active | awk -F: -v i="$iface" '$2==i{print $1}')
     [[ -n $c ]] && { sudo nmcli con mod "$c" 802-3-ethernet.mtu "$mtu"; echo "Saved via NetworkManager"; return; }
   fi
-  local np_file; np_file=$(compgen -G "/etc/netplan/*.yaml" | head -1)
-  if [[ -n $np_file ]] && grep -q "^ *$iface:" "$np_file"; then
-    grep -q "mtu:" "$np_file" && sudo sed -i "s/mtu: [0-9]*/mtu: $mtu/" "$np_file" || \
-      sudo sed -i "/^ *$iface:/a\      mtu: $mtu" "$np_file"
-    echo "Saved via Netplan ($np_file). Run 'sudo netplan apply'."; return
-  fi
+  # 2. Systemd-networkd (Arch Standard / Modern Debian)
   if [[ -d /etc/systemd/network ]]; then
-    echo -e "[Match]\nName=$iface\n[Link]\nMTUBytes=$mtu" | sudo tee "/etc/systemd/network/99-$iface-mtu.network" >/dev/null
-    echo "Saved via systemd-networkd"; return
+    printf '[Match]\nName=%s\n[Link]\nMTUBytes=%s\n' "$iface" "$mtu" | sudo tee "/etc/systemd/network/10-${iface}-mtu.network" >/dev/null
+    echo "Saved to /etc/systemd/network/ (restart systemd-networkd to apply)"; return
   fi
-  if [[ -f /etc/network/interfaces ]] && grep -q "iface $iface inet" /etc/network/interfaces; then
-    grep -q "^ *mtu $iface" /etc/network/interfaces && \
-      sudo sed -i "/iface $iface inet/,/^iface/ s/^ *mtu . */    mtu $mtu/" /etc/network/interfaces || \
-      sudo sed -i "/iface $iface inet/ a\    mtu $mtu" /etc/network/interfaces
-    echo "Saved via /etc/network/interfaces"; return
+  # 3. /etc/network/interfaces (Debian Standard)
+  if [[ -f /etc/network/interfaces ]]; then
+    if grep -q "iface $iface inet" /etc/network/interfaces; then
+      grep -q "mtu " /etc/network/interfaces && \
+        sudo sed -i "/iface $iface/,/iface/ s/mtu [0-9]*/mtu $mtu/" /etc/network/interfaces || \
+        sudo sed -i "/iface $iface/a \ \ mtu $mtu" /etc/network/interfaces
+      echo "Saved to /etc/network/interfaces"; return
+    fi
   fi
-  echo "No supported network manager found for persistence."
+  echo "No supported config found (NetworkManager, systemd-networkd, or interfaces)."
 }
 find_mtu() {
-  local srv=$1 iface=$2 min=1200 max=1500 overhead=28 cmd="ping"
-  [[ $srv =~ : ]] && { overhead=48; cmd="ping6"; }
-  command -v "$cmd" >/dev/null || die "$cmd missing"
-  "$cmd" -c1 -W1 "$srv" >/dev/null || die "Server $srv unreachable"
-  # Temporarily raise IFACE MTU to allow testing large packets
-  local orig_mtu; orig_mtu=$(ip -o link show "$iface" | awk '{print $5}')
-  sudo ip link set dev "$iface" mtu $max || die "Cannot set temp MTU on $iface"
-  local lo=$min hi=$max opt=$min mid
-  echo "Probing MTU to $srv ($cmd)..."
-  while ((lo <= hi)); do
-    mid=$(((lo + hi) / 2))
-    if "$cmd" -M do -s $((mid - overhead)) -c1 -W1 "$srv" >/dev/null 2>&1; then
-      opt=$mid; lo=$((mid + 1))
+  local srv=$1 iface=$2 min=1200 max=1500 overhead=28 opt=$min mid
+  [[ $srv =~ : ]] && overhead=48
+  # Temp raise interface MTU to allow large packets out
+  local old_mtu; old_mtu=$(ip -o link show "$iface" | awk '{print $5}')
+  sudo ip link set dev "$iface" mtu $max || die "Failed to set temp MTU"
+  echo "Probing $srv on $iface..."
+  while ((min <= max)); do
+    mid=$(((min + max) / 2))
+    if ping -M do -s $((mid - overhead)) -c1 -W1 "$srv" >/dev/null 2>&1; then
+      opt=$mid; min=$((mid + 1))
     else
-      hi=$((mid - 1))
+      max=$((mid - 1))
     fi
   done
-  # Revert MTU if not applying immediately (safety)
-  sudo ip link set dev "$iface" mtu "$orig_mtu"
+  sudo ip link set dev "$iface" mtu "$old_mtu" # Restore original
   echo $((opt - 4)) # Safety margin
 }
 main() {
-  check_deps
   local srv=${1:-8.8.8.8} iface mtu choice
-  echo "Target: $srv"
   iface=$(select_iface)
   mtu=$(find_mtu "$srv" "$iface")
   echo "Optimal MTU: $mtu"
-  read -rp "Apply and persist? (y/N) " -n1 choice; echo
-  [[ $choice =~ ^[Yy]$ ]] || { echo "Aborted."; exit 0; }
-  sudo ip link set dev "$iface" mtu "$mtu" && echo "Applied to interface."
+  read -rp "Apply permanent? (y/N) " -n1 choice; echo
+  [[ $choice =~ ^[Yy]$ ]] || exit 0
+  sudo ip link set dev "$iface" mtu "$mtu"
   persist "$iface" "$mtu"
 }
 main "$@"
