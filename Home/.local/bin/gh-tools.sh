@@ -2,15 +2,15 @@
 set -euo pipefail; shopt -s nullglob; IFS=$'\n\t'
 
 # --- Helpers ---
-die() { printf '\e[31mERROR: %s\e[0m\n' "$*" >&2; exit 1; }
-has() { command -v "$1" >/dev/null; }
-need() { has "$1" || die "Missing dependency: $1"; }
-log() { printf '\e[34m:: %s\e[0m\n' "$*"; }
+die(){ printf '\e[31mERROR: %s\e[0m\n' "$*" >&2; exit 1; }
+has(){ command -v "$1" >/dev/null; }
+need(){ has "$1" || die "Missing dependency: $1"; }
+log(){ printf '\e[34m:: %s\e[0m\n' "$*"; }
 # --- Dependencies ---
 need gh; need git
 JQ="jq"; has jaq && JQ="jaq"
 # --- Subcommands ---
-cmd_asset() {
+cmd_asset(){
   local repo="${1:-}" pattern="${2:-}" tag="" out=""
   [[ -z $repo || -z $pattern ]] && die "Usage: $0 asset OWNER/REPO PATTERN [-r TAG] [-o FILE]"
   shift 2
@@ -21,8 +21,7 @@ cmd_asset() {
   [[ -n $out ]] && args+=("--output" "$out")
   gh "${args[@]}" || die "Download failed"
 }
-
-cmd_install() {
+cmd_install(){
   local repo="${1:-}" tag="" path="$HOME/.local/bin"
   [[ -z $repo ]] && die "Usage: $0 install OWNER/REPO [-t TAG] [-p PATH]"
   shift 1
@@ -46,7 +45,7 @@ cmd_install() {
   esac
   log "Installed $selected"
 }
-cmd_maint() {
+cmd_maint(){
   local mode="both" dry=0 yes=0
   [[ ${1:-} =~ ^(clean|update|both)$ ]] && { mode=$1; shift; }
   while getopts "dyv" opt; do case $opt in d) dry=1;; y) yes=1;; esac; done
@@ -64,7 +63,7 @@ cmd_maint() {
     git branch -d "${branches[@]}"
   fi
 }
-cmd_combine() {
+cmd_combine(){
   (( $# < 1 )) && die "Usage: $0 combine-prs PR_NUMBER..."
   need awk
   log "Preparing branch..."
@@ -84,16 +83,28 @@ cmd_combine() {
   log "Success! Created branch: $branch"
   echo "To push: git push origin $branch --set-upstream"
 }
-usage() {
+cmd_submod_rm(){
+  (( $# < 1 )) && die "Usage: $0 submod-rm PATH..."
+  for path in "$@"; do
+    [[ -e "$path" || -d ".git/modules/$path" ]] || { log "Skipping invalid path: $path"; continue; }
+    log "Removing submodule: $path"
+    # Allow deinit to fail (e.g. if already broken) but ensure rm continues
+    git submodule deinit -f "$path" >/dev/null 2>&1 || :
+    git rm -f -r "$path"; rm -rf ".git/modules/$path"  # Nuke the internal git metadata so it can be re-added cleanly later
+    log "Cleaned $path"
+  done
+}
+usage(){
   cat <<EOF
 gh-tools - GitHub Utilities
-Usage: ${0##*/} [asset|install|maint|combine-prs] [ARGS]
+Usage: ${0##*/} [COMMAND] [ARGS]
 
 Commands:
   asset OWNER/REPO PATTERN [-r TAG] [-o FILE]   Download asset
   install OWNER/REPO [-t TAG] [-p PATH]         Interactive install
   maint [clean|update|both] [-d] [-y]           Repo maintenance
   combine-prs PR_ID [PR_ID...]                  Combine Dependabot PRs
+  submod-rm PATH [PATH...]                      Force remove submodules
 EOF
   exit 1
 }
@@ -103,6 +114,7 @@ CMD="$1"; shift
 case "$CMD" in
   asset|install|maint) "cmd_$CMD" "$@" ;;
   combine-prs) cmd_combine "$@" ;;
+  submod-rm) cmd_submod_rm "$@" ;;
   -h|--help) usage ;;
   *) die "Unknown command: $CMD" ;;
 esac
