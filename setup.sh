@@ -48,15 +48,19 @@ main(){
 install_packages(){
   info "Installing packages..."
   local paru_opts=(--needed --noconfirm --skipreview --sudoloop --batchinstall --combinedupgrade)
-  local pkgs=(git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf yadm tuckr konsave)
+  local pkgs=(git gitoxide aria2 curl zsh fd sd ripgrep bat jq zoxide starship fzf yadm konsave)
   if ! has paru; then
     die "paru not found."
   fi
   if [[ $DRY_RUN == true ]]; then
-    info "[DRY-RUN] Would install: ${pkgs[*]}"
+    info "[DRY-RUN] Would install: ${pkgs[*]} tuckr (or stow)"
     return 0
   fi
-  paru -Syuq "${paru_opts[@]}" "${pkgs[@]}" || die "Failed to install packages"
+  # Try installing with tuckr first
+  if ! paru -Syuq "${paru_opts[@]}" "${pkgs[@]}" tuckr 2>/dev/null; then
+    warn "tuckr install failed, using stow as fallback"
+    paru -Syuq "${paru_opts[@]}" "${pkgs[@]}" stow || die "Failed to install packages"
+  fi
 }
 setup_dotfiles(){
   if ! has yadm; then
@@ -83,23 +87,39 @@ deploy_home(){
   fi
 }
 link_system_configs(){
-  if ! has tuckr; then
-    warn "tuckr not found; skipping etc/usr deploy"
+  local pkg
+  if has tuckr; then
+    info "Using tuckr for system config deployment"
+    local hooks_file="${WORKTREE}/hooks.toml"
+    for pkg in etc usr; do
+      local src="${WORKTREE}/${pkg}"
+      [[ -d $src ]] || { warn "Directory not found: $src"; continue; }
+      info "Linking ${pkg}/ → / (tuckr)"
+      local cmd=(sudo tuckr link -d "$WORKTREE" -t / "$pkg")
+      [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
+      "${cmd[@]}" || warn "Failed to link ${pkg}"
+    done
+  elif has stow; then
+    info "tuckr not found, using stow as fallback"
+    for pkg in etc usr; do
+      local src="${WORKTREE}/${pkg}"
+      [[ -d $src ]] || { warn "Directory not found: $src"; continue; }
+      info "Linking ${pkg}/ → / (stow)"
+      (cd "$WORKTREE" && sudo stow -t / -d . "$pkg") || warn "Failed to stow ${pkg}"
+    done
+  else
+    warn "Neither tuckr nor stow found; skipping etc/usr deploy"
+    warn "Install with: paru -S tuckr  OR  paru -S stow"
     return 0
   fi
-  local hooks_file="${WORKTREE}/hooks.toml" pkg
-  for pkg in etc usr; do
-    local src="${WORKTREE}/${pkg}"
-    [[ -d $src ]] || { warn "Directory not found: $src"; continue; }
-    info "Linking ${pkg}/ → /"
-    local cmd=(sudo tuckr link -d "$WORKTREE" -t / "$pkg")
-    [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
-    "${cmd[@]}" || warn "Failed to link ${pkg}"
-  done
 }
 final_steps(){
   info "Run 'yadm status' to review."
-  info "For system configs: sudo tuckr link -d $WORKTREE -t / etc usr"
+  if has tuckr; then
+    info "For system configs: sudo tuckr link -d $WORKTREE -t / etc usr"
+  elif has stow; then
+    info "For system configs: cd $WORKTREE && sudo stow -t / etc usr"
+  fi
   info "Validate /etc/fstab with: sudo systemd-analyze verify /etc/fstab"
   info "Setup complete."
 }
