@@ -1,8 +1,8 @@
-confirm            =false
-track_installs     =true
-continue_on_failure=true
-strategies         =[]
+confirm = true
+track_installs = true
+continue_on_failure = true
+strategies = []
 
 [telemetry]
-enabled      =false
-consent_asked=true
+enabled = false
+consent_asked = false
