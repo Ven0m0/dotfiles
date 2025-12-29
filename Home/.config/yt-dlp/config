@@ -15,7 +15,7 @@
 --sponsorblock-remove all
 # ====== Downloading ======
 -o ~/Videos/%(title)s.%(ext)s
---buffer-size 16M
+--buffer-size 16K
 --concurrent-fragments 8
 --fragment-retries 5
 --retries 5
