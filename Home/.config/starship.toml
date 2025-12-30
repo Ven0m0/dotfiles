@@ -4,48 +4,57 @@ format = """
 $hostname\
 $username\
 $directory\
-$git_branch\
-$git_status\
+${custom.git_repo}\
 $shell\
 $shlvl\
-$time\
-$sudo\
 $python\
 $cmd_duration\
 ${custom.mommy}\
-$line_break\
 $character
 """
-
-# A minimal right prompt
-right_format = """${env_var.YAZI_LEVEL}"""
+right_format = "${env_var.YAZI_LEVEL}"
 continuation_prompt = '>> '
 
-scan_timeout = 30
+scan_timeout = 10
 command_timeout = 100
 add_newline = false
 follow_symlinks = true
+palette = "catppuccin_mocha"
 
-# Oxocarbon-inspired palette
-#palette = "oxocarbon"
-[palettes.oxocarbon]
-overlay = '#262626'
-love = '#fa4d56'
-gold = '#d2a106'
-rose = '#ff7eb6'
-pine = '#78a9ff'
-foam = '#08bdba'
-iris = '#be95ff'
-
-[line_break]
-disabled = true
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"
 
 [character]
 success_symbol = "[>](bold green) "
 error_symbol = "[x](bold red) "
 
 [directory]
-style = "purple"
+style = "bold mauve"
 truncate_to_repo = true
 fish_style_pwd_dir_length = 3
 truncation_length = 3
@@ -65,191 +74,146 @@ aliases = { "ven0m0" = "lucy" }
 ssh_only = true
 disabled = false
 trim_at = "."
+style = "bold yellow"
 
 [localip]
 ssh_only = true
 disabled = false
 
 [sudo]
-disabled = false
-style = "bold red"
-
-[time]
 disabled = true
-use_12hr = false
-time_format = "%H:%M"
-utc_time_offset = "local"
-time_range = "00:00:00-24:00:00"
 
 [git_branch]
 disabled = false
 truncation_length = 4
 truncation_symbol = ""
+style = "bold mauve"
 
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
 disabled = false
-use_git_executable = false
 ignore_submodules = true
+style = "bold red"
 ahead = "⇡${count}"
 diverged = "⇕⇡${ahead_count}"
 behind = "⇣${count}"
 modified = "!${count}"
 untracked = "?${count}"
 
-[bun]
-disabled = true
-format = "via [🍔 $version](bold green) "
-detect_files = [
-  "bun.lock",
-  "bun.lockb",
-  "bunfig.toml",
-  "package.json",
-  "package-lock.json",
-]
-detect_folders = [".bun"]
-
-[mise]
-disabled = true
-
-[status]
-disabled = true
-symbol = "❌ "
-success_symbol = "✅ "
-not_executable_symbol = "🚫 "
-not_found_symbol = "🔍 "
-map_symbol = true
-format = "[$symbol]($style) "
-
-[memory_usage]
-disabled = true
-threshold = 25
-symbol = " "
-style = "bold dimmed green"
-format = "via $symbol [${ram_pct}( | ${swap_pct})]($style) "
-
 [shell]
 disabled = false
 format = "[$indicator]($style)"
-style = "cyan"
+style = "cyan bold"
 bash_indicator = " bsh"
 fish_indicator = " fsh"
 zsh_indicator = " zsh"
 unknown_indicator = ""
 
-[shlvl]
-disabled = false
-format = "${shlvl}($style)"
-threshold = 2
-repeat = false
-repeat_offset = 0
-
 [cmd_duration]
 disabled = false
 min_time = 500
 format = "took [$duration]($style) "
+style = "bold yellow"
 
 [jobs]
 disabled = false
 symbol = "✦"
 number_threshold = 1
 format = "[$symbol$number]($style) "
+style = "bold blue"
 
 [battery]
 disabled = false
-
 [[battery.display]]
 threshold = 20
 style = "bold red"
-
 [[battery.display]]
 threshold = 50
 style = "bold yellow"
 
-# https://github.com/fwdekker/mommy
 [custom.mommy]
 disabled = false
-style = "red"
+style = "pink"
 command = "mommy -1 -s $status"
+when = "command -v mommy"
+
+[custom.git_repo]
+command = "basename \"$(git rev-parse --show-toplevel 2>/dev/null)\""
+when = "git rev-parse --is-inside-work-tree &>/dev/null"
+format = "[$output]($style) "
+style = "bold purple"
+shell = ["bash", "-c"]
+
+[shlvl]
+disabled = false
+format = "${shlvl}($style)"
+threshold = 2
+style = "bold sapphire"
 
 [env_var.YAZI_LEVEL]
 variable = 'YAZI_LEVEL'
-default = 'unknown level'
+default = ''
 
 [python]
 disabled = false
 python_binary = 'python3'
 detect_extensions = []
 detect_files = []
-pyenv_version_name = false
 symbol = ''
 format = '[$virtualenv]($style)'
+style = "bold yellow"
 
+[status]
+disabled = true
+[memory_usage]
+disabled = true
 [package]
 disabled = true
-
+[bun]
+disabled = true
+[mise]
+disabled = true
 [aws]
 disabled = true
-
 [cmake]
 disabled = true
-
 [cobol]
 disabled = true
-
 [dart]
 disabled = true
-
 [docker_context]
 disabled = true
-
 [elixir]
 disabled = true
-
 [elm]
 disabled = true
-
 [golang]
 disabled = true
-
 [haskell]
 disabled = true
-
 [hg_branch]
 disabled = true
-
 [java]
 disabled = true
-
 [julia]
 disabled = true
-
 [nim]
 disabled = true
-
 [nix_shell]
 disabled = true
-
 [nodejs]
 disabled = true
-
 [perl]
 disabled = true
-
 [php]
 disabled = true
-
 [ruby]
 disabled = true
-
 [rust]
 disabled = true
-
 [scala]
 disabled = true
-
 [swift]
 disabled = true
-
 [lua]
 disabled = true
