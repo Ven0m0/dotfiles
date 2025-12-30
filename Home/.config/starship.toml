@@ -11,7 +11,9 @@ ${env_var.YAZI_LEVEL}\
 $time\
 $sudo\
 $python\
+$cmd_duration\
 ${custom.mommy}\
+$line_break\
 $character
 """
 
@@ -50,6 +52,12 @@ truncation_length = 3
 truncation_symbol = "…/"
 home_symbol = "~"
 format = "[$path]($style)[$read_only]($read_only_style)"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
 
 [username]
 disabled = false
