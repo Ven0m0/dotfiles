@@ -11,16 +11,21 @@ ${env_var.YAZI_LEVEL}\
 $time\
 $sudo\
 $python\
-$status\
+${custom.mommy}\
 $character
 """
 
 # A minimal right prompt
 right_format = """$character"""
+continuation_prompt = '>> '
 
-#palette = "oxocarbon"
+scan_timeout = 30
+command_timeout = 100
+add_newline = false
+follow_symlinks = true
 
 # Oxocarbon-inspired palette
+#palette = "oxocarbon"
 [palettes.oxocarbon]
 overlay = '#262626'
 love = '#fa4d56'
@@ -29,12 +34,6 @@ rose = '#ff7eb6'
 pine = '#78a9ff'
 foam = '#08bdba'
 iris = '#be95ff'
-
-right_format = "${custom.mommy}"
-scan_timeout = 30
-command_timeout = 100
-add_newline = false
-follow_symlinks = false
 
 [line_break]
 disabled = true
