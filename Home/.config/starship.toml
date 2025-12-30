@@ -15,7 +15,6 @@ $username\
 $directory\
 $shell\
 $shlvl\
-${env_var.YAZI_LEVEL}\
 $python\
 $cmd_duration\
 $character\
@@ -135,10 +134,6 @@ style = "bold red"
 [[battery.display]]
 threshold = 50
 style = "bold yellow"
-
-[env_var.YAZI_LEVEL]
-variable = 'YAZI_LEVEL'
-default = ''
 
 [python]
 disabled = false
