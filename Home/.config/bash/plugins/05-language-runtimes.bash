@@ -30,7 +30,6 @@ has go && export GOOS=linux GOARCH=amd64 GOFLAGS="-ldflags=-s -w -trimpath -modc
 export PYTHONOPTIMIZE=1 PYTHONIOENCODING='utf-8' PYTHONHASHSEED=0 PYTHONUNBUFFERED=0 PYTHONDONTWRITEBYTECODE=0
   PYTHONNODEBUGRANGES=1 PYTHON_COLORS=1 PYTHONSTARTUP="${HOME}/.pythonstartup" PYTHONUTF8=1 PYTHONSAFEPATH=1 \
   PYTHON_DISABLE_REMOTE_DEBUG=1 PYTORCH_ENABLE_MPS_FALLBACK=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1
-
 # Use uv for pip operations when available
 pip(){
   if has uv && [[ "install uninstall list show freeze check" =~ $1 ]]; then command uv pip "$@"
@@ -39,7 +38,6 @@ pip(){
 # Create and activate Python virtual environment using uv
 if has uv; then alias py-venv="[[ -d .venv ]] || uv venv .venv && . .venv/bin/activate"
 else alias py-venv="[[ -d .venv ]] || python3 -m venv && . .venv/bin/activate"; fi
-alias py-server='python3 -m SimpleHTTPServer 8000'
 alias pdb="python3 -m pdb"
 alias serve="python3 -m http.server"
 # Script to format JSON files using Python JSON Tool
@@ -71,10 +69,9 @@ export SDKMAN_DIR="${SDKMAN_DIR:-$HOME/.sdkman}"
 ifsource "${SDKMAN_DIR}/bin/sdkman-init.sh"
 # Only compute JAVA_HOME if java exists and JAVA_HOME not already set
 if [[ -z ${JAVA_HOME:-} ]] && has java; then
-  JAVA_HOME="$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")"
-  export JAVA_HOME
+  export JAVA_HOME="$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")"
   prependpath "${JAVA_HOME}/bin"
+  export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
 fi
-
 # AppImages | https://github.com/pkgforge-dev/Citron-AppImage/issues/50
-export URUNTIME_PRELOAD=1 QT_QPA_PLATFORM=xcb
+export URUNTIME_PRELOAD=1 #QT_QPA_PLATFORM=xcb
