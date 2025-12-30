@@ -1,26 +1,27 @@
 "$schema" = "https://starship.rs/config-schema.json"
 
+# Core Configuration
+add_newline = false
+command_timeout = 100
+continuation_prompt = '>> '
+follow_symlinks = true
+palette = "catppuccin_mocha"
+scan_timeout = 30
+right_format = "${custom.mommy}"
+
 format = """
 $hostname\
 $username\
 $directory\
-${custom.git_repo}\
 $shell\
 $shlvl\
+${env_var.YAZI_LEVEL}\
 $python\
 $cmd_duration\
-${custom.mommy}\
-$character
+$character\
 """
-right_format = "${env_var.YAZI_LEVEL}"
-continuation_prompt = '>> '
 
-scan_timeout = 10
-command_timeout = 100
-add_newline = false
-follow_symlinks = true
-palette = "catppuccin_mocha"
-
+# Palette Definition
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
 flamingo = "#f2cdcd"
@@ -49,18 +50,19 @@ base = "#1e1e2e"
 mantle = "#181825"
 crust = "#11111b"
 
+# Module Configuration
 [character]
 success_symbol = "[>](bold green) "
 error_symbol = "[x](bold red) "
 
 [directory]
 style = "bold mauve"
+format = "[$path]($style)[$read_only]($read_only_style) "
 truncate_to_repo = true
-fish_style_pwd_dir_length = 3
 truncation_length = 3
 truncation_symbol = "…/"
 home_symbol = "~"
-format = "[$path]($style)[$read_only]($read_only_style)"
+fish_style_pwd_dir_length = 3
 
 [username]
 disabled = false
@@ -71,17 +73,14 @@ format = "[$user]($style)@"
 aliases = { "ven0m0" = "lucy" }
 
 [hostname]
-ssh_only = true
 disabled = false
+ssh_only = true
 trim_at = "."
 style = "bold yellow"
 
 [localip]
-ssh_only = true
 disabled = false
-
-[sudo]
-disabled = true
+ssh_only = true
 
 [git_branch]
 disabled = false
@@ -90,10 +89,10 @@ truncation_symbol = ""
 style = "bold mauve"
 
 [git_status]
-format = '([\[$all_status$ahead_behind\]]($style) )'
 disabled = false
 ignore_submodules = true
 style = "bold red"
+format = '([\[$all_status$ahead_behind\]]($style) )'
 ahead = "⇡${count}"
 diverged = "⇕⇡${ahead_count}"
 behind = "⇣${count}"
@@ -108,6 +107,12 @@ bash_indicator = " bsh"
 fish_indicator = " fsh"
 zsh_indicator = " zsh"
 unknown_indicator = ""
+
+[shlvl]
+disabled = false
+threshold = 2
+format = "${shlvl}($style)"
+style = "bold sapphire"
 
 [cmd_duration]
 disabled = false
@@ -131,25 +136,6 @@ style = "bold red"
 threshold = 50
 style = "bold yellow"
 
-[custom.mommy]
-disabled = false
-style = "pink"
-command = "mommy -1 -s $status"
-when = "command -v mommy"
-
-[custom.git_repo]
-command = "basename \"$(git rev-parse --show-toplevel 2>/dev/null)\""
-when = "git rev-parse --is-inside-work-tree &>/dev/null"
-format = "[$output]($style) "
-style = "bold purple"
-shell = ["bash", "-c"]
-
-[shlvl]
-disabled = false
-format = "${shlvl}($style)"
-threshold = 2
-style = "bold sapphire"
-
 [env_var.YAZI_LEVEL]
 variable = 'YAZI_LEVEL'
 default = ''
@@ -157,23 +143,24 @@ default = ''
 [python]
 disabled = false
 python_binary = 'python3'
+# Perf: Only show if VIRTUAL_ENV is set (no file scanning)
 detect_extensions = []
 detect_files = []
 symbol = ''
 format = '[$virtualenv]($style)'
 style = "bold yellow"
 
-[status]
-disabled = true
-[memory_usage]
-disabled = true
-[package]
+# Custom Modules
+[custom.mommy]
+disabled = false
+command = "mommy -1 -s $status"
+when = "command -v mommy"
+style = "pink"
+
+# Disabled Modules (Compacted)
+[aws]
 disabled = true
 [bun]
-disabled = true
-[mise]
-disabled = true
-[aws]
 disabled = true
 [cmake]
 disabled = true
@@ -197,11 +184,19 @@ disabled = true
 disabled = true
 [julia]
 disabled = true
+[lua]
+disabled = true
+[memory_usage]
+disabled = true
+[mise]
+disabled = true
 [nim]
 disabled = true
 [nix_shell]
 disabled = true
 [nodejs]
+disabled = true
+[package]
 disabled = true
 [perl]
 disabled = true
@@ -213,7 +208,9 @@ disabled = true
 disabled = true
 [scala]
 disabled = true
-[swift]
+[status]
 disabled = true
-[lua]
+[sudo]
+disabled = true
+[swift]
 disabled = true
