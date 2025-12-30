@@ -183,19 +183,10 @@ command = "mommy -1 -s $status"
 variable = 'YAZI_LEVEL'
 default = 'unknown level'
 
-[custom.yazi_level]
-disabled = false
-description = "Indicate the shell was launched by `yazi`"
-variable = "YAZI_LEVEL"
-symbol = "🦆"
-format = "[ $symbol ]($style)"
-
 [python]
 disabled = false
-symbol = '👾 '
 python_binary = 'python3'
 detect_extensions = []
-detect_files = ['.python-version', 'Pipfile', '__init__.py', 'pyproject.toml', 'requirements.txt', 'setup.py']
 pyenv_version_name = false
 
 [package]
