@@ -1,36 +1,147 @@
-# Global
 [global]
-line-length = 100
-respect-gitignore = true
+enable = []
+disable = []
+exclude = []
+include = []
+respect_gitignore = true
+flavor = "GitHub"  # Use GitHub-specific rules
 
-[per-file-ignores]
-"README.md" = ["MD033"]
-"SUMMARY.md" = ["MD025"]
+[MD001]
+front-matter-title = true
 
-# Lists
+[MD003]
+style = "atx"  # GitHub prefers # style headings
+
+[MD004]
+style = "dash"  # GitHub commonly uses - for unordered lists
+
 [MD007]
-indent = 2
+indent = 2  # GitHub Docs recommends two spaces for indentation [[14]]
 start-indent = 2
 start-indented = false
 style = "text-aligned"
 
-# Line length + wrapping
-[MD013]
+[MD009]
+br-spaces = 2
+list-item-empty-lines = false
+strict = false
+
+[MD010]
+spaces-per-tab = 4  # GitHub renders tabs as 4 spaces
+
+[MD012]
+maximum = 1
+
+[MD013]  # Line length is important for GitHub readability
 code-blocks = true
-line-length = 100
-reflow = true
-tables = false      # IMPORTANT: prevents table headers from being merged/inlined
+headings = true
+length-mode = "visual"
+line-length = 80  # GitHub convention follows 80-character line limit [[11]]
 paragraphs = true
+reflow = true  # Enable reflow for better GitHub rendering
+reflow-mode = "github"
+strict = false
+tables = true  # Enable table linting - critical for GitHub docs
 
-# Duplicate headers
+[MD014]
+show-output = false  # GitHub renders command output clearly
+
+[MD022]
+allowed-at-start = true
+lines-above = 1
+lines-below = 1
+
 [MD024]
-allow-different-nesting = true
+allow-different-nesting = true  # GitHub allows nested sections
+siblings-only = false
 
-# Multiple H1 handling
 [MD025]
 allow-document-sections = true
 allow-with-separators = true
+front-matter-title = "title"
+level = 1
 
-# Table formatting — disable aggressive rewrites
+[MD026]
+punctuation = ".,;:!"  # Standard for GitHub docs
+
+[MD029]
+style = "one"  # GitHub prefers consistent numbering style
+
+[MD030]
+ol-multi = 1
+ol-single = 1
+ul-multi = 1
+ul-single = 1
+
+[MD031]
+list-items = true
+
+[MD032]
+allow-lazy-continuation = true
+
+[MD033]
+allowed-elements = ["details", "summary", "kbd"]  # Allow GitHub-specific HTML
+
+[MD035]
+style = "---"  # GitHub standard horizontal rule style
+
+[MD036]
+punctuation = ".,;:!?"
+
+[MD041]
+front-matter-title = "title"
+front-matter-title-pattern = ""
+level = 1
+
+[MD043]
+headings = []
+match-case = false
+
+[MD044]
+code-blocks = true  # Enable for technical GitHub docs
+html-comments = true
+html-elements = true
+names = []  # Add project-specific terms as needed
+
+[MD045]
+placeholder-text = "TODO: Add image description"
+
+[MD046]
+style = "fenced"  # GitHub prefers triple-backtick code blocks [[24]]
+
+[MD048]
+style = "backtick"  # Standard for GitHub code spans
+
+[MD050]
+style = "asterisk"  # GitHub commonly uses * for emphasis
+
+[MD051]
+anchor-style = "github"  # Use GitHub's anchor generation style
+
+[MD054]
+autolink = true
+collapsed = true
+full = true
+inline = true
+shortcut = false  # Discourage shortcuts for clarity
+url-inline = true
+
+[MD055]
+style = "pipe"  # GitHub tables use pipe syntax
+
+[MD058]
+minimum-after = 1
+minimum-before = 1
+
+[MD059]
+prohibited-texts = ["click here", "here", "link"]  # Common GitHub anti-patterns
+
+# Disable rules not relevant to GitHub workflow
 [MD060]
 enabled = false
+
+[MD061]
+enabled = false  # GitHub doesn't enforce term case sensitivity
+
+[MD063]
+enabled = false  # Title case enforcement varies by project
