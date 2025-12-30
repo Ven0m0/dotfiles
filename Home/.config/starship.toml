@@ -113,7 +113,7 @@ detect_folders = [".bun"]
 disabled = true
 
 [status]
-disabled = false
+disabled = true
 symbol = "❌ "
 success_symbol = "✅ "
 not_executable_symbol = "🚫 "
@@ -135,7 +135,6 @@ style = "cyan"
 bash_indicator = " bsh"
 fish_indicator = " fsh"
 zsh_indicator = " zsh"
-ion_indicator = " ion"
 unknown_indicator = ""
 
 [shlvl]
@@ -181,7 +180,10 @@ default = 'unknown level'
 disabled = false
 python_binary = 'python3'
 detect_extensions = []
+detect_files = []
 pyenv_version_name = false
+symbol = ''
+format = '[$virtualenv]($style)'
 
 [package]
 disabled = true
