@@ -336,5 +336,5 @@ bleopt internal_suppress_bash_output=1
 ## Prompt
 
 # starship.rs/advanced-config
-# bleopt prompt_ps1_final='$(starship module character)'
-# bleopt prompt_rps1_final='$(starship module memory_usage)'
+bleopt prompt_ps1_final='$(starship module character)'
+bleopt prompt_rps1_final='$(starship module time)'
