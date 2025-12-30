@@ -12,14 +12,14 @@ commands:
 
 # Enable/disable automations
 automations:
-    addReadyForReview: true
-    addApprovedLabel: true
-    addChangesRequestedLabel: true
-    addMergedLabel: true
-    requestMoreInfo: true
-    addLabelsOnClose: true
-    welcomeContributor: true
-    welcomeIssue: true
+    addReadyForReview: false
+    addApprovedLabel: false
+    addChangesRequestedLabel: false
+    addMergedLabel: false
+    requestMoreInfo: false
+    addLabelsOnClose: false
+    welcomeContributor: false
+    welcomeIssue: false
 
 # Configure labels
 labels:
