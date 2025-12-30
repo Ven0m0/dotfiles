@@ -1,16 +1,32 @@
 "$schema" = "https://starship.rs/config-schema.json"
+
 format = """
-$username$hostname\
+$hostname$username\
 $directory\
 $git_branch$git_status\
 $localip\
 $shell$shlvl\
-${custom.yazi_level}\
+$env_var\
+${env_var.YAZI_LEVEL}\
 $time\
 $sudo\
+$python\
 $status\
 $character
 """
+
+#palette = "oxocarbon"
+
+# Oxocarbon-inspired palette
+[palettes.oxocarbon]
+overlay = '#262626'
+love = '#fa4d56'
+gold = '#d2a106'
+rose = '#ff7eb6'
+pine = '#78a9ff'
+foam = '#08bdba'
+iris = '#be95ff'
+
 right_format = "${custom.mommy}"
 scan_timeout = 30
 command_timeout = 100
@@ -76,10 +92,6 @@ diverged = "⇕⇡${ahead_count}"
 behind = "⇣${count}"
 modified = "!${count}"
 untracked = "?${count}"
-
-[package]
-disabled = true
-format = "via $version(208 bold)"
 
 [bun]
 disabled = true
@@ -157,12 +169,27 @@ disabled = false
 style = "red"
 command = "mommy -1 -s $status"
 
+[env_var.YAZI_LEVEL]
+variable = 'YAZI_LEVEL'
+default = 'unknown level'
+
 [custom.yazi_level]
 disabled = false
 description = "Indicate the shell was launched by `yazi`"
 variable = "YAZI_LEVEL"
 symbol = "🦆"
 format = "[ $symbol ]($style)"
+
+[python]
+disabled = false
+symbol = '👾 '
+python_binary = 'python3'
+detect_extensions = []
+detect_files = ['.python-version', 'Pipfile', '__init__.py', 'pyproject.toml', 'requirements.txt', 'setup.py']
+pyenv_version_name = false
+
+[package]
+disabled = true
 
 [aws]
 disabled = true
@@ -213,9 +240,6 @@ disabled = true
 disabled = true
 
 [php]
-disabled = true
-
-[python]
 disabled = true
 
 [ruby]
