@@ -6,10 +6,8 @@ $username\
 $directory\
 $git_branch\
 $git_status\
-$localip\
-$shell$shlvl\
-$env_var\
-${env_var.YAZI_LEVEL}\
+$shell\
+$shlvl\
 $time\
 $sudo\
 $python\
@@ -20,7 +18,7 @@ $character
 """
 
 # A minimal right prompt
-right_format = """$character"""
+right_format = """${env_var.YAZI_LEVEL}"""
 continuation_prompt = '>> '
 
 scan_timeout = 30
@@ -54,12 +52,6 @@ truncation_length = 3
 truncation_symbol = "…/"
 home_symbol = "~"
 format = "[$path]($style)[$read_only]($read_only_style)"
-
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
 
 [username]
 disabled = false
