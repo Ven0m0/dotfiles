@@ -24,8 +24,7 @@ OPTIMIZE_LAUNCH=1
 # ========================================
 # Programming Languages
 # ========================================
-PYTHONOPTIMIZE=2
-PYTHON_JIT=1
+PYTHONOPTIMIZE=1
 PYTHON_LEAVE_PIP=1
 PYENV_VIRTUALENV_DISABLE_PROMPT=1
 RUST_LOG=off
