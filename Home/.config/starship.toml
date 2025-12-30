@@ -15,6 +15,9 @@ $status\
 $character
 """
 
+# A minimal right prompt
+right_format = """$character"""
+
 #palette = "oxocarbon"
 
 # Oxocarbon-inspired palette
