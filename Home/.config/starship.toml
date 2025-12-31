@@ -1,37 +1,66 @@
 "$schema" = "https://starship.rs/config-schema.json"
 
-# Core Configuration
-add_newline = false
-command_timeout = 100
-continuation_prompt = '>> '
-follow_symlinks = true
-scan_timeout = 30
-right_format = "${custom.mommy}"
-
 format = """
 $hostname\
 $username\
 $directory\
+${custom.git_repo}\
 $shell\
 $shlvl\
-$cmd_duration\
-$line_break\
 $python\
-$character"""
+$cmd_duration\
+${custom.mommy}\
+$character
+"""
+right_format = "${env_var.YAZI_LEVEL}"
+continuation_prompt = '>> '
 
-# Module Configuration
+scan_timeout = 10
+command_timeout = 100
+add_newline = false
+follow_symlinks = true
+palette = "catppuccin_mocha"
+
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"
+
 [character]
 success_symbol = "[>](bold green) "
 error_symbol = "[x](bold red) "
 
 [directory]
-style = "purple"
-format = "[$path]($style)[$read_only]($read_only_style) "
+style = "bold mauve"
 truncate_to_repo = true
+fish_style_pwd_dir_length = 3
 truncation_length = 3
 truncation_symbol = "…/"
 home_symbol = "~"
-fish_style_pwd_dir_length = 3
+format = "[$path]($style)[$read_only]($read_only_style)"
 
 [username]
 disabled = false
@@ -42,32 +71,40 @@ format = "[$user]($style)@"
 aliases = { "ven0m0" = "lucy" }
 
 [hostname]
-disabled = false
 ssh_only = true
+disabled = false
 trim_at = "."
 style = "bold yellow"
 
 [localip]
-disabled = false
 ssh_only = true
+disabled = false
+
+[sudo]
+disabled = true
 
 [git_branch]
-disabled = false
-truncation_length = 4
-truncation_symbol = ""
-style = "bold mauve"
+disabled = true
 
 [git_status]
+disabled = true
+
+[custom.git_repo]
 disabled = false
-ignore_submodules = true
-style = "bold red"
-format = '([\[$all_status$ahead_behind\]]($style) )'
-ahead = "⇡${count}"
-diverged = "⇕⇡${ahead_count}"
-behind = "⇣${count}"
-modified = "!${count}"
-untracked = "?${count}"
-renamed = "​"
+command = '''
+git rev-parse --is-inside-work-tree &>/dev/null && {
+  name=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null)
+  [ -z "$name" ] && exit 0
+  if git status -sb 2>/dev/null | grep -q '\[behind'; then
+    printf '\033[1;31m%s\033[0m' "$name"
+  else
+    printf '\033[1;32m%s\033[0m' "$name"
+  fi
+}
+'''
+when = "git rev-parse --is-inside-work-tree"
+format = "$output "
+description = "Git repo name (green=synced, red=behind)"
 
 [shell]
 disabled = false
@@ -80,8 +117,8 @@ unknown_indicator = ""
 
 [shlvl]
 disabled = false
-threshold = 2
 format = "${shlvl}($style)"
+threshold = 2
 style = "bold sapphire"
 
 [cmd_duration]
@@ -106,27 +143,36 @@ style = "bold red"
 threshold = 50
 style = "bold yellow"
 
+[custom.mommy]
+disabled = false
+style = "pink"
+command = "mommy -1 -s $status"
+when = "command -v mommy"
+
+[env_var.YAZI_LEVEL]
+variable = 'YAZI_LEVEL'
+default = ''
+
 [python]
 disabled = false
 python_binary = 'python3'
-# Perf: Only show if VIRTUAL_ENV is set (no file scanning)
 detect_extensions = []
 detect_files = []
 symbol = ''
 format = '[$virtualenv]($style)'
 style = "bold yellow"
 
-# Custom Modules
-[custom.mommy]
-disabled = false
-command = "mommy -1 -s $status"
-when = "command -v mommy"
-style = "pink"
-
-# Disabled Modules (Compacted)
-[aws]
-disabled = true
 [bun]
+disabled = true
+[mise]
+disabled = true
+[status]
+disabled = true
+[memory_usage]
+disabled = true
+[package]
+disabled = true
+[aws]
 disabled = true
 [cmake]
 disabled = true
@@ -150,19 +196,11 @@ disabled = true
 disabled = true
 [julia]
 disabled = true
-[lua]
-disabled = true
-[memory_usage]
-disabled = true
-[mise]
-disabled = true
 [nim]
 disabled = true
 [nix_shell]
 disabled = true
 [nodejs]
-disabled = true
-[package]
 disabled = true
 [perl]
 disabled = true
@@ -174,9 +212,7 @@ disabled = true
 disabled = true
 [scala]
 disabled = true
-[status]
-disabled = true
-[sudo]
-disabled = true
 [swift]
+disabled = true
+[lua]
 disabled = true
