@@ -3,13 +3,13 @@
 set -euo pipefail
 shopt -s nullglob
 IFS=$'\n\t'
-has(){ command -v -- "$1" &>/dev/null; }
 
+has(){ command -v -- "$1" &>/dev/null; }
 readonly ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 readonly BACKUP="$HOME/.zsh_backup_$(date +%s)"
 
 main(){
-  printf '=== Fish-Like Zsh Deployment ===\n\n'
+  printf '=== Zsh Fish-Like Deployment ===\n\n'
   # Backup
   if [[ -d $ZDOTDIR ]] || [[ -f $HOME/.zshrc ]]; then
     mkdir -p "$BACKUP"
@@ -18,13 +18,17 @@ main(){
     printf 'Backed up to: %s\n' "$BACKUP"
   fi
   # Deploy
-  mkdir -p "$ZDOTDIR"
+  mkdir -p "$ZDOTDIR/completions"
   cp zshrc.zsh "$ZDOTDIR/.zshrc"
   cp zimrc.zsh "$ZDOTDIR/.zimrc"
   ln -sf "$ZDOTDIR/.zshrc" "$HOME/.zshrc"
-  # Verify zsh
+  # Verify
   has zsh || { printf '\n⚠ Install zsh first\n'; exit 1; }
-  printf '\n✅ Deployed\nRun: exec zsh\n'
+  printf '\n✅ Deployed\n'
+  printf 'Commands:\n'
+  printf '  exec zsh      - Start zsh\n'
+  printf '  zimupdate     - Update plugins\n'
+  printf '  reload        - Reload config\n\n'
   [[ -t 0 ]] && read -rp 'Start now? [Y/n] ' r && [[ ${r,,} =~ ^(y|)$ ]] && exec zsh
 }
 main "$@"
