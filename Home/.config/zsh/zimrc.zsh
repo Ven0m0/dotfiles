@@ -1,48 +1,37 @@
 # ============================================================================
-# Zimfw Configuration - Optimized Plugin Loading
+# Zimfw Config - Minimal High-Value Plugins
 # ============================================================================
 
-# ---[ Core Modules ]---
+# Core modules
 zmodule environment
 zmodule input
 zmodule utility
+zmodule history
 
-# ---[ Completion System ]---
+# Completion
 zmodule zsh-users/zsh-completions --fpath src
 zmodule completion
 
-# ---[ Command History ]---
-zmodule history
-
-# ---[ Prompt ]---
+# Prompt (P10k)
 zmodule romkatv/powerlevel10k --use degit
 
-# ---[ Syntax & Suggestions ]---
+# Fish-like features
 zmodule zdharma-continuum/fast-syntax-highlighting
 zmodule zsh-users/zsh-autosuggestions
-zmodule marlonrichert/zsh-autocomplete
+zmodule zsh-users/zsh-history-substring-search
 
-# ---[ Auto-pairing ]---
+# Auto-pairing brackets
 zmodule hlissner/zsh-autopair
 
-# ---[ FZF Integration ]---
+# FZF tab completion
 zmodule lincheney/fzf-tab-completion --source zsh/fzf-zsh-completion.zsh
 
-# ---[ Utility Plugins ]---
-zmodule MichaelAquilina/zsh-you-should-use
-zmodule QuarticCat/zsh-smartcache
+# Deferred loading (performance)
 zmodule romkatv/zsh-defer
-zmodule qoomon/zsh-lazyload
 
-# ---[ OMZ Plugins (selective) ]---
+# Git integration (OMZ has good git aliases)
 zmodule ohmyzsh/ohmyzsh --root plugins/git
 zmodule ohmyzsh/ohmyzsh --root plugins/sudo
-zmodule ohmyzsh/ohmyzsh --root plugins/archlinux
-zmodule ohmyzsh/ohmyzsh --root plugins/debian
-zmodule ohmyzsh/ohmyzsh --root plugins/docker
-zmodule ohmyzsh/ohmyzsh --root plugins/docker-compose
-zmodule ohmyzsh/ohmyzsh --root plugins/ssh-agent
-zmodule ohmyzsh/ohmyzsh --root plugins/command-not-found
 
-# ---[ History Navigation ]---
-zmodule zsh-users/zsh-history-substring-search
+# System-specific
+zmodule ohmyzsh/ohmyzsh --root plugins/archlinux
