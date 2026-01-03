@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Usage: steam-opt %command%
+# Set this as launch option: /home/youruser/.local/bin/steam-opt %command%
+
+set -euo pipefail
+
+# --- Detect GPU ---
+GPU_VENDOR="amd"
+if lspci -mm | grep -qi "nvidia"; then GPU_VENDOR="nvidia"; fi
+
+# --- Common Flags ---
+# Enable GameMode
+CMD=("gamemoderun")
+
+# --- NVIDIA Specifics ---
+if [[ "$GPU_VENDOR" == "nvidia" ]]; then
+  export PROTON_ENABLE_NVAPI=1
+  export PROTON_HIDE_NVIDIA_GPU=0
+  export __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1
+fi
+
+# --- AMD Specifics (CachyOS) ---
+if [[ "$GPU_VENDOR" == "amd" ]]; then
+  # Force RADV graphics pipeline library (Stutter fix for UE5)
+  export RADV_PERFTEST=gpl
+  # Optimize VRAM allocations
+  export RADV_DEBUG=zerovram
+fi
+
+# --- Execute Game ---
+exec "${CMD[@]}" "$@"
