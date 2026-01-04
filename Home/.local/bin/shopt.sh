@@ -121,7 +121,7 @@ minify_enhanced(){
       ((NR <= 10)) && [[ $line =~ Copyright|License ]] && { printf '%s\n' "$line" >>"$out"; continue; }
       continue
     fi
-    line=$(sed -E 's/^[[:space:]]*function[[: space:]]+([a-zA-Z0-9_]+)[[:space:]]*\{/\1(){/g' <<<"$line")
+    line=$(sed -E 's/^[[:space:]]*function[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\{/\1(){/g' <<<"$line")
     local stripped
     stripped=$(sed -E 's/[[:space:]]+#[[:space:]]*[a-zA-Z0-9 ]*$//; s/^[[:space:]]+//; s/[[:space:]]+$//' <<<"$line")
     [[ -n $stripped ]] && printf '%s\n' "$stripped" >>"$out"
