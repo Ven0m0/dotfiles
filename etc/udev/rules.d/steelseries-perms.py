@@ -1,4 +1,4 @@
-#!/usr/bin/env python3 -OO
+#!/usr/bin/env python3
 """
 SteelSeries HID device permission setter for udev.
 Parses HID report descriptors to identify vendor/consumer devices.
