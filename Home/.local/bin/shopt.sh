@@ -102,7 +102,7 @@ preprocess_shell(){
       ((depth++))
       ((active == 1 && var != "$def")) && active=1 || active=0
     elif [[ $line =~ ^[[:space:]]*#else[[:space:]]*$ ]]; then
-      ((depth > 0)) && ((active = ! active))
+      ((depth > 0 && ${stack[-1]})) && ((active = ! active))
     elif [[ $line =~ ^[[:space:]]*#endif[[:space:]]*$ ]]; then
       ((depth > 0)) && { active="${stack[-1]}"; unset 'stack[-1]'; ((depth--)); }
     else
