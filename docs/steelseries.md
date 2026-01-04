@@ -8,7 +8,7 @@ paru -S --needed --noconfirm --skipreview base-devel hidapi evtest input-remappe
 
 ```bash
 sudo pacman -S --noconfirm --needed wine-mono winetricks cabextract
-export WINEPREFIX="$HOME/.wine"
+export WINEPREFIX="$HOME/.wine" WINEARCH=win64
 wine reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\winebus" /v "Enable SDL" /t REG_DWORD /d 0
 wine reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\winebus" /v "DisableHidraw" /t REG_DWORD /d 0
 cp "/usr/share/fonts/liberation/LiberationSans-Bold.ttf" "$WINEPREFIX/drive_c/windows/Fonts/arialbd.ttf"
@@ -21,7 +21,7 @@ or clean wine:
 
 ```bash
 sudo pacman -S --noconfirm --needed wine-mono winetricks cabextract
-export WINEPREFIX="$HOME/.wine-gg"
+export WINEPREFIX="$HOME/.wine-gg" WINEARCH=win64
 wineboot -u
 winetricks -q dotnet48 vcrun2019 corefonts
 wine reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\winebus" /v "Enable SDL" /t REG_DWORD /d 0
