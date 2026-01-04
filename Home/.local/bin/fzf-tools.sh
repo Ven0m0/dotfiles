@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
 set -euo pipefail; shopt -s nullglob globstar
-export LC_ALL=C; IFS=$'\n\t'
+export LC_ALL=C; IFS=$'\n\t' SHELL=/usr/bin/bash
+
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
 has(){ command -v -- "$1" &>/dev/null; }
 die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
 warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
 log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
+
 for f in sk fzf; do has "$f" && FZF="$f" && break; done
 [[ -n ${FZF:-} ]] || die "No fuzzy finder (fzf/sk) found"
 batcmd(){ has batcat && printf 'batcat' || has bat && printf 'bat' || printf 'cat'; }
