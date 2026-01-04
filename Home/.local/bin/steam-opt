@@ -27,5 +27,7 @@ if [[ "$GPU_VENDOR" == "amd" ]]; then
   export RADV_DEBUG=zerovram
 fi
 
+export DBUS_FATAL_WARNINGS=0
+
 # --- Execute Game ---
 exec "${CMD[@]}" "$@"
