@@ -96,7 +96,7 @@ preprocess_shell(){
       stack+=("$active")
       ((depth++))
       ((active == 1 && var == "$def")) && active=1 || active=0
-    elif [[ $line =~ ^[[:space:]]*#ifndef[[: space:]]+(.+)$ ]]; then
+    elif [[ $line =~ ^[[:space:]]*#ifndef[[:space:]]+(.+)$ ]]; then
       local var="${BASH_REMATCH[1]}"
       stack+=("$active")
       ((depth++))
