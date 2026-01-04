@@ -28,9 +28,7 @@ if type -q yazi >/dev/null 2>&1
     end
 end
 
-type -q ast-grep && ast-grep completions fish | source
-command -q cod && _evalcache cod init $fish_pid fish >/dev/null 2>&1
-command -q fixit && _evalcache fixit init fish
+type -q vivid && set -gx LS_COLORS "$(vivid generate dracula)"
 
 # x-cmd (command-line toolkit)
 # https://github.com/x-cmd/x-cmd
