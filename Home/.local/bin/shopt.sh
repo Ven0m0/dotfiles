@@ -104,7 +104,7 @@ preprocess_shell(){
     elif [[ $line =~ ^[[:space:]]*#else[[:space:]]*$ ]]; then
       ((depth > 0 && ${stack[-1]})) && ((active = ! active))
     elif [[ $line =~ ^[[:space:]]*#endif[[:space:]]*$ ]]; then
-      ((depth > 0)) && { active="${stack[-1]}"; unset 'stack[-1]'; ((depth--)); }
+      ((depth > 0)) && { active="${stack[-1]}"; stack=("${stack[@]:0:${#stack[@]}-1}"); ((depth--)); }
     else
       ((active == 1)) && printf '%s\n' "$line" >>"$out"
     fi
