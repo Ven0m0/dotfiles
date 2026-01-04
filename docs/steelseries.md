@@ -30,3 +30,5 @@ cp "/usr/share/fonts/liberation/LiberationSans-Regular.ttf" "$WINEPREFIX/drive_c
 winecfg
 GDK_BACKEND=x11 wine "$WINEPREFIX/drive_c/Program Files/SteelSeries/SteelSeries GG/SteelSeriesGG.exe"
 ```
+
+<https://gitlab.winehq.org/wine/wine/-/wikis/Useful-Registry-Keys>
