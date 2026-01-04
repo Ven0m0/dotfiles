@@ -117,7 +117,7 @@ minify_enhanced(){
   : >"$out"
   while IFS= read -r line; do
     [[ $line =~ ^#!  ]] && continue
-    if [[ $line =~ ^[[: space:]]*# ]]; then
+    if [[ $line =~ ^[[:space:]]*# ]]; then
       ((NR <= 10)) && [[ $line =~ Copyright|License ]] && { printf '%s\n' "$line" >>"$out"; continue; }
       continue
     fi
