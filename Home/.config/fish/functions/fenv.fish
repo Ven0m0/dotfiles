@@ -1,5 +1,5 @@
 function fenv -d ""
-    set -l LC_ALL=C; set -l lines; set -l max 0
+    set -lx LC_ALL C; set -l lines; set -l max 0
     for v in (printenv)
         set lines $lines $v
         set n (string split -m1 = $v)[1]
