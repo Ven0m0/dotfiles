@@ -1,3 +1,3 @@
 function fenv -d ""
-    env | column -ts '=' | fzf -1 -0 $FZF_CUSTOM_OPTIONS
+    printenv | sort | column -t -s '=' | fzf --layout=reverse-list --no-mouse --no-multi --cycle --inline-info --no-scrollbar +s --height=100% --tiebreak=begin,end -e
 end
