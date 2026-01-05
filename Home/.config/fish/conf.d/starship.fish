@@ -1,5 +1,5 @@
 status -i >/dev/null 2>&1 || return
-type -q starship || return
+command -qs starship || return
 function starship_transient_prompt_func
     starship module character
 end
