@@ -16,6 +16,9 @@ set -gx VIEWER $EDITOR
 set -gx GIT_EDITOR $EDITOR
 set -gx SYSTEMD_EDITOR $EDITOR
 set -gx PAGER bat
+abbr -a --position anywhere -- --help '--help | bat -plhelp'
+abbr -a --position anywhere -- -h '-h | bat -plhelp'
+set -gx GIT_PAGER delta
 set -gx LESSHISTFILE -
 set -gx BATPIPE color
 
@@ -85,12 +88,14 @@ function qcd
 end
 abbr -a qcd --position command --regex 'q+' --function qcd
 
+set -gx SUDO sudo-rs
 alias sudo='sudo-rs '
 alias sudo-rs='sudo-rs '
 alias doas='doas '
-alias mkdir='mkdir -pv '
+alias mkdir='mkdir -pv'
+alias rmdir='rm -rf --preserve-root'
 alias ed='$EDITOR '
 alias ping='ping -c 4'
 alias cls='clear'
 
-alias update='sudo rm /var/lib/pacman/db.lck; and paru -Syu --skipreview --noconfirm'
+alias update='sudo rm -f /var/lib/pacman/db.lck && paru -Syu --skipreview --noconfirm'
