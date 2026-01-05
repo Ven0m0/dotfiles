@@ -31,7 +31,7 @@ tmpfs /tmp tmpfs defaults,noatime,lazytime,huge=within_size,mode=1777 0 0
 # ========================================
 # High-performance 64-bit journaling filesystem
 # NVME:
-# UUID=<uuid> /mnt/data xfs defaults,noatime,lazytime,inode64,logbufs=8,logbsize=256k,allocsize=1m 0 0
+# UUID=<uuid> /mnt/data xfs defaults,noatime,lazytime,inode64,logbufs=8,logbsize=256k,noquota,allocsize=1m 0 0
 # SATA:
 # UUID=<uuid> /mnt/data xfs defaults,noatime,lazytime,inode64,logbufs=8 0 0
 
