@@ -2,10 +2,10 @@
   "security": {
     "auth": {
       "selectedType": "oauth-personal"
-    }
-  },
-  "privacy": {
-    "usageStatisticsEnabled": false
+    },
+    "enablePermanentToolApproval": false,
+    "blockGitExtensions": false,
+    "disableYoloMode": true
   },
   "general": {
     "previewFeatures": true,
@@ -13,81 +13,109 @@
       "enabled": true
     },
     "preferredEditor": "vscode",
-    "disableAutoUpdate": true
-  },
-  "output": {
-    "format": "text"
+    "disableAutoUpdate": false,
+    "enablePromptCompletion": true
   },
   "ui": {
-    "hideTips": true,
     "hideBanner": true,
-    "footer": {
-      "hideSandboxStatus": true
-    },
-    "showMemoryUsage": true,
-    "hideFooter": true
-  },
-  "context": {
-    "loadMemoryFromIncludeDirectories": true
-  },
-  "model": {
-    "skipNextSpeakerCheck": true
+    "hideTips": true,
+    "hideFooter": true,
+    "showMemoryUsage": true
   },
   "tools": {
-    "autoAccept": true
+    "shell": {
+      "showColor": true,
+      "pager": "bat",
+      "enableShellOutputEfficiency": true
+    },
+    "autoAccept": false,
+    "sandbox": true,
+    "useRipgrep": true,
+    "enableToolOutputTruncation": true,
+    "truncateToolOutputThreshold": 2500000,
+    "truncateToolOutputLines": 500,
+    "enableHooks": true
+  },
+  "model": {
+    "skipNextSpeakerCheck": false,
+    "name": "gemini-3-pro-preview"
+  },
+  "privacy": {
+    "usageStatisticsEnabled": false
+  },
+  "advanced": {
+    "autoConfigureMemory": true
+  },
+  "experimental": {
+    "enableAgents": true,
+    "extensionReloading": true,
+    "jitContext": true,
+    "skills": true,
+    "introspectionAgentSettings": {
+      "enabled": true
+    }
   },
   "mcpServers": {
-    "read-website-fast": {
-      "command": "bunx",
-      "args": ["-y", "@just-every/mcp-read-website-fast"]
+    "context7": {
+      "httpUrl": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}",
+        "Accept": "application/json, text/event-stream"
+      },
+      "trust": true
     },
-    "sequential-thinking": {
+    "copilot": {
       "command": "bunx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "args": [
+        "-y",
+        "@aykahshi/copilot-mcp-server",
+        "--prefer",
+        "gpt"
+      ],
+      "trust": true
     },
-    "fast-filesystem": {
-      "command": "bunx",
-      "args": ["-y", "fast-filesystem-mcp"]
-    },
-    "memory": {
-      "command": "bunx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"]
-    },
-    "mcp-server-commands": {
-      "command": "bunx",
-      "args": ["-y", "mcp-server-commands"]
+    "github": {
+      "httpUrl": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PAT}"
+      },
+      "trust": true
     },
     "think-tool": {
       "command": "bunx",
-      "args": ["-y", "think-tool-mcp"]
+      "args": [
+        "-y",
+        "think-tool-mcp"
+      ],
+      "trust": true
     },
-    "mcp-tasks": {
+    "sequential-thinking": {
       "command": "bunx",
-      "args": ["-y", "mcp-tasks"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "trust": true
     },
-    "Github": {
-      "url": "https://api.githubcopilot.com/mcp/",
-      "type": "http"
+    "mcp-server-commands": {
+      "command": "bunx",
+      "args": [
+        "-y",
+        "mcp-server-commands"
+      ],
+      "trust": true
     },
-    "promptboost": {
-      "url": "https://promptboost.dev/mcp",
-      "type": "http"
+    "read-website-fast": {
+      "command": "bunx",
+      "args": [
+        "-y",
+        "@just-every/mcp-read-website-fast"
+      ],
+      "trust": true
     },
     "fetch": {
-      "url": "https://remote.mcpservers.org/fetch/mcp",
-      "type": "http"
-    },
-    "playwright": {
-      "url": "https://api.mcphub.com/mcp/executeautomation-mcp-playwright",
-      "type": "http"
-    },
-    "sequential": {
-      "url": "https://remote.mcpservers.org/sequentialthinking/mcp",
-      "type": "http"
-    },
-    "basic-memory": {
-      "url": "https://api.mcphub.com/mcp/basicmachines-co-basic-memory",
-      "type": "http"
+      "httpUrl": "https://remote.mcpservers.org/fetch/mcp",
+      "trust": true
     }
   }
 }
