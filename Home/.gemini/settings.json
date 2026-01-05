@@ -3,7 +3,7 @@
     "auth": {
       "selectedType": "oauth-personal"
     },
-    "enablePermanentToolApproval": false,
+    "enablePermanentToolApproval": true,
     "blockGitExtensions": false,
     "disableYoloMode": true
   },
@@ -28,7 +28,7 @@
       "pager": "bat",
       "enableShellOutputEfficiency": true
     },
-    "autoAccept": false,
+    "autoAccept": true,
     "sandbox": true,
     "useRipgrep": true,
     "enableToolOutputTruncation": true,
@@ -42,9 +42,6 @@
   },
   "privacy": {
     "usageStatisticsEnabled": false
-  },
-  "advanced": {
-    "autoConfigureMemory": true
   },
   "experimental": {
     "enableAgents": true,
