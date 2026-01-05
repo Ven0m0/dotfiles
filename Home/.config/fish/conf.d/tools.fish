@@ -3,7 +3,7 @@ status -i >/dev/null 2>&1 || return
 # ─── Tool Initialization ─────────────
 
 for tool in batman batpipe pay-respects starship
-    if command -q $tool >/dev/null 2>&1
+    if command -qs $tool >/dev/null 2>&1
         switch $tool
             case batman
                 _evalcache batman --export-env >/dev/null 2>&1
@@ -11,13 +11,11 @@ for tool in batman batpipe pay-respects starship
                 _evalcache batpipe >/dev/null 2>&1
             case pay-respects
                 _evalcache pay-respects fish --alias >/dev/null 2>&1
-            case starship
-                _evalcache starship init fish >/dev/null 2>&1 && enable_transience >/dev/null 2>&1
         end
     end
 end
 
-if type -q yazi >/dev/null 2>&1
+if command -qs yazi >/dev/null 2>&1
     function y
         set tmp (mktemp -t "yazi-cwd.XXXXXX")
         yazi $argv --cwd-file="$tmp"
@@ -28,17 +26,13 @@ if type -q yazi >/dev/null 2>&1
     end
 end
 
-type -q vivid && set -gx LS_COLORS "$(vivid generate dracula)"
+command -qs vivid && set -gx LS_COLORS "$(vivid generate dracula)"
 
 # x-cmd (command-line toolkit)
 # https://github.com/x-cmd/x-cmd
 test -r "$HOME/.x-cmd.root/X.fish" && source "$HOME/.x-cmd.root/X.fish"
 
-if command -q starship
-    starship init fish | source >/dev/null 2>&1
-end
-
-if command -q mpatch
+if command -qs mpatch
     alias ptch='mpatch'
 else
     alias ptch='patch -Np1 <'
@@ -61,9 +55,3 @@ abbr -a pnpm bun
 if test -r ~/.venv/bin/activate.fish
     source "$HOME/.venv/bin/activate.fish"
 end
-if command -q vx
-    vx shell completions fish | source
-    vx shell init fish | source
-end
-# uv python update-shell
-# uv venv
