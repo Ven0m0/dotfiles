@@ -5,5 +5,5 @@ function clone-cd --argument url _destination
         cd $destination && git pull
         return
     end
-    git clone --depth=1 $url $destination && cd $destination
+    LC_ALL=C git clone --depth=1 --filter=blob:none $url $destination && cd $destination
 end
