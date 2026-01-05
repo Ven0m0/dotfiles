@@ -32,3 +32,13 @@ GDK_BACKEND=x11 wine "$WINEPREFIX/drive_c/Program Files/SteelSeries/SteelSeries 
 ```
 
 <https://gitlab.winehq.org/wine/wine/-/wikis/Useful-Registry-Keys>
+
+
+Misc WINE
+
+```bash
+wine reg ADD 'HKEY_CURRENT_USER\Software\Wine\X11 Driver' /v UseTakeFocus /d 'N' /f
+wine reg add "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Avalon.Graphics" /v DisableHWAcceleration /t REG_DWORD /d 1 /f
+```
+
+add as launch arguments: `--single-process --disable-gpu --disable-gpu-compositing --in-process-gpu`
