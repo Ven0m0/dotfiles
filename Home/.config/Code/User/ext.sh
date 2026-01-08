@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+cat extensions.txt | xargs -n 1 code --install-extension
