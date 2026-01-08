@@ -48,9 +48,9 @@ alias which="command -v"
 alias yay='paru'
 abbr -a pip "uv pip"
 abbr -a py python3
-abbr -a npm bun
-abbr -a npx bunx
-abbr -a pnpm bun
+alias npm bun
+alias npx bunx
+alias bun-ls "bun pm ls -g --depth=0"
 
 if test -r ~/.venv/bin/activate.fish
     source "$HOME/.venv/bin/activate.fish"
