@@ -57,7 +57,7 @@ _pj(){
 }
 # --- Node/Bun
 if has bun; then
-  alias npx=bunx npm=bun
+  alias npx=bunx npm=bun bun-ls="bun pm ls -g --depth=0"
   [[ -z $BUN_INSTALL ]] && export BUN_INSTALL="$HOME/.bun"
   prependpath "$BUN_INSTALL/bin"
   export ELECTRON_IS_DEV=0 ELECTRON_DISABLE_SECURITY_WARNINGS=true NODE_ENV=production
