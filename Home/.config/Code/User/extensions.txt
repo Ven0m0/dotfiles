@@ -76,4 +76,7 @@ the0807.uv-toolkit-0.1.7
 themebetter.jsminifyobfuscator-0.0.5
 timonwong.shellcheck-0.38.5-linux-x64
 truman.autocomplate-shell-0.1.1
-yzhang.markdown-all-in-one-3.6.3
+yzhang.markdown-all-in-one
+tamasfe.even-better-toml
+redhat.vscode-yaml
+ms-vscode-remote.vscode-remote-extensionpack
