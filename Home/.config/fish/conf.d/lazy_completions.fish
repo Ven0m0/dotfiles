@@ -1,38 +1,33 @@
-status -i >/dev/null 2>&1 || return
+#!/usr/bin/env fish
+status -i; or return
 
-# ─── Commands with disabled completions ───────────────────────────────────────
-set -l lazy_completion_cmds fisher procs rg
-
-for cmd in $lazy_completion_cmds
+# ─── Lazy Completions ────────────────────────────────────────────────────────
+set -l lazy_cmds fisher procs rg
+for cmd in $lazy_cmds
     set -l compfile "$__fish_config_dir/completions/$cmd.fish"
     set -l disabled "$compfile.disabled"
-    if test -f $compfile -a ! -f $disabled
-        mv $compfile $disabled
-    end
-    # Define stub function to load real completions on demand
-    set -l fnname "__lazy_${cmd}_completions"
-    functions -q $fnname; or function $fnname --description "lazy‑load $cmd completions"
+    test -f $compfile; and not test -f $disabled; and mv $compfile $disabled
+    set -l fn "__lazy_${cmd}_comp"
+    functions -q $fn; and continue
+    function $fn -V cmd -V disabled
         complete -c $cmd -e
-        source $disabled
-        functions -e $fnname
+        source $disabled 2>/dev/null
+        functions -e $fn
         commandline -f repaint
     end
-    complete -c $cmd -f -a "($fnname)"
+    complete -c $cmd -f -a "($fn)"
 end
 
-# ─── Lazy-load fzf on first call ──────────────────────────────────────────────
-function fzf --description "lazy-load fzf"
+# ─── Lazy FZF ────────────────────────────────────────────────────────────────
+function fzf
     functions -e fzf
     fzf --fish | source
-    commandline -f repaint
     fzf $argv
 end
 
-# https://github.com/iffse/pay-respects
-# ─── Lazy-load pay-respects on first use ──────────────────────────────────────
-function pay-respects --description "lazy-load pay-respects fish aliases"
+# ─── Lazy pay-respects ───────────────────────────────────────────────────────
+function pay-respects
     functions -e pay-respects
     pay-respects fish --alias | source
-    commandline -f repaint
     pay-respects $argv
 end
