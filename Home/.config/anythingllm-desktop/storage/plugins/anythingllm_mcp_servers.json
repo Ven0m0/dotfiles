@@ -1,0 +1,23 @@
+{
+  "mcpServers":  {
+    "github-copilot":  {
+      "type":  "sse",
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": {
+        "Authorization": "Bearer $GITHUB_TOKEN"
+      }
+    },
+    "think-tool":  {
+      "command": "npx",
+      "args": ["-y", "think-tool-mcp@latest"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@latest"]
+    },
+    "read-website-fast": {
+      "command":  "npx",
+      "args": ["-y", "@just-every/mcp-read-website-fast@latest"]
+    }
+  }
+}
