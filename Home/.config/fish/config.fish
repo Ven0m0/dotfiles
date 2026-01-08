@@ -20,7 +20,7 @@ end
 set -U __done_notification_urgency_level low
 set -gx GPG_TTY (tty)
 set -gx COLORTERM truecolor
-set -gx FZF_DEFAULT_COMMAND 'fd -tf -H --size +1k'
+set -gx FZF_DEFAULT_COMMAND 'fd -tf -H --size +1k --exclude .git'
 set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
 set -gx EDITOR micro
 set -gx SUDO_EDITOR micro
