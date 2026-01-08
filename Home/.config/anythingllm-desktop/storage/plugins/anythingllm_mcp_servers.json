@@ -1,7 +1,7 @@
 {
   "mcpServers":  {
     "github-copilot":  {
-      "type":  "sse",
+      "type":  "http",
       "url": "https://api.githubcopilot.com/mcp",
       "headers": {
         "Authorization": "Bearer $GITHUB_TOKEN"
