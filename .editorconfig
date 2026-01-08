@@ -11,6 +11,12 @@ tab_width = 2
 max_line_length = 120
 quote_type = double
 spelling_language = en
+shell_variant = auto
+
+[[shell],*.{sh,bash,zsh}]
+indent_style = space
+indent_size = 2
+tab_width = 2
 shell_variant = bash
 spaces_around_operators = true
 spaces_around_brackets = false
