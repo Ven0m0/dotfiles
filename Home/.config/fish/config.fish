@@ -1,7 +1,9 @@
 status -i >/dev/null 2>&1 || return
 
-if test -r /usr/share/cachyos-fish-config/cachyos-config.fish
-    source /usr/share/cachyos-fish-config/cachyos-config.fish >/dev/null 2>&1
+test -r /usr/share/cachyos-fish-config/cachyos-config.fish && source /usr/share/cachyos-fish-config/cachyos-config.fish >/dev/null 2>&1
+
+function fish_greeting
+    LC_CTYPE=C LC_COLLATE=C hyfetch -m 8bit
 end
 
 function init_tool
