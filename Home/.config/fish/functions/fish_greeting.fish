@@ -1,7 +1,7 @@
 function fish_greeting
     if command -q hyfetch
-        hyfetch
+        LC_CTYPE=C LC_COLLATE=C hyfetch -m 8bit
     else if command -q fastfetch
-        fastfetch
+        LC_CTYPE=C LC_COLLATE=C fastfetch --thread true --detect-version false 
     end
 end
