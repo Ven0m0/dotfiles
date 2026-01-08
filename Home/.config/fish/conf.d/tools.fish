@@ -1,19 +1,12 @@
 status -i >/dev/null 2>&1 || return
 
 # ─── Tool Initialization ─────────────
-
-for tool in batman batpipe pay-respects starship
-    if command -qs $tool >/dev/null 2>&1
-        switch $tool
-            case batman
-                _evalcache batman --export-env >/dev/null 2>&1
-            case batpipe
-                _evalcache batpipe >/dev/null 2>&1
-            case pay-respects
-                _evalcache pay-respects fish --alias >/dev/null 2>&1
-        end
-    end
-end
+command -qs pay-respects >/dev/null 2>&1 && _evalcache pay-respects fish --alias >/dev/null 2>&1
+set -gx MANPAGER "env BATMAN_IS_BEING_MANPAGER=yes bash /usr/bin/batman"
+set -gx MANROFFOPT "-c"
+set -gx LESSOPEN "|/usr/bin/batpipe %s";
+set -gx LESS "$LESS -R";
+set -e LESSCLOSE
 
 if command -qs yazi >/dev/null 2>&1
     function y
@@ -46,7 +39,7 @@ end
 
 alias which="command -v"
 alias yay='paru'
-abbr -a pip "uv pip"
+alias pip="python3 -m pip"
 abbr -a py python3
 alias npm bun
 alias npx bunx
