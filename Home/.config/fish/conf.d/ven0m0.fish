@@ -94,7 +94,6 @@ alias sudo-rs='sudo-rs '
 alias doas='doas '
 alias mkdir='mkdir -pv'
 alias rmdir='rm -rf --preserve-root'
-alias ed='$EDITOR '
 alias ping='ping -c 4'
 alias cls='clear'
 
