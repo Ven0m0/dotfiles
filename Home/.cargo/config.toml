@@ -1,12 +1,10 @@
 [unstable]
-unstable-options=true
-git=true
-gitoxide=true
-avoid-dev-deps=true
-no-embed-metadata=true
-trim-paths=true
-parallel-tests=true
-doctest=false
+unstable-options = true
+git = true
+gitoxide = true
+avoid-dev-deps = true
+no-embed-metadata = true
+trim-paths = true
 #build-std = ["std", "panic_abort"]
 #build-std-features = ["panic_immediate_abort"]
 
@@ -16,21 +14,15 @@ i ="install"
 rr="run -r"
 
 [build]
-rustc-wrapper="sccache"
-incremental=false
-rustflags=[
-  "-C",
-  "target-cpu=native",
-  "-C",
-  "link-arg=-fuse-ld=lld",
-]
+rustc-wrapper = "sccache"
+incremental = false
+rustflags = ["-Ctarget-cpu=native", "-Clink-arg=-fuse-ld=lld", "-Zthreads=16"]
 
 [env]
 RUSTC_BOOTSTRAP="1"
 RUST_PANIC_STRATEGY="abort"
 RUST_LIB_BACKTRACE="0"
 RUSTC_LOG="off"
-CMAKE_BUILD_TYPE="Release"
 MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
 _RJEM_MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
 GITOXIDE_CORE_MULTIPACKINDEX="true"
@@ -54,43 +46,40 @@ multiplexing=true
 low-speed-limit=10
 
 [net]
-git-fetch-with-cli=true
+git-fetch-with-cli=false
 retry=2
 
 [resolver]
 incompatible-rust-versions="allow"
 
 [profile.release]
-opt-level=3
-codegen-units=1
-lto="fat"
-panic="abort"
-strip= true
-debug=false
-debug-assertions=false
-overflow-checks=false
-rpath=false
+opt-level = 3
+codegen-units =1
+lto = true
+strip = true
+panic = "abort"
+debug = 0
+debug-assertions = false
+overflow-checks = false
+rpath = false
 
 [profile.dev]
-opt-level=1
-lto=false
-codegen-units=16
-debug=false
+opt-level=0
+codegen-units=256
+incremental=true
+debug = 0
+split-debuginfo = "packed"
 
 [profile.release.build-override]
 inherits="release"
-opt-level=1
+opt-level=0
 codegen-units=256
 incremental=true
+debug = 0
 
 [target.x86_64-unknown-linux-gnu]
 linker="clang"
-rustflags=[
-  "-C",
-  "target-cpu=native",
-  "-C",
-  "link-arg=-fuse-ld=lld",
-]
+rustflags = ["-Ctarget-cpu=native", "-Clink-arg=-fuse-ld=lld", "-Zthreads=16"]
 
 [term]
 color="auto"
