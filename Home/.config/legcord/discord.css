@@ -1,0 +1,211 @@
+/**
+ * @name Darker DiscordNight
+ * @version 0.9.5.8
+ * @description personal overrides for KillYoy's theme
+ * @source https://github.com/twhlynch/dotfiles/other/discord
+ * @updateUrl https://raw.githubusercontent.com/twhlynch/dotfiles/master/other/discord/discord.css
+ * @website 
+ * @donate 
+ * @patreon 
+ * @invite 
+ * @author twhlynch
+ * @authorId 
+ * @authorLink 
+*/
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+:root {
+	--Channel-Invite-Edit-Buttons: flex;
+
+	--Chatbox-Gift-Button: flex;
+	--Chatbox-GIF-Button: flex;
+	--Chatbox-Stickers-Button: flex;
+
+	--Chat-Super-Reaction-Button: flex;
+
+	--Context-Menu-Emoji-Toolbar: flex;
+
+	--Super-Reaction-Animations: flex;
+
+	--Friends-List-Searchbar: flex;
+
+	--font-primary: "Inter", "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+:root,
+.theme-dark {
+	--bd-blue: #0e54b0;
+	--bd-blue-hover: #0049a8;
+	--bd-blue-active: #00327e;
+
+	--primary-600: #050505;
+	--primary-645: #101010;
+	--primary-630: #141414;
+	--primary-700: #191919;
+
+	--primary-dark-600-rgb: 7, 7, 7;
+	--primary-dark-660-rgb: 11, 11, 11;
+
+	--background-primary: #050505;
+	--background-secondary: #101010;
+	--background-tertiary: #141414;
+	--bg-base-tertiary: #050505;
+
+	--activity-card-background: #101010;
+}
+
+/* fade out media until hover */
+div:has(> video:not(.media-engine-video)),
+div:has(> [data-safe-src]),
+[data-type="sticker"] {
+	&:not([aria-label="Media Viewer Modal"] *) {
+		opacity: 0.6;
+		&:hover {
+			opacity: 1;
+			transition: opacity 0.3s linear;
+		}
+	}
+}
+
+/* revamp message previews */
+[id^="message-accessories-"] > article > div > div:has([id^="message-accessories-"]) {
+	padding-block: 0 !important;
+
+	div > div > div > div > h3[aria-labelledby^="message-username-"] {
+		margin-top: 0 !important;
+	}
+}
+/* madness */
+[id^="message-accessories-"]:has(> article > div > div [id^="message-accessories-"]) {
+	display: flex !important;
+	flex-direction: row !important;
+	flex-wrap: wrap !important;
+	gap: 5px !important;
+
+	article {
+		max-height: 240px;
+		overflow-y: scroll;
+
+		*:not([class^="file_"] *) {
+			font-size: 96% !important;
+			line-height: 1.4 !important;
+		}
+		[class^="file_"] {
+			font-size: 120% !important;
+		}
+
+		video,
+		img,
+		[data-role="img"],
+		[class^="imageContent_"] {
+			max-width: 200px !important;
+			max-height: 150px !important;
+		}
+		> div > div {
+			padding: 0 !important;
+		}
+		div:has(> div > img[class^="avatar_"]) {
+			padding-left: calc(var(--custom-message-margin-left-content-cozy) * 0.8) !important;
+		}
+		img[class^="avatar_"] {
+			left: calc(var(--custom-message-margin-horizontal) / 2) !important;
+		}
+		[id^="message-content-"] {
+			max-width: 200px !important;
+		}
+		[class^="embedAuthor_"] {
+			> img,
+			> span > span > span:not(.channelMention) {
+				display: none;
+			}
+		}
+		.vc-platform-indicator {
+			display: none !important;
+		}
+		h3[aria-labelledby^="message-username-"] {
+			margin-bottom: 0 !important;
+		}
+		[id^="message-reactions-"] {
+			display: none !important;
+		}
+		[id^="message-accessories-"] {
+			max-width: 210px !important;
+		}
+	}
+	article div:has(video) {
+		width: fit-content !important;
+	}
+}
+
+/* background */
+main[class^="chatContent_"]::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 80% !important;
+	opacity: 0.15;
+	height: 100%;
+	background-image: url("https://raw.githubusercontent.com/twhlynch/halftones/refs/heads/main/example.svg");
+	background-size: contain;
+	background-position: bottom right;
+	pointer-events: none;
+	background-repeat: no-repeat;
+	mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+	-webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+}
+
+/* hide member list when small */
+@media screen and (max-width: 800px) {
+	div:has(> aside[class^="membersWrap_"]) {
+		display: none !important;
+	}
+}
+
+/* list outliner thing */
+[id^="message-content-"]:has(li > span:hover) {
+	overflow: visible !important;
+}
+[id^="message-content-"] li > span:hover {
+	position: relative !important;
+}
+[id^="message-content-"] li > span:hover::after {
+	position: absolute !important;
+	width: 100% !important;
+	height: 100% !important;
+	content: "" !important;
+	outline: 2px solid red !important;
+	border-radius: 12px !important;
+	border: 3px solid transparent !important;
+	top: -3px !important;
+	left: -3px !important;
+	pointer-events: none !important;
+}
+
+/* smaller errors */
+.vc-error-card {
+	padding: 3px !important;
+	display: flex;
+
+	h1,
+	p {
+		display: none;
+	}
+	code {
+		font-size: 7px !important;
+		line-height: 8px !important;
+	}
+	pre {
+		margin-top: 1px !important;
+		color: #bbb;
+	}
+}
+
+/* no bg color in calls */
+[class^="tileChild__"] > [class^="content__"] > [class^="background_"] {
+	background: none !important;
+}
+[class^="mask__"]:has(> div > [class*="contentWrapperBrandColorRemoval__"]) {
+	display: none !important;
+}
