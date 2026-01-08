@@ -1,3 +1,4 @@
+#!/usr/bin/env fish
 status -i; or return
 
 # ─── Core Environment ────────────────────────────────────────────────────────
