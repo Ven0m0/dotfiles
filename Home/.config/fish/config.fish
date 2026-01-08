@@ -31,7 +31,7 @@ alias sudo="sudo-rs "
 alias ed="$EDITOR "
 alias sued="sudo-rs $EDITOR "
 
-fish_add_path ~/bun/bin ~/.local/bin/ /usr/local/bin ~/bin /usr/lib/ccache/bin/ ~/.cargo/bin/
+fish_add_path ~/.bun/bin ~/.local/bin/ /usr/local/bin ~/bin /usr/lib/ccache/bin/ ~/.cargo/bin/
 
 # Tool Initializations
 init_tool fzf "fzf --fish"
