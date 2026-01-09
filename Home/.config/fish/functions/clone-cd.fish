@@ -1,9 +1,0 @@
-function clone-cd --argument url _destination
-    set destination (default $_destination (repo-from-url $url))
-    if file-exists $destination
-        echo 'Already cloned. Attempting pull...'
-        cd $destination && git pull
-        return
-    end
-    LC_ALL=C git clone --depth=1 --filter=blob:none $url $destination && cd $destination
-end
