@@ -513,3 +513,10 @@ Find and refactor duplicated code. Identify and suggest improvements to slow or 
 Analyze the dependencies for outdated packages, security vulnerabilities, or unnecessary bloat and apply changes.
 ```
 </details>
+<details>
+<summary><b>Short-aio</b></summary>
+   
+```markdown
+Find and refactor duplicated code. Identify and suggest improvements to slow or inefficient code. Find and fix any errors or bad practices aswell. Analyze the dependencies for outdated packages, security vulnerabilities, or unnecessary bloat and apply changes. Also identify and resolve straightforward tasks from in-code TODOs or the GitHub Issues Tab. Lastly format the files with the appropriate formatter (biome, ruff, shellcheck/shellharden, clippy)
+```
+</details>
