@@ -7,7 +7,6 @@ if type -q _evalcache
     function my_async_prompt
         _evalcache starship prompt
     end
-    set -g async_prompt_functions my_async_prompt
     _evalcache_async starship init fish
 else
     starship init fish | source

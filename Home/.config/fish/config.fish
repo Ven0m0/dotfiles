@@ -2,71 +2,15 @@
 status -i; or return
 
 # ─── Core Environment ────────────────────────────────────────────────────────
-set -gx XDG_CONFIG_HOME "$HOME/.config"
-set -gx XDG_CACHE_HOME "$HOME/.cache"
-set -gx XDG_DATA_HOME "$HOME/.local/share"
-set -gx XDG_STATE_HOME "$HOME/.local/state"
-
-set -gx EDITOR micro
-set -gx VISUAL $EDITOR
-set -gx VIEWER $EDITOR
-set -gx GIT_EDITOR $EDITOR
-set -gx SUDO_EDITOR $EDITOR
-set -gx SYSTEMD_EDITOR $EDITOR
-
-set -gx PAGER bat
-set -gx GIT_PAGER delta
-set -gx MANPAGER "env BATMAN_IS_BEING_MANPAGER=yes bash /usr/bin/batman"
-set -gx MANROFFOPT "-c"
-set -gx LESSOPEN "|/usr/bin/batpipe %s"
-set -gx LESS "$LESS -R"
-set -gx LESSHISTFILE -
-set -gx BATPIPE color
-set -e LESSCLOSE
-
 set -gx GPG_TTY (tty)
 set -gx COLORTERM truecolor
-set -gx _JAVA_OPTIONS '-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true'
-
-# ─── Wayland ─────────────────────────────────────────────────────────────────
-if test "$XDG_SESSION_TYPE" = wayland
-    set -gx WAYLAND 1
-    set -gx SDL_VIDEODRIVER wayland
-    set -gx QT_QPA_PLATFORM 'wayland;xcb'
-    set -gx QT_QPA_PLATFORMTHEME qt6ct
-    set -gx GDK_BACKEND 'wayland,x11'
-    set -gx MOZ_DBUS_REMOTE 1
-    set -gx MOZ_ENABLE_WAYLAND 1
-    set -gx MOZ_ENABLE_XINPUT2 1
-    set -gx _JAVA_AWT_WM_NONREPARENTING 1
-    set -gx BEMENU_BACKEND wayland
-    set -gx CLUTTER_BACKEND wayland
-    set -gx ECORE_EVAS_ENGINE wayland_egl
-    set -gx ELM_ENGINE wayland_egl
-    set -gx ELECTRON_OZONE_PLATFORM_HINT wayland
-end
 
 # ─── FZF ─────────────────────────────────────────────────────────────────────
 set -gx FZF_DEFAULT_COMMAND 'fd -tf -H --size +1k --exclude .git'
-set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
-set -Ux FZF_LEGACY_KEYBINDINGS 0
-set -gx SKIM_DEFAULT_COMMAND 'fd -tf -F --exclude .git; or rg --files; or find -O3 .'
-set -gx SKIM_DEFAULT_OPTIONS $FZF_DEFAULT_OPTS
-
-# ─── Fish Options ────────────────────────────────────────────────────────────
-set -U fish_prompt_pwd_dir_length 2
-set -U fish_term24bit 1
-set -U fish_autosuggestion_enabled 1
-set -U __fish_git_prompt_show_informative_status 0
-set -U __fish_git_prompt_showupstream none
-set -g __fish_git_prompt_show_informative_status 0
-
-# ─── Async Prompt ────────────────────────────────────────────────────────────
-set -U async_prompt_enable 1
-set -U async_prompt_functions fish_prompt
 
 # ─── Paths ───────────────────────────────────────────────────────────────────
 fish_add_path -g ~/.bun/bin ~/.local/bin /usr/local/bin ~/bin ~/.cargo/bin /usr/lib/ccache/bin
+test -d ~/.basher/bin; and fish_add_path -g ~/.basher/bin
 
 # ─── SSH Agent (cached) ──────────────────────────────────────────────────────
 set -gx SSH_AUTH_SOCK ~/.ssh/ssh-agent.sock
@@ -100,14 +44,9 @@ init_tool fzf "fzf --fish"
 init_tool starship "starship init fish" && enable_transience
 init_tool zoxide "zoxide init --cmd cd fish"
 init_tool mise "mise activate fish"
-init_tool vivid "set -gx LS_COLORS (vivid generate molokai)"
+init_tool vivid "set -gx LS_COLORS (vivid generate dracula)"
 init_tool pay-respects "pay-respects fish --alias"
-
-# ─── Basher ──────────────────────────────────────────────────────────────────
-if test -d ~/.basher
-    fish_add_path ~/.basher/bin
-    init_tool basher "basher init - fish"
-end
+test -d ~/.basher; and init_tool basher "basher init - fish"
 
 # ─── Python venv ─────────────────────────────────────────────────────────────
 test -r ~/.venv/bin/activate.fish; and source ~/.venv/bin/activate.fish

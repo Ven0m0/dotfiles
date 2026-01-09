@@ -1,10 +1,6 @@
 status -i >/dev/null 2>&1 || return
 # ─── Fish Setup ─────────────────────────
-set -U fish_prompt_pwd_dir_length 2
 set -g __fish_git_prompt_show_informative_status 0
-set -U __fish_git_prompt_showupstream none
-set -U fish_term24bit 1
-set -U fish_autosuggestion_enabled 1
 
 # ─── Keybinds ─────────────────────────
 functions -q toggle_sudo; and bind \cs toggle_sudo
@@ -19,14 +15,15 @@ set -gx PAGER bat
 abbr -a --position anywhere -- --help '--help | bat -plhelp'
 abbr -a --position anywhere -- -h '-h | bat -plhelp'
 set -gx GIT_PAGER delta
+set -gx MANPAGER "env BATMAN_IS_BEING_MANPAGER=yes bash /usr/bin/batman"
+set -gx MANROFFOPT "-c"
+set -gx LESSOPEN "|/usr/bin/batpipe %s"
+set -gx LESS "$LESS -R"
 set -gx LESSHISTFILE -
 set -gx BATPIPE color
+set -e LESSCLOSE
 
 # ─── Fuzzy Finders ───────────────────
-set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
-set -gx SKIM_DEFAULT_COMMAND 'fd -tf -F --exclude .git; or rg --files; or find -O3 .'
-set -gx SKIM_DEFAULT_OPTIONS $FZF_DEFAULT_OPTS
-set -Ux FZF_LEGACY_KEYBINDINGS 0
 _evalcache fzf --fish 2>/dev/null
 
 # ─── Fetch Command ────────────────────
@@ -50,25 +47,6 @@ end
 if test "$TERM" = xterm-ghostty -a -e "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
     source "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
 end
-
-## Enable Wayland support for different applications
-if test "$XDG_SESSION_TYPE" = "wayland"
-    set -gx WAYLAND 1
-    set -gx QT_QPA_PLATFORM 'wayland;xcb'
-    set -gx GDK_BACKEND 'wayland,x11'
-    set -gx MOZ_DBUS_REMOTE 1
-    set -gx MOZ_ENABLE_WAYLAND 1
-    set -gx _JAVA_AWT_WM_NONREPARENTING 1
-    set -gx BEMENU_BACKEND wayland
-    set -gx CLUTTER_BACKEND wayland
-    set -gx ECORE_EVAS_ENGINE wayland_egl
-    set -gx ELM_ENGINE wayland_egl
-    set -gx ELECTRON_OZONE_PLATFORM_HINT wayland
-end
-
-# Async prompt
-set -U async_prompt_functions fish_prompt # fish_right_prompt
-set -U async_prompt_enable 1
 
 # ─── Abbreviations & Aliases ─────────
 abbr -a mv mv -iv
