@@ -6,8 +6,7 @@
 --pager="less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups"
 --paging auto
 --strip-ansi auto
-#--style="changes,grid,header,snip"
---style="changes,grid,numbers,snip"
+--style="changes,grid,snip"
 --wrap auto
 --decorations auto
 --color auto
