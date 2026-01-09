@@ -1,57 +1,39 @@
-<? xml version="1.0" standalone="yes"?>
+<?xml version="1.0" standalone="yes"?>
 <driconf>
   <device>
-    <!-- Global Defaults:  Performance + Low Latency -->
+    <!-- Global Defaults: Performance + Low Latency -->
     <application name="Default">
       <!-- Disable VSync for minimum input lag -->
       <option name="vblank_mode" value="0" />
-      
-      <!-- Performance:  Disable triple buffering overhead -->
-      <option name="always_have_depth_buffer" value="false" />
-      
-      <!-- Threading: Enable parallel shader compilation (Mesa 20.1+) -->
+      <!-- Threading: Enable parallel GL command submission -->
       <option name="mesa_glthread" value="true" />
-      <option name="glthread_nop_check_framebuffer_status" value="true" />
-      
-      <!-- Texture optimizations -->
-      <option name="texture_cache_size" value="512" />
-      <option name="allow_large_textures" value="1" />
-      
-      <!-- Shader cache (reduce stutters) -->
+      <!-- Shader cache to reduce stutter -->
       <option name="shader_cache" value="true" />
-      
-      <!-- Quality: Force trilinear filtering -->
-      <option name="force_s3tc_enable" value="true" />
-      <option name="allow_compression" value="true" />
-      
-      <!-- AMD RADV specific -->
-      <option name="radv_zero_vram" value="false" />
-      <option name="radv_report_llvm9_version_string" value="false" />
-      
-      <!-- Intel ANV specific -->
-      <option name="bo_reuse" value="true" />
-      
-      <!-- Disable unnecessary checks -->
+      <!-- Disable driver throttling -->
       <option name="disable_throttling" value="true" />
+      <!-- Critical for DXVK/Wine color precision -->
+      <option name="allow_rgb10_configs" value="true" />
+      <!-- Adaptive sync off by default (enable per-app) -->
       <option name="adaptive_sync" value="false" />
     </application>
 
-    <!-- Steam Games:  Extra optimizations -->
+    <!-- Steam Games -->
     <application name="steam_app_*" executable="*">
       <option name="vblank_mode" value="0" />
       <option name="mesa_glthread" value="true" />
       <option name="adaptive_sync" value="true" />
-      <option name="radv_enable_mrt_output_nan_fixup" value="false" />
+      <option name="allow_rgb10_configs" value="true" />
     </application>
 
-    <!-- Proton/Wine: Compatibility + Performance -->
+    <!-- Proton/Wine -->
     <application name="wine" executable="wine-preloader">
       <option name="vblank_mode" value="0" />
       <option name="mesa_glthread" value="true" />
       <option name="force_compat_profile" value="false" />
+      <option name="allow_rgb10_configs" value="true" />
     </application>
 
-    <!-- Browsers: Smooth scrolling + compositing -->
+    <!-- Browsers -->
     <application name="firefox" executable="firefox">
       <option name="vblank_mode" value="1" />
       <option name="mesa_glthread" value="false" />
@@ -61,7 +43,7 @@
       <option name="mesa_glthread" value="false" />
     </application>
 
-    <!-- Emulators: Low latency critical -->
+    <!-- Emulators -->
     <application name="retroarch" executable="retroarch">
       <option name="vblank_mode" value="0" />
       <option name="adaptive_sync" value="true" />
@@ -71,7 +53,7 @@
       <option name="mesa_glthread" value="true" />
     </application>
 
-    <!-- Blender: Quality over speed -->
+    <!-- Blender -->
     <application name="blender" executable="blender">
       <option name="vblank_mode" value="1" />
       <option name="mesa_glthread" value="false" />
