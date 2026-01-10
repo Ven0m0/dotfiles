@@ -13,6 +13,11 @@ show_symlink = true
 scrolloff = 5
 mouse_events = ["click", "scroll"]
 title_format = "Yazi: {cwd}"
+tab_width    = 1
+border_symbol = "│"
+
+[flavor]
+dark = "catppuccin-frappe"
 
 [preview]
 wrap = "no"
