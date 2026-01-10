@@ -20,7 +20,7 @@ alias ssh='TERM=xterm-256color LC_ALL=C.UTF-8 command ssh'
 has wget2 && alias wget='wget2'
 has btm && alias top='btm'
 has duf && alias df='duf'
-has dust && alias du='dust'
+has dua && alias du='dua'
 has procs && alias ps='procs'
 killport(){ lsof -sTCP:LISTEN -i ":$1" -t | xargs -r kill -9; }
 killname(){
@@ -78,9 +78,34 @@ paci(){
   [[ $package ]] && read -rn1 -p "Install ${package}? [y/N]: " install
   [[ $install == "y" ]] && pac_install $package
 }
-yayi(){
+paci(){
   has paru && has fzf || return 1
   local package=$(paru --skipreview -Sl | awk '{print $2}' | fzf -m --prompt="Select AUR packages to install: " --preview "paru --skipreview -Si {} &>/dev/null" --preview-window 'top:75%' | tr "\n" " ")
   [[ $package ]] && read -rn1 -p "Install ${package}? [y/N]: " install
   [[ $install == "y" ]] && paru --skipreview -Si $package
 }
+
+alias g='git'
+alias gss='git status'
+alias ga='git add'
+alias gaa='git add .'
+alias gc='git commit -m'
+gcc(){ git add -A && git commit -m "${1:-misc}" && git push; }
+alias gp='git push'
+alias gl='git pull'
+alias gb='git branch'
+alias gundo='git reset --soft HEAD~1'
+alias gsize='git count-objects -vH'
+alias gfp='git push --force-with-lease'  # Safe force push
+
+alias ping='ping -c 10'
+alias ipa='ip -c a'
+alias ip6='ip -6 addr show'
+alias compress='tar -czf'
+alias decompress='tar -xzf'
+alias backup='rsync -avh --progress'
+alias cleanup='sudo pacman -Rns $(pacman -Qdtq)'
+
+alias xfscheck='sudo xfs_repair -n'
+alias xfsrepair='sudo xfs_repair'
+alias xfsforce='sudo xfs_repair -L'
