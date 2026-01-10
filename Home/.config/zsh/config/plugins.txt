@@ -1,6 +1,8 @@
-zsh-users/zsh-completions
 zdharma-continuum/fast-syntax-highlighting
+zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions
+zsh-users/zsh-history-substring-search
+zdharma-continuum/history-search-multi-word
 marlonrichert/zsh-autocomplete
 romkatv/powerlevel10k
 lincheney/fzf-tab-completion pick:zsh/fzf-zsh-completion.zsh
