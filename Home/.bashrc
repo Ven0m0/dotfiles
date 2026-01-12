@@ -42,6 +42,13 @@ ifsource /usr/share/doc/pkgfile/command-not-found.bash
 ifsource /usr/share/bash-preexec/bash-preexec.sh
 ifsource "${XDG_CONFIG_HOME}/bash/init.bash"
 
+# Flyctl
+FLYCTL_INSTALL="${HOME}/.fly"
+export FLYCTL_INSTALL PATH="${FLYCTL_INSTALL}/bin:$PATH"
+
+# x-cmd
+ifsource "${HOME}/.x-cmd.root/X"
+
 # Ble.sh integration
 [[ -r "/usr/share/blesh/ble.sh" ]] && source "/usr/share/blesh/ble.sh" --attach=none
 
