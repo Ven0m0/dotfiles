@@ -25,8 +25,9 @@ description: "Production Python: strict typing, security, performance"
 **Type Safety:**
 
 ```python
-from typing import Protocol
-from collections.abc import Callable, Iterator
+from typing import Protocol, TypeVar
+
+Entity = TypeVar("Entity")
 
 class Repository(Protocol):
   def get(self, id: str) -> Entity | None: ...
