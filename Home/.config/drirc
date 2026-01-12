@@ -1,19 +1,19 @@
 <?xml version="1.0" standalone="yes"?>
 <driconf>
-  <device>
-    <!-- Global Defaults: Performance + Low Latency -->
+  <device screen="0" driver="swrast">
     <application name="Default">
-      <!-- Disable VSync for minimum input lag -->
-      <option name="vblank_mode" value="0" />
-      <!-- Threading: Enable parallel GL command submission -->
-      <option name="mesa_glthread" value="true" />
-      <!-- Shader cache to reduce stutter -->
-      <option name="shader_cache" value="true" />
-      <!-- Disable driver throttling -->
-      <option name="disable_throttling" value="true" />
-      <!-- Critical for DXVK/Wine color precision -->
+      <option name="allow_compressed_fallback" value="false" />
       <option name="allow_rgb10_configs" value="true" />
-      <!-- Adaptive sync off by default (enable per-app) -->
+      <option name="allow_higher_compat_version" value="true" />
+      <option name="do_dce_before_clip_cull_analysis" value="true" />
+      <option name="mesa_glthread_driver" value="true" />
+      <option name="mesa_no_error" value="true" />
+      <option name="allow_glsl_120_subset_in_110" value="true" />
+      <option name="allow_glsl_relaxed_es" value="true" />
+      <option name="vblank_mode" value="0" />
+      <option name="mesa_glthread" value="true" />
+      <option name="shader_cache" value="true" />
+      <option name="disable_throttling" value="true" />
       <option name="adaptive_sync" value="false" />
     </application>
 
@@ -51,13 +51,6 @@
     <application name="dolphin-emu" executable="dolphin-emu">
       <option name="vblank_mode" value="0" />
       <option name="mesa_glthread" value="true" />
-    </application>
-
-    <!-- Blender -->
-    <application name="blender" executable="blender">
-      <option name="vblank_mode" value="1" />
-      <option name="mesa_glthread" value="false" />
-      <option name="allow_higher_compat_version" value="true" />
     </application>
   </device>
 </driconf>
