@@ -282,4 +282,6 @@ jqwrap(){
   else printf "neither jq nor jaq found in PATH\n" >&2; return 1; fi
 }
 
+xfs-opt(){ sudo fstrim -a; sudo xfs_scrub /; }
+
 # vim: set ft=bash ts=2 sw=2 et:
