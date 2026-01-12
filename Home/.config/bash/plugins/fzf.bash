@@ -4,7 +4,7 @@ has fzf || return
 has fd && export FZF_DEFAULT_COMMAND='fd -tf -HI -S +10k --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # Base options for all FZF instances
-export FZF_DEFAULT_OPTS='--height=~90% --layout=reverse-list --border --cycle --preview-window=wrap --inline-info -0 -1 --marker=*'
+export FZF_DEFAULT_OPTS='--height=~90% --layout=reverse-list --border --cycle --preview-window=wrap --inline-info -0 -1 --marker="*" --tiebreak=chunk,index'
 # Ctrl-T: File selection with preview
 has bat && export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS --preview 'bat -p --color=always -r :250 {}' --bind 'ctrl-/:change-preview-window(down|hidden|)'"
 # Ctrl-R: Command history search
@@ -18,6 +18,7 @@ fi
 # Source key bindings and completion
 ifsource /usr/share/fzf/key-bindings.bash
 ifsource /usr/share/fzf/completion.bash
+ifsource /usr/share/fzf-tab-completion/bash/fzf-bash-completion.sh
 # --- RGA integration
 if has rga && has fzf; then
   rga-fzf() {
