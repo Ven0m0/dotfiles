@@ -1,28 +1,57 @@
 ---
 applyTo: "**/*.py"
-description: "Python coding conventions and guidelines"
+description: "Production Python: strict typing, security, performance"
 ---
 
-# Python Conventions
+# Python Standards
 
-## Core
+## Toolchain
 
-- **Style**: PEP 8; 4-space indent; max 80 chars.
-- **Types**: Use `typing` (`List`, `Dict`, `Optional`); hints on all funcs.
-- **Doc**: PEP 257 docstrings (Args/Returns) immediately after def.
+- **Lint/Fmt**: `ruff check --fix && ruff format` (PEP 8, 4-space, 80 chars)
+- **Types**: `mypy --strict` (no `Any`; full annotations)
+- **Test**: `pytest -v --cov` (95%+ coverage, edge cases)
+- **Deps**: `uv sync && uv audit` (security checks)
 
-## Quality
+## Core Rules
 
-- **Funcs**: Small, atomic, descriptive names.
-- **Readability**: Priority #1; comment complex algos/decisions.
-- **Err**: Handle specific exceptions; no bare `except:`.
-- **Test**: Unit tests for crit paths; cover edge cases (empty/invalid/large).
+- **Style**: PEP 8, PEP 257 (docstrings), PEP 484 (type hints)
+- **Types**: Modern generics (`list[str]`); `Protocol` for interfaces; no `Any`
+- **Security**: Input validation, no hardcoded secrets, OWASP awareness
+- **Perf**: O(n) algorithms; `lru_cache` for expensive ops; generators for large data
+- **Arch**: SOLID principles, dependency injection, clean architecture
 
-## Example
+## Patterns
+
+**Type Safety:**
 
 ```python
-def calc_area(r: float) -> float:
-    """Calc circle area. Args: r(float). Ret: area(float)."""
-    import math
-    return math.pi * r ** 2
+from typing import Protocol
+from collections.abc import Callable, Iterator
+
+class Repository(Protocol):
+  def get(self, id: str) -> Entity | None: ...
+  def save(self, entity: Entity) -> None: ...
 ```
+
+**Performance:**
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=128)
+def expensive(n: int) -> int:
+  return sum(range(n))
+
+def stream_file(path: str) -> Iterator[str]:
+  with open(path) as f:
+    for line in f:
+      yield line.strip()
+```
+
+## Forbidden
+
+- Bare `except:` → catch specific exceptions
+- `Any` type → use concrete types or `Protocol`
+- Hardcoded secrets → use env vars
+- O(n²) loops → use sets/dicts for lookups
+- Global mutable state → use DI/parameters

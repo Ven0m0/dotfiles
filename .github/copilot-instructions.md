@@ -12,12 +12,9 @@ Result-first. Lists ≤7
 
 ## Bash Standards
 
-- **Native:** Arrays over string splits. `set -euo pipefail`.
-- **Idioms:** `[[ regex ]]`, `mapfile -t`, `local -n`, `printf`, `ret=$(fn)`.
-- **Ban:** `eval`, parsing `ls`, backticks, unneeded subshells.
-- **Safe:** Quote all vars. `"${var}"` not `$var`.
-- **Format:** 2-space indent. Short args (`-a` not `--all`).
-- **CI:** shfmt + shellcheck clean required.
+**Full standards**: `.github/instructions/bash.instructions.md`
+
+**Quick ref**: `set -euo pipefail` | Quote vars `"${var}"` | `[[ ]]` > `[ ]` | No `eval`/backticks | shfmt + shellcheck clean
 
 ## Toolchain Preference
 
