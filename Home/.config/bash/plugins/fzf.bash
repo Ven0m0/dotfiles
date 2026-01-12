@@ -19,6 +19,7 @@ fi
 ifsource /usr/share/fzf/key-bindings.bash
 ifsource /usr/share/fzf/completion.bash
 ifsource /usr/share/fzf-tab-completion/bash/fzf-bash-completion.sh
+bind -x '"\t": fzf_bash_completion'
 # --- RGA integration
 if has rga && has fzf; then
   rga-fzf() {
