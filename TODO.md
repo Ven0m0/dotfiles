@@ -38,11 +38,7 @@ echo "${PATH//:/$'\n'}"
 - surge.sh
 - render.com
 
-### Fix wine steelseries gg
+### Implement scripts from: [dusky](https://github.com/dusklinux/dusky)
 
-```bash
-wine reg add HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\WineBus /v Enable\ SDL /t Reg_Dword /d 0
-# Change these paths to your respective files.
-cp /usr/share/fonts/TTF/arialbd.ttf ~/.wine/drive_c/windows/Fonts/arialbd.ttf
-cp /usr/share/fonts/TTF/ariblk.ttf ~/.wine/drive_c/windows/Fonts/ariblk.ttf
-```
+- https://github.com/dusklinux/dusky/blob/main/user_scripts/drives/ntfs_fix.sh
+- https://github.com/dusklinux/dusky/blob/main/user_scripts/drives/drive_manager.sh
