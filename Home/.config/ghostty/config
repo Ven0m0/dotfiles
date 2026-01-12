@@ -18,7 +18,7 @@ window-decoration = true
 window-padding-balance = true
 window-inherit-working-directory = true
 working-directory = home
-background-opacity = 0.85
+background-opacity = 1.00
 theme = TokyoNight Night
 
 shell-integration = detect
@@ -33,11 +33,10 @@ async-backend = auto
 quick-terminal-animation-duration = 0.1
 quick-terminal-autohide = true
 quit-after-last-window-closed = true
-quit-after-last-window-closed-delay = 5
 grapheme-width-method = unicode
 
 mouse-hide-while-typing = true
-mouse-scroll-multiplier = 0.95
+mouse-scroll-multiplier = 2.5
 scrollback-limit = 10000
 confirm-close-surface = false
 
