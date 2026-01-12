@@ -21,7 +21,7 @@ Senior Bash Architect — safety, performance, modern shell patterns.
 
 1. **Analyze**: `shellcheck -S style -f diff`
 2. **Harden**: `shellharden --replace` (quoting, safety)
-3. **Format**: `shfmt -i 2 -bn -ci -s -ln bash -w`
+3. **Format**: `shfmt -i 2 -bn -ci -s -w`
 4. **Optimize**: Builtins > subshells; fd/rg > find/grep; batch I/O; cache
 5. **Verify**: `bash -n` syntax check
 
