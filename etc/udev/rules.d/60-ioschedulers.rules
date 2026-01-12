@@ -1,17 +1,13 @@
-# USB flash drives
-ACTION=="add|change", KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{removable}=="1", ATTR{queue/scheduler}="bfq"
-
-# SD cards
-ACTION=="add|change", KERNEL=="mmcblk[0-9]*", SUBSYSTEM=="block", ATTR{queue/scheduler}="bfq"
+# USB/SD
+ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{removable}=="1", ATTR{queue/scheduler}="bfq", ATTR{queue/read_ahead_kb}="64"
 
 # HDD
-ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
+ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq", ATTR{queue/iostats}="1", ATTR{queue/read_ahead_kb}="64"
 
 # SSD (SATA/MMC)
-ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
+ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline", ATTR{queue/read_ahead_kb}="1024"
 
 # NVMe SSD
-ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none", ATTR{queue/nr_requests}="1024", ATTR{queue/read_ahead_kb}="512", ATTR{queue/iostats}="0"
-
-# Increase read-ahead for gaming
-ACTION=="add|change", KERNEL=="sd[a-z]|nvme[0-9]*", ATTR{bdi/read_ahead_kb}="1024"
+# Read-ahead: 2048KB (balance for Gaming/Dev)
+ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none", \
+    ATTR{queue/read_ahead_kb}="2048", ATTR{queue/nr_requests}="1024", ATTR{queue/iostats}="0", ATTR{queue/add_random}="0"
