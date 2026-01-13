@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eo pipefail
+set -euo pipefail
 
 APPIMAGE_PATH="$1"
 if [[ -z "$APPIMAGE_PATH" ]]; then
@@ -21,7 +21,7 @@ if [[ "$2" == "--remove" ]]; then
     find "${ICON_FOLDER}" -maxdepth 1 -type f -name "$APP_NAME.*" -delete
     echo "Removed"; exit 0
 fi
-pushd $TEMP_SQUASHFS_PATH
+pushd "$TEMP_SQUASHFS_PATH"
 "$APPIMAGE_FULLPATH" --appimage-extract > /dev/null
 cd squashfs-root/
 echo "Choose icon: "
@@ -47,5 +47,5 @@ Terminal=false
 EOT
 
 popd
-rm -rf $TEMP_SQUASHFS_PATH
+rm -rf "$TEMP_SQUASHFS_PATH"
 echo "Created"
