@@ -1,0 +1,11 @@
+[Unit]
+Description=Enable KSM at boot
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/sh -c 'echo 1 > /sys/kernel/mm/ksm/run'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
