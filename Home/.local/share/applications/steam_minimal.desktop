@@ -1,2 +1,6 @@
+[Desktop Entry]
 Name=Steam Minimal (Runtime)
-Exec=/usr/bin/steam -silent -nochatui -nofriendsui %U
+Exec=/usr/bin/steam -silent -nochatui -nofriendsui -compat-force-slr off -cef-disable-js-logging -nocrashmonitor -enable-features=WaylandWindowDecorations %U
+Terminal=false
+PrefersNonDefaultGPU=true
+X-KDE-RunOnDiscreteGpu=true
