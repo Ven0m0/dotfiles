@@ -1,2 +1,2 @@
 Name=Steam Minimal (Runtime)
-Exec=/usr/bin/steam -cef-disable-gpu-compositing -cef-disable-gpu steam://open/minigameslist %U
+Exec=/usr/bin/steam -silent -nochatui -nofriendsui %U
