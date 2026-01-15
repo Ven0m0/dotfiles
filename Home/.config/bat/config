@@ -4,6 +4,7 @@
 --squeeze-blank
 --squeeze-limit 1
 --pager="less -RFKQiqs --use-color -Dd+r$Du+b$ --no-histdups"
+--pager="less -RFKQiqs --use-color --mouse --no-histdups"
 --paging auto
 --strip-ansi auto
 --style="changes,grid,snip"
