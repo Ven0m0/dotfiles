@@ -22,6 +22,9 @@ Comprehensive analysis of the dotfiles repository to identify straightforward ta
 - Lines 28-43 contain all requested environment variables:
   - `export CC="/usr/bin/clang"`
   - `export CXX="/usr/bin/clang++"`
+  - `export CC_LD="/usr/bin/ld.lld"`
+  - `export CXX_LD="/usr/bin/ld.lld"`
+  - `export LD="/usr/bin/ld.lld"`
   - `export AR="/usr/bin/llvm-ar"`
   - `export NM="/usr/bin/llvm-nm"`
   - `export STRIP="/usr/bin/llvm-strip"`
@@ -32,6 +35,7 @@ Comprehensive analysis of the dotfiles repository to identify straightforward ta
   - `export HOSTCC="/usr/bin/clang"`
   - `export HOSTCXX="/usr/bin/clang++"`
   - `export HOSTAR="/usr/bin/llvm-ar"`
+  - `export HOSTLD="/usr/bin/ld.lld"`
 
 **Action:** Issue can be closed as completed.
 
