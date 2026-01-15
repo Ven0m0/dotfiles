@@ -54,6 +54,7 @@
   overview = log --all --oneline --no-merges
   today = log --since=midnight --author=\"$(git config user.name)\" --oneline
   contributors = shortlog -sn --no-merges
+  hub = "!xdg-open $(git remote get-url origin 2>/dev/null) >/dev/null 2>&1"
 [color]
   ui = auto
   branch = auto
