@@ -42,32 +42,32 @@ monorepo_depth = 3
 
 # Tools Configuration
 [tools]
-java = "oracle-graalvm"
+# java = "oracle-graalvm"
 #"ubi:zeroBzeroT/ChunkCleaner" = "latest"
 #"cargo:https://github.com/ComunidadAylas/PackSquash" = "latest"
 #"github:Voxelum/x-minecraft-launcher" = "latest"
 # Image & media tools
-"cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
+# "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
 "cargo:image-optimizer" = "latest"
 #"cargo:imgc" = "latest"
 "cargo:ffzap" = "latest"
 # Cargo utilities
 "cargo:cargo-alias-exec" = "latest"
 "cargo:cargo-list" = "latest"
-"cargo:shell-mommy" = "latest"
+# "cargo:shell-mommy" = "latest"
 #"cargo:cargo-minify" = "latest"
 #"cargo:cargo-diet" = "latest"
 # Utility tools
 cpz = "latest"
 rmz = "latest"
-"cargo:vicut" = "latest"
+#"cargo:vicut" = "latest"
 "cargo:filerefine" = "latest"
 "cargo:https://github.com/fthomys/update-alternatives" = "latest"
-"cargo:roxide" = "latest"
-"cargo:submod" = "latest"
-"cargo:nvidia_oc" = "latest"
+#"cargo:roxide" = "latest"
+#"cargo:submod" = "latest"
+#"cargo:nvidia_oc" = "latest"
 "cargo:dui-cli" = "latest"
-"cargo:kanata" = "latest"
+# "cargo:kanata" = "latest"
 #"cargo:ab-av1" = "latest"
 #"cargo:youtube-tui" = "latest"
 #"cargo:caligula" = "latest"
@@ -76,11 +76,11 @@ rmz = "latest"
 "cargo:zap-rs" = "latest"
 # Development & formatting
 #lefthook = "latest"
-minify = "latest"
+# minify = "latest"
 #"npm:@adguard/aglint" = "latest"
 #"npm:@adguard/dead-domains-linter" = "latest"
 #"npm:@adguard/hostlist-compiler" = "latest"
-"cargo:sy" = "latest"
+# "cargo:sy" = "latest"
 #"cargo:mpatch" = "latest"
 
 [env]
