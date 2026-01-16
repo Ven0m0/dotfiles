@@ -4,7 +4,7 @@
 ### General
 
 ```bash
-PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 PROTON_HIDE_NVIDIA_GPU=0 LD_BIND_NOW=1 %command%
+PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 PROTON_HIDE_NVIDIA_GPU=0 LD_BIND_NOW=1 __GL_THREADED_OPTIMIZATIONS=1 %command%
 ```
 
 ### offline:
@@ -44,7 +44,7 @@ paru -S evhz-git dkms wmo_oc-dkms
 
 ```bash
 sudo pacman -S mimalloc
-env LD_PRELOAD=/usr/lib/libmimalloc.so
+env LD_PRELOAD=/usr/lib/libmimalloc.so.2
 ```
 
 ### Steam launch
