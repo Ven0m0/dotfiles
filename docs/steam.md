@@ -59,3 +59,17 @@ steam -compat-force-slr off
 cd ${WINEPREFIX:-~/.wine}/drive_c/windows/Fonts && for i in /usr/share/fonts/**/*.{ttf,otf}; do ln -s "$i"; done
 export FREETYPE_PROPERTIES="truetype:interpreter-version=35"
 ```
+
+### Force keep password steam
+
+```bash
+chattr +i ~/.steam/registry.vdf
+```
+
+### Prevent crashdumps
+
+```bash
+ln -s /dev/null /tmp/dumps
+mkdir /tmp/dumps
+chmod 600 /tmp/dumps
+```
