@@ -32,3 +32,10 @@ VKD3D_CONFIG=dxr
 ```
 tsc=reliable clocksource=tsc
 ```
+
+
+### Mouse overclocking
+
+```bash
+paru -S dkms wmo_oc-dkms
+```
