@@ -46,3 +46,8 @@ paru -S evhz-git dkms wmo_oc-dkms
 sudo pacman -S mimalloc
 env LD_PRELOAD=/usr/lib/libmimalloc.so
 ```
+
+### Steam launch
+
+```bash
+steam -compat-force-slr off 
