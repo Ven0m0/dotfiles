@@ -37,5 +37,5 @@ tsc=reliable clocksource=tsc
 ### [Mouse overclocking](https://wiki.archlinux.org/title/Mouse_polling_rate#Polling_rate_not_changing)
 
 ```bash
-paru -S dkms wmo_oc-dkms
+paru -S evhz-git dkms wmo_oc-dkms
 ```
