@@ -39,3 +39,10 @@ tsc=reliable clocksource=tsc
 ```bash
 paru -S evhz-git dkms wmo_oc-dkms
 ```
+
+### Mimalloc
+
+```bash
+sudo pacman -S mimalloc
+env LD_PRELOAD=/usr/lib/libmimalloc.so
+```
