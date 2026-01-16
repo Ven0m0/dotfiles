@@ -69,6 +69,6 @@ chmod 600 /tmp/dumps
 - Celeste: `SDL_VIDEODRIVER=wayland %command%`
 - Hollow Knight: `-force-vulkan %command%`
 - Haste: `-force-vulkan %command%`
-- ARC Raiders: `PROTON_ENABLE_NVAPI=1 PROTON_DXVK_GPLASYNC=1 PROTON_DLSS_UPGRADE=1 %command% -novid`
+- ARC Raiders: `PROTON_ENABLE_NVAPI=1 PROTON_DLSS_UPGRADE=1 STEAM_RUNTIME=0 STEAM_RUNTIME_HEAVY=0 %command% -novid -dx12 -fullscreen`
 - Terraria: `FNA_GRAPHICS_BACKEND=Vulkan SDL_AUDIODRIVER=pipewire %command%`
 - The Witcher 3: `PROTON_ENABLE_NVAPI=1 PROTON_DXVK_GPLASYNC=1 VKD3D_CONFIG=dxr %command% -novid`
