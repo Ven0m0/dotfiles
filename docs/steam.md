@@ -35,12 +35,6 @@ echo 0 | sudo tee /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
 VKD3D_CONFIG=dxr
 ```
 
-### Kernel cmdline:
-
-```
-tsc=reliable clocksource=tsc
-```
-
 ### Mouse
 
 ```bash
@@ -57,19 +51,24 @@ steam -compat-force-slr off
 
 ```bash
 cd ${WINEPREFIX:-~/.wine}/drive_c/windows/Fonts && for i in /usr/share/fonts/**/*.{ttf,otf}; do ln -s "$i"; done
-export FREETYPE_PROPERTIES="truetype:interpreter-version=35"
 ```
 
-### Force keep password steam
+
+### Prevent crashdumps, keep login
 
 ```bash
 chattr +i ~/.steam/registry.vdf
-```
-
-### Prevent crashdumps
-
-```bash
 ln -s /dev/null /tmp/dumps
 mkdir /tmp/dumps
 chmod 600 /tmp/dumps
 ```
+
+
+## Games:
+
+- Celeste: `SDL_VIDEODRIVER=wayland %command%`
+- Hollow Knight: `-force-vulkan %command%`
+- Haste: `-force-vulkan %command%`
+- ARC Raiders: `PROTON_ENABLE_NVAPI=1 PROTON_DXVK_GPLASYNC=1 PROTON_DLSS_UPGRADE=1 %command% -novid`
+- Terraria: `FNA_GRAPHICS_BACKEND=Vulkan SDL_AUDIODRIVER=pipewire %command%`
+- The Witcher 3: `PROTON_ENABLE_NVAPI=1 PROTON_DXVK_GPLASYNC=1 VKD3D_CONFIG=dxr %command% -novid`
