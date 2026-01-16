@@ -7,6 +7,14 @@
 PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 PROTON_HIDE_NVIDIA_GPU=0 LD_BIND_NOW=1 __GL_THREADED_OPTIMIZATIONS=1 PULSE_LATENCY_MSEC=30 %command%
 ```
 
+`/etc/environment`
+
+```bash
+WINEESYNC=1
+WINEFSYNC=1
+WINEDLLOVERRIDES=mscoree=d;mshtml=d
+```
+
 ### offline:
 
 ```bash
