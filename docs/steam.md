@@ -4,7 +4,7 @@
 ### General
 
 ```bash
-PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 PROTON_HIDE_NVIDIA_GPU=0 LD_BIND_NOW=1 __GL_THREADED_OPTIMIZATIONS=1 PULSE_LATENCY_MSEC=30 %command%
+PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 LD_BIND_NOW=1 PULSE_LATENCY_MSEC=30 %command%
 ```
 
 `/etc/environment`
@@ -41,18 +41,10 @@ VKD3D_CONFIG=dxr
 tsc=reliable clocksource=tsc
 ```
 
-
-### [Mouse overclocking](https://wiki.archlinux.org/title/Mouse_polling_rate#Polling_rate_not_changing)
-
-```bash
-paru -S evhz-git dkms wmo_oc-dkms
-```
-
-### Mimalloc
+### Mouse
 
 ```bash
-sudo pacman -S mimalloc
-env LD_PRELOAD=/usr/lib/libmimalloc.so.2
+paru -S evhz-git
 ```
 
 ### Steam launch
