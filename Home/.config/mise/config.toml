@@ -14,7 +14,6 @@ go_skip_checksum = true
 cache_prune_age = "7d"
 http_timeout = "30s"
 disable_default_shorthands = false
-status = { missing_tools = "if_other_versions_installed", show_env = false, show_tools = false }
 
 [settings.python]
 uv_venv_auto = true
@@ -31,21 +30,11 @@ uvx = true
 [settings.npm]
 bun = true
 
-[settings.aqua]
-baked_registry = true
-
-[settings.ruby]
-ruby_build_opts = "--enable-shared"
-
-[settings.task]
-monorepo_depth = 3
-
 # Tools Configuration
 [tools]
 # java = "oracle-graalvm"
 #"ubi:zeroBzeroT/ChunkCleaner" = "latest"
 #"cargo:https://github.com/ComunidadAylas/PackSquash" = "latest"
-#"github:Voxelum/x-minecraft-launcher" = "latest"
 # Image & media tools
 # "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
 "cargo:image-optimizer" = "latest"
@@ -72,45 +61,36 @@ rmz = "latest"
 #"cargo:youtube-tui" = "latest"
 #"cargo:caligula" = "latest"
 #"cargo:etchdns" = "latest"
-"cargo:appInstalleR" = "latest"
-"cargo:zap-rs" = "latest"
+#"cargo:appInstalleR" = "latest"
 # Development & formatting
 #lefthook = "latest"
 # minify = "latest"
 #"npm:@adguard/aglint" = "latest"
 #"npm:@adguard/dead-domains-linter" = "latest"
 #"npm:@adguard/hostlist-compiler" = "latest"
-# "cargo:sy" = "latest"
+"cargo:sy" = "latest"
 #"cargo:mpatch" = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true }
-_.java.GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
+#_.java.GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
 UV_LINK_MODE = "hardlink"
 UV_CONCURRENT_DOWNLOADS = "12"
 UV_CONCURRENT_INSTALLS = "8"
 UV_THREADPOOL_SIZE = "16"
-PYTHONOPTIMIZE = "2"
+PYTHONOPTIMIZE = "1"
 PYTHONNODEBUGRANGES = "1"
-PYTHONUTF8 = "1"
-PYTHONIOENCODING = "UTF-8"
 DO_NOT_TRACK = "1"
 MISE_NPM_BUN = "1"
 MISE_NODE_NINJA = "true"
 MISE_NODE_CONCURRENCY = "16"
-NODE_OPTIONS = "--max-old-space-size=8192"
 NODE_SKIP_PLATFORM_CHECK = "1"
 NODE_PRESERVE_SYMLINKS = "1"
 NODE_TLS_REJECT_UNAUTHORIZED = "0"
 NODE_NO_WARNINGS = "1"
-CARGO_NET_GIT_FETCH_WITH_CLI = "true"
+CARGO_NET_GIT_FETCH_WITH_CLI = "false"
 CARGO_HTTP_MULTIPLEXING = "true"
 BINSTALL_DISABLE_TELEMETRY = "true"
 RUSTC_BOOTSTRAP = "1"
 RUSTC_WRAPPER = "sccache"
 RUST_PANIC_STRATEGY = "abort"
-SCCACHE_DIRECT = "true"
-CMAKE_BUILD_TYPE = "Release"
-CMAKE_SKIP_INSTALL_RPATH = "YES"
-CMAKE_GENERATOR = "Ninja"
-GITOXIDE_CORE_MULTIPACKINDEX = "true"
