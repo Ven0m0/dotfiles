@@ -1,5 +1,10 @@
 {
   "$schema": "https://oxc.rs/schemas/oxlint.json",
+  "plugins": [
+    "unicorn",
+    "typescript",
+    "oxc"
+  ],
   "rules": {
     "correctness": "error",
     "suspicious": "error",
@@ -15,6 +20,7 @@
     "unsafeWindow": "readonly"
   },
   "env": {
+    "builtin": true,
     "browser": true,
     "es2020": true,
     "node": true,
