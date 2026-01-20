@@ -1,7 +1,7 @@
 ## This file MUST be edited with the 'visudo' command as root.
 
 Cmnd_Alias REBOOT = /sbin/halt, /sbin/reboot, /sbin/poweroff
-Cmnd_Alias PKGMAN = /usr/bin/pacman, /usr/bin/paru, /usr/bin/octopi, /usr/bin/bauh, /usr/bin/topgrade
+Cmnd_Alias PKGMAN = /usr/bin/pacman, /usr/bin/paru, /usr/lib/octopi/octphelper, /usr/bin/bauh, /usr/bin/topgrade
 Cmnd_Alias HARMLESS = /usr/bin/cat, /usr/bin/ls, /usr/bin/grep, /usr/bin/find, /usr/bin/bat
 Defaults!/usr/bin/visudo env_keep += "SUDO_EDITOR EDITOR VISUAL"
 Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
