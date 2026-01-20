@@ -1,5 +1,4 @@
 {
-  "$schema": "https://oxc.rs/schemas/oxlint.json",
   "plugins": [
     "unicorn",
     "typescript",
