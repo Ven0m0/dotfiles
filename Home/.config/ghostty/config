@@ -1,15 +1,7 @@
-font-family = JetBrainsMono Nerd Font Mono
+font-family = JetBrainsMono Nerd Font
 font-size = 12
 font-feature = ss01,ss02,ss03,ss04,ss05,ss06,ss07,ss08,ss09,ss10,ss19,ss20,calt,lig,liga,dlig,clig,zero
-# https://github.com/ryanoasis/nerd-fonts/wiki/Glyph-Sets-and-Code-Points
-# powerline & powerline-extras
-font-codepoint-map = U+e0b0-U+e0b3,U+e0b4-U+e0c8,U+e0cc-U+e0d4,U+e0ca=JetBrainsMono Nerd Font Mono
-# font-awesome
-font-codepoint-map = U+f000-U+f2e0,U+e200-U+e2a9=JetBrainsMono Nerd Font Mono
-# seti-ui
-font-codepoint-map = U+e5fa-U+e6b1=JetBrainsMono Nerd Font Mono
-# codicons
-font-codepoint-map = U+ea60-U+ebeb=JetBrainsMono Nerd Font Mono
+
 cursor-style = bar
 cursor-style-blink = true
 window-theme = dark
@@ -22,22 +14,14 @@ background-opacity = 1.00
 theme = TokyoNight Night
 
 shell-integration = detect
-shell-integration-features = no-cursor,no-sudo,ssh-env,no-ssh-terminfo
+shell-integration-features = cursor,no-sudo,ssh-env,ssh-terminfo
 
 custom-shader-animation = false
 app-notifications = config-reload,no-clipboard-copy
 
-gtk-single-instance = detect
-gtk-opengl-debug = false
-async-backend = auto
-quick-terminal-animation-duration = 0.1
-quick-terminal-autohide = true
-quit-after-last-window-closed = true
-grapheme-width-method = unicode
-
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2.5
-scrollback-limit = 10000
+scrollback-limit = 5000
 confirm-close-surface = false
 
 clipboard-read = allow
