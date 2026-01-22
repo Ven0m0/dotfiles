@@ -13,16 +13,9 @@ decorations_theme_variant = "Dark"
 columns = 100
 lines = 30
 
-[window.class]
-instance = "Alacritty"
-general = "Alacritty"
-
 [scrolling]
-history = 10000
+history = 2000
 multiplier = 3
-
-[colors]
-draw_bold_text_with_bright_colors = true
 
 [colors.primary]
 background = "0x2E3440"
@@ -57,10 +50,10 @@ bold_italic = { family = "JetBrainsMono Nerd Font Mono", style = "Bold Italic" }
 
 [selection]
 semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
-save_to_clipboard = true
+save_to_clipboard = false
 
 [cursor]
-style = "Underline"
+style = "Beam"
 vi_mode_style = "None"
 unfocused_hollow = true
 thickness = 0.15
