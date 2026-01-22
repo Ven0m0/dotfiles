@@ -1,4 +1,0 @@
-title Linux Cachyos
-option rw zswap.enabled=0 nowatchdog quiet nvidia-drm.modeset=1 clocksource=tsc tsc=reliable cpuidle.governor=teo init_on_alloc=0 transparent_hugepage=madvise transparent_hugepage_shmem=enabled transparent_hugepage_tmpfs=enabled usbhid.mousepoll=1 usbhid.kbpoll=1 workqueue.power_efficient=0 threadirqs=on tsx=auto split_lock_detect=off systemd.unified_cgroup_hierarchy=1 libahci.ignore_sss=1 loglevel=3 rd.udev.log_level=3 pcie_aspm.policy=performance pcie_aspm=off psmouse.resolution=1600 f2fs.flush_merge_segments=1 nvme_core.default_ps_max_latency_us=0 systemd.show_status=auto
-linux /vmlinuz-linux-cachyos
-initrd /initramfs-linux-cachyos.img
