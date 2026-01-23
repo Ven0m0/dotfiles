@@ -42,14 +42,14 @@
 	"ui": {
 		"hideBanner": true,
 		"hideTips": true,
-		"hideContextSummary": false,
+		"hideContextSummary": true,
 		"hideFooter": false,
 		"showLineNumbers": false,
 		"accessibility": {
 			"disableLoadingPhrases": true
 		},
 		"footer": {
-			"hideModelInfo": false
+			"hideModelInfo": true
 		}
 	},
 	"model": {
@@ -63,7 +63,6 @@
 	"tools": {
 		"shell": {
 			"showColor": true,
-			"pager": "bat",
 			"enableShellOutputEfficiency": true
 		},
 		"autoAccept": true,
