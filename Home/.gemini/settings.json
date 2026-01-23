@@ -1,118 +1,83 @@
 {
-  "security": {
-    "auth": {
-      "selectedType": "oauth-personal"
-    },
-    "enablePermanentToolApproval": true,
-    "blockGitExtensions": false,
-    "disableYoloMode": true
-  },
-  "general": {
-    "previewFeatures": true,
-    "sessionRetention": {
-      "enabled": true
-    },
-    "preferredEditor": "vscode",
-    "disableAutoUpdate": false,
-    "enablePromptCompletion": true
-  },
-  "ui": {
-    "hideBanner": true,
-    "hideTips": true,
-    "hideFooter": true,
-    "showMemoryUsage": true
-  },
-  "tools": {
-    "shell": {
-      "showColor": true,
-      "pager": "bat",
-      "enableShellOutputEfficiency": true
-    },
-    "autoAccept": true,
-    "sandbox": true,
-    "useRipgrep": true,
-    "enableToolOutputTruncation": true,
-    "truncateToolOutputThreshold": 2500000,
-    "truncateToolOutputLines": 500,
-    "enableHooks": true
-  },
-  "model": {
-    "skipNextSpeakerCheck": false,
-    "name": "gemini-3-pro-preview"
-  },
-  "privacy": {
-    "usageStatisticsEnabled": false
-  },
-  "experimental": {
-    "enableAgents": true,
-    "extensionReloading": true,
-    "jitContext": true,
-    "skills": true,
-    "introspectionAgentSettings": {
-      "enabled": true
-    }
-  },
-  "mcpServers": {
-    "context7": {
-      "httpUrl": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}",
-        "Accept": "application/json, text/event-stream"
-      },
-      "trust": true
-    },
-    "copilot": {
-      "command": "bunx",
-      "args": [
-        "-y",
-        "@aykahshi/copilot-mcp-server",
-        "--prefer",
-        "gpt"
-      ],
-      "trust": true
-    },
-    "github": {
-      "httpUrl": "https://api.githubcopilot.com/mcp/",
-      "headers": {
-        "Authorization": "Bearer ${GITHUB_PAT}"
-      },
-      "trust": true
-    },
-    "think-tool": {
-      "command": "bunx",
-      "args": [
-        "-y",
-        "think-tool-mcp"
-      ],
-      "trust": true
-    },
-    "sequential-thinking": {
-      "command": "bunx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
-      "trust": true
-    },
-    "mcp-server-commands": {
-      "command": "bunx",
-      "args": [
-        "-y",
-        "mcp-server-commands"
-      ],
-      "trust": true
-    },
-    "read-website-fast": {
-      "command": "bunx",
-      "args": [
-        "-y",
-        "@just-every/mcp-read-website-fast"
-      ],
-      "trust": true
-    },
-    "fetch": {
-      "httpUrl": "https://remote.mcpservers.org/fetch/mcp",
-      "trust": true
-    }
-  }
+	"mcpServers": {
+		"serena": {
+			"command": "uvx",
+			"args": [
+				"--from",
+				"git+https://github.com/oraios/serena",
+				"serena",
+				"start-mcp-server"
+			],
+			"trust": true
+		},
+		"sequential-thinking": {
+			"command": "bunx",
+			"args": ["@modelcontextprotocol/server-sequential-thinking"],
+			"trust": true
+		},
+		"read-website-fast": {
+			"command": "bunx",
+			"args": ["@just-every/mcp-read-website-fast"],
+			"trust": true
+		}
+	},
+	"_disabledMcpServers": {},
+	"security": {
+		"auth": {
+			"selectedType": "oauth-personal"
+		},
+		"enablePermanentToolApproval": true,
+		"environmentVariableRedaction": {
+			"enabled": true
+		}
+	},
+	"general": {
+		"previewFeatures": true,
+		"sessionRetention": {
+			"enabled": true
+		},
+		"disableAutoUpdate": true,
+		"enablePromptCompletion": true
+	},
+	"ui": {
+		"hideBanner": true,
+		"hideTips": true,
+		"hideContextSummary": false,
+		"hideFooter": false,
+		"showLineNumbers": false,
+		"accessibility": {
+			"disableLoadingPhrases": true
+		},
+		"footer": {
+			"hideModelInfo": false
+		}
+	},
+	"model": {
+		"maxSessionTurns": -1,
+		"skipNextSpeakerCheck": true
+	},
+	"context": {
+		"discoveryMaxDirs": 200,
+		"loadMemoryFromIncludeDirectories": false
+	},
+	"tools": {
+		"shell": {
+			"showColor": true,
+			"pager": "bat",
+			"enableShellOutputEfficiency": true
+		},
+		"autoAccept": true,
+		"useRipgrep": true,
+		"enableToolOutputTruncation": true,
+		"truncateToolOutputThreshold": 4000000,
+		"truncateToolOutputLines": 1000,
+		"enableHooks": true
+	},
+	"experimental": {
+		"skills": true,
+		"enableAgents": true,
+		"introspectionAgentSettings": {
+			"enabled": true
+		}
+	}
 }
