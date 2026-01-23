@@ -1,194 +1,131 @@
 {
-  "env": {
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4.5",
-    "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
-    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
-    "DISABLE_ERROR_REPORTING": "1",
-    "DISABLE_PROMPT_CACHING": "0",
-    "DISABLE_TELEMETRY": "1",
-    "USE_BUILTIN_RIPGREP": "0",
-    "DISABLE_AUTOUPDATER": "1",
-    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "8192",
-    "BASH_DEFAULT_TIMEOUT_MS": "31000",
-    "BASH_MAX_TIMEOUT_MS": "600000",
-    "BASH_MAX_OUTPUT_LENGTH": "50000",
-    "DISABLE_COST_WARNINGS": "1",
-    "DISABLE_BUG_COMMAND": "1",
-    "MCP_TIMEOUT": "30000",
-    "MCP_TOOL_TIMEOUT": "60000",
-    "MAX_MCP_OUTPUT_TOKENS": "40000",
-    "MAX_THINKING_TOKENS": "121393"
-  },
-  "includeCoAuthoredBy": false,
-  "permissions": {
-    "allow": [
-      "LS",
-      "Read",
-      "Write",
-      "Edit",
-      "MultiEdit",
-      "Glob",
-      "Grep",
-      "NotebookRead",
-      "NotebookEdit",
-      "Task",
-      "TodoWrite",
-      "WebFetch(domain:*)",
-      "WebSearch",
-      "Bash(source:*)",
-      "Bash(cd:*)",
-      "Bash(claude config --help)",
-      "Bash(claude config get:*)",
-      "Bash(claude config list:*)",
-      "Bash(check-mcp-logs:*)",
-      "Bash(python:*)",
-      "Bash(git:*)",
-      "Bash(gh:*)",
-      "Bash(ls:*)",
-      "mcp__playwright"
-    ],
-    "deny": [],
-    "defaultMode": "bypassPermissions",
-    "additionalDirectories": ["//"]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Read|Edit|MultiEdit|Write|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudekit-hooks run file-guard"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudekit-hooks run lint-changed"
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudekit-hooks run typecheck-changed"
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudekit-hooks run check-any-changed"
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudekit-hooks run test-changed"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudekit-hooks run check-comment-replacement"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudekit-hooks run check-unused-parameters"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudekit-hooks run typecheck-project"
-          },
-          {
-            "type": "command",
-            "command": "claudekit-hooks run lint-project"
-          },
-          {
-            "type": "command",
-            "command": "claudekit-hooks run test-project"
-          },
-          {
-            "type": "command",
-            "command": "claudekit-hooks run check-todos"
-          },
-          {
-            "type": "command",
-            "command": "claudekit-hooks run self-review"
-          },
-          {
-            "type": "command",
-            "command": "claudekit-hooks run create-checkpoint"
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [],
-    "SessionStart": [],
-    "UserPromptSubmit": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudekit-hooks run codebase-map"
-          },
-          {
-            "type": "command",
-            "command": "claudekit-hooks run thinking-level"
-          }
-        ]
-      }
-    ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "printf '[%s@%s %s]' \"$USER\" \"$(hostname -s)\" \"$(basename \"$PWD\")\""
-  },
-  "enabledPlugins": {
-    "code-review-ai@claude-code-workflows": true,
-    "full-stack-orchestration@claude-code-workflows": true,
-    "code-refactoring@claude-code-workflows": true,
-    "comprehensive-review@claude-code-workflows": true,
-    "agent-orchestration@claude-code-workflows": true,
-    "context-management@claude-code-workflows": true,
-    "llm-application-dev@claude-code-workflows": true,
-    "application-performance@claude-code-workflows": true,
-    "codebase-cleanup@claude-code-workflows": true,
-    "git-pr-workflows@claude-code-workflows": true,
-    "team-collaboration@claude-code-workflows": true,
-    "dependency-management@claude-code-workflows": true,
-    "criticalthink@criticalthink": true,
-    "claude-mem@thedotmack": true
-  },
-  "forceLoginMethod": "claudeai",
-  "alwaysThinkingEnabled": true
+	"$schema": "https://json.schemastore.org/claude-code-settings.json",
+	"env": {
+		"CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+		"DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+		"USE_BUILTIN_RIPGREP": "0",
+		"DISABLE_PROMPT_CACHING": "0",
+		"DISABLE_TELEMETRY": "1",
+		"DISABLE_ERROR_REPORTING": "1",
+		"ENABLE_LSP_TOOL": "1",
+		"CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
+		"DISABLE_BUG_COMMAND": "1",
+		"GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN:-$(gh auth token)}",
+		"PYTHONPATH": ".",
+		"PYTHONOPTIMIZE": "1",
+		"BASH_DEFAULT_TIMEOUT_MS": "120000",
+		"BASH_MAX_TIMEOUT_MS": "600000",
+		"BASH_MAX_OUTPUT_LENGTH": "100000",
+		"CLAUDE_CODE_MAX_OUTPUT_TOKENS": "8000",
+		"MCP_TIMEOUT": "30000",
+		"MCP_TOOL_TIMEOUT": "60000",
+		"MAX_MCP_OUTPUT_TOKENS": "20000"
+	},
+	"includeCoAuthoredBy": false,
+	"permissions": {
+		"allow": [
+			"Bash",
+			"Bash(gix:*)",
+			"Bash(git:*)",
+			"Bash(gh:*)",
+			"Bash(cat:*)",
+			"Bash(ls:*)",
+			"Bash(eza:*)",
+			"Bash(rg:*)",
+			"Bash(fd:*)",
+			"Bash(find:*)",
+			"Bash(grep:*)",
+			"Bash(head:*)",
+			"Bash(tail:*)",
+			"Bash(cp:*)",
+			"Bash(bun:*)",
+			"Bash(uv:*)",
+			"Bash(python3:*)",
+			"Bash(python:*)",
+			"Bash(ruff:*)",
+			"Bash(cargo fmt:*)",
+			"Bash(rustfmt:*)",
+			"Bash(jaq:*)",
+			"Bash(jq:*)",
+			"Bash(sd:*)",
+			"Bash(sed:*)",
+			"Bash(awk:*)",
+			"Bash(mawk:*)",
+			"Bash(curl:*)",
+			"Bash(wget:*)",
+			"Bash(aria2c:*)",
+			"Bash(axel:*)",
+			"BashOutput",
+			"Edit",
+			"MultiEdit",
+			"TodoWrite",
+			"Write",
+			"Glob",
+			"Grep",
+			"Read",
+			"LSP",
+			"Skill",
+			"SlashCommand",
+			"KillShell",
+			"Task",
+			"WebSearch",
+			"WebFetch",
+			"mcp__*",
+			"mcp__plugin_serena_serena__get_current_config"
+		],
+		"defaultMode": "acceptEdits"
+	},
+	"model": "opusplan",
+	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"$HOME/.claude/hooks/gsd-intel-session.js\""
+					}
+				]
+			}
+		]
+	},
+	"statusLine": {
+		"type": "command",
+		"command": "node \"$HOME/.claude/hooks/statusline.js\""
+	},
+	"enabledPlugins": {
+		"context7@claude-plugins-official": true,
+		"serena@claude-plugins-official": true,
+		"sc@superclaude": false,
+		"prompt-optimizer@daymade-skills": true,
+		"claude-code-tools@claudex": false,
+		"repomix-mcp@repomix": false,
+		"general-dev@claude-settings": true,
+		"ultralytics-dev@claude-settings": true,
+		"claude-md-progressive-disclosurer@daymade-skills": true,
+		"docs-cleaner@daymade-skills": true,
+		"optimize-claude-md@lifegenie-marketplace": true,
+		"conserve@claude-night-market": true,
+		"github@claude-plugins-official": true,
+		"vscode-langservers@claude-code-lsps": true,
+		"markdown-optimizer@lifegenie-marketplace": true,
+		"vtsls@claude-code-lsps": true,
+		"rust-analyzer@claude-code-lsps": true,
+		"plugin-dev@claude-settings": true,
+		"fact-checker@daymade-skills": true,
+		"thinking-partner@lifegenie-marketplace": true,
+		"block-dotfiles@wombat9000-marketplace": true,
+		"config-wizard@wombat9000-marketplace": true,
+		"dependency-blocker@wombat9000-marketplace": true,
+		"superpowers@claude-plugins-official": true,
+		"frontend-design@claude-plugins-official": true,
+		"feature-dev@claude-plugins-official": true,
+		"mgrep@Mixedbread-Grep": true,
+		"code-review@claude-plugins-official": true,
+		"rust-analyzer-lsp@claude-plugins-official": false,
+		"ui-designer@daymade-skills": true,
+		"code-simplifier@claude-plugins-official": true
+	},
+	"forceLoginMethod": "claudeai",
+	"spinnerTipsEnabled": false,
+	"alwaysThinkingEnabled": true
 }
