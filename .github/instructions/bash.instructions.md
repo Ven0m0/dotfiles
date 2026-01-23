@@ -1,5 +1,5 @@
 ---
-applyTo: "*.{sh,bash,zsh},PKGBUILD"
+applyTo: "**/.{sh,bash,zsh}"
 description: "Optimized bash/shell standards for performance and safety"
 ---
 
