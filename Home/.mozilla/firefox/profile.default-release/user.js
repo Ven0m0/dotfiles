@@ -49,8 +49,8 @@ user_pref('media.cache_readahead_limit', 7200);
 user_pref('media.cache_resume_threshold', 3600);
 /*** NETWORK ***/
 user_pref('network.http.max-connections', 1800);
-user_pref('network.http.max-persistent-connections-per-server', 20);
-user_pref('network.http.max-urgent-start-excessive-connections-per-host', 10);
+user_pref('network.http.max-persistent-connections-per-server', 16);
+user_pref('network.http.max-urgent-start-excessive-connections-per-host', 8);
 user_pref('network.http.request.max-start-delay', 5);
 user_pref('network.http.pacing.requests.enabled', false);
 user_pref('network.http.rcwn.enabled', false);
