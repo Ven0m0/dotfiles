@@ -31,5 +31,10 @@ preload = []
 coverage = false
 smol = true
 
-[debug]
-editor = "code"
+[install.scopes]
+"@jsr" = "https://npm.jsr.io"
+
+# Enable loader for TypeScript settings files
+# This allows us to use .bunfig.ts for configuration with onCreate callbacks
+[loader]
+".ts" = "bun"
