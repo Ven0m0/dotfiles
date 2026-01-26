@@ -1,5 +1,13 @@
 # General
 
+**PR comments**
+
+- `@gemini-code-assist review`
+- `@dependabot rebase`
+- `@copilot`
+- `@claude`
+- `@jules` (pings a real person aswell as the bot for some weird reason)
+
 <details>
 <summary><b>Misc</b></summary>
 
