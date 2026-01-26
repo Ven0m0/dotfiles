@@ -351,12 +351,10 @@ Apply this specifically to `json` code blocks and JSON structures:
 - **Constraint**: Only apply this if the resulting single line is **≤ 140 characters**.
 - **Style**: Maintain readability with spacing.
   - *Current*:
-    ```json
     "plugins": [
       "unicorn",
       "cat"
     ]
-    ```
   - *Target*: `"plugins": [ "unicorn", "cat" ]`
 - **Fallback**: If the single line exceeds 140 characters, keep it multi-line to preserve readability.
 ### 2. Markdown Compaction
