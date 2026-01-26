@@ -395,10 +395,14 @@ Find and refactor duplicated code. Identify and suggest improvements to slow or 
 </details>
 
 
-# Google jules
+# [Google jules](https://github.com/google-labs-code/jules-awesome-list)
 
 - `Find duplicate logic across files`
 - `Analyze this repo and generate 3 feature ideas`
 - `Cluster related functions and suggest refactors`
 - `Refactor this Python function to be more amenable to parallel processing (e.g., using multiprocessing or threading)`
+- `Upgrade my linter and autofix breaking config changes`
+- `Set up Renovate or Dependabot for auto-updates`
+- `Turn this tool into a GitHub App`
+- `I want to build a web scraper—start me off`
 
