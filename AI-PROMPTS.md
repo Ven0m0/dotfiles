@@ -7,6 +7,7 @@
 - `@dependabot rebase`
 - `@copilot`
 - `@claude`
+- `@cursor`
 - `@jules` (pings a real person aswell as the bot for some weird reason)
 </details>
 <details>
