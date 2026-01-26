@@ -1,13 +1,14 @@
 # General
 
-**PR comments**
+<details>
+<summary><b>PR comments</b></summary>
 
 - `@gemini-code-assist review`
 - `@dependabot rebase`
 - `@copilot`
 - `@claude`
 - `@jules` (pings a real person aswell as the bot for some weird reason)
-
+</details>
 <details>
 <summary><b>Misc</b></summary>
 
@@ -340,29 +341,31 @@ Review and refactor `.github/workflows/*.yml` for security, performance, maintai
 ```
 </details>
 <details>
-<summary><b>TODO</b></summary>
+<summary><b>Markdown token tweaks</b></summary>
 
 ```md
-Role: Senior Dev-Assistant Goal: Identify and resolve straightforward tasks from in-code TODOs or the GitHub Issues Tab.
-Deliver a standalone, test-verified patch.
-1. Discovery (Dual-Source)
-- Issues: List via `gh issue list --limit 10 --label 'bug,good-first-issue,chore'` or API equivalent.
-- TODOs: Find via `rg --hidden -g '!node_modules' -n 'TODO'`.
-- Filter: Exclude vendor, build, or docs paths. Skip schema changes or complex auth.
-2. Selection Criteria
-- Priority 1: Open issue with "good first issue" or "bug" label and clear repro steps.
-- Priority 2: Explicit TODO in a stable, well-tested file.
-- Heuristics: Single file, ≤50 LOC, no external API/schemas, existing test coverage.
-3. Implementation & Validation
-- Fix: Minimal logic to satisfy issue or TODO.
-- Lint/Format: Use project-specific tools (e.g., shfmt, black, prettier).
-- Test: Run focused unit tests, then full suite. Zero regressions allowed.
-4. Output Requirements Source: Issue ID/URL or file:line with snippet. Rationale: Brief safety/feasibility note. Unified
-   Diff: Full git diff patch. Verification Log: Key linter and test output. Commit/PR:
-- PR summary: Fix overview and risk: Low/Med. Constraints
-- Use only existing dev dependencies; no new external libraries.
-- No drive-by refactoring.
-- If ambiguous, state one assumption, document, and proceed.
+Ensure that the skills only have the permissions they need to function optimally, no more, otherwise they would be wasting tokens.Please refactor the selected file(s) to minimize token usage while maintaining readability. Follow these strict rules:
+### 1. JSON Formatting (Moderate Inlining)
+Apply this specifically to `json` code blocks and JSON structures:
+- **Action**: Convert multi-line arrays `[...]` and small objects `{...}` into single-line representations.
+- **Constraint**: Only apply this if the resulting single line is **≤ 140 characters**.
+- **Style**: Maintain readability with spacing.
+  - *Current*:
+    ```json
+    "plugins": [
+      "unicorn",
+      "cat"
+    ]
+    ```
+  - *Target*: `"plugins": [ "unicorn", "cat" ]`
+- **Fallback**: If the single line exceeds 140 characters, keep it multi-line to preserve readability.
+### 2. Markdown Compaction
+- **Whitespace**: Collapse 3+ consecutive newlines into 2 (max one empty line between paragraphs).
+- **Comments**: Remove all HTML comments ``.
+- **Lists**: Ensure list items use tight spacing (no blank lines between items) unless they contain complex block content.
+### 3. Safety Guidelines
+- **Immutable Code**: Do NOT modify the formatting of non-JSON code blocks (e.g., Python, Bash, YAML) unless they have trailing whitespace.
+- **Content**: Do not summarize or delete actual text content, only syntactic waste.
 ```
 </details>
 <details>
@@ -394,7 +397,6 @@ Find and refactor duplicated code. Identify and suggest improvements to slow or 
 ```
 </details>
 
-
 # [Google jules](https://github.com/google-labs-code/jules-awesome-list)
 
 - `Find duplicate logic across files`
@@ -405,4 +407,3 @@ Find and refactor duplicated code. Identify and suggest improvements to slow or 
 - `Set up Renovate or Dependabot for auto-updates`
 - `Turn this tool into a GitHub App`
 - `I want to build a web scraper—start me off`
-
