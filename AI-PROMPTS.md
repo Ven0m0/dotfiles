@@ -400,7 +400,7 @@ Find and refactor duplicated code. Identify and suggest improvements to slow or 
 <summary><b>Cleaner</b></summary>
 
 ```md
-Act as a repository optimization agent. Scan all Markdown and plaintext files to strip emojis, enforce 2-space indentation, and fill paragraphs to a minimum width of 100 characters. Identify and merge any files with >80% content similarity. Finally, refactor the Markdown structure into modular, reusable library components to eliminate redundancy and optimize token usage.
+Act as a senior repository optimization agent. Aggressively purge unused code, dead paths, and stale dependencies while flattening complex logic and inlining single-use abstractions. Scan all text files to strip emojis, enforce 2-space indentation with a minimum 100-character line width, and merge files exhibiting >80% similarity. Finally, refactor documentation into modular, reusable Markdown libraries to optimize token usage and consolidate redundant infrastructure patterns.
 ```
 </details>
 
