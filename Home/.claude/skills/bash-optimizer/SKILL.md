@@ -1,30 +1,23 @@
 ---
 name: bash-optimizer
-description: Analyze bash scripts for performance bottlenecks, enforce coding standards, identify consolidation opportunities, and suggest modern tool replacements. Use when optimizing shell scripts, merging multiple scripts, refactoring for performance, validating against standards, or preparing scripts for production. Analyzes subshell/fork waste, validates shellcheck compliance, checks indentation/style, and recommends fd/rg/sd over legacy tools.
+description: "Optimize bash scripts for performance and standards. Auto-triggers on: optimize script, shellcheck, bash performance, modernize shell, consolidate scripts, fix shellcheck, refactor bash, shell audit."
+triggers: [optimize bash, shellcheck, shell performance, modernize shell, consolidate scripts, refactor bash]
+related: [modern-tool-substitution, codeagent, python-cli-builder]
+applyTo: "**/*.{sh,bash,zsh}"
 ---
 
 # Bash Script Optimizer
 
-Analyze and optimize bash scripts according to strict standards: performance, modern tooling, consolidation patterns.
+Analyze and optimize bash scripts: performance, modern tooling, consolidation.
 
 ## Quick Start
 
-**Analyze a script:**
 ```bash
 python3 scripts/analyze.py path/to/script.sh
 ```
 
-**Optimize workflow:**
-1. Run analyzer on target script(s)
-2. Review issues by priority: critical → performance → optimization → standards
-3. Apply fixes systematically
-4. Validate with shellcheck
-5. Test functionality
-6. Measure improvement
-
 ## Core Standards
 
-Scripts must include:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -33,176 +26,41 @@ IFS=$'\n\t'
 export LC_ALL=C LANG=C
 ```
 
-**Style:** 2-space indent, minimal blank lines, short CLI args, quoted variables
-
-**Native bash:** arrays, `[[ ]]` tests, parameter expansion, process substitution
+**Style:** 2-space indent, quoted variables, `[[ ]]` tests
 
 **Modern tools (prefer → fallback):**
-- fd/fdfind → find
-- rg → grep
-- sd → sed
-- fzf/sk for interactive
-- jaq → jq
-- choose → cut/awk
-- rust-parallel → parallel → xargs -P
-
-See `references/standards.md` for complete specification.
+- fd → find | rg → grep | sd → sed | jaq → jq | rust-parallel → xargs -P
 
 ## Analysis Categories
 
-**Critical:** Must fix (security, correctness)
-- Parsing ls output
-- Unquoted variables
-- eval usage
-- Wrong shebang
-
-**Performance:** Significant impact
-- Unnecessary cat pipes
-- Excessive subshells/forks
-- Sequential vs parallel opportunities
-- Uncached expensive operations
-
-**Optimization:** Modern alternatives
-- find → fd (3-5x faster)
-- grep → rg (10x+ faster)
-- sed → sd (cleaner syntax)
-- Legacy tool replacement opportunities
-
-**Standards:** Code quality
-- [ ] vs [[ ]] 
-- echo vs printf
-- Indentation (2-space)
-- function syntax (prefer `fn(){}`)
-
-## Consolidation Patterns
-
-**When to consolidate multiple scripts:**
-- Shared validation/setup logic
-- Common function libraries
-- Similar workflows with parameter variations
-- Reduce maintenance burden
-
-**Unified entry point pattern:**
-```bash
-mode=${1:-}
-case $mode in
-  action1) shift; action1_fn "$@";;
-  action2) shift; action2_fn "$@";;
-  *) die "Usage: $0 {action1|action2}";;
-esac
-```
-
-**Shared library extraction:**
-Extract common functions to `lib/common.sh`, source in scripts.
-
-**Configuration-driven logic:**
-Replace script proliferation with data structures (assoc arrays).
-
-See `references/patterns.md` for detailed consolidation strategies.
-
-## Optimization Workflow
-
-### 1. Baseline Analysis
-Run analyzer on all target scripts. Prioritize by issue count/severity.
-
-### 2. Quick Wins
-- Replace cat pipes: `cat f | grep` → `grep < f`
-- Convert tests: `[ ]` → `[[ ]]`
-- Quote variables: `$var` → `"$var"`
-- Add missing options: `set -euo pipefail`
-
-### 3. Tool Modernization
-Replace legacy tools where available:
-```bash
-# Check availability
-command -v fd &>/dev/null && use_fd=1
-
-# Fallback pattern
-if [[ $use_fd ]]; then
-  fd -tf '\.sh$'
-else
-  find . -type f -name '*.sh'
-fi
-```
-
-### 4. Performance Optimization
-- **Batch operations:** Collect items, process in parallel
-- **Cache results:** Avoid repeated expensive calls
-- **Reduce forks:** Use bash builtins vs external commands
-- **Process substitution:** `< <(cmd)` vs `cmd |`
-
-### 5. Consolidation
-If analyzing multiple related scripts:
-- Extract shared functions
-- Unify entry points
-- Create configuration-driven logic
-- Document migration
-
-### 6. Validation
-- Shellcheck clean
-- Bash execution test
-- Functionality verification
-- Performance measurement (time, profiling)
+**Critical:** Parsing ls, unquoted vars, eval usage, wrong shebang
+**Performance:** Cat pipes, excessive forks, sequential vs parallel
+**Optimization:** find→fd, grep→rg, sed→sd
+**Standards:** `[ ]`→`[[ ]]`, echo→printf, 2-space indent
 
 ## Common Refactorings
 
-**Remove unnecessary subshells:**
 ```bash
-# Before: count=$(cat file | wc -l)
-# After: count=$(wc -l < file)
-# Better: mapfile -t lines < file; count=${#lines[@]}
+# Remove cat pipes
+count=$(cat file | wc -l)  →  count=$(wc -l < file)
+
+# Parallel processing
+for f in *.txt; do process "$f"; done
+→ printf '%s\n' *.txt | rust-parallel -j"$(nproc)" process
+
+# Parameter expansion over sed
+echo "$file" | sed 's/\.txt$//'  →  printf '%s\n' "${file%.txt}"
 ```
 
-**Parallel processing:**
-```bash
-# Before: for f in *.txt; do process "$f"; done
-# After: printf '%s\n' *.txt | rust-parallel -j"$(nproc)" process
-```
+## Workflow
 
-**Parameter expansion over sed:**
-```bash
-# Before: echo "$file" | sed 's/\.txt$//'
-# After: printf '%s\n' "${file%.txt}"
-```
-
-**Batch I/O:**
-```bash
-# Before: while read line; do echo "prefix $line" >> out; done < in
-# After: 
-output=()
-while read -r line; do output+=("prefix $line"); done < in
-printf '%s\n' "${output[@]}" > out
-```
-
-## Token Efficiency
-
-Compress documentation:
-- **Cause → effect:** `⇒` notation
-- **Lists:** ≤7 items
-- **Minimize whitespace:** Prefer compact over verbose
-
-Example:
-```bash
-# Verbose (44 tokens)
-# This function checks if the required tools are available
-# in the system PATH and exits with an error if any are missing.
-# It takes a list of tool names as arguments.
-
-# Compact (16 tokens)
-# Verify required tools exist ⇒ exit if missing
-```
-
-## Tips
-
-- Analyze before bulk edits
-- Test incrementally, not all at once
-- Keep shellcheck clean at each step
-- Measure performance impact when optimizing
-- Document consolidation rationale
-- Maintain fallback chains for tools
+1. Analyze: `shellcheck -S style -f diff`
+2. Harden: `shellharden --replace`
+3. Format: `shfmt -i 2 -bn -ci -s -w`
+4. Optimize: Builtins > subshells; batch I/O; cache
+5. Verify: `bash -n` syntax check
 
 ## Resources
-
-- `scripts/analyze.py` - Automated script analyzer
-- `references/standards.md` - Complete coding standards
-- `references/patterns.md` - Optimization patterns and consolidation strategies
+- `scripts/analyze.py` - Automated analyzer
+- `references/standards.md` - Complete standards
+- `references/patterns.md` - Optimization patterns
