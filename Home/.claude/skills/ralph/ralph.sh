@@ -15,26 +15,22 @@ for ((i=1; i<=$MAX; i++)); do
     result=$(claude --dangerously-skip-permissions -p "You are Ralph, an autonomous coding agent. Do exactly ONE task per iteration.
 
 ## Steps
-
 1. Read PRD.md and find the first task that is NOT complete (marked [ ]).
 2. Read progress.txt - check the Learnings section first for patterns from previous iterations.
 3. Implement that ONE task only.
 4. Run tests/typecheck to verify it works.
 
 ## Critical: Only Complete If Tests Pass
-
 - If tests PASS:
   - Update PRD.md to mark the task complete (change [ ] to [x])
   - Commit your changes with message: feat: [task description]
   - Append what worked to progress.txt
-
 - If tests FAIL:
   - Do NOT mark the task complete
   - Do NOT commit broken code
   - Append what went wrong to progress.txt (so next iteration can learn)
 
 ## Progress Notes Format
-
 Append to progress.txt using this format:
 
 ## Iteration [N] - [Task Name]
@@ -47,14 +43,12 @@ Append to progress.txt using this format:
 ---
 
 ## Update AGENTS.md (If Applicable)
-
 If you discover a reusable pattern that future work should know about:
 - Check if AGENTS.md exists in the project root
 - Add patterns like: 'This codebase uses X for Y' or 'Always do Z when changing W'
 - Only add genuinely reusable knowledge, not task-specific details
 
 ## End Condition
-
 After completing your task, check PRD.md:
 - If ALL tasks are [x], output exactly: <promise>COMPLETE</promise>
 - If tasks remain [ ], just end your response (next iteration will continue)")

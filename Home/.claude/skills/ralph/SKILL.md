@@ -8,7 +8,6 @@ description: "Generate a Product Requirements Document (PRD) for a new feature. 
 Create detailed Product Requirements Documents that are clear, actionable, and suitable for autonomous AI implementation via the Ralph loop.
 
 ---
-
 ## The Job
 
 1. Receive a feature description from the user
@@ -20,11 +19,9 @@ Create detailed Product Requirements Documents that are clear, actionable, and s
 **Important:** Do NOT start implementing. Just create the PRD.
 
 ---
-
 ## Step 1: Clarifying Questions
 
 Ask only critical questions where the initial prompt is ambiguous. Focus on:
-
 - **Problem/Goal:** What problem does this solve?
 - **Core Functionality:** What are the key actions?
 - **Scope/Boundaries:** What should it NOT do?
@@ -55,7 +52,6 @@ Ask only critical questions where the initial prompt is ambiguous. Focus on:
 This lets users respond with "1A, 2C, 3B" for quick iteration.
 
 ---
-
 ## Step 2: Story Sizing (THE NUMBER ONE RULE)
 
 **Each story must be completable in ONE context window (~10 min of AI work).**
@@ -79,7 +75,6 @@ Ralph spawns a fresh instance per iteration with no memory of previous work. If 
 **Rule of thumb:** If you cannot describe the change in 2-3 sentences, it is too big.
 
 ---
-
 ## Step 3: Story Ordering (Dependencies First)
 
 Stories execute in priority order. Earlier stories must NOT depend on later ones.
@@ -97,7 +92,6 @@ US-002: Schema change
 ```
 
 ---
-
 ## Step 4: Acceptance Criteria (Must Be Verifiable)
 
 Each criterion must be something Ralph can CHECK, not something vague.
@@ -126,7 +120,6 @@ Each criterion must be something Ralph can CHECK, not something vague.
 ```
 
 ---
-
 ## PRD Structure
 
 Generate the PRD with these sections:
@@ -164,18 +157,15 @@ What this feature will NOT include. Critical for scope.
 - Existing components to reuse
 
 ---
-
 ## Example PRD
 
 ```markdown
 # PRD: Task Priority System
 
 ## Introduction
-
 Add priority levels to tasks so users can focus on what matters most. Tasks can be marked as high, medium, or low priority, with visual indicators and filtering.
 
 ## Goals
-
 - Allow assigning priority (high/medium/low) to any task
 - Provide clear visual differentiation between priority levels
 - Enable filtering by priority
@@ -221,19 +211,16 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Verify changes work in browser
 
 ## Non-Goals
-
 - No priority-based notifications or reminders
 - No automatic priority assignment based on due date
 - No priority inheritance for subtasks
 
 ## Technical Considerations
-
 - Reuse existing badge component with color variants
 - Filter state managed via URL search params
 ```
 
 ---
-
 ## Output
 
 Save to `PRD.md` in the current directory.
@@ -249,7 +236,6 @@ Also create `progress.txt`:
 ```
 
 ---
-
 ## Checklist Before Saving
 
 - [ ] Asked clarifying questions with lettered options
