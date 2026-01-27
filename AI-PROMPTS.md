@@ -395,6 +395,14 @@ Analyze the dependencies for outdated packages, security vulnerabilities, or unn
 Find and refactor duplicated code. Identify and suggest improvements to slow or inefficient code. Find and fix any errors or bad practices aswell. Analyze the dependencies for outdated packages, security vulnerabilities, or unnecessary bloat and apply changes. Also identify and resolve straightforward tasks from in-code TODOs or the GitHub Issues Tab. Lastly format the files with the appropriate formatter (biome, ruff, shellcheck/shellharden, clippy, yamlfmt/yamllint)
 ```
 </details>
+</details>
+<details>
+<summary><b>Cleaner</b></summary>
+
+```md
+Act as a repository optimization agent. Scan all Markdown and plaintext files to strip emojis, enforce 2-space indentation, and fill paragraphs to a minimum width of 100 characters. Identify and merge any files with >80% content similarity. Finally, refactor the Markdown structure into modular, reusable library components to eliminate redundancy and optimize token usage.
+```
+</details>
 
 # [Google jules](https://github.com/google-labs-code/jules-awesome-list)
 
