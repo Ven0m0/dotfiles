@@ -120,7 +120,7 @@ def process(cfg: Config) -> int:
 
         files_processed += 1
 
-      except Exception as e:
+      except (OSError, UnicodeError) as e:
         print(f"Error processing {file_path}: {e}", file=sys.stderr)
         errors += 1
     
