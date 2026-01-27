@@ -127,7 +127,7 @@ def process(cfg: Config) -> int:
     if cfg.verbose:
       print(f"Processing complete. Files: {files_processed}, Errors: {errors}", file=sys.stderr)
     
-    return 0
+    return 1 if errors > 0 else 0
     
   except PermissionError as e:
     print(f"Permission denied: {e}", file=sys.stderr)
