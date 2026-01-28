@@ -28,7 +28,7 @@ binstall = true
 uvx = true
 
 [settings.npm]
-bun = true
+package_manager = bun
 
 # Tools Configuration
 [tools]
@@ -81,7 +81,7 @@ UV_THREADPOOL_SIZE = "16"
 PYTHONOPTIMIZE = "1"
 PYTHONNODEBUGRANGES = "1"
 DO_NOT_TRACK = "1"
-MISE_NPM_BUN = "1"
+MISE_NPM_PACKAGE_MANAGER = "bun"
 MISE_NODE_NINJA = "true"
 MISE_NODE_CONCURRENCY = "16"
 NODE_SKIP_PLATFORM_CHECK = "1"
