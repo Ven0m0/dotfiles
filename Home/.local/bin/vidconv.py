@@ -260,7 +260,7 @@ def process_item(inp: Path, preset: Preset, cfg: Config, out_dir: Path | None, s
     return stats, f"Skipped (same): {inp.name}"
 
   # Use quiet log for parallel workers to prevent interleaved output
-  ok, in_sz, out_sz = process(inp, out, preset, cfg, Log(quiet=True), delete)
+  ok, in_sz, out_sz = process(inp, out, preset, cfg, log, delete)
 
   if ok:
     stats.processed += 1
