@@ -20,6 +20,7 @@ uv_venv_auto = true
 uv_venv_create_args = ["--system-site-packages", "--clear", "--no-managed-python"]
 precompiled_os = "x86_64_v3"
 precompiled_flavor = "pgo+lto"
+default_packages_file = "$HOME/.default-python-packages"
 
 [settings.cargo]
 binstall = true
