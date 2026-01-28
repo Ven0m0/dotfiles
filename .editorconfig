@@ -40,6 +40,7 @@ end_of_line = crlf
 
 [**/*.{py,pyw,pyi}]
 indent_size = 4
+max_line_length = 100
 
 # C/C++
 [**/*.{c,cc,cpp,cxx,h,hpp,hxx}]
