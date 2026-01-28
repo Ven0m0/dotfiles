@@ -17,7 +17,7 @@ disable_default_shorthands = false
 
 [settings.python]
 uv_venv_auto = true
-uv_venv_create_args = ["--system-site-packages", "--seed"]
+uv_venv_create_args = ["--system-site-packages", "--seed", "--symlinks", "--clear", "--no-managed-python"]
 precompiled_os = "x86_64_v3"
 precompiled_flavor = "pgo+lto"
 
@@ -43,7 +43,6 @@ package_manager = bun
 # Cargo utilities
 "cargo:cargo-alias-exec" = "latest"
 "cargo:cargo-list" = "latest"
-# "cargo:shell-mommy" = "latest"
 #"cargo:cargo-minify" = "latest"
 #"cargo:cargo-diet" = "latest"
 # Utility tools
@@ -56,36 +55,24 @@ rmz = "latest"
 #"cargo:submod" = "latest"
 #"cargo:nvidia_oc" = "latest"
 "cargo:dui-cli" = "latest"
-# "cargo:kanata" = "latest"
-#"cargo:ab-av1" = "latest"
-#"cargo:youtube-tui" = "latest"
-#"cargo:caligula" = "latest"
 #"cargo:etchdns" = "latest"
-#"cargo:appInstalleR" = "latest"
-# Development & formatting
 #lefthook = "latest"
 # minify = "latest"
 #"npm:@adguard/aglint" = "latest"
 #"npm:@adguard/dead-domains-linter" = "latest"
 #"npm:@adguard/hostlist-compiler" = "latest"
 "cargo:sy" = "latest"
-#"cargo:mpatch" = "latest"
 
 [env]
-_.python.venv = { path = ".venv", create = true }
+_.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages"] }
 #_.java.GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
+NODE_ENV = 'production'
 UV_LINK_MODE = "hardlink"
-UV_CONCURRENT_DOWNLOADS = "12"
-UV_CONCURRENT_INSTALLS = "8"
-UV_THREADPOOL_SIZE = "16"
 PYTHONOPTIMIZE = "1"
-PYTHONNODEBUGRANGES = "1"
 DO_NOT_TRACK = "1"
 MISE_NPM_PACKAGE_MANAGER = "bun"
 MISE_NODE_NINJA = "true"
-MISE_NODE_CONCURRENCY = "16"
 NODE_SKIP_PLATFORM_CHECK = "1"
-NODE_PRESERVE_SYMLINKS = "1"
 NODE_TLS_REJECT_UNAUTHORIZED = "0"
 NODE_NO_WARNINGS = "1"
 CARGO_NET_GIT_FETCH_WITH_CLI = "false"
@@ -93,4 +80,3 @@ CARGO_HTTP_MULTIPLEXING = "true"
 BINSTALL_DISABLE_TELEMETRY = "true"
 RUSTC_BOOTSTRAP = "1"
 RUSTC_WRAPPER = "sccache"
-RUST_PANIC_STRATEGY = "abort"
