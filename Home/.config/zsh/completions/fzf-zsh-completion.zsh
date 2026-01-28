@@ -51,29 +51,39 @@ _fzf_completion(){
     local _fzf_sentinel2=257539ae-7100-4cd8-b822-a1ef35335e88
     (
         # set -o pipefail
-        # hacks
-        __override_compadd(){ compadd(){ _fzf_completion_compadd "$@"; }; }
-        __override_compadd
-        # some completions change zstyle so need to propagate that out
-        zstyle(){ _fzf_completion_zstyle "$@"; }
+        # Override compadd to capture completions
+        _fzf_override_compadd() {
+            compadd() { _fzf_completion_compadd "$@"; }
+        }
+        _fzf_override_compadd
 
-        # massive hack
-        # _approximate also overrides _compadd, so we have to override their one
-        __override_approximate(){
-            functions[_approximate]="unfunction compadd; { ${functions[_approximate]//builtin compadd /_fzf_completion_compadd } } always { __override_compadd }"
+        # Override zstyle to propagate changes to parent shell
+        zstyle() { _fzf_completion_zstyle "$@"; }
+
+        # Helper to apply the patch
+        _fzf_apply_patch() {
+            local completer=$1
+            functions[$completer]="unfunction compadd; { ${functions[$completer]//builtin compadd /_fzf_completion_compadd } } always { _fzf_override_compadd }"
         }
 
-        if [[ "$functions[_approximate]" == 'builtin autoload'* ]]; then
-            _approximate(){
-                unfunction _approximate
-                printf %s\\n "builtin autoload +XUz _approximate" >&"$__evaled"
-                builtin autoload +XUz _approximate
-                __override_approximate
-                _approximate "$@"
-            }
-        else
-            __override_approximate
-        fi
+        # Helper to patch completers that use 'builtin compadd'
+        _fzf_patch_completer() {
+            local completer=$1
+            if [[ "$functions[$completer]" == 'builtin autoload'* ]]; then
+                eval "$completer() {
+                    unfunction $completer
+                    printf %s\\\\n \"builtin autoload +XUz $completer\" >&\"\$__evaled\"
+                    builtin autoload +XUz $completer
+                    _fzf_apply_patch $completer
+                    $completer \"\$@\"
+                }"
+            else
+                _fzf_apply_patch "$completer"
+            fi
+        }
+
+        # Apply patch to _approximate
+        _fzf_patch_completer _approximate
 
         # all except autoload functions
         local __full_variables="$(typeset -p)"
