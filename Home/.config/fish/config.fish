@@ -17,16 +17,15 @@ set -gx SSH_AUTH_SOCK ~/.ssh/ssh-agent.sock
 if not test -S $SSH_AUTH_SOCK
     eval (ssh-agent -c -s) >/dev/null 2>&1
 end
+export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
 
 # ─── Greeting (cached, skip if terminal not interactive) ─────────────────────
 function fish_greeting
     set -l cache "$XDG_CACHE_HOME/fish-greeting-shown"
     if command -q hyfetch; and not test -f $cache
-        LC_CTYPE=C LC_COLLATE=C hyfetch -m 8bit
-        touch $cache &
+        hyfetch -m 8bit; touch $cache &
     else if command -q fastfetch; and not test -f $cache
-        LC_CTYPE=C LC_COLLATE=C fastfetch --thread true --detect-version false
-        touch $cache &
+        fastfetch --thread true --detect-version false; touch $cache &
     end
 end
 
