@@ -395,11 +395,10 @@ _rg() {
     typespec)
       if compset -P '[^:]##:include:'; then
         _sequence -s , _rg_types && ret=0
-      # @todo This bit in particular could be better, but it's a little
-      # complex, and attempting to solve it seems to run us up against a crash
-      # bug — zsh # 40362
       elif compset -P '[^:]##:'; then
-        _message 'glob or include directive' && ret=1
+        _alternative \
+          'directives:include directive:compadd -S "" include\:' \
+          'globs:glob pattern:_files' && ret=0
       elif [[ ! -prefix *:* ]]; then
         _rg_types -qS : && ret=0
       fi
