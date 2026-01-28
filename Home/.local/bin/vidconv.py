@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Final
@@ -248,8 +249,32 @@ def process(inp: Path, out: Path, preset: Preset, cfg: Config, log: Log, delete:
       log.warn("  Output larger, kept original")
   return True, in_sz, out_sz
 
+def process_item(inp: Path, preset: Preset, cfg: Config, out_dir: Path | None, src_root: Path | None, delete: bool) -> tuple[Stats, str]:
+  stats = Stats()
+  out = gen_out_path(inp, preset, cfg, out_dir, src_root)
+  if out.exists():
+    stats.skipped += 1
+    return stats, f"Skipped (exists): {out.name}"
+  if inp == out:
+    stats.skipped += 1
+    return stats, f"Skipped (same): {inp.name}"
+
+  # Use quiet log for parallel workers to prevent interleaved output
+  ok, in_sz, out_sz = process(inp, out, preset, cfg, Log(quiet=True), delete)
+
+  if ok:
+    stats.processed += 1
+    stats.input_bytes += in_sz
+    stats.output_bytes += out_sz
+    ratio = out_sz / in_sz if in_sz else 0
+    return stats, f"{inp.name} → {out.name}: {in_sz/1e6:.2f}MB → {out_sz/1e6:.2f}MB ({ratio:.1%})"
+  else:
+    stats.failed += 1
+    stats.failures.append(str(inp))
+    return stats, f"Failed: {inp.name}"
+
 def run_batch(files: list[Path], preset: Preset, cfg: Config, log: Log,
-              out_dir: Path | None, src_root: Path | None, delete: bool) -> Stats:
+              out_dir: Path | None, src_root: Path | None, delete: bool, jobs: int) -> Stats:
   stats = Stats()
   total = len(files)
   log.info(f"Processing {total} files")
@@ -271,6 +296,32 @@ def run_batch(files: list[Path], preset: Preset, cfg: Config, log: Log,
     log.info(f"Input:  {src_root}")
     log.info(f"Output: {out_dir}")
   print()
+
+  if jobs > 1:
+    log.info(f"Parallel execution with {jobs} jobs")
+    try:
+      with ThreadPoolExecutor(max_workers=jobs) as executor:
+        futures = {executor.submit(process_item, f, preset, cfg, out_dir, src_root, delete): f for f in files}
+        for i, future in enumerate(as_completed(futures), 1):
+          inp = futures[future]
+          try:
+            s, msg = future.result()
+            stats.processed += s.processed
+            stats.skipped += s.skipped
+            stats.failed += s.failed
+            stats.input_bytes += s.input_bytes
+            stats.output_bytes += s.output_bytes
+            stats.failures.extend(s.failures)
+            log.info(f"[{i}/{total}] {msg}")
+          except Exception as e:
+            stats.failed += 1
+            stats.failures.append(str(inp))
+            log.err(f"Error processing {inp.name}: {e}")
+    except KeyboardInterrupt:
+      log.err("Interrupted")
+      sys.exit(130)
+    return stats
+
   for i, inp in enumerate(files, 1):
     log.prog(i, total, inp.name)
     print()
@@ -350,6 +401,7 @@ def parse_args() -> tuple[argparse.Namespace, list[str]]:
   f.add_argument('--crop', metavar='W:H:X:Y', help='Crop video (or "auto")')
   f.add_argument('--scale', metavar='WxH', help='Scale video (e.g., "1920x1080")')
   p.add_argument('--delete', action='store_true', help='Delete original after conversion')
+  p.add_argument('-j', '--jobs', type=int, default=1, help='Number of parallel jobs (default: 1)')
   p.add_argument('--quiet', action='store_true', help='Suppress progress output')
   p.add_argument('--silent', action='store_true', help='Suppress all output except errors')
   return p.parse_known_args()
@@ -407,7 +459,7 @@ def main() -> int:
   if not files:
     log.warn("No files found")
     return 0
-  stats = run_batch(files, preset, cfg, log, out_dir, src_root, args.delete)
+  stats = run_batch(files, preset, cfg, log, out_dir, src_root, args.delete, args.jobs)
   print_summary(stats, log)
   return 1 if stats.failed else 0
 
