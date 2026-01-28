@@ -41,9 +41,15 @@ def get_repo_stats(repo: Path) -> RepoStats:
   age = (now - int(first_ts)) // 86400 if first_ts else 0
   active = (now - int(last_ts)) // 86400 if last_ts else 0
   authors: dict[str, int] = defaultdict(int)
-  authors_out = run_git(["log", "--format=%an"], repo)
-  for author in authors_out.splitlines():
-    authors[author] += 1
+  authors_out = run_git(["shortlog", "-s", "HEAD"], repo)
+  for line in authors_out.splitlines():
+    line = line.strip()
+    if not line:
+      continue
+    parts = line.split("\t", 1)
+    if len(parts) == 2:
+      count, author = parts
+      authors[author] += int(count)
   return RepoStats(commits, files, age, active, dict(authors))
 
 def find_repos(path: Path) -> list[Path]:
