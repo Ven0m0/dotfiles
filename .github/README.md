@@ -13,14 +13,10 @@
 - Install [dbin](https://github.com/xplshn/dbin)
 ```bash
 curl -sfLO "https://raw.githubusercontent.com/xplshn/dbin/master/stubdl" | bash -s -- --install "${HOME}/.local/bin/dbin"
-# or
-wget -qO- "https://raw.githubusercontent.com/xplshn/dbin/master/stubdl" | bash -s -- --install "${HOME}/.local/bin/dbin"
 ```
 - Install [AM](https://github.com/ivan-hc/AM)
 ```bash
 curl -sfLO "https://raw.githubusercontent.com/ivan-hc/AM/main/AM-INSTALLER" && chmod a+x ./AM-INSTALLER && ./AM-INSTALLER && rm ./AM-INSTALLER
-# or
-wget -q "https://raw.githubusercontent.com/ivan-hc/AM/main/AM-INSTALLER" && chmod a+x ./AM-INSTALLER && ./AM-INSTALLER && rm ./AM-INSTALLER****
 ```
 - Install [x-cmd](https://www.x-cmd.com)
 
