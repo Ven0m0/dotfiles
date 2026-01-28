@@ -28,7 +28,7 @@ binstall = true
 uvx = true
 
 [settings.npm]
-package_manager = bun
+package_manager = "bun"
 
 # Tools Configuration
 [tools]
@@ -64,7 +64,7 @@ rmz = "latest"
 "cargo:sy" = "latest"
 
 [env]
-_.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages"] }
+_.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages", "--seed", "--symlinks", "--clear", "--no-managed-python"] }
 #_.java.GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
 NODE_ENV = 'production'
 UV_LINK_MODE = "hardlink"
