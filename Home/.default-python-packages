@@ -1,0 +1,10 @@
+pipenv
+httpx
+aiohttp
+pathlib
+pendulum
+uvloop
+orjson
+polars
+typer
+rich
