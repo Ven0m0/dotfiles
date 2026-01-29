@@ -61,31 +61,22 @@ pre-commit:
         done
       fail_text: "JSON invalid"
 
-    aglint:
-      priority: 5
-      glob: "*.txt"
-      run: |
-        command -v bunx &>/dev/null || { printf "bun not installed, skipping AGLint\n" >&2; exit 0; }
-        [[ -f .aglintrc.yml ]] || { printf ". aglintrc.yml not found, skipping AGLint\n" >&2; exit 0; }
-        bunx @adguard/aglint {staged_files}
-      fail_text: "AGLint validation failed"
-
     biome:
-      priority: 6
+      priority: 5
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       run: bunx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
       stage_fixed:  true
       fail_text: "Biome failed"
 
     markdown-lint:
-      priority: 7
+      priority: 6
       glob: "*.{md,markdown}"
       run: bunx markdownlint-cli2 --fix {staged_files}
       stage_fixed: true
       fail_text: "Markdown lint failed"
 
     normalize: 
-      priority: 8
+      priority: 7
       glob: "*"
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2? |ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
@@ -99,7 +90,7 @@ pre-commit:
       fail_text: "Normalize failed"
 
     gha-lint:
-      priority: 9
+      priority: 8
       glob: ". github/workflows/*.{yml,yaml}"
       run:  |
         command -v actionlint &>/dev/null || { printf "actionlint not installed, skipping\n" >&2; exit 0; }
@@ -122,24 +113,3 @@ post-checkout:
       priority: 1
       run: "git submodule update --init --recursive &>/dev/null || :"
       fail_text:  "Submodule update failed"
-
-    notify:
-      priority: 2
-      run: |
-        changed=$(git diff HEAD@{1} HEAD --name-only)
-        grep -qE '^(package. json|bun\. lockb|.*lock\. json)$' <<< "$changed" && {
-          printf "Dependencies changed.  Run: bun install\n" >&2
-        } || :
-      fail_text: "Dep check failed"
-
-prepare-commit-msg:
-  commands:
-    ticket:
-      priority: 1
-      run: |
-        branch=$(git rev-parse --abbrev-ref HEAD)
-        [[ "$branch" =~ ^(feature|bugfix|hotfix|fix)/([A-Z]+-[0-9]+) ]] && {
-          ticket="${BASH_REMATCH[2]}"
-          grep -qF "$ticket" {1} || sed -i. bak "1s/^/$ticket: /" {1} && rm -f {1}.bak
-        } || :
-      fail_text: "Ticket insert failed"
