@@ -3,6 +3,12 @@ NoPlugin=false
 library=org.kde.breeze
 theme=Breeze
 
+[EdgeBarrier]
+CornerBarrier=false
+
+[Input]
+TabletMode=off
+
 [NightColor]
 Active=true
 Mode=Times
@@ -12,6 +18,8 @@ TransitionTime=15
 NightTemperature=3700
 
 [Plugins]
+better_blur_dxEnabled=true
+hidecursorEnabled=true
 auto-activeEnabled=false
 blurEnabled=false
 desktopchangeosdEnabled=false
@@ -24,9 +32,6 @@ screenedgeEnabled=false
 synchronizeskipswitcherEnabled=false
 zoomEnabled=false
 
-[Compositing]
-Backend=vk
-
 [Windows]
 ElectricBorderMaximize=false
 ElectricBorderTiling=false
@@ -36,4 +41,5 @@ TabletMode=off
 
 [Xwayland]
 Scale=1
+XwaylandEisNoPrompt=true
 XwaylandEisNoPrompt=true
