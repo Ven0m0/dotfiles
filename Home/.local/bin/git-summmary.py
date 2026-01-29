@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Recursively summarize git repositories in a directory tree."""
+import concurrent.futures
 import subprocess as sp
 import sys
 from collections import defaultdict
@@ -75,8 +76,10 @@ def aggregate_stats(repos: list[Path], base: Path) -> None:
   total_commits = total_files = 0
   min_age = max_age = min_active = max_active = None
   all_authors: dict[str, int] = defaultdict(int)
-  for repo in repos:
-    stats = get_repo_stats(repo)
+  with concurrent.futures.ThreadPoolExecutor() as executor:
+    stats_list = list(executor.map(get_repo_stats, repos))
+
+  for stats in stats_list:
     total_commits += stats.commits
     total_files += stats.files
     age, active = stats.age, stats.active
