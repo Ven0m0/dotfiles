@@ -11,6 +11,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Final
 
+# TODO: implement features of https://github.com/hykilpikonna/formtool
+
 # ─── Constants ───
 VIDEO_EXTS: Final = frozenset({'.mp4','.mkv','.m4v','.avi','.mov','.ts','.flv','.wmv','.webm'})
 AUDIO_EXTS: Final = frozenset({'.mp3','.ogg','.opus','.m4a','.aac','.wma'})
