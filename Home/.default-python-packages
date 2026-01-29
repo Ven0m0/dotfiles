@@ -1,4 +1,9 @@
 pipenv
 httpx
+aiohttp
 pathlib
 pendulum
+uvloop
+polars
+typer
+rich
