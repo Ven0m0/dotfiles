@@ -91,12 +91,43 @@ def process(cfg: Config) -> int:
     if cfg.dry_run:
       print("DRY RUN: No changes will be made", file=sys.stderr)
     
-    # TODO: Implement core logic here
+    # Core processing logic
+    files_processed = 0
+    errors = 0
+
+    # Determine files to process
+    if cfg.input_path.is_file():
+      files = [cfg.input_path]
+    else:
+      # Use generators for memory efficiency
+      files = cfg.input_path.rglob("*")
+
+    for file_path in files:
+      if not file_path.is_file():
+        continue
+
+      try:
+        if cfg.verbose:
+          print(f"Processing: {file_path}", file=sys.stderr)
+
+        if not cfg.dry_run:
+          # TODO: Replace with actual file processing logic
+          # Example:
+          # content = file_path.read_text()
+          # processed = transform(content)
+          # file_path.write_text(processed)
+          pass
+
+        files_processed += 1
+
+      except (OSError, UnicodeError) as e:
+        print(f"Error processing {file_path}: {e}", file=sys.stderr)
+        errors += 1
     
     if cfg.verbose:
-      print("Processing complete", file=sys.stderr)
+      print(f"Processing complete. Files: {files_processed}, Errors: {errors}", file=sys.stderr)
     
-    return 0
+    return 1 if errors > 0 else 0
     
   except PermissionError as e:
     print(f"Permission denied: {e}", file=sys.stderr)
