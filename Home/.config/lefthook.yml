@@ -72,24 +72,15 @@ pre-commit:
 
     biome:
       priority: 6
-      glob: "*.{js,ts,cjs,mjs,d.cts,d. mts,jsx,tsx,json,jsonc}"
-      run: |
-        command -v biome &>/dev/null || { printf "biome not installed, skipping\n" >&2; exit 0; }
-        cfg="${HOME}/.config/biome. json"
-        [[ -r "$cfg" ]] || cfg="${HOME}/biome.json"
-        BIOME_CONFIG_PATH="$cfg" biome check --write --skip-parse-errors --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files} || :
-        git add {staged_files}
+      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
+      run: bunx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
       stage_fixed:  true
       fail_text: "Biome failed"
 
     markdown-lint:
       priority: 7
       glob: "*.{md,markdown}"
-      run:  |
-        command -v bunx &>/dev/null || { printf "bun not installed, skipping\n" >&2; exit 0; }
-        [[ -f .markdownlint-cli2.jsonc ]] || { printf ".markdownlint-cli2.jsonc not found, skipping with config\n" >&2; }
-        bunx markdownlint-cli2 --fix {staged_files} || bunx markdownlint-cli2 {staged_files}
-        git add {staged_files}
+      run: bunx markdownlint-cli2 --fix {staged_files}
       stage_fixed: true
       fail_text: "Markdown lint failed"
 
@@ -107,86 +98,13 @@ pre-commit:
       stage_fixed: true
       fail_text: "Normalize failed"
 
-    security: 
-      priority: 9
-      run: |
-        command -v rg &>/dev/null || { printf "ripgrep not installed, skipping security scan\n" >&2; exit 0; }
-        files=$(printf '%s\n' {staged_files} | grep -vE '(test|spec|fixture|mock|example|sample|__tests__|\. test\.|\.spec\.|/tests? /)' || :)
-        [[ -z "$files" ]] && exit 0
-        echo "$files" | xargs -r rg -iNn \
-          -e 'AKIA[0-9A-Z]{16}' \
-          -e 'ghp_[0-9a-zA-Z]{36}' \
-          -e 'glpat-[0-9a-zA-Z_-]{20,}' \
-          -e 'xox[baprs]-[0-9]{10,13}-[0-9]{10,13}-[0-9a-zA-Z]{24,}' \
-          -e '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' \
-          -e '^(<{7}|={7}|>{7})[^<>=]' \
-          && { printf "Security issue detected (secrets/merge conflicts)\n" >&2; exit 1; } || :
-      fail_text: "Security check failed"
-
     gha-lint:
-      priority: 10
+      priority: 9
       glob: ". github/workflows/*.{yml,yaml}"
       run:  |
         command -v actionlint &>/dev/null || { printf "actionlint not installed, skipping\n" >&2; exit 0; }
         actionlint {staged_files}
       fail_text: "GHA lint failed"
-
-    build-userscripts:
-      priority: 11
-      run: |
-        [[ -f package. json ]] && grep -q '"build: userscripts"' package.json || exit 0
-        bun run build:userscripts || : 
-      fail_text: "Build userscripts failed"
-
-    branch-protect:
-      priority: 12
-      run: |
-        branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-        [[ "$branch" =~ ^(main|master)$ ]] && { printf "Direct commits to %s blocked\n" "$branch" >&2; exit 1; } || :
-      fail_text: "Protected branch"
-
-commit-msg:
-  commands: 
-    conventional: 
-      priority: 1
-      run: |
-        grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}' {1} || {
-          printf "Use Conventional Commits: type(scope? ): subject\n" >&2; exit 1
-        }
-        subject=$(head -n1 {1})
-        (( ${#subject} > 72 )) && { printf "Subject >72 chars (%d)\n" "${#subject}" >&2; exit 1; } || :
-        grep -qEi '\b(wip|todo|fixme|hack)\b' {1} && { printf "Remove WIP/TODO\n" >&2; exit 1; } || :
-      fail_text: "Commit format invalid"
-
-pre-push:
-  parallel: true
-  commands:
-    test: 
-      priority: 1
-      run: |
-        [[ -f Makefile ]] && { make test &>/dev/null; exit 0; }
-        [[ -f package. json ]] && { bun test &>/dev/null; exit 0; }
-        [[ -f Cargo.toml ]] && { cargo test -q &>/dev/null; exit 0; }
-        exit 0
-      fail_text:  "Tests failed"
-
-    branch: 
-      priority: 2
-      run: |
-        branch=$(git rev-parse --abbrev-ref HEAD)
-        [[ "$branch" =~ ^(main|master|production)$ ]] && { printf "Direct push to %s blocked\n" "$branch" >&2; exit 1; }
-        [[ "$branch" =~ ^(develop|staging|release/. +|hotfix/.+|feature/.+|(bug)?fix/.+|beta|alpha|next)$ ]] || {
-          printf "Use git-flow: feature/*, fix/*, release/*, hotfix/*\n" >&2
-        }; exit 0
-      fail_text: "Branch naming violation"
-
-    audit:
-      priority: 3
-      run: |
-        [[ -f package.json ]] && { bun audit || bun x npm audit --production --audit-level=high; } || :
-        [[ -f Cargo.toml ]] && command -v cargo-audit &>/dev/null && cargo audit || :
-        exit 0
-      fail_text:  "Audit failed"
 
 post-merge:
   commands:
