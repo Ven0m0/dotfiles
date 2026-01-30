@@ -2,14 +2,78 @@
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
 set -euo pipefail; shopt -s nullglob globstar dotglob
 IFS=$'\n\t'; export LC_ALL=C
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+# s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
+
+# Helper functions and constants
+readonly BLD=$'\e[1m' GRN=$'\e[32m' RED=$'\e[31m' YLW=$'\e[33m' DEF=$'\e[0m'
+export BLD GRN RED YLW DEF
 
 has(){ command -v -- "$1" &>/dev/null; }
-readonly BLD=$'\e[1m' GRN=$'\e[32m' RED=$'\e[31m' YLW=$'\e[33m' DEF=$'\e[0m'
+export -f has
+
 die(){ printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2; exit 1; }
 log(){ printf '%b==>%b %s\n' "${BLD}" "$DEF" "$*"; }
 ok(){ printf '%b✓%b %s\n' "${GRN}" "$DEF" "$*"; }
 err(){ printf '%b✗%b %s\n' "${RED}" "$DEF" "$*"; }
+export -f log ok err
+
+# Worker function for parallel execution
+_sanitize_worker() {
+  # Config from environment variables: DO_CR, DO_EOF, DO_TRAILING, DO_UNICODE, CHECK
+  local sed_script="" dirty=0
+  local -a file_issues=()
+  local out_buffer=""
+
+  # Local output helpers to buffer output
+  _ok(){ out_buffer+="$(ok "$@")"$'\n'; }
+  _err(){ out_buffer+="$(err "$@")"$'\n'; }
+
+  for f in "$@"; do
+    [[ -f $f ]] || continue
+    grep -qP -m1 '\x00' <(head -c 8000 "$f") && continue
+
+    sed_script=""
+    dirty=0
+    file_issues=()
+    out_buffer=""
+
+    [[ $DO_TRAILING -eq 1 ]] && grep -q '[[:space:]]$' "$f" && {
+      file_issues+=("trailing-ws")
+      sed_script+='s/[[:space:]]\+$//;'
+    }
+    [[ $DO_CR -eq 1 ]] && grep -q $'\r' "$f" && {
+      file_issues+=("crlf")
+      sed_script+='s/\r//g;'
+    }
+    [[ $CHECK -eq 0 && -n $sed_script ]] && {
+      sed -i "$sed_script" "$f"
+      dirty=1
+    }
+    if [[ $DO_UNICODE -eq 1 ]] && has perl; then
+      if perl -ne 'exit 1 if /[\x{00A0}\x{202F}\x{200B}\x{00AD}]/' "$f"; then
+        :
+      else
+        file_issues+=("unicode")
+        [[ $CHECK -eq 0 ]] && {
+          perl -CS -0777 -i -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g' "$f"
+          dirty=1
+        }
+      fi
+    fi
+    [[ $DO_EOF -eq 1 && -s $f ]] && [[ -n "$(tail -c 1 "$f")" ]] && {
+      file_issues+=("no-eof-newline")
+      [[ $CHECK -eq 0 ]] && {
+        echo >>"$f"
+        dirty=1
+      }
+    }
+    [[ ${#file_issues[@]} -gt 0 ]] && {
+      [[ $CHECK -eq 1 ]] && _err "$f: ${file_issues[*]}" || _ok "$f (fixed:  ${file_issues[*]})"
+      printf "%s" "$out_buffer"
+    }
+  done
+}
+export -f _sanitize_worker
 
 usage(){
   cat <<EOF
@@ -58,7 +122,7 @@ resolve_paths(){
 }
 
 cmd_whitespace(){
-  local check=0 do_cr=0 do_eof=0 do_trailing=0 do_unicode=0 issues=0
+  local check=0 do_cr=0 do_eof=0 do_trailing=0 do_unicode=0
   local -a args=() files=()
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -78,48 +142,27 @@ cmd_whitespace(){
   [[ ${#files[@]} -eq 0 ]] && die "No files found.  Pass path or --git."
   log "Processing ${#files[@]} files..."
 
-  for f in "${files[@]}"; do
-    [[ -f $f ]] || continue
-    grep -qP -m1 '\x00' <(head -c 8000 "$f") && continue
-    local dirty=0 sed_script=""
-    local -a file_issues=()
-    [[ $do_trailing -eq 1 ]] && grep -q '[[:space:]]$' "$f" && {
-      file_issues+=("trailing-ws")
-      sed_script+='s/[[:space:]]\+$//;'
-    }
-    [[ $do_cr -eq 1 ]] && grep -q $'\r' "$f" && {
-      file_issues+=("crlf")
-      sed_script+='s/\r//g;'
-    }
-    [[ $check -eq 0 && -n $sed_script ]] && {
-      sed -i "$sed_script" "$f"
-      dirty=1
-    }
-    if [[ $do_unicode -eq 1 ]] && has perl; then
-      if perl -ne 'exit 1 if /[\x{00A0}\x{202F}\x{200B}\x{00AD}]/' "$f"; then
-        : 
-      else
-        file_issues+=("unicode")
-        [[ $check -eq 0 ]] && {
-          perl -CS -0777 -i -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g' "$f"
-          dirty=1
+  export DO_CR=$do_cr DO_EOF=$do_eof DO_TRAILING=$do_trailing DO_UNICODE=$do_unicode CHECK=$check
+
+  local cores=4
+  has nproc && cores=$(nproc)
+
+  printf '%s\0' "${files[@]}" | \
+    xargs -0 -P "$cores" -n 50 bash -c '_sanitize_worker "$@"' _ | \
+    awk -v check="$check" -v bld="$BLD" -v red="$RED" -v def="$DEF" '
+      { print }
+      /✗/ { count++ }
+      END {
+        if (check == 1 && count > 0) {
+            printf "%sERROR:%s Found issues in %d files.\n", bld red, def, count > "/dev/stderr"
+            exit 1
         }
-      fi
-    fi
-    [[ $do_eof -eq 1 && -s $f ]] && [[ -n "$(tail -c 1 "$f")" ]] && {
-      file_issues+=("no-eof-newline")
-      [[ $check -eq 0 ]] && {
-        echo >>"$f"
-        dirty=1
       }
-    }
-    [[ ${#file_issues[@]} -gt 0 ]] && {
-      issues=$((issues + 1))
-      [[ $check -eq 1 ]] && err "$f: ${file_issues[*]}" || ok "$f (fixed:  ${file_issues[*]})"
-    }
-  done
-  [[ $check -eq 1 && $issues -gt 0 ]] && die "Found issues in $issues files."
-  [[ $check -eq 0 ]] && log "Done."
+    '
+
+  if [[ $check -eq 0 ]]; then
+      log "Done."
+  fi
 }
 
 cmd_filenames(){
