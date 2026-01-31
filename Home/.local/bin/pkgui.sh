@@ -94,10 +94,22 @@ _pkgui_search_aur_rpc(){
   
   preview_fn='
     pkg=$(cut -f1 <<<{})
-    curl -fsSL "https://aur.archlinux.org/rpc/?v=5&type=info&arg=$pkg" 2>/dev/null | jq -r ". results[0] | \"Name:         \(.Name // \"N/A\")\nVersion:     \(.Version // \"N/A\")\nMaintainer:  \(.Maintainer // \"orphan\")\nVotes:       \(.NumVotes // 0)\nPopularity:  \(.Popularity // 0.0)\nOut-of-date:  \(if .OutOfDate then \"YES\" else \"no\" end)\nDescription: \(.Description // \"N/A\")\nURL:         \(.URL // \"N/A\")\nLicense:     \(.License // [] | join(\", \"))\""
+    cache_dir="$CACHE/aur_rpc"
+    mkdir -p "$cache_dir"
+    cache_file="$cache_dir/$pkg"
+    if [[ -s "$cache_file" ]]; then
+      cat "$cache_file"
+    else
+      out=$(curl -fsSL "https://aur.archlinux.org/rpc/?v=5&type=info&arg=$pkg" 2>/dev/null | jq -r ".results[0] | \"Name:         \(.Name // \"N/A\")\nVersion:     \(.Version // \"N/A\")\nMaintainer:  \(.Maintainer // \"orphan\")\nVotes:       \(.NumVotes // 0)\nPopularity:  \(.Popularity // 0.0)\nOut-of-date:  \(if .OutOfDate then \"YES\" else \"no\" end)\nDescription: \(.Description // \"N/A\")\nURL:         \(.URL // \"N/A\")\nLicense:     \(.License // [] | join(\", \"))\"")
+      if [[ -n "$out" && "$out" != "null" ]]; then
+         echo "$out" | tee "$cache_file"
+      else
+         echo "No info found for $pkg"
+      fi
+    fi
   '
   
-  export -f _pkgui_fzf; export FND FZF_THEME HIST PAC
+  export -f _pkgui_fzf; export FND FZF_THEME HIST PAC CACHE
   local selected
   selected=$(jq -r '.results[] | "\(.Name)\t\(.Version)\t\(.Maintainer//"-")\t\(.Description//"-")"' <<<"$raw" | \
     _pkgui_fzf -m \
