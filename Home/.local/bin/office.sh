@@ -9,7 +9,7 @@ repack_zip(){ local f=$1 t=${f%.*}-opt.${f##*.} d=$(mktemp -d);unzip -q "$f" -d 
 repack_zstd(){ local f=$1 t=${f%.*}-zstd.${f##*.} d=$(mktemp -d);unzip -q "$f" -d "$d";(cd "$d" && zip --compression-method zstd -q -r "../$t" .);rm -rf "$d";printf '%s\n' "$t";}
 pdf_lossless(){ local f=$1 o=${f%.*}-opt.pdf;gs -sDEVICE=pdfwrite -dPDFSETTINGS=/default -dCompatibilityLevel=1.7 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="$o" "$f" 2>/dev/null||return 1;printf '%s\n' "$o";}
 pdf_lossy(){ local f=$1 o=${f%.*}-lossy.pdf;gs -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook -dNOPAUSE -q -dBATCH -dDownsampleColorImages=true -dDownsampleMonoImages=true -dDownsampleGrayImages=true -sOutputFile="$o" "$f" 2>/dev/null||return 1;printf '%s\n' "$o";}
-validate_office(){ local f=$1 d=$(mktemp -d);if unzip -tq "$f" -d "$d" 2>/dev/null;then [[ -f "$d/content.xml" || -f "$d/word/document.xml" || -f "$d/xl/workbook.xml" ]] && printf 'OK\n'||printf 'INVALID\n';else printf 'CORRUPT\n';fi;rm -rf "$d";}
+validate_office(){ local f=$1 d=$(mktemp -d);if unzip -q "$f" -d "$d" >/dev/null 2>&1;then [[ -f "$d/content.xml" || -f "$d/word/document.xml" || -f "$d/xl/workbook.xml" ]] && printf 'OK\n'||printf 'INVALID\n';else printf 'CORRUPT\n';fi;rm -rf "$d";}
 compress_media(){
   local d=$1 mode=${2:-lossless} -a imgs=() pdfs=()
   mapfile -t imgs < <(find "$d" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \))
@@ -34,9 +34,12 @@ batch_compress(){
   printf '%s\n' "${files[@]}"|xargs -P"$(nproc 2>/dev/null||printf 4)" -I{} bash -c "$(declare -f compress_file repack_zip repack_zstd pdf_lossless pdf_lossy);compress_file {} $mode" _
 }
 lint_office(){
-  local dir=${1:-.} -a files=()
+  local dir=${1:-.}
+  local -a files=()
   has fd && mapfile -t files < <(fd -e odt -e ods -e odp -e docx -e xlsx -e pptx . "$dir")||mapfile -t files < <(find "$dir" -type f \( -name '*.odt' -o -name '*.ods' -o -name '*.odp' -o -name '*.docx' -o -name '*.xlsx' -o -name '*.pptx' \))
-  for f in "${files[@]}";do printf '%s: %s\n' "$f" "$(validate_office "$f")";done
+  [[ ${#files[@]} -eq 0 ]] && return 0
+  export -f validate_office
+  printf '%s\n' "${files[@]}" | xargs -P"$(nproc 2>/dev/null||printf 4)" -I{} bash -c 'printf "%s: %s\n" "$1" "$(validate_office "$1")"' _ "{}"
 }
 strip_metadata(){ local f=$1 t=${f%.*}-clean.${f##*.} d=$(mktemp -d);unzip -q "$f" -d "$d";find "$d" -name 'meta.xml' -delete;[[ -f "$d/docProps/core.xml" ]] && : >"$d/docProps/core.xml";[[ -f "$d/docProps/app.xml" ]] && : >"$d/docProps/app.xml";(cd "$d" && zip -9 -q -r "../$t" .);rm -rf "$d";printf '%s\n' "$t";}
 show_stats(){
