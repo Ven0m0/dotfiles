@@ -5,17 +5,18 @@ die(){ printf '%s\n' "$*" >&2;exit 1;}
 has(){ command -v "$1" &>/dev/null;}
 req(){ has "$1"||die "missing: $1";}
 img_opt(){ case $1 in *.png) has oxipng && oxipng -q -o2 "$1"||has optipng && optipng -q "$1";;*.jpg|*.jpeg) has jpegoptim && jpegoptim -q -s "$1";;esac;}
+pdf_opt(){ local p=$1 mode=$2; local t="${p%.*}-t.pdf" s=$([[ $mode == lossy ]] && printf ebook||printf prepress);gs -sDEVICE=pdfwrite -dPDFSETTINGS=/$s -dCompatibilityLevel=1.7 -dNOPAUSE -q -dBATCH -sOutputFile="$t" "$p" 2>/dev/null && mv "$t" "$p";}
 repack_zip(){ local f=$1 t=${f%.*}-opt.${f##*.} d=$(mktemp -d);unzip -q "$f" -d "$d";(cd "$d" && zip -9 -q -r "../$t" .);rm -rf "$d";printf '%s\n' "$t";}
 repack_zstd(){ local f=$1 t=${f%.*}-zstd.${f##*.} d=$(mktemp -d);unzip -q "$f" -d "$d";(cd "$d" && zip --compression-method zstd -q -r "../$t" .);rm -rf "$d";printf '%s\n' "$t";}
 pdf_lossless(){ local f=$1 o=${f%.*}-opt.pdf;gs -sDEVICE=pdfwrite -dPDFSETTINGS=/default -dCompatibilityLevel=1.7 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="$o" "$f" 2>/dev/null||return 1;printf '%s\n' "$o";}
 pdf_lossy(){ local f=$1 o=${f%.*}-lossy.pdf;gs -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook -dNOPAUSE -q -dBATCH -dDownsampleColorImages=true -dDownsampleMonoImages=true -dDownsampleGrayImages=true -sOutputFile="$o" "$f" 2>/dev/null||return 1;printf '%s\n' "$o";}
 validate_office(){ local f=$1 d=$(mktemp -d);if unzip -tq "$f" -d "$d" 2>/dev/null;then [[ -f "$d/content.xml" || -f "$d/word/document.xml" || -f "$d/xl/workbook.xml" ]] && printf 'OK\n'||printf 'INVALID\n';else printf 'CORRUPT\n';fi;rm -rf "$d";}
 compress_media(){
-  local d=$1 mode=${2:-lossless} -a imgs=() pdfs=()
+  local d=$1 mode=${2:-lossless}; local -a imgs=() pdfs=()
   mapfile -t imgs < <(find "$d" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \))
   mapfile -t pdfs < <(find "$d" -type f -iname '*.pdf')
   [[ ${#imgs[@]} -gt 0 ]] && printf '%s\n' "${imgs[@]}"|xargs -P"$(nproc 2>/dev/null||printf 4)" -I{} bash -c "$(declare -f img_opt has);img_opt {}"
-  for p in "${pdfs[@]}";do local t="${p%.*}-t.pdf" s=$([[ $mode == lossy ]] && printf ebook||printf prepress);gs -sDEVICE=pdfwrite -dPDFSETTINGS=/$s -dCompatibilityLevel=1.7 -dNOPAUSE -q -dBATCH -sOutputFile="$t" "$p" 2>/dev/null && mv "$t" "$p";done
+  [[ ${#pdfs[@]} -gt 0 ]] && printf '%s\n' "${pdfs[@]}"|xargs -P"$(nproc 2>/dev/null||printf 4)" -I{} bash -c "$(declare -f pdf_opt);pdf_opt \"\$1\" \"\$2\"" _ "{}" "$mode"
 }
 repack_media(){ local f=$1 mode=${2:-lossless} t=${f%.*}-media.${f##*.} d=$(mktemp -d);unzip -q "$f" -d "$d";compress_media "$d" "$mode";(cd "$d" && zip -9 -q -r "../$t" .);rm -rf "$d";printf '%s\n' "$t";}
 compress_file(){
@@ -77,4 +78,6 @@ main(){
     *) usage;exit 1;;
   esac
 }
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main "$@"
+fi
