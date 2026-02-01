@@ -30,7 +30,7 @@ _sanitize_worker() {
 
   for f in "$@"; do
     [[ -f $f ]] || continue
-    grep -qP -m1 '\x00' <(head -c 8000 "$f") && continue
+    grep -qP -m1 '\x00' <(head -c 8000 -- "$f") && continue
 
     sed_script=""
     dirty=0
