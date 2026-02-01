@@ -50,7 +50,7 @@ _sanitize_worker() {
       dirty=1
     }
     if [[ $DO_UNICODE -eq 1 ]] && has perl; then
-      if perl -ne 'exit 1 if /[\x{00A0}\x{202F}\x{200B}\x{00AD}]/' "$f"; then
+      if perl -ne 'exit 1 if /[\x{00A0}\x{202F}\x{200B}\x{00AD}]/' -- "$f"; then
         :
       else
         file_issues+=("unicode")
