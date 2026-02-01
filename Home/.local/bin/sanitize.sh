@@ -55,7 +55,7 @@ _sanitize_worker() {
       else
         file_issues+=("unicode")
         [[ $CHECK -eq 0 ]] && {
-          perl -CS -0777 -i -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g' "$f"
+          perl -CS -0777 -i -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g' -- "$f"
           dirty=1
         }
       fi
