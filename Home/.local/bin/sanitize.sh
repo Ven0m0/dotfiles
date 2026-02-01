@@ -46,7 +46,7 @@ _sanitize_worker() {
       sed_script+='s/\r//g;'
     }
     [[ $CHECK -eq 0 && -n $sed_script ]] && {
-      sed -i "$sed_script" "$f"
+      sed -i "$sed_script" -- "$f"
       dirty=1
     }
     if [[ $DO_UNICODE -eq 1 ]] && has perl; then
