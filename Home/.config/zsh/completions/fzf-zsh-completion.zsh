@@ -270,13 +270,13 @@ _fzf_completion_selector(){
         flags+=( --query="$__query" )
     fi
 
-    tput cud1 >/dev/tty # fzf clears the line on exit so move down one
+    printf '\e[B' >/dev/tty # fzf clears the line on exit so move down one
     # fullvalue, value, index, display, show, prefix
     FZF_DEFAULT_OPTS="--height $default_height --reverse $FZF_DEFAULT_OPTS $FZF_COMPLETION_OPTS" \
         "$fzf" --ansi --prompt "${FZF_TAB_COMPLETION_PROMPT:-> }$PREFIX" -d "[${_FZF_COMPLETION_SEP}${_FZF_COMPLETION_SPACE_SEP}]" --with-nth 6,5,4 --nth "$field" "${flags[@]}" \
         < <( (( ${#lines[@]} )) && printf %s\\n "${lines[@]}"; cat)
     code="$?"
-    tput cuu1 >/dev/tty
+    printf '\e[A' >/dev/tty
     return "$code"
 }
 
