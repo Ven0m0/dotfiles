@@ -68,7 +68,7 @@ _sanitize_worker() {
       }
     }
     [[ ${#file_issues[@]} -gt 0 ]] && {
-      [[ $CHECK -eq 1 ]] && _err "$f: ${file_issues[*]}" || _ok "$f (fixed:  ${file_issues[*]})"
+      [[ $CHECK -eq 1 ]] && _err "$f: ${file_issues[*]}" || _ok "$f (fixed: ${file_issues[*]})"
       printf "%s" "$out_buffer"
     }
   done
