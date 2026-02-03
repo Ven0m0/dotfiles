@@ -342,32 +342,6 @@ Review and refactor `.github/workflows/*.yml` for security, performance, maintai
 ```
 </details>
 <details>
-<summary><b>Markdown token tweaks</b></summary>
-
-```md
-Ensure that the skills only have the permissions they need to function optimally, no more, otherwise they would be wasting tokens.Please refactor the selected file(s) to minimize token usage while maintaining readability. Follow these strict rules:
-### 1. JSON Formatting (Moderate Inlining)
-Apply this specifically to `json` code blocks and JSON structures:
-- **Action**: Convert multi-line arrays `[...]` and small objects `{...}` into single-line representations.
-- **Constraint**: Only apply this if the resulting single line is **≤ 140 characters**.
-- **Style**: Maintain readability with spacing.
-  - *Current*:
-    "plugins": [
-      "unicorn",
-      "cat"
-    ]
-  - *Target*: `"plugins": [ "unicorn", "cat" ]`
-- **Fallback**: If the single line exceeds 140 characters, keep it multi-line to preserve readability.
-### 2. Markdown Compaction
-- **Whitespace**: Collapse 3+ consecutive newlines into 2 (max one empty line between paragraphs).
-- **Comments**: Remove all HTML comments ``.
-- **Lists**: Ensure list items use tight spacing (no blank lines between items) unless they contain complex block content.
-### 3. Safety Guidelines
-- **Immutable Code**: Do NOT modify the formatting of non-JSON code blocks (e.g., Python, Bash, YAML) unless they have trailing whitespace.
-- **Content**: Do not summarize or delete actual text content, only syntactic waste.
-```
-</details>
-<details>
 <summary><b>TODO short</b></summary>
 
 ```md
