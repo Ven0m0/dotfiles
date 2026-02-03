@@ -226,7 +226,7 @@ bgd(){
 fman(){
   [[ $# -gt 0 ]] && { man "$@"; return; }
   local cmd
-  cmd="man -k . | fzf --reverse --preview=\"bash -c 's={2}; man {1}.\${s//[()]/}'\""
+  cmd='man -k . | fzf --reverse --preview="bash -c \"s={2}; man {1}.\${s//[()]/}\""'
   eval "$cmd" | awk '{print $1"."$2}' | tr -d '()' | xargs -r man
 }
 bathelp(){ "$@" --help 2>&1 | bat -plhelp; }
