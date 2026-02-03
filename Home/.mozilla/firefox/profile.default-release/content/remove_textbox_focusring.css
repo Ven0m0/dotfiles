@@ -1,5 +1,0 @@
-:where(textarea, input[type="text"], input[type="search"], input[type="password"], input[type="url"]) {
-  appearance: none;
-  border-style: solid;
-  outline: none;
-}

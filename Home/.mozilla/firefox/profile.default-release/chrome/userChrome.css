@@ -1,3 +1,11 @@
+/* Feature imports - comment out to disable individual features */
+@import url("inline_tab_audio_icons.css");
+@import url("minimal_toolbarbuttons_v3.css");
+@import url("scrollable_bookmarks_toolbar.css");
+@import url("scrollable_menupopups.css");
+@import url("scrollable_urlbar_popup.css");
+@import url("shrinking_pinned_tabs.css");
+
 :root {
   --toolbarbutton-inner-padding: 6px;
   --tab-block-margin: 2px;
