@@ -226,11 +226,7 @@ bgd(){
 fman(){
   [[ $# -gt 0 ]] && { man "$@"; return; }
   local cmd
-  if command -v sd &>/dev/null; then
-    cmd="man -k . | fzf --reverse --preview=\"echo {1,2} | sd ' \\(' '.' | sd '\\)\\s*\$' '' | xargs man\""
-  else
-    cmd="man -k . | fzf --reverse --preview=\"echo {1,2} | sed 's/ (/./' | sed -E 's/\)\s*$//' | xargs man\""
-  fi
+  cmd='man -k . | fzf --reverse --preview="bash -c \"s={2}; man {1}.\${s//[()]/}\""'
   eval "$cmd" | awk '{print $1"."$2}' | tr -d '()' | xargs -r man
 }
 bathelp(){ "$@" --help 2>&1 | bat -plhelp; }
