@@ -4,10 +4,10 @@
 # Enable right prompt when you figure out what to add there
 # RIGHT_PROMPT="\n\$(tput sc; rightprompt; tput rc)"
 
+# Pretty print path variable
 echo "${PATH//:/$'\n'}"
 ```
 
-- https://www.jetify.com/devbox
 - https://github.com/ChrisTitusTech/linutil/tree/main/core/tabs
 
 # Misc
@@ -20,23 +20,15 @@ echo "${PATH//:/$'\n'}"
 
 ### Shell
 
-- https://github.com/gmou3/fzf-preview
 - https://github.com/BartSte/fzf-help
 - https://github.com/beauwilliams/Dotfiles
 
 ### Adblock
 
-- https://hermit.chimbori.com/config/content-blockers/v2/PaidContentLinks.txt
 - https://github.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt
 - https://hermit.chimbori.com/config/content-blockers/v2/UserSuggested.txt
 - https://github.com/MetaMask/eth-phishing-detect/master/src/hosts.txt
 - https://urlhaus.abuse.ch/downloads/hostfile
-
-### web dev
-
-- netlify.com
-- surge.sh
-- render.com
 
 ### Implement scripts from: [dusky](https://github.com/dusklinux/dusky)
 
