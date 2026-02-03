@@ -2,6 +2,7 @@
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
 set -euo pipefail; shopt -s nullglob globstar dotglob
 IFS=$'\n\t'; export LC_ALL=C
+# s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
 
 # Helper functions and constants
 readonly BLD=$'\e[1m' GRN=$'\e[32m' RED=$'\e[31m' YLW=$'\e[33m' DEF=$'\e[0m'
@@ -29,7 +30,7 @@ _sanitize_worker() {
 
   for f in "$@"; do
     [[ -f $f ]] || continue
-    grep -qP -m1 '\x00' <(head -c 8000 -- "$f") && continue
+    grep -qP -m1 '\x00' <(head -c 8000 "$f") && continue
 
     sed_script=""
     dirty=0
@@ -45,16 +46,16 @@ _sanitize_worker() {
       sed_script+='s/\r//g;'
     }
     [[ $CHECK -eq 0 && -n $sed_script ]] && {
-      sed -i "$sed_script" -- "$f"
+      sed -i "$sed_script" "$f"
       dirty=1
     }
     if [[ $DO_UNICODE -eq 1 ]] && has perl; then
-      if perl -ne 'exit 1 if /[\x{00A0}\x{202F}\x{200B}\x{00AD}]/' -- "$f"; then
+      if perl -ne 'exit 1 if /[\x{00A0}\x{202F}\x{200B}\x{00AD}]/' "$f"; then
         :
       else
         file_issues+=("unicode")
         [[ $CHECK -eq 0 ]] && {
-          perl -CS -0777 -i -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g' -- "$f"
+          perl -CS -0777 -i -pe 's/[\x{00A0}\x{202F}\x{200B}\x{00AD}]+/ /g' "$f"
           dirty=1
         }
       fi
@@ -67,7 +68,7 @@ _sanitize_worker() {
       }
     }
     [[ ${#file_issues[@]} -gt 0 ]] && {
-      [[ $CHECK -eq 1 ]] && _err "$f: ${file_issues[*]}" || _ok "$f (fixed: ${file_issues[*]})"
+      [[ $CHECK -eq 1 ]] && _err "$f: ${file_issues[*]}" || _ok "$f (fixed:  ${file_issues[*]})"
       printf "%s" "$out_buffer"
     }
   done
@@ -143,31 +144,17 @@ cmd_whitespace(){
 
   export DO_CR=$do_cr DO_EOF=$do_eof DO_TRAILING=$do_trailing DO_UNICODE=$do_unicode CHECK=$check
 
-  local cores=4 batch_size
-  # Try to detect CPU count; fall back to 4 if detection fails.
-  if has nproc; then
-    cores=$(nproc)
-  elif has getconf; then
-    cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)
-  fi
-  # Ensure at least 1 core; using 1 core on single-core systems is intentional.
-  if ! [[ "$cores" =~ ^[0-9]+$ ]] || (( cores < 1 )); then
-    cores=1
-  fi
-
-  local total_files=${#files[@]}
-  batch_size=$(( total_files / cores ))
-  (( batch_size < 1 )) && batch_size=1
-  (( batch_size > 500 )) && batch_size=500
+  local cores=4
+  has nproc && cores=$(nproc)
 
   printf '%s\0' "${files[@]}" | \
-    xargs -0 -P "$cores" -n "$batch_size" bash -c '_sanitize_worker "$@"' _ | \
+    xargs -0 -P "$cores" -n 50 bash -c '_sanitize_worker "$@"' _ | \
     awk -v check="$check" -v bld="$BLD" -v red="$RED" -v def="$DEF" '
       { print }
       /✗/ { count++ }
       END {
         if (check == 1 && count > 0) {
-            printf "%sERROR:%s Found issues in %d files.\n", bld, red, def, count > "/dev/stderr"
+            printf "%sERROR:%s Found issues in %d files.\n", bld red, def, count > "/dev/stderr"
             exit 1
         }
       }
