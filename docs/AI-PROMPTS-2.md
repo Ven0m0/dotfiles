@@ -21,3 +21,7 @@ Apply "Flow Style" to arrays/lists and objects/tables/maps:
 - **Preservation**: Do NOT modify the internal formatting of script code blocks (e.g., Python, Bash) unless strictly trimming trailing whitespace.
 - **Content**: Do not summarize text or remove valid documentation; focus purely on syntactic density.
 ```
+
+```md
+Analyze this repository and create a comprehensive AGENTS.md file that explains the codebase structure, development workflows, and key conventions for AI assistants to follow. If one already exists, update it with the most recent state. Create a CLAUDE.md and GEMINI.md file which both symlink to AGENTS.md.
+```
