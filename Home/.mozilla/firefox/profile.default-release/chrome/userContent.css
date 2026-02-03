@@ -117,9 +117,13 @@
   }
 }
 
-/* Textbox focus ring removal */
+/* Textbox styling with custom visible focus ring */
 :where(textarea, input[type="text"], input[type="search"], input[type="password"], input[type="url"]) {
   appearance: none;
   border-style: solid;
-  outline: none;
+}
+
+:where(textarea, input[type="text"], input[type="search"], input[type="password"], input[type="url"]):focus-visible {
+  outline: 2px solid Highlight;
+  outline-offset: 2px;
 }
