@@ -144,7 +144,16 @@ cmd_whitespace(){
   export DO_CR=$do_cr DO_EOF=$do_eof DO_TRAILING=$do_trailing DO_UNICODE=$do_unicode CHECK=$check
 
   local cores=4 batch_size
-  has nproc && cores=$(nproc)
+  # Try to detect CPU count; fall back to 4 if detection fails.
+  if has nproc; then
+    cores=$(nproc)
+  elif has getconf; then
+    cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)
+  fi
+  # Ensure at least 1 core; using 1 core on single-core systems is intentional.
+  if ! [[ "$cores" =~ ^[0-9]+$ ]] || (( cores < 1 )); then
+    cores=1
+  fi
 
   local total_files=${#files[@]}
   batch_size=$(( total_files / cores ))
