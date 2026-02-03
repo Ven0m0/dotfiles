@@ -158,7 +158,7 @@ cmd_whitespace(){
       /✗/ { count++ }
       END {
         if (check == 1 && count > 0) {
-            printf "%s%sERROR:%s Found issues in %d files.\n", bld, red, def, count > "/dev/stderr"
+            printf "%sERROR:%s Found issues in %d files.\n", bld, red, def, count > "/dev/stderr"
             exit 1
         }
       }
