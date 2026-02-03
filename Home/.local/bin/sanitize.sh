@@ -144,11 +144,16 @@ cmd_whitespace(){
 
   export DO_CR=$do_cr DO_EOF=$do_eof DO_TRAILING=$do_trailing DO_UNICODE=$do_unicode CHECK=$check
 
-  local cores=4
+  local cores=4 batch_size
   has nproc && cores=$(nproc)
 
+  local total_files=${#files[@]}
+  batch_size=$(( total_files / cores ))
+  (( batch_size < 1 )) && batch_size=1
+  (( batch_size > 500 )) && batch_size=500
+
   printf '%s\0' "${files[@]}" | \
-    xargs -0 -P "$cores" -n 50 bash -c '_sanitize_worker "$@"' _ | \
+    xargs -0 -P "$cores" -n "$batch_size" bash -c '_sanitize_worker "$@"' _ | \
     awk -v check="$check" -v bld="$BLD" -v red="$RED" -v def="$DEF" '
       { print }
       /✗/ { count++ }
