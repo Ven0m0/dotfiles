@@ -81,6 +81,7 @@
     .addon-name-container > .addon-name { grid-area: name; }
     .addon-name-container > :is(.toggle-button, moz-toggle) { grid-area: toggle; justify-self: end; }
     .addon-name-container > .addon-badge { grid-area: badge; }
+    .addon-name-container > .more-options-button { margin-inline: 0; }
     .card-heading-image { max-width: calc(100% + 32px); object-position: left; }
     section > h2 { grid-area: hd; }
     addon-card { padding-block: 0; grid-area: auto; }
