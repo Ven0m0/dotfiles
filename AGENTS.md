@@ -32,6 +32,14 @@ dotfiles/
 └── BASH_PERFORMANCE.md      # Perf patterns
 ```
 
+**Key Files:**
+- @Home - User dotfiles root
+- @etc - System configs root
+- @setup.sh - Bootstrap installer
+- @hooks.toml - Tuckr hooks
+- @YADM.md - Deployment guide
+- @BASH_PERFORMANCE.md - Performance patterns
+
 **Stats:** 66 config dirs | 22 scripts | 89 system configs | ~4K LOC
 
 ---
@@ -43,6 +51,7 @@ dotfiles/
 - **Idioms:** `[[ ]]`, `mapfile -t`, `local -n`, `printf`, `ret=$(fn)`, `${var}`
 - **Ban:** `eval`, `ls` parse, backticks, unquoted vars
 - **Packages:** `paru`→`yay` (Arch) | `apt` (Debian). Verify `pacman -Q` first.
+- **Reference:** @BASH_PERFORMANCE.md
 
 ### Tools (Modern Preferred)
 | Legacy | Modern | Reason |
@@ -63,14 +72,14 @@ dotfiles/
 - Direct ANSI codes, not `tput`
 
 ### Protected Files (Read-Only)
-`pacman.conf`, `.zshrc`, `.gitconfig`, `sysctl.d/*.conf`, `paru.conf`, `makepkg.conf`
+@etc/pacman.conf, @Home/.config/zsh/.zshrc, @Home/.gitconfig, @etc/sysctl.d, @etc/paru.conf, @etc/makepkg.conf
 
 ---
 
 ## Deployment System
 
 ### YADM (User Configs)
-Deploys `Home/` → `~/`
+Deploys @Home → `~/`
 
 ```bash
 yadm-sync pull    # Repo → Home → ~
@@ -79,53 +88,57 @@ yadm bootstrap    # Full first-time deploy
 ```
 
 **Alternate files:** `file##os.Linux`, `file##hostname.server`
+**Reference:** @YADM.md
 
 ### Tuckr (System Configs)
-Deploys `etc/`, `usr/` → `/` (requires sudo)
+Deploys @etc, `usr/` → `/` (requires sudo)
 
 ```bash
 sudo tuckr link -d $(yadm rev-parse --show-toplevel) -t / etc usr
 ```
 
 **Fallback:** `sudo stow -t / -d . etc usr`
+**Hooks:** @hooks.toml
 
 ---
 
-## Scripts Inventory (`~/.local/bin`)
+## Scripts Inventory
+
+Scripts location: @Home/.local/bin
 
 ### System & Package Management
 | Script | Purpose |
 |--------|---------|
-| `pkgui.sh` | Unified Arch package TUI (fzf + paru/yay) |
-| `systool.sh` | System maintenance utilities |
-| `deploy-system-configs.sh` | Tuckr/stow deployment |
-| `lint-format.sh` | Auto-lint framework |
+| @Home/.local/bin/pkgui.sh | Unified Arch package TUI (fzf + paru/yay) |
+| @Home/.local/bin/systool.sh | System maintenance utilities |
+| @Home/.local/bin/deploy-system-configs.sh | Tuckr/stow deployment |
+| @Home/.local/bin/lint-format.sh | Auto-lint framework |
 
 ### Media & Video
 | Script | Purpose |
 |--------|---------|
-| `av1pack.sh` | AV1 codec encoding |
-| `av-tool.sh` | Audio-video processing |
-| `media-opt.sh` | Image/audio compression |
-| `media-toolkit.sh` | Media utilities |
+| @Home/.local/bin/av1pack.sh | AV1 codec encoding |
+| @Home/.local/bin/av-tool.sh | Audio-video processing |
+| @Home/.local/bin/media-opt.sh | Image/audio compression |
+| @Home/.local/bin/media-toolkit.sh | Media utilities |
 
 ### Git & Development
 | Script | Purpose |
 |--------|---------|
-| `yadm-sync.sh` | Bidirectional dotfile sync |
-| `gh-tools.sh` | GitHub CLI wrapper |
-| `fzf-tools.sh` | Fuzzy finder integration |
+| @Home/.local/bin/yadm-sync.sh | Bidirectional dotfile sync |
+| @Home/.local/bin/gh-tools.sh | GitHub CLI wrapper |
+| @Home/.local/bin/fzf-tools.sh | Fuzzy finder integration |
 
 ### Utilities
 | Script | Purpose |
 |--------|---------|
-| `cht.sh` | Cheat sheet CLI |
-| `dedupe.sh` | File deduplication |
-| `sanitize.sh` | File/system cleanup |
-| `speedtest.sh` | Network speed test |
-| `optimal-mtu.sh` | MTU optimization |
-| `yt_grab.sh` | YouTube downloader |
-| `vnfetch.sh` | System info fetcher |
+| @Home/.local/bin/cht.sh | Cheat sheet CLI |
+| @Home/.local/bin/dedupe.sh | File deduplication |
+| @Home/.local/bin/sanitize.sh | File/system cleanup |
+| @Home/.local/bin/speedtest.sh | Network speed test |
+| @Home/.local/bin/optimal-mtu.sh | MTU optimization |
+| @Home/.local/bin/yt_grab.sh | YouTube downloader |
+| @Home/.local/bin/vnfetch.sh | System info fetcher |
 
 ---
 
@@ -134,28 +147,42 @@ sudo tuckr link -d $(yadm rev-parse --show-toplevel) -t / etc usr
 ### Shell Configs
 | Shell | Config | Framework |
 |-------|--------|-----------|
-| Bash | `.bashrc` + modular | Native |
-| Zsh | `.config/zsh/` | Zimfw + P10k |
-| Fish | `.config/fish/` | Native |
-| Prompt | `.config/starship.toml` | Starship |
+| Bash | @Home/.bashrc + @Home/.bash_functions | Native |
+| Zsh | @Home/.config/zsh | Zimfw + P10k |
+| Fish | @Home/.config/fish | Native |
+| Prompt | @Home/.config/starship.toml | Starship |
 
 ### Terminal Emulators
-- Alacritty, Kitty, Wezterm
+- @Home/.config/alacritty
+- @Home/.config/kitty
+- @Home/.config/wezterm
 
 ### Development Tools
-- VSCode/Codium, Neovim, Git, Mise, Docker
+- @Home/.config/Code (VSCode)
+- @Home/.config/nvim (Neovim)
+- @Home/.gitconfig
+- @Home/.config/mise
+- @Home/.config/docker
 
 ### AI Integration
-- Claude (`.claude/`), Gemini (`.gemini/`), Copilot
+- @Home/.claude
+- @Home/.gemini
+- GitHub Copilot
 
 ### Desktop/UI
-- Plasma/KDE, Yazi, Walker, Fontconfig, GTK/Qt
+- @Home/.config/plasma-workspace (KDE)
+- @Home/.config/yazi
+- @Home/.config/walker
+- @Home/.config/fontconfig
+- @Home/.config/gtk-3.0
 
 ### Gaming
-- Gamemode, DXVK, Proton, Steam, Heroic
+- @Home/.config/gamemode.ini
+- Steam, Heroic, DXVK, Proton
 
 ### Media
-- YT-DLP, FFmpeg, Dolphin Emulator, Borked3DS
+- @Home/.config/yt-dlp
+- FFmpeg, Dolphin Emulator
 
 ---
 
@@ -214,6 +241,7 @@ git pull origin <branch>      # With retry on network errors
 
 ### CI Pipeline
 GitHub Actions runs: `shfmt`, `shellcheck`, `biome`, `ruff`, `actionlint`
+Workflows: @.github/workflows
 
 ### Testing
 - **Pattern:** TDD (Red→Green→Refactor)
@@ -222,31 +250,33 @@ GitHub Actions runs: `shfmt`, `shellcheck`, `biome`, `ruff`, `actionlint`
 
 ---
 
-## System Config Categories (`etc/`)
+## System Config Categories
+
+Location: @etc
 
 ### Package Management
-- `pacman.conf`, `paru.conf`, `makepkg.conf`
-- `pacman.d/hooks/` (15 hooks for automation)
+- @etc/pacman.conf, @etc/paru.conf, @etc/makepkg.conf
+- @etc/pacman.d/hooks (15 hooks for automation)
 
 ### Kernel & Modules
-- `sysctl.d/` (kernel parameters)
-- `modprobe.d/` (nvidia, bluetooth, nvme)
-- `modules-load.d/` (module autoload)
+- @etc/sysctl.d (kernel parameters)
+- @etc/modprobe.d (nvidia, bluetooth, nvme)
+- @etc/modules-load.d (module autoload)
 
 ### Systemd
-- `systemd/system/` (custom services)
-- `systemd/user.conf.d/` (user limits)
-- `systemd/journald.conf.d/` (logging)
+- @etc/systemd/system (custom services)
+- @etc/systemd/user.conf.d (user limits)
+- @etc/systemd/journald.conf.d (logging)
 
 ### Hardware & Performance
-- `udev/rules.d/` (17 rules for devices)
-- `tmpfiles.d/` (temp file management)
-- `security/limits.d/` (audio, gaming limits)
+- @etc/udev/rules.d (17 rules for devices)
+- @etc/tmpfiles.d (temp file management)
+- @etc/security/limits.d (audio, gaming limits)
 
 ### Network
-- `NetworkManager/conf.d/`
-- `resolv.conf`, `dnsmasq.conf`
-- `ssh/sshd_config`
+- @etc/NetworkManager/conf.d
+- @etc/resolv.conf
+- @etc/ssh/sshd_config
 
 ---
 
@@ -291,6 +321,7 @@ XDG_RUNTIME_DIR=/run/user/$UID
 ### Fix Shellcheck Error
 ```bash
 # Task: systool has unquoted variable
+# File: @Home/.local/bin/systool.sh
 # Before: log_path=$HOME/.cache/systool.log
 # After:  log_path="${HOME}/.cache/systool.log"
 # Result: Shellcheck passes ∴ Variables quoted per standards
@@ -299,7 +330,7 @@ XDG_RUNTIME_DIR=/run/user/$UID
 ### Add Feature to Script
 ```bash
 # Task: Add verbose flag to pkgui
-# 1. Read ~/.local/bin/pkgui.sh (Read tool)
+# 1. Read @Home/.local/bin/pkgui.sh
 # 2. Search for flag parsing (line ~15-30)
 # 3. Edit to add -v flag + verbose logic (Edit tool)
 # 4. Verify shellcheck passes
@@ -310,7 +341,7 @@ XDG_RUNTIME_DIR=/run/user/$UID
 ### Deploy System Config
 ```bash
 # Task: Add new udev rule
-# 1. Create etc/udev/rules.d/99-custom.rules
+# 1. Create @etc/udev/rules.d/99-custom.rules
 # 2. Run: sudo tuckr link -d . -t / etc
 # 3. Run: sudo udevadm control --reload-rules
 # Result: Rule deployed ∴ Tuckr symlinked, udev reloaded
@@ -319,7 +350,7 @@ XDG_RUNTIME_DIR=/run/user/$UID
 ### Sync Dotfiles
 ```bash
 # Task: Update repo with local changes
-# 1. yadm-sync push (dry-run first)
+# 1. Run @Home/.local/bin/yadm-sync.sh push (dry-run first)
 # 2. Review changes
 # 3. git add <specific files>
 # 4. git commit -m "chore: sync local config updates"
@@ -333,12 +364,12 @@ XDG_RUNTIME_DIR=/run/user/$UID
 ### Common Paths
 | Type | Path |
 |------|------|
-| User configs | `Home/.config/` |
-| Scripts | `Home/.local/bin/` |
-| System configs | `etc/` |
-| Bash config | `Home/.bashrc` |
-| Zsh config | `Home/.config/zsh/` |
-| Fish config | `Home/.config/fish/` |
+| User configs | @Home/.config |
+| Scripts | @Home/.local/bin |
+| System configs | @etc |
+| Bash config | @Home/.bashrc |
+| Zsh config | @Home/.config/zsh |
+| Fish config | @Home/.config/fish |
 
 ### Key Commands
 ```bash
