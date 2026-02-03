@@ -16,18 +16,14 @@ rr="run -r"
 [build]
 rustc-wrapper = "sccache"
 incremental = false
-rustflags = ["-Ctarget-cpu=native", "-Clink-arg=-fuse-ld=lld", "-Zthreads=16"]
+rustflags = ["-Ctarget-cpu=native", "-Clink-arg=-fuse-ld=lld"]
 
 [env]
 RUSTC_BOOTSTRAP="1"
 RUST_PANIC_STRATEGY="abort"
 RUST_LIB_BACKTRACE="0"
 RUSTC_LOG="off"
-MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
-_RJEM_MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu,dirty_decay_ms:0,muzzy_decay_ms:0"
 GITOXIDE_CORE_MULTIPACKINDEX="true"
-SCCACHE_DIRECT="true"
-SCCACHE_IDLE_TIMEOUT="10800"
 
 [cache]
 auto-clean-frequency="7 days"
@@ -79,7 +75,7 @@ debug = 0
 
 [target.x86_64-unknown-linux-gnu]
 linker="clang"
-rustflags = ["-Ctarget-cpu=native", "-Clink-arg=-fuse-ld=lld", "-Zthreads=16"]
+rustflags = ["-Ctarget-cpu=native", "-Clink-arg=-fuse-ld=lld"]
 
 [term]
 color="auto"
