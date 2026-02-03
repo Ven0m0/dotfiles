@@ -134,9 +134,8 @@ def find_files_walk(root: Path, exts: frozenset[str]) -> list[Path]:
   files: list[Path] = []
   for r, _, fnames in os.walk(root):
     for f in fnames:
-      p = Path(r) / f
-      if p.suffix.lower() in exts:
-        files.append(p)
+      if os.path.splitext(f)[1].lower() in exts:
+        files.append(Path(r) / f)
   return files
 
 def find_files(root: Path, exts: frozenset[str]) -> list[Path]:
@@ -251,7 +250,7 @@ def process(inp: Path, out: Path, preset: Preset, cfg: Config, log: Log, delete:
       log.warn("  Output larger, kept original")
   return True, in_sz, out_sz
 
-def process_item(inp: Path, preset: Preset, cfg: Config, out_dir: Path | None, src_root: Path | None, delete: bool) -> tuple[Stats, str]:
+def process_item(inp: Path, preset: Preset, cfg: Config, out_dir: Path | None, src_root: Path | None, delete: bool, log: Log) -> tuple[Stats, str]:
   stats = Stats()
   out = gen_out_path(inp, preset, cfg, out_dir, src_root)
   if out.exists():
@@ -301,9 +300,10 @@ def run_batch(files: list[Path], preset: Preset, cfg: Config, log: Log,
 
   if jobs > 1:
     log.info(f"Parallel execution with {jobs} jobs")
+    quiet_log = Log(quiet=True, silent=log.silent)
     try:
       with ThreadPoolExecutor(max_workers=jobs) as executor:
-        futures = {executor.submit(process_item, f, preset, cfg, out_dir, src_root, delete): f for f in files}
+        futures = {executor.submit(process_item, f, preset, cfg, out_dir, src_root, delete, quiet_log): f for f in files}
         for i, future in enumerate(as_completed(futures), 1):
           inp = futures[future]
           try:
