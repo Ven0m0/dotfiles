@@ -162,8 +162,7 @@ _pkgui_orphans(){
         mapfile -t data < <("$PAC" -Qi "${orphans[@]}" 2>/dev/null | awk -v RS= -v FS='\n' '{n="";s="";d="";for(i=1;i<=NF;i++){if($i~/^Name/){sub(/^Name +: +/,"",$i);n=$i}else if($i~/^Installed Size/){sub(/^Installed Size +: +/,"",$i);s=$i}else if($i~/^Description/){sub(/^Description +: +/,"",$i);d=$i}}if(n)printf "%s\t%s\t%s\n",n,s,d}')
       fi
 
-      for line in "${data[@]}"; do
-        IFS=$'\t' read -r pkg size desc <<< "$line"
+      printf '%s\n' "${data[@]}" | while IFS=$'\t' read -r pkg size desc; do
         printf '%b▸ %s%b\n  Size: %s\n  %s\n\n' "$B" "$pkg" "$D" "$size" "$desc"
       done
       ;;
