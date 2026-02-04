@@ -46,6 +46,9 @@ x-scheme-handler/chrome=firefox.desktop;
 x-scheme-handler/geo=openstreetmap-geo-handler.desktop;
 x-scheme-handler/http=firefox.desktop;
 x-scheme-handler/https=firefox.desktop;
+x-scheme-handler/cursor=cursor.desktop;
+x-scheme-handler/opencode=OpenCode-handler.desktop
+x-scheme-handler/claude=claude-desktop.desktop;
 
 [Default Applications]
 application/pdf=firefox.desktop;
@@ -95,9 +98,11 @@ video/x-theora=mpv.desktop;
 video/x-theora+ogg=mpv.desktop;
 x-scheme-handler/bitwarden=bitwarden.desktop;
 x-scheme-handler/chrome=firefox.desktop;
-x-scheme-handler/claude=claude-desktop.desktop;
 x-scheme-handler/dyad=dyad.desktop;
 x-scheme-handler/geo=openstreetmap-geo-handler.desktop;
 x-scheme-handler/http=firefox.desktop;
 x-scheme-handler/https=firefox.desktop;
 x-scheme-handler/podman-desktop=Podman Desktop.desktop;
+x-scheme-handler/cursor=cursor.desktop;
+x-scheme-handler/opencode=OpenCode-handler.desktop
+x-scheme-handler/claude=claude-desktop.desktop;
