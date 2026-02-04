@@ -4,18 +4,19 @@ set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
 # --- Helpers ---
-R=$'\e[31m' G=$'\e[32m' B=$'\e[34m' Y=$'\e[33m' X=$'\e[0m'
+export R=$'\e[31m' G=$'\e[32m' B=$'\e[34m' Y=$'\e[33m' X=$'\e[0m'
 log() { printf "%b[+]%b %s\n" "$B" "$X" "$*"; }
 die() { printf "%b[!]%b %s\n" "$R" "$X" "$*" >&2; exit "${2:-1}"; }
 warn() { printf "%b[WARN]%b %s\n" "$Y" "$X" "$*" >&2; }
 req() { command -v "$1" >/dev/null || die "Missing dependency: $1"; }
+
+export -f log die warn
 
 # --- Commands ---
 cmd_gif() {
   [[ $# -lt 2 ]] && die "Usage: gif <input> <output.gif> [scale_width]"
   local in=$1 out=$2 width=${3:-480}
   log "Generating GIF ($width px wide)..."
-  # High quality palette generation + usage in one complex filter
   ffmpeg -y -v warning -i "$in" -vf "fps=15,scale=$width:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -c:v gif "$out"
 }
 
@@ -28,14 +29,12 @@ cmd_frame() {
 cmd_combine() {
   [[ $# -lt 3 ]] && die "Usage: combine <video/img> <audio> <output>"
   log "Muxing $1 + $2..."
-  # -shortest ends when shortest stream ends
   ffmpeg -y -v warning -i "$1" -i "$2" -c:v copy -c:a aac -b:a 192k -shortest "$3"
 }
 
 cmd_trim() {
   [[ $# -lt 4 ]] && die "Usage: trim <input> <start> <end> <output>"
   log "Trimming $1 ($2 to $3)..."
-  # Fast seek (-ss before -i) is less accurate but faster; re-encoding usually needed for precise cuts
   ffmpeg -y -v warning -ss "$2" -to "$3" -i "$1" -c copy "$4"
 }
 
@@ -49,7 +48,6 @@ cmd_fade() {
   [[ $# -lt 3 ]] && die "Usage: fade <input> <duration> <output>"
   local d=$2
   log "Fading in/out ($d sec)..."
-  # Simple fade in video/audio
   ffmpeg -y -v warning -i "$1" \
     -vf "fade=t=in:st=0:d=$d" \
     -af "afade=t=in:st=0:d=$d" \
@@ -63,6 +61,23 @@ cmd_silence() {
     -c:v copy -c:a aac -shortest "$2"
 }
 
+_cdopt_worker() {
+  local file=$1 out_dir=$2
+  local base; base=$(basename "${file%.*}")
+  local fmt; fmt=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$file" < /dev/null)
+
+  if [[ $fmt =~ mp3|aac|ogg|wma ]]; then
+     warn "Lossy source ($fmt): $base"
+     echo "STATUS:LOSSY"
+  fi
+
+  # High-quality Resampling (SOXR) + Dither (Triangular)
+  ffmpeg -nostdin -y -v error -i "$file" \
+      -af "aresample=44100:resampler=soxr:precision=28:dither_method=triangular" \
+      -c:a pcm_s16le "$out_dir/$base.wav" && echo "STATUS:DONE"
+}
+export -f _cdopt_worker
+
 cmd_cdopt() {
   [[ $# -lt 2 ]] && die "Usage: cd-optimize <input_dir> <output_dir>"
   local in_dir=$1 out_dir=$2 count=0 lossy=0
@@ -70,21 +85,23 @@ cmd_cdopt() {
   mkdir -p "$out_dir"
   
   log "Optimizing for Red Book CD (16-bit/44.1kHz)..."
-  # Find audio files
-  while IFS= read -r -d '' file; do
-    local base; base=$(basename "${file%.*}")
-    local fmt; fmt=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$file")
-    
-    [[ $fmt =~ mp3|aac|ogg|wma ]] && { warn "Lossy source ($fmt): $base"; ((lossy++)); }
-    
-    # High-quality Resampling (SOXR) + Dither (Triangular)
-    ffmpeg -y -v error -i "$file" \
-      -af "aresample=44100:resampler=soxr:precision=28:dither_method=triangular" \
-      -c:a pcm_s16le "$out_dir/$base.wav"
-    
-    printf "."
-    ((count++))
-  done < <(find "$in_dir" -maxdepth 1 -type f -regextype posix-extended -regex ".*\.(flac|wav|mp3|m4a|aac|ogg|alac|aiff)$" -print0)
+
+  local jobs
+  if command -v nproc >/dev/null; then
+      jobs=$(nproc)
+  else
+      jobs=4
+  fi
+
+  # Use process substitution to avoid subshell issues with counters?
+  # Actually pipe output to while loop in current shell
+
+  while read -r line; do
+      case "$line" in
+          STATUS:LOSSY) ((lossy++)) || true ;;
+          STATUS:DONE)  ((count++)) || true; printf ".";;
+      esac
+  done < <(find "$in_dir" -maxdepth 1 -type f -regextype posix-extended -regex ".*\.(flac|wav|mp3|m4a|aac|ogg|alac|aiff)$" -print0 | xargs -0 -P "$jobs" -I {} bash -c '_cdopt_worker "$@"' _ "{}" "$out_dir")
   
   echo
   ((count)) || die "No audio files found."
