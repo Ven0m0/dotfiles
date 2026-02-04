@@ -4,7 +4,6 @@
 
 [misc]
 pre_sudo = true
-sudo_command = "sudo-rs"
 disable = ["system", "config_update", "vim"]
 ignore_failures = ["system", "micro", "uv", "pipx", "shell", "yazi", "bun", "mise", "yadm", "node"]
 assume_yes = true
