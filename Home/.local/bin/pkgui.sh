@@ -8,7 +8,8 @@ s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
 has(){ command -v -- "$1" &>/dev/null; }
 export HOME="/home/${SUDO_USER:-$USER}" SHELL="$(command -v bash)"
 readonly R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' C=$'\e[36m' M=$'\e[35m' BD=$'\e[1m' D=$'\e[0m' UL=$'\e[4m' IT=$'\e[3m'
-readonly CFG="${XDG_CONFIG_HOME:-$HOME/.config}/pkgui" CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/pkgui" HIST="${PKGUI_HISTORY:-$CACHE/history}" PKGLIST="${PKGUI_PKGLIST:-$CFG/packagelist}"
+readonly CFG="${XDG_CONFIG_HOME:-$HOME/.config}/pkgui" CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/pkgui"
+readonly HIST="${PKGUI_HISTORY:-$CACHE/history}" PKGLIST="${PKGUI_PKGLIST:-$CFG/packagelist}"
 readonly FILE_NATIVE="$CFG/native. txt" FILE_AUR="$CFG/aur.txt"
 declare -A _pkgui_cmd_cache _CI _CQ _CL _CLO _CUPD
 _CUPD_TIME=0
@@ -25,10 +26,12 @@ _pkgui_msg(){ printf '%b%s%b\n' "$G" "$*" "$D"; }
 _pkgui_warn(){ printf '%b[WARN]%b %s\n' "$Y" "$D" "$*" >&2; }
 
 # --- Package Manager Detection ---
+_old_ifs="$IFS"; IFS=' '
 for p in ${PARUZ:-paru yay pacman}; do _pkgui_has "$p" && PAC="$p" && break; done
 [[ -z ${PAC:-} ]] && _pkgui_die "No pkg mgr (pacman/paru/yay)"
 for f in ${FINDER:-sk fzf}; do _pkgui_has "$f" && FND="$f" && break; done
 [[ -z ${FND:-} ]] && _pkgui_die "No fuzzy finder (sk/fzf)"
+IFS="$_old_ifs"
 FZF_THEME="${FZF_THEME:-hl: italic:#FFFF00,hl+:bold: underline:#FF0000,fg:#98A0C5,fg+:bold:#FFFFFF,bg:#13172A,bg+:#0F1222,border:#75A2F7,label: bold:#75A2F7,preview-fg:#C0CAF5,preview-bg:#0F1222,marker: bold:#FF0000,pointer:bold:#FF0000,prompt:bold:#75A2F7,spinner:#FF0000,header: italic:#75A2F7,info:#FFFF00,scrollbar:#75A2F7,separator:#75A2F7,gutter:#13172A}"
 
 _pkgui_ver(){ printf '%b%s%b v5. 3.0 - Unified Arch Package Manager TUI\n' "$BD" "${0##*/}" "$D"; }
@@ -140,7 +143,7 @@ _pkgui_browse_aur(){
 
 # --- Orphan Management ---
 _pkgui_orphans(){
-  local mode="${1:-interactive}" -a orphans
+  local mode="${1:-interactive}"; local -a orphans
   mapfile -t orphans < <("$PAC" -Qdttq 2>/dev/null)
   local count=${#orphans[@]}
   
@@ -152,10 +155,15 @@ _pkgui_orphans(){
   case $mode in
     list)
       printf '%bFound %d orphaned packages:%b\n\n' "$Y" "$count" "$D"
-      for pkg in "${orphans[@]}"; do
-        local size desc
-        size=$("$PAC" -Qi "$pkg" 2>/dev/null | awk '/Installed Size/{print $4,$5}')
-        desc=$("$PAC" -Qi "$pkg" 2>/dev/null | awk -F':  ' '/Description/{print $2}')
+      local -a data
+      if _pkgui_has expac; then
+        mapfile -t data < <(expac -Q -H '%n\t%m\t%d' "${orphans[@]}" 2>/dev/null)
+      else
+        mapfile -t data < <("$PAC" -Qi "${orphans[@]}" 2>/dev/null | awk -v RS= -v FS='\n' '{n="";s="";d="";for(i=1;i<=NF;i++){if($i~/^Name/){sub(/^Name +: +/,"",$i);n=$i}else if($i~/^Installed Size/){sub(/^Installed Size +: +/,"",$i);s=$i}else if($i~/^Description/){sub(/^Description +: +/,"",$i);d=$i}}if(n)printf "%s\t%s\t%s\n",n,s,d}')
+      fi
+
+      for line in "${data[@]}"; do
+        IFS=$'\t' read -r pkg size desc <<< "$line"
         printf '%b▸ %s%b\n  Size: %s\n  %s\n\n' "$B" "$pkg" "$D" "$size" "$desc"
       done
       ;;
@@ -357,4 +365,6 @@ MENU
   done
 }
 
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main "$@"
+fi
