@@ -63,6 +63,7 @@ rmz = "latest"
 #"npm:@adguard/dead-domains-linter" = "latest"
 #"npm:@adguard/hostlist-compiler" = "latest"
 "cargo:sy" = "latest"
+jules = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages", "--clear", "--no-managed-python"] }
