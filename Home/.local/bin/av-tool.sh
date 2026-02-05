@@ -63,8 +63,8 @@ cmd_silence() {
 
 _cdopt_worker() {
   local file=$1 out_dir=$2
-  local base; base=$(basename "${file%.*}")
-  local fmt; fmt=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$file" < /dev/null)
+  local base=$(basename "${file%.*}")
+  local fmt=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$file" < /dev/null)
 
   if [[ $fmt =~ mp3|aac|ogg|wma ]]; then
      warn "Lossy source ($fmt): $base"
