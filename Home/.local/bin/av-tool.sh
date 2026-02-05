@@ -101,7 +101,7 @@ cmd_cdopt() {
           STATUS:LOSSY) ((lossy++)) || true ;;
           STATUS:DONE)  ((count++)) || true; printf ".";;
       esac
-  done < <(find "$in_dir" -maxdepth 1 -type f -regextype posix-extended -regex ".*\.(flac|wav|mp3|m4a|aac|ogg|alac|aiff)$" -print0 | xargs -0 -P "$jobs" -I {} bash -c '_cdopt_worker "$@"' _ "{}" "$out_dir")
+  done < <(find "$in_dir" -maxdepth 1 -type f -regextype posix-extended -iregex ".*\.(flac|wav|mp3|m4a|aac|ogg|alac|aiff)$" -print0 | xargs -0 -P "$jobs" -I {} bash -c '_cdopt_worker "$@"' _ "{}" "$out_dir")
   
   echo
   ((count)) || die "No audio files found."
