@@ -86,12 +86,7 @@ cmd_cdopt() {
   
   log "Optimizing for Red Book CD (16-bit/44.1kHz)..."
 
-  local jobs
-  if command -v nproc >/dev/null; then
-      jobs=$(nproc)
-  else
-      jobs=4
-  fi
+  local jobs=$(nproc 2>/dev/null || echo 4)
 
   # Use process substitution to avoid subshell issues with counters?
   # Actually pipe output to while loop in current shell
