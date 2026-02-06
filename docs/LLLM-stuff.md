@@ -8,7 +8,7 @@
 @dependabot rebase
 ```
 ```
-@copilot
+@copilot | @codex[agent]  | @claude
 ```
 ```
 @claude
