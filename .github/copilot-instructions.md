@@ -18,7 +18,7 @@ Result-first. Lists ≤7
 
 ## Toolchain Preference
 
-fd → find | rg → grep | bat → cat | sd → sed | aria2 → curl | jaq → jq | rust-parallel → xargs
+fd → find | rg → grep | bat → cat | eza → ls | sd → sed | aria2 → curl | jaq → jq | parallel → xargs
 
 ## Performance
 
