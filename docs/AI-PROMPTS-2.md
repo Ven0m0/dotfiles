@@ -1,10 +1,7 @@
 # AI Prompts
 
 ## PR Commands
-
-```
-@gemini-code-assist review | @dependabot rebase | @copilot | @codex | @claude | @cursor | @jules | @OpenHands
-```
+`@gemini-code-assist review` | `@dependabot rebase` | `@copilot` | `@claude` | `@cursor` | `@jules`
 
 ---
 
@@ -19,7 +16,6 @@ Find outdated/insecure deps, remove unused packages. Resolve TODO/FIXME. Apply f
 risk assessment, remaining issues.
 ```
 </details>
-
 <details><summary><b>Deps</b></summary>
 
 ```text
@@ -45,7 +41,6 @@ single-use abstractions. Enforce 2-space indent, 100-char lines. Merge files >80
 Strip emojis, comments. Output: before/after metrics, diffs.
 ```
 </details>
-
 <details><summary><b>Short AIO</b></summary>
 
 ```text
@@ -229,7 +224,6 @@ else block style. Max 2 consecutive newlines. Delete HTML comments. Tight lists.
 alphabetically where possible. Output: diffs, space savings (bytes/lines), validation.
 ```
 </details>
-
 <details><summary><b>AGENTS.md Generator</b></summary>
 
 ```text
