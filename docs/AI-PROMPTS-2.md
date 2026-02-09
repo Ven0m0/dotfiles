@@ -238,18 +238,39 @@ GEMINI.md → AGENTS.md. Output: complete AGENTS.md, symlinks, README update.
 ---
 
 ## Jules / Copilot Tasks
-
 ```text
 Find duplicate logic across files
+```
+```text
 Analyze repo, generate 3 feature ideas with implementation plans
+```
+```text
 Cluster related functions by responsibility, suggest module refactoring
+```
+```text
 Refactor for parallel processing using modern concurrency
+```
+```text
 Upgrade linters to latest, autofix breaking config changes
+```
+```text
 Set up Renovate/Dependabot with optimal config
+```
+```text
 Convert CLI tool into GitHub App with webhooks
+```
+```text
 Build web scraper starter with rate limiting, retries, error handling
+```
+```text
 Implement test coverage for untested modules
+```
+```text
 Set up pre-commit hooks with linters/formatters
+```
+```text
 Create CI/CD workflows with caching and parallel jobs
+```
+```text
 Refactor large functions into composable smaller functions
 ```
