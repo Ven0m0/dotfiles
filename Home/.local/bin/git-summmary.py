@@ -42,6 +42,7 @@ def get_repo_stats(repo: Path) -> RepoStats:
     script = (
         "git ls-files | wc -l; "
         "if git rev-parse HEAD >/dev/null 2>&1; then "
+        "  set -e; "
         "  git rev-list --count HEAD; "
         "  git log -1 --format=%at; "
         "  git log --reverse -1 --format=%at; "
