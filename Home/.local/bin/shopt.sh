@@ -152,10 +152,10 @@ concat_files(){
       [[ -n $xf ]] && excl_args+=("!" "-path" "$xf")
     done <"$dirpath/__EXCLUDE_FILES"
     for ext in "${exts[@]}"; do
-      while IFS= read -r -d '' lf; do
-        [[ $lf == *__* || $lf == *_PLACEHOLDER* ]] && continue
-        [[ $lf == *."$ext" ]] && cat "$lf" >>"$out"
-      done < <(find "$dirpath" -type f "${excl_args[@]}" -print0 2>/dev/null)
+      find "$dirpath" -type f "${excl_args[@]}" \
+        ! -path "*__*" ! -path "*_PLACEHOLDER*" \
+        -name "*.$ext" -print0 2>/dev/null | \
+        xargs -0 -r cat >>"$out"
     done
   done
 }
