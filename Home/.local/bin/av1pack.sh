@@ -129,7 +129,9 @@ main(){
       to_check+=("$f")
     done
     if [[ ${#to_check[@]} -gt 0 ]]; then
-      mapfile -d "" -t valid < <(printf '%s\0' "${to_check[@]}" | xargs -0 -P "$(nproc)" bash -c '_check_av1_worker "$@"' _)
+      local procs
+      procs=$(nproc 2>/dev/null || echo 1)
+      mapfile -d "" -t valid < <(printf '%s\0' "${to_check[@]}" | xargs -0 -P "$procs" bash -c '_check_av1_worker "$@"' _)
     fi
     [[ ${#valid[@]} -eq 0 ]] && { log "All processed"; exit 0; }
     log "Queued:  ${#valid[@]}"
