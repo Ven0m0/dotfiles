@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """Unified video/audio converter with SVT-AV1, VP9, H.265, x264 support."""
 import argparse
+import itertools
 import os
 import shutil
 import subprocess
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Final
+from typing import Final, Iterable, Iterator
 
 # TODO: implement features of https://github.com/hykilpikonna/formtool
 
@@ -114,32 +115,40 @@ class Log:
     if not self.quiet:
       pct = (cur/tot)*100 if tot else 0
       bar = '█'*int(20*cur/tot) + '░'*(20-int(20*cur/tot)) if tot else '░'*20
-      print(f"\r[{bar}] {pct:5.1f}% ({cur}/{tot}) {fname[:40]:<40}", end='', flush=True)
+      tot_str = str(tot) if tot else "?"
+      print(f"\r[{bar}] {pct:5.1f}% ({cur}/{tot_str}) {fname[:40]:<40}", end='', flush=True)
   def prog_done(self) -> None:
     if not self.quiet: print()
 
 def has(cmd: str) -> bool:
   return shutil.which(cmd) is not None
 
-def find_files_fd(root: Path, exts: frozenset[str]) -> list[Path]:
-  if not has('fd'): return []
+def find_files_fd(root: Path, exts: frozenset[str]) -> Iterator[Path]:
+  if not has('fd'): return
   cmd = ['fd', '--type', 'f'] + [x for e in exts for x in ['-e', e.lstrip('.')]] + ['.', str(root)]
   try:
-    out = subprocess.run(cmd, capture_output=True, text=True, check=True).stdout
-    return [Path(p) for p in out.strip().split('\n') if p]
-  except subprocess.CalledProcessError:
-    return []
+    with subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True, bufsize=1) as proc:
+      if proc.stdout:
+        for line in proc.stdout:
+          if l := line.strip():
+            yield Path(l)
+  except (subprocess.SubprocessError, OSError):
+    return
 
-def find_files_walk(root: Path, exts: frozenset[str]) -> list[Path]:
-  files: list[Path] = []
+def find_files_walk(root: Path, exts: frozenset[str]) -> Iterator[Path]:
   for r, _, fnames in os.walk(root):
     for f in fnames:
       if os.path.splitext(f)[1].lower() in exts:
-        files.append(Path(r) / f)
-  return files
+        yield Path(r) / f
 
-def find_files(root: Path, exts: frozenset[str]) -> list[Path]:
-  return find_files_fd(root, exts) or find_files_walk(root, exts)
+def find_files(root: Path, exts: frozenset[str]) -> Iterator[Path]:
+  found = False
+  if has('fd'):
+    for p in find_files_fd(root, exts):
+      yield p
+      found = True
+  if not found:
+    yield from find_files_walk(root, exts)
 
 def build_filters(cfg: Config, is_video: bool) -> list[str]:
   if not is_video: return []
@@ -274,11 +283,19 @@ def process_item(inp: Path, preset: Preset, cfg: Config, out_dir: Path | None, s
     stats.failures.append(str(inp))
     return stats, f"Failed: {inp.name}"
 
-def run_batch(files: list[Path], preset: Preset, cfg: Config, log: Log,
+def run_batch(files: Iterable[Path], preset: Preset, cfg: Config, log: Log,
               out_dir: Path | None, src_root: Path | None, delete: bool, jobs: int) -> Stats:
   stats = Stats()
-  total = len(files)
-  log.info(f"Processing {total} files")
+  try:
+    total = len(files) # type: ignore
+  except (TypeError, AttributeError):
+    total = 0
+
+  if total:
+    log.info(f"Processing {total} files")
+  else:
+    log.info("Processing files")
+
   log.info(f"Format: {preset.name} (.{preset.ext}), CRF {cfg.crf}, Preset {cfg.preset}, Grain {cfg.grain}")
   if preset.is_video:
     log.info(f"Audio: {cfg.audio_bitrate}, {cfg.audio_channels}ch")
@@ -303,22 +320,40 @@ def run_batch(files: list[Path], preset: Preset, cfg: Config, log: Log,
     quiet_log = Log(quiet=True, silent=log.silent)
     try:
       with ThreadPoolExecutor(max_workers=jobs) as executor:
-        futures = {executor.submit(process_item, f, preset, cfg, out_dir, src_root, delete, quiet_log): f for f in files}
-        for i, future in enumerate(as_completed(futures), 1):
-          inp = futures[future]
+        futures = {}
+        iterator = iter(files)
+        # Initial submission
+        for _ in range(jobs * 2):
           try:
-            s, msg = future.result()
-            stats.processed += s.processed
-            stats.skipped += s.skipped
-            stats.failed += s.failed
-            stats.input_bytes += s.input_bytes
-            stats.output_bytes += s.output_bytes
-            stats.failures.extend(s.failures)
-            log.info(f"[{i}/{total}] {msg}")
-          except Exception as e:
-            stats.failed += 1
-            stats.failures.append(str(inp))
-            log.err(f"Error processing {inp.name}: {e}")
+            f = next(iterator)
+            futures[executor.submit(process_item, f, preset, cfg, out_dir, src_root, delete, quiet_log)] = f
+          except StopIteration:
+            break
+        i = 1
+        while futures:
+          done, _ = wait(futures, return_when=FIRST_COMPLETED)
+          for future in done:
+            f = futures.pop(future)
+            try:
+              s, msg = future.result()
+              stats.processed += s.processed
+              stats.skipped += s.skipped
+              stats.failed += s.failed
+              stats.input_bytes += s.input_bytes
+              stats.output_bytes += s.output_bytes
+              stats.failures.extend(s.failures)
+              tot_str = f"/{total}" if total else ""
+              log.info(f"[{i}{tot_str}] {msg}")
+            except Exception as e:
+              stats.failed += 1
+              stats.failures.append(str(f))
+              log.err(f"Error processing {f.name}: {e}")
+            i += 1
+            try:
+              next_f = next(iterator)
+              futures[executor.submit(process_item, next_f, preset, cfg, out_dir, src_root, delete, quiet_log)] = next_f
+            except StopIteration:
+              pass
     except KeyboardInterrupt:
       log.err("Interrupted")
       sys.exit(130)
@@ -444,21 +479,27 @@ def main() -> int:
       return 1
     files = find_files(src_root, exts)
     if args.format == 'opus':
-      files = [f for f in files if f.suffix.lower() not in PASSTHROUGH_EXTS]
+      files = (f for f in files if f.suffix.lower() not in PASSTHROUGH_EXTS)
     out_dir = args.output_dir.resolve()
   else:
-    import glob
     src_root = None
-    files = []
-    for pat in args.files:
-      for p in glob.iglob(str(Path(pat).expanduser()), recursive=True):
-        path = Path(p)
-        if path.is_file() and path.suffix.lower() in exts:
-          if args.format == 'opus' and path.suffix.lower() in PASSTHROUGH_EXTS:
-            continue
-          files.append(path)
+    def get_files():
+      import glob
+      for pat in args.files:
+        for p in glob.iglob(str(Path(pat).expanduser()), recursive=True):
+          path = Path(p)
+          if path.is_file() and path.suffix.lower() in exts:
+            if args.format == 'opus' and path.suffix.lower() in PASSTHROUGH_EXTS:
+              continue
+            yield path
+    files = get_files()
     out_dir = args.output_dir.resolve() if args.output_dir else None
-  if not files:
+
+  files_iter = iter(files)
+  try:
+    first = next(files_iter)
+    files = itertools.chain([first], files_iter)
+  except StopIteration:
     log.warn("No files found")
     return 0
   stats = run_batch(files, preset, cfg, log, out_dir, src_root, args.delete, args.jobs)
