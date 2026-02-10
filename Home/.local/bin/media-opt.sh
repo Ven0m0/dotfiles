@@ -98,7 +98,7 @@ main() {
     fd -t f -0 -e jpg -e jpeg -e png -e webp -e mp4 -e mkv -e mov . ${paths[@]}
   else
     find ${paths[@]} -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.webp" -o -iname "*.mp4" -o -iname "*.mkv" \) -print0
-  fi | xargs -0 -P "$JOBS" -n 20 bash -c 'optimize_worker "$@"' _
+  fi | xargs -0 -P "$JOBS" -n "${BATCH_SIZE:-20}" bash -c 'optimize_worker "$@"' _
   
   log "Done."
 }
