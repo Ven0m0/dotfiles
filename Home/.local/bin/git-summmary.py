@@ -111,7 +111,7 @@ def aggregate_stats(repos: list[Path], base: Path) -> None:
             all_authors[author] += count
 
     def fmt_day(d):
-        return f"{d} day{'s' if d != 1 else ''}"
+        return "N/A" if d is None else f"{d} day{'s' if d != 1 else ''}"
 
     print(f"\nbase directory                  : {base}")
     print(f"repo age (latest / oldest)      : {fmt_day(min_age)} / {fmt_day(max_age)}")
