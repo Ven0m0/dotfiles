@@ -83,32 +83,34 @@ NR==1 && /^#!/ { print; next }
 { gsub(/[[:space:]]+#.*/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, ""); if(length) print }
 AWK
 
-# Pure bash preprocessor: handles #ifdef SHELL_IS_<VARIANT>
+# Awk-based preprocessor: handles #ifdef SHELL_IS_<VARIANT>
 # Syntax: #ifdef VAR / #ifndef VAR / #else / #endif
 preprocess_shell(){
   local in="$1" out="$2" def="$3"
-  local -a stack=() line
-  local active=1 depth=0
-  :  >"$out"
-  while IFS= read -r line; do
-    if [[ $line =~ ^[[:space:]]*#ifdef[[:space:]]+(.+)$ ]]; then
-      local var="${BASH_REMATCH[1]}"
-      stack+=("$active")
-      ((depth++))
-      ((active == 1 && var == "$def")) && active=1 || active=0
-    elif [[ $line =~ ^[[:space:]]*#ifndef[[:space:]]+(.+)$ ]]; then
-      local var="${BASH_REMATCH[1]}"
-      stack+=("$active")
-      ((depth++))
-      ((active == 1 && var != "$def")) && active=1 || active=0
-    elif [[ $line =~ ^[[:space:]]*#else[[:space:]]*$ ]]; then
-      ((depth > 0 && ${stack[-1]})) && ((active = ! active))
-    elif [[ $line =~ ^[[:space:]]*#endif[[:space:]]*$ ]]; then
-      ((depth > 0)) && { active="${stack[-1]}"; stack=("${stack[@]:0:${#stack[@]}-1}"); ((depth--)); }
-    else
-      ((active == 1)) && printf '%s\n' "$line" >>"$out"
-    fi
-  done <"$in"
+  awk -v def="$def" '
+    BEGIN { active = 1; depth = 0 }
+    /^[[:space:]]*#ifdef[[:space:]]+/ {
+      var=$0; sub(/^[[:space:]]*#ifdef[[:space:]]+/, "", var); sub(/[[:space:]]+$/, "", var)
+      stack[++depth] = active
+      active = active && (var == def)
+      next
+    }
+    /^[[:space:]]*#ifndef[[:space:]]+/ {
+      var=$0; sub(/^[[:space:]]*#ifndef[[:space:]]+/, "", var); sub(/[[:space:]]+$/, "", var)
+      stack[++depth] = active
+      active = active && (var != def)
+      next
+    }
+    /^[[:space:]]*#else[[:space:]]*$/ {
+      if (depth > 0 && stack[depth]) active = !active
+      next
+    }
+    /^[[:space:]]*#endif[[:space:]]*$/ {
+      if (depth > 0) active = stack[depth--]
+      next
+    }
+    { if (active) print }
+  ' "$in" > "$out"
 }
 
 # Minify: strip comments (except copyright/license in first 10 lines), normalize function syntax
@@ -152,10 +154,10 @@ concat_files(){
       [[ -n $xf ]] && excl_args+=("!" "-path" "$xf")
     done <"$dirpath/__EXCLUDE_FILES"
     for ext in "${exts[@]}"; do
-      while IFS= read -r -d '' lf; do
-        [[ $lf == *__* || $lf == *_PLACEHOLDER* ]] && continue
-        [[ $lf == *."$ext" ]] && cat "$lf" >>"$out"
-      done < <(find "$dirpath" -type f "${excl_args[@]}" -print0 2>/dev/null)
+      find "$dirpath" -type f "${excl_args[@]}" \
+        ! -path "*__*" ! -path "*_PLACEHOLDER*" \
+        -name "*.$ext" -print0 2>/dev/null | \
+        xargs -0 -r cat -- >>"$out"
     done
   done
 }
