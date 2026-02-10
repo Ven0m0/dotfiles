@@ -75,8 +75,7 @@ append() {
 echo
 printf "  ${BLD}%s${DEF}\n" "$userhost"
 printf -v _sep "%*s" "${#userhost}" ""
-printf "  ${CYN}%s${DEF}\n" "${_sep// /─}"
-unset _sep
+printf "  ${CYN}%s${DEF}\n" "${_sep// /─}"; unset _sep
 # Lines
 append "OS"     "$os_name"
 append "Kernel" "$kernel"
