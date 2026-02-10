@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Recursively summarize git repositories in a directory tree."""
 import concurrent.futures
+import os
 import subprocess as sp
 import sys
 from collections import defaultdict
@@ -60,13 +61,14 @@ def find_repos(path: Path) -> list[Path]:
   """Recursively find all git repositories."""
   repos: list[Path] = []
   try:
-    for item in path.iterdir():
-      if item.is_dir():
-        if (item / ".git").is_dir():
-          repos.append(item)
-          print(f"Git repository found {item}", file=sys.stderr)
-        else:
-          repos.extend(find_repos(item))
+    for dirpath, dirnames, filenames in os.walk(path, followlinks=True):
+      if ".git" in dirnames:
+        dirnames.remove(".git")
+        repo = Path(dirpath)
+        if repo != path:
+          repos.append(repo)
+          print(f"Git repository found {repo}", file=sys.stderr)
+          dirnames[:] = []
   except PermissionError:
     pass
   return repos
