@@ -20,19 +20,19 @@ class RepoStats:
     authors: dict[str, int]
 
 
-def run_cmd(cmd: list[str] | str, cwd: Path) -> str:
+def run_cmd(cmd: list[str], cwd: Path) -> str:
     """Run command, return stdout or empty string on error."""
     try:
-        is_shell = isinstance(cmd, str)
         return sp.run(
-            cmd if is_shell else ["git", *cmd],
+            ["git", *cmd],
             cwd=cwd,
             capture_output=True,
             text=True,
             timeout=15,
             check=True,
-            shell=is_shell,
         ).stdout.strip()
+    except (sp.CalledProcessError, sp.TimeoutExpired, FileNotFoundError):
+        return ""
     except (sp.CalledProcessError, sp.TimeoutExpired, FileNotFoundError):
         return ""
 
