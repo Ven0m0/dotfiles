@@ -16,8 +16,16 @@ test -d ~/.basher/bin; and fish_add_path -g ~/.basher/bin
 set -gx SSH_AUTH_SOCK ~/.ssh/ssh-agent.sock
 if not test -S $SSH_AUTH_SOCK
     eval (ssh-agent -c -s) >/dev/null 2>&1
+    ssh-add ~/.ssh/id_ed25519 2>/dev/null
 end
-export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+
+# Docker compatibility aliases
+alias docker '/usr/bin/docker'
+alias docker-compose '/usr/bin/docker compose'
+# Podman socket for Docker API compatibility (Fish syntax)
+# Force docker CLI to use Docker daemon
+set -gx DOCKER_HOST "unix:///var/run/docker.sock"
+#export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
 
 # ─── Greeting (cached, skip if terminal not interactive) ─────────────────────
 function fish_greeting
