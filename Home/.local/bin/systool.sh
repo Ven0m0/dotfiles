@@ -63,21 +63,31 @@ cmd_prsync(){
   [[ -z $src || -z $dst ]] && die "Usage: $0 prsync SRC DST [JOBS]"
   need rsync; need find
   log "Scanning source: $src"
-  local tmp; tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+  local tmp; tmp=$(mktemp -d); trap "rm -rf '$tmp'" EXIT
   # 1. List files with sizes and sort descending (LPT algorithm for better packing)
   find "$src" -type f -printf "%s %P\n" | sort -nr > "$tmp/files"
   log "Bin-packing files into $jobs chunks..."
-  # 2. Initialize bucket sizes
-  local -a buckets; for ((i=0; i<jobs; i++)); do buckets[i]=0; done
-  # 3. Distribute files to the emptiest bucket (Greedy)
-  while read -r size file; do
-    local min_idx=0 min_val=${buckets[0]}
-    for ((i=1; i<jobs; i++)); do
-      if (( buckets[i] < min_val )); then min_val=${buckets[i]}; min_idx=$i; fi
-    done
-    buckets[min_idx]=$((buckets[min_idx] + size))
-    printf "%s\n" "$file" >> "$tmp/chunk_$min_idx"
-  done < "$tmp/files"
+  # 2. Initialize bucket sizes and distribute files (Greedy LPT)
+  awk -v jobs="$jobs" -v tmp="$tmp" '
+    BEGIN { for (i=0; i<jobs; i++) buckets[i]=0 }
+    {
+      size = $1
+      # Extract filename (handle spaces correctly)
+      # find output is "%s %P". First field is size, rest is filename.
+      file = substr($0, length($1) + 2)
+
+      # Find the emptiest bucket
+      min_idx = 0
+      min_val = buckets[0]
+      for (i=1; i<jobs; i++) {
+        if (buckets[i] < min_val) {
+          min_val = buckets[i]
+          min_idx = i
+        }
+      }
+      buckets[min_idx] += size
+      print file > (tmp "/chunk_" min_idx)
+    }' "$tmp/files"
   
   log "Starting $jobs rsync workers..."
   for ((i=0; i<jobs; i++)); do

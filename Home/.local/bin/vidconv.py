@@ -451,7 +451,7 @@ def main() -> int:
     src_root = None
     files = []
     for pat in args.files:
-      for p in glob.glob(str(Path(pat).expanduser()), recursive=True):
+      for p in glob.iglob(str(Path(pat).expanduser()), recursive=True):
         path = Path(p)
         if path.is_file() and path.suffix.lower() in exts:
           if args.format == 'opus' and path.suffix.lower() in PASSTHROUGH_EXTS:

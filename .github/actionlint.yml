@@ -1,8 +1,0 @@
-self-hosted-runner:
-  labels: []
-config-variables:  null
-paths:
-  . github/workflows/*. yml: 
-    ignore: 
-      - 'SC2086'  # Allow unquoted variables in shell (common in workflows)
-      - ".+SC1090.+"
