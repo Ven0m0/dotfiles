@@ -96,9 +96,9 @@ preprocess_shell(){
       next
     }
     /^[[:space:]]*#ifndef[[:space:]]+/ {
-      sub(/^[[:space:]]*#ifndef[[:space:]]+/, ""); var=$0; sub(/[[:space:]]+$/, "", var)
+      var=$0; sub(/^[[:space:]]*#ifndef[[:space:]]+/, "", var); sub(/[[:space:]]+$/, "", var)
       stack[++depth] = active
-      if (active && var != def) active = 1; else active = 0
+      active = active && (var != def)
       next
     }
     /^[[:space:]]*#else[[:space:]]*$/ {
