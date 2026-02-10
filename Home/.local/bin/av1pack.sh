@@ -16,9 +16,19 @@ log(){ printf '[%s] %s\n' "$(date +'%H:%M:%S')" "$*"; }
 err(){ printf '[%s] [ERR] %s\n' "$(date +'%H:%M:%S')" "$*" >&2; }
 is_av1(){
   local codec
-  codec=$(ffprobe -v error -select_streams v: 0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$1" 2>/dev/null || echo "err")
+  codec=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$1" 2>/dev/null || echo "err")
   [[ "$codec" == "av1" ]]
 }
+_check_av1_worker() {
+  for f in "$@"; do
+    if is_av1 "$f"; then
+      log "Skip AV1: $f" >&2
+    else
+      printf "%s\0" "$f"
+    fi
+  done
+}
+export -f _check_av1_worker is_av1 log
 encode_one(){
   local src="$1" dst="$2"
   mkdir -p "$(dirname "$dst")"
@@ -111,13 +121,18 @@ main(){
     local candidates=() valid=()
     mapfile -t candidates < <(scan_files "$in")
     [[ ${#candidates[@]} -eq 0 ]] && { log "No files"; exit 0; }
+    local to_check=()
     for f in "${candidates[@]}"; do
       [[ "$f" == *"${OUT_SUFFIX}.${TARGET_EXT}" ]] && continue
       local out_file="${f%.*}${OUT_SUFFIX}.${TARGET_EXT}"
       [[ -f "$out_file" ]] && continue
-      is_av1 "$f" && { log "Skip AV1: $f"; continue; }
-      valid+=("$f")
+      to_check+=("$f")
     done
+    if [[ ${#to_check[@]} -gt 0 ]]; then
+      local procs
+      procs=$(nproc 2>/dev/null || echo 1)
+      mapfile -d "" -t valid < <(printf '%s\0' "${to_check[@]}" | xargs -0 -P "$procs" bash -c '_check_av1_worker "$@"' _)
+    fi
     [[ ${#valid[@]} -eq 0 ]] && { log "All processed"; exit 0; }
     log "Queued:  ${#valid[@]}"
     local args="-c:v libsvtav1 -preset 3 -crf 26 -g 600 -pix_fmt yuv420p10le -svtav1-params tune=0:film-grain=6:enable-qm=1:qm-min=0:enable-variance-boost=1:tf-strength=1:sharpness=1:tile-columns=1:tile-rows=0:enable-dlf=2:scd=1 -vf \"scale='if(gt(iw,ih),min(1920,iw),-2)':'if(gt(iw,ih),-2,min(1920,ih))',deband\" -c:a libopus -b:a 128k -ac 2 -rematrix_maxval 1.0"
