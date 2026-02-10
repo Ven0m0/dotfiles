@@ -90,9 +90,9 @@ preprocess_shell(){
   awk -v def="$def" '
     BEGIN { active = 1; depth = 0 }
     /^[[:space:]]*#ifdef[[:space:]]+/ {
-      sub(/^[[:space:]]*#ifdef[[:space:]]+/, ""); var=$0; sub(/[[:space:]]+$/, "", var)
+      var=$0; sub(/^[[:space:]]*#ifdef[[:space:]]+/, "", var); sub(/[[:space:]]+$/, "", var)
       stack[++depth] = active
-      if (active && var == def) active = 1; else active = 0
+      active = active && (var == def)
       next
     }
     /^[[:space:]]*#ifndef[[:space:]]+/ {
