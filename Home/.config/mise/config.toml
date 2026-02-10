@@ -64,6 +64,8 @@ rmz = "latest"
 #"npm:@adguard/hostlist-compiler" = "latest"
 "cargo:sy" = "latest"
 jules = "latest"
+"github:mattzcarey/zagi" = "latest"
+"github:sammcj/mcp-devtools" = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages", "--clear", "--no-managed-python"] }
@@ -82,3 +84,4 @@ CARGO_HTTP_MULTIPLEXING = "true"
 BINSTALL_DISABLE_TELEMETRY = "true"
 RUSTC_BOOTSTRAP = "1"
 RUSTC_WRAPPER = "sccache"
+ZAGI_STRIP_COAUTHORS = "1"
