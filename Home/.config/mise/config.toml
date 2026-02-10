@@ -17,10 +17,9 @@ disable_default_shorthands = false
 
 [settings.python]
 uv_venv_auto = true
-uv_venv_create_args = ["--system-site-packages", "--clear", "--no-managed-python"]
+uv_venv_create_args = ["--system-site-packages", "--clear", "--no-managed-python", "--no-python-downloads", "-q"]
 precompiled_os = "x86_64_v3"
 precompiled_flavor = "pgo+lto"
-default_packages_file = "$HOME/.default-python-packages"
 
 [settings.cargo]
 binstall = true
@@ -33,23 +32,15 @@ package_manager = "bun"
 
 # Tools Configuration
 [tools]
-# java = "oracle-graalvm"
-#"ubi:zeroBzeroT/ChunkCleaner" = "latest"
-#"cargo:https://github.com/ComunidadAylas/PackSquash" = "latest"
-# Image & media tools
 # "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
 "cargo:image-optimizer" = "latest"
-#"cargo:imgc" = "latest"
 "cargo:ffzap" = "latest"
-# Cargo utilities
 "cargo:cargo-alias-exec" = "latest"
 "cargo:cargo-list" = "latest"
 #"cargo:cargo-minify" = "latest"
 #"cargo:cargo-diet" = "latest"
-# Utility tools
 cpz = "latest"
 rmz = "latest"
-#"cargo:vicut" = "latest"
 "cargo:filerefine" = "latest"
 "cargo:https://github.com/fthomys/update-alternatives" = "latest"
 #"cargo:roxide" = "latest"
@@ -58,7 +49,7 @@ rmz = "latest"
 "cargo:dui-cli" = "latest"
 #"cargo:etchdns" = "latest"
 #lefthook = "latest"
-# minify = "latest"
+#minify = "latest"
 #"npm:@adguard/aglint" = "latest"
 #"npm:@adguard/dead-domains-linter" = "latest"
 #"npm:@adguard/hostlist-compiler" = "latest"
@@ -67,6 +58,8 @@ jules = "latest"
 "github:mattzcarey/zagi" = "latest"
 "github:sammcj/mcp-devtools" = "latest"
 "npm:@1mcp/agent" = "latest"
+"github:Musixal/Backhaul" = "latest"
+action-validator = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages", "--clear", "--no-managed-python"] }
