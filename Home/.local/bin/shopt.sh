@@ -155,7 +155,7 @@ concat_files(){
       find "$dirpath" -type f "${excl_args[@]}" \
         ! -path "*__*" ! -path "*_PLACEHOLDER*" \
         -name "*.$ext" -print0 2>/dev/null | \
-        xargs -0 -r cat >>"$out"
+        xargs -0 -r cat -- >>"$out"
     done
   done
 }
