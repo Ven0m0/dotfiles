@@ -1,6 +1,5 @@
 eth-p/fish-plugin-sudo
-# acomagu/fish-async-prompt
-Ven0m0/fish-async-prompt
+acomagu/fish-async-prompt
 # archelaus/shell-mommy
 oh-my-fish/plugin-xdg
 patrickf1/fzf.fish
