@@ -15,8 +15,8 @@ test -d ~/.basher/bin; and fish_add_path -g ~/.basher/bin
 # ─── SSH Agent (cached) ──────────────────────────────────────────────────────
 set -gx SSH_AUTH_SOCK ~/.ssh/ssh-agent.sock
 if not test -S $SSH_AUTH_SOCK
-    eval (ssh-agent -c -s) >/dev/null 2>&1
-    ssh-add ~/.ssh/id_ed25519 2>/dev/null
+    ssh-agent -c 2>/dev/null | source >/dev/null 2>&1
+    ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
 end
 
 # Docker compatibility aliases
@@ -94,7 +94,7 @@ alias npx='bunx'
 alias mkdir='mkdir -pv'
 alias ping='ping -c 4'
 alias cls='clear'
-alias ptch='command -q mpatch && mpatch || patch -Np1 <'
+alias ptch='patch -Np1 <'
 alias update='sudo-rs rm -f /var/lib/pacman/db.lck && paru -Syu --skipreview --noconfirm'
 
 # ─── eza/ls ──────────────────────────────────────────────────────────────────
