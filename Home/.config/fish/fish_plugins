@@ -3,8 +3,7 @@ acomagu/fish-async-prompt
 # archelaus/shell-mommy
 oh-my-fish/plugin-xdg
 patrickf1/fzf.fish
-#kyohsuke/fish-evalcache
-Ven0m0/fish-evalcache
+kyohsuke/fish-evalcache
 scaryrawr/cheat.sh.fish
 y3owk1n/fish-x
 scaryrawr/zoxide.fish
