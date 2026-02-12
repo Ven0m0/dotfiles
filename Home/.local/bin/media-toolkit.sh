@@ -41,7 +41,7 @@ cmd_pngzip() {
   done
   shift $((OPTIND-1)); local path="${1:-.}"
   log "Optimizing PNGs in $path (Jobs: $(nproc))..."
-  find "$path" -type f -name "*.png" -print0 | xargs -0 -r -P$(nproc) -n 16 pngquant "${opts[@]}" --ext .png --force
+  find -- "$path" -type f -name "*.png" -print0 | xargs -0 -r -P$(nproc) -n 16 pngquant "${opts[@]}" --ext .png --force
 }
 
 cmd_towebp() {
