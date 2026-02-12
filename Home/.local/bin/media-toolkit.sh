@@ -52,8 +52,8 @@ cmd_towebp() {
   shift $((OPTIND-1)); local path="${1:-.}"
   log "Converting to WebP in $path (Jobs: $(nproc))..."
 
-  local cwebp_cmd="cwebp -q $q -m $m"
-  for opt in "${opts[@]}"; do cwebp_cmd="$cwebp_cmd $opt"; done
+local cwebp_cmd="cwebp -q $(printf %q "$q") -m $(printf %q "$m")"
+  for opt in "${opts[@]}"; do cwebp_cmd="$cwebp_cmd $(printf %q "$opt")"; done
   export cwebp_cmd
 
   find "$path" -type f \( -iname "*.jpg" -o -iname "*.png" \) -print0 | \
