@@ -63,7 +63,7 @@ if status is-interactive
     #           3003, 4001, 4002, 4003, 4004, 4005, 4006, 4007, 4008, 5001, 5555,
     #           6001, 7001, 8001, 9999)
     # (Default: [])
-    # set -gx fish_lsp_diagnostic_disable_error_codes
+    set -gx fish_lsp_diagnostic_disable_error_codes 4004
 
     # $fish_lsp_max_diagnostics <NUMBER>
     # The maximum number of diagnostics to return per file.
