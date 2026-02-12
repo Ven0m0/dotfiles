@@ -58,10 +58,16 @@ local cwebp_cmd="cwebp -q $(printf %q "$q") -m $(printf %q "$m")"
 
   find "$path" -type f \( -iname "*.jpg" -o -iname "*.png" \) -print0 | \
     xargs -0 -r -P$(nproc) -n 16 bash -c '
-      for file; do
-        $cwebp_cmd "$file" -o "${file%.*}.webp"
+      local inner_cwebp_args=()
+      while [[ "$1" != "--" ]]; do # Use a separator to distinguish options from files
+        inner_cwebp_args+=("$1")
+        shift
       done
-    ' _
+      shift # Remove the separator "--"
+      for file; do
+        cwebp "${inner_cwebp_args[@]}" "$file" -o "${file%.*}.webp"
+      done
+    ' _ "${cwebp_options[@]}" --
 }
 
 cmd_vid() {
