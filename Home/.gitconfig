@@ -157,7 +157,8 @@
   compactionHeuristic = true
   mnemonicprefix = true
   relative = true
-  submodule = log
+  ignoreSubmodules = true
+  autoRefreshIndex = true
 [difftool]
   prompt = false
 [difftool "vscode"]
@@ -191,7 +192,7 @@
   manyFiles = true
   experimental = true
 [status]
-  short = false
+  short = true
   submoduleSummary = true
   showUntrackedFiles = all
   aheadBehind = true
@@ -228,22 +229,33 @@
   auto = true
 [maintenance "prefetch"]
   enabled = true
+  auto = true
 [maintenance "gc"]
   enabled = true
+  auto = true
 [maintenance "loose-objects"]
   enabled = true
+  auto = true
 [maintenance "incremental-repack"]
   enabled = true
+  auto = true
 [maintenance "pack-refs"]
   enabled = true
+  auto = true
 [maintenance "commit-graph"]
   enabled = true
 [maintenance "reflog-expire"]
   enabled = true
+  auto = true
 [maintenance "rerere-gc"]
   enabled = true
+  auto = true
 [maintenance "worktree-prune"]
   enabled = true
+  auto = true
+[maintenance "geometric-repack"]
+  enabled = true
+  auto = true
 [gpg]
   program = gpg
 [safe]
