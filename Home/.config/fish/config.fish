@@ -12,6 +12,8 @@ set -gx FZF_DEFAULT_COMMAND 'fd -tf -H --size +1k --exclude .git'
 fish_add_path -g ~/.bun/bin ~/.local/bin /usr/local/bin ~/bin ~/.cargo/bin /usr/lib/ccache/bin
 test -d ~/.basher/bin; and fish_add_path -g ~/.basher/bin
 
+set -gx XDG_DATA_DIRS "/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share:/usr/local/share:/usr/share"
+
 # ─── SSH Agent (cached) ──────────────────────────────────────────────────────
 set -gx SSH_AUTH_SOCK ~/.ssh/ssh-agent.sock
 if not test -S $SSH_AUTH_SOCK
@@ -24,8 +26,10 @@ alias docker '/usr/bin/docker'
 alias docker-compose '/usr/bin/docker compose'
 # Podman socket for Docker API compatibility (Fish syntax)
 # Force docker CLI to use Docker daemon
+# Global
 set -gx DOCKER_HOST "unix:///var/run/docker.sock"
-#export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+# Rootless
+# set -gx DOCKER_HOST "unix://$XDG_RUNTIME_DIR/docker.sock"
 
 # ─── Greeting (cached, skip if terminal not interactive) ─────────────────────
 function fish_greeting
