@@ -41,7 +41,7 @@ cmd_pngzip() {
   done
   shift $((OPTIND-1)); local path="${1:-.}"
   log "Optimizing PNGs in $path (Jobs: $(nproc))..."
-  find "$path" -type f -name "*.png" -print0 | xargs -0 -P$(nproc) -I{} pngquant "${opts[@]}" --ext .png --force "{}"
+  find -- "$path" -type f -name "*.png" -print0 | xargs -0 -r -P$(nproc) -n 16 pngquant "${opts[@]}" --ext .png --force
 }
 
 cmd_towebp() {
@@ -51,8 +51,23 @@ cmd_towebp() {
   done
   shift $((OPTIND-1)); local path="${1:-.}"
   log "Converting to WebP in $path (Jobs: $(nproc))..."
-  find "$path" -type f \( -iname "*.jpg" -o -iname "*.png" \) -print0 | \
-    xargs -0 -P$(nproc) -I{} bash -c 'cwebp -q '$q' -m '$m' "${@}" "$1" -o "${1%.*}.webp"' _ "${opts[@]}" "{}"
+
+local cwebp_cmd="cwebp -q $(printf %q "$q") -m $(printf %q "$m")"
+  for opt in "${opts[@]}"; do cwebp_cmd="$cwebp_cmd $(printf %q "$opt")"; done
+  export cwebp_cmd
+
+  find -- "$path" -type f \( -iname "*.jpg" -o -iname "*.png" \) -print0 | \
+    xargs -0 -r -P$(nproc) -n 16 bash -c '
+      local inner_cwebp_args=()
+      while [[ "$1" != "--" ]]; do # Use a separator to distinguish options from files
+        inner_cwebp_args+=("$1")
+        shift
+      done
+      shift # Remove the separator "--"
+      for file; do
+        cwebp "${inner_cwebp_args[@]}" "$file" -o "${file%.*}.webp"
+      done
+    ' _ "${cwebp_options[@]}" --
 }
 
 cmd_vid() {
