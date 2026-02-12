@@ -56,7 +56,7 @@ local cwebp_cmd="cwebp -q $(printf %q "$q") -m $(printf %q "$m")"
   for opt in "${opts[@]}"; do cwebp_cmd="$cwebp_cmd $(printf %q "$opt")"; done
   export cwebp_cmd
 
-  find "$path" -type f \( -iname "*.jpg" -o -iname "*.png" \) -print0 | \
+  find -- "$path" -type f \( -iname "*.jpg" -o -iname "*.png" \) -print0 | \
     xargs -0 -r -P$(nproc) -n 16 bash -c '
       local inner_cwebp_args=()
       while [[ "$1" != "--" ]]; do # Use a separator to distinguish options from files
