@@ -66,19 +66,6 @@
   branch = auto
   diff = auto
   status = auto
-[color "branch"]
-  current = yellow reverse
-  local = yellow
-  remote = green
-[color "diff"]
-  meta = yellow bold
-  frag = magenta bold
-  old = red bold
-  new = green bold
-[color "status"]
-  added = green
-  changed = yellow
-  untracked = red
 [push]
   default = current
   autoSetupRemote = true
@@ -159,11 +146,6 @@
   navigate = true
   side-by-side = false
   syntax-theme = Monokai Extended
-[delta "decorations"]
-  commit-decoration-style = bold yellow box ul
-  file-style = bold yellow ul
-  file-decoration-style = none
-  hunk-header-decoration-style = cyan box
 [diff]
   tool = vscode
   algorithm = histogram
@@ -179,7 +161,7 @@
 [difftool]
   prompt = false
 [difftool "vscode"]
-  cmd = code --wait --diff $LOCAL $REMOTE
+  cmd = vscodium --wait --diff $LOCAL $REMOTE
 [diff-so-fancy]
   markEmptyLines = false
   stripLeadingSymbols = true
@@ -187,7 +169,7 @@
   options = --line-numbers
 [merge]
   conflictStyle = zdiff3
-  tool = vscode
+  tool = vscodium
   stat = true
   summary = true
   ff = false
@@ -197,7 +179,7 @@
   keepBackup = false
   hideResolved = true
 [mergetool "vscode"]
-  cmd = code --wait $MERGED
+  cmd = vscodium --wait $MERGED
   useAutoMerge = true
 [mergetool "meld"]
   useAutoMerge = true
@@ -265,6 +247,6 @@
 [gpg]
   program = gpg
 [safe]
-	directory = *
+  directory = *
 [remote "origin"]
-	prune = true
+  prune = true
