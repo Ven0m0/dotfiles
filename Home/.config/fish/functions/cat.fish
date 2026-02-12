@@ -1,3 +1,7 @@
-function cat --wraps=bat --wraps='bat -pp' --description bat
-    bat -pp $argv
+function cat --wraps='bat -pp' --description 'cat -> bat'
+    if not command -q bat
+        command cat $argv
+        return $status
+    end
+    command bat -pp $argv
 end
