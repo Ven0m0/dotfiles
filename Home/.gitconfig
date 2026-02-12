@@ -157,7 +157,8 @@
   compactionHeuristic = true
   mnemonicprefix = true
   relative = true
-  submodule = log
+  ignoreSubmodules = true
+  autoRefreshIndex = true
 [difftool]
   prompt = false
 [difftool "vscode"]
