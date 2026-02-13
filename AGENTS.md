@@ -1,10 +1,25 @@
-# Repo Manual: Arch/Debian Dotfiles
+# Dotfiles Repository Manual
 
-**Purpose:** AI operational directives for dotfiles repo (Claude, Gemini, Copilot)
-**Tone:** Blunt, precise. `Result :: Cause`. Lists <=7
-**System:** YADM (`Home/`->`~/`) + Tuckr (`etc/`,`usr/`->`/`)
-**Targets:** Arch (CachyOS), Debian, Termux
-**Priority:** User>Rules. Verify>Assume. Edit>Create. Debt-First.
+**Purpose:** AI operational directives for dotfiles repository (Claude, Gemini, Copilot)
+**Tone:** Blunt, precise. `Result :: Cause`. Lists ≤7
+**System:** YADM (`Home/` → `~/`) + Tuckr (`etc/` → `/`)
+**Targets:** Arch Linux (CachyOS), Debian, Termux
+**Priority:** User > Rules. Verify > Assume. Edit > Create. Debt-First.
+
+---
+
+## Project Overview
+
+Multi-platform dotfiles repository for Arch Linux (CachyOS), Debian, and Termux environments. Managed via YADM for user configs and Tuckr/stow for system configs. Includes 25 utility scripts, 65+ application configs, and 89 system configuration files.
+
+**Tech Stack:**
+- **Languages:** Bash (primary), Python 3 (utilities), YAML/TOML/JSON (configs)
+- **Deployment:** YADM, Tuckr, Stow
+- **CI/CD:** GitHub Actions (6 workflows)
+- **Pre-commit:** Lefthook (8 hooks: shell, yaml, toml, json, biome, markdown, normalize, actionlint)
+- **Shells:** Bash (ble.sh), Zsh (Zimfw + P10k), Fish, Starship prompt
+- **Desktop:** KDE Plasma (Wayland), Catppuccin Mocha theme
+- **Package Managers:** paru/yay (Arch AUR), apt (Debian), pkg (Termux)
 
 ---
 
@@ -13,66 +28,179 @@
 ```
 dotfiles/
 ├── Home/                    # User dotfiles (~/)           [YADM]
-│   ├── .config/             # 65 app configs (XDG)
+│   ├── .config/             # 65+ app configs (XDG)
 │   │   ├── alacritty/       # Terminal emulator
 │   │   ├── bash/            # Bash init scripts
 │   │   ├── Code/            # VS Code settings
 │   │   ├── fish/            # Fish shell
 │   │   ├── ghostty/         # Terminal emulator
 │   │   ├── gh/              # GitHub CLI
+│   │   ├── lefthook.yml     # Git pre-commit hooks
 │   │   ├── mpv/             # Media player
 │   │   ├── starship.toml    # Cross-shell prompt
 │   │   ├── yadm/            # YADM bootstrap
 │   │   ├── yazi/            # File manager
 │   │   ├── yt-dlp/          # YouTube downloader
 │   │   ├── zsh/             # Zsh config (Zimfw + P10k)
-│   │   └── [55 more apps]
+│   │   └── [60+ more apps]
 │   ├── .local/
-│   │   ├── bin/             # 27 utility scripts
+│   │   ├── bin/             # 25 utility scripts (22 bash + 3 python)
 │   │   └── share/           # Desktop entries, icons, snippets
+│   ├── .claude/             # Claude Code settings
+│   ├── .gemini/             # Gemini settings
 │   ├── .bashrc              # Bash config
 │   ├── .bash_functions      # Bash utilities (~470 LOC)
 │   ├── .bash_exports        # Environment vars
 │   ├── .gitconfig           # Git configuration
 │   ├── .blerc               # ble.sh config (~340 LOC)
-│   └── [25+ root dotfiles]
+│   └── [27 root dotfiles]
 ├── etc/                     # System configs (/etc)        [Tuckr]
 │   ├── pacman.conf          # Package manager
+│   ├── paru.conf            # AUR helper
+│   ├── makepkg.conf         # Build config
 │   ├── pacman.d/hooks/      # 13 pacman hooks
 │   ├── systemd/             # Services, timers, limits
 │   ├── sysctl.d/            # Kernel parameters (4 files)
 │   ├── modprobe.d/          # Module configs (5 files)
-│   ├── udev/rules.d/        # 16 device rules
+│   ├── modules-load.d/      # Module autoload
+│   ├── udev/rules.d/        # Device rules
 │   ├── security/limits.d/   # Audio/gaming realtime limits
+│   ├── NetworkManager/      # Network config
+│   ├── ssh/                 # SSH config
+│   ├── sudoers.d/           # Sudo rules
 │   └── [89 files total]
 ├── .github/                 # CI/CD & AI automation
-│   ├── workflows/           # 3 GitHub Actions
-│   ├── agents/              # 5 AI agent definitions
-│   ├── commands/            # 4 Gemini commands
-│   ├── instructions/        # 7 coding instructions
-│   ├── prompts/             # 2 prompt templates
-│   └── ISSUE_TEMPLATE/      # 7 issue templates
+│   ├── workflows/           # 6 GitHub Actions workflows
+│   ├── copilot-instructions.md  # GitHub Copilot directives
+│   ├── dependabot.yml       # Dependency updates
+│   ├── FUNDING.yml          # Sponsorship links
+│   └── README.md            # GitHub overview
 ├── docs/                    # Reference documentation
-│   ├── AI-PROMPTS*.md       # Prompt engineering references
-│   ├── steam.md             # Steam/gaming notes
-│   └── steelseries.md       # Peripheral config
-├── AGENTS.md                # This file (CLAUDE.md, GEMINI.md symlink here)
-├── @setup.sh                # Bootstrap installer
-├── @hooks.toml              # Tuckr hooks
-├── @YADM.md                 # Deployment guide
-├── @BASH_PERFORMANCE.md     # Perf patterns
+├── AGENTS.md                # This file (symlink target)
+├── CLAUDE.md → AGENTS.md    # Symlink for Claude
+├── GEMINI.md → AGENTS.md    # Symlink for Gemini
+├── setup.sh                 # Bootstrap installer
+├── hooks.toml               # Tuckr deployment hooks
+├── TODO.md                  # Task tracking
 ├── main.knsv                # KDE Plasma backup (konsave)
-└── LICENSE                  # MIT
+├── LICENSE                  # MIT License
+├── .editorconfig            # Editor settings
+├── .gitattributes           # Git attributes
+├── .gitignore               # Git ignore patterns
+├── .shellcheckrc → Home/.shellcheckrc
+├── .yamlfmt.yml → Home/.config/yamlfmt/yamlfmt.yml
+└── .yamllint.yml → Home/.config/yamllint/config
 ```
 
-**Stats:** 65 config dirs | 27 scripts | 89 system configs | ~6K LOC
+**Key Files:**
+- `setup.sh` - One-shot bootstrap installer for new systems
+- `Home/.local/bin/yadm-sync.sh` - Bidirectional dotfile sync utility
+- `Home/.local/bin/deploy-system-configs.sh` - System config deployment wrapper
+- `Home/.config/lefthook.yml` - Pre-commit hook configuration
+- `Home/.config/yadm/bootstrap` - YADM post-clone setup script
 
-**Symlinks at root:**
-- `CLAUDE.md` -> `AGENTS.md`
-- `GEMINI.md` -> `AGENTS.md`
-- `.shellcheckrc` -> `Home/.shellcheckrc`
-- `.yamlfmt.yml` -> `Home/.config/yamlfmt/yamlfmt.yml`
-- `.yamllint.yml` -> `Home/.config/yamllint/config`
+**Stats:** 65 config dirs | 25 scripts (22 bash + 3 python) | 89 system configs | ~810 LOC (bash functions)
+
+---
+
+## Development Workflows
+
+### Initial Setup
+
+```bash
+# Clone repository
+git clone https://github.com/Ven0m0/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+
+# Bootstrap installation (first-time setup)
+./setup.sh
+
+# Or manual YADM setup
+yadm clone https://github.com/Ven0m0/dotfiles.git
+yadm bootstrap
+
+# Deploy system configs (requires sudo)
+sudo ./Home/.local/bin/deploy-system-configs.sh
+# or manually:
+sudo tuckr link -d ~/dotfiles -t / etc
+```
+
+### Daily Development
+
+```bash
+# Pull latest configs from repo
+yadm-sync pull
+
+# Make changes to configs in ~/
+# Edit files, test changes...
+
+# Push changes back to repo
+yadm-sync push              # Sync ~ -> Home/ -> commit
+
+# Stage and commit
+git add Home/.config/app/config.toml
+git commit -m "feat(app): add new feature"
+
+# Push to remote (on claude/* branch)
+git push -u origin <branch-name>
+```
+
+### Testing & Validation
+
+```bash
+# Run all linters/formatters
+./Home/.local/bin/lint-format.sh
+
+# Test shell scripts
+shellcheck Home/.local/bin/*.sh
+shfmt -d Home/.local/bin/*.sh
+
+# Test YAML configs
+yamllint Home/.config/**/*.yml
+yamlfmt -lint Home/.config/**/*.yml
+
+# Validate JSON
+jaq empty Home/.config/**/*.json
+
+# Test Python scripts
+python3 -m py_compile Home/.local/bin/*.py
+```
+
+### Deployment
+
+**User Configs (YADM):**
+```bash
+yadm-sync pull              # Deploy: Repo -> Home/ -> ~/
+yadm-sync push              # Update: ~/ -> Home/ -> Repo
+yadm-sync status            # Show differences
+yadm-sync diff              # Detailed diff
+```
+
+**System Configs (Tuckr):**
+```bash
+# Deploy /etc configs (preferred)
+sudo tuckr link -d ~/dotfiles -t / etc
+
+# With hooks execution
+sudo tuckr link -d ~/dotfiles -t / -h hooks.toml etc
+
+# Fallback (stow)
+sudo stow -t / -d ~/dotfiles etc
+
+# Helper script (auto-detects best tool)
+sudo deploy-system-configs.sh
+```
+
+### CI/CD Pipeline
+
+GitHub Actions runs on every push/PR:
+1. **lint-format** - Validates all code (shellcheck, biome, ruff, yamllint, actionlint)
+2. **img-opt** - Optimizes images automatically
+3. **deps** - Auto-approves Dependabot updates
+4. **jules-performance-improver** - Weekly performance analysis
+5. **jules-weekly-cleanup** - Automated code maintenance
+
+Local pre-commit hooks (Lefthook) run before each commit.
 
 ---
 
@@ -129,6 +257,66 @@ These files must not be modified by AI agents without explicit user request:
 
 `etc/pacman.conf`, `Home/.config/zsh/.zshrc`, `Home/.gitconfig`, `etc/sysctl.d/`,
 `etc/paru.conf`, `etc/makepkg.conf`, `etc/sudoers`, `etc/ssh/sshd_config`
+
+---
+
+## Dependencies
+
+### Core Tools (Required)
+
+| Tool | Purpose | Install |
+|------|---------|---------|
+| yadm | User dotfile manager | `paru -S yadm` or `apt install yadm` |
+| tuckr | System config deployment | `paru -S tuckr` or `cargo install tuckr` |
+| stow | Symlink manager (fallback) | `paru -S stow` or `apt install stow` |
+| git | Version control | `paru -S git` or `apt install git` |
+| bash | Shell scripting | Built-in |
+| python3 | Python scripts | `paru -S python` or `apt install python3` |
+
+### Development Tools
+
+| Tool | Purpose | Install |
+|------|---------|---------|
+| shfmt | Shell formatter | `paru -S shfmt` or `go install mvdan.cc/sh/v3/cmd/shfmt@latest` |
+| shellcheck | Shell linter | `paru -S shellcheck` or `apt install shellcheck` |
+| shellharden | Shell hardener | `paru -S shellharden` or `cargo install shellharden` |
+| yamlfmt | YAML formatter | `paru -S yamlfmt` or `go install github.com/google/yamlfmt/cmd/yamlfmt@latest` |
+| yamllint | YAML linter | `paru -S yamllint` or `apt install yamllint` |
+| taplo | TOML formatter/linter | `paru -S taplo-cli` or `cargo install taplo-cli` |
+| jaq | JSON query tool | `paru -S jaq` or `cargo install jaq` |
+| actionlint | GitHub Actions linter | `paru -S actionlint` or `go install github.com/rhysd/actionlint/cmd/actionlint@latest` |
+| lefthook | Git hooks manager | `paru -S lefthook` or `go install github.com/evilmartians/lefthook@latest` |
+
+### Optional Modern Tools
+
+| Legacy | Modern | Purpose | Install |
+|--------|--------|---------|---------|
+| find | fd | Fast file finder | `paru -S fd` or `apt install fd-find` |
+| grep | rg (ripgrep) | Fast text search | `paru -S ripgrep` or `apt install ripgrep` |
+| cat | bat | Syntax highlighting cat | `paru -S bat` or `apt install bat` |
+| sed | sd | Simple find/replace | `paru -S sd` or `cargo install sd` |
+| curl | aria2 | Parallel downloader | `paru -S aria2` or `apt install aria2` |
+| ls | eza | Modern ls | `paru -S eza` or `cargo install eza` |
+| du | dust | Disk usage | `paru -S dust` or `cargo install du-dust` |
+
+### Runtime Dependencies (Script-Specific)
+
+**Media Tools:**
+- `ffmpeg` - Video/audio processing (av1pack, vidconv, av-tool, media-opt)
+- `svt-av1` - AV1 encoding (av1pack, vidconv)
+- `yt-dlp` - YouTube downloads (yt_grab)
+- `mpv` - Media playback
+
+**System Tools:**
+- `fzf` or `skim` - Fuzzy finder (pkgui, fzf-tools)
+- `gh` - GitHub CLI (gh-tools)
+- `paru` or `yay` - AUR helpers (pkgui)
+- `rsync` - File sync (yadm-sync, systool)
+
+**Optimization Tools:**
+- `jpegoptim`, `oxipng`, `cwebp` - Image optimization (media-opt)
+- `fclones`, `czkawka` - Deduplication (dedupe)
+- `fontforge` - Font optimization (minify_font)
 
 ---
 
@@ -347,42 +535,24 @@ Location: `.github/`
 |----------|---------|---------|
 | `lint-format.yml` | Push/PR | CI: shfmt, shellcheck, biome, ruff, actionlint |
 | `deps.yml` | Dependabot PR | Auto-approve dependency updates |
-| `img-opt.yml` | Push (image changes) | Optimize images on commit (WebP conversion) |
+| `dependabot-automerge.yml` | Dependabot PR | Auto-merge approved dependency updates |
+| `img-opt.yml` | Push (images) | Optimize images (WebP conversion, compression) |
+| `jules-performance-improver.yml` | Scheduled/manual | Automated performance optimization analysis |
+| `jules-weekly-cleanup.yml` | Weekly schedule | Automated code cleanup and maintenance |
 
-### AI Agents
+### AI Integration
 
-| Agent | Specialty |
-|-------|-----------|
-| `bash.agent.md` | Bash programming (strict mode, shellcheck) |
-| `python.agent.md` | Python programming (type hints, dataclasses) |
-| `refactoring-expert.agent.md` | Code restructuring (min diff, pattern preservation) |
-| `github-issue-fixer.agent.md` | Issue resolution (analyze, fix, test) |
-| `critical-thinking.agent.md` | Problem decomposition, root cause analysis |
+| Tool | Config | Purpose |
+|------|--------|---------|
+| Claude Code | `Home/.claude/settings.json` | Claude agent configuration |
+| Gemini | `Home/.gemini/settings.json` | Gemini agent configuration |
+| GitHub Copilot | `.github/copilot-instructions.md` | Copilot coding directives |
 
-### Gemini Commands
+### Dependabot
 
-| Command | Purpose |
-|---------|---------|
-| `gemini-invoke.toml` | Execute structured commands |
-| `gemini-review.toml` | Code review with standards enforcement |
-| `gemini-triage.toml` | Issue triage and prioritization |
-| `gemini-scheduled-triage.toml` | Automated scheduled triage |
-
-### Coding Instructions
-
-| Instruction | Scope |
-|-------------|-------|
-| `bash.instructions.md` | Bash coding standards |
-| `python.instructions.md` | Python coding standards |
-| `javascript.instructions.md` | JS/TS standards (Biome) |
-| `actions.instructions.md` | GitHub Actions patterns |
-| `markdown.instructions.md` | Markdown guidelines |
-| `prompt.instructions.md` | Prompt engineering |
-| `token-efficient.instructions.md` | Token optimization |
-
-### Issue Templates
-
-Bug reports, feature requests, implementation plans, TODOs, and custom templates.
+- `.github/dependabot.yml` - Automated dependency updates
+- Monitors: GitHub Actions, npm, pip, cargo, docker
+- Auto-merge enabled for minor/patch versions
 
 ---
 
@@ -465,15 +635,19 @@ git push -u origin <branch-name>
 
 ### Pre-commit Hooks (Lefthook)
 
-Runs automatically on commit:
-1. `shfmt` + `shellcheck` + `shellharden` (shell files)
-2. `yamlfmt` + `yamllint` (YAML)
-3. `taplo` (TOML)
-4. `jaq`/`jq` validation (JSON)
-5. `biome` (JS/TS)
-6. `markdownlint` (Markdown)
-7. Whitespace normalization (trailing WS, CRLF, zero-width chars)
-8. `actionlint` (GitHub Actions)
+Config: `Home/.config/lefthook.yml`
+
+Runs automatically on commit (parallel execution):
+1. **shell-format** - `shfmt`, `shellcheck`, `shellharden` (*.sh, *.bash, *.zsh)
+2. **yaml-lint** - `yamlfmt`, `yamllint` (*.yml, *.yaml)
+3. **toml-lint** - `taplo format`, `taplo lint` (*.toml)
+4. **json-validate** - `jaq`/`jq` syntax validation (*.json, *.jsonc, *.json5)
+5. **biome** - JS/TS linting & formatting (*.js, *.ts, *.jsx, *.tsx, *.json)
+6. **markdown-lint** - `markdownlint-cli2` (*.md, *.markdown)
+7. **normalize** - Whitespace cleanup (trailing WS, CRLF, zero-width chars, BOM)
+8. **gha-lint** - `actionlint` for GitHub Actions workflows
+
+All hooks auto-fix and stage changes. Gracefully skip if tools not installed.
 
 ---
 
@@ -613,10 +787,11 @@ XDG_PROJECTS_DIR=~/Projects
 | System configs | `etc/` |
 | Bash config | `Home/.bashrc` + `Home/.bash_functions` |
 | Zsh config | `Home/.config/zsh/` |
-| AI agents | `.github/agents/` |
-| Coding standards | `.github/instructions/` |
+| AI config | `Home/.claude/`, `Home/.gemini/` |
+| GitHub config | `.github/copilot-instructions.md` |
 | CI workflows | `.github/workflows/` |
-| Gemini commands | `.github/commands/` |
+| Documentation | `docs/`, `AGENTS.md`, `TODO.md` |
+| Git hooks | `Home/.config/lefthook.yml` |
 
 ### Key Commands
 
@@ -643,3 +818,330 @@ sanitize.sh ws --git       # Fix whitespace in changed files
 | `docs:` | Documentation |
 | `chore:` | Maintenance |
 | `style:` | Formatting |
+
+---
+
+## Common Tasks
+
+### Package Management
+
+```bash
+# Search packages (AUR + official repos)
+pkgui.sh                    # Interactive TUI with fzf/skim
+
+# Search AUR via RPC (fast)
+search flutter              # Bash function from .bash_functions
+
+# Install from AUR
+paru -S package-name        # Primary (preferred)
+yay -S package-name         # Fallback
+
+# System update
+paru -Syu                   # AUR + official repos
+
+# Clean package cache
+paru -Sc                    # Remove uninstalled packages
+paru -Scc                   # Clean all cache
+```
+
+### Dotfile Management
+
+```bash
+# Sync from repo to system
+yadm-sync pull              # Repo -> Home/ -> ~/
+
+# Sync from system to repo
+yadm-sync push              # ~/ -> Home/ -> repo
+
+# Check differences
+yadm-sync status            # Show file differences
+yadm-sync diff              # Detailed diff
+
+# Bootstrap new system
+./setup.sh                  # Full automated setup
+yadm bootstrap              # YADM post-clone setup
+
+# Deploy system configs
+sudo deploy-system-configs.sh
+sudo tuckr link -d ~/dotfiles -t / etc
+```
+
+### Code Quality
+
+```bash
+# Run all linters/formatters
+lint-format.sh
+
+# Format shell scripts
+shfmt -w -i 2 -bn -ci -sr script.sh
+
+# Lint shell scripts
+shellcheck script.sh
+
+# Harden shell scripts
+shellharden --replace script.sh
+
+# Format YAML
+yamlfmt file.yml
+
+# Lint YAML
+yamllint file.yml
+
+# Format TOML
+taplo format file.toml
+
+# Validate JSON
+jaq empty file.json
+
+# Normalize whitespace
+sanitize.sh ws --git        # Git-tracked files
+sanitize.sh ws dir/         # Specific directory
+```
+
+### Media Processing
+
+```bash
+# Convert video to AV1
+av1pack.sh input.mp4        # Single file
+av1pack.sh -r dir/          # Recursive batch
+vidconv.py -c av1 -q 28 input.mp4
+
+# Video utilities
+av-tool.sh gif input.mp4 output.gif
+av-tool.sh trim input.mp4 00:10 00:20
+av-tool.sh loudnorm input.mp4
+
+# Optimize images/videos
+media-opt.sh -r dir/        # Recursive optimization
+media-opt.sh image.jpg      # Single file
+
+# Optimize documents
+office.sh compress document.pdf
+office.sh -l compress image.pdf  # Lossy compression
+
+# Download YouTube
+yt_grab.sh "URL"            # Best quality
+yt_grab.sh -a "URL"         # Audio only
+```
+
+### System Utilities
+
+```bash
+# System maintenance
+systool.sh symlinks         # Smart symlink management
+systool.sh swap 16G         # Create swap file
+systool.sh usb mount        # Mount USB
+systool.sh rsync src/ dst/  # Parallel rsync
+
+# Deduplicate files
+dedupe.sh -m hardlink dir/  # Hardlink duplicates
+dedupe.sh -m delete dir/    # Delete duplicates
+
+# Network testing
+speedtest.sh                # Speed test
+optimal-mtu.sh              # Find optimal MTU
+
+# File search & grep
+fzf-tools.sh file           # Fuzzy file finder
+fzf-tools.sh grep           # Live grep
+fzf-tools.sh git-status     # Git status picker
+
+# GitHub operations
+gh-tools.sh download user/repo asset.tar.gz
+gh-tools.sh install user/repo
+```
+
+### Git Operations
+
+```bash
+# Create feature branch
+git checkout -b claude/feature-name-XYZ
+
+# Stage changes
+git add Home/.config/app/config.toml
+
+# Commit (pre-commit hooks run automatically)
+git commit -m "feat(app): add new feature"
+
+# Push to remote
+git push -u origin claude/feature-name-XYZ
+
+# View status
+git st                      # Short status (alias)
+git s                       # Compact status (alias)
+
+# View diff
+git df                      # Diff unstaged
+git dc                      # Diff staged
+
+# View log
+git lg                      # Pretty graph log
+git hist                    # Historical log
+
+# Useful aliases (from .gitconfig)
+git unstage file            # Unstage file
+git amend                   # Amend last commit (no-edit)
+git undo                    # Soft reset HEAD~1
+```
+
+### Shell Navigation (Bash Functions)
+
+```bash
+# Directory navigation
+mkcd newdir                 # Create and cd
+cdls dir/                   # cd and list
+up 3                        # Go up 3 directories
+fz                          # Fuzzy directory finder
+
+# File operations
+extract archive.tar.gz      # Auto-detect and extract
+cr archive.zip file1 file2  # Create archive
+cpg src dst                 # Copy with progress
+mvg src dst                 # Move with progress
+
+# Process management
+pk process_name             # Kill by name
+fkill                       # Fuzzy process killer
+bgd command                 # Background daemon
+
+# Fuzzy tools
+fz -f                       # Fuzzy file finder
+fz -p                       # Parent directory finder
+```
+
+---
+
+## Conventions & Naming
+
+### File Naming
+
+- **Scripts:** `lowercase-with-dashes.sh` or `snake_case.py`
+- **Configs:** Follow app conventions (often lowercase, sometimes camelCase)
+- **Bash functions:** `snake_case` or `lowercase` (no dashes)
+- **Constants:** `UPPERCASE_WITH_UNDERSCORES`
+
+### Directory Structure
+
+- Follow XDG Base Directory specification
+- User configs: `~/.config/app/`
+- User scripts: `~/.local/bin/`
+- User data: `~/.local/share/app/`
+- System configs: `/etc/`
+
+### Code Style
+
+**Bash:**
+- Strict mode: `set -euo pipefail`
+- Use `[[ ]]` not `[ ]`
+- Quote all variables: `"${var}"`
+- Prefer `printf` over `echo`
+- Use helper functions: `has()`, `die()`, `log()`
+
+**Python:**
+- Type hints required
+- Use `dataclasses` with `slots=True`
+- Prefer pathlib over os.path
+- Use f-strings for formatting
+- Minimal external dependencies
+
+**Git:**
+- Conventional commits: `type(scope): description`
+- Types: fix, feat, refactor, perf, docs, chore, style
+- Branch naming: `claude/<description-ID>`
+- Selective staging, never `git add -A`
+
+### Performance Guidelines
+
+1. **Batch operations** - Process multiple files at once
+2. **Parallel execution** - Use `xargs -P` or GNU parallel
+3. **Cache lookups** - Store repeated `command -v` checks
+4. **Direct file reading** - Use `$(<file)` not `$(cat file)`
+5. **Anchor regex** - Use `grep -F` for literal strings
+6. **Modern tools** - Prefer fd/rg/bat with fallbacks
+
+---
+
+## Troubleshooting
+
+### Deployment Issues
+
+```bash
+# YADM sync fails
+yadm-sync status            # Check what's different
+yadm diff                   # See detailed changes
+yadm add -u                 # Stage updates only
+yadm commit -m "sync"       # Commit changes
+
+# Tuckr deployment fails
+sudo tuckr link -d ~/dotfiles -t / --verbose etc
+sudo stow -t / -d ~/dotfiles --verbose etc  # Fallback
+
+# Permission errors
+sudo chown -R $USER:$USER ~/dotfiles/Home
+chmod +x ~/dotfiles/Home/.local/bin/*
+```
+
+### Pre-commit Hook Issues
+
+```bash
+# Hooks not running
+lefthook install            # Reinstall hooks
+
+# Hook fails
+lefthook run pre-commit     # Run manually to debug
+
+# Skip hooks (emergency only)
+git commit --no-verify -m "message"
+
+# Disable specific hook temporarily
+# Edit Home/.config/lefthook.yml, add: skip: true
+```
+
+### Script Errors
+
+```bash
+# ShellCheck errors
+shellcheck -x script.sh     # Check with sourcing
+
+# Permission denied
+chmod +x script.sh
+
+# Command not found
+command -v tool || echo "Install: paru -S tool"
+
+# Syntax error
+bash -n script.sh           # Check syntax without running
+```
+
+---
+
+## AI Agent Guidelines
+
+### Task Priorities
+
+1. **User requests** - Always highest priority
+2. **Verify before acting** - Read files, check state, confirm assumptions
+3. **Edit over create** - Modify existing files unless explicitly creating new
+4. **Technical debt first** - Fix blockers before adding features
+5. **Protected files** - Never modify without explicit permission
+
+### Best Practices
+
+- Read file contents before editing
+- Use specific git add, not `git add -A`
+- Test scripts with shellcheck before committing
+- Follow existing patterns and conventions
+- Keep changes minimal and focused
+- Document non-obvious decisions
+- Commit messages must be clear and conventional
+
+### Common Pitfalls to Avoid
+
+- Don't parse `ls` output - use globs or `find`
+- Don't use `eval` - find safer alternatives
+- Don't use backticks - use `$()`
+- Don't skip pre-commit hooks without reason
+- Don't force push to main/master
+- Don't commit secrets or sensitive data
+- Don't create unnecessary abstractions
+- Don't add features not requested
