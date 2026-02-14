@@ -164,19 +164,27 @@ fiximg(){
   local -a exts=(png jpg jpeg webp avif jxl)
   # Export for subshell
   export GM_CMD GM_IDENTIFY
-  export -f _strip_file_internal 2>/dev/null
+
+  # Helper for batch processing
   _strip_file_internal(){
-    local f="$1" tmp
-    if [[ -n $("$GM_IDENTIFY" -format "%[EXIF:*]%[IPTC:*]%[Comment]" "$f" 2>/dev/null) ]]; then
-      tmp="${f}.strip.$$"
-      "$GM_CMD" "$f" -strip "$tmp" && mv "$tmp" "$f"
-    fi
+    local tmp
+    for f in "$@"; do
+      if [[ -n $("$GM_IDENTIFY" -format "%[EXIF:*]%[IPTC:*]%[Comment]" "$f" 2>/dev/null) ]]; then
+        tmp="${f}.strip.$$"
+        "$GM_CMD" "$f" -strip "$tmp" && mv "$tmp" "$f"
+      fi
+    done
   }
+  export -f _strip_file_internal 2>/dev/null
+
   if command -v fd &>/dev/null; then
-    fd -t f "$(printf -- '-e %s ' "${exts[@]}")" -x bash -c '_strip_file_internal "$1"' _
+    local args=()
+    for ext in "${exts[@]}"; do args+=("-e" "$ext"); done
+    fd -t f -0 "${args[@]}" | xargs -0 -P "$(nproc 2>/dev/null || echo 4)" -n 20 bash -c '_strip_file_internal "$@"' _
   else
-    find . -type f \( "$(printf -- '-iname "*.%s" -o ' "${exts[@]}")" -false \) \
-      -exec bash -c '_strip_file_internal "$1"' _ {} \;
+    local args=()
+    for ext in "${exts[@]}"; do args+=("-iname" "*.$ext" "-o"); done
+    find . -type f \( "${args[@]}" -false \) -print0 | xargs -0 -P "$(nproc 2>/dev/null || echo 4)" -n 20 bash -c '_strip_file_internal "$@"' _
   fi
 }
 
