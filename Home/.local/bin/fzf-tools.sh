@@ -3,7 +3,6 @@
 set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t' SHELL=/usr/bin/bash
 
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
 has(){ command -v -- "$1" &>/dev/null; }
 die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
 warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
@@ -35,26 +34,67 @@ EOF
 cmd_preview(){
   local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/fzf"
   mkdir -p "$cache_dir" || :
-  mime_of(){ file --mime-type -b -- "$1"; }
-  ext_of(){ local b="${1##*/}"; b="${b##*.}"; printf '%s' "${b,,}"; }
+
+  # Optimization: Resolve bat command once to avoid repeated subshells
+  local BAT_CMD
+  if has batcat; then BAT_CMD="batcat"; elif has bat; then BAT_CMD="bat"; else BAT_CMD="cat"; fi
+
+  # Helper: Get extension (lowercase) without subshell
+  ext_of(){ local b="${1##*/}"; b="${b##*.}"; _EXT="${b,,}"; }
+
   preview_text(){
-    local file="$1" center="${2:-0}" ext=$(ext_of "$file")
+    local file="$1" center="${2:-0}" ext="${3:-}"
+    [[ -z $ext ]] && { ext_of "$file"; ext="$_EXT"; }
     case "$ext" in
-      md) has glow && { glow --style=auto --width "$((${FZF_PREVIEW_COLUMNS:-80}-1))" -- "$file"; return; } ;;
+      md|markdown) has glow && { glow --style=auto --width "$((${FZF_PREVIEW_COLUMNS:-80}-1))" -- "$file"; return; } ;;
       htm|html) has w3m && { w3m -T text/html -dump -- "$file"; return; } ;;
     esac
-    local b=$(batcmd)
-    [[ $b == cat ]] && sed -n '1,400p' -- "$file" || "$b" --style="${BAT_STYLE:-numbers}" --color=always --pager=never --highlight-line="${center:-0}" -- "$file"
+    if [[ $BAT_CMD == cat ]]; then
+      sed -n '1,400p' -- "$file"
+    else
+      "$BAT_CMD" --style="${BAT_STYLE:-numbers}" --color=always --pager=never --highlight-line="${center:-0}" -- "$file"
+    fi
   }
+
   preview_file(){
-    local loc="$1" center="${2:-0}" mime=$(mime_of "$loc" || printf '')
+    local loc="$1" center="${2:-0}"
+
+    # Fast path: Directory (avoid file check)
+    if [[ -d "$loc" ]]; then
+      has eza && eza -T -L 2 -- "$loc" || find -- "$loc" -maxdepth 2 -printf '%y %p\n'
+      return
+    fi
+
+    # Fast path: Check extension to avoid expensive 'file' calls
+    ext_of "$loc"
+    local ext="$_EXT"
+
+    # Known text formats
+    if [[ "$ext" =~ ^(txt|sh|bash|zsh|fish|py|rb|js|ts|jsx|tsx|css|xml|yaml|yml|toml|ini|conf|cfg|c|h|cpp|hpp|rs|go|java|kt|swift|php|pl|pm|lua|vim|md|markdown|html|htm|json)$ ]]; then
+      if [[ "$ext" == "json" ]] && has jq; then
+        jq -C . "$loc" 2>/dev/null || preview_text "$loc" "$center" "$ext"
+        return
+      fi
+      preview_text "$loc" "$center" "$ext"
+      return
+    fi
+
+    # Known binary formats
+    if [[ "$ext" =~ ^(png|jpg|jpeg|gif|webp|ico|tiff|bmp|pdf|zip|tar|gz|xz|7z|rar|iso|jar)$ ]]; then
+      file --brief --dereference -- "$loc"
+      return
+    fi
+
+    # Fallback for unknown extensions: check mime type (slow)
+    local mime
+    mime=$(file --mime-type -b -- "$loc" || printf '')
     case "$mime" in
       text/*) preview_text "$loc" "$center" ;;
-      application/json) has jq && "$(batcmd)" -p --color=always -- "$loc"|jq . || preview_text "$loc" "$center" ;;
-      inode/directory) has eza && eza -T -L 2 -- "$loc" || find -- "$loc" -maxdepth 2 -printf '%y %p\n' ;;
+      application/json) has jq && jq -C . "$loc" 2>/dev/null || preview_text "$loc" "$center" ;;
       *) file --brief --dereference -- "$loc" ;;
     esac
   }
+
   parse_arg(){
     local in="$1" file="$1" center=0
     if [[ ! -r $file ]]; then
@@ -62,6 +102,7 @@ cmd_preview(){
     fi
     printf '%s\n%s\n' "${file/#\~\//$HOME/}" "$center"
   }
+
   [[ $# -ge 1 ]] || { printf 'usage: fzf-tools preview PATH[:LINE]\n'; return 1; }
   local file center
   read -r file center < <(parse_arg "$1")
