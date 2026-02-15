@@ -95,6 +95,25 @@ _pkgui_search_aur_rpc(){
   local count; count=$(jq -r '.resultcount' <<<"$raw")
   ((count==0)) && { _pkgui_warn "No results for '$query'"; return 1; }
   
+  # Optimization: Batch generate previews from search results (avoids N curls)
+  local cache_dir="$CACHE/aur_rpc"
+  mkdir -p "$cache_dir"
+  jq -j '.results[] | .Name, "\u0000",
+    ("Name:         " + (.Name // "N/A") + "\n" +
+     "Version:     " + (.Version // "N/A") + "\n" +
+     "Maintainer:  " + (.Maintainer // "orphan") + "\n" +
+     "Votes:       " + (.NumVotes // 0 | tostring) + "\n" +
+     "Popularity:  " + (.Popularity // 0.0 | tostring) + "\n" +
+     "Out-of-date:  " + (if .OutOfDate then "YES" else "no" end) + "\n" +
+     "Description: " + (.Description // "N/A") + "\n" +
+     "URL:         " + (.URL // "N/A") + "\n"
+    ), "\u0000"' <<<"$raw" | \
+   while IFS= read -r -d '' name && IFS= read -r -d '' content; do
+     if [[ "$name" =~ ^[a-zA-Z0-9@._+-]+$ ]] && [[ "$name" != "." ]] && [[ "$name" != ".." ]] && [[ ! -e "$cache_dir/$name" ]]; then
+       printf '%s' "$content" > "$cache_dir/$name"
+     fi
+  done
+
   preview_fn='
     pkg=$(cut -f1 <<<{})
     cache_dir="$CACHE/aur_rpc"
