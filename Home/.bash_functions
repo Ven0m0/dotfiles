@@ -168,10 +168,13 @@ fiximg(){
   # Helper for batch processing
   _strip_file_internal(){
     local tmp
+    local -a gm_cmd_arr gm_identify_arr
+    read -r -a gm_cmd_arr <<< "${GM_CMD}"
+    read -r -a gm_identify_arr <<< "${GM_IDENTIFY}"
     for f in "$@"; do
-      if [[ -n $("$GM_IDENTIFY" -format "%[EXIF:*]%[IPTC:*]%[Comment]" "$f" 2>/dev/null) ]]; then
+      if [[ -n $("${gm_identify_arr[@]}" -format "%[EXIF:*]%[IPTC:*]%[Comment]" "$f" 2>/dev/null) ]]; then
         tmp="${f}.strip.$$"
-        "$GM_CMD" "$f" -strip "$tmp" && mv "$tmp" "$f"
+        "${gm_cmd_arr[@]}" "$f" -strip "$tmp" && mv "$tmp" "$f"
       fi
     done
   }
