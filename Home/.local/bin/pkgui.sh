@@ -108,8 +108,8 @@ _pkgui_search_aur_rpc(){
      "Description: " + (.Description // "N/A") + "\n" +
      "URL:         " + (.URL // "N/A") + "\n"
     ), "\u0000"' <<<"$raw" | \
-  while IFS= read -r -d '' name && IFS= read -r -d '' content; do
-     if [[ ! -e "$cache_dir/$name" ]]; then
+   while IFS= read -r -d '' name && IFS= read -r -d '' content; do
+     if [[ "$name" =~ ^[a-zA-Z0-9@._+-]+$ ]] && [[ "$name" != "." ]] && [[ "$name" != ".." ]] && [[ ! -e "$cache_dir/$name" ]]; then
        printf '%s' "$content" > "$cache_dir/$name"
      fi
   done
