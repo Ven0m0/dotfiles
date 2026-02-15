@@ -1,69 +1,25 @@
 {
-  "root": false,
-  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
-  "vcs": {
-    "enabled": true,
-    "clientKind": "git",
-    "useIgnoreFile": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true, "defaultBranch": "main" },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": true,
+    "maxSize": 1048576,
+    "includes": ["**", "!!**/.git", "!!**/dist", "!!**/build", "!!**/coverage", "!!**/.next", "!!**/.nuxt", "!!**/.output"]
   },
   "formatter": {
     "enabled": true,
-    "formatWithErrors": false,
+    "formatWithErrors": true,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineEnding": "lf",
     "lineWidth": 120,
     "attributePosition": "auto",
     "bracketSpacing": true,
-    "bracketSameLine": false
+    "bracketSameLine": true,
+    "useEditorconfig": true
   },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "complexity": {
-        "noExcessiveCognitiveComplexity": "warn",
-        "noForEach": "off",
-        "useFlatMap": "warn"
-      },
-      "correctness": {
-        "noUnusedVariables": "error",
-        "noUnusedImports": "error",
-        "useHookAtTopLevel": "error",
-        "useExhaustiveDependencies": "warn"
-      },
-      "nursery": {
-        "noDuplicateDependencies": "error",
-        "useSortedClasses": "warn"
-      },
-      "performance": {
-        "noAccumulatingSpread": "warn",
-        "noBarrelFile": "warn",
-        "noDelete": "warn",
-        "noReExportAll": "warn"
-      },
-      "style": {
-        "noDefaultExport": "off",
-        "noNegationElse": "off",
-        "noNonNullAssertion": "warn",
-        "noParameterAssign": "warn",
-        "useConsistentArrayType": "error",
-        "useFilenamingConvention": "off",
-        "useNodejsImportProtocol": "error",
-        "useSingleVarDeclarator": "warn"
-      },
-      "suspicious": {
-        "noConsole": "warn",
-        "noDoubleEquals": "error",
-        "noEmptyBlockStatements": "warn",
-        "noExplicitAny": "warn",
-        "noEvolvingTypes": "warn"
-      }
-    }
-  },
+  "linter": { "enabled": true, "rules": { "recommended": true } },
+  "assist": { "enabled": true, "actions": { "source": { "recommended": true } } },
   "javascript": {
     "formatter": {
       "jsxQuoteStyle": "double",
@@ -71,37 +27,23 @@
       "quoteProperties": "asNeeded",
       "trailingCommas": "all",
       "semicolons": "always",
-      "arrowParentheses": "always",
-      "bracketSpacing": true,
-      "bracketSameLine": false
-    }
+      "arrowParentheses": "always"
+    },
+    "jsxRuntime": "transparent"
   },
   "json": {
-    "formatter": { "trailingCommas": "none" },
-    "parser": { "allowComments": true, "allowTrailingCommas": false }
+    "parser": { "allowComments": false, "allowTrailingCommas": false },
+    "formatter": { "trailingCommas": "none" }
   },
-  "css": {
-    "formatter": { "quoteStyle": "double" },
-    "linter": { "enabled": true }
-  },
+  "css": { "formatter": { "quoteStyle": "double" } },
   "overrides": [
     {
       "includes": ["*.config.{js,ts,mjs,cjs}", ".*rc.{js,ts}", ".*.{js,ts}"],
-      "linter": {
-        "rules": {
-          "suspicious": { "noConsole": "off" },
-          "style": { "noDefaultExport": "off" }
-        }
-      }
+      "linter": { "rules": { "suspicious": { "noConsole": "off" }, "style": { "noDefaultExport": "off" } } }
     },
     {
-      "includes": ["**/__tests__/**", "**/*.test.{js,ts,jsx,tsx}", "**/*.spec.{js,ts,jsx,tsx}"],
-      "linter": {
-        "rules": {
-          "suspicious": { "noExplicitAny": "off" },
-          "style": { "noNonNullAssertion": "off" }
-        }
-      }
+      "includes": ["package.json", "tsconfig.json", "tsconfig.*.json"],
+      "json": { "formatter": { "expand": "always" } }
     }
   ]
 }
