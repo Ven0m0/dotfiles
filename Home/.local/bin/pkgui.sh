@@ -10,7 +10,7 @@ export HOME="/home/${SUDO_USER:-$USER}" SHELL="$(command -v bash)"
 readonly R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[34m' C=$'\e[36m' M=$'\e[35m' BD=$'\e[1m' D=$'\e[0m' UL=$'\e[4m' IT=$'\e[3m'
 readonly CFG="${XDG_CONFIG_HOME:-$HOME/.config}/pkgui" CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/pkgui"
 readonly HIST="${PKGUI_HISTORY:-$CACHE/history}" PKGLIST="${PKGUI_PKGLIST:-$CFG/packagelist}"
-readonly FILE_NATIVE="$CFG/native. txt" FILE_AUR="$CFG/aur.txt"
+readonly FILE_NATIVE="$CFG/native.txt" FILE_AUR="$CFG/aur.txt"
 declare -A _pkgui_cmd_cache _CI _CQ _CL _CLO _CUPD
 _CUPD_TIME=0
 mkdir -p "$CFG" "$CACHE" "${HIST%/*}"
@@ -34,7 +34,7 @@ for f in ${FINDER:-sk fzf}; do _pkgui_has "$f" && FND="$f" && break; done
 IFS="$_old_ifs"
 FZF_THEME="${FZF_THEME:-hl: italic:#FFFF00,hl+:bold: underline:#FF0000,fg:#98A0C5,fg+:bold:#FFFFFF,bg:#13172A,bg+:#0F1222,border:#75A2F7,label: bold:#75A2F7,preview-fg:#C0CAF5,preview-bg:#0F1222,marker: bold:#FF0000,pointer:bold:#FF0000,prompt:bold:#75A2F7,spinner:#FF0000,header: italic:#75A2F7,info:#FFFF00,scrollbar:#75A2F7,separator:#75A2F7,gutter:#13172A}"
 
-_pkgui_ver(){ printf '%b%s%b v5. 3.0 - Unified Arch Package Manager TUI\n' "$BD" "${0##*/}" "$D"; }
+_pkgui_ver(){ printf '%b%s%b v5.3.0 - Unified Arch Package Manager TUI\n' "$BD" "${0##*/}" "$D"; }
 _pkgui_help(){
   cat <<'EOF'
 USAGE:  pkgui [CMD|FLAG] [ARGS]
@@ -264,7 +264,7 @@ _pkgui_gen_lists(){
   local d="$CFG/lists"; mkdir -p "$d"; _pkgui_msg "Generating..."
   pacman -Qeq >"$d/explicit.txt"; pacman -Qdq >"$d/deps.txt"; pacman -Qnq >"$d/native.txt"; pacman -Qmq >"$d/foreign.txt"; pacman -Qdttq 2>/dev/null >"$d/orphans.txt"||:
   expac -H M '%m %n' | sort -h >"$d/by-size.txt"; expac --timefmt='%Y-%m-%d %T' '%l %n' | sort >"$d/by-install.txt"
-  _pkgui_has flatpak && flatpak list >"$d/flatpak. txt"
+  _pkgui_has flatpak && flatpak list >"$d/flatpak.txt"
   _pkgui_msg "Done:  $d"; find "$d" -name '*.txt' -printf '%p %s\n'
 }
 _pkgui_backup(){ local b="$PKGLIST. $(date +%Y%m%d-%H%M%S)"; pacman -Qeq >"$b"; _pkgui_msg "Backup: $b"; }
