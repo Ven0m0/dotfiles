@@ -36,26 +36,40 @@ def get_repo_stats(repo: Path) -> RepoStats:
   files_out = run_git(["ls-files"], repo)
   files = len(files_out.splitlines()) if files_out else 0
 
-  log_out = run_git(["log", "--format=%at%x09%aN", "HEAD"], repo)
-  if not log_out:
+  commits_str = run_git(["rev-list", "--count", "HEAD"], repo)
+  if not commits_str:
     return RepoStats(0, files, 0, 0, {})
+  commits = int(commits_str)
 
-  lines = log_out.splitlines()
-  commits = len(lines)
+  last_ts_str = run_git(["log", "-1", "--format=%at", "HEAD"], repo)
+  last_ts = int(last_ts_str) if last_ts_str else 0
 
-  last_ts = int(lines[0].split('\t')[0])
-  first_ts = int(lines[-1].split('\t')[0])
+  # Get oldest commit timestamp (handle multiple roots)
+  roots_out = run_git(["log", "--max-parents=0", "--format=%at", "HEAD"], repo)
+  if roots_out:
+    first_ts = min(int(ts) for ts in roots_out.splitlines() if ts.strip())
+  else:
+    first_ts = last_ts
 
   now = int(time())
   age = (now - first_ts) // 86400
   active = (now - last_ts) // 86400
 
-  authors: dict[str, int] = defaultdict(int)
-  for line in lines:
-    parts = line.split('\t', 1)
-    if len(parts) == 2:
-      authors[parts[1]] += 1
-  return RepoStats(commits, files, age, active, dict(authors))
+  authors: dict[str, int] = {}
+  authors_out = run_git(["shortlog", "-sn", "HEAD"], repo)
+  if authors_out:
+    for line in authors_out.splitlines():
+      line = line.strip()
+      if not line: continue
+      parts = line.split('\t', 1)
+      if len(parts) == 2:
+        authors[parts[1]] = int(parts[0])
+      else:
+        parts = line.split(None, 1)
+        if len(parts) == 2:
+          authors[parts[1]] = int(parts[0])
+
+  return RepoStats(commits, files, age, active, authors)
 
 def find_repos(path: Path) -> list[Path]:
   """Recursively find all git repositories."""
