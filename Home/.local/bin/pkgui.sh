@@ -209,6 +209,17 @@ _pkgui_rm(){ local -a p; mapfile -t p; ((${#p[@]}==0)) && return; [[ $PAC == pac
 # --- Update ---
 _pkgui_upd_check(){
   local now pac aur=0 flat=0; now=$(printf '%(%s)T' -1)
+
+  # Optimization: Load persistent cache
+  local cache_file="$CACHE/updates_state"
+  if [[ -z ${_CUPD[pac]:-} ]] && [[ -f "$cache_file" ]]; then
+    local ts c_pac c_aur c_flat
+    IFS=' ' read -r ts c_pac c_aur c_flat < "$cache_file" || true
+    if [[ "$ts" =~ ^[0-9]+$ ]] && ((now - ts < 300)); then
+       _CUPD[pac]=$c_pac; _CUPD[aur]=$c_aur; _CUPD[flat]=$c_flat; _CUPD_TIME=$ts
+    fi
+  fi
+
   if ((now-_CUPD_TIME<300)) && [[ -n ${_CUPD[pac]:-} ]]; then
     pac=${_CUPD[pac]}; aur=${_CUPD[aur]:-0}; flat=${_CUPD[flat]:-0}
   else
@@ -216,6 +227,8 @@ _pkgui_upd_check(){
     [[ $PAC != pacman ]] && aur=$("$PAC" -Qua 2>/dev/null | wc -l)
     _pkgui_has flatpak && flat=$(flatpak remote-ls --updates 2>/dev/null | wc -l)
     _CUPD[pac]=$pac; _CUPD[aur]=$aur; _CUPD[flat]=$flat; _CUPD_TIME=$now
+    # Optimization: Save persistent cache
+    echo "$now $pac $aur $flat" > "$cache_file"
   fi
   printf '\n%bUpdate Summary:%b\nPacman: %b%d%b\n' "$BD" "$D" "$C" "$pac" "$D"
   ((aur>0)) && printf 'AUR:      %b%d%b\n' "$C" "$aur" "$D"
