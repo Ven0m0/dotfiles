@@ -63,12 +63,10 @@ def get_repo_stats(repo: Path) -> RepoStats:
       line = line.strip()
       if not line: continue
       parts = line.split('\t', 1)
+      if len(parts) != 2:
+        parts = line.split(None, 1)
       if len(parts) == 2:
         authors[parts[1]] = int(parts[0])
-      else:
-        parts = line.split(None, 1)
-        if len(parts) == 2:
-          authors[parts[1]] = int(parts[0])
 
   return RepoStats(commits, files, age, active, authors)
 
