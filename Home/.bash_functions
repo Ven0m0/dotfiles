@@ -74,7 +74,7 @@ vcode(){
 mounted(){
   mount | column -t
 }
-prettypath(){ echo "${PATH//:/$'\n'}"; }
+prettypath(){ printf '%s\n' "${PATH//:/$'\n'}"; }
 
 # =============================================================================
 # ARCHIVE MANAGEMENT
