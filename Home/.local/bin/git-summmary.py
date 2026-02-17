@@ -47,7 +47,8 @@ def get_repo_stats(repo: Path) -> RepoStats:
   # Get oldest commit timestamp (handle multiple roots)
   roots_out = run_git(["log", "--max-parents=0", "--format=%at", "HEAD"], repo)
   if roots_out:
-    first_ts = min(int(ts) for ts in roots_out.splitlines() if ts.strip())
+    root_timestamps = [int(ts) for ts in roots_out.splitlines() if ts.strip()]
+    first_ts = min(root_timestamps) if root_timestamps else last_ts
   else:
     first_ts = last_ts
 
