@@ -3,9 +3,10 @@ on:
   workflow_dispatch:
 jobs:
   optimize:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: BeksOmega/jules-action@v1.0.0
         with:
