@@ -228,7 +228,7 @@ _pkgui_upd_check(){
     _pkgui_has flatpak && flat=$(flatpak remote-ls --updates 2>/dev/null | wc -l)
     _CUPD[pac]=$pac; _CUPD[aur]=$aur; _CUPD[flat]=$flat; _CUPD_TIME=$now
     # Optimization: Save persistent cache
-    echo "$now $pac $aur $flat" > "$cache_file"
+echo "$now $pac $aur $flat" > "$cache_file" || _pkgui_warn "Failed to save update cache to $cache_file"
   fi
   printf '\n%bUpdate Summary:%b\nPacman: %b%d%b\n' "$BD" "$D" "$C" "$pac" "$D"
   ((aur>0)) && printf 'AUR:      %b%d%b\n' "$C" "$aur" "$D"
