@@ -215,7 +215,7 @@ _pkgui_upd_check(){
   if [[ -z ${_CUPD[pac]:-} ]] && [[ -f "$cache_file" ]]; then
     local ts c_pac c_aur c_flat
     IFS=' ' read -r ts c_pac c_aur c_flat < "$cache_file" || true
-    if [[ "$ts" =~ ^[0-9]+$ ]] && ((now - ts < 300)); then
+    if [[ "$ts" =~ ^[0-9]+$ ]] && [[ "$c_pac" =~ ^[0-9]+$ ]] && [[ "$c_aur" =~ ^[0-9]+$ ]] && [[ "$c_flat" =~ ^[0-9]+$ ]] && ((now - ts < 300)); then
        _CUPD[pac]=$c_pac; _CUPD[aur]=$c_aur; _CUPD[flat]=$c_flat; _CUPD_TIME=$ts
     fi
   fi
