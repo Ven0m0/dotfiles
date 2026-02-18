@@ -1,8 +1,0 @@
-#pipenv
-#httpx
-#pendulum
-#uvloop
-#orjson
-#polars
-#typer
-#rich
