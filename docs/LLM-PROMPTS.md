@@ -10,19 +10,19 @@
 <details><summary><b>Audit</b></summary>
 
 ```text
-Scan for duplicate logic, slow paths, bugs, edge cases, bad practices. Find outdated/insecure deps, remove unused packages. Resolve TODO/FIXME. Format (Biome/Ruff/rustfmt/shfmt+shellcheck+shellharden). Output: summary table, unified diffs, risk assessment.
+use rg to scan for duplicate logic, slow paths, bugs, edge cases, bad practices. Find outdated/insecure deps, remove unused packages. Resolve TODO/FIXME. Format (biome/ruff/rustfmt/shfmt+shellcheck+shellharden). Output: summary table, unified diffs, risk assessment.
 ```
 </details>
 <details><summary><b>Deps</b></summary>
 
 ```text
-Use rg to search for outdated packages, CVEs, bloat, unused deps. Suggest modern replacements. Apply updates respecting semver. Output: report table, update commands, migration notes.
+use rg to search for outdated packages, CVEs, bloat, unused deps. Suggest modern replacements. Apply updates respecting semver. Output: report table, update commands, migration notes.
 ```
 </details>
 <details><summary><b>TODOs</b></summary>
 
 ```text
-Extract all TODOs from code/issues. Categorize: trivial/moderate/complex. Resolve trivial items inline. Output: completion report, diffs, remaining backlog.
+use rg to extract all TODOs from code/issues. Categorize: trivial/moderate/complex. Resolve trivial items inline. Output: completion report, diffs, remaining backlog.
 ```
 </details>
 <details><summary><b>Cleaner</b></summary>
@@ -34,7 +34,7 @@ Purge unused code, dead paths, stale deps. Flatten complex logic, inline single-
 <details><summary><b>AIO</b></summary>
 
 ```text
-Refactor duplicates. Fix slow paths, errors, bad practices. Analyze deps for outdated/CVEs/bloat — apply changes. Resolve trivial TODOs. Format (Biome/Ruff/shellcheck+shellharden/clippy/yamlfmt+yamllint). Output: summary, diffs, risk notes.
+Refactor duplicates. Fix slow paths, errors, bad practices. Analyze deps for outdated/CVEs/bloat with rg — apply changes. Resolve trivial TODOs. Format (Biome/Ruff/shellcheck+shellharden/clippy/yamlfmt+yamllint). Output: summary, diffs, risk notes.
 ```
 </details>
 <details><summary><b>Cleanup</b></summary>
