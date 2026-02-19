@@ -10,7 +10,7 @@
 <details><summary><b>Audit</b></summary>
 
 ```text
-Senior code auditor: Scan for duplicate logic, slow paths, bugs, edge cases, bad practices.
+Senior code auditor: Use rg to scan for duplicate logic, slow paths, bugs, edge cases, bad practices.
 Find outdated/insecure deps, remove unused packages. Resolve TODO/FIXME. Apply formatters
 (Biome/Ruff/rustfmt/shfmt+shellcheck+shellharden). Output: summary table, unified diffs,
 risk assessment, remaining issues.
