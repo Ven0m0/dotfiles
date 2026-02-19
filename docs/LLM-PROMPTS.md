@@ -16,7 +16,7 @@ Scan for duplicate logic, slow paths, bugs, edge cases, bad practices. Find outd
 <details><summary><b>Deps</b></summary>
 
 ```text
-Find outdated packages, CVEs, bloat, unused deps. Suggest modern replacements. Apply updates respecting semver. Output: report table, update commands, migration notes.
+Use rg to search for outdated packages, CVEs, bloat, unused deps. Suggest modern replacements. Apply updates respecting semver. Output: report table, update commands, migration notes.
 ```
 </details>
 <details><summary><b>TODOs</b></summary>
