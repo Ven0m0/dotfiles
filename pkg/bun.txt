@@ -1,10 +1,12 @@
 zon-format
-# ocx
-# mcp-mode
 code-mode-toon
 @toon-format/toon
 @th0rgal/ralph-wiggum
 @programsmagic/toon-format
 @programsmagic/toon-core
+
 @blowmage/cursor-agent-acp
-# @skills-server/mc
+@google/gemini-cli@preview
+@notprolands/ast-grep-mcp
+opencode-plugin-auto-update
+openportal
