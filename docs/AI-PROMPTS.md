@@ -178,8 +178,6 @@ sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }
 ```
 </details>
 
----
-
 ## Utilities
 
 <details><summary><b>Flow-Style Compaction</b></summary>
