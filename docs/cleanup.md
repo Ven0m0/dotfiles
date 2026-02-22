@@ -1,122 +1,242 @@
-# Code Analysis & Cleanup Workflow
+# LLM Prompts
 
-## Important: Ultrathink multi-Chat Workflow
+## PR Commands
 
-**Code analysis and cleanup requires multiple chat sessions to avoid context limits and ensure thorough review.**
+```text
+@gemini-code-assist review | @dependabot rebase | @copilot | @claude | @cursor | @jules
+```
 
-### Progress Tracking System
-I'll create and continuously update a `code-analysis-progress.md` file after each major step. This file contains:
-- **Complete workflow instructions** - Full prompt context and guidelines for new chats
-- **Analysis guidelines** - What to identify, safety protocols, confirmation requirements
-- **Project context** - Your codebase structure, technology stack, and specific requirements
-- **Completed phases** - What has been analyzed and documented
-- **Current findings** - Discovered unused imports, dead code, and potential issues
-- **Next steps** - Specific cleanup tasks and priorities for continuation
-- **File locations** - Where all analysis reports and backup recommendations are stored
+## Quick Tasks
 
-This ensures any new chat session has complete context to continue the analysis seamlessly.
+<details><summary><b>Audit</b></summary>
 
-### When to Start a New Chat
-Start a new chat session when:
-- This conversation becomes long and responses slow down
-- You want to focus on a different part of the codebase
-- Moving from analysis to cleanup implementation
-- You're returning to the analysis after a break
+```text
+use rg to scan for duplicate logic, slow paths, bugs, edge cases, bad practices. Find outdated/insecure deps, remove unused packages. Resolve TODO/FIXME. Format (biome/ruff/rustfmt/shfmt+shellcheck+shellharden). Use ultrathink. Output: summary table, unified diffs, risk assessment.
+```
 
-### Continuing in a New Chat
-Simply start your new conversation with:
-*"Continue code analysis - please read `code-analysis-progress.md` to understand where we left off, then proceed with the next phase."*
+</details>
+<details><summary><b>Deps</b></summary>
 
-**I'll update the progress file after every major step to ensure seamless continuity.**
+```text
+use `rg` to search for outdated packages, CVEs, bloat, unused deps. Suggest modern replacements. Apply updates respecting semver. Use ultrathink. Output: report table, update commands, migration notes.
+```
 
----
+</details>
+<details><summary><b>TODOs</b></summary>
 
-## My Working Method
+```text
+use `rg` to extract all TODOs from code/issues. Categorize: trivial/moderate/complex. Resolve trivial items inline. Output: completion report, diffs, remaining backlog.
+```
 
-I work in phases with strict safety protocols and confirmation points:
+</details>
+<details><summary><b>Cleaner</b></summary>
 
-### Phase-Based Approach
-1. **Discovery Phase**: Explore project structure, identify technologies, understand architecture
-2. **Scanning Phase**: Systematically analyze files for unused imports and dead code
-3. **Analysis Phase**: Categorize findings, assess impact, identify dependencies
-4. **Review Phase**: Present findings with detailed reports and recommendations
-5. **Cleanup Phase**: Execute approved changes with backup and rollback plans
+```text
+Purge unused code, dead paths, stale deps. Flatten complex logic, inline single-use abstractions. Enforce 2-space indent, 120-char lines. Merge files >80% similar. Strip emojis, comments. Output: before/after metrics, diffs. Use `rg` to find files and use ultrathink
+```
 
-### Safety Protocols
-- **NEVER DELETE OR MODIFY CODE** without explicit confirmation
-- Always create backup recommendations before any changes
-- Provide detailed impact analysis for each proposed change
-- Show exactly what will be removed/modified before taking action
-- Implement changes incrementally with testing checkpoints
-- Use `rg`, `fd` and `ast-grep`/`bunx @ast-grep/cli`
+</details>
+<details><summary><b>AIO</b></summary>
 
-**Approval Checkpoint**: I'll show you comprehensive analysis reports and get your explicit approval before making ANY changes.
+```text
+Refactor duplicates. Fix slow paths, errors, bad practices. Analyze deps for outdated/CVEs/bloat and apply changes. Resolve trivial TODOs. Format (Biome/Ruff/shellcheck+shellharden/clippy/yamlfmt+yamllint). Use `rg` to find files and use ultrathink. Output: summary, diffs, risk notes.
+```
 
----
+</details>
+<details><summary><b>Cleanup</b></summary>
 
-I use Desktop Commander for file system operations and code analysis.
+```text
+Delete logs, temp files, caches, build artifacts. Remove duplicate lines, redundant/dead text, bloat files, empty dirs. Strip trailing whitespace, normalize line endings (LF), max 1 trailing newline per file. Use `rg` to find files and use ultrathink. Then format:
+  YAML:     yamlfmt
+  JSON:     biome format (or prettier --write)
+  JS/TS:    biome format --write → biome check --write
+  Shell:    shfmt -i 2 -bn -ci -ln bash → shellcheck → shellharden --replace
+  Python:   ruff format → ruff check --fix
+  Markdown: markdownlint --fix
+  All text: codespell --write-changes
+Output: deleted file list, before/after byte counts, format diffs, codespell fixes.
+```
 
----
+</details>
 
-## Getting Started
+## Bash Refactor
 
-To begin, please provide:
+<details><summary><b>Full Spec</b></summary>
 
-1. **Project Root Path**: Full absolute path to your project directory
+```text
+Refactor shell scripts (*.sh, *.bash, *.zsh, rc files). Use `rg` to find files and use ultrathink
+Exclude: .git/, node_modules/, vendor/, generated assets. Bash preferred.
+── Prologue (required) ──
+#!/usr/bin/env bash
+shellcheck enable=all shell=bash source-path=SCRIPTDIR
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; LC_ALL=C
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null
+has(){ command -v -- "$1" &>/dev/null; }
+── Style: shfmt -i 2 -bn -ci -ln bash ──
+Max 1 empty line | Compact: name(){ … } | Inline case: pat) cmd1; cmd2 ;;
+[[ ]] over [ ] | No spaces in redirects: >/dev/null | Normalize: &>/dev/null
+fn() { → fn(){ | Ensure bash shebang when bashisms present
+── Forbidden ──
+eval | parsing ls | unquoted expansions | unnecessary subshells | curl|bash
+── Safety: DO NOT modify ──
+heredocs, single-quoted blocks, regex-heavy lines, ambiguous [ conversions
+── Inline/Extract rules ──
+Inline: ≤6 lines + ≤2 calls + no complex flow
+Extract: >50 tokens + ≥3 repeats → function | No sourcing; standalone only
+── Prefer ──
+Builtins > externals | arrays + mapfile + parameter expansion
+printf > echo | (( )) arithmetic | [[ ]] with =~ | mapfile -t | read -ra
+local -n | declare -A | while IFS= read -r line; do ...; done
+── Helpers ──
+date(){ local x="${1:-%d/%m/%y-%R}"; printf "%($x)T\n" '-1'; }
+fcat(){ printf '%s\n' "$(<"${1}")"; }
+sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }
+── Pipeline ──
+parse → transform → shfmt → shellcheck --severity=error → shellharden --replace → shellcheck
+── Output: plan (3-6 lines), unified diff, standalone script(s), risk note, LOC metrics ──
+```
 
-2. **Project Context**: 
-   - What type of application/system is this? (web app, API, library, etc.)
-   - What's the main technology stack? (JavaScript/TypeScript, Python, Java, etc.)
-   - What's your goal with this cleanup?
-   - Any areas you're particularly concerned about?
-   - Your familiarity level with the codebase
+</details>
 
-3. **Analysis Scope**: 
-   - **Full analysis** (entire codebase) or **targeted analysis** (specific directories/files)
-   - **Conservative** (only obvious unused code) or **aggressive** (potential dead code)
-   - **Focus areas**: unused imports, dead functions, unreachable code, unused variables
-   - **Exclusions**: files/directories to skip (tests, config, generated code, etc.)
+## Python Refactor
 
-4. **Safety Preferences**:
-   - Backup strategy preference
-   - Testing requirements before cleanup
-   - Incremental vs batch changes
+<details><summary><b>Full Spec</b></summary>
 
-### Analysis Features
+```text
+Refactor Python following strict standards. Use `rg` to find files and use ultrathink
+Pipeline: ruff format → ruff check --fix → mypy --strict → pytest --durations=0 | uv
+Types:    Full hints, modern generics (list[str]), no Any w/o docs, prefer dataclasses/TypedDict/Protocol
+Perf:     orjson > json | uvloop > asyncio | httpx > requests | csv > pandas for ETL
+          Generators for large data | Target O(n)+
+Style:    Atomic functions (SRP) | snake_case, PascalCase classes, UPPER constants
+          Specific exceptions: raise X from e | No globals | Max 50 lines/func
+Tests:    pytest + fixtures + hypothesis | Min 80% coverage
+Output: plan (5-10 lines), type-checked code, coverage report, perf metrics, migration guide
+```
 
-**Unused Import Detection:**
-- Identifies imported modules/packages never referenced
-- Detects partially unused imports (specific functions/classes)
-- Handles complex import patterns (aliases, destructuring, etc.)
-- Cross-references with dynamic imports and string-based imports
+</details>
 
-**Dead Code Identification:**
-- Unreferenced functions, classes, and variables
-- Unreachable code blocks (after returns, in impossible conditions)
-- Unused configuration and constants
-- Orphaned files with no external references
+## JS/TS Refactor
 
-**Smart Analysis:**
-- Respects framework conventions (React hooks, lifecycle methods, etc.)
-- Handles dynamic references (reflection, string-based calls, etc.)
-- Considers build-time and runtime dependencies
-- Analyzes across module boundaries
+<details><summary><b>Full Spec</b></summary>
 
-**Comprehensive Reporting:**
-- Detailed file-by-file breakdown
-- Impact assessment for each finding
-- Dependency analysis and removal safety
-- Statistics on potential space/complexity savings
-- Prioritized cleanup recommendations
+```text
+Refactor JS/TS with modern tooling. Use `rg` to find files and use ultrathink
+Discovery: fd -tf -e js -e jsx -e ts -e tsx -e mjs -e cjs -E node_modules -E .git -E dist
+Pipeline:  biome format --write . → biome check --write --unsafe . → oxlint -D all --deny-warnings
+Style:  2-space, double quotes, trailing commas, semicolons
+        const > let | arrow funcs | template literals | destructure | ?./??
+TS:     strict mode | no any w/o comment | interfaces for objects | satisfies
+Perf:   No O(n²) | Map/Set | lazy load | memoize | debounce/throttle
+Output: summary table (File|Status|Biome|Oxlint|Notes), diffs
+```
 
-### Example Usage
+</details>
 
-After providing the information above, I'll:
+## GitHub Actions Fix
 
-1. **Map your project structure** and understand the architecture
-2. **Scan systematically** through all relevant files
-3. **Generate detailed reports** of findings with impact analysis
-4. **Present cleanup plan** with step-by-step safety protocols
-5. **Execute approved changes** with full backup and rollback capabilities
+<details><summary><b>Full Spec</b></summary>
 
-Ready to help you clean up your codebase safely and effectively!
+```text
+Fix and harden CI/CD workflows.
+Fixes: add permissions, fix deprecated commands, Never use SHA pins, always use latest direct version, use ${{ secrets.* }}, add timeout-minutes (60), fix YAML errors
+Security: explicit permissions | never echo secrets | env protection
+Perf:     concurrency groups | cache deps | matrix parallelism | fetch-depth: 1
+Validate: actionlint → action-validator → ghalint → yamlfmt → yamllint
+Limits:   ≤20 files | ≤20min/job | ≤7 matrix jobs | No main/latest refs
+Output: analysis, diffs, new workflows, validation results, rollback plan
+```
+
+</details>
+
+## Lint/Format Orchestrator
+
+<details><summary><b>Full Spec</b></summary>
+
+```text
+Orchestrate multi-language quality checks.
+Use `rg` to find files and use ultrathink
+Exclude: .git, node_modules, vendor, dist, .venv
+Rules: Format before lint | Batch: xargs -P$(nproc) | Exit on error in CI
+YAML:      yamlfmt -w        → yamllint -f parsable
+JS/TS:     biome fmt          → biome check
+Shell:     shfmt -w -i 2 -bn -ci → shellcheck --severity=error → shellharden
+Fish:      fish_indent -w
+TOML:      taplo fmt          → tombi lint
+Markdown:  mdformat           → markdownlint --fix
+Actions:   yamlfmt            → yamllint → actionlint
+Python:    ruff format        → ruff check --fix
+Rust:      cargo fmt          → cargo clippy -D warnings
+Lua:       stylua             → selene
+Go:        gofmt -w           → golangci-lint run
+Output: orchestration script, error reports, summary table, CI exit codes
+```
+
+</details>
+
+## Utilities
+
+<details><summary><b>Flow-Style Compaction</b></summary>
+
+```text
+Compact JSON/YAML/TOML: inline arrays/objects ≤140 chars, else block. Max 2 consecutive newlines. Delete HTML comments. Sort keys alphabetically. Use `rg` to find files and use ultrathink. Output: diffs, space savings (bytes/lines), validation.
+```
+
+</details>
+<details><summary><b>AGENTS.md Generator</b></summary>
+
+```text
+Analyze repo: languages, frameworks, conventions, workflows, configs. Generate AGENTS.md covering: project overview + stack, repo structure (@prefix key files), dev workflows (setup/build/test/deploy), conventions (naming/style/patterns), deps, common tasks. Symlink: CLAUDE.md → AGENTS.md, GEMINI.md → AGENTS.md.
+```
+
+</details>
+
+## Copilot / Jules Tasks
+
+```text
+Find duplicate logic across files
+```
+
+```text
+Analyze repo, generate 3 feature ideas with implementation plans
+```
+
+```text
+Cluster related functions by responsibility, suggest module refactoring
+```
+
+```text
+Refactor for parallel processing using modern concurrency
+```
+
+```text
+Upgrade linters to latest, autofix breaking config changes
+```
+
+```text
+Set up Renovate/Dependabot with optimal config
+```
+
+```text
+Convert CLI tool into GitHub App with webhooks
+```
+
+```text
+Build web scraper starter with rate limiting, retries, error handling
+```
+
+```text
+Implement test coverage for untested modules
+```
+
+```text
+Set up pre-commit hooks with linters/formatters
+```
+
+```text
+Create CI/CD workflows with caching and parallel jobs
+```
+
+```text
+Refactor large functions into composable smaller functions
+```
