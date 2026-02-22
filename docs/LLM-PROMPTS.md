@@ -447,7 +447,7 @@ Find untested public functions/methods via coverage report. Generate pytest/vite
 ```
 
 ```text
-Set up pre-commit hooks: format (biome/ruff/shfmt) → lint (oxlint/ruff/shellcheck) → type-check (tsc --noEmit/mypy) → codespell. Include .pre-commit-config.yaml and setup instructions.
+Set up prek pre-commit hooks: format (biome/ruff/shfmt) → lint (oxlint/ruff/shellcheck) → type-check (tsc --noEmit/mypy) → codespell. Include .pre-commit-config.yaml and setup instructions.
 ```
 
 ```text
