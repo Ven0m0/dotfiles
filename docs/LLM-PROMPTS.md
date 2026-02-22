@@ -1,7 +1,10 @@
-# AI Prompts
+# LLM Prompts
 
 ## PR Commands
-`@gemini-code-assist review` | `@dependabot rebase` | `@copilot` | `@claude` | `@cursor` | `@jules`
+
+```text
+@gemini-code-assist review | @dependabot rebase | @copilot | @claude | @cursor | @jules
+```
 
 ## Quick Tasks
 
@@ -10,30 +13,35 @@
 ```text
 use rg to scan for duplicate logic, slow paths, bugs, edge cases, bad practices. Find outdated/insecure deps, remove unused packages. Resolve TODO/FIXME. Format (biome/ruff/rustfmt/shfmt+shellcheck+shellharden). Use ultrathink. Output: summary table, unified diffs, risk assessment.
 ```
+
 </details>
 <details><summary><b>Deps</b></summary>
 
 ```text
 use `rg` to search for outdated packages, CVEs, bloat, unused deps. Suggest modern replacements. Apply updates respecting semver. Use ultrathink. Output: report table, update commands, migration notes.
 ```
+
 </details>
 <details><summary><b>TODOs</b></summary>
 
 ```text
 use `rg` to extract all TODOs from code/issues. Categorize: trivial/moderate/complex. Resolve trivial items inline. Output: completion report, diffs, remaining backlog.
 ```
+
 </details>
 <details><summary><b>Cleaner</b></summary>
 
 ```text
 Purge unused code, dead paths, stale deps. Flatten complex logic, inline single-use abstractions. Enforce 2-space indent, 120-char lines. Merge files >80% similar. Strip emojis, comments. Output: before/after metrics, diffs. Use `rg` to find files and use ultrathink
 ```
+
 </details>
 <details><summary><b>AIO</b></summary>
 
 ```text
 Refactor duplicates. Fix slow paths, errors, bad practices. Analyze deps for outdated/CVEs/bloat and apply changes. Resolve trivial TODOs. Format (Biome/Ruff/shellcheck+shellharden/clippy/yamlfmt+yamllint). Use `rg` to find files and use ultrathink. Output: summary, diffs, risk notes.
 ```
+
 </details>
 <details><summary><b>Cleanup</b></summary>
 
@@ -48,6 +56,7 @@ Delete logs, temp files, caches, build artifacts. Remove duplicate lines, redund
   All text: codespell --write-changes
 Output: deleted file list, before/after byte counts, format diffs, codespell fixes.
 ```
+
 </details>
 
 ## Bash Refactor
@@ -86,6 +95,7 @@ sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }
 parse → transform → shfmt → shellcheck --severity=error → shellharden --replace → shellcheck
 ── Output: plan (3-6 lines), unified diff, standalone script(s), risk note, LOC metrics ──
 ```
+
 </details>
 
 ## Python Refactor
@@ -103,6 +113,7 @@ Style:    Atomic functions (SRP) | snake_case, PascalCase classes, UPPER constan
 Tests:    pytest + fixtures + hypothesis | Min 80% coverage
 Output: plan (5-10 lines), type-checked code, coverage report, perf metrics, migration guide
 ```
+
 </details>
 
 ## JS/TS Refactor
@@ -119,6 +130,7 @@ TS:     strict mode | no any w/o comment | interfaces for objects | satisfies
 Perf:   No O(n²) | Map/Set | lazy load | memoize | debounce/throttle
 Output: summary table (File|Status|Biome|Oxlint|Notes), diffs
 ```
+
 </details>
 
 ## GitHub Actions Fix
@@ -130,10 +142,11 @@ Fix and harden CI/CD workflows.
 Fixes: add permissions, fix deprecated commands, Never use SHA pins, always use latest direct version, use ${{ secrets.* }}, add timeout-minutes (60), fix YAML errors
 Security: explicit permissions | never echo secrets | env protection
 Perf:     concurrency groups | cache deps | matrix parallelism | fetch-depth: 1
-Validate: `actionlint` → `action-validator` → `ghalint` → `yamlfmt` → `yamllint`
+Validate: actionlint → action-validator → ghalint → yamlfmt → yamllint
 Limits:   ≤20 files | ≤20min/job | ≤7 matrix jobs | No main/latest refs
 Output: analysis, diffs, new workflows, validation results, rollback plan
 ```
+
 </details>
 
 ## Lint/Format Orchestrator
@@ -158,6 +171,7 @@ Lua:       stylua             → selene
 Go:        gofmt -w           → golangci-lint run
 Output: orchestration script, error reports, summary table, CI exit codes
 ```
+
 </details>
 
 ## Utilities
@@ -167,50 +181,62 @@ Output: orchestration script, error reports, summary table, CI exit codes
 ```text
 Compact JSON/YAML/TOML: inline arrays/objects ≤140 chars, else block. Max 2 consecutive newlines. Delete HTML comments. Sort keys alphabetically. Use `rg` to find files and use ultrathink. Output: diffs, space savings (bytes/lines), validation.
 ```
+
 </details>
 <details><summary><b>AGENTS.md Generator</b></summary>
 
 ```text
 Analyze repo: languages, frameworks, conventions, workflows, configs. Generate AGENTS.md covering: project overview + stack, repo structure (@prefix key files), dev workflows (setup/build/test/deploy), conventions (naming/style/patterns), deps, common tasks. Symlink: CLAUDE.md → AGENTS.md, GEMINI.md → AGENTS.md.
 ```
+
 </details>
 
----
-
 ## Copilot / Jules Tasks
+
 ```text
 Find duplicate logic across files
 ```
+
 ```text
 Analyze repo, generate 3 feature ideas with implementation plans
 ```
+
 ```text
 Cluster related functions by responsibility, suggest module refactoring
 ```
+
 ```text
 Refactor for parallel processing using modern concurrency
 ```
+
 ```text
 Upgrade linters to latest, autofix breaking config changes
 ```
+
 ```text
 Set up Renovate/Dependabot with optimal config
 ```
+
 ```text
 Convert CLI tool into GitHub App with webhooks
 ```
+
 ```text
 Build web scraper starter with rate limiting, retries, error handling
 ```
+
 ```text
 Implement test coverage for untested modules
 ```
+
 ```text
 Set up pre-commit hooks with linters/formatters
 ```
+
 ```text
 Create CI/CD workflows with caching and parallel jobs
 ```
+
 ```text
 Refactor large functions into composable smaller functions
-```
+```****
