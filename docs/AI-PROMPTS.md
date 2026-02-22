@@ -10,7 +10,7 @@
 ```text
 Senior code auditor: Use `rg` to scan for duplicate logic, slow paths, bugs, edge cases, bad practices.
 Find outdated/insecure deps, remove unused packages. Resolve TODO/FIXME. Apply formatters
-(Biome/Ruff/rustfmt/shfmt+shellcheck+shellharden). Output: summary table, unified diffs,
+(Biome/Ruff/rustfmt/shfmt+shellcheck+shellharden). Use ultrathink. Output: summary table, unified diffs,
 risk assessment, remaining issues.
 ```
 </details>
@@ -18,7 +18,7 @@ risk assessment, remaining issues.
 
 ```text
 Dependency specialist: Find outdated packages, CVEs, bloat, unused deps. Suggest modern
-alternatives. Apply updates respecting semver. Output: report table, update commands,
+alternatives. Apply updates respecting semver. Use ultrathink. Output: report table, update commands,
 migration notes.
 ```
 </details>
@@ -36,7 +36,7 @@ Resolve trivial items. Output: completion report, diffs, task backlog.
 ```text
 Code minimalist: Purge unused code, dead paths, stale deps. Flatten complex logic, inline
 single-use abstractions. Enforce 2-space indent, 100-char lines. Merge files >80% similar.
-Strip emojis, comments. Output: before/after metrics, diffs.
+Strip emojis, comments. Output: before/after metrics, diffs. Use `rg` to find files and use ultrathink
 ```
 </details>
 <details><summary><b>Short AIO</b></summary>
@@ -45,7 +45,7 @@ Strip emojis, comments. Output: before/after metrics, diffs.
 Full-stack auditor: Refactor duplicated code. Fix slow/inefficient paths, errors, bad practices.
 Analyze deps for outdated packages, CVEs, bloat — apply changes. Resolve trivial TODOs/issues.
 Format with appropriate tool (Biome/Ruff/shellcheck+shellharden/clippy/yamlfmt+yamllint).
-Output: summary, diffs, risk notes.
+Output: summary, diffs, risk notes. Use `rg` to find files and use ultrathink
 ```
 </details>
 
@@ -117,8 +117,7 @@ sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }
 
 ```bash
 # JS/TS engineer: Apply modern tooling.
-# Discovery:
-#   fd -tf -e js -e jsx -e ts -e tsx -e mjs -e cjs -E node_modules -E .git -E dist
+# Discovery: `fd` and `rg` | Exclude: .git, node_modules, vendor, dist, .venv
 # Pipeline:
 #   biome format --write .
 #   biome check --write --unsafe .
@@ -159,8 +158,8 @@ sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }
 <details><summary><b>Full Spec</b></summary>
 
 ```bash
-# Multi-language specialist: Orchestrate quality checks.
-# Discovery: fd (prefer) or find | Exclude: .git, node_modules, vendor, dist, .venv
+# Multi-language specialist with ultrathink: Orchestrate quality checks.
+# Discovery: `fd` and `rg` | Exclude: .git, node_modules, vendor, dist, .venv
 # Rules: Format before lint | Batch: xargs -P$(nproc) | Exit on error in CI
 # ── Pipelines ──
 # YAML:      yamlfmt -w         → yamllint -f parsable
@@ -191,11 +190,11 @@ alphabetically where possible. Output: diffs, space savings (bytes/lines), valid
 <details><summary><b>AGENTS.md Generator</b></summary>
 
 ```text
-Documentation specialist: Use `rg` (ripgrep) to analyze repo structure, languages, frameworks, conventions, workflows,
+Documentation specialist with ultrathink: Use `rg` (ripgrep) to analyze repo structure, languages, frameworks, conventions, workflows,
 configs, patterns. Generate comprehensive "AGENTS.md" and ".github/copilot-instructions.md" with: project overview + tech stack, repo
 structure + key files with [at]prefix, dev workflows (setup/build/test/deploy), conventions
 (naming/style/patterns), dependencies, common tasks. Create symlinks: CLAUDE.md → AGENTS.md,
-GEMINI.md → AGENTS.md. Output: complete AGENTS.md, symlinks, README update.
+GEMINI.md → AGENTS.md. Output: complete AGENTS.md, copilot-instructions.md, symlinks, README update.
 ```
 </details>
 
