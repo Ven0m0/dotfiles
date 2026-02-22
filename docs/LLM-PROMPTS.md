@@ -8,13 +8,13 @@
 <details><summary><b>Audit</b></summary>
 
 ```text
-use rg to scan for duplicate logic, slow paths, bugs, edge cases, bad practices. Find outdated/insecure deps, remove unused packages. Resolve TODO/FIXME. Format (biome/ruff/rustfmt/shfmt+shellcheck+shellharden). Output: summary table, unified diffs, risk assessment.
+use rg to scan for duplicate logic, slow paths, bugs, edge cases, bad practices. Find outdated/insecure deps, remove unused packages. Resolve TODO/FIXME. Format (biome/ruff/rustfmt/shfmt+shellcheck+shellharden). Use ultrathink. Output: summary table, unified diffs, risk assessment.
 ```
 </details>
 <details><summary><b>Deps</b></summary>
 
 ```text
-use `rg` to search for outdated packages, CVEs, bloat, unused deps. Suggest modern replacements. Apply updates respecting semver. Output: report table, update commands, migration notes.
+use `rg` to search for outdated packages, CVEs, bloat, unused deps. Suggest modern replacements. Apply updates respecting semver. Use ultrathink. Output: report table, update commands, migration notes.
 ```
 </details>
 <details><summary><b>TODOs</b></summary>
@@ -26,19 +26,19 @@ use `rg` to extract all TODOs from code/issues. Categorize: trivial/moderate/com
 <details><summary><b>Cleaner</b></summary>
 
 ```text
-Purge unused code, dead paths, stale deps. Flatten complex logic, inline single-use abstractions. Enforce 2-space indent, 120-char lines. Merge files >80% similar. Strip emojis, comments. Output: before/after metrics, diffs.
+Purge unused code, dead paths, stale deps. Flatten complex logic, inline single-use abstractions. Enforce 2-space indent, 120-char lines. Merge files >80% similar. Strip emojis, comments. Output: before/after metrics, diffs. Use `rg` to find files and use ultrathink
 ```
 </details>
 <details><summary><b>AIO</b></summary>
 
 ```text
-Refactor duplicates. Fix slow paths, errors, bad practices. Analyze deps for outdated/CVEs/bloat with `rg` — apply changes. Resolve trivial TODOs. Format (Biome/Ruff/shellcheck+shellharden/clippy/yamlfmt+yamllint). Output: summary, diffs, risk notes.
+Refactor duplicates. Fix slow paths, errors, bad practices. Analyze deps for outdated/CVEs/bloat and apply changes. Resolve trivial TODOs. Format (Biome/Ruff/shellcheck+shellharden/clippy/yamlfmt+yamllint). Use `rg` to find files and use ultrathink. Output: summary, diffs, risk notes.
 ```
 </details>
 <details><summary><b>Cleanup</b></summary>
 
 ```text
-Delete logs, temp files, caches, build artifacts. Remove duplicate lines, redundant/dead text, bloat files, empty dirs. Strip trailing whitespace, normalize line endings (LF), max 1 trailing newline per file. Use `rg` for finding files. Then format:
+Delete logs, temp files, caches, build artifacts. Remove duplicate lines, redundant/dead text, bloat files, empty dirs. Strip trailing whitespace, normalize line endings (LF), max 1 trailing newline per file. Use `rg` to find files and use ultrathink. Then format:
   YAML:     yamlfmt
   JSON:     biome format (or prettier --write)
   JS/TS:    biome format --write → biome check --write
@@ -55,7 +55,7 @@ Output: deleted file list, before/after byte counts, format diffs, codespell fix
 <details><summary><b>Full Spec</b></summary>
 
 ```text
-Refactor shell scripts (*.sh, *.bash, *.zsh, rc files).
+Refactor shell scripts (*.sh, *.bash, *.zsh, rc files). Use `rg` to find files and use ultrathink
 Exclude: .git/, node_modules/, vendor/, generated assets. Bash preferred.
 ── Prologue (required) ──
 #!/usr/bin/env bash
@@ -93,7 +93,7 @@ parse → transform → shfmt → shellcheck --severity=error → shellharden --
 <details><summary><b>Full Spec</b></summary>
 
 ```text
-Refactor Python following strict standards.
+Refactor Python following strict standards. Use `rg` to find files and use ultrathink
 Pipeline: ruff format → ruff check --fix → mypy --strict → pytest --durations=0 | uv
 Types:    Full hints, modern generics (list[str]), no Any w/o docs, prefer dataclasses/TypedDict/Protocol
 Perf:     orjson > json | uvloop > asyncio | httpx > requests | csv > pandas for ETL
@@ -110,7 +110,7 @@ Output: plan (5-10 lines), type-checked code, coverage report, perf metrics, mig
 <details><summary><b>Full Spec</b></summary>
 
 ```text
-Refactor JS/TS with modern tooling.
+Refactor JS/TS with modern tooling. Use `rg` to find files and use ultrathink
 Discovery: fd -tf -e js -e jsx -e ts -e tsx -e mjs -e cjs -E node_modules -E .git -E dist
 Pipeline:  biome format --write . → biome check --write --unsafe . → oxlint -D all --deny-warnings
 Style:  2-space, double quotes, trailing commas, semicolons
@@ -127,8 +127,7 @@ Output: summary table (File|Status|Biome|Oxlint|Notes), diffs
 
 ```text
 Fix and harden CI/CD workflows.
-Fixes: add permissions: {contents: read}, fix deprecated commands,
-       use ${{ secrets.* }}, add timeout-minutes (60), fix YAML errors
+Fixes: add permissions, fix deprecated commands, Never use SHA pins, always use latest direct version, use ${{ secrets.* }}, add timeout-minutes (60), fix YAML errors
 Security: explicit permissions | never echo secrets | env protection
 Perf:     concurrency groups | cache deps | matrix parallelism | fetch-depth: 1
 Validate: `actionlint` → `action-validator` → `ghalint` → `yamlfmt` → `yamllint`
@@ -143,6 +142,7 @@ Output: analysis, diffs, new workflows, validation results, rollback plan
 
 ```text
 Orchestrate multi-language quality checks.
+Use `rg` to find files and use ultrathink
 Exclude: .git, node_modules, vendor, dist, .venv
 Rules: Format before lint | Batch: xargs -P$(nproc) | Exit on error in CI
 YAML:      yamlfmt -w        → yamllint -f parsable
@@ -165,7 +165,7 @@ Output: orchestration script, error reports, summary table, CI exit codes
 <details><summary><b>Flow-Style Compaction</b></summary>
 
 ```text
-Compact JSON/YAML/TOML: inline arrays/objects ≤140 chars, else block. Max 2 consecutive newlines. Delete HTML comments. Sort keys alphabetically. Output: diffs, space savings (bytes/lines), validation.
+Compact JSON/YAML/TOML: inline arrays/objects ≤140 chars, else block. Max 2 consecutive newlines. Delete HTML comments. Sort keys alphabetically. Use `rg` to find files and use ultrathink. Output: diffs, space savings (bytes/lines), validation.
 ```
 </details>
 <details><summary><b>AGENTS.md Generator</b></summary>
