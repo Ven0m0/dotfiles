@@ -186,7 +186,11 @@ Compact JSON/YAML/TOML: inline arrays/objects ≤140 chars, else block. Max 2 co
 <details><summary><b>AGENTS.md Generator</b></summary>
 
 ```text
-Analyze repo: languages, frameworks, conventions, workflows, configs. Generate AGENTS.md covering: project overview + stack, repo structure (@prefix key files), dev workflows (setup/build/test/deploy), conventions (naming/style/patterns), deps, common tasks. Symlink: CLAUDE.md → AGENTS.md, GEMINI.md → AGENTS.md.
+Documentation specialist: Use `rg` to analyze repo structure, languages, frameworks, conventions, workflows,
+configs, patterns. Generate comprehensive "AGENTS.md" and ".github/copilot-instructions.md" with: project overview + tech stack, repo
+structure + key files with [at]prefix, dev workflows (setup/build/test/deploy), conventions
+(naming/style/patterns), dependencies, common tasks. Create symlinks: CLAUDE.md → AGENTS.md,
+GEMINI.md → AGENTS.md. Use ultrahink to optimize agentic understanding. Output: complete AGENTS.md, symlinks, README update.
 ```
 
 </details>
