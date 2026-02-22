@@ -3,8 +3,6 @@
 ## PR Commands
 `@gemini-code-assist review` | `@dependabot rebase` | `@copilot` | `@claude` | `@cursor` | `@jules`
 
----
-
 ## Quick Tasks
 
 <details><summary><b>Audit</b></summary>
@@ -16,13 +14,13 @@ use rg to scan for duplicate logic, slow paths, bugs, edge cases, bad practices.
 <details><summary><b>Deps</b></summary>
 
 ```text
-use rg to search for outdated packages, CVEs, bloat, unused deps. Suggest modern replacements. Apply updates respecting semver. Output: report table, update commands, migration notes.
+use `rg` to search for outdated packages, CVEs, bloat, unused deps. Suggest modern replacements. Apply updates respecting semver. Output: report table, update commands, migration notes.
 ```
 </details>
 <details><summary><b>TODOs</b></summary>
 
 ```text
-use rg to extract all TODOs from code/issues. Categorize: trivial/moderate/complex. Resolve trivial items inline. Output: completion report, diffs, remaining backlog.
+use `rg` to extract all TODOs from code/issues. Categorize: trivial/moderate/complex. Resolve trivial items inline. Output: completion report, diffs, remaining backlog.
 ```
 </details>
 <details><summary><b>Cleaner</b></summary>
@@ -34,13 +32,13 @@ Purge unused code, dead paths, stale deps. Flatten complex logic, inline single-
 <details><summary><b>AIO</b></summary>
 
 ```text
-Refactor duplicates. Fix slow paths, errors, bad practices. Analyze deps for outdated/CVEs/bloat with rg — apply changes. Resolve trivial TODOs. Format (Biome/Ruff/shellcheck+shellharden/clippy/yamlfmt+yamllint). Output: summary, diffs, risk notes.
+Refactor duplicates. Fix slow paths, errors, bad practices. Analyze deps for outdated/CVEs/bloat with `rg` — apply changes. Resolve trivial TODOs. Format (Biome/Ruff/shellcheck+shellharden/clippy/yamlfmt+yamllint). Output: summary, diffs, risk notes.
 ```
 </details>
 <details><summary><b>Cleanup</b></summary>
 
 ```text
-Delete logs, temp files, caches, build artifacts. Remove duplicate lines, redundant/dead text, bloat files, empty dirs. Strip trailing whitespace, normalize line endings (LF), max 1 trailing newline per file. Then format:
+Delete logs, temp files, caches, build artifacts. Remove duplicate lines, redundant/dead text, bloat files, empty dirs. Strip trailing whitespace, normalize line endings (LF), max 1 trailing newline per file. Use `rg` for finding files. Then format:
   YAML:     yamlfmt
   JSON:     biome format (or prettier --write)
   JS/TS:    biome format --write → biome check --write
@@ -51,8 +49,6 @@ Delete logs, temp files, caches, build artifacts. Remove duplicate lines, redund
 Output: deleted file list, before/after byte counts, format diffs, codespell fixes.
 ```
 </details>
-
----
 
 ## Bash Refactor
 
@@ -92,8 +88,6 @@ parse → transform → shfmt → shellcheck --severity=error → shellharden --
 ```
 </details>
 
----
-
 ## Python Refactor
 
 <details><summary><b>Full Spec</b></summary>
@@ -111,8 +105,6 @@ Output: plan (5-10 lines), type-checked code, coverage report, perf metrics, mig
 ```
 </details>
 
----
-
 ## JS/TS Refactor
 
 <details><summary><b>Full Spec</b></summary>
@@ -129,8 +121,6 @@ Output: summary table (File|Status|Biome|Oxlint|Notes), diffs
 ```
 </details>
 
----
-
 ## GitHub Actions Fix
 
 <details><summary><b>Full Spec</b></summary>
@@ -141,13 +131,11 @@ Fixes: add permissions: {contents: read}, fix deprecated commands,
        use ${{ secrets.* }}, add timeout-minutes (60), fix YAML errors
 Security: explicit permissions | never echo secrets | env protection
 Perf:     concurrency groups | cache deps | matrix parallelism | fetch-depth: 1
-Validate: actionlint → action-validator → ghalint → yamlfmt → yamllint
+Validate: `actionlint` → `action-validator` → `ghalint` → `yamlfmt` → `yamllint`
 Limits:   ≤20 files | ≤20min/job | ≤7 matrix jobs | No main/latest refs
 Output: analysis, diffs, new workflows, validation results, rollback plan
 ```
 </details>
-
----
 
 ## Lint/Format Orchestrator
 
@@ -172,8 +160,6 @@ Output: orchestration script, error reports, summary table, CI exit codes
 ```
 </details>
 
----
-
 ## Utilities
 
 <details><summary><b>Flow-Style Compaction</b></summary>
@@ -194,12 +180,37 @@ Analyze repo: languages, frameworks, conventions, workflows, configs. Generate A
 ## Copilot / Jules Tasks
 ```text
 Find duplicate logic across files
+```
+```text
+Analyze repo, generate 3 feature ideas with implementation plans
+```
+```text
 Cluster related functions by responsibility, suggest module refactoring
+```
+```text
 Refactor for parallel processing using modern concurrency
+```
+```text
 Upgrade linters to latest, autofix breaking config changes
+```
+```text
 Set up Renovate/Dependabot with optimal config
+```
+```text
+Convert CLI tool into GitHub App with webhooks
+```
+```text
+Build web scraper starter with rate limiting, retries, error handling
+```
+```text
 Implement test coverage for untested modules
+```
+```text
 Set up pre-commit hooks with linters/formatters
+```
+```text
 Create CI/CD workflows with caching and parallel jobs
+```
+```text
 Refactor large functions into composable smaller functions
 ```
