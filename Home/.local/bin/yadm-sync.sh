@@ -91,7 +91,7 @@ Templates
 *.log
 *.tmp
 EXCLUDES
-  local -a rsync_opts=(-av --delete --exclude-from="$exclude_file" --exclude='.git' --exclude='.gitignore' --filter='dir-merge,- .gitignore' --files-from=-)
+  local -a rsync_opts=(-av --delete --exclude-from="$exclude_file" --exclude='.git' --exclude='.gitignore' --filter='dir-merge,- .gitignore' --files-from=- --from0)
   [[ $dry_run == "1" ]] && rsync_opts+=(--dry-run)
   [[ $dry_run == "1" ]] && warn "DRY RUN - Showing what would be synced..."
   local -a files_to_sync=()
@@ -101,7 +101,7 @@ EXCLUDES
     source_file="${HOME}/${rel_path}"
     [[ -e $source_file ]] && files_to_sync+=("$rel_path")
   done < <(find "$home_dir" -type f -print0)
-  ((${#files_to_sync[@]}>0)) && printf '%s\n' "${files_to_sync[@]}" | rsync "${rsync_opts[@]}" "${HOME}/" "${home_dir}/"
+  ((${#files_to_sync[@]}>0)) && printf '%s\0' "${files_to_sync[@]}" | rsync "${rsync_opts[@]}" "${HOME}/" "${home_dir}/"
   rm -f "$exclude_file"
   if [[ $dry_run == "1" ]]; then
     warn "DRY RUN - No files modified"
