@@ -73,42 +73,51 @@ done
 # Check if running as root
 [[ $EUID -eq 0 ]] || die "This script must be run as root (use sudo)"
 
-# Deploy using tuckr or stow
-if has tuckr; then
-  info "Using tuckr for deployment"
-  local hooks_file="${REPO_DIR}/hooks.toml"
-  for pkg in "${PACKAGES[@]}"; do
-    local src="${REPO_DIR}/${pkg}"
-    [[ -d $src ]] || { warn "Directory not found: $src"; continue; }
+deploy_configs() {
+  local repo_dir="$1"
+  local unlink="$2"
+  shift 2
+  local packages=("$@")
 
-    if [[ $UNLINK == true ]]; then
-      info "Unlinking ${pkg}/"
-      tuckr unlink -d "$REPO_DIR" -t / "$pkg" || warn "Failed to unlink $pkg"
-    else
-      info "Linking ${pkg}/ → / (tuckr)"
-      local cmd=(tuckr link -d "$REPO_DIR" -t / "$pkg")
-      [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
-      "${cmd[@]}" || warn "Failed to link $pkg"
-    fi
-  done
-elif has stow; then
-  info "Using stow for deployment (tuckr not available)"
-  for pkg in "${PACKAGES[@]}"; do
-    local src="${REPO_DIR}/${pkg}"
-    [[ -d $src ]] || { warn "Directory not found: $src"; continue; }
+  if has tuckr; then
+    info "Using tuckr for deployment"
+    local hooks_file="${repo_dir}/hooks.toml"
+    for pkg in "${packages[@]}"; do
+      local src="${repo_dir}/${pkg}"
+      [[ -d $src ]] || { warn "Directory not found: $src"; continue; }
 
-    if [[ $UNLINK == true ]]; then
-      info "Unstowing ${pkg}/"
-      (cd "$REPO_DIR" && stow -t / -d . -D "$pkg") || warn "Failed to unstow $pkg"
-    else
-      info "Stowing ${pkg}/ → / (stow)"
-      (cd "$REPO_DIR" && stow -t / -d . "$pkg") || warn "Failed to stow $pkg"
-    fi
-  done
-else
-  die "Neither tuckr nor stow is installed. Install one of them:
+      if [[ $unlink == true ]]; then
+        info "Unlinking ${pkg}/"
+        tuckr unlink -d "$repo_dir" -t / "$pkg" || warn "Failed to unlink $pkg"
+      else
+        info "Linking ${pkg}/ → / (tuckr)"
+        local cmd=(tuckr link -d "$repo_dir" -t / "$pkg")
+        [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
+        "${cmd[@]}" || warn "Failed to link $pkg"
+      fi
+    done
+  elif has stow; then
+    info "Using stow for deployment (tuckr not available)"
+    for pkg in "${packages[@]}"; do
+      local src="${repo_dir}/${pkg}"
+      [[ -d $src ]] || { warn "Directory not found: $src"; continue; }
+
+      if [[ $unlink == true ]]; then
+        info "Unstowing ${pkg}/"
+        (cd "$repo_dir" && stow -t / -d . -D "$pkg") || warn "Failed to unstow $pkg"
+      else
+        info "Stowing ${pkg}/ → / (stow)"
+        (cd "$repo_dir" && stow -t / -d . "$pkg") || warn "Failed to stow $pkg"
+      fi
+    done
+  else
+    die "Neither tuckr nor stow is installed. Install one of them:
   Arch: paru -S tuckr  OR  paru -S stow
   Debian: apt install stow"
-fi
+  fi
+}
+
+# Deploy using tuckr or stow
+deploy_configs "$REPO_DIR" "$UNLINK" "${PACKAGES[@]}"
 
 info "Deployment complete"
