@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 import sys
+from functools import lru_cache
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
 from dataclasses import dataclass, field
@@ -120,6 +121,7 @@ class Log:
   def prog_done(self) -> None:
     if not self.quiet: print()
 
+@lru_cache(maxsize=None)
 def has(cmd: str) -> bool:
   return shutil.which(cmd) is not None
 
