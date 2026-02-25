@@ -8,7 +8,7 @@ import subprocess
 import sys
 from functools import lru_cache
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
+from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Final, Iterable, Iterator
