@@ -1,0 +1,62 @@
+{
+  "mcpServers": {
+    "github-mcp-server": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/insiders",
+      "tools": ["*"],
+      "headers": {
+        "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search"
+        "Authorization": "Bearer ${GITHUB_TOKEN}"
+      }
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "tools": ["*"]
+    },
+    "coding-thinker": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mcp-coding-thinker"],
+      "tools": ["*"]
+    },
+    "exa": {
+      "type": "http",
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
+      "tools": ["*"],
+      "headers": {
+        "EXA_API_KEY": "${EXA_API_KEY}"
+      }
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "tools": ["*"],
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      }
+    },
+    "grepika": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@agentika/grepika", "--mcp"],
+      "tools": ["*"]
+    },
+    "ast-grep": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@notprolands/ast-grep-mcp"],
+      "tools": ["*"]
+    },
+    "octocode": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "octocode-mcp@latest"],
+      "tools": ["*"]
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    }
+  }
+}
