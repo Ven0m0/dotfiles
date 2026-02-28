@@ -3,11 +3,14 @@
 set -euo pipefail
 shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C
-has(){ command -v -- "$1" &>/dev/null; }
-die(){ printf '%s\n' "$1" >&2; exit "${2:-1}"; }
+has() { command -v -- "$1" &> /dev/null; }
+die() {
+  printf '%s\n' "$1" >&2
+  exit "${2:-1}"
+}
 
-show_help(){
-  cat <<'EOF'
+show_help() {
+  cat << 'EOF'
 nekofetch - Fetch and display anime images in terminal
 
 USAGE:
@@ -32,24 +35,43 @@ APIS:
   waifu.im    - Anime waifus with tag filtering (maid, waifu, etc.)
 EOF
 }
-cleanup(){ [[ -f ${tmp_file:-} ]] && rm -f "$tmp_file"; }
+cleanup() { [[ -f ${tmp_file:-} ]] && rm -f "$tmp_file"; }
 
-nekofetch(){
+nekofetch() {
   local api="${NEKO_API:-nekos}" cat="" json_tool="" img_tool="" nsfw=""
   local jsont imgt response img_url api_base query_str json_path is_gif=0
   tmp_file=""
   trap cleanup EXIT
   while [[ $# -gt 0 ]]; do
     case $1 in
-    -h | --help) show_help; return 0 ;;
-    -a | --api) api="${2,,}"; shift 2 ;;
-    -j | --json) json_tool="$2"; shift 2 ;;
-    -i | --img) img_tool="$2"; shift 2 ;;
-    --nsfw) nsfw="true"; shift ;;
-    -*)
-      printf 'Unknown option: %s\nTry: nekofetch --help\n' "$1" >&2
-      return 1 ;;
-    *) cat="$1"; shift ;;
+      -h | --help)
+        show_help
+        return 0
+        ;;
+      -a | --api)
+        api="${2,,}"
+        shift 2
+        ;;
+      -j | --json)
+        json_tool="$2"
+        shift 2
+        ;;
+      -i | --img)
+        img_tool="$2"
+        shift 2
+        ;;
+      --nsfw)
+        nsfw="true"
+        shift
+        ;;
+      -*)
+        printf 'Unknown option: %s\nTry: nekofetch --help\n' "$1" >&2
+        return 1
+        ;;
+      *)
+        cat="$1"
+        shift
+        ;;
     esac
   done
 
@@ -76,40 +98,40 @@ nekofetch(){
 
   # API config
   case $api in
-  nekos | nekos.best)
-    api_base="https://nekos.best/api/v2"
-    json_path='.results[0].url'
-    if [[ -z $cat ]]; then
-      printf 'nekos.best categories:\n\n'
-      response="$(curl -fsSL "${api_base}/endpoints")" || die "error: failed to fetch endpoints" 2
-      if has column; then
-        printf '%s' "$response" | "$jsont" -r 'to_entries[]|"\(.key)\t\(.value.format)"' | column -t -s $'\t'
-      else
-        printf '%s' "$response" | "$jsont" -r 'keys[]'
+    nekos | nekos.best)
+      api_base="https://nekos.best/api/v2"
+      json_path='.results[0].url'
+      if [[ -z $cat ]]; then
+        printf 'nekos.best categories:\n\n'
+        response="$(curl -fsSL "${api_base}/endpoints")" || die "error: failed to fetch endpoints" 2
+        if has column; then
+          printf '%s' "$response" | "$jsont" -r 'to_entries[]|"\(.key)\t\(.value.format)"' | column -t -s $'\t'
+        else
+          printf '%s' "$response" | "$jsont" -r 'keys[]'
+        fi
+        printf '\nUsage: nekofetch <category>\n'
+        return 0
       fi
-      printf '\nUsage: nekofetch <category>\n'
-      return 0
-    fi
-    query_str="$cat"
-    ;;
-  waifu | waifu.im)
-    api_base="https://api.waifu.im"
-    json_path='.images[0].url'
-    if [[ -z $cat ]]; then
-      printf 'waifu.im tags:\n\n'
-      response="$(curl -fsSL "$api_base/tags")" || die "error: failed to fetch tags" 2
-      printf 'SFW: '
-      printf '%s' "$response" | "$jsont" -r '.versatile|join(", ")'
-      printf '\nNSFW: '
-      printf '%s' "$response" | "$jsont" -r '.nsfw|join(", ")'
-      printf '\n\nUsage: nekofetch -a waifu <tag>[,tag2] [--nsfw]\n'
-      return 0
-    fi
-    query_str="search?"
-    for tag in ${cat//,/ }; do query_str+="included_tags=${tag}&"; done
-    [[ -n $nsfw ]] && query_str+="is_nsfw=true" || query_str+="is_nsfw=false"
-    ;;
-  *) die "error: unknown api '$api' (use: nekos, waifu)" ;;
+      query_str="$cat"
+      ;;
+    waifu | waifu.im)
+      api_base="https://api.waifu.im"
+      json_path='.images[0].url'
+      if [[ -z $cat ]]; then
+        printf 'waifu.im tags:\n\n'
+        response="$(curl -fsSL "$api_base/tags")" || die "error: failed to fetch tags" 2
+        printf 'SFW: '
+        printf '%s' "$response" | "$jsont" -r '.versatile|join(", ")'
+        printf '\nNSFW: '
+        printf '%s' "$response" | "$jsont" -r '.nsfw|join(", ")'
+        printf '\n\nUsage: nekofetch -a waifu <tag>[,tag2] [--nsfw]\n'
+        return 0
+      fi
+      query_str="search?"
+      for tag in ${cat//,/ }; do query_str+="included_tags=${tag}&"; done
+      [[ -n $nsfw ]] && query_str+="is_nsfw=true" || query_str+="is_nsfw=false"
+      ;;
+    *) die "error: unknown api '$api' (use: nekos, waifu)" ;;
   esac
 
   # Fetch
@@ -130,21 +152,23 @@ nekofetch(){
     tmp_file="$(mktemp "/tmp/neko_XXXXXX.gif")" || die "mktemp failed" 5
     curl -fsSL "$img_url" -o "$tmp_file" || die "download failed" 6
     case $imgt in
-    chafa) chafa --animate on --duration inf -w 9 "$tmp_file" ;;
-    viu) viu -w 80 "$tmp_file" ;;
-    *)
-      printf 'GIF saved: %s\n' "$tmp_file"
-      trap - EXIT ;;
+      chafa) chafa --animate on --duration inf -w 9 "$tmp_file" ;;
+      viu) viu -w 80 "$tmp_file" ;;
+      *)
+        printf 'GIF saved: %s\n' "$tmp_file"
+        trap - EXIT
+        ;;
     esac
   else
     case $imgt in
-    chafa) curl -fsSL "$img_url" | chafa -O 6 -w 9 - ;;
-    viu) curl -fsSL "$img_url" | viu -w 80 - ;;
-    *)
-      tmp_file="$(mktemp "/tmp/neko_XXXXXX")" || die "mktemp failed" 5
-      curl -fsSL "$img_url" -o "$tmp_file" || die "download failed" 6
-      printf 'Saved: %s\n' "$tmp_file"
-      trap - EXIT ;;
+      chafa) curl -fsSL "$img_url" | chafa -O 6 -w 9 - ;;
+      viu) curl -fsSL "$img_url" | viu -w 80 - ;;
+      *)
+        tmp_file="$(mktemp "/tmp/neko_XXXXXX")" || die "mktemp failed" 5
+        curl -fsSL "$img_url" -o "$tmp_file" || die "download failed" 6
+        printf 'Saved: %s\n' "$tmp_file"
+        trap - EXIT
+        ;;
     esac
   fi
 }

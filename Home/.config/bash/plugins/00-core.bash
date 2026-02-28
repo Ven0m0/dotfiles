@@ -15,8 +15,8 @@ shopt -s autocd cdable_vars cdspell checkwinsize dirspell globstar nullglob
 shopt -s hostcomplete no_empty_cmd_completion histappend cmdhist
 set -o noclobber
 # Disable flow control (Ctrl-S/Q)
-stty -ixon -ixoff -ixany &>/dev/null
-bind -r '\C-s' &>/dev/null
+stty -ixon -ixoff -ixany &> /dev/null
+bind -r '\C-s' &> /dev/null
 export IGNOREEOF=10 COLUMNS
 # --- Sourcing Legacy
 ifsource /etc/bashrc

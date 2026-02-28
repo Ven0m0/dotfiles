@@ -1,4 +1,4 @@
-_cht_complete(){
+_cht_complete() {
   local cur prev opts
   _get_comp_words_by_ref -n : cur
   COMPREPLY=()

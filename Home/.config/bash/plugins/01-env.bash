@@ -15,9 +15,12 @@ export LANG='C.UTF-8' TZ='Europe/Berlin' TIME_STYLE='+%d-%m %H:%M' GPG_TTY="$(tt
 has micro && export EDITOR='micro' MICRO_TRUECOLOR=1
 export EDITOR="${EDITOR:-nano}"
 export GIT_EDITOR="$EDITOR" SUDO_EDITOR="$EDITOR" FCEDIT="$EDITOR"
-if has code; then export VISUAL="code -w"
-elif has vscode; then export VISUAL="vscode -w"
-elif has kate; then export VISUAL="kate"
+if has code; then
+  export VISUAL="code -w"
+elif has vscode; then
+  export VISUAL="vscode -w"
+elif has kate; then
+  export VISUAL="kate"
 else export VISUAL="${EDITOR:-nano}"; fi
 # --- Browser
 if has firefox; then
@@ -30,8 +33,10 @@ if has ghostty; then
   export TERMINAL="ghostty +ssh-cache --wait-after-command"
 fi
 # --- Privilege Escalation
-if has sudo-rs; then export SUDO='sudo-rs'
-elif has doas; then export SUDO='doas'
+if has sudo-rs; then
+  export SUDO='sudo-rs'
+elif has doas; then
+  export SUDO='doas'
 else export SUDO='sudo'; fi
 # --- Path Setup
 prependpath "$HOME/.local/bin"
@@ -53,7 +58,7 @@ if [[ ${XDG_SESSION_TYPE-} == "wayland" ]]; then
     exportif __GL_SHADER_DISK_CACHE_PATH "$HOME/.cache/nvidia/GLCache"
   fi
 fi
-has dbus-launch && export "$(dbus-launch &>/dev/null)"
+has dbus-launch && export "$(dbus-launch &> /dev/null)"
 # --- Performance Tuning
 export MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
 export _RJEM_MALLOC_CONF="$MALLOC_CONF" GLIBC_TUNABLES="glibc.malloc.hugetlb=1"

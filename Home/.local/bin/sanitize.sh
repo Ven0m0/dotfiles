@@ -1,20 +1,25 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-set -euo pipefail; shopt -s nullglob globstar dotglob
-IFS=$'\n\t'; export LC_ALL=C
+set -euo pipefail
+shopt -s nullglob globstar dotglob
+IFS=$'\n\t'
+export LC_ALL=C
 # s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
 
 # Helper functions and constants
 readonly BLD=$'\e[1m' GRN=$'\e[32m' RED=$'\e[31m' YLW=$'\e[33m' DEF=$'\e[0m'
 export BLD GRN RED YLW DEF
 
-has(){ command -v -- "$1" &>/dev/null; }
+has() { command -v -- "$1" &> /dev/null; }
 export -f has
 
-die(){ printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2; exit 1; }
-log(){ printf '%b==>%b %s\n' "${BLD}" "$DEF" "$*"; }
-ok(){ printf '%b✓%b %s\n' "${GRN}" "$DEF" "$*"; }
-err(){ printf '%b✗%b %s\n' "${RED}" "$DEF" "$*"; }
+die() {
+  printf '%bERROR:%b %s\n' "${BLD}${RED}" "$DEF" "$*" >&2
+  exit 1
+}
+log() { printf '%b==>%b %s\n' "${BLD}" "$DEF" "$*"; }
+ok() { printf '%b✓%b %s\n' "${GRN}" "$DEF" "$*"; }
+err() { printf '%b✗%b %s\n' "${RED}" "$DEF" "$*"; }
 export -f log ok err
 
 # Worker function for parallel execution
@@ -25,8 +30,8 @@ _sanitize_worker() {
   local out_buffer=""
 
   # Local output helpers to buffer output
-  _ok(){ out_buffer+="$(ok "$@")"$'\n'; }
-  _err(){ out_buffer+="$(err "$@")"$'\n'; }
+  _ok() { out_buffer+="$(ok "$@")"$'\n'; }
+  _err() { out_buffer+="$(err "$@")"$'\n'; }
 
   for f in "$@"; do
     [[ -f $f ]] || continue
@@ -63,7 +68,7 @@ _sanitize_worker() {
     [[ $DO_EOF -eq 1 && -s $f ]] && [[ -n "$(tail -c 1 "$f")" ]] && {
       file_issues+=("no-eof-newline")
       [[ $CHECK -eq 0 ]] && {
-        echo >>"$f"
+        echo >> "$f"
         dirty=1
       }
     }
@@ -75,8 +80,8 @@ _sanitize_worker() {
 }
 export -f _sanitize_worker
 
-usage(){
-  cat <<EOF
+usage() {
+  cat << EOF
 sanitize - File sanitization utilities
 USAGE: 
   sanitize ws [OPTS] [PATH|--git|--staged]... 
@@ -96,17 +101,17 @@ FILENAME OPTIONS:
 EOF
 }
 
-resolve_paths(){
+resolve_paths() {
   local -n _in="$1" _out="$2"
   local use_git=0 use_staged=0
   for p in "${_in[@]}"; do
     case "$p" in
-      --git) use_git=1;;
-      --staged) use_staged=1;;
+      --git) use_git=1 ;;
+      --staged) use_staged=1 ;;
       *)
         if [[ -d $p ]]; then
           if has fd; then
-            mapfile -t -O "${#_out[@]}" _out < <(fd --type f --hidden --exclude .git .  "$p")
+            mapfile -t -O "${#_out[@]}" _out < <(fd --type f --hidden --exclude .git . "$p")
           else
             mapfile -t -O "${#_out[@]}" _out < <(find "$p" -type f -not -path '*/.git/*')
           fi
@@ -121,19 +126,22 @@ resolve_paths(){
   mapfile -t _out < <(printf '%s\n' "${_out[@]}" | sort -u)
 }
 
-cmd_whitespace(){
+cmd_whitespace() {
   local check=0 do_cr=0 do_eof=0 do_trailing=0 do_unicode=0
   local -a args=() files=()
   while [[ $# -gt 0 ]]; do
     case $1 in
-      --check) check=1;;
-      --cr) do_cr=1;;
-      --eof) do_eof=1;;
-      --trailing) do_trailing=1;;
-      --unicode) do_unicode=1;;
-      --all) do_cr=1 do_eof=1 do_trailing=1 do_unicode=1;;
-      -h|--help) usage; return 0;;
-      *) args+=("$1");;
+      --check) check=1 ;;
+      --cr) do_cr=1 ;;
+      --eof) do_eof=1 ;;
+      --trailing) do_trailing=1 ;;
+      --unicode) do_unicode=1 ;;
+      --all) do_cr=1 do_eof=1 do_trailing=1 do_unicode=1 ;;
+      -h | --help)
+        usage
+        return 0
+        ;;
+      *) args+=("$1") ;;
     esac
     shift
   done
@@ -147,9 +155,9 @@ cmd_whitespace(){
   local cores=4
   has nproc && cores=$(nproc)
 
-  printf '%s\0' "${files[@]}" | \
-    xargs -0 -P "$cores" -n 50 bash -c '_sanitize_worker "$@"' _ | \
-    awk -v check="$check" -v bld="$BLD" -v red="$RED" -v def="$DEF" '
+  printf '%s\0' "${files[@]}" \
+    | xargs -0 -P "$cores" -n 50 bash -c '_sanitize_worker "$@"' _ \
+    | awk -v check="$check" -v bld="$BLD" -v red="$RED" -v def="$DEF" '
       { print }
       /✗/ { count++ }
       END {
@@ -161,20 +169,20 @@ cmd_whitespace(){
     '
 
   if [[ $check -eq 0 ]]; then
-      log "Done."
+    log "Done."
   fi
 }
 
-cmd_filenames(){
+cmd_filenames() {
   local dry=0 lowercase=1 spaces=0 trans=1
   local -a args=() files=()
   has iconv || trans=0
   while [[ $# -gt 0 ]]; do
     case $1 in
-      -n|--dry-run) dry=1;;
-      --allow-spaces) spaces=1;;
-      --preserve-case) lowercase=0;;
-      *) args+=("$1");;
+      -n | --dry-run) dry=1 ;;
+      --allow-spaces) spaces=1 ;;
+      --preserve-case) lowercase=0 ;;
+      *) args+=("$1") ;;
     esac
     shift
   done
@@ -186,12 +194,12 @@ cmd_filenames(){
     dir=$(dirname "$src")
     base=$(basename "$src")
     clean="$base"
-    [[ $trans -eq 1 ]] && clean=$(printf '%s' "$clean" | iconv -f utf8 -t ascii//translit 2>/dev/null || printf '%s' "$clean")
+    [[ $trans -eq 1 ]] && clean=$(printf '%s' "$clean" | iconv -f utf8 -t ascii//translit 2> /dev/null || printf '%s' "$clean")
     clean=${clean//[\`\$\!\*\?\<\>\|\"\'\:\;]/}
     clean=${clean//\&/and}
     clean=${clean//@/at}
     [[ $spaces -eq 0 ]] && clean=${clean//[[:space: ]]/_}
-    clean=$(sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^[._-]+//; s/[._-]+$//; s/_+/_/g' <<<"$clean")
+    clean=$(sed -E 's/[^A-Za-z0-9._-]+/_/g; s/^[._-]+//; s/[._-]+$//; s/_+/_/g' <<< "$clean")
     [[ $lowercase -eq 1 ]] && clean=${clean,,}
     [[ -z $clean ]] && clean="file_${RANDOM}"
     if [[ $base != "$clean" ]]; then
@@ -206,15 +214,15 @@ cmd_filenames(){
     fi
   done
 }
-main(){
+main() {
   [[ $# -eq 0 ]] && usage && exit 0
   local cmd="$1"
   shift
   case "$cmd" in
-    ws|whitespace|w) cmd_whitespace "$@";;
-    fn|filenames|f) cmd_filenames "$@";;
-    -h|--help) usage;;
-    *) die "Unknown command: $cmd";;
+    ws | whitespace | w) cmd_whitespace "$@" ;;
+    fn | filenames | f) cmd_filenames "$@" ;;
+    -h | --help) usage ;;
+    *) die "Unknown command: $cmd" ;;
   esac
 }
 

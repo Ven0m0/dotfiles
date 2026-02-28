@@ -119,39 +119,39 @@ hash -d config=~/.config local=~/.local
 # Expand on space (use Ctrl+Space for literal space)
 typeset -gA abbrevs=(
   # Git shortcuts
-  gs    'git status'
-  gds   'git diff --staged'
-  gcm   'git commit -m'
-  gaa   'git add -A'
-  gcan  'git commit --amend --no-edit'
-  gp    'git push'
-  gl    'git pull'
-  gco   'git checkout'
-  gcb   'git checkout -b'
-  glog  'git log --oneline --graph --decorate'
+  gs 'git status'
+  gds 'git diff --staged'
+  gcm 'git commit -m'
+  gaa 'git add -A'
+  gcan 'git commit --amend --no-edit'
+  gp 'git push'
+  gl 'git pull'
+  gco 'git checkout'
+  gcb 'git checkout -b'
+  glog 'git log --oneline --graph --decorate'
   # Directory navigation
-  ..    'cd ..'
-  ...   'cd ../..'
-  ....  'cd ../../..'
+  .. 'cd ..'
+  ... 'cd ../..'
+  .... 'cd ../../..'
   # Listing
-  ll    'ls -lah'
-  la    'ls -A'
-  lt    'ls --tree'
+  ll 'ls -lah'
+  la 'ls -A'
+  lt 'ls --tree'
   # Process management
-  psg   'ps aux | grep -v grep | grep -i -e VSZ -e'
+  psg 'ps aux | grep -v grep | grep -i -e VSZ -e'
   # Docker
-  dps   'docker ps'
-  dpsa  'docker ps -a'
-  dex   'docker exec -it'
+  dps 'docker ps'
+  dpsa 'docker ps -a'
+  dex 'docker exec -it'
   # Package management
-  pup   'paru -Syu'
-  pins  'paru -S'
-  prem  'paru -Rns'
-  psea  'paru -Ss'
+  pup 'paru -Syu'
+  pins 'paru -S'
+  prem 'paru -Rns'
+  psea 'paru -Ss'
 )
 
 # Abbreviation expansion widget
-magic-abbrev-expand(){
+magic-abbrev-expand() {
   local left="${LBUFFER%% *}"
   local expanded="${abbrevs[$left]}"
   if [[ -n $expanded ]]; then
@@ -163,6 +163,6 @@ magic-abbrev-expand(){
 # Bind expansion to space
 zle -N magic-abbrev-expand
 bindkey ' ' magic-abbrev-expand
-bindkey '^ ' self-insert  # Ctrl+Space for literal space
+bindkey '^ ' self-insert # Ctrl+Space for literal space
 
 # vim: set ft=zsh ts=2 sw=2 et:

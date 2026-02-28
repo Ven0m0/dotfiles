@@ -7,11 +7,17 @@
     width: 22px;
     outline-offset: 0;
   }
-  .cell-edit { width: 28px; }
+  .cell-edit {
+    width: 28px;
+  }
   form > input,
   tr:not(.add) > th,
-  tr:not(.add) > .cell-value { padding-block: 0; }
-  tr:not(:hover) .semi-transparent:not(.primary, .button-add) { background-color: initial; }
+  tr:not(.add) > .cell-value {
+    padding-block: 0;
+  }
+  tr:not(:hover) .semi-transparent:not(.primary, .button-add) {
+    background-color: initial;
+  }
 }
 
 /* about:addons compact grid layout with inline buttons */
@@ -20,9 +26,15 @@
     overflow-x: hidden;
     --sidebar-width: 60px;
   }
-  addon-card .addon-name-link { font-size: 0.9em; }
-  .addon-card-message { margin-block: 0; }
-  .card.addon { padding-bottom: 0; }
+  addon-card .addon-name-link {
+    font-size: 0.9em;
+  }
+  .addon-card-message {
+    margin-block: 0;
+  }
+  .card.addon {
+    padding-bottom: 0;
+  }
   addon-card .addon-card-collapsed {
     display: grid;
     grid-template-areas: "ic con" "op op";
@@ -33,7 +45,9 @@
     white-space: initial;
     grid-area: con;
   }
-  .card-heading-icon { grid-area: ic; }
+  .card-heading-icon {
+    grid-area: ic;
+  }
   .more-options-menu {
     position: static;
     grid-area: op;
@@ -58,12 +72,24 @@
   .arrow,
   .more-options-menu > .more-options-button,
   .addon-name-container > .more-options-button,
-  panel-item[action="expand"] { display: none; }
-  div.list { display: inherit; flex-direction: row; }
-  panel-item[action="toggle-disabled"] { --icon: url("chrome://browser/skin/quit.svg"); }
-  panel-item[action="preferences"] { --icon: url("chrome://global/skin/icons/settings.svg"); }
+  panel-item[action="expand"] {
+    display: none;
+  }
+  div.list {
+    display: inherit;
+    flex-direction: row;
+  }
+  panel-item[action="toggle-disabled"] {
+    --icon: url("chrome://browser/skin/quit.svg");
+  }
+  panel-item[action="preferences"] {
+    --icon: url("chrome://global/skin/icons/settings.svg");
+  }
   @media (min-width: 420px) {
-    #main { max-width: unset; padding-right: 28px; }
+    #main {
+      max-width: unset;
+      padding-right: 28px;
+    }
     addon-list > section {
       padding: 1em;
       display: grid;
@@ -77,41 +103,91 @@
       grid-row-gap: 6px;
       grid-auto-columns: 1fr 24px auto;
     }
-    .addon-icon { align-self: center; }
-    .addon-name-container > .addon-name { grid-area: name; }
-    .addon-name-container > :is(.toggle-button, moz-toggle) { grid-area: toggle; justify-self: end; }
-    .addon-name-container > .addon-badge { grid-area: badge; }
-    .addon-name-container > .more-options-button { margin-inline: 0; }
-    .card-heading-image { max-width: calc(100% + 32px); object-position: left; }
-    section > h2 { grid-area: hd; }
-    addon-card { padding-block: 0; grid-area: auto; }
-    addon-card .addon-description { max-height: 3em; scrollbar-width: thin; }
-    addon-list[type="theme"] addon-card { margin-right: auto; }
+    .addon-icon {
+      align-self: center;
+    }
+    .addon-name-container > .addon-name {
+      grid-area: name;
+    }
+    .addon-name-container > :is(.toggle-button, moz-toggle) {
+      grid-area: toggle;
+      justify-self: end;
+    }
+    .addon-name-container > .addon-badge {
+      grid-area: badge;
+    }
+    .addon-name-container > .more-options-button {
+      margin-inline: 0;
+    }
+    .card-heading-image {
+      max-width: calc(100% + 32px);
+      object-position: left;
+    }
+    section > h2 {
+      grid-area: hd;
+    }
+    addon-card {
+      padding-block: 0;
+      grid-area: auto;
+    }
+    addon-card .addon-description {
+      max-height: 3em;
+      scrollbar-width: thin;
+    }
+    addon-list[type="theme"] addon-card {
+      margin-right: auto;
+    }
   }
   @media (min-width: 640px) {
-    addon-list[type="extension"] > section { grid-template-areas: "hd hd hd" "cd cd cd"; }
+    addon-list[type="extension"] > section {
+      grid-template-areas: "hd hd hd" "cd cd cd";
+    }
   }
   @media (min-width: 960px) {
-    addon-list[type="extension"] > section { grid-template-areas: "hd hd hd hd" "cd cd cd cd"; }
+    addon-list[type="extension"] > section {
+      grid-template-areas: "hd hd hd hd" "cd cd cd cd";
+    }
   }
   @media (min-width: 1180px) {
-    addon-list[type="extension"] > section { grid-template-areas: "hd hd hd hd hd" "cd cd cd cd cd"; }
+    addon-list[type="extension"] > section {
+      grid-template-areas: "hd hd hd hd hd" "cd cd cd cd cd";
+    }
   }
   @media (min-width: 1420px) {
-    addon-list[type="extension"] > section { grid-template-areas: "hd hd hd hd hd hd" "cd cd cd cd cd cd"; }
+    addon-list[type="extension"] > section {
+      grid-template-areas: "hd hd hd hd hd hd" "cd cd cd cd cd cd";
+    }
   }
-  addon-card:not([expanded]) :is(.addon-badge-verified, .addon-badge-recommended, .addon-description, .addon-card-message button[action]) { display: none; }
-  addon-list[type="extension"] { --card-padding: 8px; }
-  #categories { width: var(--sidebar-width); }
-  #categories > .category { margin-left: 10px; -moz-box-pack: center; }
-  .sidebar-footer-list { margin-left: 18px; }
+  addon-card:not([expanded])
+    :is(.addon-badge-verified, .addon-badge-recommended, .addon-description, .addon-card-message button[action]) {
+    display: none;
+  }
+  addon-list[type="extension"] {
+    --card-padding: 8px;
+  }
+  #categories {
+    width: var(--sidebar-width);
+  }
+  #categories > .category {
+    margin-left: 10px;
+    -moz-box-pack: center;
+  }
+  .sidebar-footer-list {
+    margin-left: 18px;
+  }
   .sidebar-footer-label,
-  .category > .category-name { display: none; }
+  .category > .category-name {
+    display: none;
+  }
 }
 
 /* about: pages scrollbar styling */
 @-moz-document url-prefix("about:") {
-  window, page, html, .main-content, scrollbar {
+  window,
+  page,
+  html,
+  .main-content,
+  scrollbar {
     scrollbar-color: #d2d2d2 #2a2a2e;
     scrollbar-width: thin;
   }

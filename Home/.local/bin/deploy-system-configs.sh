@@ -1,27 +1,32 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-set -euo pipefail; shopt -s nullglob globstar
-export LC_ALL=C; IFS=$'\n\t'
-has(){ command -v -- "$1" &>/dev/null; }
-info(){ printf '==> %s\n' "$*"; }
-warn(){ printf '==> WARNING: %s\n' "$*"; }
-die(){ printf '==> ERROR: %s\n' "$*" >&2; exit 1; }
+set -euo pipefail
+shopt -s nullglob globstar
+export LC_ALL=C
+IFS=$'\n\t'
+has() { command -v -- "$1" &> /dev/null; }
+info() { printf '==> %s\n' "$*"; }
+warn() { printf '==> WARNING: %s\n' "$*"; }
+die() {
+  printf '==> ERROR: %s\n' "$*" >&2
+  exit 1
+}
 
 # Get repository directory
-get_repo_dir(){
-  if yadm rev-parse --show-toplevel &>/dev/null; then
+get_repo_dir() {
+  if yadm rev-parse --show-toplevel &> /dev/null; then
     yadm rev-parse --show-toplevel
   elif [[ -d "${HOME}/.local/share/yadm/repo.git" ]]; then
     echo "${HOME}"
-  elif git rev-parse --show-toplevel &>/dev/null; then
+  elif git rev-parse --show-toplevel &> /dev/null; then
     git rev-parse --show-toplevel
   else
     die "Cannot determine repository location"
   fi
 }
 
-usage(){
-  cat <<'EOF'
+usage() {
+  cat << 'EOF'
 deploy-system-configs - Deploy system configs using tuckr or stow
 
 Usage: deploy-system-configs [OPTIONS] [PACKAGES...]
@@ -51,12 +56,16 @@ PACKAGES=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -h|--help) usage; exit 0 ;;
-    -d|--dir)
-      if [[ -z ${2:-} ]]; then die "Option '$1' requires an argument."; fi
-      REPO_DIR="$2"; shift
+    -h | --help)
+      usage
+      exit 0
       ;;
-    -u|--unlink) UNLINK=true ;;
+    -d | --dir)
+      if [[ -z ${2:-} ]]; then die "Option '$1' requires an argument."; fi
+      REPO_DIR="$2"
+      shift
+      ;;
+    -u | --unlink) UNLINK=true ;;
     -*) die "Unknown option: $1" ;;
     *) PACKAGES+=("$1") ;;
   esac
@@ -84,7 +93,10 @@ deploy_configs() {
     local hooks_file="${repo_dir}/hooks.toml"
     for pkg in "${packages[@]}"; do
       local src="${repo_dir}/${pkg}"
-      [[ -d $src ]] || { warn "Directory not found: $src"; continue; }
+      [[ -d $src ]] || {
+        warn "Directory not found: $src"
+        continue
+      }
 
       if [[ $unlink == true ]]; then
         info "Unlinking ${pkg}/"
@@ -100,7 +112,10 @@ deploy_configs() {
     info "Using stow for deployment (tuckr not available)"
     for pkg in "${packages[@]}"; do
       local src="${repo_dir}/${pkg}"
-      [[ -d $src ]] || { warn "Directory not found: $src"; continue; }
+      [[ -d $src ]] || {
+        warn "Directory not found: $src"
+        continue
+      }
 
       if [[ $unlink == true ]]; then
         info "Unstowing ${pkg}/"

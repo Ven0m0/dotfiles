@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-set -euo pipefail; shopt -s nullglob globstar extglob
-export LC_ALL=C; IFS=$'\n\t'
-s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"
-has(){ command -v -- "$1" &>/dev/null; }
-die(){ printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2; exit "${2:-1}"; }
-warn(){ printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
-log(){ printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
-ok(){ printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
+set -euo pipefail
+shopt -s nullglob globstar extglob
+export LC_ALL=C
+IFS=$'\n\t'
+s=${BASH_SOURCE[0]}
+[[ $s != /* ]] && s=$PWD/$s
+cd -P -- "${s%/*}"
+has() { command -v -- "$1" &> /dev/null; }
+die() {
+  printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
+  exit "${2:-1}"
+}
+warn() { printf '%b[WARN]%b %s\n' '\e[1;33m' '\e[0m' "$*" >&2; }
+log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
+ok() { printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
 readonly BLD=$'\e[1m' BLU=$'\e[34m' DEF=$'\e[0m'
-get_repo_dir(){
-  if yadm rev-parse --show-toplevel &>/dev/null; then
+get_repo_dir() {
+  if yadm rev-parse --show-toplevel &> /dev/null; then
     yadm rev-parse --show-toplevel
     return
   fi
@@ -20,8 +27,8 @@ get_repo_dir(){
   fi
   die "Cannot determine yadm repository location"
 }
-usage(){
-  cat <<EOF
+usage() {
+  cat << EOF
 ${BLD}yadm-sync${DEF} - Sync dotfiles between ~/ and repository
 ${BLD}Usage:${DEF} yadm-sync <cmd> [opts]
 ${BLD}Commands:${DEF} pull(repo→~/) push(~/→repo) status diff
@@ -32,11 +39,12 @@ ${BLD}Examples:${DEF}
 ${BLD}Note:${DEF} Manages Home/ subdirectory. System configs (etc/, usr/) use tuckr.
 EOF
 }
-sync_pull(){
+sync_pull() {
   local repo_dir home_dir dry_run="${1:-0}"
-  repo_dir="$(get_repo_dir)"; home_dir="${repo_dir}/Home"
+  repo_dir="$(get_repo_dir)"
+  home_dir="${repo_dir}/Home"
   [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
-  if ! command -v rsync &>/dev/null; then
+  if ! command -v rsync &> /dev/null; then
     die "rsync required"
   fi
   log "Syncing FROM repository TO home directory..."
@@ -51,11 +59,12 @@ sync_pull(){
     ok "Dotfiles deployed to home directory"
   fi
 }
-sync_push(){
+sync_push() {
   local repo_dir home_dir dry_run="${1:-0}"
-  repo_dir="$(get_repo_dir)"; home_dir="${repo_dir}/Home"
+  repo_dir="$(get_repo_dir)"
+  home_dir="${repo_dir}/Home"
   [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
-  if ! command -v rsync &>/dev/null; then
+  if ! command -v rsync &> /dev/null; then
     die "rsync required"
   fi
   log "Syncing FROM home directory TO repository..."
@@ -63,7 +72,7 @@ sync_push(){
   log "Target: $home_dir/"
   local exclude_file
   exclude_file=$(mktemp)
-  cat >"$exclude_file" <<'EXCLUDES'
+  cat > "$exclude_file" << 'EXCLUDES'
 .cache
 .local/share
 .local/state
@@ -101,7 +110,7 @@ EXCLUDES
     source_file="${HOME}/${rel_path}"
     [[ -e $source_file ]] && files_to_sync+=("$rel_path")
   done < <(find "$home_dir" -type f -print0)
-  ((${#files_to_sync[@]}>0)) && printf '%s\0' "${files_to_sync[@]}" | rsync "${rsync_opts[@]}" "${HOME}/" "${home_dir}/"
+  ((${#files_to_sync[@]} > 0)) && printf '%s\0' "${files_to_sync[@]}" | rsync "${rsync_opts[@]}" "${HOME}/" "${home_dir}/"
   rm -f "$exclude_file"
   if [[ $dry_run == "1" ]]; then
     warn "DRY RUN - No files modified"
@@ -114,11 +123,12 @@ EXCLUDES
     log "  git push"
   fi
 }
-sync_status(){
+sync_status() {
   local repo_dir home_dir
-  repo_dir="$(get_repo_dir)"; home_dir="${repo_dir}/Home"
+  repo_dir="$(get_repo_dir)"
+  home_dir="${repo_dir}/Home"
   [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
-  if ! command -v rsync &>/dev/null; then
+  if ! command -v rsync &> /dev/null; then
     die "rsync required"
   fi
   log "Checking differences..."
@@ -126,11 +136,12 @@ sync_status(){
     ok "No differences - in sync!"
   fi
 }
-sync_diff(){
+sync_diff() {
   local repo_dir home_dir
-  repo_dir="$(get_repo_dir)"; home_dir="${repo_dir}/Home"
+  repo_dir="$(get_repo_dir)"
+  home_dir="${repo_dir}/Home"
   [[ -d $home_dir ]] || die "Home/ directory not found: $home_dir"
-  if ! command -v diff &>/dev/null; then
+  if ! command -v diff &> /dev/null; then
     die "diff command not found"
   fi
   log "Showing detailed differences..."
@@ -139,21 +150,30 @@ sync_diff(){
     local source_file="${HOME}/${rel_path}"
     if [[ -f $source_file && -f $file ]]; then
       # Quick size/time check before spawning diff
-      if [[ ! $source_file -ef $file ]] && { [[ $(stat -c%s "$source_file") -ne $(stat -c%s "$file") ]] || ! diff -q "$source_file" "$file" &>/dev/null; }; then
+      if [[ ! $source_file -ef $file ]] && { [[ $(stat -c%s "$source_file") -ne $(stat -c%s "$file") ]] || ! diff -q "$source_file" "$file" &> /dev/null; }; then
         printf '\n%b%bDifferences in:%b %s\n%b━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%b\n' "$BLD" "$BLU" "$DEF" "$rel_path" "$BLD" "$DEF"
-        diff -u --color=always "$file" "$source_file" 2>/dev/null || :
+        diff -u --color=always "$file" "$source_file" 2> /dev/null || :
       fi
     fi
-  done < <(find "$home_dir" -type f -print0 2>/dev/null)
+  done < <(find "$home_dir" -type f -print0 2> /dev/null)
 }
-main(){
+main() {
   local command="${1:-}" dry_run=0
   shift || :
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -h|--help) usage; exit 0 ;;
-      -n|--dry-run) dry_run=1; shift ;;
-      -v|--verbose) set -x; shift ;;
+      -h | --help)
+        usage
+        exit 0
+        ;;
+      -n | --dry-run)
+        dry_run=1
+        shift
+        ;;
+      -v | --verbose)
+        set -x
+        shift
+        ;;
       *) die "Unknown option: $1" ;;
     esac
   done
@@ -162,7 +182,10 @@ main(){
     push) sync_push "$dry_run" ;;
     status) sync_status ;;
     diff) sync_diff ;;
-    -h|--help|help) usage; exit 0 ;;
+    -h | --help | help)
+      usage
+      exit 0
+      ;;
     "") die "No command specified" ;;
     *) die "Unknown command: $command" ;;
   esac
