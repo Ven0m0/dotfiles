@@ -385,8 +385,8 @@ Generate comprehensive AGENTS.md for AI-assisted development. Use `rg` to analyz
 Analysis steps:
 1. Languages: fd -tf | rg -o '\.[^.]+$' | sort | uniq -c | sort -rn (top extensions)
 2. Frameworks: rg for imports/requires of major frameworks (react, next, express, flask, fastapi, etc.)
-3. Build system: detect package.json, Cargo.toml, pyproject.toml, go.mod, Makefile, etc.
-4. CI/CD: .github/workflows/, .gitlab-ci.yml, Jenkinsfile, etc.
+3. Build system: detect package.json, Cargo.toml, pyproject.toml, Makefile, etc.
+4. CI/CD: .github/workflows/, etc.
 5. Conventions: analyze existing code for patterns (naming, error handling, testing approach)
 6. Config files: .editorconfig, biome.json, ruff.toml, tsconfig.json, .eslintrc, etc.
 7. Key entry points: main files, CLI entrypoints, API routes, exported modules
