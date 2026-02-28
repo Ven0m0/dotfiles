@@ -36,37 +36,55 @@ def get_repo_stats(repo: Path) -> RepoStats:
   files_out = run_git(["ls-files"], repo)
   files = len(files_out.splitlines()) if files_out else 0
 
-  commits_str = run_git(["rev-list", "--count", "HEAD"], repo)
-  if not commits_str:
+  commits = 0
+  last_ts = 0
+  first_ts = 0
+  root_timestamps: list[int] = []
+  authors: dict[str, int] = defaultdict(int)
+
+  try:
+    # Use %x00 as delimiter: timestamp, author name (respecting .mailmap), parents
+    cmd = ["git", "log", "--format=%at%x00%aN%x00%P", "HEAD"]
+    with sp.Popen(cmd, cwd=repo, stdout=sp.PIPE, text=True, encoding="utf-8", errors="replace") as proc:
+      for i, line in enumerate(proc.stdout):
+        line = line.strip()
+        if not line:
+          continue
+        parts = line.split('\0')
+        if len(parts) < 3:
+          continue
+
+        try:
+          ts = int(parts[0])
+        except ValueError:
+          continue
+
+        author = parts[1]
+        parents = parts[2]
+
+        if i == 0:
+          last_ts = ts
+
+        if not parents:
+          root_timestamps.append(ts)
+
+        commits += 1
+        authors[author] += 1
+
+      if proc.wait() != 0:
+        return RepoStats(0, files, 0, 0, {})
+
+  except (sp.CalledProcessError, FileNotFoundError, OSError):
     return RepoStats(0, files, 0, 0, {})
-  commits = int(commits_str)
 
-  last_ts_str = run_git(["log", "-1", "--format=%at", "HEAD"], repo)
-  last_ts = int(last_ts_str) if last_ts_str else 0
+  if commits == 0:
+    return RepoStats(0, files, 0, 0, {})
 
-  # Get oldest commit timestamp (handle multiple roots)
-  roots_out = run_git(["log", "--max-parents=0", "--format=%at", "HEAD"], repo)
-  if roots_out:
-    root_timestamps = [int(ts) for ts in roots_out.splitlines() if ts.strip()]
-    first_ts = min(root_timestamps) if root_timestamps else last_ts
-  else:
-    first_ts = last_ts
+  first_ts = min(root_timestamps) if root_timestamps else last_ts
 
   now = int(time())
   age = (now - first_ts) // 86400
   active = (now - last_ts) // 86400
-
-  authors: dict[str, int] = {}
-  authors_out = run_git(["shortlog", "-sn", "HEAD"], repo)
-  if authors_out:
-    for line in authors_out.splitlines():
-      line = line.strip()
-      if not line: continue
-      parts = line.split('\t', 1)
-      if len(parts) != 2:
-        parts = line.split(None, 1)
-      if len(parts) == 2:
-        authors[parts[1]] = int(parts[0])
 
   return RepoStats(commits, files, age, active, authors)
 
