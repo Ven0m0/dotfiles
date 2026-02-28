@@ -45,6 +45,9 @@ fetch_pkgfile() {
   if [[ -n $SCRIPT_DIR && -f "$SCRIPT_DIR/$path" ]]; then
     cat "$SCRIPT_DIR/$path"
   elif [[ -n $REPO_RAW ]]; then
+    if [[ ! $REPO_RAW =~ ^https:// ]]; then
+      die "Security: REPO_RAW must be an HTTPS URL."
+    fi
     curl -fsSL "${REPO_RAW%/}/$path"
   else
     warn "pkg/${name}.txt not found and REPO_RAW not set, skipping"
