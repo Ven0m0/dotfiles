@@ -2,11 +2,27 @@
 
 > Copy-paste prompts for AI-assisted development. Each prompt is self-contained and executable.
 
-## PR Commands
+<details><summary><b>PR Commands</b></summary>
 
 ```text
-@gemini-code-assist review | @dependabot rebase | @copilot | @claude | @cursor | @jules
+@gemini-code-assist review 
 ```
+```text
+@dependabot rebase
+```
+```text
+@copilot 
+```
+```text
+@claude 
+```
+```text
+@cursor 
+```
+```text
+@jules 
+```
+</details>
 
 ---
 
