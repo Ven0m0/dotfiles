@@ -74,7 +74,7 @@ pre-commit:
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2? |ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         for f in {staged_files}; do
-          sed -i. bak 's/[[:space:]]*$//; s/\xE2\x80\x8B//g; s/\xE2\x80\x8C//g; s/\xE2\x80\x8D//g; s/\xE2\x80\xAF//g; s/\xC2\xAD//g; s/\xEF\xBB\xBF//g; s/\r$//' "$f"
+          sed -i.bak 's/[[:space:]]*$//; s/\xE2\x80\x8B//g; s/\xE2\x80\x8C//g; s/\xE2\x80\x8D//g; s/\xE2\x80\xAF//g; s/\xC2\xAD//g; s/\xEF\xBB\xBF//g; s/\r$//' "$f"
           rm -f "${f}.bak"
         done
         command -v dos2unix &>/dev/null && dos2unix -q {staged_files} 2>/dev/null || :
