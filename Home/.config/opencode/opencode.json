@@ -1,6 +1,13 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["file:///usr/lib/opencode/plugins/opencode-antigravity-auth" "file:///usr/lib/opencode/plugins/opencode-gemini-auth", "@plannotator/opencode@latest", "@openspoon/subtask2@latest", "micode", "octto"],
+  "plugin": [
+    "file:///usr/lib/opencode/plugins/opencode-antigravity-auth",
+    "file:///usr/lib/opencode/plugins/opencode-gemini-auth",
+    "@plannotator/opencode@latest",
+    "@openspoon/subtask2@latest",
+    "micode",
+    "octto"
+  ],
   "autoupdate": false,
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
@@ -15,7 +22,7 @@
   "tools": {
     "write": false,
     "bash": false
-  }
+  },
   "provider": {
     "anthropic": {
       "options": {

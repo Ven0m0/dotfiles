@@ -7,7 +7,7 @@ if has mise; then
   # Cache mise activation to improve startup time
   MISE_CACHE="${BASH_CACHE_DIR}/mise_init.bash"
   if [[ ! -f $MISE_CACHE || $(command -v mise) -nt $MISE_CACHE ]]; then
-    mise activate bash >"$MISE_CACHE"
+    mise activate bash > "$MISE_CACHE"
   fi
   source "$MISE_CACHE"
   alias mx="mise x --"
@@ -28,25 +28,30 @@ has go && export GOOS=linux GOARCH=amd64 GOFLAGS="-ldflags=-s -w -trimpath -modc
 
 # --- Python
 export PYTHONOPTIMIZE=1 PYTHONIOENCODING='utf-8' PYTHONHASHSEED=0 PYTHONUNBUFFERED=0 PYTHONDONTWRITEBYTECODE=0
-  PYTHONNODEBUGRANGES=1 PYTHONNOUSERSITE=1 PYTHON_COLORS=1 PYTHONSTARTUP="${HOME}/.pythonstartup" PYTHONUTF8=1 PYTHONSAFEPATH=1 \
+PYTHONNODEBUGRANGES=1 PYTHONNOUSERSITE=1 PYTHON_COLORS=1 PYTHONSTARTUP="${HOME}/.pythonstartup" PYTHONUTF8=1 PYTHONSAFEPATH=1 \
   PYTHON_DISABLE_REMOTE_DEBUG=1 PYTORCH_ENABLE_MPS_FALLBACK=1 PYENV_VIRTUALENV_DISABLE_PROMPT=1
 if has uv; then
   export UV_NO_MANAGED_PYTHON=1 UV_CONFIG_FILE="${HOME}/.config/uv/uv.toml" UV_VENV_CLEAR=1 UV_VENV_SEED=1 UV_COMPILE_BYTECODE=1
   # UV_LINK_MODE=hardlink UV_LINK_MODE=symlink
 fi
 # Use uv for pip operations when available
-pip(){
-  if has uv && [[ "install uninstall list show freeze check" =~ $1 ]]; then command uv pip "$@"
+pip() {
+  if has uv && [[ "install uninstall list show freeze check" =~ $1 ]]; then
+    command uv pip "$@"
   else command python -m pip "$@"; fi
 }
 # Create and activate Python virtual environment using uv
-if has uv; then alias py-venv="[[ -d .venv ]] || uv venv .venv && . .venv/bin/activate"
+if has uv; then
+  alias py-venv="[[ -d .venv ]] || uv venv .venv && . .venv/bin/activate"
 else alias py-venv="[[ -d .venv ]] || python3 -m venv && . .venv/bin/activate"; fi
 alias pdb="python3 -m pdb"
 alias serve="python3 -m http.server"
 # Script to format JSON files using Python JSON Tool
-_pj(){
-  [[ -z $1 ]] && { printf "%s\n" "No file path"; return; }
+_pj() {
+  [[ -z $1 ]] && {
+    printf "%s\n" "No file path"
+    return
+  }
   if [[ $1 == "." ]]; then
     local -a json_files=()
     if has fd; then
@@ -55,9 +60,9 @@ _pj(){
       mapfile -t json_files < <(find . -name '*.json' -type f)
     fi
     for json_file_path in "${json_files[@]}"; do
-      pretty_json=$(python3 -m json.tool "$json_file_path") && echo "$pretty_json" >"$json_file_path"
+      pretty_json=$(python3 -m json.tool "$json_file_path") && echo "$pretty_json" > "$json_file_path"
     done
-  else pretty_json=$(python3 -m json.tool "$1") && echo "$pretty_json" >"$1"; fi
+  else pretty_json=$(python3 -m json.tool "$1") && echo "$pretty_json" > "$1"; fi
 }
 # --- Node/Bun
 if has bun; then

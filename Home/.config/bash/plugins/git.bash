@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
 has git || return
 export GH_BROWSER=firefox
-gpush(){
-  git maintenance run --auto --quiet; git add -A >/dev/null
+gpush() {
+  git maintenance run --auto --quiet
+  git add -A > /dev/null
   git commit -q -m "${1:-Update}" && LC_ALL=C git push --recurse-submodules=on-demand --prune
   git status
 }
-gctl(){
-  [[ $# -eq 0 ]] && { printf "Usage: gctl <git-repo-url> [directory]\n" >&2; return 1; }
+gctl() {
+  [[ $# -eq 0 ]] && {
+    printf "Usage: gctl <git-repo-url> [directory]\n" >&2
+    return 1
+  }
   local url="$1" dir="$2"
-  [[ -n $2 ]] || { dir="$(basename "${url%%/}")"; dir="${dir%.git}"; }
+  [[ -n $2 ]] || {
+    dir="$(basename "${url%%/}")"
+    dir="${dir%.git}"
+  }
   if [[ ! -d $dir ]]; then
     if has gix; then
       LC_ALL=C gix clone --depth 1 --no-tags "$url" "$dir" || return 1
@@ -30,11 +37,11 @@ gctl(){
 # Lazy-load: only fetch token when needed, not on every shell startup
 if has gh; then
   # Setup git to use gh for authentication (one-time config)
-  gh auth setup-git 2>/dev/null
+  gh auth setup-git 2> /dev/null
   # Define lazy function to get token only when GITHUB_TOKEN is accessed
-  get_github_token(){ 
+  get_github_token() {
     export GITHUB_TOKEN="${GITHUB_TOKEN:-GH_TOKEN}"
-    [[ -z GITHUB_TOKEN ]] && export GITHUB_TOKEN="$(gh auth token 2>/dev/null)"
+    [[ -z GITHUB_TOKEN ]] && export GITHUB_TOKEN="$(gh auth token 2> /dev/null)"
   }
 fi
 # Git dotfiles
@@ -47,22 +54,25 @@ alias gh-pr-view="gh pr view --json number,title,state,url,author,createdAt,upda
 alias gh-pr-stats="gh pr view --json additions,deletions,changedFiles,files,title,state,url"
 # PR stats with full detailed information
 alias gh-pr-stats-full="gh pr view --json additions,deletions,changedFiles,files,title,author,state,createdAt,updatedAt,url,assignees,body,closed,closedAt,comments,commits,headRefName,headRefOid,isDraft,labels,mergeStateStatus,mergeable,mergedAt,mergedBy,reviewDecision,reviews"
-gcommits(){
+gcommits() {
   if [[ -z $1 ]]; then
     git log --format="%C(auto)%h (%s, %ad)" -n 20 | cat
   else
     git log --format="%H" -n "$1" | cat
   fi
 }
-gh-cp(){
-    usage(){ echo "Usage: gh cp <repo> <path> <dest>"; }
-    [[ $# -lt 3 ]] && { usage >&2; return 1; }
-    local repo="$1" path="$2" dest="$3" dest_file dest_dir
-    dest_file="${dest%/}/$(basename "$path")"
-    if [[ ! -d "$dest" ]] && [[ $dest != */ ]]; then
-      dest_file="$dest"
-    fi
-    dest_dir="$(dirname "$dest_file")"
-    [[ "$dest_dir" = "." ]] || mkdir -p "$dest_dir"
-    gh api -H 'accept: application/vnd.github.v3.raw' "repos/$repo/contents/$path" > "$dest_file"
+gh-cp() {
+  usage() { echo "Usage: gh cp <repo> <path> <dest>"; }
+  [[ $# -lt 3 ]] && {
+    usage >&2
+    return 1
+  }
+  local repo="$1" path="$2" dest="$3" dest_file dest_dir
+  dest_file="${dest%/}/$(basename "$path")"
+  if [[ ! -d "$dest" ]] && [[ $dest != */ ]]; then
+    dest_file="$dest"
+  fi
+  dest_dir="$(dirname "$dest_file")"
+  [[ "$dest_dir" = "." ]] || mkdir -p "$dest_dir"
+  gh api -H 'accept: application/vnd.github.v3.raw' "repos/$repo/contents/$path" > "$dest_file"
 }

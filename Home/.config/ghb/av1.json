@@ -5,9 +5,7 @@
       "AudioAutomaticNamingBehavior": "unnamed",
       "AudioCopyMask": [],
       "AudioEncoderFallback": "opus",
-      "AudioLanguageList": [
-        "any"
-      ],
+      "AudioLanguageList": ["any"],
       "AudioList": [
         {
           "AudioBitrate": 128,

@@ -12,12 +12,12 @@ portable_dirs = "~/portable-dirs"
 
 # Performance tuning (adjusted for typical 16-core systems)
 parallel = true
-parallel_limit = 24  # Conservative for stability
-ghcr_concurrency = 16  # Reduced for reliability
+parallel_limit = 24   # Conservative for stability
+ghcr_concurrency = 16 # Reduced for reliability
 search_limit = 100
 
 # Network & reliability
-timeout = 600  # 10min for large downloads
+timeout = 600           # 10min for large downloads
 retry_attempts = 5
 retry_delay = 3
 connection_timeout = 30
@@ -26,7 +26,7 @@ max_redirects = 10
 # Caching strategy
 use_cache = true
 compress_cache = true
-cache_ttl = 14400  # 4h cache validity
+cache_ttl = 14400       # 4h cache validity
 verify_checksums = true
 strict_checksum = true
 
@@ -78,7 +78,7 @@ install_patterns = [
 log_level = "info"
 log_file = "~/.local/share/soar/soar.log"
 log_rotation = true
-max_log_size = 10485760  # 10MB
+max_log_size = 10485760                   # 10MB
 
 [profile.default]
 root_path = "~"
@@ -168,7 +168,7 @@ keep_old_versions = 1
 # Download optimization
 [download]
 max_concurrent_downloads = 8
-chunk_size = 8388608  # 8MB chunks
+chunk_size = 8388608         # 8MB chunks
 resume_downloads = true
 prefer_mirrors = true
 

@@ -5,12 +5,12 @@
 
 # Macs have bash3 for which the bash-completion package doesn't include
 # _init_completion. This is a minimal version of that function.
-__bat_init_completion(){
+__bat_init_completion() {
   COMPREPLY=()
   _get_comp_words_by_ref "$@" cur prev words cword
 }
 
-__bat_escape_completions(){
+__bat_escape_completions() {
   # Do not escape if completing a quoted value.
   [[ $cur == [\"\']* ]] && return 0
   # printf -v to an array index is available in bash >= 4.1.
@@ -30,9 +30,9 @@ __bat_escape_completions(){
   fi
 }
 
-_bat(){
+_bat() {
   local cur prev words split=false
-  if declare -F _init_completion &>/dev/null; then
+  if declare -F _init_completion &> /dev/null; then
     _init_completion -s || return 0
   else
     __bat_init_completion -n "=" || return 0
@@ -158,7 +158,7 @@ _bat(){
         snip
       )
       # shellcheck disable=SC2016
-      if declare -F _comp_delimited &>/dev/null; then
+      if declare -F _comp_delimited &> /dev/null; then
         # bash-completion > 2.11
         _comp_delimited , -W '"${styles[@]}"'
       else

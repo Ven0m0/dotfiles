@@ -17,7 +17,13 @@ disable_default_shorthands = false
 
 [settings.python]
 uv_venv_auto = true
-uv_venv_create_args = ["--system-site-packages", "--clear", "--no-managed-python", "--no-python-downloads", "-q"]
+uv_venv_create_args = [
+  "--system-site-packages",
+  "--clear",
+  "--no-managed-python",
+  "--no-python-downloads",
+  "-q",
+]
 precompiled_os = "x86_64_v3"
 precompiled_flavor = "pgo+lto"
 
@@ -62,7 +68,11 @@ jules = "latest"
 action-validator = "latest"
 
 [env]
-_.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages", "--clear", "--no-managed-python"] }
+_.python.venv = { path = ".venv", create = true, uv_create_args = [
+  "--system-site-packages",
+  "--clear",
+  "--no-managed-python",
+] }
 #_.java.GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
 NODE_ENV = 'production'
 UV_LINK_MODE = "hardlink"

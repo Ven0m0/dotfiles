@@ -9,9 +9,9 @@ trim-paths = true
 #build-std-features = ["panic_immediate_abort"]
 
 [alias]
-b ="build -r"
-i ="install"
-rr="run -r"
+b = "build -r"
+i = "install"
+rr = "run -r"
 
 [build]
 rustc-wrapper = "sccache"
@@ -19,38 +19,38 @@ incremental = false
 rustflags = ["-Ctarget-cpu=native", "-Clink-arg=-fuse-ld=lld"]
 
 [env]
-RUSTC_BOOTSTRAP="1"
-RUST_PANIC_STRATEGY="abort"
-RUST_LIB_BACKTRACE="0"
-RUSTC_LOG="off"
-GITOXIDE_CORE_MULTIPACKINDEX="true"
+RUSTC_BOOTSTRAP = "1"
+RUST_PANIC_STRATEGY = "abort"
+RUST_LIB_BACKTRACE = "0"
+RUSTC_LOG = "off"
+GITOXIDE_CORE_MULTIPACKINDEX = "true"
 
 [cache]
-auto-clean-frequency="7 days"
+auto-clean-frequency = "7 days"
 
 [cache.global-clean]
-max-src-age   ="1 month"
-max-crate-age ="2 months"
-max-index-age ="2 months"
-max-git-co-age="1 month"
-max-git-db-age="1 months"
+max-src-age = "1 month"
+max-crate-age = "2 months"
+max-index-age = "2 months"
+max-git-co-age = "1 month"
+max-git-db-age = "1 months"
 
 [http]
-timeout=30
-check-revoke=false
-multiplexing=true
-low-speed-limit=10
+timeout = 30
+check-revoke = false
+multiplexing = true
+low-speed-limit = 10
 
 [net]
-git-fetch-with-cli=false
-retry=2
+git-fetch-with-cli = false
+retry = 2
 
 [resolver]
-incompatible-rust-versions="allow"
+incompatible-rust-versions = "allow"
 
 [profile.release]
 opt-level = 3
-codegen-units =1
+codegen-units = 1
 lto = true
 strip = true
 panic = "abort"
@@ -60,24 +60,24 @@ overflow-checks = false
 rpath = false
 
 [profile.dev]
-opt-level=0
-codegen-units=256
-incremental=true
+opt-level = 0
+codegen-units = 256
+incremental = true
 debug = 0
 split-debuginfo = "packed"
 
 [profile.release.build-override]
-inherits="release"
-opt-level=0
-codegen-units=256
-incremental=true
+inherits = "release"
+opt-level = 0
+codegen-units = 256
+incremental = true
 debug = 0
 
 [target.x86_64-unknown-linux-gnu]
-linker="clang"
+linker = "clang"
 rustflags = ["-Ctarget-cpu=native", "-Clink-arg=-fuse-ld=lld"]
 
 [term]
-color="auto"
-progress.when="auto"
-progress.term-integration=true
+color = "auto"
+progress.when = "auto"
+progress.term-integration = true

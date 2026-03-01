@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 # av-tool.sh - Optimized FFmpeg Wrapper
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'
+set -euo pipefail
+shopt -s nullglob globstar
+IFS=$'\n\t'
 export LC_ALL=C LANG=C
 
 # --- Helpers ---
 export R=$'\e[31m' G=$'\e[32m' B=$'\e[34m' Y=$'\e[33m' X=$'\e[0m'
 log() { printf "%b[+]%b %s\n" "$B" "$X" "$*"; }
-die() { printf "%b[!]%b %s\n" "$R" "$X" "$*" >&2; exit "${2:-1}"; }
+die() {
+  printf "%b[!]%b %s\n" "$R" "$X" "$*" >&2
+  exit "${2:-1}"
+}
 warn() { printf "%b[WARN]%b %s\n" "$Y" "$X" "$*" >&2; }
-req() { command -v "$1" >/dev/null || die "Missing dependency: $1"; }
+req() { command -v "$1" > /dev/null || die "Missing dependency: $1"; }
 
 export -f log die warn
 
@@ -67,14 +72,14 @@ _cdopt_worker() {
   local fmt=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$file" < /dev/null)
 
   if [[ $fmt =~ mp3|aac|ogg|wma ]]; then
-     warn "Lossy source ($fmt): $base"
-     echo "STATUS:LOSSY"
+    warn "Lossy source ($fmt): $base"
+    echo "STATUS:LOSSY"
   fi
 
   # High-quality Resampling (SOXR) + Dither (Triangular)
   ffmpeg -nostdin -y -v error -i "$file" \
-      -af "aresample=44100:resampler=soxr:precision=28:dither_method=triangular" \
-      -c:a pcm_s16le "$out_dir/$base.wav" && echo "STATUS:DONE"
+    -af "aresample=44100:resampler=soxr:precision=28:dither_method=triangular" \
+    -c:a pcm_s16le "$out_dir/$base.wav" && echo "STATUS:DONE"
 }
 export -f _cdopt_worker
 
@@ -83,26 +88,29 @@ cmd_cdopt() {
   local in_dir=$1 out_dir=$2 count=0 lossy=0
   [[ -d $in_dir ]] || die "Input dir not found: $in_dir"
   mkdir -p "$out_dir"
-  
+
   log "Optimizing for Red Book CD (16-bit/44.1kHz)..."
 
-  local jobs=$(nproc 2>/dev/null || echo 4)
+  local jobs=$(nproc 2> /dev/null || echo 4)
 
   # Use process substitution to avoid subshell issues with counters?
   # Actually pipe output to while loop in current shell
 
   while read -r line; do
-      case "$line" in
-          STATUS:LOSSY) ((lossy++)) || true ;;
-          STATUS:DONE)  ((count++)) || true; printf ".";;
-      esac
+    case "$line" in
+      STATUS:LOSSY) ((lossy++)) || true ;;
+      STATUS:DONE)
+        ((count++)) || true
+        printf "."
+        ;;
+    esac
   done < <(find "$in_dir" -maxdepth 1 -type f -regextype posix-extended -iregex ".*\.(flac|wav|mp3|m4a|aac|ogg|alac|aiff)$" -print0 | xargs -0 -P "$jobs" -I {} bash -c '_cdopt_worker "$@"' _ "{}" "$out_dir")
-  
+
   echo
   ((count)) || die "No audio files found."
   log "Processed $count files ($lossy lossy sources)."
-  
-  cat <<EOF
+
+  cat << EOF
 ${Y}---------------------------------------------------------------------
    🔥 BURN INSTRUCTIONS (Red Book)
 ---------------------------------------------------------------------${X}
@@ -114,7 +122,7 @@ EOF
 }
 
 usage() {
-  cat <<EOF
+  cat << EOF
 av-tool - FFmpeg Automation
 Usage: ${0##*/} [COMMAND] [ARGS]
 Commands:
@@ -131,12 +139,14 @@ EOF
 }
 
 # --- Main ---
-req ffmpeg; req ffprobe
+req ffmpeg
+req ffprobe
 [[ $# -eq 0 ]] && usage
-CMD="$1"; shift
+CMD="$1"
+shift
 case "$CMD" in
-  gif|frame|combine|trim|norm|fade|silence) "cmd_$CMD" "$@" ;;
-  cd-optimize|cdopt) cmd_cdopt "$@" ;;
-  -h|--help) usage ;;
+  gif | frame | combine | trim | norm | fade | silence) "cmd_$CMD" "$@" ;;
+  cd-optimize | cdopt) cmd_cdopt "$@" ;;
+  -h | --help) usage ;;
   *) die "Unknown command: $CMD" ;;
 esac

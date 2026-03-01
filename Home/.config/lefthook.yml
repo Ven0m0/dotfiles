@@ -1,11 +1,10 @@
 assert_lefthook_installed: true
-skip_lfs:  true
-skip_output:  [meta, execution]
-output:  [summary, skips]
+skip_lfs: true
+skip_output: [meta, execution]
+output: [summary, skips]
 colors: true
 no_tty: false
 min_version: 1.5.0
-
 pre-commit:
   parallel: true
   commands:
@@ -17,11 +16,10 @@ pre-commit:
         command -v shellcheck &>/dev/null || { printf "shellcheck not installed, skipping lint\n" >&2; exit 0; }
         shfmt -w -i 2 -bn -ci -sr {staged_files}
         shellcheck -S style {staged_files}
-        command -v shellharden &>/dev/null && shellharden --replace {staged_files} || : 
+        command -v shellharden &>/dev/null && shellharden --replace {staged_files} || :
         git add {staged_files}
       stage_fixed: true
       fail_text: "Shell format failed"
-
     yaml-lint:
       priority: 2
       glob: "*.{yml,yaml}"
@@ -32,8 +30,7 @@ pre-commit:
         git add {staged_files}
       stage_fixed: true
       fail_text: "YAML lint failed"
-
-    toml-lint: 
+    toml-lint:
       priority: 3
       glob: "*.toml"
       run: |
@@ -43,7 +40,6 @@ pre-commit:
         git add {staged_files}
       stage_fixed: true
       fail_text: "TOML lint failed"
-
     json-validate:
       priority: 4
       glob: "*.{json,jsonc,json5}"
@@ -60,56 +56,50 @@ pre-commit:
           "$jcmd" -e .  "$f" &>/dev/null || { printf "Invalid:  %s\n" "$f" >&2; exit 1; }
         done
       fail_text: "JSON invalid"
-
     biome:
       priority: 5
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       run: bunx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
-      stage_fixed:  true
+      stage_fixed: true
       fail_text: "Biome failed"
-
     markdown-lint:
       priority: 6
       glob: "*.{md,markdown}"
       run: bunx markdownlint-cli2 --fix {staged_files}
       stage_fixed: true
       fail_text: "Markdown lint failed"
-
-    normalize: 
+    normalize:
       priority: 7
       glob: "*"
       exclude: "\\.(png|jpe?g|gif|webp|ico|svg|woff2? |ttf|eot|otf|mp[34]|webm|ogg|wav|flac|pdf|zip|tar|gz|xz|zst|bz2|7z|rar)$"
       run: |
         for f in {staged_files}; do
-          sed -i. bak 's/[[:space:]]*$//; s/\xE2\x80\x8B//g; s/\xE2\x80\x8C//g; s/\xE2\x80\x8D//g; s/\xE2\x80\xAF//g; s/\xC2\xAD//g; s/\xEF\xBB\xBF//g; s/\r$//' "$f"
+          sed -i.bak 's/[[:space:]]*$//; s/\xE2\x80\x8B//g; s/\xE2\x80\x8C//g; s/\xE2\x80\x8D//g; s/\xE2\x80\xAF//g; s/\xC2\xAD//g; s/\xEF\xBB\xBF//g; s/\r$//' "$f"
           rm -f "${f}.bak"
         done
-        command -v dos2unix &>/dev/null && dos2unix -q {staged_files} 2>/dev/null || : 
+        command -v dos2unix &>/dev/null && dos2unix -q {staged_files} 2>/dev/null || :
         git add {staged_files}
       stage_fixed: true
       fail_text: "Normalize failed"
-
     gha-lint:
       priority: 8
-      glob: ". github/workflows/*.{yml,yaml}"
-      run:  |
+      glob: ".github/workflows/*.{yml,yaml}"
+      run: |
         command -v actionlint &>/dev/null || { printf "actionlint not installed, skipping\n" >&2; exit 0; }
         actionlint {staged_files}
       fail_text: "GHA lint failed"
-
 post-merge:
   commands:
     deps:
       priority: 1
       run: |
-        [[ -f bun.lockb || -f package-lock.json ]] && bun install --frozen-lockfile --production 2>/dev/null || : 
-        [[ -f Cargo. lock ]] && cargo fetch &>/dev/null || :
+        [[ -f bun.lockb || -f package-lock.json ]] && bun install --frozen-lockfile --production 2>/dev/null || :
+        [[ -f Cargo.lock ]] && cargo fetch &>/dev/null || :
         exit 0
       fail_text: "Deps update failed"
-
 post-checkout:
-  commands: 
+  commands:
     submodules:
       priority: 1
       run: "git submodule update --init --recursive &>/dev/null || :"
-      fail_text:  "Submodule update failed"
+      fail_text: "Submodule update failed"

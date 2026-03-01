@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-set -euo pipefail; shopt -s nullglob globstar
+set -euo pipefail
+shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C
 
-has(){ command -v -- "$1" &>/dev/null; }
-die(){ printf '%s\n' "$1" >&2; exit "${2:-1}"; }
+has() { command -v -- "$1" &> /dev/null; }
+die() {
+  printf '%s\n' "$1" >&2
+  exit "${2:-1}"
+}
 
 [[ $# -ge 1 ]] || die "usage: $0 URL [URL...]"
 

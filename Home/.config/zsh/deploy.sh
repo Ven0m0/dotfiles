@@ -4,11 +4,11 @@ set -euo pipefail
 shopt -s nullglob
 IFS=$'\n\t'
 
-has(){ command -v -- "$1" &>/dev/null; }
+has() { command -v -- "$1" &> /dev/null; }
 readonly ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 readonly BACKUP="$HOME/.zsh_backup_$(date +%s)"
 
-main(){
+main() {
   printf '=== Zsh Modular Deployment ===\n\n'
   # Backup existing configs
   if [[ -d $ZDOTDIR ]] || [[ -f $HOME/.zshrc ]]; then
@@ -28,7 +28,10 @@ main(){
   # Create symlink for backward compatibility
   ln -sf "$ZDOTDIR/.zshrc" "$HOME/.zshrc"
   # Verify zsh
-  has zsh || { printf '\n⚠ Install zsh first\n'; exit 1; }
+  has zsh || {
+    printf '\n⚠ Install zsh first\n'
+    exit 1
+  }
   printf '\n✅ Deployed\n'
   printf 'Structure:\n'
   printf '  ~/.config/zsh/\n'

@@ -2,12 +2,16 @@
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
 # Interactive Deduplication Pipeline (Fclones -> Czkawka)
 # Usage: ./dedupe.sh <target_directory>
-set -euo pipefail; shopt -s nullglob globstar
+set -euo pipefail
+shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C
-has(){ command -v -- "$1" &>/dev/null; }
-msg(){ printf '%s\n' "$@"; }
-log(){ printf '%s\n' "$@" >&2; }
-die(){ printf '%s\n' "$1" >&2; exit "${2:-1}"; }
+has() { command -v -- "$1" &> /dev/null; }
+msg() { printf '%s\n' "$@"; }
+log() { printf '%s\n' "$@" >&2; }
+die() {
+  printf '%s\n' "$1" >&2
+  exit "${2:-1}"
+}
 
 readonly TARGET="${1:-}"
 readonly RPT_PREFIX="dedupe_report"
@@ -22,7 +26,7 @@ msg "" "Target: $TARGET" ""
 # 1. Backup Verification
 msg "SAFETY CHECK"
 read -rp "Have you created a backup of this directory? [y/N] " backup_ans
-[[ !  ${backup_ans,,} =~ ^y ]] && die "Aborting. Please backup your data first."
+[[ ! ${backup_ans,,} =~ ^y ]] && die "Aborting. Please backup your data first."
 # 2. Strategy Selection
 msg "" "STRATEGY" \
   "1) Hardlink (Safe) - Replaces exact duplicates with hardlinks.  Saves space, keeps filenames." \
@@ -40,14 +44,14 @@ elif [[ $strat_ans == 2 ]]; then
   FCLONES_CMD="remove"
   CZ_ACTION="DELETE"
 fi
-timestamp(){ printf '%(%H:%M:%S)T' -1; }
-phase(){ log "" "[ $(timestamp) ] $*"; }
-run_fclones(){
+timestamp() { printf '%(%H:%M:%S)T' -1; }
+phase() { log "" "[ $(timestamp) ] $*"; }
+run_fclones() {
   phase "Phase 1: Fclones (Exact Match)"
   local rpt="${RPT_PREFIX}_fclones. txt"
-  fclones group "$TARGET" >"$rpt"
+  fclones group "$TARGET" > "$rpt"
   local cnt
-  cnt=$(grep -c '^[0-9a-f]' "$rpt" || : )
+  cnt=$(grep -c '^[0-9a-f]' "$rpt" || :)
   if [[ $cnt -eq 0 ]]; then
     log "   No exact duplicates found."
     return
@@ -55,12 +59,12 @@ run_fclones(){
   log "   Found $cnt groups."
   if [[ $MODE != dry ]]; then
     log "   EXECUTING: fclones $FCLONES_CMD..."
-    fclones "$FCLONES_CMD" <"$rpt"
+    fclones "$FCLONES_CMD" < "$rpt"
   else
     log "   DRY RUN: See $rpt"
   fi
 }
-run_czkawka(){
+run_czkawka() {
   local type=$1
   phase "Phase 2: Czkawka ($type)"
   local -a cmd=(czkawka-cli "$type" "$TARGET" "${CZ_BASE[@]}")
