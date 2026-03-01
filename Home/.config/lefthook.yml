@@ -83,7 +83,7 @@ pre-commit:
       fail_text: "Normalize failed"
     gha-lint:
       priority: 8
-      glob: ". github/workflows/*.{yml,yaml}"
+      glob: ".github/workflows/*.{yml,yaml}"
       run: |
         command -v actionlint &>/dev/null || { printf "actionlint not installed, skipping\n" >&2; exit 0; }
         actionlint {staged_files}
