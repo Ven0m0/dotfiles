@@ -44,6 +44,7 @@ MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:p
 _RJEM_MALLOC_CONF="metadata_thp:auto,tcache:true,background_thread:true,percpu_arena:percpu"
 SYSTEMD_SERVICE_FILE_WATCHERS=disabled
 ZSTD_NBTHREADS=0
+CURL_SSL_BACKEND=rustls
 
 # Privacy
 DOTNET_CLI_TELEMETRY_OPTOUT=1
