@@ -20,9 +20,6 @@
 @claude 
 ```
 ```text
-@cursor 
-```
-```text
 @cursoragent
 ```
 ```text
