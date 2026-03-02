@@ -25,18 +25,14 @@
 ```text
 @jules 
 ```
-
-
 </details>
 
 ---
-
 ## Quick Tasks
-
 <details><summary><b>🔍 Audit</b> — Quality, security, correctness sweep</summary>
-
+  
 ```text
-Audit codebase for quality, security, and correctness. Use `rg` to find files. Use ultrathink.
+Audit codebase for quality, security, and correctness. <use_parallel_tool_calls>Use `rg` to find files.</use_parallel_tool_calls> Use ultrathink.
 Scope: all source files. Exclude: .git/, node_modules/, vendor/, dist/, .venv/, generated/.
 Steps:
 1. Duplicate logic: rg for repeated patterns >10 lines across files, propose shared functions
@@ -46,13 +42,15 @@ Steps:
 5. Dependencies: flag CVEs (check advisories), unmaintained (>2yr no release), duplicated, unused
 6. Resolve all TODO/FIXME that are trivial (<10 min effort). List remaining with severity.
 7. Format per language: biome (JS/TS) | ruff (Python) | rustfmt+clippy (Rust) | shfmt+shellcheck+shellharden (Shell)
+<investigate_before_answering>
 Output: summary table (file|issue|severity|fix), unified diffs, risk assessment (breaking changes, data loss potential).
+</investigate_before_answering>
 ```
 </details>
 <details><summary><b>📦 Deps</b> — Dependency audit and update</summary>
 
 ```text
-Audit and update all dependencies. Use `rg` to find lockfiles, manifests, import statements.
+Audit and update all dependencies. <use_parallel_tool_calls>Use `rg` to find lockfiles, manifests, import statements.</use_parallel_tool_calls>
 Steps:
 1. Inventory: list all deps with current version, latest version, last publish date, weekly downloads
 2. CVEs: cross-reference with known advisories, flag severity (critical/high/medium/low)
@@ -61,14 +59,21 @@ Steps:
 5. Outdated: categorize as patch/minor/major. Apply patch+minor automatically. Major: note breaking changes.
 6. Duplicates: find multiple versions of same package in lockfile, dedupe where possible.
 7. Apply updates respecting semver. Regenerate lockfiles. Verify build passes after changes.
+<investigate_before_answering>
 Output: table (package|current|latest|status|action), update commands, migration notes for major bumps, before/after lockfile size.
+</investigate_before_answering>
 ```
 </details>
 <details><summary><b>📋 TODOs</b> — Extract and resolve TODOs/FIXMEs</summary>
 
 ```text
-Extract and resolve TODOs/FIXMEs across entire codebase. Use `rg` to find all occurrences.
+<investigate_before_answering>
+Extract and resolve TODOs/FIXMEs across entire codebase.
+</investigate_before_answering>
+<use_parallel_tool_calls>
+Use `rg` to find all occurrences.
 Pattern: rg -n "TODO|FIXME|HACK|XXX|WARN|DEPRECATED" --type-add 'src:*.{sh,bash,py,ts,tsx,js,jsx,rs,go,lua,yml,yaml,toml}'
+</use_parallel_tool_calls>
 Steps:
 1. Extract all matches with file, line number, surrounding context (3 lines)
 2. Categorize: trivial (type fix, rename, add guard) | moderate (refactor, new function) | complex (architecture, new feature)
@@ -138,9 +143,7 @@ Output: deleted files list, before/after byte counts per phase, format diffs, co
 </details>
 
 ---
-
 ## Language-Specific Refactors
-
 <details><summary><b>🐚 Bash 5.2+</b> — Maximum-density modern bash refactoring</summary>
 
 ```text
@@ -334,9 +337,7 @@ Optimized Dockerfile(s), compose.yml, .dockerignore, image size before/after, la
 </details>
 
 ---
-
 ## CI/CD & Tooling
-
 <details><summary><b>⚙️ GitHub Actions</b> — Fix, harden, optimize workflows</summary>
 
 ```text
@@ -505,9 +506,8 @@ Deleted files list, normalization diffs, codespell corrections, format diffs, be
 </details>
 
 ---
-
 <details><summary><b>📐 Flow-Style Compaction</b> — Compact structured data files</summary>
-
+  
 ```text
 Compact structured data files for density without losing readability.
 Use `rg`/`fd` to find JSON/YAML/TOML files. Use ultrathink.
@@ -597,9 +597,7 @@ Markdown changelog following Keep a Changelog format. Group by category. Include
 </details>
 
 ---
-
 ## Copilot / Jules Tasks
-
 <details><summary><b>Expand task list</b></summary>
 
 ```text
