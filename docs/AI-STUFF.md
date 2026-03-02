@@ -25,6 +25,9 @@
 ```text
 @jules 
 ```
+```text
+@coderabbitai
+```
 </details>
 
 ---
