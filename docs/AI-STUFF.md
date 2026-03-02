@@ -5,13 +5,16 @@
 <details><summary><b>PR Commands</b></summary>
 
 ```text
-@gemini-code-assist review 
-```
-```text
 @dependabot rebase
 ```
 ```text
+@gemini-code-assist review 
+```
+```text
 @copilot 
+```
+```text
+@codex[agent]
 ```
 ```text
 @claude 
@@ -20,14 +23,12 @@
 @cursor 
 ```
 ```text
-@jules 
-```
-```text
 @cursoragent
 ```
 ```text
-@codex[agent]
+@jules 
 ```
+
 
 </details>
 
