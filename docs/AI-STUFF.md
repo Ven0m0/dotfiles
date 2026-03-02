@@ -22,6 +22,13 @@
 ```text
 @jules 
 ```
+```text
+@cursoragent
+```
+```text
+@codex[agent]
+```
+
 </details>
 
 ---
