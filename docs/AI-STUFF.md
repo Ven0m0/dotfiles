@@ -147,15 +147,21 @@ Output: deleted files list, before/after byte counts per phase, format diffs, co
 <details><summary><b>🐚 Bash 5.2+</b> — Maximum-density modern bash refactoring</summary>
 
 ```text
-Refactor shell scripts to latest bash (5.2+), maximizing bashisms and density. Use `rg` to find files. Use ultrathink.
+<instructions>Refactor shell scripts to latest bash (5.2+), maximizing bashisms and density</instructions>. <use_parallel_tool_calls>Use `rg` to find files. Use ultrathink.</use_parallel_tool_calls>
 Target: *.sh, *.bash, rc/profile files. Convert POSIX sh → bash where beneficial.
 Exclude: .git/, node_modules/, vendor/, generated/, third-party scripts.
+<formatting>2 space indentation, max 1 nempty newline, 120 line lengt, follow editorconfig</formatting>
 ── Prologue (required for all scripts) ──
+<examples>
+
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t'; LC_ALL=C
+set -euo pipefail; shopt -s nullglob globstar; IFS=$'\n\t' LC_ALL=C
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null
 has(){ command -v -- "$1" &>/dev/null; }
+</examples>
+<rules>
+
 ── Whitespace: absolute minimum ──
 Zero blank lines between functions unless readability demands exactly one.
 fn(){ body; } — no space before brace, no space after {, compact single-line where ≤100 chars.
@@ -190,13 +196,21 @@ mapfile -t arr < <(cmd) over arr=($(cmd)). read -ra over manual IFS splitting.
 while IFS= read -r line; do ...; done <file over for line in $(cat file).
 printf '%s\n' over echo. local -r for constants. declare -g for global-from-function.
 Parallel I/O: limited &+wait -n. Process substitution <() over temp files.
+</rules>
+<examples>
+
 ── Helpers (include only if used) ──
 die(){ printf '%s\n' "$*" >&2; exit 1; }
 fcat(){ printf '%s\n' "$(<"$1")"; }
 sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null||:; }
+</examples>
+<action>
+
 ── Pipeline ──
-1. Parse and transform → 2. shfmt -i 2 -bn -ci -ln bash -w → 3. shellcheck --severity=error -f gcc
+1. Parse and transform → 2. shfmt -i 2 -bn -ci -ln bash -w → 3. shellcheck -S error -f diff
 4. shellharden --replace → 5. shellcheck (final, must pass clean)
+</action>
+
 ── Output ──
 Plan (3-6 lines), unified diff, standalone script(s), risk notes, LOC before/after with % reduction.
 ```
