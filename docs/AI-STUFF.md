@@ -14,10 +14,16 @@
 @copilot 
 ```
 ```text
+@copilot code review[agent]
+```
+```text
 @codex[agent]
 ```
 ```text
 @claude 
+```
+```text
+@claude[agent]
 ```
 ```text
 @cursoragent
