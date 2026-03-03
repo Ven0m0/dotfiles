@@ -545,7 +545,8 @@ Output: unified diffs, space savings (bytes before/after, line count before/afte
 <details><summary><b>📖 AGENTS.md Generator</b> — AI-assisted development docs</summary>
 
 ```text
-Generate AGENTS.md via deep repo analysis (use `rg` + `fd`). Infer only from evidence. Use ultrathink.
+Generate AGENTS.md via deep repo analysis (<use_parallel_tool_calls>use `rg` + `fd`</use_parallel_tool_calls>). Infer only from evidence. Use ultrathink.
+<instructions>
 ANALYZE:
 1. Languages → rank file extensions.
 2. Frameworks → search imports/requires.
@@ -554,6 +555,8 @@ ANALYZE:
 5. Conventions → infer naming, structure, errors, tests.
 6. Tooling → detect formatter, linter, type system, test runner.
 7. Entry points → main app, CLI, routes, exports.
+</instructions>
+<investigate_before_answering>
 OUTPUT:
 1) AGENTS.md with sections:
 - Project (desc, languages, frameworks, architecture)
@@ -571,6 +574,7 @@ OUTPUT:
    (dev commands + conventions subset, similar to AGENTS.md)
 4) Summary of detected patterns.
 No guesses. No analysis logs. Output final artifacts only.
+</investigate_before_answering>
 ```
 </details>
 <details><summary><b>📊 Benchmark</b> — Performance profiling and comparison</summary>
