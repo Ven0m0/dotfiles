@@ -122,8 +122,6 @@
 [checkout]
   guess = true
   workers = 0
-[rebase]
-  autoStash = true
 [rerere]
   enabled = true
   autoupdate = true
