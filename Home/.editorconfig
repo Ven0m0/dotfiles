@@ -12,8 +12,10 @@ max_line_length = 120
 quote_type = double
 spelling_language = en
 shell_variant = auto
+curly_bracket_next_line = false
+spaces_around_operators = true
 
-[[shell],*.{sh,bash,zsh}]
+[[shell],**/*.{sh,bash,zsh}]
 indent_style = space
 indent_size = 2
 tab_width = 2
@@ -25,62 +27,64 @@ switch_case_indent = true
 keep_padding = false
 space_redirects = false
 function_next_line = false
+simplify = true
+minify = true
 
 # Fish
-[*.{fish,fish_*},fishd.*,fish_*]
+[**/*.fish]
 indent_size = 4
 
-# Win shell scripts
-[*.{bat,cmd,ps1,psm1}]
+[**/*.{bat,cmd,ps1,psm1}]
 indent_style = tab
 indent_size = 4
 end_of_line = crlf
 
-[.ahk]
+[**/*.ahk]
 end_of_line = crlf
 
-# Python
-[*.{py,pyw,pyi}]
+[**/*.{py,pyw,pyi}]
 indent_size = 4
+max_line_length = 100
 
 # C/C++
-[*.{c,cc,cpp,cxx,h,hpp,hxx}]
+[**/*.{c,cc,cpp,cxx,h,hpp,hxx}]
 indent_size = 4
 max_line_length = 100
 
 # C#, Java, PHP, Perl
-[*.{cs,java,php,pl,pm}]
+[**/*.{cs,java,php,pl,pm}]
 indent_size = 4
 
 # Go (requires tabs)
-[*.go,go.mod,go.sum]
+[**/*.go,go.mod,go.sum]
 indent_style = tab
 indent_size = 4
 tab_width = 4
 
 # Rust & Zig
-[*.{rs,zig}]
+[**/*.{rs,zig}]
 indent_size = 4
 
 # XML / HTML
-[*.{xml,html,htm}]
+[**/*.{xml,html,htm}]
 indent_size = 4
 
-[*.{patch,diff}]
+[**/*.{md,markdown}]
+max_line_length = unset
+trim_trailing_whitespace = false
+
+[**/*.{patch,diff}]
 trim_trailing_whitespace = false
 insert_final_newline = false
 
-[*.{md,markdown}]
-max_line_length = 100
-
-[*.{rst,txt,md,markdown}]
+[**/*.{rst,txt}]
 trim_trailing_whitespace = false
 
-[*.min.{js,css,txt}]
+[**/*.min.{js,css,txt}]
 insert_final_newline = false
 
 # Makefiles (require tabs)
-[Makefile,*.mk]
+[Makefile,**/*.mk]
 indent_style = tab
 indent_size = 4
 tab_width = 4
