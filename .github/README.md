@@ -52,6 +52,8 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 - [AUR PKG](https://aur.archlinux.org)
 - [CachyOS](https://packages.cachyos.org) **|** [PKGBUILDs](https://github.com/CachyOS/CachyOS-PKGBUILDS)
 - [Crates.io](https://crates.io)
+- [PyPi](https://pypi.org)
+- [npmjs](https://www.npmjs.com)
 - [FlatHub](https://flathub.org)
 - [AppImages](https://portable-linux-apps.github.io/apps)
 - [AppBundleHUB](https://xplshn.github.io/AppBundleHUB)

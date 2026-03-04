@@ -34,6 +34,10 @@
 ```text
 @coderabbitai
 ```
+```text
+@cmux-agent
+@cto-new
+```
 </details>
 
 ---
