@@ -13,6 +13,7 @@ quote_type = double
 spelling_language = en
 shell_variant = auto
 curly_bracket_next_line = false
+spaces_around_operators = true
 
 [[shell],**/*.{sh,bash,zsh}]
 indent_style = space
