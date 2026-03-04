@@ -66,15 +66,14 @@ indent_size = 4
 [*.{xml,html,htm}]
 indent_size = 4
 
-[*.{md,markdown}]
-max_line_length = 100
-trim_trailing_whitespace = false
-
 [*.{patch,diff}]
 trim_trailing_whitespace = false
 insert_final_newline = false
 
-[*.{rst,txt}]
+[*.{md,markdown}]
+max_line_length = 100
+
+[*.{rst,txt,md,markdown}]
 trim_trailing_whitespace = false
 
 [*.min.{js,css,txt}]
