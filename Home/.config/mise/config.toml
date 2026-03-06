@@ -21,8 +21,6 @@ uv_venv_create_args = [
   "--system-site-packages",
   "--clear",
   "--no-managed-python",
-  "--no-python-downloads",
-  "-q",
 ]
 precompiled_os = "x86_64_v3"
 precompiled_flavor = "pgo+lto"
@@ -32,6 +30,8 @@ binstall = true
 
 [settings.pipx]
 uvx = true
+
+[settings.node]
 
 [settings.npm]
 package_manager = "bun"
