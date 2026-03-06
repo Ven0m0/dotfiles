@@ -16,7 +16,7 @@ http_timeout = "30s"
 disable_default_shorthands = false
 
 [settings.python]
-uv_venv_auto = true
+uv_venv_auto = "create|source"
 uv_venv_create_args = [
   "--system-site-packages",
   "--clear",
