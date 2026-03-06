@@ -32,6 +32,7 @@ binstall = true
 uvx = true
 
 [settings.node]
+ninja = true
 
 [settings.npm]
 package_manager = "bun"
