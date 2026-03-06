@@ -23,18 +23,18 @@ cleanup = true
 skip_notify = true
 notify_each_step = false
 no_self_update = true
-run_in_tmux = false
+run_in_tmux = true
 
 [pre_commands]
 "pacfree" = "rm -f /var/lib/pacman/db.lck"
 "pacpart" = 'sudo find /var/cache/pacman/pkg/ -iname "*.part" -delete'
 
 [post_commands]
-"paru_clean" = "paru -Scc --noconfirm; sudo paccache -rk0"
+"paru_clean" = "paru -Scc --noconfirm; sudo paccache -rk0; paru -c --noconfirm; am -c"
 "mise_clear" = "mise cache c -y"
 "bun_clear" = "bun pm cache rm"
 "uv_clear" = "uv clean"
-"cargo_cache" = "cargo cache -efg; cargo cache -ef trim --limit 1B"
+"cargo_cache" = "cargo cache -efg"
 
 [brew]
 greedy_cask = true
@@ -72,7 +72,7 @@ self_rename = true
 
 [mise]
 bump = false
-jobs = 8
+jobs = 12
 interactive = false
 
 [npm]
@@ -89,7 +89,7 @@ use_sudo = true
 # Specify the containers to ignore while updating (Wildcard supported)
 # ignored_containers = ["ghcr.io/rancher-sandbox/rancher-desktop/rdx-proxy:latest", "docker.io*"]
 # Specify the runtime to use for containers (default: "docker", allowed values: "docker", "podman")
-runtime = "podman"
+runtime = "docker"
 system_prune = true
 use_sudo = true
 
