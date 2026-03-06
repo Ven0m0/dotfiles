@@ -36,6 +36,9 @@ uvx = true
 [settings.npm]
 package_manager = "bun"
 
+[settings.ruby]
+compile = true
+
 # Tools Configuration
 [tools]
 # "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
@@ -66,6 +69,7 @@ jules = "latest"
 "npm:@1mcp/agent" = "latest"
 "github:Musixal/Backhaul" = "latest"
 action-validator = "latest"
+prek = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true, uv_create_args = [
