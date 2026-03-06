@@ -73,11 +73,8 @@ action-validator = "latest"
 prek = "latest"
 
 [env]
-_.python.venv = { path = ".venv", create = true, uv_create_args = [
-  "--system-site-packages",
-  "--clear",
-  "--no-managed-python",
-] }
+_.python.venv = ".venv"
+_.python.venv = { path = "{{env.HOME}}/.venv", create = true, uv_create_args = ['--seed', '--system-site-packages'] }
 #_.java.GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
 NODE_ENV = 'production'
 UV_LINK_MODE = "hardlink"
