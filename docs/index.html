@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Model Comparison — March 2026</title>
+<meta name="description" content="Benchmark scores, pricing, and speed for 10 frontier LLMs. SWE-bench, Terminal-Bench, pricing per 1M tokens. Updated March 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08080d;
+    --surface: #0e0e16;
+    --border: #1a1a28;
+    --border-hi: #2a2a3d;
+    --text: #d4d4dc;
+    --text-dim: #6b6b80;
+    --text-mute: #44445a;
+    --accent: #7c6aef;
+    --accent-dim: #7c6aef22;
+    --green: #34d399;
+    --green-dim: #34d39930;
+    --yellow: #fbbf24;
+    --yellow-dim: #fbbf2430;
+    --orange: #fb923c;
+    --red: #f87171;
+    --cyan: #22d3ee;
+    --cyan-dim: #22d3ee18;
+    --mono: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
+    --sans: 'Instrument Sans', -apple-system, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 15px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: #fff; }
+
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 48px 0 32px;
+  }
+  header h1 {
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  header h1 span { color: var(--accent); }
+  .subtitle {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-top: 6px;
+    font-family: var(--mono);
+  }
+  .subtitle a { color: var(--text-dim); text-decoration: none; border-bottom: 1px dotted var(--text-mute); }
+  .subtitle a:hover { color: var(--accent); border-color: var(--accent); }
+  .meta-row {
+    display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .meta-pill {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+  .meta-pill b { color: var(--text); }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  nav .container { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  nav a {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  nav a:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+
+  /* ── SECTIONS ── */
+  section { padding: 40px 0; }
+  section + section { border-top: 1px solid var(--border); }
+  h2 {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  h3 {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    margin: 28px 0 12px;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    table-layout: auto;
+  }
+  thead th {
+    text-align: left;
+    padding: 8px 12px;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-mute);
+    border-bottom: 1px solid var(--border-hi);
+    white-space: nowrap;
+    position: sticky;
+    top: 42px;
+    background: var(--bg);
+  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  tbody tr:hover { background: #0f0f1a; }
+  td { padding: 10px 12px; vertical-align: middle; white-space: nowrap; }
+
+  .model-name { font-weight: 600; color: #fff; font-size: 0.84rem; }
+  .model-provider { font-size: 0.68rem; color: var(--text-dim); margin-top: 1px; }
+  .tag-open {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.56rem;
+    font-weight: 600;
+    color: var(--cyan);
+    border: 1px solid var(--cyan-dim);
+    background: var(--cyan-dim);
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .date {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-mute);
+  }
+
+  /* ── SCORE BAR ── */
+  .score-cell { display: flex; align-items: center; gap: 8px; }
+  .bar-track {
+    width: 56px; height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .bar-fill { height: 100%; border-radius: 3px; }
+  .score-val { font-family: var(--mono); font-size: 0.76rem; font-weight: 600; }
+  .na { color: var(--text-mute); font-size: 0.7rem; }
+
+  /* ── PRICE ── */
+  .price { font-family: var(--mono); font-size: 0.74rem; }
+  .price-in { color: var(--green); }
+  .price-out { color: var(--yellow); }
+  .price-sep { color: var(--text-mute); }
+
+  /* ── CARDS ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .card h4 {
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .card .card-date {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--text-mute);
+    margin-bottom: 8px;
+  }
+  .card p {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+  .tier-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+  .tier-1 { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-dim); }
+  .tier-2 { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow-dim); }
+
+  /* ── TAKEAWAYS ── */
+  .takeaways { list-style: none; counter-reset: ta; }
+  .takeaways li {
+    counter-increment: ta;
+    padding: 8px 0 8px 32px;
+    position: relative;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+  .takeaways li:last-child { border-bottom: none; }
+  .takeaways li::before {
+    content: counter(ta);
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--accent);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--accent-dim);
+    border-radius: 4px;
+    background: var(--accent-dim);
+  }
+  .takeaways li strong { color: var(--text); }
+
+  /* ── REMOVED ── */
+  .removed-table { font-size: 0.78rem; }
+  .removed-table td { color: var(--text-dim); }
+  .removed-table .reason { font-style: italic; color: var(--text-mute); }
+
+  /* ── CAVEATS ── */
+  .caveats {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    font-size: 0.76rem;
+    color: var(--text-mute);
+    line-height: 1.75;
+  }
+  .caveats strong { color: var(--text-dim); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-mute);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    header h1 { font-size: 1.2rem; }
+    .card-grid { grid-template-columns: 1fr; }
+    html { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>LLM Model Comparison <span>— March 2026</span></h1>
+    <p class="subtitle">
+      <a href="https://www.swebench.com">swebench.com</a> ·
+      <a href="https://www.tbench.ai">tbench.ai</a> ·
+      <a href="https://www.marc0.dev/en/leaderboard">marc0.dev</a> ·
+      <a href="https://pricepertoken.com">pricepertoken.com</a> ·
+      <a href="https://artificialanalysis.ai">artificialanalysis.ai</a>
+    </p>
+    <div class="meta-row">
+      <span class="meta-pill"><b>10</b> models</span>
+      <span class="meta-pill"><b>5</b> open-weight</span>
+      <span class="meta-pill">released after <b>Sep 2025</b></span>
+      <span class="meta-pill">updated <b>2026-03-06</b></span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="container">
+    <a href="#benchmarks">Benchmarks</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#notes">Notes</a>
+    <a href="#takeaways">Takeaways</a>
+    <a href="#removed">Removed</a>
+    <a href="#caveats">Caveats</a>
+  </div>
+</nav>
+
+<!-- ════════════ BENCHMARKS ════════════ -->
+<section id="benchmarks">
+  <div class="container">
+    <h2>Benchmark Scores</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Model</th>
+            <th>Released</th>
+            <th>SWE-bench V.</th>
+            <th>T-Bench 2.0</th>
+            <th>SWE-Pro</th>
+          </tr>
+        </thead>
+        <tbody id="bench-body"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ PRICING ════════════ -->
+<section id="pricing">
+  <div class="container">
+    <h2>Pricing &amp; Speed</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Model</th>
+            <th>Released</th>
+            <th>In $/1M</th>
+            <th>Out $/1M</th>
+            <th>Blended¹</th>
+            <th>Speed</th>
+            <th>Ctx</th>
+          </tr>
+        </thead>
+        <tbody id="price-body"></tbody>
+      </table>
+    </div>
+    <p style="font-size:0.65rem;color:var(--text-mute);margin-top:10px;font-family:var(--mono);">
+      ¹ Blended = (input × 0.75) + (output × 0.25) per 1M tokens, ~3:1 in/out ratio.
+    </p>
+  </div>
+</section>
+
+<!-- ════════════ NOTES ════════════ -->
+<section id="notes">
+  <div class="container">
+    <h2>Model Notes</h2>
+    <h3>🏆 Tier 1 — Frontier (SWE-bench ≥ 79%)</h3>
+    <div class="card-grid" id="tier1-cards"></div>
+    <h3>🥈 Tier 2 — Strong (SWE-bench 72–78%)</h3>
+    <div class="card-grid" id="tier2-cards"></div>
+  </div>
+</section>
+
+<!-- ════════════ TAKEAWAYS ════════════ -->
+<section id="takeaways">
+  <div class="container">
+    <h2>Key Takeaways</h2>
+    <ol class="takeaways">
+      <li><strong>Best SWE-bench:</strong> Claude Opus 4.6 — 80.8% in this list.</li>
+      <li><strong>Best all-rounder:</strong> Gemini 3.1 Pro Preview — top T-Bench, near-top SWE-bench, 1M ctx, fast, mid-price.</li>
+      <li><strong>Best value (open-weight):</strong> MiniMax M2.5 — 80.2% at $0.30/$1.20.</li>
+      <li><strong>Best value (proprietary):</strong> Claude Sonnet 4.6 — 79.6% at $3/$15.</li>
+      <li><strong>Best agentic execution:</strong> GPT-5.3-Codex — leads SWE-Pro and T-Bench.</li>
+      <li><strong>Best budget:</strong> DeepSeek V3.2 — 73.0% at $0.27/$1.10.</li>
+      <li><strong>Best open MoE:</strong> Qwen 3.5 Plus — 76.4% SWE-bench, 83.6 LiveCodeBench, $0.60/$3.60. 35B variant runs on single 4090.</li>
+      <li><strong>Open-source closing gap:</strong> 5 of 10 are open-weight; MiniMax M2.5 at #3 overall.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ════════════ REMOVED ════════════ -->
+<section id="removed">
+  <div class="container">
+    <h2>Removed Models</h2>
+    <div class="table-wrap">
+      <table class="removed-table">
+        <thead><tr><th>Model</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td>Claude Opus 4.5</td><td class="reason">Dupe — superseded by Opus 4.6 (same family, newer, cheaper)</td></tr>
+          <tr><td>GPT-5.4</td><td class="reason">Unreleased — only leaked in Codex PR materials (Mar 2026)</td></tr>
+          <tr><td>Grok 4</td><td class="reason">Released 2025_07_09 (&gt;6 months old)</td></tr>
+          <tr><td>Codestral 2508</td><td class="reason">Released Jul 2025 (&gt;6 months, FIM specialist)</td></tr>
+          <tr><td>Codestral Latest (2501)</td><td class="reason">Released Jan 2025 (&gt;12 months, FIM specialist)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ CAVEATS ════════════ -->
+<section id="caveats">
+  <div class="container">
+    <h2>Caveats</h2>
+    <div class="caveats">
+      SWE-bench scores are <strong>self-reported</strong> by providers and heavily <strong>scaffold-dependent</strong>.
+      Terminal-Bench 2.0 scores vary by agent framework.
+      Speed: approximate median throughput from OpenRouter / Artificial Analysis.
+      Pricing from official APIs as of March 2026; third-party providers often cheaper for open-weight.
+      GPT-5.3-Codex API pricing not yet public as of March 6, 2026.
+      Release dates approximate where exact day not confirmed.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">Last updated: March 6, 2026</div>
+</footer>
+
+<script>
+const M = [
+  { n:"Claude Opus 4.6", p:"Anthropic", r:"2026_02_05", sw:80.8, tb:74.7, sp:null, pi:5.00, po:25.00, spd:"~40", ctx:"200K", open:false, tier:1,
+    note:"#1 SWE-bench here (80.8%). T-Bench 74.7% (up from 65.4% Jan). Agent Teams, 1M ctx beta, 128K output. 3× cheaper than Opus 4.5." },
+  { n:"Gemini 3.1 Pro Preview", p:"Google", r:"2026_02_19", sw:80.6, tb:78.4, sp:null, pi:2.00, po:12.00, spd:"~110", ctx:"1M", open:false, tier:1,
+    note:"Best all-rounder. Leads T-Bench (78.4%), #2 SWE-bench (80.6%). Unmatched 1M context. $2/$12 — best frontier value + speed." },
+  { n:"MiniMax M2.5", p:"MiniMax", r:"2026_02_12", sw:80.2, tb:null, sp:null, pi:0.30, po:1.20, spd:"~60", ctx:"205K", open:true, tier:1,
+    note:"Top open-weight. 229B/10B MoE. 37% faster than M2.1. $0.30/$1.20 — 50× cheaper output than Sonnet 4.6 while scoring higher." },
+  { n:"GPT-5.3-Codex", p:"OpenAI", r:"2026_02_05", sw:80.0, tb:77.3, sp:56.8, pi:null, po:null, spd:"~70", ctx:"200K", open:false, tier:1,
+    note:"Leads SWE-Pro (56.8%), #2 T-Bench (77.3%). Merges coding+reasoning. First 'high capability' under Preparedness Framework. API pricing TBD." },
+  { n:"Claude Sonnet 4.6", p:"Anthropic", r:"2026_02_17", sw:79.6, tb:null, sp:null, pi:3.00, po:15.00, spd:"~90", ctx:"200K", open:false, tier:1,
+    note:"79.6% SWE-bench, 1.2pts behind Opus 4.6 at 5× cheaper ($3/$15). 1M ctx beta. Default in claude.ai. Best proprietary cost/perf." },
+  { n:"GLM-5", p:"Zhipu AI (Z.ai)", r:"2026_02_12", sw:77.8, tb:null, sp:null, pi:1.00, po:3.20, spd:"~40", ctx:"200K", open:true, tier:2,
+    note:"744B params, Huawei chips. Record-low hallucination (AA-Omniscience -1). First open model 50+ on AA Intelligence Index v4." },
+  { n:"Kimi K2.5", p:"Moonshot AI", r:"2026_01_27", sw:76.8, tb:null, sp:null, pi:0.60, po:3.00, spd:"~50", ctx:"262K", open:true, tier:2,
+    note:"1.04T/32B MoE. Native multimodal. Agent Swarm: 100 sub-agents, 1500 parallel tool calls. 96.1% AIME 2025. MIT license." },
+  { n:"Qwen 3.5 Plus", p:"Alibaba / Qwen", r:"2026_02_16", sw:76.4, tb:52.5, sp:null, pi:0.60, po:3.60, spd:"~70", ctx:"262K", open:true, tier:2,
+    note:"397B/17B MoE. Apache 2.0. 83.6 LiveCodeBench v6, 91.3% AIME 2026. 35B-A3B variant: 69.2% SWE-bench on single RTX 4090." },
+  { n:"DeepSeek V3.2", p:"DeepSeek", r:"2025_12_01", sw:73.0, tb:null, sp:null, pi:0.27, po:1.10, spd:"~80", ctx:"128K", open:true, tier:2,
+    note:"Best budget at $0.27/$1.10. Thinking-in-tool-use. V3.2-Speciale rivals Gemini 3 Pro on competition math. Smallest ctx here." },
+  { n:"Devstral 2 2512", p:"Mistral AI", r:"2025_12_09", sw:72.2, tb:22.5, sp:null, pi:0.40, po:2.00, spd:"~50", ctx:"262K", open:true, tier:2,
+    note:"123B open-weight. Weak T-Bench (22.5%). 7× cheaper output than Sonnet. 24B variant runs on single RTX 4090." },
+];
+
+function scoreColor(v) {
+  if (v >= 78) return 'var(--green)';
+  if (v >= 72) return 'var(--yellow)';
+  if (v >= 50) return 'var(--orange)';
+  return 'var(--red)';
+}
+
+function scoreCell(v, max) {
+  if (v == null) return '<span class="na">—</span>';
+  const pct = Math.min(v / (max || 85) * 100, 100);
+  const c = scoreColor(v);
+  return `<span class="score-cell">
+    <span class="bar-track"><span class="bar-fill" style="width:${pct}%;background:${c}"></span></span>
+    <span class="score-val" style="color:${c}">${v}%</span>
+  </span>`;
+}
+
+function priceCell(v) {
+  return v != null ? `$${v.toFixed(2)}` : 'TBD';
+}
+
+function modelCell(m) {
+  return `<span class="model-name">${m.n}</span>${m.open ? '<span class="tag-open">OPEN</span>' : ''}
+    <div class="model-provider">${m.p}</div>`;
+}
+
+// ── Benchmark table
+const bb = document.getElementById('bench-body');
+const byScore = [...M].sort((a, b) => (b.sw || 0) - (a.sw || 0));
+byScore.forEach((m, i) => {
+  bb.innerHTML += `<tr>
+    <td style="color:var(--text-mute);font-size:0.72rem">${i + 1}</td>
+    <td>${modelCell(m)}</td>
+    <td><span class="date">${m.r}</span></td>
+    <td>${scoreCell(m.sw, 85)}</td>
+    <td>${scoreCell(m.tb, 85)}</td>
+    <td>${scoreCell(m.sp, 60)}</td>
+  </tr>`;
+});
+
+// ── Pricing table (sorted by blended cost)
+function blended(m) {
+  if (m.pi == null) return 1e9;
+  return m.pi * 0.75 + m.po * 0.25;
+}
+const pb = document.getElementById('price-body');
+const byPrice = [...M].sort((a, b) => blended(a) - blended(b));
+byPrice.forEach((m, i) => {
+  const bl = m.pi != null ? `$${blended(m).toFixed(2)}` : 'TBD';
+  pb.innerHTML += `<tr>
+    <td style="color:var(--text-mute);font-size:0.72rem">${i + 1}</td>
+    <td>${modelCell(m)}</td>
+    <td><span class="date">${m.r}</span></td>
+    <td class="price"><span class="price-in">${priceCell(m.pi)}</span></td>
+    <td class="price"><span class="price-out">${priceCell(m.po)}</span></td>
+    <td class="price" style="color:var(--text)">${bl}</td>
+    <td style="font-family:var(--mono);font-size:0.74rem;color:var(--text-dim)">${m.spd} tok/s</td>
+    <td style="font-family:var(--mono);font-size:0.74rem;color:var(--text-dim)">${m.ctx}</td>
+  </tr>`;
+});
+
+// ── Note cards
+function renderCards(tier, containerId) {
+  const el = document.getElementById(containerId);
+  M.filter(m => m.tier === tier).forEach(m => {
+    const badge = tier === 1 ? 'tier-1' : 'tier-2';
+    el.innerHTML += `<div class="card">
+      <span class="tier-badge ${badge}">TIER ${tier}</span>
+      <h4>${m.n}${m.open ? ' <span class="tag-open">OPEN</span>' : ''}</h4>
+      <div class="card-date">${m.p} · ${m.r}</div>
+      <p>${m.note}</p>
+    </div>`;
+  });
+}
+renderCards(1, 'tier1-cards');
+renderCards(2, 'tier2-cards');
+</script>
+</body>
+</html>
