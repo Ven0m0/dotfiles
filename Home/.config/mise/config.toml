@@ -75,7 +75,7 @@ _.path = ['{{config_root}}/node_modules/.bin']
 _.python.venv = ".venv"
 _.python.venv = { path = "{{env.HOME}}/.venv", create = true, uv_create_args = ['--seed', '--system-site-packages'] }
 #_.java.GRAALVM_HOME = "${MISE_INSTALLS}/graalvm/${version}"
-NODE_ENV = 'production'
+NODE_ENV = "{{ env.NODE_ENV | default(value='production') }}"
 UV_LINK_MODE = "hardlink"
 PYTHONOPTIMIZE = "1"
 DO_NOT_TRACK = "1"
