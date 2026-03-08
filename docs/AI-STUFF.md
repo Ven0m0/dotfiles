@@ -11,7 +11,7 @@
 @gemini-code-assist review 
 ```
 ```text
-@copilot +gpt-5.3-codex
+@copilot
 ```
 ```text
 @copilot code review[agent]
