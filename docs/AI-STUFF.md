@@ -42,6 +42,13 @@
 
 ---
 ## Quick Tasks
+
+<details><summary><b>AGENTS.md/copilot-instructions.md</summary>
+
+```text
+update the AGENTS.md and .github/copilot-instructions.md file . Use the best practices for both files and think about how to optimize them. Use `rg` for file discovery.
+```
+</details>
 <details><summary><b>🔍 Audit</b> — Quality, security, correctness sweep</summary>
   
 ```text
