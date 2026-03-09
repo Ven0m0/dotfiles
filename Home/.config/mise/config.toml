@@ -39,6 +39,10 @@ compile = true
 
 # Tools Configuration
 [tools]
+"github:lucasgelfond/zerobrew" = "latest"
+action-validator = "latest"
+prek = "latest"
+jules = "latest"
 # "cargo:rimage" = { version = "latest", features = "build-binary", default-features = true }
 "cargo:image-optimizer" = "latest"
 "cargo:ffzap" = "latest"
@@ -61,13 +65,14 @@ rmz = "latest"
 #"npm:@adguard/dead-domains-linter" = "latest"
 #"npm:@adguard/hostlist-compiler" = "latest"
 "cargo:sy" = "latest"
-jules = "latest"
 "github:mattzcarey/zagi" = "latest"
 "github:sammcj/mcp-devtools" = "latest"
 "npm:@1mcp/agent" = "latest"
 "github:Musixal/Backhaul" = "latest"
-action-validator = "latest"
-prek = "latest"
+
+
+"github:MoonshotAI/kimi-cli" = "latest"
+"github:Kilo-Org/kilocode" = "latest"
 
 [env]
 _.file = { path = ".env", tools = true }
