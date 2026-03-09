@@ -7,7 +7,7 @@
 # Deployment:
 # • User configs: yadm bootstrap copies Home/ → ~/
 # • System configs: tuckr links etc/ → /etc and usr/ → /usr
-# • Run 'sudo tuckr link -d ~/.local/share/yadm/repo.git -t / etc usr'
+# • Run 'sudo tuckr link -d "$HOME" -t / etc usr'
 #
 [core]
  # Exclude files that shouldn't be tracked
@@ -29,9 +29,9 @@
   auto-private-dirs = true
   auto-perms = true
 [alias]
-  sync-pull = "!bash -c 'yadm-sync pull'"
-  sync-push = "!bash -c 'yadm-sync push'"
-  sync-status = "!bash -c 'yadm-sync status'"
+  sync-pull = "!bash -c 'yadm-sync.sh pull'"
+  sync-push = "!bash -c 'yadm-sync.sh push'"
+  sync-status = "!bash -c 'yadm-sync.sh status'"
   deploy = "!bash -c 'yadm bootstrap'"
   submod = "!bash -c 'yadm submodule update --recursive --init'"
 [push]

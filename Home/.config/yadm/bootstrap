@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
+# YADM bootstrap entry point — placed at .config/yadm/bootstrap so that
+# `yadm clone --bootstrap` can find and run it automatically.
+# yadm checks out this file to ~/.config/yadm/bootstrap (worktree = ~).
+# deploy_home() then rsyncs Home/.config/yadm/bootstrap → ~/.config/yadm/bootstrap,
+# keeping both copies in sync.  Keep this file identical to Home/.config/yadm/bootstrap.
 set -euo pipefail; shopt -s nullglob globstar
 export LC_ALL=C; IFS=$'\n\t'
 s=${BASH_SOURCE[0]}; [[ $s != /* ]] && s=$PWD/$s; cd -P -- "${s%/*}"

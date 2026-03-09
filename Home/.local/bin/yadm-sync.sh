@@ -7,6 +7,7 @@ IFS=$'\n\t'
 s=${BASH_SOURCE[0]}
 [[ $s != /* ]] && s=$PWD/$s
 cd -P -- "${s%/*}"
+readonly SCRIPT_DIR=$PWD
 has() { command -v -- "$1" &> /dev/null; }
 die() {
   printf '%b[ERROR]%b %s\n' '\e[1;31m' '\e[0m' "$*" >&2
@@ -17,25 +18,44 @@ log() { printf '%b[INFO]%b %s\n' '\e[1;34m' '\e[0m' "$*"; }
 ok() { printf '%b[OK]%b %s\n' '\e[1;32m' '\e[0m' "$*"; }
 readonly BLD=$'\e[1m' BLU=$'\e[34m' DEF=$'\e[0m'
 get_repo_dir() {
-  if yadm rev-parse --show-toplevel &> /dev/null; then
-    yadm rev-parse --show-toplevel
+  if command -v -- yadm &> /dev/null; then
+    if yadm rev-parse --show-toplevel &> /dev/null; then
+      yadm rev-parse --show-toplevel
+      return
+    fi
+  fi
+  if [[ -d "${HOME}/Home" ]]; then
+    printf '%s\n' "${HOME}"
     return
   fi
-  if [[ -d "${HOME}/.local/share/yadm/repo.git" ]]; then
-    echo "${HOME}/.local/share/yadm/repo.git"
-    return
+  if [[ $SCRIPT_DIR == */Home/.local/bin ]]; then
+    local repo_dir="${SCRIPT_DIR%/Home/.local/bin}"
+    if [[ -d "${repo_dir}/Home" ]]; then
+      printf '%s\n' "${repo_dir}"
+      return
+    fi
   fi
-  die "Cannot determine yadm repository location"
+  if command -v -- git &> /dev/null; then
+    local repo_dir
+    if git rev-parse --show-toplevel &> /dev/null; then
+      repo_dir="$(git rev-parse --show-toplevel)"
+      if [[ -d "${repo_dir}/Home" ]]; then
+        printf '%s\n' "${repo_dir}"
+        return
+      fi
+    fi
+  fi
+  die "Cannot determine yadm worktree location"
 }
 usage() {
   cat << EOF
-${BLD}yadm-sync${DEF} - Sync dotfiles between ~/ and repository
-${BLD}Usage:${DEF} yadm-sync <cmd> [opts]
+${BLD}yadm-sync.sh${DEF} - Sync dotfiles between ~/ and repository
+${BLD}Usage:${DEF} yadm-sync.sh <cmd> [opts]
 ${BLD}Commands:${DEF} pull(repo→~/) push(~/→repo) status diff
 ${BLD}Options:${DEF} -h,--help -n,--dry-run -v,--verbose
 ${BLD}Examples:${DEF}
-  yadm-sync pull              # Deploy dotfiles
-  yadm-sync push --dry-run    # Preview changes
+  yadm-sync.sh pull              # Deploy dotfiles
+  yadm-sync.sh push --dry-run    # Preview changes
 ${BLD}Note:${DEF} Manages Home/ subdirectory. System configs (etc/, usr/) use tuckr.
 EOF
 }
