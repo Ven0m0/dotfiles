@@ -90,41 +90,57 @@ deploy_configs() {
 
   if has stow; then
     info "Using stow for deployment"
+    local valid_pkgs=()
     for pkg in "${packages[@]}"; do
       local src="${repo_dir}/${pkg}"
-      [[ -d $src ]] || {
-        warn "Directory not found: $src"
-        continue
-      }
-
-      if [[ $unlink == true ]]; then
-        info "Unstowing ${pkg}/"
-        (cd "$repo_dir" && stow -t / -d . -D "$pkg") || warn "Failed to unstow $pkg"
+      if [[ -d $src ]]; then
+        valid_pkgs+=("$pkg")
       else
-        info "Stowing ${pkg}/ → / (stow)"
-        (cd "$repo_dir" && stow -t / -d . "$pkg") || warn "Failed to stow $pkg"
+        warn "Directory not found: $src"
       fi
     done
+
+    if ((${#valid_pkgs[@]} > 0)); then
+      local pkgs_str
+      printf -v pkgs_str '%s ' "${valid_pkgs[@]}"
+      pkgs_str="${pkgs_str% }"
+
+      if [[ $unlink == true ]]; then
+        info "Unstowing ${pkgs_str}"
+        (cd "$repo_dir" && stow -t / -d . -D "${valid_pkgs[@]}") || warn "Failed to unstow ${pkgs_str}"
+      else
+        info "Stowing ${pkgs_str} → / (stow)"
+        (cd "$repo_dir" && stow -t / -d . "${valid_pkgs[@]}") || warn "Failed to stow ${pkgs_str}"
+      fi
+    fi
   elif has tuckr; then
     info "Using tuckr for deployment (stow not available)"
     local hooks_file="${repo_dir}/hooks.toml"
+    local valid_pkgs=()
     for pkg in "${packages[@]}"; do
       local src="${repo_dir}/${pkg}"
-      [[ -d $src ]] || {
-        warn "Directory not found: $src"
-        continue
-      }
-
-      if [[ $unlink == true ]]; then
-        info "Unlinking ${pkg}/"
-        tuckr unlink -d "$repo_dir" -t / "$pkg" || warn "Failed to unlink $pkg"
+      if [[ -d $src ]]; then
+        valid_pkgs+=("$pkg")
       else
-        info "Linking ${pkg}/ → / (tuckr)"
-        local cmd=(tuckr link -d "$repo_dir" -t / "$pkg")
-        [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
-        "${cmd[@]}" || warn "Failed to link $pkg"
+        warn "Directory not found: $src"
       fi
     done
+
+    if ((${#valid_pkgs[@]} > 0)); then
+      local pkgs_str
+      printf -v pkgs_str '%s ' "${valid_pkgs[@]}"
+      pkgs_str="${pkgs_str% }"
+
+      if [[ $unlink == true ]]; then
+        info "Unlinking ${pkgs_str}"
+        tuckr unlink -d "$repo_dir" -t / "${valid_pkgs[@]}" || warn "Failed to unlink ${pkgs_str}"
+      else
+        info "Linking ${pkgs_str} → / (tuckr)"
+        local cmd=(tuckr link -d "$repo_dir" -t / "${valid_pkgs[@]}")
+        [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
+        "${cmd[@]}" || warn "Failed to link ${pkgs_str}"
+      fi
+    fi
   else
     die "Neither stow nor tuckr is installed. Install one of them:
   Arch: paru -S stow  OR  paru -S tuckr
