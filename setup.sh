@@ -187,22 +187,22 @@ link_system_configs() {
   local worktree
   worktree="$(yadm config core.worktree 2>/dev/null || printf '%s' "$HOME")"
   local hooks_file="${worktree}/hooks.toml"
-  if has tuckr; then
-    log "Linking system configs via tuckr..."
+  if has stow; then
+    log "Linking system configs via stow..."
+    for pkg in etc usr; do
+      [[ -d ${worktree}/${pkg} ]] || continue
+      (cd "$worktree" && sudo stow -t / -d . "$pkg") || warn "stow failed for $pkg"
+    done
+  elif has tuckr; then
+    log "stow not found, linking system configs via tuckr..."
     for pkg in etc usr; do
       [[ -d ${worktree}/${pkg} ]] || continue
       local cmd=(sudo tuckr link -d "$worktree" -t / "$pkg")
       [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
       "${cmd[@]}" || warn "tuckr failed for $pkg"
     done
-  elif has stow; then
-    log "Linking system configs via stow (fallback)..."
-    for pkg in etc usr; do
-      [[ -d ${worktree}/${pkg} ]] || continue
-      (cd "$worktree" && sudo stow -t / -d . "$pkg") || warn "stow failed for $pkg"
-    done
   else
-    warn "Neither tuckr nor stow found; skipping system config deployment"
+    warn "Neither stow nor tuckr found; skipping system config deployment"
   fi
 }
 
@@ -301,7 +301,7 @@ main() {
 
   setup_repos
   setup_git
-  install_pkgs       # pacman + AUR from pkg/*.txt — includes yadm, tuckr/stow, konsave
+  install_pkgs       # pacman + AUR from pkg/*.txt — includes yadm, stow, konsave
   setup_dotfiles     # yadm clone --bootstrap → triggers .config/yadm/bootstrap
   # These are no-ops if bootstrap already ran them, safe to call again as idempotent fallbacks:
   configure_shell

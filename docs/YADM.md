@@ -8,8 +8,8 @@ clean, hierarchical folder structure.
 ```
 dotfiles/
 ├── Home/           # User-level dotfiles (~/.*)  [Managed by yadm]
-├── etc/            # System configs (/etc/*)     [Managed by tuckr/stow]
-├── usr/            # System configs (/usr/*)     [Managed by tuckr/stow]
+├── etc/            # System configs (/etc/*)     [Managed by stow]
+├── usr/            # System configs (/usr/*)     [Managed by stow]
 ├── Home/.config/yadm/
 │   ├── bootstrap   # Managed bootstrap source copied into ~/.config/yadm/bootstrap
 │   ├── config      # Repository-wide yadm config
@@ -24,10 +24,10 @@ After checkout into `$HOME`, yadm executes `~/.config/yadm/bootstrap` as the boo
 
 - **Separation of concerns**: User configs vs. system configs
 - **Easy to understand**: Mirrors Linux filesystem structure
-- **Flexible deployment**: yadm for user files, tuckr/stow for system files
+- **Flexible deployment**: yadm for user files, stow for system files
 - **Git-friendly**: Clean repository with minimal clutter
 - **Portable**: Works across different systems
-- **Fallback support**: Automatically uses stow if tuckr is unavailable
+- **Fallback support**: Can still fall back to tuckr if stow is unavailable
 
 ---
 
@@ -177,7 +177,7 @@ yadm push
 
 ### Update System Configs (etc/, usr/)
 
-System configs are managed separately with **tuckr** (or **stow** as fallback):
+System configs are managed separately with **stow**:
 
 ```bash
 # Navigate to repository
@@ -192,13 +192,10 @@ git commit -m "Update pacman configuration"
 git push
 
 # Re-link system configs (creates symlinks)
-# Option 1: Using tuckr (preferred)
-sudo tuckr link -d $(yadm rev-parse --show-toplevel) -t / etc usr
-
-# Option 2: Using stow (fallback)
+# Option 1: Using stow (preferred)
 cd $(yadm rev-parse --show-toplevel) && sudo stow -t / etc usr
 
-# Option 3: Using helper script (auto-detects tuckr/stow)
+# Option 2: Using helper script
 sudo deploy-system-configs.sh
 ```
 
@@ -249,7 +246,7 @@ When you run `yadm bootstrap`, yadm executes `~/.config/yadm/bootstrap`. In this
    └─> Add zoxide integration
 
 4. Deploys system configs (with sudo)
-   └─> tuckr/stow link etc/ usr/ → /
+   └─> stow link etc/ usr/ → /
 
 5. Applies optional KDE settings
    └─> konsave import/apply main.knsv
@@ -269,20 +266,16 @@ Unlike traditional yadm setups where dotfiles are at the repository root, this r
 
 The `~/.config/yadm/bootstrap` script handles this deployment automatically using rsync.
 
-### System Configs with Tuckr or Stow
+### System Configs with Stow
 
-System-level configs (`/etc`, `/usr`) require root permissions and are managed with **tuckr** or **stow**:
+System-level configs (`/etc`, `/usr`) require root permissions and are managed with **stow**:
 
 ```bash
-# Using tuckr (preferred - supports hooks)
-sudo tuckr link -d /path/to/repo -t / etc
-# Creates: /etc/pacman.conf → /path/to/repo/etc/pacman.conf
-
-# Using stow (fallback - widely available)
+# Using stow (preferred)
 cd /path/to/repo && sudo stow -t / etc
 # Creates: /etc/pacman.conf → /path/to/repo/etc/pacman.conf
 
-# Using helper script (auto-detects best tool)
+# Using helper script
 sudo deploy-system-configs.sh etc usr
 ```
 
@@ -391,23 +384,17 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 ### System configs not applying
 
 ```bash
-# Option 1: Install tuckr (preferred)
-paru -S tuckr  # Arch/AUR
-
-# Option 2: Install stow (fallback, widely available)
+# Install stow
 paru -S stow       # Arch
 sudo apt install stow  # Debian/Ubuntu
 
-# Re-link system configs with sudo
+# Re-link system configs
 cd $(yadm rev-parse --show-toplevel)
 
-# Using tuckr:
-sudo tuckr link -d "$PWD" -t / etc usr
-
-# OR using stow:
+# Using stow:
 sudo stow -t / etc usr
 
-# OR using helper script (auto-detects):
+# OR using helper script:
 sudo deploy-system-configs.sh
 ```
 
@@ -418,7 +405,7 @@ sudo deploy-system-configs.sh
 - **yadm Documentation**: [https://yadm.io/docs](https://yadm.io/docs)
 - **yadm Alternate Files**: [https://yadm.io/docs/alternates](https://yadm.io/docs/alternates)
 - **yadm Encryption**: [https://yadm.io/docs/encryption](https://yadm.io/docs/encryption)
-- **tuckr Documentation**: [https://github.com/RaphGL/tuckr](https://github.com/RaphGL/tuckr)
+- **GNU Stow Manual**: [https://www.gnu.org/software/stow/manual/](https://www.gnu.org/software/stow/manual/)
 
 ---
 

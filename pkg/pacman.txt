@@ -439,7 +439,7 @@ ttf-jetbrains-mono-nerd
 ttf-liberation
 ttf-meslo-nerd
 ttf-opensans
-tuckr
+stow
 typescript-language-server
 ubuntu-keyring
 ufw
