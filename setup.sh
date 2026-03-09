@@ -252,7 +252,7 @@ setup_flatpak() {
 setup_services() {
   log "Enabling services..."
   local svcs=(NetworkManager bluetooth sshd)
-  for s in "${svcs[@]}"; do try sudo systemctl enable --now "$s"; done
+  try sudo systemctl enable --now "${svcs[@]}"
 }
 
 fix_permissions() {
