@@ -165,6 +165,14 @@ concat_files() {
   local base="$1" out="$2" rx="$5"
   local -n exts="$3" wlist="$4"
   : > "$out"
+
+  local -a name_args=()
+  for ext in "${exts[@]}"; do
+    ((${#name_args[@]} > 0)) && name_args+=("-o")
+    name_args+=("-name" "*.$ext")
+  done
+  ((${#name_args[@]} == 0)) && return 0
+
   for dirpath in "$base"/*/; do
     dirpath="${dirpath%/}"
     local dname="${dirpath##*/}"
@@ -180,17 +188,17 @@ concat_files() {
       ((found == 0)) && continue
     fi
     [[ -n $rx && ! $dirpath =~ $rx ]] && continue
+
     clog "Concat: $dname"
     local -a excl_args=()
     [[ -f $dirpath/__EXCLUDE_FILES ]] && while IFS= read -r xf; do
       [[ -n $xf ]] && excl_args+=("!" "-path" "$xf")
     done < "$dirpath/__EXCLUDE_FILES"
-    for ext in "${exts[@]}"; do
-      find "$dirpath" -type f "${excl_args[@]}" \
-        ! -path "*__*" ! -path "*_PLACEHOLDER*" \
-        -name "*.$ext" -print0 2> /dev/null \
-        | xargs -0 -r cat -- >> "$out"
-    done
+
+    find "$dirpath" -type f "${excl_args[@]}" \
+      ! -path "*__*" ! -path "*_PLACEHOLDER*" \
+      \( "${name_args[@]}" \) -print0 2> /dev/null \
+      | xargs -0 -r cat -- >> "$out"
   done
 }
 
