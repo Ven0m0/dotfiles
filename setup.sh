@@ -226,8 +226,12 @@ setup_am() {
     return 0
   fi
   log "Installing AM (appman)..."
-  curl -fsSL "https://raw.githubusercontent.com/ivan-hc/AM/main/INSTALL" \
-    | AGREE=y bash >/dev/null
+  local install_script
+  install_script=$(mktemp "${WORKDIR}/am-install.XXXXXX")
+  curl -fsSL "https://raw.githubusercontent.com/ivan-hc/AM/main/INSTALL" -o "$install_script" || \
+    die "Failed to download AM installation script"
+  AGREE=y bash "$install_script" >/dev/null
+  rm -f "$install_script"
   has am || die "AM installation failed"
   log "Installing AM apps..."
   # Add your apps here, e.g.:
