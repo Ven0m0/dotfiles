@@ -10,14 +10,15 @@ dotfiles/
 ├── Home/           # User-level dotfiles (~/.*)  [Managed by yadm]
 ├── etc/            # System configs (/etc/*)     [Managed by tuckr/stow]
 ├── usr/            # System configs (/usr/*)     [Managed by tuckr/stow]
-├── .config/yadm/   # yadm bootstrap entrypoint checked out into $HOME
-│   └── bootstrap   # Main bootstrap script executed by `yadm bootstrap`
 ├── Home/.config/yadm/
-│   ├── bootstrap   # Managed copy kept in sync with ~/.config/yadm/bootstrap
+│   ├── bootstrap   # Managed bootstrap source copied into ~/.config/yadm/bootstrap
 │   ├── config      # Repository-wide yadm config
 │   └── encrypt     # Encryption patterns used by `yadm encrypt`
 └── setup.sh        # One-command full system setup
 ```
+
+After checkout into `$HOME`, yadm executes `~/.config/yadm/bootstrap` as the bootstrap entrypoint. This repository keeps
+`Home/.config/yadm/bootstrap` as the managed source copy and mirrors it into place during deployment.
 
 ### Why This Structure?
 
@@ -328,10 +329,10 @@ yadm decrypt
 Add additional bootstrapping for specific applications:
 
 ```bash
-# This repository already ships the bootstrap entrypoint at ~/.config/yadm/bootstrap
-# and keeps Home/.config/yadm/bootstrap as the managed source copy.
+# This repository keeps Home/.config/yadm/bootstrap as the managed source copy
+# and mirrors it to ~/.config/yadm/bootstrap during deployment.
 # Keep both files identical if you edit the bootstrap logic.
-${EDITOR-nano} .config/yadm/bootstrap
+${EDITOR-nano} Home/.config/yadm/bootstrap
 ```
 
 ### Useful Aliases

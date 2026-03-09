@@ -7,7 +7,7 @@
 # Deployment:
 # • User configs: yadm bootstrap copies Home/ → ~/
 # • System configs: tuckr links etc/ → /etc and usr/ → /usr
-# • Run 'sudo tuckr link -d "$HOME" -t / etc usr'
+# • Run 'sudo tuckr link -d "$(yadm rev-parse --show-toplevel)" -t / etc usr'
 #
 [core]
  # Exclude files that shouldn't be tracked
