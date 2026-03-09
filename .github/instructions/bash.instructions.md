@@ -1,3 +1,8 @@
+---
+description: 'Bash/Shell scripting standards: safety, performance, modern idioms'
+applyTo: '**/*.sh,**/*.bash,**/*.zsh'
+---
+
 # Bash Development Standards
 
 **Purpose:** Detailed bash coding standards for GitHub Copilot
