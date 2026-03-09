@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/yamlfmt.json
 continue_on_error: true
 use_editorconfig: true
 doublestar: false
