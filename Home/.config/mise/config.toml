@@ -70,7 +70,6 @@ rmz = "latest"
 "npm:@1mcp/agent" = "latest"
 "github:Musixal/Backhaul" = "latest"
 
-
 "github:MoonshotAI/kimi-cli" = "latest"
 "github:Kilo-Org/kilocode" = "latest"
 
