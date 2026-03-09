@@ -72,6 +72,7 @@ rmz = "latest"
 
 "github:MoonshotAI/kimi-cli" = "latest"
 "github:Kilo-Org/kilocode" = "latest"
+"npm:@termly-dev/cli" = "latest"
 
 [env]
 _.file = { path = ".env", tools = true }
