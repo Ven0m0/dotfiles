@@ -11,7 +11,7 @@ tab_width = 2
 max_line_length = 120
 quote_type = double
 spelling_language = en
-shell_variant = auto
+shell_variant = bash
 curly_bracket_next_line = false
 spaces_around_operators = true
 

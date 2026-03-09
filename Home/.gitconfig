@@ -134,7 +134,7 @@
   followRedirects = true
   maxRequests = 10
 [transfer]
-  fsckObjects = true
+  fsckObjects = false
 [help]
   autoCorrect = prompt
 [delta]
