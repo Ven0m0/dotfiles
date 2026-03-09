@@ -7,8 +7,8 @@
 #   yadm decrypt      - Decrypt the archive
 #   yadm list -a      - List all tracked files including encrypted ones
 #
-# Note: You must have GPG configured with a key before using encryption
-# Setup: gpg --full-generate-key
+# Note: yadm uses symmetric GPG encryption by default, so a passphrase is enough.
+# Optional: configure yadm.gpg-recipient if you want asymmetric encryption instead.
 
 # SSH Keys
 .ssh/id_*

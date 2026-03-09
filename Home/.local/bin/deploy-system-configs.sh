@@ -27,7 +27,7 @@ get_repo_dir() {
 
 usage() {
   cat << 'EOF'
-deploy-system-configs - Deploy system configs using tuckr or stow
+deploy-system-configs - Deploy system configs using stow or tuckr
 
 Usage: deploy-system-configs [OPTIONS] [PACKAGES...]
 
@@ -41,7 +41,7 @@ Packages:
   usr            Deploy /usr configs
   (default: etc usr)
 
-This script automatically uses tuckr if available, otherwise falls back to stow.
+This script automatically uses stow if available, otherwise falls back to tuckr.
 
 Examples:
   sudo deploy-system-configs           # Deploy both etc and usr
@@ -88,8 +88,25 @@ deploy_configs() {
   shift 2
   local packages=("$@")
 
-  if has tuckr; then
-    info "Using tuckr for deployment"
+  if has stow; then
+    info "Using stow for deployment"
+    for pkg in "${packages[@]}"; do
+      local src="${repo_dir}/${pkg}"
+      [[ -d $src ]] || {
+        warn "Directory not found: $src"
+        continue
+      }
+
+      if [[ $unlink == true ]]; then
+        info "Unstowing ${pkg}/"
+        (cd "$repo_dir" && stow -t / -d . -D "$pkg") || warn "Failed to unstow $pkg"
+      else
+        info "Stowing ${pkg}/ → / (stow)"
+        (cd "$repo_dir" && stow -t / -d . "$pkg") || warn "Failed to stow $pkg"
+      fi
+    done
+  elif has tuckr; then
+    info "Using tuckr for deployment (stow not available)"
     local hooks_file="${repo_dir}/hooks.toml"
     for pkg in "${packages[@]}"; do
       local src="${repo_dir}/${pkg}"
@@ -108,26 +125,9 @@ deploy_configs() {
         "${cmd[@]}" || warn "Failed to link $pkg"
       fi
     done
-  elif has stow; then
-    info "Using stow for deployment (tuckr not available)"
-    for pkg in "${packages[@]}"; do
-      local src="${repo_dir}/${pkg}"
-      [[ -d $src ]] || {
-        warn "Directory not found: $src"
-        continue
-      }
-
-      if [[ $unlink == true ]]; then
-        info "Unstowing ${pkg}/"
-        (cd "$repo_dir" && stow -t / -d . -D "$pkg") || warn "Failed to unstow $pkg"
-      else
-        info "Stowing ${pkg}/ → / (stow)"
-        (cd "$repo_dir" && stow -t / -d . "$pkg") || warn "Failed to stow $pkg"
-      fi
-    done
   else
-    die "Neither tuckr nor stow is installed. Install one of them:
-  Arch: paru -S tuckr  OR  paru -S stow
+    die "Neither stow nor tuckr is installed. Install one of them:
+  Arch: paru -S stow  OR  paru -S tuckr
   Debian: apt install stow"
   fi
 }
