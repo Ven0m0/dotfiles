@@ -1,18 +1,15 @@
-#!/bin/bash
-# xsudo - run graphical applications with root privileges
+#!/usr/bin/env bash
+set -euo pipefail
 
-if [[ -z $1 ]]; then
-  echo "at least 1 argument required!" >>/dev/stderr; exit 1
-fi
-COMMAND=$1
-shift #shift first arg
-for ARG in "$@"; do
-  if [ -z "$ARGS" ]; then
-    ARGS="$ARG"
-  else
-    ARGS="$ARGS $ARG"
-  fi
-done
-ARGS=\'$ARGS\'
-eval pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $COMMAND $ARGS
-exit 0
+has() { command -v -- "$1" &>/dev/null; }
+die() { printf '\e[31mERROR: %s\e[0m\n' "$*" >&2; exit 1; }
+
+[[ $# -eq 0 ]] && die "At least 1 argument required!"
+
+has pkexec || die "pkexec is required but not installed."
+
+# Use pkexec to run the command with graphical environment variables preserved
+pkexec env \
+  DISPLAY="${DISPLAY:-}" \
+  XAUTHORITY="${XAUTHORITY:-}" \
+  "$@"
