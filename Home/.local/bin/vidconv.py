@@ -216,10 +216,12 @@ def has(cmd: str) -> bool:
 def find_files_fd(root: Path, exts: frozenset[str]) -> Iterator[Path]:
     if not has("fd"):
         return
-    cmd = (
-        ["fd", "--type", "f"]
-        + [x for e in exts for x in ["-e", e.lstrip(".")]]
-        + [".", str(root)]
+    cmd = list(
+        itertools.chain(
+            ["fd", "--type", "f"],
+            (x for e in exts for x in ["-e", e.lstrip(".")]),
+            [".", str(root)],
+        )
     )
     try:
         with subprocess.Popen(
