@@ -1,3 +1,4 @@
+$schema: "https://raw.githubusercontent.com/evilmartians/lefthook/master/schema.json"
 assert_lefthook_installed: true
 skip_lfs: true
 skip_output: [meta, execution]
@@ -59,13 +60,13 @@ pre-commit:
     biome:
       priority: 5
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
-      run: bunx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      run: bunx @biomejs/biome@latest check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
       stage_fixed: true
       fail_text: "Biome failed"
     markdown-lint:
       priority: 6
       glob: "*.{md,markdown}"
-      run: bunx markdownlint-cli2 --fix {staged_files}
+      run: bunx markdownlint-cli2@latest --fix {staged_files}
       stage_fixed: true
       fail_text: "Markdown lint failed"
     normalize:

@@ -1,14 +1,15 @@
 7zip
 accountsservice
+actionlint
 adaptivemm
 adriconf
 alacritty
 alsa-firmware
 alsa-plugins
 alsa-utils
+appimagepool-appimage
 appmenu-glib-translator
 appmenu-gtk-module
-appimagepool-appimage
 appstream-glib
 aria2
 aria2p
@@ -224,6 +225,7 @@ libwebp-utils
 libwnck3
 limine
 limine-mkinitcpio-hook
+linutil-bin
 linux-cachyos
 linux-cachyos-headers
 linux-cachyos-lts
@@ -231,7 +233,6 @@ linux-cachyos-lts-headers
 linux-cachyos-lts-nvidia-open
 linux-cachyos-nvidia-open
 linux-firmware
-linutil-bin
 linuxtoys-bin
 logrotate
 lrzip
@@ -404,7 +405,9 @@ sccache
 sddm
 sddm-kcm
 sg3_utils
+shellcheck
 shellharden
+shfmt
 skim
 smartmontools
 soar-bin

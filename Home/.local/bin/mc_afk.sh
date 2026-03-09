@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck enable=all shell=bash source-path=SCRIPTDIR external-sources=true
+# shellcheck enable=all shell=bash source-path=SCRIPTDIR
 set -euo pipefail
 shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C
@@ -147,14 +147,14 @@ case "$cmd" in
   fish-start) start_fish ;;
   fish-stop) stop_fish ;;
   fish-toggle)
-    local pid=""
+    pid=""
     [[ -f $PID_FISH ]] && pid=$(< "$PID_FISH")
     is_running "${pid}" && stop_fish || start_fish
     ;;
   eat-start) start_eat ;;
   eat-stop) stop_eat ;;
   eat-toggle)
-    local pid=""
+    pid=""
     [[ -f $PID_EAT ]] && pid=$(< "$PID_EAT")
     is_running "${pid}" && stop_eat || start_eat
     ;;
