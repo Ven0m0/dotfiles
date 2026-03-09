@@ -169,8 +169,8 @@ sync_diff() {
     local rel_path="${file#"${home_dir}"/}"
     local source_file="${HOME}/${rel_path}"
     if [[ -f $source_file && -f $file ]]; then
-      # Quick size/time check before spawning diff
-      if [[ ! $source_file -ef $file ]] && { [[ $(stat -c%s "$source_file") -ne $(stat -c%s "$file") ]] || ! diff -q "$source_file" "$file" &> /dev/null; }; then
+      # Quick binary check before spawning diff
+      if [[ ! $source_file -ef $file ]] && ! cmp -s "$source_file" "$file"; then
         printf '\n%b%bDifferences in:%b %s\n%b━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%b\n' "$BLD" "$BLU" "$DEF" "$rel_path" "$BLD" "$DEF"
         diff -u --color=always "$file" "$source_file" 2> /dev/null || :
       fi
