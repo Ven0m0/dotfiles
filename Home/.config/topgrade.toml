@@ -5,18 +5,8 @@
 [misc]
 pre_sudo = true
 disable = ["system", "config_update", "vim"]
-ignore_failures = [
-  "system",
-  "micro",
-  "uv",
-  "pipx",
-  "shell",
-  "yazi",
-  "bun",
-  "mise",
-  "yadm",
-  "node",
-]
+ignore_failures = ["system", "micro", "uv", "pipx",
+  "shell", "yazi", "bun", "mise", "yadm", "node"]
 assume_yes = true
 no_retry = true
 cleanup = true
@@ -33,7 +23,7 @@ run_in_tmux = true
 "paru_clean" = "paru -Scc --noconfirm; sudo paccache -rk0; paru -c --noconfirm; am -c"
 "mise_clear" = "mise cache c -y"
 "bun_clear" = "bun pm cache rm"
-"uv_clear" = "uv clean"
+"uv_clear" = "uv clean --force"
 "cargo_cache" = "cargo cache -efg"
 
 [brew]
