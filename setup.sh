@@ -20,6 +20,18 @@ log() { printf '%b\n' "${GRN}[+]${DEF} $*"; }
 warn() { printf '%b\n' "${YLW}[!]${DEF} $*"; }
 err() { printf '%b\n' "${RED}[!]${DEF} $*" >&2; }
 die() { err "$*"; exit "${2:-1}"; }
+run_url() {
+  local url="$1"
+  shift
+  [[ $url =~ ^https:// ]] || die "Security: URL must be HTTPS: $url"
+  local name="${url##*/}"
+  [[ $name =~ ^[[:alnum:]._-]+$ ]] || die "Invalid installer filename from URL: $url"
+  local tmp="$WORKDIR/$name"
+  curl --proto '=https' --tlsv1.3 -fsSL --retry 3 --retry-delay 2 "$url" -o "$tmp" \
+    || die "Failed to download $url"
+  [[ -s $tmp ]] || die "Downloaded installer is empty: $url"
+  bash "$tmp" "$@"
+}
 
 WORKDIR=$(mktemp -d)
 cleanup() { set +e; rm -rf "${WORKDIR:-}"; }
@@ -43,7 +55,7 @@ fetch_pkgfile() {
   local path="pkg/${name}.txt"
 
   if [[ -n $SCRIPT_DIR && -f "$SCRIPT_DIR/$path" ]]; then
-    cat "$SCRIPT_DIR/$path"
+    printf '%s' "$(<"$SCRIPT_DIR/$path")"
   elif [[ -n $REPO_RAW ]]; then
     if [[ ! $REPO_RAW =~ ^https:// ]]; then
       die "Security: REPO_RAW must be an HTTPS URL."
@@ -187,22 +199,22 @@ link_system_configs() {
   local worktree
   worktree="$(yadm config core.worktree 2>/dev/null || printf '%s' "$HOME")"
   local hooks_file="${worktree}/hooks.toml"
-  if has stow; then
-    log "Linking system configs via stow..."
-    for pkg in etc usr; do
-      [[ -d ${worktree}/${pkg} ]] || continue
-      (cd "$worktree" && sudo stow -t / -d . "$pkg") || warn "stow failed for $pkg"
-    done
-  elif has tuckr; then
-    log "stow not found, linking system configs via tuckr..."
+  if has tuckr; then
+    log "Linking system configs via tuckr..."
     for pkg in etc usr; do
       [[ -d ${worktree}/${pkg} ]] || continue
       local cmd=(sudo tuckr link -d "$worktree" -t / "$pkg")
       [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
       "${cmd[@]}" || warn "tuckr failed for $pkg"
     done
+  elif has stow; then
+    log "tuckr not found, linking system configs via stow..."
+    for pkg in etc usr; do
+      [[ -d ${worktree}/${pkg} ]] || continue
+      (cd "$worktree" && sudo stow -t / -d . "$pkg") || warn "stow failed for $pkg"
+    done
   else
-    warn "Neither stow nor tuckr found; skipping system config deployment"
+    warn "Neither tuckr nor stow found; skipping system config deployment"
   fi
 }
 
@@ -234,8 +246,21 @@ setup_am() {
   rm -f "$install_script"
   has am || die "AM installation failed"
   log "Installing AM apps..."
-  # Add your apps here, e.g.:
-  # am -i am-gui nix-portable
+  local -a am_apps
+  mapfile -t am_apps < <(load_pkgs am)
+  if (( ${#am_apps[@]} > 0 )); then
+    am -i "${am_apps[@]}" || warn "Some AM apps failed"
+  fi
+}
+
+install_zerobrew() {
+  if has zb; then
+    log "zerobrew already installed, skipping"
+    return 0
+  fi
+  log "Installing zerobrew..."
+  has curl || sudo pacman -S --needed --noconfirm curl
+  run_url "https://zerobrew.rs/install" --no-modify-path
 }
 
 setup_rust() {
@@ -305,7 +330,7 @@ main() {
 
   setup_repos
   setup_git
-  install_pkgs       # pacman + AUR from pkg/*.txt — includes yadm, stow, konsave
+  install_pkgs       # pacman + AUR from pkg/*.txt — includes yadm, tuckr, stow, konsave
   setup_dotfiles     # yadm clone --bootstrap → triggers .config/yadm/bootstrap
   # These are no-ops if bootstrap already ran them, safe to call again as idempotent fallbacks:
   configure_shell
@@ -313,6 +338,7 @@ main() {
   apply_konsave_profile
   install_bun_pkgs
   install_uv_pkgs
+  install_zerobrew
   setup_rust
   setup_am
   setup_flatpak
