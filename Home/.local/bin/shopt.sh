@@ -286,7 +286,19 @@ elif ((concat)); then
   concat_files "$target" "$output" extensions whitelist "$regex"
   clog "✓ $output"
 else
+  declare -a out_files=()
   for f in "${files[@]}"; do
     optimize "$f"
+
+    # Collect the output target path
+    out_target="$f"
+    [[ -n $output ]] && {
+      [[ $output == - ]] && out_target="" || out_target="$output"
+    }
+    [[ -n $out_target ]] && out_files+=("$(realpath "$out_target")")
   done
+
+  if ((${#out_files[@]} > 0)); then
+    shellcheck -a -x -s bash -f diff "${out_files[@]}" 2>/dev/null | patch -p1 -d / &>/dev/null || :
+  fi
 fi
