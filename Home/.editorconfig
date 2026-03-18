@@ -24,11 +24,12 @@ spaces_around_operators = true
 spaces_around_brackets = false
 binary_next_line = true
 switch_case_indent = true
-keep_padding = false
+keep_padding = true
 space_redirects = false
 function_next_line = false
 simplify = true
 minify = true
+never_split = true
 
 # Fish
 [**/*.fish]
