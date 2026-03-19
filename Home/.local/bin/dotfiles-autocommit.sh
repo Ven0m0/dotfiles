@@ -19,15 +19,19 @@ get_repo_dir() {
     yadm rev-parse --show-toplevel
     return
   fi
-  # Fall back: yadm-sync.sh lives in <repo>/Home/.local/bin after deployment
-  # so walk up from its deploy location ~/.local/bin and check parent trees
+  # Fall back: this script lives in <repo>/Home/.local/bin after deployment.
+  # Walk up from its deploy location (e.g., ~/.local/bin) and check parent trees
   if command -v git &>/dev/null; then
-    local d
-    d="$(git -C "$(dirname -- "${BASH_SOURCE[0]}")" rev-parse --show-toplevel 2>/dev/null)" || true
-    if [[ -n $d && -d $d/Home ]]; then
-      printf '%s\n' "$d"
-      return
-    fi
+    local script_dir candidate d
+    script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+    for candidate in "$script_dir" "$script_dir/.." "$script_dir/../.." "$script_dir/../../.."; do
+      if d="$(git -C "$candidate" rev-parse --show-toplevel 2>/dev/null)"; then
+        if [[ -n $d && -d $d/Home ]]; then
+          printf '%s\n' "$d"
+          return
+        fi
+      fi
+    done
   fi
   printf '%s\n' ""
 }
