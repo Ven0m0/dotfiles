@@ -163,11 +163,15 @@ setup_dotfiles() {
   has yadm || { warn "yadm not found, skipping dotfiles"; return 0; }
   if [[ ! -d $YADM_DIR ]]; then
     log "Cloning dotfiles via yadm..."
-    # --bootstrap triggers .config/yadm/bootstrap automatically
-    yadm clone --bootstrap "$DOTFILES_REPO" || die "yadm clone failed"
+    # -b main: explicit branch avoids mismatch with GitHub default
+    # -f: force overwrite any conflicting files already on disk
+    # --bootstrap: run ~/.config/yadm/bootstrap after checkout
+    yadm clone -b main -f --bootstrap "$DOTFILES_REPO" || die "yadm clone failed"
   else
     log "Dotfiles already cloned, pulling..."
     yadm pull || warn "yadm pull failed"
+    # Ensure bootstrap is executable before running (yadm requires it)
+    chmod +x "${HOME}/.config/yadm/bootstrap" 2>/dev/null || true
     yadm bootstrap || warn "yadm bootstrap failed"
   fi
 }
@@ -196,26 +200,14 @@ configure_shell() {
 }
 
 link_system_configs() {
+  has stow || { warn "stow not found; skipping system config deployment"; return 0; }
   local worktree
   worktree="$(yadm config core.worktree 2>/dev/null || printf '%s' "$HOME")"
-  local hooks_file="${worktree}/hooks.toml"
-  if has tuckr; then
-    log "Linking system configs via tuckr..."
-    for pkg in etc usr; do
-      [[ -d ${worktree}/${pkg} ]] || continue
-      local cmd=(sudo tuckr link -d "$worktree" -t / "$pkg")
-      [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
-      "${cmd[@]}" || warn "tuckr failed for $pkg"
-    done
-  elif has stow; then
-    log "tuckr not found, linking system configs via stow..."
-    for pkg in etc usr; do
-      [[ -d ${worktree}/${pkg} ]] || continue
-      (cd "$worktree" && sudo stow -t / -d . "$pkg") || warn "stow failed for $pkg"
-    done
-  else
-    warn "Neither tuckr nor stow found; skipping system config deployment"
-  fi
+  log "Linking system configs via stow..."
+  for pkg in etc usr; do
+    [[ -d ${worktree}/${pkg} ]] || continue
+    (cd "$worktree" && sudo stow -t / -d . "$pkg") || warn "stow failed for $pkg"
+  done
 }
 
 apply_konsave_profile() {
@@ -330,9 +322,10 @@ main() {
 
   setup_repos
   setup_git
-  install_pkgs       # pacman + AUR from pkg/*.txt — includes yadm, tuckr, stow, konsave
+  install_pkgs       # pacman + AUR from pkg/*.txt — includes yadm, stow, konsave
   setup_dotfiles     # yadm clone --bootstrap → triggers .config/yadm/bootstrap
   # These are no-ops if bootstrap already ran them, safe to call again as idempotent fallbacks:
+  deploy_home        # rsync ~/Home/ → ~/ (no-op if bootstrap already did it)
   configure_shell
   link_system_configs
   apply_konsave_profile
