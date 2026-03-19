@@ -1,0 +1,19 @@
+[Unit]
+Description=Commit dotfiles snapshot before shutdown/reboot
+# Run before user session is torn down
+DefaultDependencies=no
+Before=shutdown.target reboot.target halt.target poweroff.target
+
+[Service]
+Type=oneshot
+# RemainAfterExit + ExecStop is the reliable shutdown-hook pattern:
+# systemd starts the service immediately (no-op ExecStart), then
+# runs ExecStop when it tears down the unit during shutdown.
+RemainAfterExit=true
+ExecStart=/bin/true
+ExecStop=%h/.local/bin/dotfiles-autocommit.sh pre-shutdown
+# Cap how long we'll wait so shutdown is never blocked
+TimeoutStopSec=45
+
+[Install]
+WantedBy=default.target

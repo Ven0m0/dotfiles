@@ -1,0 +1,16 @@
+[Unit]
+Description=Commit dotfiles snapshot after successful boot
+# This is the bootloop-safety net: every clean boot = a committed snapshot.
+# If the system enters a bootloop, the last committed state is always preserved.
+After=network-online.target graphical-session.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Wait for session to settle before committing (credential helpers, mounts, etc.)
+ExecStartPre=/usr/bin/sleep 60
+ExecStart=%h/.local/bin/dotfiles-autocommit.sh post-boot
+SuccessExitStatus=0 1
+
+[Install]
+WantedBy=default.target

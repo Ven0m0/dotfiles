@@ -1,0 +1,9 @@
+[Unit]
+Description=Auto-commit and push dotfiles snapshot
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/dotfiles-autocommit.sh periodic
+# Don't fail the timer if script exits non-zero
+SuccessExitStatus=0 1

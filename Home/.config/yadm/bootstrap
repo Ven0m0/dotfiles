@@ -116,6 +116,21 @@ apply_konsave_profile(){
     konsave -a "$profile_name" || { warn "Failed to apply Konsave profile: $profile_name"; return 0; }
   fi
 }
+enable_autocommit_services(){
+  info "Enabling dotfiles auto-commit systemd units..."
+  local bin="${HOME}/.local/bin/dotfiles-autocommit.sh"
+  [[ -f $bin ]] && chmod +x "$bin" || { warn "dotfiles-autocommit.sh not found; skipping."; return 0; }
+  if ! systemctl --user daemon-reload 2>/dev/null; then
+    warn "systemctl daemon-reload failed (no user session?); skipping auto-commit setup."
+    return 0
+  fi
+  systemctl --user enable --now dotfiles-autocommit.timer 2>/dev/null \
+    || warn "Failed to enable dotfiles-autocommit.timer"
+  systemctl --user enable dotfiles-shutdown.service 2>/dev/null \
+    || warn "Failed to enable dotfiles-shutdown.service"
+  systemctl --user enable dotfiles-boot.service 2>/dev/null \
+    || warn "Failed to enable dotfiles-boot.service"
+}
 main(){
   deploy_home
   install_base_deps
@@ -123,6 +138,7 @@ main(){
   deploy_system_configs
   apply_konsave_profile
   setup_alternates
+  enable_autocommit_services
   info "✓ YADM Bootstrap completed."
   info "Validate /etc/fstab: sudo systemd-analyze verify /etc/fstab"
   info "System configs (needs sudo): cd $REPO_DIR && sudo stow -t / etc usr"

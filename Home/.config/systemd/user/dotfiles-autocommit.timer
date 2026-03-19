@@ -1,0 +1,12 @@
+[Unit]
+Description=Auto-commit dotfiles every 6 hours
+
+[Timer]
+# Run 5 min after boot, then every 6h
+OnBootSec=5min
+OnUnitActiveSec=6h
+# Fire a missed run on next boot if the machine was off during a scheduled window
+Persistent=true
+
+[Install]
+WantedBy=default.target
