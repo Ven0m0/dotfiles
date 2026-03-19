@@ -333,6 +333,7 @@ main() {
   install_pkgs       # pacman + AUR from pkg/*.txt — includes yadm, tuckr, stow, konsave
   setup_dotfiles     # yadm clone --bootstrap → triggers .config/yadm/bootstrap
   # These are no-ops if bootstrap already ran them, safe to call again as idempotent fallbacks:
+  deploy_home        # rsync ~/Home/ → ~/ (no-op if bootstrap already did it)
   configure_shell
   link_system_configs
   apply_konsave_profile

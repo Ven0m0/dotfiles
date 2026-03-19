@@ -17,6 +17,7 @@ opencode-desktop-bin
 plasma-splash-rem-git
 python-mashumaro
 ralph
+tuckr
 vscodium-all-marketplace
 vscodium-electron-features
 vscodium-prod-patcher
