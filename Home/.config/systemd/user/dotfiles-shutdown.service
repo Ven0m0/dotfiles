@@ -12,6 +12,7 @@ Type=oneshot
 RemainAfterExit=true
 ExecStart=/bin/true
 ExecStop=%h/.local/bin/dotfiles-autocommit.sh pre-shutdown
+SuccessExitStatus=0 1
 # Cap how long we'll wait so shutdown is never blocked
 TimeoutStopSec=45
 
