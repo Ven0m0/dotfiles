@@ -163,11 +163,15 @@ setup_dotfiles() {
   has yadm || { warn "yadm not found, skipping dotfiles"; return 0; }
   if [[ ! -d $YADM_DIR ]]; then
     log "Cloning dotfiles via yadm..."
-    # --bootstrap triggers .config/yadm/bootstrap automatically
-    yadm clone --bootstrap "$DOTFILES_REPO" || die "yadm clone failed"
+    # -b main: explicit branch avoids mismatch with GitHub default
+    # -f: force overwrite any conflicting files already on disk
+    # --bootstrap: run ~/.config/yadm/bootstrap after checkout
+    yadm clone -b main -f --bootstrap "$DOTFILES_REPO" || die "yadm clone failed"
   else
     log "Dotfiles already cloned, pulling..."
     yadm pull || warn "yadm pull failed"
+    # Ensure bootstrap is executable before running (yadm requires it)
+    chmod +x "${HOME}/.config/yadm/bootstrap" 2>/dev/null || true
     yadm bootstrap || warn "yadm bootstrap failed"
   fi
 }
