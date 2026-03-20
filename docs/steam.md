@@ -4,7 +4,7 @@
 ### General
 
 ```bash
-PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 LD_BIND_NOW=1 PULSE_LATENCY_MSEC=30 %command%
+PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 LD_BIND_NOW=1 PULSE_LATENCY_MSEC=60 %command%
 ```
 
 `/etc/environment`
@@ -32,7 +32,7 @@ echo 0 | sudo tee /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
 ### misc:
 
 ```bash
-VKD3D_CONFIG=dxr
+VKD3D_CONFIG=dxr,dxr11
 ```
 
 ### Mouse
@@ -71,4 +71,4 @@ chmod 600 /tmp/dumps
 - Haste: `-force-vulkan %command%`
 - ARC Raiders: `PROTON_ENABLE_NVAPI=1 PROTON_DLSS_UPGRADE=1 STEAM_RUNTIME=0 STEAM_RUNTIME_HEAVY=0 %command% -novid -dx12 -fullscreen`
 - Terraria: `FNA_GRAPHICS_BACKEND=Vulkan SDL_AUDIODRIVER=pipewire %command%`
-- The Witcher 3: `PROTON_ENABLE_NVAPI=1 PROTON_DXVK_GPLASYNC=1 VKD3D_CONFIG=dxr %command% -novid`
+- The Witcher 3: `PROTON_ENABLE_NVAPI=1 PROTON_DXVK_GPLASYNC=1 VKD3D_CONFIG=dxr,dxr11 %command% -novid`
