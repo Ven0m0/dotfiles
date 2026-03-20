@@ -43,3 +43,8 @@ repos:
     rev: v3.12.0-2
     hooks:
       - id: shfmt
+  - repo: https://github.com/rvben/rumdl-pre-commit
+    rev: v0.1.57
+    hooks:
+      - id: rumdl      # Lint only (fails on issues)
+      - id: rumdl-fmt  # Auto-format and fail if issues remain
