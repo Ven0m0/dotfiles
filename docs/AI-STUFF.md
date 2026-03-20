@@ -95,12 +95,16 @@ Use `rg` to find all occurrences.
 Pattern: rg -n "TODO|FIXME|HACK|XXX|WARN|DEPRECATED" --type-add 'src:*.{sh,bash,py,ts,tsx,js,jsx,rs,go,lua,yml,yaml,toml}'
 </use_parallel_tool_calls>
 Steps:
+<instructions>
 1. Extract all matches with file, line number, surrounding context (3 lines)
 2. Categorize: trivial (type fix, rename, add guard) | moderate (refactor, new function) | complex (architecture, new feature)
 3. Resolve all trivial items inline — apply the fix, remove the TODO comment
 4. For moderate: create actionable description with estimated LOC change
 5. For complex: note as backlog with suggested approach
+</instructions>
+<answer>
 Output: completion report (resolved count/total), diffs for resolved items, remaining backlog table (file|line|category|description).
+<answer>
 ```
 </details>
 <details><summary><b>🧹 Cleaner</b> — Aggressive dead code removal</summary>
