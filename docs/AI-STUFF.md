@@ -91,7 +91,7 @@ Output: table (package|current|latest|status|action), update commands, migration
 Extract and resolve TODOs/FIXMEs across entire codebase.
 </investigate_before_answering>
 <use_parallel_tool_calls>
-Use `rg` to find all occurrences.
+Use `rg` to find all occurrences. Use `ToolSearch` to find the optimal mcp servers for the task.
 Pattern: rg -n "TODO|FIXME|HACK|XXX|WARN|DEPRECATED" --type-add 'src:*.{sh,bash,py,ts,tsx,js,jsx,rs,go,lua,yml,yaml,toml}'
 </use_parallel_tool_calls>
 Steps:
