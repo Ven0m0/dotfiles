@@ -5,6 +5,6 @@ Type = Path
 Target = usr/share/wine/wine.inf
 
 [Action]
-Description = Optimizing Wine configuration...
+Description = Disable Wine file associations and set Direct3D defaults...
 When = PostTransaction
 Exec = /bin/sh -c 'f=/usr/share/wine/wine.inf; [ -f "$f" ] || exit 0; /usr/bin/grep -q "HKCU,\"Software\\\Wine\\\FileOpenAssociations\",\"Enable\",2,\"N\"" "$f" || /usr/bin/sed -i "s/\[Services\]/\[Services\]\nHKCU,\"Software\\\Wine\\\FileOpenAssociations\",\"Enable\",2,\"N\"/g" "$f"; /usr/bin/grep -q "HKCU,\"Software\\\Wine\\\Direct3D\",\"StrictDrawOrdering\",,\"disabled\"" "$f" || /usr/bin/sed -i "s/\[Services\]/\[Services\]\nHKCU,\"Software\\\Wine\\\Direct3D\",\"Renderer\",,\"vulkan\"\nHKCU,\"Software\\\Wine\\\Direct3D\",\"MultisampleTextures\",0x00010001,0\nHKCU,\"Software\\\Wine\\\Direct3D\",\"Multisampling\",,\"disabled\"\nHKCU,\"Software\\\Wine\\\Direct3D\",\"CSMT\",,\"enabled\"\nHKCU,\"Software\\\Wine\\\Direct3D\",\"StrictDrawOrdering\",,\"disabled\"/g" "$f"'
