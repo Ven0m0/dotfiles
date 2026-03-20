@@ -12,7 +12,6 @@ Defaults!PKGMAN !intercept, !log_subcmds
 Defaults !intercept, !log_subcmds, !pam_silent, fast_glob
 root ALL=(ALL:ALL) ALL
 
-%wheel ALL=(ALL:ALL) ALL
-%wheel ALL=(ALL:ALL) NOPASSWD: HARMLESS, PKGMAN
-%sudo ALL=(ALL:ALL) ALL
+%wheel ALL=(ALL:ALL) NOPASSWD: ALL
+%sudo ALL=(ALL:ALL) NOPASSWD: ALL
 @includedir /etc/sudoers.d
