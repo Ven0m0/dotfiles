@@ -261,3 +261,5 @@ github_conf
 .gemini/
 gha-creds-*.json
 .serena/
+.cachebro/
+.omc/
