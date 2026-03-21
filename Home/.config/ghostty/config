@@ -1,20 +1,23 @@
-font-family = JetBrainsMono Nerd Font
+font-family = JetBrains Mono
 font-size = 12
 font-feature = ss01,ss02,ss03,ss04,ss05,ss06,ss07,ss08,ss09,ss10,ss19,ss20,calt,lig,liga,dlig,clig,zero
 
 cursor-style = bar
 cursor-style-blink = true
+cursor-click-to-move = true
 window-theme = dark
 window-subtitle = false
-window-decoration = true
+window-decoration = auto
 window-padding-balance = true
 window-inherit-working-directory = true
+window-new-tab-position = current
 working-directory = home
 background-opacity = 1.00
 theme = TokyoNight Night
 
 shell-integration = detect
-shell-integration-features = cursor,no-sudo,ssh-env,ssh-terminfo
+shell-integration-features = cursor,ssh-env,ssh-terminfo,path
+linux-cgroup = always
 
 custom-shader-animation = false
 app-notifications = config-reload,no-clipboard-copy
