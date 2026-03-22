@@ -15,9 +15,15 @@ jobs:
     uses: Ven0m0/.github/.github/workflows/lint-format.yml@main
     secrets: inherit
   qlty-fmt:
+    needs: lint-format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: qltysh/qlty-action/fmt@v2
       - name: Verify no qlty formatting changes are needed
-        run: git diff --exit-code
+        run: |
+          git diff --exit-code || {
+            git --no-pager diff --stat
+            echo "::error::Qlty formatting changes are required. Update this branch with the qlty GitHub workflow or app output and commit the result."
+            exit 1
+          }
