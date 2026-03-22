@@ -177,7 +177,7 @@ lint_stage() {
   run_parallel fmt_toml "${toml[@]}" || :
   run_parallel fmt_lua "${lua[@]}" || :
   run_parallel fmt_actions "${act[@]}" || ((lint_errors++))
-  qlty fmt --all || ((lint_errors++))
+  $dry_run || qlty fmt --all || ((lint_errors++))
 }
 
 ok() { printf 'v %s (%d -> %d%s)\n' "${1##*/}" "$2" "$3" "${4:+, $4}"; }
