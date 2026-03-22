@@ -223,6 +223,15 @@ apply_konsave_profile() {
   konsave -a "$profile_name" || warn "konsave apply failed"
 }
 
+setup_qlty() {
+  if has qlty; then
+    log "qlty already installed, skipping"
+    return 0
+  fi
+  log "Installing qlty..."
+  run_url "https://qlty.sh"
+}
+
 setup_am() {
   if has am; then
     log "am already installed, updating..."
@@ -323,6 +332,7 @@ main() {
   setup_repos
   setup_git
   install_pkgs       # pacman + AUR from pkg/*.txt — includes yadm, stow, konsave
+  setup_qlty
   setup_dotfiles     # yadm clone --bootstrap → triggers .config/yadm/bootstrap
   # These are no-ops if bootstrap already ran them, safe to call again as idempotent fallbacks:
   deploy_home        # rsync ~/Home/ → ~/ (no-op if bootstrap already did it)
