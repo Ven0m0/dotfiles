@@ -24,6 +24,6 @@ jobs:
         run: |
           git diff --exit-code || {
             git --no-pager diff --stat
-            echo "::error::Qlty formatting changes are required. Update this branch with the qlty GitHub workflow or app output and commit the result."
+            echo "::error::Qlty formatting changes are required. Apply the qlty GitHub App changes (or an equivalent formatting commit) to this branch, then rerun CI."
             exit 1
           }
