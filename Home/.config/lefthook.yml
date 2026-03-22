@@ -9,11 +9,6 @@ min_version: 1.5.0
 pre-commit:
   parallel: true
   commands:
-    qlty-fmt:
-      priority: 0
-      glob: "*"
-      run: qlty fmt {staged_files}
-      stage_fixed: true
     shell-format:
       priority: 1
       glob: "*.{sh,bash,zsh}"

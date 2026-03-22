@@ -14,3 +14,10 @@ jobs:
   lint-format:
     uses: Ven0m0/.github/.github/workflows/lint-format.yml@main
     secrets: inherit
+  qlty-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: qltysh/qlty-action/fmt@v2
+      - name: Verify qlty output is committed
+        run: git diff --exit-code
