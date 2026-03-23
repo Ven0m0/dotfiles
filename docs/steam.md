@@ -33,8 +33,6 @@ DXVK_ASYNC=1
 
 ```bash
 echo madvise | sudo tee >/sys/kernel/mm/transparent_hugepage/enabled
-echo advise | sudo tee >/sys/kernel/mm/transparent_hugepage/shmem_enabled
-echo 0 | sudo tee /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
 ```
 ### misc:
 
