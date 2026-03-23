@@ -1,113 +1,113 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.8/schema.json",
-	"vcs": {
-		"enabled": true,
-		"clientKind": "git",
-		"useIgnoreFile": true,
-		"defaultBranch": "main"
-	},
-	"files": {
-		"ignoreUnknown": true,
-		"maxSize": 1048576,
-		"includes": [
-			"**",
-			"!!**/.git",
-			"!!**/dist",
-			"!!**/build",
-			"!!**/coverage",
-			"!!**/.next",
-			"!!**/.nuxt",
-			"!!**/.output"
-		]
-	},
-	"formatter": {
-		"enabled": true,
-		"formatWithErrors": true,
-		"indentStyle": "space",
-		"indentWidth": 2,
-		"lineEnding": "lf",
-		"lineWidth": 120,
-		"attributePosition": "auto",
-		"bracketSpacing": true,
-		"bracketSameLine": true,
-		"useEditorconfig": true
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true
-		}
-	},
-	"assist": {
-		"enabled": true,
-		"actions": {
-			"source": {
-				"recommended": true
-			}
-		}
-	},
-	"javascript": {
-		"formatter": {
-			"jsxQuoteStyle": "double",
-			"quoteStyle": "single",
-			"quoteProperties": "asNeeded",
-			"trailingCommas": "all",
-			"semicolons": "always",
-			"arrowParentheses": "always"
-		},
-		"jsxRuntime": "transparent"
-	},
-	"json": {
-		"parser": {
-			"allowComments": false,
-			"allowTrailingCommas": false
-		},
-		"formatter": {
-			"trailingCommas": "none"
-		}
-	},
-	"css": {
-		"formatter": {
-			"quoteStyle": "double"
-		}
-	},
-	"overrides": [
-		{
-			"includes": ["*.config.{js,ts,mjs,cjs}", ".*rc.{js,ts}", ".*.{js,ts}"],
-			"linter": {
-				"rules": {
-					"suspicious": {
-						"noConsole": "off"
-					},
-					"style": {
-						"noDefaultExport": "off"
-					}
-				}
-			}
-		},
-		{
-			"includes": ["package.json", "tsconfig.json", "tsconfig.*.json"],
-			"json": {
-				"formatter": {
-					"expand": "always"
-				}
-			}
-		},
-		{
-			"includes": ["**/*.css"],
-			"linter": {
-				"rules": {
-					"correctness": {
-						"noUnknownTypeSelector": "off",
-						"noUnknownPseudoClass": "off",
-						"noUnknownProperty": "off",
-						"noUnknownMediaFeatureName": "off"
-					},
-					"complexity": {
-						"noImportantStyles": "off"
-					}
-				}
-			}
-		}
-	]
+  "$schema": "https://biomejs.dev/schemas/2.4.8/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "maxSize": 1048576,
+    "includes": [
+      "**",
+      "!!**/.git",
+      "!!**/dist",
+      "!!**/build",
+      "!!**/coverage",
+      "!!**/.next",
+      "!!**/.nuxt",
+      "!!**/.output"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 120,
+    "attributePosition": "auto",
+    "bracketSpacing": true,
+    "bracketSameLine": true,
+    "useEditorconfig": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "recommended": true
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "double",
+      "quoteStyle": "single",
+      "quoteProperties": "asNeeded",
+      "trailingCommas": "all",
+      "semicolons": "always",
+      "arrowParentheses": "always"
+    },
+    "jsxRuntime": "transparent"
+  },
+  "json": {
+    "parser": {
+      "allowComments": false,
+      "allowTrailingCommas": false
+    },
+    "formatter": {
+      "trailingCommas": "none"
+    }
+  },
+  "css": {
+    "formatter": {
+      "quoteStyle": "double"
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["*.config.{js,ts,mjs,cjs}", ".*rc.{js,ts}", ".*.{js,ts}"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          },
+          "style": {
+            "noDefaultExport": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["package.json", "tsconfig.json", "tsconfig.*.json"],
+      "json": {
+        "formatter": {
+          "expand": "always"
+        }
+      }
+    },
+    {
+      "includes": ["**/*.css"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnknownTypeSelector": "off",
+            "noUnknownPseudoClass": "off",
+            "noUnknownProperty": "off",
+            "noUnknownMediaFeatureName": "off"
+          },
+          "complexity": {
+            "noImportantStyles": "off"
+          }
+        }
+      }
+    }
+  ]
 }
