@@ -1,4 +1,7 @@
 # `Dotfiles`
+
+[![Maintainability](https://qlty.sh/gh/Ven0m0/projects/dotfiles/maintainability.svg)](https://qlty.sh/gh/Ven0m0/projects/dotfiles)
+
 <details>
 <summary><b>Features</b></summary>
 
