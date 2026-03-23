@@ -70,12 +70,17 @@ sync_pull() {
   log "Syncing FROM repository TO home directory..."
   log "Source: $home_dir/"
   log "Target: $HOME/"
-  local -a rsync_opts=(-av --exclude='.git' --exclude='.gitignore')
+  local backup_dir="${HOME}/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
+  local -a rsync_opts=(-av --backup --backup-dir="$backup_dir"
+    --exclude='.git' --exclude='.gitignore')
   [[ $dry_run == "1" ]] && rsync_opts+=(--dry-run)
   rsync "${rsync_opts[@]}" "${home_dir}/" "${HOME}/"
   if [[ $dry_run == "1" ]]; then
     warn "DRY RUN - No files modified"
   else
+    # Remove backup dir if nothing was actually overwritten
+    find "$backup_dir" -maxdepth 0 -empty -exec rmdir {} \; 2>/dev/null || true
+    [[ -d $backup_dir ]] && warn "Overwritten files backed up → $backup_dir"
     ok "Dotfiles deployed to home directory"
   fi
 }
