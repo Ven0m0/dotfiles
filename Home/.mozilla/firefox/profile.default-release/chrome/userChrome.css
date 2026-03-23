@@ -7,289 +7,256 @@
 @import url("shrinking_pinned_tabs.css");
 
 :root {
-	--toolbarbutton-inner-padding: 6px;
-	--tab-block-margin: 2px;
-	--tabs-shadow-size: 0;
-	--arrowpanel-menuitem-padding-block: 5px;
-	--panel-font-size: inherit;
-	--arrowpanel-padding: 0.8em;
-	--inline-tab-padding: 8px;
-	--tab-inline-padding: 8px;
-	--item_y_padding: 3px;
-	--y_padding_before_label: 24px;
-	--y_padding_before_label_bm: 12px;
-	--y_padding_before_label_sep: 12px;
-	--panel-padding: 0;
-	--arrowpanel-menuitem-margin: 0;
-	--arrowpanel-menuitem-padding: calc(var(--item_y_padding) + 1px) 2px;
-	--panel-subview-body-padding: 0;
-	--user-tab-rounding: 4px;
-	--uei-icon-size: 16px;
+  --toolbarbutton-inner-padding: 6px;
+  --tab-block-margin: 2px;
+  --tabs-shadow-size: 0;
+  --arrowpanel-menuitem-padding-block: 5px;
+  --panel-font-size: inherit;
+  --arrowpanel-padding: 0.8em;
+  --inline-tab-padding: 8px;
+  --tab-inline-padding: 8px;
+  --item_y_padding: 3px;
+  --y_padding_before_label: 24px;
+  --y_padding_before_label_bm: 12px;
+  --y_padding_before_label_sep: 12px;
+  --panel-padding: 0;
+  --arrowpanel-menuitem-margin: 0;
+  --arrowpanel-menuitem-padding: calc(var(--item_y_padding) + 1px) 2px;
+  --panel-subview-body-padding: 0;
+  --user-tab-rounding: 4px;
+  --uei-icon-size: 16px;
 }
 .tabbrowser-tab {
-	min-width: 1em;
-	clip-width: 1em;
-	padding: 0;
-	background-image: linear-gradient(
-		transparent 20%,
-		color-mix(in srgb, currentColor 20%, transparent) 20%,
-		color-mix(in srgb, currentColor 20%, transparent) 80%,
-		transparent 80%
-	);
-	background-size: 1px 100%;
-	background-repeat: no-repeat;
+  min-width: 1em;
+  clip-width: 1em;
+  padding: 0;
+  background-image: linear-gradient(
+    transparent 20%,
+    color-mix(in srgb, currentColor 20%, transparent) 20%,
+    color-mix(in srgb, currentColor 20%, transparent) 80%,
+    transparent 80%
+  );
+  background-size: 1px 100%;
+  background-repeat: no-repeat;
 }
 .tab-background {
-	border-radius: var(--user-tab-rounding);
+  border-radius: var(--user-tab-rounding);
 }
-.tabbrowser-tab:not([selected="true"]):not([multiselected="true"]):not(
-		[beforeselected-visible="true"]
-	)
-	.tab-background {
-	border-right: 1px solid
-		var(--lwt-background-tab-separator-color, rgba(0, 0, 0, 0.2));
-	border-radius: 0;
+.tabbrowser-tab:not([selected="true"]):not([multiselected="true"]):not([beforeselected-visible="true"])
+  .tab-background {
+  border-right: 1px solid var(--lwt-background-tab-separator-color, rgba(0, 0, 0, 0.2));
+  border-radius: 0;
 }
 [brighttext="true"]
-	.tabbrowser-tab:not([selected="true"]):not([multiselected="true"]):not(
-		[beforeselected-visible="true"]
-	)
-	.tab-background {
-	border-right: 1px solid
-		var(
-			--lwt-background-tab-separator-color,
-			var(--lwt-selected-tab-background-color, rgba(255, 255, 255, 0.2))
-		);
+  .tabbrowser-tab:not([selected="true"]):not([multiselected="true"]):not([beforeselected-visible="true"])
+  .tab-background {
+  border-right: 1px solid
+    var(--lwt-background-tab-separator-color, var(--lwt-selected-tab-background-color, rgba(255, 255, 255, 0.2)));
 }
-#tabbrowser-tabs:not([movingtab])
-	.tabbrowser-tab:hover
-	+ .tabbrowser-tab:not([first-visible-unpinned-tab]),
+#tabbrowser-tabs:not([movingtab]) .tabbrowser-tab:hover + .tabbrowser-tab:not([first-visible-unpinned-tab]),
 .tabbrowser-tab:is(:hover, :first-child, [selected], [multiselected]),
-.tabbrowser-tab:is([selected], [multiselected])
-	+ .tabbrowser-tab[hidden]
-	+ .tabbrowser-tab,
-#tabbrowser-tabs:not([movingtab])
-	.tabbrowser-tab:is([multiselected], [selected])
-	+ .tabbrowser-tab,
+.tabbrowser-tab:is([selected], [multiselected]) + .tabbrowser-tab[hidden] + .tabbrowser-tab,
+#tabbrowser-tabs:not([movingtab]) .tabbrowser-tab:is([multiselected], [selected]) + .tabbrowser-tab,
 tab-group[collapsed] + .tabbrowser-tab,
 tab-group > .tabbrowser-tab:first-of-type,
-tab-group:has(
-		> .tabbrowser-tab:last-child:is(:hover, [selected], [multiselected])
-	)
-	+ .tabbrowser-tab {
-	background-image: none;
+tab-group:has(> .tabbrowser-tab:last-child:is(:hover, [selected], [multiselected])) + .tabbrowser-tab {
+  background-image: none;
 }
 .tab-label-container[textoverflow]:not([pinned]) {
-	mask-image: unset;
+  mask-image: unset;
 }
 .tab-close-button {
-	margin-inline-start: 0;
-	width: 20px;
-	height: 20px;
-	padding: 5px;
+  margin-inline-start: 0;
+  width: 20px;
+  height: 20px;
+  padding: 5px;
 }
 .tab-group-label-container {
-	padding-inline-start: 2px;
+  padding-inline-start: 2px;
 }
 #tabbrowser-tabs {
-	--uc-tabs-scrollbutton-border: 2px;
+  --uc-tabs-scrollbutton-border: 2px;
 }
 #scrollbutton-up,
 #scrollbutton-down {
-	border-block-width: var(--uc-tabs-scrollbutton-border, 0);
+  border-block-width: var(--uc-tabs-scrollbutton-border, 0);
 }
 #nav-bar {
-	box-shadow: inset 0 var(--tabs-shadow-size) 0 var(--lwt-tabs-border-color);
+  box-shadow: inset 0 var(--tabs-shadow-size) 0 var(--lwt-tabs-border-color);
 }
 #urlbar[breakout][breakout-extend] {
-	margin-left: 0;
-	width: var(--urlbar-width);
-	margin-top: calc((var(--urlbar-container-height) - var(--urlbar-height)) / 2);
+  margin-left: 0;
+  width: var(--urlbar-width);
+  margin-top: calc((var(--urlbar-container-height) - var(--urlbar-height)) / 2);
 }
 .urlbarView {
-	margin-inline: 0;
-	width: auto;
+  margin-inline: 0;
+  width: auto;
 }
 .urlbarView-row {
-	padding: 0 2px;
+  padding: 0 2px;
 }
 .urlbarView-row-inner {
-	padding-inline-start: 4px;
+  padding-inline-start: 4px;
 }
 #urlbar-background {
-	animation: none;
+  animation: none;
 }
 .urlbar-input-container {
-	padding: 0 1px;
-	height: initial;
+  padding: 0 1px;
+  height: initial;
 }
 #identity-icon {
-	margin-block: var(--urlbar-icon-padding);
+  margin-block: var(--urlbar-icon-padding);
 }
 .urlbarView > .search-one-offs:not([hidden]) {
-	padding-block: 0;
+  padding-block: 0;
 }
 .subviewbutton.bookmark-item {
-	padding-block: 4px;
+  padding-block: 4px;
 }
 .subview-subheader {
-	display: block;
+  display: block;
 }
 menupopup > menuitem,
 menupopup > menu {
-	padding-block: 0.3em;
+  padding-block: 0.3em;
 }
 .subview-subheader,
 panelview .toolbarbutton-1,
 .subviewbutton:not(#appMenu-fxa-status2),
 .widget-overflow-list .toolbarbutton-1 {
-	margin: 0;
-	min-height: 0;
-	padding: calc(var(--item_y_padding) + 1px) 2px;
+  margin: 0;
+  min-height: 0;
+  padding: calc(var(--item_y_padding) + 1px) 2px;
 }
 .widget-overflow-list .toolbarbutton-1 {
-	padding: var(--item_y_padding) 2px;
+  padding: var(--item_y_padding) 2px;
 }
 #appMenu-popup .PanelUI-subView .subviewbutton:not(#appMenu-fxa-status2) {
-	padding: calc(var(--item_y_padding) + 1px) 4px;
+  padding: calc(var(--item_y_padding) + 1px) 4px;
 }
 menupopup[type="arrow"] > :is(menuitem, menu) {
-	padding-block: 0;
-	padding: var(--item_y_padding) 0;
-	padding-inline-start: 4px;
+  padding-block: 0;
+  padding: var(--item_y_padding) 0;
+  padding-inline-start: 4px;
 }
 .panel-subview-body {
-	padding: 0;
+  padding: 0;
 }
 menuseparator {
-	padding-block: 0;
+  padding-block: 0;
 }
 :is(menupopup, panel)[type="arrow"] {
-	--panel-padding: 0;
+  --panel-padding: 0;
 }
-#context-navigation
-	:is(
-		#context-back,
-		#context-forward,
-		#context-reload,
-		#context-stop,
-		#context-bookmarkpage
-	) {
-	padding: var(--item_y_padding) 2px;
-	margin-inline-start: -6px;
+#context-navigation :is(#context-back, #context-forward, #context-reload, #context-stop, #context-bookmarkpage) {
+  padding: var(--item_y_padding) 2px;
+  margin-inline-start: -6px;
 }
-:is(
-		#context-back,
-		#context-forward,
-		#context-reload,
-		#context-stop,
-		#context-bookmarkpage
-	)
-	image {
-	margin: 0;
-	padding: 0;
-	padding-inline-start: 4px;
-	height: 16px;
+:is(#context-back, #context-forward, #context-reload, #context-stop, #context-bookmarkpage) image {
+  margin: 0;
+  padding: 0;
+  padding-inline-start: 4px;
+  height: 16px;
 }
 :is(menupopup, panel)[type="arrow"] :is(.menu-accel, .menu-iconic-accel) {
-	margin-inline-end: 8px;
+  margin-inline-end: 8px;
 }
 :is(menupopup, panel)[type="arrow"] .menu-right {
-	margin-inline-end: 4px;
+  margin-inline-end: 4px;
 }
 .menu-iconic-icon {
-	margin-inline-start: 2px;
-	margin-inline-end: -2px;
+  margin-inline-start: 2px;
+  margin-inline-end: -2px;
 }
 .menu-icon {
-	margin-inline: 2px;
+  margin-inline: 2px;
 }
 @media (-moz-platform: windows) {
-	menupopup > :is(menuitem, menu) {
-		padding-block: 0;
-		padding: var(--item_y_padding) 4px;
-	}
-	menupopup {
-		--panel-padding: 0;
-	}
-	:is(menupopup, panel) :is(.menu-accel, .menu-iconic-accel) {
-		margin-inline-end: 4px;
-	}
-	:is(menupopup, panel) .menu-right {
-		margin-inline-end: 4px;
-	}
-	menugroup#context-navigation
-		> menuitem.menuitem-iconic
-		> :is(.menu-icon, hbox.menu-iconic-left > .menu-iconic-icon) {
-		margin: 0 6px 0 10px;
-	}
+  menupopup > :is(menuitem, menu) {
+    padding-block: 0;
+    padding: var(--item_y_padding) 4px;
+  }
+  menupopup {
+    --panel-padding: 0;
+  }
+  :is(menupopup, panel) :is(.menu-accel, .menu-iconic-accel) {
+    margin-inline-end: 4px;
+  }
+  :is(menupopup, panel) .menu-right {
+    margin-inline-end: 4px;
+  }
+  menugroup#context-navigation > menuitem.menuitem-iconic > :is(.menu-icon, hbox.menu-iconic-left > .menu-iconic-icon) {
+    margin: 0 6px 0 10px;
+  }
 }
 #customizationui-widget-multiview #appMenu-libraryView,
 #pageActionPanel panelview,
 #widget-overflow panelview {
-	min-width: 0;
-	padding: var(--item_y_padding) 0;
+  min-width: 0;
+  padding: var(--item_y_padding) 0;
 }
 .unified-extensions-item-menu-button.subviewbutton {
-	padding: 0;
-	margin-inline-end: 0;
+  padding: 0;
+  margin-inline-end: 0;
 }
 .unified-extensions-item-action-button.subviewbutton {
-	padding-block: 6px;
+  padding-block: 6px;
 }
 .unified-extensions-item-menu-button.subviewbutton > .toolbarbutton-icon {
-	padding: 4px;
+  padding: 4px;
 }
 .unified-extensions-item-message-deck {
-	display: none;
+  display: none;
 }
 #unified-extensions-view > vbox > vbox > .unified-extensions-item {
-	padding-block: 0;
+  padding-block: 0;
 }
 #unified-extensions-panel .unified-extensions-item {
-	margin-block: 0;
-	padding: 0;
+  margin-block: 0;
+  padding: 0;
 }
 .unified-extensions-item-name,
 .unified-extensions-item-message {
-	padding-inline-start: 0;
-	width: 28em;
+  padding-inline-start: 0;
+  width: 28em;
 }
 .findbar-container,
 .findbar-container * {
-	padding: 0;
+  padding: 0;
 }
 .findbar-container {
-	height: unset;
+  height: unset;
 }
 :is(.browserContainer, #viewSource) :is(findbar, #FindToolbar) {
-	padding-block: unset;
+  padding-block: unset;
 }
 #sidebar {
-	max-width: none;
-	min-width: 0;
+  max-width: none;
+  min-width: 0;
 }
 .titlebar-buttonbox {
-	align-items: stretch;
+  align-items: stretch;
 }
 .titlebar-button {
-	-moz-appearance: none;
-	-moz-context-properties: fill, stroke, fill-opacity;
-	fill: currentColor;
-	padding: 4px 6px;
-	flex-grow: 1;
-	overflow: -moz-hidden-unscrollable;
+  -moz-appearance: none;
+  -moz-context-properties: fill, stroke, fill-opacity;
+  fill: currentColor;
+  padding: 4px 6px;
+  flex-grow: 1;
+  overflow: -moz-hidden-unscrollable;
 }
 .titlebar-button:hover {
-	background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .titlebar-min {
-	list-style-image: url(chrome://browser/skin/zoom-out.svg);
+  list-style-image: url(chrome://browser/skin/zoom-out.svg);
 }
 .titlebar-close {
-	list-style-image: url(chrome://global/skin/icons/close.svg);
-	fill-opacity: 0;
-	stroke: currentColor;
+  list-style-image: url(chrome://global/skin/icons/close.svg);
+  fill-opacity: 0;
+  stroke: currentColor;
 }
 #context-sendpagetodevice,
 #context-sep-sendpagetodevice,
@@ -297,5 +264,5 @@ menuseparator {
 #context-sep-sendlinktodevice,
 #context_sendTabToDevice,
 #context_sendTabToDevice_separator {
-	display: none;
+  display: none;
 }

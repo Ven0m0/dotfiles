@@ -1,6 +1,6 @@
 {
-	"nonbreaking space": {
-		"body": "&nbsp;",
-		"prefix": "nonbreaking space"
-	}
+  "nonbreaking space": {
+    "body": "&nbsp;",
+    "prefix": "nonbreaking space"
+  }
 }

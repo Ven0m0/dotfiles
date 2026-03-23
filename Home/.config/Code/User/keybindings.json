@@ -1,22 +1,22 @@
 [
-	{
-		"key": "ctrl+enter",
-		"command": "workbench.action.terminal.sendSequence",
-		"when": "terminalFocus",
-		"args": {
-			"text": "\\\r\n"
-		}
-	},
-	{
-		"key": "shift+enter",
-		"command": "workbench.action.terminal.sendSequence",
-		"when": "terminalFocus",
-		"args": {
-			"text": "\\\r\n"
-		}
-	},
-	{
-		"key": "ctrl+f4",
-		"command": "workbench.action.files.saveFiles"
-	}
+  {
+    "key": "ctrl+enter",
+    "command": "workbench.action.terminal.sendSequence",
+    "when": "terminalFocus",
+    "args": {
+      "text": "\\\r\n"
+    }
+  },
+  {
+    "key": "shift+enter",
+    "command": "workbench.action.terminal.sendSequence",
+    "when": "terminalFocus",
+    "args": {
+      "text": "\\\r\n"
+    }
+  },
+  {
+    "key": "ctrl+f4",
+    "command": "workbench.action.files.saveFiles"
+  }
 ]

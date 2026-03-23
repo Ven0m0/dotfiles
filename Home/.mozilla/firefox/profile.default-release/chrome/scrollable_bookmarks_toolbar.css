@@ -1,12 +1,12 @@
 #PlacesToolbarItems {
-	overflow-x: auto;
+  overflow-x: auto;
 }
 .bookmark-item {
-	visibility: initial;
+  visibility: initial;
 }
 #PlacesToolbar #PlacesChevron {
-	visibility: collapse;
+  visibility: collapse;
 }
 #PlacesToolbarItems {
-	scrollbar-width: thin;
+  scrollbar-width: thin;
 }
