@@ -3,6 +3,8 @@
 
 ### General
 
+Gamescope: `gamescope -f --force-grab-cursor -w 1920 -h 1080 -- %command%`
+
 ```bash
 PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 LD_BIND_NOW=1 PULSE_LATENCY_MSEC=60 %command%
 ```
