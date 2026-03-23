@@ -4,6 +4,10 @@
 - https://lutris.net
 - https://github.com/ValveSoftware/Proton
 - https://github.com/HansKristian-Work/vkd3d-proton
+- https://github.com/Etaash-mathamsetty/Proton/blob/em-10/docs/EM-ADDITIONS.md
+- https://github.com/Etaash-mathamsetty/Proton/blob/em-10/docs/FSR4.md
+- https://github.com/pythonlover02/DXVK-Sarek#shader-compilation
+- https://github.com/netborg-afps/dxvk-low-latency#dxvk-low-latency
 
 ### General
 
