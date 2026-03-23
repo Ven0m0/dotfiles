@@ -27,14 +27,30 @@ name = "actionlint"
 name = "prettier"
 
 [[plugin]]
+name = "eslint"
+
+[[plugin]]
 name = "ripgrep"
+mode = "comment"
+
+[[plugin]]
+name = "shfmt"
 mode = "comment"
 
 [[plugin]]
 name = "shellcheck"
 
 [[plugin]]
+name = "ruff"
+
+[[plugin]]
 name = "yamllint"
+
+[[plugin]]
+name = "markdowlint"
+
+[[plugin]]
+name = "hadolint"
 
 [[triage]]
 match.file_patterns = [".github/workflows/*"]
