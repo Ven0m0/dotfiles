@@ -3,6 +3,7 @@
 - https://www.protondb.com
 - https://lutris.net
 - https://github.com/ValveSoftware/Proton
+- https://github.com/HansKristian-Work/vkd3d-proton
 
 ### General
 
@@ -33,7 +34,7 @@ echo 0 | sudo tee /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
 ### misc:
 
 ```bash
-VKD3D_CONFIG=dxr,dxr11
+VKD3D_CONFIG=dxr12,dxr,force_static_cbv,force_static_cbv
 ```
 ### Mouse
 
