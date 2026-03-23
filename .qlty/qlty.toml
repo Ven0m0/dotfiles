@@ -60,12 +60,14 @@ mode = "comment"
 name = "default"
 default = true
 
-
 [[plugin]]
 name = "actionlint"
 
 [[plugin]]
-name = "bandit"
+name = "markdowlint"
+
+[[plugin]]
+name = "hadolint"
 
 [[plugin]]
 name = "biome"
@@ -73,29 +75,29 @@ name = "biome"
 [[plugin]]
 name = "eslint"
 
-
-[[plugin]]
-name = "radarlint-python"
-mode = "comment"
-
 [[plugin]]
 name = "ripgrep"
 mode = "comment"
 
 [[plugin]]
 name = "ruff"
-drivers = [
-  "lint",
-]
+drivers = ["lint",]
 
 [[plugin]]
 name = "shellcheck"
 
 [[plugin]]
-name = "trufflehog"
+name = "shfmt"
+mode = "comment"
 
 [[plugin]]
 name = "yamllint"
 
 [[plugin]]
-name = "zizmor"
+name = "actionlint"
+
+[[plugin]]
+name = "prettier"
+
+[[plugin]]
+name = "eslint"
