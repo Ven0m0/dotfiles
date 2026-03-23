@@ -58,7 +58,7 @@ chmod 600 /tmp/dumps
 - Celeste: `SDL_VIDEODRIVER=wayland %command%`
 - Hollow Knight: `-force-vulkan %command%`
 - Haste: `-force-vulkan %command%`
-- ARC Raiders: `mangohud __GL__THREADED_OPTIMIZATIONS=1 PROTON_LOCAL_SHADER_CACHE=1 DXVK_ASYNC=1 PROTON_NVIDIA_LIBS=1 PROTON_USE_EAC_LINUX=1 PROTON_ENABLE_NVAPI=1 PROTON_DLSS_UPGRADE=1 PROTON_ENABLE_WAYLAND=1 PROTON_FSR4_UPGRADE=1 PROTON_USE_NTSYNC=1 DXVK_CONFIG="dxgi.syncInterval=0 gamemoderun mangohud %command% -novid -dx12 -fullscreen -useallavailablecores`
+- ARC Raiders: `mangohud __GL__THREADED_OPTIMIZATIONS=1 PULSE_LATENCY_MSEC=30 DXVK_STATE_CACHE=1 PROTON_LOCAL_SHADER_CACHE=1 DXVK_ASYNC=1 PROTON_NVIDIA_LIBS=1 PROTON_USE_EAC_LINUX=1 PROTON_ENABLE_NVAPI=1 PROTON_DLSS_UPGRADE=1 PROTON_ENABLE_WAYLAND=1 PROTON_FSR4_UPGRADE=1 PROTON_USE_NTSYNC=1 DXVK_CONFIG="dxgi.syncInterval=0 gamemoderun mangohud %command% -novid -dx12 -fullscreen -useallavailablecores`
   > - `sudo sysctl -w vm.max_map_count=2147483642vm.max_map_count=2147483642`
   > - Set mangohud (mangojuice) VSYNC > VULKAN config to OFF for IMMEDIATE frame presentation.
 - Terraria: `FNA_GRAPHICS_BACKEND=Vulkan SDL_AUDIODRIVER=pipewire %command%`
