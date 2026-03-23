@@ -1,0 +1,5 @@
+#!/bin/bash
+
+PROTON_NO_ESYNC=1
+WINEARCH=win64
+#PROTON_DXVK_DDRAW
