@@ -21,10 +21,17 @@ deploy_home(){
   local home_dir="${REPO_DIR}/Home"
   [[ -d $home_dir ]] || { warn "Home/ not found: $home_dir"; return 0; }
   info "Deploying Home/ → $HOME/"
+  local backup_dir="${HOME}/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
   if has rsync; then
-    rsync -a --delete --exclude='.git' --exclude='.gitignore' "${home_dir}/" "${HOME}/"
+    # --no-delete: never remove files from $HOME that aren't in the repo
+    # --backup: any overwritten file is preserved in $backup_dir for recovery
+    rsync -a --backup --backup-dir="$backup_dir" \
+      --exclude='.git' --exclude='.gitignore' \
+      "${home_dir}/" "${HOME}/"
+    # Remove backup dir if nothing was actually backed up
+    find "$backup_dir" -maxdepth 0 -empty -exec rmdir {} \; 2>/dev/null || true
   else
-    warn "rsync missing; falling back to cp"
+    warn "rsync missing; falling back to cp (no backup)"
     cp -a "${home_dir}/." "${HOME}/"
   fi
 }
