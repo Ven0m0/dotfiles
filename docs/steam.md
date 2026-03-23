@@ -1,5 +1,8 @@
 - https://wiki.archlinux.org/title/Gaming#Improving_performance
 - https://linux-gaming.kwindu.eu/index.php/Main_Page
+- https://www.protondb.com
+- https://lutris.net
+- https://github.com/ValveSoftware/Proton
 
 ### General
 
@@ -60,7 +63,7 @@ chmod 600 /tmp/dumps
 - Celeste: `SDL_VIDEODRIVER=wayland %command%`
 - Hollow Knight: `-force-vulkan %command%`
 - Haste: `-force-vulkan %command%`
-- ARC Raiders: `mangohud __GL__THREADED_OPTIMIZATIONS=1 PULSE_LATENCY_MSEC=30 DXVK_STATE_CACHE=1 PROTON_LOCAL_SHADER_CACHE=1 DXVK_ASYNC=1 DXVK_ENABLE_NVAPI=1 PROTON_NVIDIA_NVOPTIX=1 PROTON_NVIDIA_LIBS_NO_32BIT=1 PROTON_USE_EAC_LINUX=1 PROTON_ENABLE_NVAPI=1 PROTON_ENABLE_NGX_UPDATER=1 PROTON_DLSS_UPGRADE=1 PROTON_ENABLE_WAYLAND=1 PROTON_FSR4_UPGRADE=1 PROTON_USE_NTSYNC=1 DXVK_CONFIG="dxgi.syncInterval=0 VKD3D_CONFIG=dxr12,dxr,upload_hvv LD_PRELOAD="" XMODIFIERS="" mangohud dlss-swapper gamemoderun %command% -dx12 -full-screen -useallavailablecores`
+- ARC Raiders: `mangohud __GL__THREADED_OPTIMIZATIONS=1 PULSE_LATENCY_MSEC=30 DXVK_STATE_CACHE=1 PROTON_LOCAL_SHADER_CACHE=1 DXVK_ASYNC=1 DXVK_ENABLE_NVAPI=1 PROTON_NVIDIA_NVOPTIX=1 PROTON_NVIDIA_LIBS_NO_32BIT=1 PROTON_USE_EAC_LINUX=1 PROTON_ENABLE_NVAPI=1 PROTON_ENABLE_NGX_UPDATER=1 PROTON_DLSS_UPGRADE=1 PROTON_ENABLE_WAYLAND=1 PROTON_FSR4_UPGRADE=1 PROTON_USE_NTSYNC=1 DXVK_CONFIG="dxgi.syncInterval=0 VKD3D_CONFIG=dxr12,dxr,upload_hvv LD_PRELOAD="" XMODIFIERS="" mangohud dlss-swapper gamemoderun %command% -dx12 -full-screen -useallavailablecores -high`
   > - `sudo sysctl -w vm.max_map_count=2147483642vm.max_map_count=2147483642` and LD_PRELOAD="" (crash fix)
   > - Set mangohud (mangojuice) VSYNC > VULKAN config to OFF for IMMEDIATE frame presentation
   > - Add kernel parameter: vsyscall=emulate
