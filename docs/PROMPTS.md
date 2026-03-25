@@ -114,8 +114,6 @@ Success: all generated files are project-specific, non-trivially useful, and pas
 - AGENTS.md exists and contains exact CLI commands for build/test/lint
 - .kilocodeignore exists and contains ≥1 secret/credential pattern AND ≥1 build-output pattern
 - .ignore exists (may be minimal if .gitignore is comprehensive; document why if empty)
-
-Output: shell script creating the full tree + summary table.
 </answer>
 ```
 </details>
