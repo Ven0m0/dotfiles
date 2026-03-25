@@ -182,8 +182,15 @@ deploy_home() {
   worktree="$(yadm config core.worktree 2>/dev/null || printf '%s' "$HOME")"
   local home_dir="${worktree}/Home"
   [[ -d $home_dir ]] || { warn "Home/ not found at $home_dir"; return 0; }
-  log "Deploying Home/ → $HOME/..."
-  rsync -a --delete --exclude='.git' --exclude='.gitignore' "${home_dir}/" "${HOME}/"
+  local backup_dir="${HOME}/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
+  log "Deploying Home/ → $HOME/  (backups → $backup_dir)"
+  # --no-delete: never remove files from $HOME that aren't in the repo
+  # --backup: preserve any overwritten file in $backup_dir for recovery
+  rsync -a --backup --backup-dir="$backup_dir" \
+    --exclude='.git' --exclude='.gitignore' \
+    "${home_dir}/" "${HOME}/"
+  # Remove backup dir if nothing was actually backed up
+  find "$backup_dir" -maxdepth 0 -empty -exec rmdir {} \; 2>/dev/null || true
 }
 
 configure_shell() {
@@ -324,8 +331,9 @@ main() {
   setup_git
   install_pkgs       # pacman + AUR from pkg/*.txt — includes yadm, stow, konsave
   setup_dotfiles     # yadm clone --bootstrap → triggers .config/yadm/bootstrap
-  # These are no-ops if bootstrap already ran them, safe to call again as idempotent fallbacks:
-  deploy_home        # rsync ~/Home/ → ~/ (no-op if bootstrap already did it)
+  # deploy_home is a fallback only — bootstrap already ran rsync.
+  # Re-running it is safe (no --delete) but wasteful; skip when yadm repo exists.
+  [[ ! -d $YADM_DIR ]] && deploy_home  # only on fresh clone (bootstrap may have failed)
   configure_shell
   link_system_configs
   apply_konsave_profile
