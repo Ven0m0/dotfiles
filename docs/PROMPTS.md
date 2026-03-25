@@ -1,5 +1,7 @@
 
+<details><summary><b>Opencode/Kilocode rules</b></summary>
 
+```text
 <investigate_before_answering>
 Before generating any files, read these paths if they exist — never speculate about project stack, commands, or workflows:
 - package.json / Cargo.toml / pyproject.toml / go.mod / build.gradle / CMakeLists.txt
@@ -139,3 +141,5 @@ Success: all generated files are project-specific, non-trivially useful, and pas
 
 Output: shell script creating the full tree + summary table.
 </answer>
+```
+</details>
