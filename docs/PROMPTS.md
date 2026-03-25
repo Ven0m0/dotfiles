@@ -54,31 +54,7 @@ All file-read operations above are independent — execute them in parallel.
 
    b. `.kilocode/rules-code/` — rules that apply only in Code mode: diff size limits, refactor scope, forbidden patterns.
 
-   c. `.kilocodemodes` (YAML) — define 2–4 custom modes relevant to this project. Use this schema:
-```yaml
-   customModes:
-     - slug: <slug>           # /^[a-zA-Z0-9-]+$/
-       name: <emoji + name>
-       description: <one line shown in UI>
-       roleDefinition: >-
-         <expert identity, 2–4 sentences>
-       whenToUse: <one line for orchestrator routing>
-       customInstructions: |-
-         <bullet list of behavioral rules>
-       groups:
-         - read
-         - - edit
-           - fileRegex: <pattern>   # restrict edit scope
-             description: <label>
-         - command   # only if shell access needed
-```
-   Recommended modes to generate if applicable:
-   - A read-only `review` mode (fileRegex blocks all edits, groups: [read, browser])
-   - A `test-engineer` mode locked to test file patterns
-   - A `docs-writer` mode locked to `\.md$`
-   - A project-specific mode (e.g., `migration`, `api-design`, `infra`) if a clear workflow exists
-
-   d. `.kilocode/skills/` — mirror any `.opencode/skills/` skills here (same SKILL.md format). Kilo picks up from `.kilocode/skills/*/SKILL.md`. Mode-specific: `.kilocode/skills-{mode-slug}/`.
+   c. `.kilocode/skills/` — mirror any `.opencode/skills/` skills here (same SKILL.md format). Kilo picks up from `.kilocode/skills/*/SKILL.md`. Mode-specific: `.kilocode/skills-{mode-slug}/`.
 
 4. **Generate `.kilocodeignore`** at project root. This file uses gitignore syntax and tells Kilo Code which paths it MUST NOT access via any tool (read_file, write_to_file, apply_diff, delete_file, execute_command, list_files). Generate by:
    - Scanning for secrets/credentials: `.env*`, `*.pem`, `*.key`, `*.crt`, `*credentials*`, `*secrets*`, `*token*`
