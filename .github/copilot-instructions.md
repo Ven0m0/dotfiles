@@ -1,7 +1,6 @@
 # GitHub Copilot Dev Guardrails
 
 **Purpose:** Code generation guardrails for GitHub Copilot
-**Model:** copilot (claude-sonnet-4.5 based)
 **Tone:** Blunt, precise. Result-first. Lists ≤7.
 
 ---
@@ -298,9 +297,9 @@ Why: Single file read + associative array lookup
 | Topic | Reference |
 |-------|-----------|
 | Bash Standards | [`.github/instructions/bash.instructions.md`](.github/instructions/bash.instructions.md) |
-| Project Overview | [`CLAUDE.md`](../CLAUDE.md) (or `AGENTS.md`/`GEMINI.md`) |
-| Repository Structure | `CLAUDE.md` → Repository Structure section |
-| Scripts Inventory | `CLAUDE.md` → Scripts Inventory section |
-| Tool Installation | `CLAUDE.md` → Dependencies section |
-| Common Tasks | `CLAUDE.md` → Common Tasks section |
-| Git Workflow | `CLAUDE.md` → Git Workflow section |
+| Python Standards | [`.github/instructions/python.instructions.md`](.github/instructions/python.instructions.md) |
+| Project Overview | [`AGENTS.md`](../AGENTS.md) (symlinked as `CLAUDE.md`, `GEMINI.md`) |
+| Repository Structure | `AGENTS.md` → Project Structure section |
+| Scripts Inventory | `AGENTS.md` → Scripts Inventory section |
+| Dependencies | `AGENTS.md` → Dependencies section |
+| Git Workflow | `AGENTS.md` → Git Workflow section |
