@@ -420,8 +420,11 @@ def process(
     ratio = out_sz / in_sz if in_sz else 0
     log.info(f"  {in_sz / 1e6:.2f}MB → {out_sz / 1e6:.2f}MB ({ratio:.1%})")
     if cfg.in_place:
-        inp.unlink()
-        log.ok("  Removed original")
+        if out_sz < in_sz:
+            inp.unlink()
+            log.ok("  Removed original")
+        else:
+            log.warn(f"  Output larger ({out_sz / 1e6:.2f}MB), kept original")
     return True, in_sz, out_sz
 
 
