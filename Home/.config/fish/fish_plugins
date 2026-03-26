@@ -1,6 +1,5 @@
 eth-p/fish-plugin-sudo
 acomagu/fish-async-prompt
-# archelaus/shell-mommy
 oh-my-fish/plugin-xdg
 patrickf1/fzf.fish
 kyohsuke/fish-evalcache
@@ -11,13 +10,10 @@ eugene-babichenko/fish-codegen-cache
 wk/plugin-ssh-term-helper
 rubiev/plugin-fuck
 jorgebucaran/autopair.fish
-ven0m0/sponge
-nickeb96/puffer-fish
 laughedelic/pisces
 gazorby/fifc
 kpbaks/autols.fish
 halostatue/fish-rust@
-kpbaks/zellij.fish
 wawa19933/fish-systemd
 givensuman/fish-bat
 edc/bass
