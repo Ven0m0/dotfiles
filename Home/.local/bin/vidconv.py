@@ -153,7 +153,7 @@ class Config:
     scale: str | None = None
     extra: list[str] = field(default_factory=list)
     dry_run: bool = False
-    skip_existing: bool = False
+    skip_existing: bool = True
     in_place: bool = False
 
 
