@@ -18,21 +18,16 @@
     "opencode-ignore",
     "github:JRedeker/opencode-morph-fast-apply",
     "opencode-fastedit",
+    "openslimedit@latest",
     "@spoons-and-mirrors/subtask2@latest",
     "@azumag/opencode-rate-limit-fallback",
     "opencode-plugin-auto-update",
     "@hueyexe/opencode-ensemble"
   ],
-  "tools": {
-    "edit": true,
-    "write": true,
-    "bash": true,
-    "webfetch": "allow"
-  },
   "permission": {
     "*": "allow",
     "doom_loop": "deny"
-  }
+  },
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
   },
