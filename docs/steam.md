@@ -67,7 +67,7 @@ chmod 600 /tmp/dumps
 - Celeste: `SDL_VIDEODRIVER=wayland %command%`
 - Hollow Knight: `-force-vulkan %command%`
 - Haste: `-force-vulkan %command%`
-- ARC Raiders: `__GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1 __GL_SYNC_TO_VBLANK=0 __GL_MaxFramesAllowed=1 __GLX_VENDOR_LIBRARY_NAME=nvidia PROTON_LOCAL_SHADER_CACHE=1 PROTON_DLSS_UPGRADE=1 PROTON_ENABLE_WAYLAND=1 PROTON_USE_NTSYNC=1 PROTON_USE_VKD3D=1 DXVK_STATE_CACHE=1 PROTON_LOCAL_SHADER_CACHE=1 PROTON_ENABLE_NVAPI=1 dlss-swapper game-performance %command% -dx12`
+- ARC Raiders: `__GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1 __GL_SYNC_TO_VBLANK=0 __GL_MaxFramesAllowed=1 __GLX_VENDOR_LIBRARY_NAME=nvidia PROTON_LOCAL_SHADER_CACHE=1 PROTON_DLSS_UPGRADE=1 PROTON_ENABLE_WAYLAND=1 PROTON_USE_NTSYNC=1 PROTON_USE_VKD3D=1 DXVK_ASYNC=1 DXVK_STATE_CACHE=1 PROTON_LOCAL_SHADER_CACHE=1 PROTON_ENABLE_NVAPI=1 dlss-swapper game-performance %command% -dx12`
   > - `sudo sysctl -w vm.max_map_count=2147483642` and LD_PRELOAD="" (crash fix)
   > - Set mangohud (mangojuice) VSYNC > VULKAN config to OFF for IMMEDIATE frame presentation
   > - Add kernel parameter: vsyscall=emulate
