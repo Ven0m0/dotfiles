@@ -56,7 +56,7 @@ find_best_server() {
     BEGIN { min = 999; url = "" }
     { if ($1 < min) { min = $1; url = $2 } }
     END { print min, url }
-  ' "$tmp_dir"/*)
+  ' "$tmp_dir"/* < /dev/null)
   [[ -z $best_url ]] && die "All servers unreachable"
   printf "  ${G}Best:${N} %s (${W}%s ms${N})\n" "$best_url" "$(calc "$best_time * 1000")"
   echo "$best_url"
