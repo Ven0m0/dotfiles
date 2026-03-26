@@ -110,7 +110,6 @@ Implement the tasks defined in @PLAN.md exactly as specified. Do not add unreque
    a. Run `rg -n "{RELEVANT_PATTERN}" {SCOPE}` to locate all affected files before touching any.
    b. Implement only what the task specifies. Match acceptance criteria exactly.
    c. After each task: run `{VALIDATE_CMD}` (build/lint/test). Fix failures before proceeding.
-   d. Output: `✅ T{NNN} · {title} — done` or `❌ T{NNN} · {title} — BLOCKED: {reason}`.
 3. Exclude: `.git/` `node_modules/` `vendor/` `dist/` `.venv/` `*.min.*` `*.lock`
 4. On BLOCKED: stop, report exact blocker, wait for input.
 5. After all tasks: run full validation suite `{FINAL_VALIDATE_CMD}`.
