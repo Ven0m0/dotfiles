@@ -52,13 +52,11 @@ find_best_server() {
   done
   wait "${pids[@]}"
   local best_time=999 best_url=""
-  for f in "$tmp_dir"/*; do
-    read -r t u < "$f"
-    if (($(echo "$t < $best_time" | bc -l 2> /dev/null || echo 0))); then
-      best_time=$t
-      best_url=$u
-    fi
-  done
+  read -r best_time best_url < <(awk '
+    BEGIN { min = 999; url = "" }
+    { if ($1 < min) { min = $1; url = $2 } }
+    END { print min, url }
+  ' "$tmp_dir"/*)
   [[ -z $best_url ]] && die "All servers unreachable"
   printf "  ${G}Best:${N} %s (${W}%s ms${N})\n" "$best_url" "$(calc "$best_time * 1000")"
   echo "$best_url"
