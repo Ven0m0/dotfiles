@@ -93,3 +93,39 @@ Success: all generated files are project-specific, non-trivially useful, and pas
 </answer>
 ```
 </details>
+
+<details><summary><b>Implement PLAN.md</b></summary>
+
+```text
+<investigate_before_answering>
+Read PLAN.md in full before taking any action. Never speculate about task intent — derive it from the plan text only.
+</investigate_before_answering>
+<use_parallel_tool_calls>
+Run independent tasks in parallel. Use rg to locate all files referenced in PLAN.md before starting implementation.
+</use_parallel_tool_calls>
+Implement the tasks defined in @PLAN.md exactly as specified. Do not add unrequested features, refactor unrelated code, or skip tasks marked incomplete.
+<instructions>
+1. Read `PLAN.md` completely. Parse each task block and its acceptance criteria.
+2. For each task in order (unless marked parallelizable):
+   a. Run `rg -n "{RELEVANT_PATTERN}" {SCOPE}` to locate all affected files before touching any.
+   b. Implement only what the task specifies. Match acceptance criteria exactly.
+   c. After each task: run `{VALIDATE_CMD}` (build/lint/test). Fix failures before proceeding.
+   d. Output: `✅ T{NNN} · {title} — done` or `❌ T{NNN} · {title} — BLOCKED: {reason}`.
+3. Exclude: `.git/` `node_modules/` `vendor/` `dist/` `.venv/` `*.min.*` `*.lock`
+4. On BLOCKED: stop, report exact blocker, wait for input.
+5. After all tasks: run full validation suite `{FINAL_VALIDATE_CMD}`.
+</instructions>
+<rules>
+- NEVER modify files outside the scope defined per task.
+- NEVER mark a task done if its acceptance criteria are not fully met.
+- NEVER proceed past a failing build/lint/test.
+- NEVER infer missing requirements — report ambiguity as BLOCKED.
+- ALWAYS use `rg` (not grep), `fd` (not find), `bun`/`uv` (not npm/pip).
+</rules>
+<answer>
+Output per task: status line + any modified file paths.
+Final output: summary table (task | status | files changed).
+Success signal: all tasks `x` and `{FINAL_VALIDATE_CMD}` exits 0.
+</answer>
+```
+</details>
