@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
-cat extensions.txt | xargs -n 1 code --install-extension
+set -euo pipefail
+xargs -n 1 code --install-extension < extensions.txt
