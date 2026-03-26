@@ -24,7 +24,7 @@ Technologies:
   • Shell: Bash (ble.sh), Zsh (Zimfw), Fish, Starship
   • Deployment: YADM (user), Tuckr/stow (system)
   • CI/CD: GitHub Actions (6 workflows)
-  • Hooks: Lefthook (8 pre-commit hooks)
+  • Hooks: prek (pre-commit compatible, 11 hook sources)
   • Desktop: KDE Plasma (Wayland), Catppuccin Mocha
 ```
 
@@ -107,7 +107,7 @@ dotfiles/
 │   │   ├── fish/            # Fish shell
 │   │   ├── ghostty/         # Terminal emulator
 │   │   ├── gh/              # GitHub CLI
-│   │   ├── lefthook.yml     # Git pre-commit hooks
+│   │   ├── [app configs]    # 65+ app configurations
 │   │   ├── mpv/             # Media player
 │   │   ├── starship.toml    # Cross-shell prompt
 │   │   ├── yadm/            # YADM bootstrap
@@ -480,7 +480,7 @@ Full setup:     setup.sh (one-shot bootstrap)
 | python3 | Python scripts |
 
 **Development Tools**
-- shellcheck, shfmt, yamlfmt, yamllint, jaq, lefthook
+- shellcheck, shfmt, yamlfmt, yamllint, jaq, prek, taplo, biome
 
 **Optional Modern Tools**
 - fd (find), rg (grep), bat (cat), eza (ls)
@@ -558,17 +558,20 @@ Full setup:     setup.sh (one-shot bootstrap)
 
 ### Pre-commit Hooks (Automatic)
 
-Lefthook runs on every commit (parallel):
+prek (`.pre-commit-config.yaml`) runs on every commit:
 1. Shell format/lint (shfmt, shellcheck, shellharden)
-2. YAML format/lint (yamlfmt, yamllint)
-3. TOML format/lint (taplo)
-4. JSON validation (jaq)
+2. YAML format/lint (yamlfmt, yamllint strict)
+3. TOML format/lint (check-toml builtin, taplo)
+4. JSON validation (check-json builtin)
 5. JavaScript/TypeScript (biome)
-6. Markdown lint (markdownlint-cli2)
-7. Whitespace cleanup
+6. Markdown lint (rumdl)
+7. Whitespace/encoding cleanup (trailing-whitespace, fix-byte-order-marker, mixed-line-ending)
 8. GitHub Actions lint (actionlint)
+9. Secret detection (detect-secrets)
+10. Python type check (basedpyright)
+11. Schema validation (check-github-workflows, check-dependabot)
 
-All hooks auto-fix and stage changes.
+Run `prek install` to install hooks. Auto-fix hooks stage their changes.
 
 ---
 
@@ -610,10 +613,10 @@ chmod +x ~/dotfiles/Home/.local/bin/*
 
 ```bash
 # Hooks not running
-lefthook install
+prek install
 
-# Run hook manually
-lefthook run pre-commit
+# Run hooks manually
+prek run pre-commit
 
 # Skip temporarily (emergency)
 git commit --no-verify -m "message"

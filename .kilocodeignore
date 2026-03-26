@@ -1,0 +1,104 @@
+# .kilocodeignore — Paths Kilo Code MUST NOT access via any tool
+# (read_file, write_to_file, apply_diff, delete_file, execute_command, list_files)
+# Uses gitignore syntax.
+
+#######################
+# Secrets & Credentials
+#######################
+.gnupg/
+.ssh/id_*
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*credentials*
+*secrets*
+*token
+*token*
+*apikey*
+*password*
+*.secret
+.github-personal-access-token
+gha-creds-*.json
+.config/gh/hosts.yml
+.yadm/archive
+.yadm/encrypt
+.yadm/files.gpg
+
+# Un-ignore safe SSH config (no keys, no auth material)
+!.ssh/config
+!.ssh/known_hosts
+
+#######################
+# Build Output & Generated
+#######################
+__pycache__/
+*.pyc
+*.pyo
+*$py.class
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+target/
+result
+result-*
+node_modules/
+.venv/
+.venv*/
+.env
+.env.*
+!.env.example
+
+#######################
+# Large / Binary Assets
+#######################
+*.lock
+*.sqlite
+*.db
+!modprobed.db
+*.iso
+*.deb
+*.rpm
+*.dmg
+*.tar.gz
+*.tar.xz
+*.tar.zst
+*.zip
+*.7z
+
+#######################
+# Shell History & Runtime
+#######################
+.*history
+*history
+.zsh_sessions/
+.zcompcache/
+.zcompdump*
+.thumbnails/
+.nv/
+*.log
+*.log.*
+tmp/
+nohup.out
+
+#######################
+# OS & Editor Cruft
+#######################
+.DS_Store
+Thumbs.db
+.directory
+.Trash-*
+*.swp
+*.kate-swp
+.idea/
+.vscode/
+
+#######################
+# execute_command restriction
+#######################
+# The following shell commands MUST NOT be run on blocked files above,
+# since execute_command bypasses read_file restrictions:
+# cat, head, tail, less, more, bat, strings, xxd, od, hexdump,
+# grep, rg, awk, sed, python3 -c open(), jq, jaq

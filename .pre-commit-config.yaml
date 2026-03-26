@@ -6,6 +6,7 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
+      - id: check-json
       - id: check-toml
       - id: fix-byte-order-marker
       - id: mixed-line-ending
@@ -21,6 +22,11 @@ repos:
     rev: v0.21.0
     hooks:
       - id: yamlfmt
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.37.0
+    hooks:
+      - id: yamllint
+        args: [-s]
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
@@ -39,12 +45,36 @@ repos:
     rev: v0.11.0
     hooks:
       - id: shellcheck
+        args: [-S, style, -x]
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: v3.12.0-2
     hooks:
       - id: shfmt
+        args: [-w, -i, "2", -bn, -ci, -sr]
+  - repo: https://github.com/biomejs/pre-commit
+    rev: v0.6.1
+    hooks:
+      - id: biome-check
+        additional_dependencies: ["@biomejs/biome@1.9.4"]
   - repo: https://github.com/rvben/rumdl-pre-commit
     rev: v0.1.60
     hooks:
       - id: rumdl      # Lint only (fails on issues)
       - id: rumdl-fmt  # Auto-format and fail if issues remain
+  - repo: local
+    hooks:
+      - id: taplo-format
+        name: taplo format
+        language: system
+        entry: taplo format
+        types: [toml]
+      - id: taplo-lint
+        name: taplo lint
+        language: system
+        entry: taplo lint
+        types: [toml]
+      - id: shellharden
+        name: shellharden
+        language: system
+        entry: shellharden --replace
+        types: [shell]

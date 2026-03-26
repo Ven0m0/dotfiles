@@ -1,0 +1,40 @@
+# .ignore — ripgrep ignore file (consumed by opencode's grep/glob/list tools)
+# .gitignore already excludes most build output and secrets.
+# This file primarily UN-IGNORES paths that .gitignore hides but opencode should discover.
+
+# Un-ignore opencode and kilocode config (gitignored via .vscode/* pattern catch-all?)
+!.opencode/
+!.kilocode/
+
+# Un-ignore shell config files that start with dot (some tools skip dotfiles)
+!.bashrc
+!.bash_functions
+!.bash_exports
+!.blerc
+!.shellcheckrc
+!.editorconfig
+!.ripgreprc
+!.inputrc
+
+# Un-ignore SSH client config (non-secret)
+!.ssh/config
+
+# Un-ignore YADM bootstrap and config (tracked, not secret)
+!.yadm/bootstrap
+!.yadm/config
+
+# Explicitly exclude dirs that opencode should never search
+# (.gitignore handles most, but reinforce key ones)
+.git/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+node_modules/
+.venv/
+target/
+dist/
+build/
+.cache/
+.thumbnails/
+.nv/
+megalinter-reports/
