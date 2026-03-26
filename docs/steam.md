@@ -68,6 +68,17 @@ ln -s /dev/null /tmp/dumps
 mkdir /tmp/dumps
 chmod 600 /tmp/dumps
 ```
+Wine regedit
+
+```reg
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"Renderer"="vulkan"
+"MultisampleTextures"=dword:00000000
+"Multisampling"="disabled"
+"CSMT"="enabled"
+"StrictDrawOrdering"="disabled"
+```
+
 ## Games:
 
 - Celeste: `SDL_VIDEODRIVER=wayland %command%`
