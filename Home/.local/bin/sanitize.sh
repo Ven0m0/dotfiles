@@ -191,8 +191,10 @@ cmd_filenames() {
   for src in "${files[@]}"; do
     [[ -e $src ]] || continue
     local dir base clean
-    dir=$(dirname "$src")
-    base=$(basename "$src")
+    dir="${src%/*}"
+    [[ "$dir" == "$src" ]] && dir="."
+    [[ -z "$dir" ]] && dir="/"
+    base="${src##*/}"
     clean="$base"
     [[ $trans -eq 1 ]] && clean=$(printf '%s' "$clean" | iconv -f utf8 -t ascii//translit 2> /dev/null || printf '%s' "$clean")
     clean=${clean//[\`\$\!\*\?\<\>\|\"\'\:\;]/}
