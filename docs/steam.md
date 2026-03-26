@@ -11,6 +11,12 @@
 
 ### General
 
+-> For arch:
+
+```bash
+parru -S dxvk-async-git dxvk-nvapi-vkreflex-layer vkd3d-proton-git vkd3d proton-cachyos-slr bottles protontricks
+```
+
 Gamescope: `gamescope -f --force-grab-cursor -w 1920 -h 1080 -- %command%`
 
 ```bash
