@@ -1,0 +1,110 @@
+{
+  "$schema":"https://opencode.ai/config.json",
+  "instructions": [
+    "https://raw.githubusercontent.com/JRedeker/opencode-morph-fast-apply/refs/heads/trunk/instructions/morph-tools.md",
+    "AGENTS.md"
+  ],
+  "plugin": [
+    "@nick-vi/opencode-type-inject",
+    "@tarquinen/opencode-dcp@latest",
+    "@bastiangx/opencode-unmoji",
+    "@old-mikser/occontext-thinking-trim",
+    "@franlol/opencode-md-table-formatter@latest",
+    "opencode-gemini-auth",
+    "opencode-google-antigravity-auth",
+    "opencode-kilo-auth@latest",
+    "@gotgenes/opencode-agent-identity",
+    "opencode-ignore",
+    "github:JRedeker/opencode-morph-fast-apply",
+    "opencode-fastedit",
+    "@spoons-and-mirrors/subtask2@latest",
+    "@azumag/opencode-rate-limit-fallback",
+    "opencode-plugin-auto-update"
+  ],
+  "tools": {
+    "edit": true,
+    "write": true,
+    "bash": true,
+    "webfetch": "allow"
+  },
+  "watcher": {
+    "ignore": ["node_modules/**", "dist/**", ".git/**"]
+  },
+  "share": "auto",
+  "model": "kilo/kilo-auto/frontier",
+  "small_model": "kilo/minimax/minimax-m2.5:free",
+  "default_agent": "plan",
+  "agent": {
+    "plan": {
+      "model": "kilo/kilo-auto/frontier",
+      "temperature": 0.3,
+      "reasoningEffort": "high",
+      "textVerbosity": "low"
+    },
+    "build": {
+      "model": "kilo/kilo-auto/frontier",
+      "temperature": 0.3,
+      "reasoningEffort": "high",
+      "textVerbosity": "low"
+    },
+    "coder": {
+      "model": "openrouter/minimax/minimax-m2.7",
+      "temperature": 0.2,
+      "reasoningEffort": "medium",
+      "textVerbosity": "low"
+    },
+    "explore": {
+      "model": "kilo/minimax/minimax-m2.5:free",
+      "temperature": 0.2,
+      "reasoningEffort": "low",
+      "textVerbosity": "low"
+    },
+    "researcher": {
+      "model": "kilo/kilo-auto/frontier",
+      "temperature": 0.4,
+      "reasoningEffort": "high",
+      "textVerbosity": "medium"
+    },
+    "scribe": {
+      "model": "kilo/minimax/minimax-m2.5:free",
+      "temperature": 1,
+      "reasoningEffort": "low",
+      "textVerbosity": "high"
+    },
+    "reviewer": {
+      "model": "kilo/z-ai/glm-5",
+      "temperature": 0.1,
+      "reasoningEffort": "high",
+      "textVerbosity": "medium"
+    }
+  },
+  "provider": {
+    "anthropic": {
+      "options": {
+        "timeout": 600000,
+        "chunkTimeout": 30000,
+        "setCacheKey": true,
+        "apiKey": "{env:ANTHROPIC_API_KEY}"
+      }
+    }
+  },
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "exa": {
+      "type": "remote",
+      "url": "https://mcp.exa.ai/mcp"
+    },
+    "gh_grep": {
+      "type": "remote",
+      "url": "https://mcp.grep.app"
+    }
+  },
+  "experimental": {
+    "continue_loop_on_deny": false,
+    "mcp_timeout": 10000,
+    "openTelemetry": false
+  }
+}
