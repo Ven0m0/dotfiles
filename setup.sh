@@ -75,12 +75,6 @@ load_pkgs() {
 }
 
 # --- Repo & AUR helper setup ---
-pm_detect() {
-  for pm in paru yay pacman; do
-    has "$pm" && printf '%s' "$pm" && return
-  done
-}
-PKG_MGR="${PKG_MGR:-$(pm_detect)}"
 
 setup_repos() {
   log "Configuring repositories..."
@@ -104,7 +98,6 @@ setup_repos() {
     git clone https://aur.archlinux.org/paru-bin.git "$WORKDIR/paru-bin"
     (cd "$WORKDIR/paru-bin" && makepkg -si --noconfirm)
   }
-  PKG_MGR=paru
 }
 
 install_pkgs() {
