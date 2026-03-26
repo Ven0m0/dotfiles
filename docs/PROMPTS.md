@@ -38,7 +38,7 @@ All file-read operations above are independent — execute them in parallel.
    - `commit.md` — conventional commit from `` !`git diff --staged` ``
    Add project-specific commands for any repeated workflows found in Makefile/justfile/CI.
 
-   b. `.opencode/skills/` — one folder per skill, each with `SKILL.md`. Frontmatter: `name` (match dir name, lowercase-alphanum-hyphen, ≤64 chars), `description` (≤1024 chars, written so the agent picks it correctly). Body: concise expert instructions. Generate skills for:
+   b. `.opencode/skills/` — one folder per skill, each with `SKILL.md`. Frontmatter: `name` (match dir name, lowercase-alphanum-hyphen, ≤64 chars), `description` (≤512 chars, written so the agent picks it correctly). Body: concise expert instructions. Generate skills for:
    - Detected stack conventions (e.g., `rust-idioms`, `nextjs-patterns`, `django-conventions`)
    - Repo-specific patterns found in code (naming, error handling, API shapes)
    - Any CI/release/git workflow worth encoding
@@ -52,9 +52,7 @@ All file-read operations above are independent — execute them in parallel.
    - `testing.md` — test structure, coverage expectations, mocking policy
    Include only rules that are specific and actionable — no generic AI platitudes.
 
-   b. `.kilocode/rules-code/` — rules that apply only in Code mode: diff size limits, refactor scope, forbidden patterns.
-
-   c. `.kilocode/skills/` — mirror any `.opencode/skills/` skills here (same SKILL.md format). Kilo picks up from `.kilocode/skills/*/SKILL.md`. Mode-specific: `.kilocode/skills-{mode-slug}/`.
+   b. `.kilocode/skills/` — mirror any `.opencode/skills/` skills here (same SKILL.md format). Kilo picks up from `.kilocode/skills/*/SKILL.md`. Mode-specific: `.kilocode/skills-{mode-slug}/`.
 
 4. **Generate `.kilocodeignore`** at project root. This file uses gitignore syntax and tells Kilo Code which paths it MUST NOT access via any tool (read_file, write_to_file, apply_diff, delete_file, execute_command, list_files). Generate by:
    - Scanning for secrets/credentials: `.env*`, `*.pem`, `*.key`, `*.crt`, `*credentials*`, `*secrets*`, `*token*`
@@ -110,7 +108,6 @@ Success: all generated files are project-specific, non-trivially useful, and pas
 - rg "TODO|PLACEHOLDER|generic" .opencode/ .kilocode/ AGENTS.md → zero matches
 - Every SKILL.md has name + description frontmatter with name matching its directory
 - Every .kilocode/rules/*.md contains ≥1 concrete, falsifiable rule
-- .kilocodemodes is valid YAML with ≥2 custom modes
 - AGENTS.md exists and contains exact CLI commands for build/test/lint
 - .kilocodeignore exists and contains ≥1 secret/credential pattern AND ≥1 build-output pattern
 - .ignore exists (may be minimal if .gitignore is comprehensive; document why if empty)
