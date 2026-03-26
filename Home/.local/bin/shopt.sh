@@ -142,21 +142,21 @@ preprocess_shell() {
 # Minify: strip comments (except copyright/license in first 10 lines), normalize function syntax
 minify_enhanced() {
   local in="$1" out="$2"
-  : > "$out"
-  while IFS= read -r line; do
-    [[ $line =~ ^#! ]] && continue
-    if [[ $line =~ ^[[:space:]]*# ]]; then
-      ((NR <= 10)) && [[ $line =~ Copyright|License ]] && {
-        printf '%s\n' "$line" >> "$out"
-        continue
+  sed -E '
+    /^#!/d
+    /^[[:space:]]*#/ {
+      1,10 {
+        /Copyright|License/ !d
+        b
       }
-      continue
-    fi
-    line=$(sed -E 's/^[[:space:]]*function[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\{/\1(){/g' <<< "$line")
-    local stripped
-    stripped=$(sed -E 's/[[:space:]]+#[[:space:]]*[a-zA-Z0-9 ]*$//; s/^[[:space:]]+//; s/[[:space:]]+$//' <<< "$line")
-    [[ -n $stripped ]] && printf '%s\n' "$stripped" >> "$out"
-  done < "$in"
+      d
+    }
+    s/^[[:space:]]*function[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\{/\1(){/g
+    s/[[:space:]]+#[[:space:]]*[a-zA-Z0-9 ]*$//
+    s/^[[:space:]]+//
+    s/[[:space:]]+$//
+    /^$/d
+  ' "$in" > "$out"
   sed -i -e '/^:[[:space:]]*'"'"'/,/^'"'"'/d' -e '/^#[[:space:]]*[-─]{5,}/d' "$out" 2> /dev/null || :
 }
 
