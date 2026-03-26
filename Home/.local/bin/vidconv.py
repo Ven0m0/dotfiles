@@ -723,7 +723,7 @@ def parse_args() -> tuple[argparse.Namespace, list[str]]:
         "-n", "--dry-run", action="store_true", help="Print planned conversions without encoding"
     )
     p.add_argument(
-        "--skip-existing", action="store_true", help="Skip if output file already exists"
+        "--overwrite", dest="skip_existing", action="store_false", help="Overwrite if output file already exists"
     )
     p.add_argument(
         "-j", "--jobs", type=int, default=1, help="Number of parallel jobs (default: 1)"
