@@ -29,6 +29,14 @@ WINEESYNC=1
 WINEFSYNC=1
 WINEDLLOVERRIDES=mscoree=d;mshtml=d
 PROTON_USE_WOW64=1
+winetricks -q --optout vcrun2022 vkd3d dxvk d3dx9 corefonts
+wine reg add "HKCU\Software\Wine\Direct3D" /v Renderer /t REG_SZ /d "vulkan" /f
+wine reg add "HKCU\Software\Wine\Direct3D" /v CSMT /t REG_SZ /d "enabled" /f
+wine reg add "HKCU\Software\Wine\Direct3D" /v MultisampleTextures /t REG_DWORD /d 0 /f
+wine reg add "HKCU\Software\Wine\Direct3D" /v Multisampling /t REG_SZ /d "disabled" /f
+wine reg add "HKCU\Software\Wine\Direct3D" /v StrictDrawOrdering /t REG_SZ /d "disabled" /f
+# Only for steelseries engine
+wine reg add HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\WineBus /v Enable\ SDL /t Reg_Dword /d 0 /f
 ```
 ### offline:
 
