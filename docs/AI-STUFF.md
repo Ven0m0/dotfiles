@@ -184,7 +184,6 @@ _Generated: {ISO date} · {N} tasks · Est. {total LOC range}_
 {exact code pattern, type, function signature, or algorithm — not prose}
 
 ---
-```
 
 After writing PLAN.md:
 - Run `wc -l PLAN.md` and report: total tasks, breakdown by severity, breakdown by category, estimated LOC delta totals (S/M/L/XL counts)
