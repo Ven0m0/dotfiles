@@ -22,4 +22,5 @@ When you encounter a file reference such as `@rules/general.md`, load it with th
 - Do not preemptively load all referenced files
 - Treat loaded referenced content as mandatory for the task at hand
 - Follow referenced files recursively when needed
+
 @../AGENTS.md
