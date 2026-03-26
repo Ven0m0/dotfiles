@@ -3,7 +3,7 @@
     "autoInstallDxvk": true,
     "autoInstallDxvkNvapi": true,
     "autoInstallVkd3d": true,
-    "preferSystemLibs": false,
+    "preferSystemLibs": true,
     "enableEsync": true,
     "enableMsync": false,
     "enableFSR": true,
