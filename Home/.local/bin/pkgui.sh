@@ -579,7 +579,32 @@ v - Version
 MENU
     )
     case "${choice%% *}" in
-      s) _pkgui_search ;; S) _pkgui_search | _pkgui_inst ;; l) _pkgui_local ;; R) _pkgui_local | _pkgui_rm ;; A) _pkgui_orphans interactive ;; O) _pkgui_opt_deps | _pkgui_rm ;; U) _pkgui_upd_check ;; u) _pkgui_upd_full ;; F) _pkgui_upd_flat ;; b) _pkgui_browse_aur ;; a) _pkgui_search_aur_rpc | _pkgui_inst ;; M) _pkgui_maint ;; C) _pkgui_clean ;; m) _pkgui_mirrors ;; f) _pkgui_fw ;; k) _pkgui_svc ;; P) _pkgui_gen_lists ;; B) _pkgui_backup ;; T) _pkgui_restore ;; L) _pkgui_sync_list ;; X) _pkgui_export ;; I) _pkgui_import ;; i) _pkgui_info_sys ;; n) _pkgui_notify ;; h) _pkgui_help ;; v) _pkgui_ver ;;
+      s) _pkgui_search ;;
+      S) _pkgui_search | _pkgui_inst ;;
+      l) _pkgui_local ;;
+      R) _pkgui_local | _pkgui_rm ;;
+      A) _pkgui_orphans interactive ;;
+      O) _pkgui_opt_deps | _pkgui_rm ;;
+      U) _pkgui_upd_check ;;
+      u) _pkgui_upd_full ;;
+      F) _pkgui_upd_flat ;;
+      b) _pkgui_browse_aur ;;
+      a) _pkgui_search_aur_rpc | _pkgui_inst ;;
+      M) _pkgui_maint ;;
+      C) _pkgui_clean ;;
+      m) _pkgui_mirrors ;;
+      f) _pkgui_fw ;;
+      k) _pkgui_svc ;;
+      P) _pkgui_gen_lists ;;
+      B) _pkgui_backup ;;
+      T) _pkgui_restore ;;
+      L) _pkgui_sync_list ;;
+      X) _pkgui_export ;;
+      I) _pkgui_import ;;
+      i) _pkgui_info_sys ;;
+      n) _pkgui_notify ;;
+      h) _pkgui_help ;;
+      v) _pkgui_ver ;;
       *) continue ;;
     esac
   done
