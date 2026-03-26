@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Final, Iterable, Iterator
 
-# TODO: implement features of https://github.com/hykilpikonna/formtool
+
 
 # ─── Constants ───
 VIDEO_EXTS: Final = frozenset(
@@ -152,6 +152,9 @@ class Config:
     crop: str | None = None
     scale: str | None = None
     extra: list[str] = field(default_factory=list)
+    dry_run: bool = False
+    skip_existing: bool = False
+    in_place: bool = False
 
 
 @dataclass(slots=True)
@@ -400,10 +403,15 @@ def gen_out_path(
 
 
 def process(
-    inp: Path, out: Path, preset: Preset, cfg: Config, log: Log, delete: bool
+    inp: Path, out: Path, preset: Preset, cfg: Config, log: Log
 ) -> tuple[bool, int, int]:
     in_sz = inp.stat().st_size
     log.info(f"  {inp.name} → {out.name}")
+
+    if cfg.dry_run:
+        log.info("  [dry-run]")
+        return True, in_sz, 0
+
     if not convert(inp, out, preset, cfg, log):
         if out.exists():
             out.unlink()
@@ -411,12 +419,9 @@ def process(
     out_sz = out.stat().st_size
     ratio = out_sz / in_sz if in_sz else 0
     log.info(f"  {in_sz / 1e6:.2f}MB → {out_sz / 1e6:.2f}MB ({ratio:.1%})")
-    if delete:
-        if out_sz < in_sz:
-            inp.unlink()
-            log.ok("  Removed original")
-        else:
-            log.warn("  Output larger, kept original")
+    if cfg.in_place:
+        inp.unlink()
+        log.ok("  Removed original")
     return True, in_sz, out_sz
 
 
@@ -426,12 +431,11 @@ def process_item(
     cfg: Config,
     out_dir: Path | None,
     src_root: Path | None,
-    delete: bool,
     log: Log,
 ) -> tuple[Stats, str]:
     stats = Stats()
     out = gen_out_path(inp, preset, cfg, out_dir, src_root)
-    if out.exists():
+    if cfg.skip_existing and out.exists():
         stats.skipped += 1
         return stats, f"Skipped (exists): {out.name}"
     if inp == out:
@@ -439,7 +443,7 @@ def process_item(
         return stats, f"Skipped (same): {inp.name}"
 
     # Use quiet log for parallel workers to prevent interleaved output
-    ok, in_sz, out_sz = process(inp, out, preset, cfg, log, delete)
+    ok, in_sz, out_sz = process(inp, out, preset, cfg, log)
 
     if ok:
         stats.processed += 1
@@ -463,7 +467,6 @@ def run_batch(
     log: Log,
     out_dir: Path | None,
     src_root: Path | None,
-    delete: bool,
     jobs: int,
 ) -> Stats:
     stats = Stats()
@@ -527,7 +530,6 @@ def run_batch(
                                 cfg,
                                 out_dir,
                                 src_root,
-                                delete,
                                 quiet_log,
                             )
                         ] = f
@@ -563,7 +565,6 @@ def run_batch(
                                     cfg,
                                     out_dir,
                                     src_root,
-                                    delete,
                                     quiet_log,
                                 )
                             ] = next_f
@@ -578,7 +579,7 @@ def run_batch(
         log.prog(i, total, inp.name)
         print()
         out = gen_out_path(inp, preset, cfg, out_dir, src_root)
-        if out.exists():
+        if cfg.skip_existing and out.exists():
             log.warn(f"  Skipping (exists): {out.name}")
             stats.skipped += 1
             continue
@@ -586,7 +587,7 @@ def run_batch(
             log.warn(f"  Skipping (same): {inp.name}")
             stats.skipped += 1
             continue
-        ok, in_sz, out_sz = process(inp, out, preset, cfg, log, delete)
+        ok, in_sz, out_sz = process(inp, out, preset, cfg, log)
         if ok:
             stats.processed += 1
             stats.input_bytes += in_sz
@@ -602,15 +603,20 @@ def run_batch(
 
 def print_summary(stats: Stats, log: Log) -> None:
     print()
-    log.info("═" * 50)
-    log.info(
-        f"Processed: {stats.processed}, Skipped: {stats.skipped}, Failed: {stats.failed}"
-    )
-    if stats.input_bytes:
-        ratio = stats.output_bytes / stats.input_bytes
+    total_files = stats.processed + stats.skipped + stats.failed
+    log.info("┌──────────────┬───────┐")
+    log.info(f"│ {'Total Files':<12} │ {total_files:>5} │")
+    log.info("├──────────────┼───────┤")
+    log.info(f"│ {'Succeeded':<12} │ {stats.processed:>5} │")
+    log.info(f"│ {'Skipped':<12} │ {stats.skipped:>5} │")
+    log.info(f"│ {'Failed':<12} │ {stats.failed:>5} │")
+    log.info("└──────────────┴───────┘")
+
+    if stats.input_bytes or stats.output_bytes:
+        ratio = stats.output_bytes / stats.input_bytes if stats.input_bytes else 0
         saved = stats.input_bytes - stats.output_bytes
         log.info(
-            f"Total: {stats.input_bytes / 1e6:.2f}MB → {stats.output_bytes / 1e6:.2f}MB ({ratio:.1%})"
+            f"Storage: {stats.input_bytes / 1e6:.2f}MB → {stats.output_bytes / 1e6:.2f}MB ({ratio:.1%})"
         )
         if saved > 0:
             log.ok(f"Saved: {saved / 1e6:.2f}MB")
@@ -618,7 +624,6 @@ def print_summary(stats: Stats, log: Log) -> None:
         log.err("Failures:")
         for f in stats.failures:
             log.err(f"  - {f}")
-    log.info("═" * 50)
 
 
 def parse_args() -> tuple[argparse.Namespace, list[str]]:
@@ -631,7 +636,7 @@ def parse_args() -> tuple[argparse.Namespace, list[str]]:
   vidconv av1 --max-dim 1280 720 *.mp4   # Limit to 720p
   vidconv av1 -i /src -o /dst            # Directory mode, preserve structure
   vidconv av1 --deinterlace bwdif old.avi  # Fix interlaced video
-  vidconv opus **/*.mp3 --delete         # MP3→Opus, remove originals
+  vidconv opus **/*.mp3 --in-place       # MP3→Opus, remove originals
   vidconv vp9 --crf 30 video.mkv         # VP9 with custom CRF
 """,
     )
@@ -646,6 +651,9 @@ def parse_args() -> tuple[argparse.Namespace, list[str]]:
     )
     p.add_argument(
         "-o", "--output-dir", type=Path, metavar="DIR", help="Output directory"
+    )
+    p.add_argument(
+        "-e", "--ext", help="Comma-separated format filters (e.g. mp4,mkv)"
     )
     p.add_argument("--crf", type=int, default=26, help="Video CRF (default: 26)")
     p.add_argument(
@@ -706,7 +714,13 @@ def parse_args() -> tuple[argparse.Namespace, list[str]]:
     f.add_argument("--crop", metavar="W:H:X:Y", help='Crop video (or "auto")')
     f.add_argument("--scale", metavar="WxH", help='Scale video (e.g., "1920x1080")')
     p.add_argument(
-        "--delete", action="store_true", help="Delete original after conversion"
+        "-I", "--in-place", "--delete", dest="in_place", action="store_true", help="Delete original after conversion"
+    )
+    p.add_argument(
+        "-n", "--dry-run", action="store_true", help="Print planned conversions without encoding"
+    )
+    p.add_argument(
+        "--skip-existing", action="store_true", help="Skip if output file already exists"
     )
     p.add_argument(
         "-j", "--jobs", type=int, default=1, help="Number of parallel jobs (default: 1)"
@@ -755,11 +769,19 @@ def main() -> int:
         crop=args.crop,
         scale=args.scale,
         extra=extra,
+        dry_run=args.dry_run,
+        skip_existing=args.skip_existing,
+        in_place=args.in_place,
     )
     if preset.is_video:
         exts = VIDEO_EXTS
     else:
         exts = AUDIO_EXTS | PASSTHROUGH_EXTS
+
+    if args.ext:
+        allowed = {f".{e.strip().lstrip('.')}" for e in args.ext.lower().split(",")}
+        exts = exts & allowed
+
     if args.input_dir:
         src_root = args.input_dir.resolve()
         if not src_root.exists():
@@ -796,9 +818,7 @@ def main() -> int:
     except StopIteration:
         log.warn("No files found")
         return 0
-    stats = run_batch(
-        files, preset, cfg, log, out_dir, src_root, args.delete, args.jobs
-    )
+    stats = run_batch(files, preset, cfg, log, out_dir, src_root, args.jobs)
     print_summary(stats, log)
     return 1 if stats.failed else 0
 
