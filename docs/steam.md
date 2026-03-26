@@ -27,7 +27,7 @@ PROTON_USE_WOW64=1
 ### offline:
 
 ```bash
-DXVK_ASYNC=1
+DXVK_ASYNC=1 PROTON_DXVK_SAREK=1
 ```
 ### latency:
 
