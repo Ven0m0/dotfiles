@@ -153,7 +153,9 @@ cmd_git() {
     local pager=$(_pager) files
     files=$(_git diff --name-only --diff-filter=ACDMRTUXB "$@" | _fzf_git -m --header='Tab:select Enter:add' --preview="git diff --color=always {}|${pager}")
     [[ -z ${files} ]] && return 0
-    while IFS= read -r f; do _git add -- "$f"; done <<< "$files"
+    local -a arr
+    mapfile -t arr <<< "$files"
+    _git add -- "${arr[@]}"
   }
   git_log() {
     _check_repo
