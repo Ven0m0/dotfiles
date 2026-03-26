@@ -123,9 +123,9 @@ _pkgui_prev_pkg() {
     printf "=== Info ===\n"
     "$PAC" --color=always -Si "$pkg" 2> /dev/null || echo "N/A"
     printf "\n=== PKGBUILD ===\n"
-    _pkgui_has curl && curl -fsSL "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD? h=$pkg" 2> /dev/null || :
+    _pkgui_has curl && curl -fsSL "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" 2> /dev/null || :
     printf "\n=== Tree ===\n"
-    _pkgui_has curl && curl -fsSL "https://aur.archlinux.org/cgit/aur.git/tree/? h=$pkg" 2> /dev/null | grep 'tree/' | sed -n 's/.*tree\/\([^?"]*\).*/\1/p' | sort -u | while read -r f; do echo "  - $f"; done || :
+    _pkgui_has curl && curl -fsSL "https://aur.archlinux.org/cgit/aur.git/tree/?h=$pkg" 2> /dev/null | sed -n 's|.*href=.*/tree/\([^?'\''"]\{1,\}\)?.*|  - \1|p' | sort -u || :
   else
     _pkgui_info "$pkg"
   fi
