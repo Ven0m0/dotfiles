@@ -33,14 +33,13 @@ image_delay = 0
 image_filter = "triangle"
 image_quality = 75
 # Prefer kitty/wezterm graphics, fall back to sixel, then ASCII; size to terminal
-# TODO: use viu instead of chafa
 image = '''bash -lc '
   if [[ -n "$WEZTERM_PANE" || -n "$KITTY_WINDOW_ID" || "$TERM" =~ (wezterm|kitty) ]]; then
-    exec chafa -f kitty -s ${COLUMNS}x${LINES} -O 6 -c full --symbols all "{}"
+    exec viu -w ${COLUMNS} -h ${LINES} "{}"
   elif [[ -n "$TERM_SIXEL" ]]; then
-    exec chafa -f sixel -s ${COLUMNS}x${LINES} -O 6 -c full "{}"
+    exec viu -w ${COLUMNS} -h ${LINES} "{}"
   else
-    exec chafa -s ${COLUMNS}x${LINES} -c full "{}"
+    exec viu -b -w ${COLUMNS} -h ${LINES} "{}"
   fi
 ' '''
 
