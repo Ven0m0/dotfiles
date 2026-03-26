@@ -190,7 +190,7 @@ deploy_home() {
     --exclude='.git' --exclude='.gitignore' \
     "${home_dir}/" "${HOME}/"
   # Remove backup dir if nothing was actually backed up
-  find "$backup_dir" -maxdepth 0 -empty -exec rmdir {} \; 2>/dev/null || true
+  find "$backup_dir" -maxdepth 0 -empty -delete 2>/dev/null || true
 }
 
 configure_shell() {
