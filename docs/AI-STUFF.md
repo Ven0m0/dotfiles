@@ -111,7 +111,6 @@ Steps:
 <investigate_before_answering>
 Extract all TODO/FIXME/HACK/XXX/NOTE/WARN/DEPRECATED markers from the entire codebase and synthesize them into a machine-actionable PLAN.md at the repo root. Never speculate about code you have not opened.
 </investigate_before_answering>
-
 <use_parallel_tool_calls>
 Use `rg` to discover all markers in parallel. Pattern:
   rg -n "TODO|FIXME|HACK|XXX|WARN|DEPRECATED|NOTE\(.*\)" \
@@ -121,7 +120,6 @@ Use `rg` to discover all markers in parallel. Pattern:
      --glob '!*.min.*' --glob '!*.lock' --glob '!generated'
 Simultaneously run: git log --oneline -20, cat README.md, fd -tf -e md docs/
 </use_parallel_tool_calls>
-
 Steps:
 1. Collect: file, line number, full comment text, 5 lines surrounding context
 2. Deduplicate: merge near-identical items (<10 token diff) pointing at same code path
@@ -143,17 +141,11 @@ Steps:
    - concrete implementation hint (exact function/type/pattern to use, not prose)
    - estimated LOC delta (S=<20, M=20-100, L=100-300, XL=300+)
    - blocking_ids (list of task IDs that must complete first)
-
 <answer>
 Write PLAN.md with this structure:
 ```md
 # Implementation Plan
 _Generated: {ISO date} · {N} tasks · Est. {total LOC range}_
-
-## Legend
-<!-- severity: 🔴 critical 🟠 high 🟡 medium 🔵 low -->
-<!-- category: bug perf refactor feature security debt docs -->
-
 ## Summary
 {2-3 sentence executive summary of the overall work scope}
 
@@ -161,39 +153,29 @@ _Generated: {ISO date} · {N} tasks · Est. {total LOC range}_
 
 | # | ID | Title | Sev | Cat | Size | Blocks |
 |---|-----|-------|-----|-----|------|--------|
-| 1 | T001 | ... | 🔴 | bug | S | — |
+| 1 | T001 | ... |  | bug | S | — |
 ...
-
 ## Tasks
-
 ### T001 · {title}
 **File:** `path/to/file.ts:42`
 **Severity:** critical · **Category:** bug · **Size:** S
 **Blocks:** —  **Blocked by:** —
-
 **Context:**
 > {original TODO/FIXME comment verbatim}
-
 **Intent:** {what the author meant in 1 sentence}
-
 **Acceptance criteria:**
 - [ ] {specific, testable criterion}
 - [ ] {specific, testable criterion}
-
 **Implementation:**
 {exact code pattern, type, function signature, or algorithm — not prose}
-
 ---
-
 After writing PLAN.md:
 - Run `wc -l PLAN.md` and report: total tasks, breakdown by severity, breakdown by category, estimated LOC delta totals (S/M/L/XL counts)
 - Do NOT resolve any TODOs — only document them
 - Do NOT modify any source files
 </answer>
-
 Agent targeting note: acceptance criteria and implementation hints are written for claude-sonnet-4-6, minimax-m2.7, gpt-5, and glm-5 — use unambiguous imperative language, avoid pronouns, anchor every task to file:line, never use "maybe" or "consider", emit only machine-parseable task IDs (T\d{3}) for dependency references.
 ```
-
 </details>
 <details><summary><b>🧹 Cleaner</b> — Aggressive dead code removal</summary>
 
