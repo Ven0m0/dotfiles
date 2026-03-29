@@ -93,11 +93,20 @@ setup_repos() {
 
   sudo pacman -Sy --noconfirm
 
-  has paru || {
-    sudo pacman -S --needed --noconfirm base-devel git
-    git clone https://aur.archlinux.org/paru-bin.git "$WORKDIR/paru-bin"
-    (cd "$WORKDIR/paru-bin" && makepkg -si --noconfirm)
-  }
+  # Ensure we have an AUR helper available if only pacman was detected
+  if [[ $PKG_MGR == "pacman" ]]; then
+    if has paru; then
+      PKG_MGR=paru
+    elif has yay; then
+      PKG_MGR=yay
+    else
+      log "Installing paru (AUR helper)..."
+      sudo pacman -S --needed --noconfirm base-devel git
+      git clone https://aur.archlinux.org/paru-bin.git "$WORKDIR/paru-bin"
+      (cd "$WORKDIR/paru-bin" && makepkg -si --noconfirm)
+      PKG_MGR=paru
+    fi
+  fi
 }
 
 install_pkgs() {
@@ -105,14 +114,14 @@ install_pkgs() {
   local -a pacman_pkgs
   mapfile -t pacman_pkgs < <(load_pkgs pacman)
   if (( ${#pacman_pkgs[@]} > 0 )); then
-    paru -S --needed --noconfirm "${pacman_pkgs[@]}" || warn "Some pacman packages failed"
+    "$PKG_MGR" -S --needed --noconfirm "${pacman_pkgs[@]}" || warn "Some pacman packages failed"
   fi
 
   log "Installing AUR packages..."
   local -a aur_pkgs
   mapfile -t aur_pkgs < <(load_pkgs aur)
   if (( ${#aur_pkgs[@]} > 0 )); then
-    paru -S --needed --noconfirm "${aur_pkgs[@]}" || warn "Some AUR packages failed"
+    "$PKG_MGR" -S --needed --noconfirm "${aur_pkgs[@]}" || warn "Some AUR packages failed"
   fi
 }
 
