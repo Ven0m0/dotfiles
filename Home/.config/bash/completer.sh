@@ -7,7 +7,7 @@ load_completion() {
   has "$cmd" || return
   declare -F "$name" &> /dev/null && return
   case "$kind" in
-    eval) eval "$src" &> /dev/null ;;
+    eval) source <(printf '%s\n' "$src") &> /dev/null ;;
     source | .) [[ -r ${src/#\~\//${HOME}/} ]] && . "${src/#\~\//${HOME}/}" &> /dev/null ;;
     *) return 1 ;;
   esac
