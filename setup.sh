@@ -204,10 +204,14 @@ link_system_configs() {
   local worktree
   worktree="$(yadm config core.worktree 2>/dev/null || printf '%s' "$HOME")"
   log "Linking system configs via stow..."
+  local pkgs=()
   for pkg in etc usr; do
     [[ -d ${worktree}/${pkg} ]] || continue
-    (cd "$worktree" && sudo stow -t / -d . "$pkg") || warn "stow failed for $pkg"
+    pkgs+=("$pkg")
   done
+  if ((${#pkgs[@]} > 0)); then
+    (cd "$worktree" && sudo stow -t / -d . "${pkgs[@]}") || warn "stow failed for ${pkgs[*]}"
+  fi
 }
 
 apply_konsave_profile() {
