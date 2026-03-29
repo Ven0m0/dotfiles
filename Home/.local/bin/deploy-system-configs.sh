@@ -92,11 +92,10 @@ deploy_configs() {
     info "Using stow for deployment"
     local valid_pkgs=()
     for pkg in "${packages[@]}"; do
-      local src="${repo_dir}/${pkg}"
-      if [[ -d $src ]]; then
+      if [[ -d "${repo_dir}/${pkg}" ]]; then
         valid_pkgs+=("$pkg")
       else
-        warn "Directory not found: $src"
+        warn "Directory not found: ${repo_dir}/${pkg}"
       fi
     done
 
@@ -118,11 +117,10 @@ deploy_configs() {
     local hooks_file="${repo_dir}/hooks.toml"
     local valid_pkgs=()
     for pkg in "${packages[@]}"; do
-      local src="${repo_dir}/${pkg}"
-      if [[ -d $src ]]; then
+      if [[ -d "${repo_dir}/${pkg}" ]]; then
         valid_pkgs+=("$pkg")
       else
-        warn "Directory not found: $src"
+        warn "Directory not found: ${repo_dir}/${pkg}"
       fi
     done
 
