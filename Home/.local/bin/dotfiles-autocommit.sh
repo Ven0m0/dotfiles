@@ -25,7 +25,7 @@ get_repo_dir() {
     local script_dir candidate d
     script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
     for candidate in "$script_dir" "$script_dir/.." "$script_dir/../.." "$script_dir/../../.."; do
-      if d="$(git -C "$candidate" rev-parse --show-toplevel 2>/dev/null)"; then
+      if [[ -d "$candidate/.git" || -f "$candidate/.git" ]] && d="$(git -C "$candidate" rev-parse --show-toplevel 2>/dev/null)"; then
         if [[ -n $d && -d $d/Home ]]; then
           printf '%s\n' "$d"
           return
