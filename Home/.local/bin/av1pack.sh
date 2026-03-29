@@ -170,7 +170,9 @@ main() {
     if [[ ${#to_check[@]} -gt 0 ]]; then
       local procs
       procs=$(nproc 2> /dev/null || echo 1)
-      mapfile -d "" -t valid < <(printf '%s\0' "${to_check[@]}" | xargs -0 -P "$procs" bash -c '_check_av1_worker "$@"' _)
+      local chunk_size=$(( (${#to_check[@]} + procs - 1) / procs ))
+      (( chunk_size < 1 )) && chunk_size=1
+      mapfile -d "" -t valid < <(printf '%s\0' "${to_check[@]}" | xargs -0 -n "$chunk_size" -P "$procs" bash -c '_check_av1_worker "$@"' _)
     fi
     [[ ${#valid[@]} -eq 0 ]] && {
       log "All processed"
