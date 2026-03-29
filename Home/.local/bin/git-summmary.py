@@ -96,18 +96,27 @@ def get_repo_stats(repo: Path) -> RepoStats:
 
 
 def find_repos(path: Path) -> list[Path]:
-    """Recursively find all git repositories."""
+    \"\"\"Recursively find all git repositories.\"\"\"
     repos: list[Path] = []
     try:
-        for dirpath, dirnames, filenames in os.walk(path, followlinks=True):
-            if ".git" in dirnames:
-                dirnames.remove(".git")
-                repo = Path(dirpath)
-                if repo != path:
-                    repos.append(repo)
-                    print(f"Git repository found {repo}", file=sys.stderr)
-                    dirnames[:] = []
-    except PermissionError:
+        # -L to follow symbolic links
+        # -type d to match directories
+        # -exec test -d '{}/.git' \; to check if the directory contains a .git directory
+        # -prune to not descend into repositories (similar to dirnames[:] = [])
+        # -print to output the repository path
+        cmd = ["find", "-L", str(path), "-type", "d", "-exec", "test", "-d", "{}/.git", ";", "-prune", "-print"]
+        output = sp.check_output(cmd, text=True, stderr=sp.DEVNULL)
+        for line in output.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            repo = Path(line)
+            if repo != path:
+                repos.append(repo)
+                print(f"Git repository found {repo}", file=sys.stderr)
+    except sp.CalledProcessError:
+        pass
+    except FileNotFoundError:
         pass
     return repos
 
