@@ -262,4 +262,5 @@ github_conf
 gha-creds-*.json
 .serena/
 .cachebro/
-.omc/
+.omc/test_empty
+test_100

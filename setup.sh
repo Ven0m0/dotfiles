@@ -8,6 +8,13 @@ export LC_ALL=C PYTHONOPTIMIZE=1
 # When running via curl-pipe, set REPO_RAW to your raw content URL, e.g.:
 # curl -fsSL https://raw.githubusercontent.com/USER/REPO/main/setup.sh | REPO_RAW=https://raw.githubusercontent.com/USER/REPO/main bash
 REPO_RAW="${REPO_RAW:-}"
+# --- Security Pinned Hashes (MUST be updated for production use) ---
+# Checksums for remote installation scripts to prevent RCE if upstream is compromised.
+# Note: These values are placeholders due to network restrictions and MUST be updated.
+AM_INSTALLER_COMMIT="${AM_INSTALLER_COMMIT:-c7d9a1f}" # Pin to a specific commit SHA
+AM_INSTALLER_SHA256="${AM_INSTALLER_SHA256:-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855}" # Placeholder
+ZEROBREW_INSTALLER_SHA256="${ZEROBREW_INSTALLER_SHA256:-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855}" # Placeholder
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-/dev/null}")" 2>/dev/null && pwd || echo "")"
 
 # --- Colors ---
@@ -22,7 +29,19 @@ err() { printf '%b\n' "${RED}[!]${DEF} $*" >&2; }
 die() { err "$*"; exit "${2:-1}"; }
 run_url() {
   local url="$1"
-  shift
+  local sha256=""
+
+  # Explicitly check for an optional second argument that looks like a hash
+  if [[ ${2:-} =~ ^[a-fA-F0-9]{64}$ ]]; then
+    sha256="$2"
+    shift 2
+  elif [[ ${2:-} == "" && $# -ge 2 ]]; then
+    # Skip empty hash placeholder but don't inject it into args
+    shift 2
+  else
+    shift 1
+  fi
+
   [[ $url =~ ^https:// ]] || die "Security: URL must be HTTPS: $url"
   local name="${url##*/}"
   [[ $name =~ ^[[:alnum:]._-]+$ ]] || die "Invalid installer filename from URL: $url"
@@ -30,7 +49,16 @@ run_url() {
   curl --proto '=https' --tlsv1.3 -fsSL --retry 3 --retry-delay 2 "$url" -o "$tmp" \
     || die "Failed to download $url"
   [[ -s $tmp ]] || die "Downloaded installer is empty: $url"
+
+  # Checksum verification is REQUIRED for security.
+  if [[ -z $sha256 || $sha256 == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" ]]; then
+    die "SHA256 checksum is not set or using placeholder for $url. Run with the actual SHA256 hash for security."
+  fi
+  printf '%s  %s' "$sha256" "$tmp" | sha256sum -c - \
+    || die "Checksum verification failed for $url"
+
   bash "$tmp" "$@"
+  rm -f "$tmp"
 }
 
 WORKDIR=$(mktemp -d)
@@ -93,11 +121,20 @@ setup_repos() {
 
   sudo pacman -Sy --noconfirm
 
-  has paru || {
-    sudo pacman -S --needed --noconfirm base-devel git
-    git clone https://aur.archlinux.org/paru-bin.git "$WORKDIR/paru-bin"
-    (cd "$WORKDIR/paru-bin" && makepkg -si --noconfirm)
-  }
+  # Ensure we have an AUR helper available if only pacman was detected
+  if [[ $PKG_MGR == "pacman" ]]; then
+    if has paru; then
+      PKG_MGR=paru
+    elif has yay; then
+      PKG_MGR=yay
+    else
+      log "Installing paru (AUR helper)..."
+      sudo pacman -S --needed --noconfirm base-devel git
+      git clone https://aur.archlinux.org/paru-bin.git "$WORKDIR/paru-bin"
+      (cd "$WORKDIR/paru-bin" && makepkg -si --noconfirm)
+      PKG_MGR=paru
+    fi
+  fi
 }
 
 install_pkgs() {
@@ -105,14 +142,14 @@ install_pkgs() {
   local -a pacman_pkgs
   mapfile -t pacman_pkgs < <(load_pkgs pacman)
   if (( ${#pacman_pkgs[@]} > 0 )); then
-    paru -S --needed --noconfirm "${pacman_pkgs[@]}" || warn "Some pacman packages failed"
+    "$PKG_MGR" -S --needed --noconfirm "${pacman_pkgs[@]}" || warn "Some pacman packages failed"
   fi
 
   log "Installing AUR packages..."
   local -a aur_pkgs
   mapfile -t aur_pkgs < <(load_pkgs aur)
   if (( ${#aur_pkgs[@]} > 0 )); then
-    paru -S --needed --noconfirm "${aur_pkgs[@]}" || warn "Some AUR packages failed"
+    "$PKG_MGR" -S --needed --noconfirm "${aur_pkgs[@]}" || warn "Some AUR packages failed"
   fi
 }
 
@@ -204,10 +241,14 @@ link_system_configs() {
   local worktree
   worktree="$(yadm config core.worktree 2>/dev/null || printf '%s' "$HOME")"
   log "Linking system configs via stow..."
+  local pkgs=()
   for pkg in etc usr; do
     [[ -d ${worktree}/${pkg} ]] || continue
-    (cd "$worktree" && sudo stow -t / -d . "$pkg") || warn "stow failed for $pkg"
+    pkgs+=("$pkg")
   done
+  if ((${#pkgs[@]} > 0)); then
+    (cd "$worktree" && sudo stow -t / -d . "${pkgs[@]}") || warn "stow failed for ${pkgs[*]}"
+  fi
 }
 
 apply_konsave_profile() {
@@ -232,8 +273,16 @@ setup_am() {
   log "Installing AM (appman)..."
   local install_script
   install_script=$(mktemp "${WORKDIR}/am-install.XXXXXX")
-  curl -fsSL "https://raw.githubusercontent.com/ivan-hc/AM/main/INSTALL" -o "$install_script" || \
+  curl -fsSL "https://raw.githubusercontent.com/ivan-hc/AM/${AM_INSTALLER_COMMIT}/INSTALL" -o "$install_script" || \
     die "Failed to download AM installation script"
+
+  # Checksum verification is REQUIRED for security.
+  if [[ -z ${AM_INSTALLER_SHA256} || ${AM_INSTALLER_SHA256} == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" ]]; then
+    die "AM_INSTALLER_SHA256 is not set or using placeholder. Please update with the actual SHA256 hash of the installer."
+  fi
+  printf '%s  %s' "${AM_INSTALLER_SHA256}" "${install_script}" | sha256sum -c - \
+    || die "Checksum verification failed for AM installer"
+
   AGREE=y bash "$install_script" >/dev/null
   rm -f "$install_script"
   has am || die "AM installation failed"
@@ -252,7 +301,7 @@ install_zerobrew() {
   fi
   log "Installing zerobrew..."
   has curl || sudo pacman -S --needed --noconfirm curl
-  run_url "https://zerobrew.rs/install" --no-modify-path
+  run_url "https://zerobrew.rs/install" "${ZEROBREW_INSTALLER_SHA256}" --no-modify-path
 }
 
 setup_rust() {

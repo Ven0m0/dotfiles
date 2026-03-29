@@ -38,18 +38,13 @@ fi
 # Shell (Basename only)
 shell="${SHELL##*/}"
 # CPU (Parse first 'model name' from /proc/cpuinfo)
-cpu=""
-while IFS=':' read -r k v; do
-  if [[ $k == "model name" ]]; then
-    cpu="${v##* }"
-    # Clean up common CPU clutter
-    cpu="${cpu//(R)/}"
-    cpu="${cpu//(TM)/}"
-    cpu="${cpu//CPU /}"
-    cpu="${cpu// @*/}"
-    break
-  fi
-done < /proc/cpuinfo
+cpu=$(grep -m1 '^model name' /proc/cpuinfo)
+cpu="${cpu##*: }"
+# Clean up common CPU clutter
+cpu="${cpu//(R)/}"
+cpu="${cpu//(TM)/}"
+cpu="${cpu//CPU /}"
+cpu="${cpu// @*/}"
 # Memory (Parse /proc/meminfo)
 mem_tot=0 mem_avl=0
 while IFS=':' read -r k v; do

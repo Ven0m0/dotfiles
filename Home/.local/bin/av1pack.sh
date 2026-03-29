@@ -47,7 +47,7 @@ encode_one() {
 run_ffzap() {
   local list_file="$1" args="$2"
   log "Engine: ffzap batch"
-  ffzap --file-list "$list_file" --overwrite -f "$args" -o "{{dir}}/{{name}}${OUT_SUFFIX}. ${TARGET_EXT}"
+  ffzap --file-list "$list_file" --overwrite -f "$args" -o "{{dir}}/{{name}}${OUT_SUFFIX}.${TARGET_EXT}"
 }
 run_ffmpeg_loop() {
   local -n targets=$1
@@ -80,8 +80,80 @@ scan_files() {
     find "$root" -type f \( -name "*.mkv" -o -name "*.mp4" -o -name "*.mov" -o -name "*.avi" -o -name "*.webm" -o -name "*.mts" -o -name "*.m2ts" -o -name "*. wmv" -o -name "*.flv" -o -name "*.ts" \)
   fi
 }
+process_single_file() {
+  local in="$1" out="$2"
+  [[ ${in,,} =~ $EXT_RE ]] || {
+    err "Unsupported:  $in"
+    return 1
+  }
+  [[ -z "$out" ]] && out="."
+  mkdir -p "$out"
+  local dst="$out"
+  [[ -d "$dst" ]] && dst="$dst/${in##*/}"
+  dst="${dst%.*}.${TARGET_EXT}"
+  encode_one "$in" "$dst"
+}
+process_recursive() {
+  local in="$1" out="$2"
+  [[ -z "$out" ]] && {
+    err "Recursive mode requires <outdir>"
+    return 1
+  }
+  mkdir -p "$out"
+  local candidates=() src dst rel
+  mapfile -t candidates < <(scan_files "$in")
+  [[ ${#candidates[@]} -eq 0 ]] && {
+    log "No files found"
+    return 0
+  }
+  for src in "${candidates[@]}"; do
+    [[ ${src,,} =~ $EXT_RE ]] || continue
+    rel="${src#"$in"/}"
+    dst="$out/${rel%.*}.${TARGET_EXT}"
+    encode_one "$src" "$dst"
+  done
+}
+process_smart() {
+  local in="$1"
+  log "Scanning:  $in"
+  local candidates=() valid=()
+  mapfile -t candidates < <(scan_files "$in")
+  [[ ${#candidates[@]} -eq 0 ]] && {
+    log "No files"
+    return 0
+  }
+  local to_check=()
+  for f in "${candidates[@]}"; do
+    [[ "$f" == *"${OUT_SUFFIX}.${TARGET_EXT}" ]] && continue
+    local out_file="${f%.*}${OUT_SUFFIX}.${TARGET_EXT}"
+    [[ -f "$out_file" ]] && continue
+    to_check+=("$f")
+  done
+  if [[ ${#to_check[@]} -gt 0 ]]; then
+    local procs
+    procs=$(nproc 2> /dev/null || echo 1)
+    local chunk_size=$(( (${#to_check[@]} + procs - 1) / procs ))
+    (( chunk_size < 1 )) && chunk_size=1
+    mapfile -d "" -t valid < <(printf '%s\0' "${to_check[@]}" | xargs -0 -n "$chunk_size" -P "$procs" bash -c '_check_av1_worker "$@"' _)
+  fi
+  [[ ${#valid[@]} -eq 0 ]] && {
+    log "All processed"
+    return 0
+  }
+  log "Queued:  ${#valid[@]}"
+  local args="-c:v libsvtav1 -preset 3 -crf 26 -g 600 -pix_fmt yuv420p10le -svtav1-params tune=0:film-grain=6:enable-qm=1:qm-min=0:enable-variance-boost=1:tf-strength=1:sharpness=1:tile-columns=1:tile-rows=0:enable-dlf=2:scd=1 -vf \"scale='if(gt(iw,ih),min(1920,iw),-2)':'if(gt(iw,ih),-2,min(1920,ih))',deband\" -c:a libopus -b:a 128k -ac 2 -rematrix_maxval 1.0"
+  if has ffzap; then
+    local list
+    list=$(mktemp)
+    printf '%s\n' "${valid[@]}" > "$list"
+    run_ffzap "$list" "$args"
+    rm -f "$list"
+  else
+    run_ffmpeg_loop valid "$args"
+  fi
+}
 main() {
-  local mode=single recursive=0 smart=0 in="" out=""
+  local recursive=0 smart=0 in="" out=""
   # Parse flags
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -113,16 +185,7 @@ main() {
   }
   # Mode:  Single file
   if [[ -f "$in" ]]; then
-    [[ ${in,,} =~ $EXT_RE ]] || {
-      err "Unsupported:  $in"
-      exit 1
-    }
-    [[ -z "$out" ]] && out="."
-    mkdir -p "$out"
-    local dst="$out"
-    [[ -d "$dst" ]] && dst="$dst/${in##*/}"
-    dst="${dst%.*}. ${TARGET_EXT}"
-    encode_one "$in" "$dst"
+    process_single_file "$in" "$out" || exit 1
     exit 0
   fi
   # Mode: Directory
@@ -130,63 +193,12 @@ main() {
     err "Input not found: $in"
     exit 1
   }
-  # Recursive batch
   if [[ $recursive -eq 1 ]]; then
-    [[ -z "$out" ]] && {
-      err "Recursive mode requires <outdir>"
-      exit 1
-    }
-    mkdir -p "$out"
-    local candidates=() src dst rel
-    mapfile -t candidates < <(scan_files "$in")
-    [[ ${#candidates[@]} -eq 0 ]] && {
-      log "No files found"
-      exit 0
-    }
-    for src in "${candidates[@]}"; do
-      [[ ${src,,} =~ $EXT_RE ]] || continue
-      rel="${src#"$in"/}"
-      dst="$out/${rel%.*}.${TARGET_EXT}"
-      encode_one "$src" "$dst"
-    done
+    process_recursive "$in" "$out" || exit 1
     exit 0
   fi
-  # Smart mode: skip AV1/existing, optional ffzap
   if [[ $smart -eq 1 ]]; then
-    log "Scanning:  $in"
-    local candidates=() valid=()
-    mapfile -t candidates < <(scan_files "$in")
-    [[ ${#candidates[@]} -eq 0 ]] && {
-      log "No files"
-      exit 0
-    }
-    local to_check=()
-    for f in "${candidates[@]}"; do
-      [[ "$f" == *"${OUT_SUFFIX}.${TARGET_EXT}" ]] && continue
-      local out_file="${f%.*}${OUT_SUFFIX}.${TARGET_EXT}"
-      [[ -f "$out_file" ]] && continue
-      to_check+=("$f")
-    done
-    if [[ ${#to_check[@]} -gt 0 ]]; then
-      local procs
-      procs=$(nproc 2> /dev/null || echo 1)
-      mapfile -d "" -t valid < <(printf '%s\0' "${to_check[@]}" | xargs -0 -P "$procs" bash -c '_check_av1_worker "$@"' _)
-    fi
-    [[ ${#valid[@]} -eq 0 ]] && {
-      log "All processed"
-      exit 0
-    }
-    log "Queued:  ${#valid[@]}"
-    local args="-c:v libsvtav1 -preset 3 -crf 26 -g 600 -pix_fmt yuv420p10le -svtav1-params tune=0:film-grain=6:enable-qm=1:qm-min=0:enable-variance-boost=1:tf-strength=1:sharpness=1:tile-columns=1:tile-rows=0:enable-dlf=2:scd=1 -vf \"scale='if(gt(iw,ih),min(1920,iw),-2)':'if(gt(iw,ih),-2,min(1920,ih))',deband\" -c:a libopus -b:a 128k -ac 2 -rematrix_maxval 1.0"
-    if has ffzap; then
-      local list
-      list=$(mktemp)
-      printf '%s\n' "${valid[@]}" > "$list"
-      run_ffzap "$list" "$args"
-      rm -f "$list"
-    else
-      run_ffmpeg_loop valid "$args"
-    fi
+    process_smart "$in" || exit 1
     exit 0
   fi
   err "For directories use -r (recursive) or -s (smart scan)"
