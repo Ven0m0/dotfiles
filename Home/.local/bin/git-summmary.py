@@ -20,68 +20,61 @@ class RepoStats:
     authors: dict[str, int]
 
 
-def run_git(cmd: list[str], cwd: Path) -> str:
-    """Run git command, return stdout or empty string on error."""
-    try:
-        return sp.run(
-            ["git", *cmd],
-            cwd=cwd,
-            capture_output=True,
-            text=True,
-            timeout=10,
-            check=True,
-        ).stdout.strip()
-    except (sp.CalledProcessError, sp.TimeoutExpired, FileNotFoundError):
-        return ""
-
-
 def get_repo_stats(repo: Path) -> RepoStats:
     """Extract stats from a single git repo."""
-    files_out = run_git(["ls-files"], repo)
-    files = len(files_out.splitlines()) if files_out else 0
+    cmd = ["sh", "-c", "git ls-files 2>/dev/null | wc -l; printf '\\0'; git log --format='%at%x00%aN%x00%P' HEAD 2>/dev/null || true"]
+    try:
+        proc = sp.run(
+            cmd,
+            cwd=repo,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=10,
+        )
+        out = proc.stdout
+    except (sp.CalledProcessError, sp.TimeoutExpired, FileNotFoundError, OSError):
+        return RepoStats(0, 0, 0, 0, {})
+
+    parts = out.split("\x00", 1)
+    if len(parts) != 2:
+        return RepoStats(0, 0, 0, 0, {})
+
+    try:
+        files = int(parts[0].strip())
+    except ValueError:
+        files = 0
 
     commits = 0
     last_ts = 0
-    first_ts = 0
     root_timestamps: list[int] = []
     authors: dict[str, int] = defaultdict(int)
 
-    try:
-        # Use %x00 as delimiter: timestamp, author name (respecting .mailmap), parents
-        cmd = ["git", "log", "--format=%at%x00%aN%x00%P", "HEAD"]
-        with sp.Popen(
-            cmd, cwd=repo, stdout=sp.PIPE, text=True, encoding="utf-8", errors="replace"
-        ) as proc:
-            for i, line in enumerate(proc.stdout):
-                line = line.strip()
-                if not line:
-                    continue
-                parts = line.split("\0")
-                if len(parts) < 3:
-                    continue
+    for i, line in enumerate(parts[1].splitlines()):
+        line = line.strip()
+        if not line:
+            continue
+        line_parts = line.split("\x00")
+        if len(line_parts) < 3:
+            continue
 
-                try:
-                    ts = int(parts[0])
-                except ValueError:
-                    continue
+        try:
+            ts = int(line_parts[0])
+        except ValueError:
+            continue
 
-                author = parts[1]
-                parents = parts[2]
+        author = line_parts[1]
+        parents = line_parts[2]
 
-                if i == 0:
-                    last_ts = ts
+        if i == 0:
+            last_ts = ts
 
-                if not parents:
-                    root_timestamps.append(ts)
+        if not parents:
+            root_timestamps.append(ts)
 
-                commits += 1
-                authors[author] += 1
-
-            if proc.wait() != 0:
-                return RepoStats(0, files, 0, 0, {})
-
-    except (sp.CalledProcessError, FileNotFoundError, OSError):
-        return RepoStats(0, files, 0, 0, {})
+        commits += 1
+        authors[author] += 1
 
     if commits == 0:
         return RepoStats(0, files, 0, 0, {})
@@ -98,6 +91,19 @@ def get_repo_stats(repo: Path) -> RepoStats:
 def find_repos(path: Path) -> list[Path]:
     """Recursively find all git repositories."""
     repos: list[Path] = []
+    try:
+        cmd = ["find", "-L", str(path), "-name", ".git", "-type", "d", "-prune"]
+        proc = sp.run(cmd, capture_output=True, text=True, check=True)
+        for line in proc.stdout.splitlines():
+            repo = Path(line).parent
+            if repo != path:
+                repos.append(repo)
+                print(f"Git repository found {repo}", file=sys.stderr)
+        return repos
+    except (sp.CalledProcessError, FileNotFoundError, OSError):
+        # Fallback to os.walk if find is not available or errors out
+        pass
+
     try:
         for dirpath, dirnames, filenames in os.walk(path, followlinks=True):
             if ".git" in dirnames:
