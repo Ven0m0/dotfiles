@@ -16,17 +16,19 @@ pdf_opt() {
   gs -sDEVICE=pdfwrite -dPDFSETTINGS=/$s -dCompatibilityLevel=1.7 -dNOPAUSE -q -dBATCH -sOutputFile="$t" "$p" 2> /dev/null && mv "$t" "$p"
 }
 repack_zip() {
-  local f=$1 t=${f%.*}-opt.${f##*.} d=$(mktemp -d)
+  local f=$1 t=${f%.*}-opt.${f##*.} d
+  d=$(mktemp -d)
   unzip -q "$f" -d "$d"
   (cd "$d" && zip -9 -q -r "../$t" .)
-  rm -rf "$d"
+  [[ -n "$d" && -d "$d" ]] && rm -rf "$d"
   printf '%s\n' "$t"
 }
 repack_zstd() {
-  local f=$1 t=${f%.*}-zstd.${f##*.} d=$(mktemp -d)
+  local f=$1 t=${f%.*}-zstd.${f##*.} d
+  d=$(mktemp -d)
   unzip -q "$f" -d "$d"
   (cd "$d" && zip --compression-method zstd -q -r "../$t" .)
-  rm -rf "$d"
+  [[ -n "$d" && -d "$d" ]] && rm -rf "$d"
   printf '%s\n' "$t"
 }
 pdf_lossless() {
@@ -40,9 +42,10 @@ pdf_lossy() {
   printf '%s\n' "$o"
 }
 validate_office() {
-  local f=$1 d=$(mktemp -d)
+  local f=$1 d
+  d=$(mktemp -d)
   if unzip -q "$f" -d "$d" > /dev/null 2>&1; then [[ -f "$d/content.xml" || -f "$d/word/document.xml" || -f "$d/xl/workbook.xml" ]] && printf 'OK\n' || printf 'INVALID\n'; else printf 'CORRUPT\n'; fi
-  rm -rf "$d"
+  [[ -n "$d" && -d "$d" ]] && rm -rf "$d"
 }
 compress_media() {
   local d=$1 mode=${2:-lossless}
@@ -53,11 +56,12 @@ compress_media() {
   [[ ${#pdfs[@]} -gt 0 ]] && printf '%s\n' "${pdfs[@]}" | xargs -P"$(nproc 2> /dev/null || printf 4)" -I{} bash -c "$(declare -f pdf_opt);pdf_opt \"\$1\" \"\$2\"" _ "{}" "$mode"
 }
 repack_media() {
-  local f=$1 mode=${2:-lossless} t=${f%.*}-media.${f##*.} d=$(mktemp -d)
+  local f=$1 mode=${2:-lossless} t=${f%.*}-media.${f##*.} d
+  d=$(mktemp -d)
   unzip -q "$f" -d "$d"
   compress_media "$d" "$mode"
   (cd "$d" && zip -9 -q -r "../$t" .)
-  rm -rf "$d"
+  [[ -n "$d" && -d "$d" ]] && rm -rf "$d"
   printf '%s\n' "$t"
 }
 compress_file() {
@@ -87,13 +91,14 @@ lint_office() {
   printf '%s\n' "${files[@]}" | xargs -P"$(nproc 2> /dev/null || printf 4)" -I{} bash -c 'printf "%s: %s\n" "$1" "$(validate_office "$1")"' _ "{}"
 }
 strip_metadata() {
-  local f=$1 t=${f%.*}-clean.${f##*.} d=$(mktemp -d)
+  local f=$1 t=${f%.*}-clean.${f##*.} d
+  d=$(mktemp -d)
   unzip -q "$f" -d "$d"
   find "$d" -name 'meta.xml' -delete
   [[ -f "$d/docProps/core.xml" ]] && : > "$d/docProps/core.xml"
   [[ -f "$d/docProps/app.xml" ]] && : > "$d/docProps/app.xml"
   (cd "$d" && zip -9 -q -r "../$t" .)
-  rm -rf "$d"
+  [[ -n "$d" && -d "$d" ]] && rm -rf "$d"
   printf '%s\n' "$t"
 }
 show_stats() {
@@ -101,12 +106,13 @@ show_stats() {
   case $f in
     *.pdf) pdfinfo "$f" 2> /dev/null | grep -E '^(Pages|File size|PDF version):' || : ;;
     *.odt | *.ods | *.odp | *.docx | *.xlsx | *.pptx)
-      local d=$(mktemp -d)
+      local d
+      d=$(mktemp -d)
       unzip -q "$f" -d "$d"
       printf 'Size: %s\n' "$(du -sh "$f" | cut -f1)"
       printf 'Files: %s\n' "$(find "$d" -type f | wc -l)"
       printf 'Compress: %s\n' "$(unzip -l "$f" | awk 'NR==2 {print $4}')"
-      rm -rf "$d"
+      [[ -n "$d" && -d "$d" ]] && rm -rf "$d"
       ;;
   esac
 }
