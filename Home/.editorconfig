@@ -9,9 +9,9 @@ indent_style = space
 indent_size = 2
 tab_width = 2
 max_line_length = 120
-quote_type = double
+quote_type = auto
 spelling_language = en
-shell_variant = bash
+shell_variant = auto
 curly_bracket_next_line = false
 spaces_around_operators = true
 
@@ -36,7 +36,7 @@ never_split = true
 indent_size = 4
 
 [**/*.{bat,cmd,ps1,psm1}]
-indent_style = tab
+indent_style = space
 indent_size = 4
 end_of_line = crlf
 
@@ -45,7 +45,8 @@ end_of_line = crlf
 
 [**/*.{py,pyw,pyi}]
 indent_size = 4
-max_line_length = 100
+max_line_length = 120
+quote_type = double
 
 # C/C++
 [**/*.{c,cc,cpp,cxx,h,hpp,hxx}]
