@@ -15,7 +15,7 @@ shell_variant = bash
 curly_bracket_next_line = false
 spaces_around_operators = true
 
-[[shell],**/*.{sh,bash,zsh}]
+[[shell],**/*.{sh,bash,zsh},PKGBUILD]
 indent_style = space
 indent_size = 2
 tab_width = 2
