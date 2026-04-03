@@ -92,7 +92,7 @@ indent_size = 4
 tab_width = 4
 
 # Lock files
-[{bun.lockb,package-lock.json}]
+[bun.lockb,package-lock.json,uv.lock]
 insert_final_newline = true
 
 [*.svg]
