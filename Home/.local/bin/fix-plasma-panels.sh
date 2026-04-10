@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+has() { command -v -- "$1" &>/dev/null; }
+die() { printf '\e[31mERROR: %s\e[0m\n' "$*" >&2; exit 1; }
+log() { printf '\e[34mINFO: %s\e[0m\n' "$*"; }
+
 # Fix KDE Plasma panels/menus not loading after boot
 # Run this when taskbar/panels are missing
-
 echo "Killing plasmashell..."
 kill -9 $(pgrep plasmashell) 2>/dev/null
 sleep 2
