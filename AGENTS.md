@@ -2,7 +2,7 @@
 
 **Purpose:** AI operational directives for dotfiles repository
 **Tone:** Blunt, precise. Result :: Cause. Lists ≤7
-**System:** YADM (`Home/` → `~/`) + Tuckr (`etc/` → `/`)
+**System:** Chezmoi (`Home/` → `~/`) + Tuckr (`etc/` → `/`)
 **Targets:** Arch Linux (CachyOS), Debian, Termux
 **Priority:** User > Rules. Verify > Assume. Edit > Create. Debt-First.
 
@@ -16,13 +16,13 @@ Multi-platform dotfiles repo (Arch, Debian, Termux)
 
 Quick Start:
   ./setup.sh                  # First-time bootstrap
-  yadm-sync pull             # Deploy repo → home
-  yadm-sync push             # Update repo ← home
+  chezmoi-sync pull             # Deploy repo → home
+  chezmoi-sync push <file>             # Update repo ← home
   sudo deploy-system-configs.sh  # Deploy /etc
 
 Technologies:
-  • Shell: Bash (ble.sh), Zsh (Zimfw), Fish, Starship
-  • Deployment: YADM (user), Tuckr/stow (system)
+  • Shell: Bash (ble.sh), Zsh (Antidote), Fish, Starship
+  • Deployment: Chezmoi (user), Tuckr/stow (system)
   • CI/CD: GitHub Actions (6 workflows)
   • Hooks: prek (pre-commit compatible, 11 hook sources)
   • Desktop: KDE Plasma (Wayland), Catppuccin Mocha
@@ -46,9 +46,9 @@ Technologies:
 
 ```bash
 # Dotfile Synchronization
-yadm-sync pull              # Deploy: Repo → Home → ~
-yadm-sync push              # Update: ~ → Home → Repo
-yadm-sync status            # Show file differences
+chezmoi-sync pull              # Deploy: Repo → Home → ~
+chezmoi-sync push <file>              # Update: ~ → Home → Repo
+chezmoi-sync status            # Show file differences
 lint-format.sh              # Run all linters/formatters
 
 # System Configuration
@@ -99,7 +99,7 @@ shfmt -d -i 2 script.sh     # Format validation
 
 ```
 dotfiles/
-├── Home/                    # User dotfiles (~/)          [YADM]
+├── Home/                    # User dotfiles (~/)          [Chezmoi]
 │   ├── .config/             # 65+ app configs (XDG)
 │   │   ├── alacritty/       # Terminal emulator
 │   │   ├── bash/            # Bash init scripts
@@ -110,10 +110,10 @@ dotfiles/
 │   │   ├── [app configs]    # 65+ app configurations
 │   │   ├── mpv/             # Media player
 │   │   ├── starship.toml    # Cross-shell prompt
-│   │   ├── yadm/            # YADM bootstrap
+│   │   ├── chezmoi/            # Chezmoi bootstrap
 │   │   ├── yazi/            # File manager
 │   │   ├── yt-dlp/          # YouTube downloader
-│   │   ├── zsh/             # Zsh config (Zimfw + P10k)
+│   │   ├── zsh/             # Zsh config (Antidote + P10k)
 │   │   └── [60+ more apps]
 │   ├── .local/
 │   │   ├── bin/             # 27 utility scripts
@@ -155,9 +155,9 @@ git clone https://github.com/Ven0m0/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./setup.sh
 
-# Or manual YADM setup
-yadm clone https://github.com/Ven0m0/dotfiles.git
-yadm bootstrap
+# Or manual Chezmoi setup
+chezmoi clone https://github.com/Ven0m0/dotfiles.git
+chezmoi bootstrap
 
 # Deploy system configs (requires sudo)
 sudo deploy-system-configs.sh
@@ -167,13 +167,13 @@ sudo deploy-system-configs.sh
 
 ```bash
 # 1. Pull latest from repo
-yadm-sync pull
+chezmoi-sync pull
 
 # 2. Edit configs in ~/
 # ... modify files, test changes ...
 
 # 3. Sync changes back to repo
-yadm-sync push
+chezmoi-sync push <file>
 
 # 4. Stage & commit specific files
 git add Home/.config/app/config.toml
@@ -302,7 +302,7 @@ Termux: pkg
 <summary><b>Which Deployment Tool?</b></summary>
 
 ```
-User configs:   yadm-sync.sh (rsync-based)
+User configs:   chezmoi-sync.sh (rsync-based)
 System configs: tuckr (preferred) → stow (fallback)
 Full setup:     setup.sh (one-shot bootstrap)
 ```
@@ -339,7 +339,7 @@ Full setup:     setup.sh (one-shot bootstrap)
 
 | Script | Purpose |
 |--------|---------|
-| `yadm-sync.sh` | Bidirectional dotfile sync (pull/push/status) |
+| `chezmoi-sync.sh` | Bidirectional dotfile sync (pull/push/status) |
 | `gh-tools.sh` | GitHub CLI wrapper (asset DL, interactive install) |
 | `fzf-tools.sh` | Fuzzy finder integration (preview, git, grep, man) |
 | `git-summmary.py` | Recursive git repo statistics |
@@ -380,7 +380,7 @@ Full setup:     setup.sh (one-shot bootstrap)
 | Alacritty | `.config/alacritty/` |
 | Ghostty | `.config/ghostty/` |
 | Bash | `.bashrc`, `.bash_functions`, `.bash_exports` |
-| Zsh | `.config/zsh/` (Zimfw + P10k) |
+| Zsh | `.config/zsh/` (Antidote + P10k) |
 | Fish | `.config/fish/` |
 | Starship | `.config/starship.toml` |
 
@@ -473,7 +473,7 @@ Full setup:     setup.sh (one-shot bootstrap)
 
 | Tool | Purpose |
 |------|---------|
-| yadm | User dotfile manager |
+| chezmoi | User dotfile manager |
 | tuckr | System config deployment |
 | git | Version control |
 | bash | Shell scripting |
@@ -528,8 +528,8 @@ Full setup:     setup.sh (one-shot bootstrap)
 
 ```bash
 # Task: Update repo with local changes
-# 1. Run yadm-sync push --dry-run (preview)
-# 2. Run yadm-sync push
+# 1. Run chezmoi-sync push <file> --dry-run (preview)
+# 2. Run chezmoi-sync push <file>
 # 3. git add <specific files>
 # 4. git commit -m "chore: sync local config updates"
 ```
@@ -593,9 +593,9 @@ These require explicit user approval before modification:
 <summary><b>Deployment Issues</b></summary>
 
 ```bash
-# YADM sync fails
-yadm-sync status            # Check differences
-yadm diff                   # Detailed diff
+# Chezmoi sync fails
+chezmoi-sync status            # Check differences
+chezmoi diff                   # Detailed diff
 
 # Tuckr deployment fails
 sudo tuckr link -d ~/dotfiles -t / --verbose etc

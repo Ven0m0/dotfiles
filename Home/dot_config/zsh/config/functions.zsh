@@ -365,8 +365,11 @@ shlint(){
   shfmt -w -ln bash -bn -i 2 -s "$1"
 }
 
-zimupdate(){
-  zimfw update && zimfw upgrade
+antidote-update(){
+  (
+    cd "${XDG_DATA_HOME:-$HOME/.local/share}/antidote" && git pull
+    antidote update
+  )
 }
 
 # vim: set ft=zsh ts=2 sw=2 et:

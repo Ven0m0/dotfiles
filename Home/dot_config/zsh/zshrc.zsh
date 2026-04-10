@@ -18,14 +18,17 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export ZDOTDIR="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}"
 
-# ---[ Zimfw Init ]---
-ZIM_HOME="${XDG_DATA_HOME}/zim"
-if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
-  mkdir -p "$ZIM_HOME"
-  git clone --depth=1 --filter=blob:none https://github.com/zimfw/zimfw.git "$ZIM_HOME"
+# ---[ Antidote Init ]---
+ANTIDOTE_DIR="${XDG_DATA_HOME}/antidote"
+if [[ ! -d $ANTIDOTE_DIR ]]; then
+  git clone --depth=1 https://github.com/mattmc3/antidote.git "$ANTIDOTE_DIR"
 fi
-[[ ! ${ZIM_HOME}/init.zsh -nt ${ZDOTDIR}/.zimrc ]] && source "${ZIM_HOME}/zimfw.zsh" init -q
-source "${ZIM_HOME}/init.zsh"
+source "${ANTIDOTE_DIR}/antidote.zsh"
+# Load plugins and generate static file if needed
+if [[ ! "$ZDOTDIR/plugins.zsh" -nt "$ZDOTDIR/config/plugins.txt" ]]; then
+  antidote bundle <"$ZDOTDIR/config/plugins.txt" >"$ZDOTDIR/plugins.zsh"
+fi
+source "$ZDOTDIR/plugins.zsh"
 
 # ---[ Zsh Options ]---
 setopt EXTENDED_GLOB NULL_GLOB GLOB_DOTS NO_GLOBAL_RCS

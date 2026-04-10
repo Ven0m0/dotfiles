@@ -21,7 +21,6 @@ main() {
   mkdir -p "$ZDOTDIR/config" "$ZDOTDIR/completions"
   # Deploy files
   cp zshrc.zsh "$ZDOTDIR/.zshrc"
-  cp zimrc.zsh "$ZDOTDIR/.zimrc"
   cp aliases.zsh "$ZDOTDIR/config/aliases.zsh"
   cp functions.zsh "$ZDOTDIR/config/functions.zsh"
   cp completions.zsh "$ZDOTDIR/config/completions.zsh"
@@ -36,7 +35,6 @@ main() {
   printf 'Structure:\n'
   printf '  ~/.config/zsh/\n'
   printf '    ├── .zshrc            (main config)\n'
-  printf '    ├── .zimrc            (plugins)\n'
   printf '    ├── config/\n'
   printf '    │   ├── aliases.zsh   (aliases + abbreviations)\n'
   printf '    │   ├── functions.zsh (utility functions)\n'

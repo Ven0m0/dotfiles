@@ -6,7 +6,7 @@
 pre_sudo = true
 disable = ["system", "config_update", "vim"]
 ignore_failures = ["system", "micro", "uv", "pipx",
-  "shell", "yazi", "bun", "mise", "yadm", "node"]
+  "shell", "yazi", "bun", "mise", "chezmoi", "node"]
 assume_yes = true
 no_retry = true
 cleanup = true

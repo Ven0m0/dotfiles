@@ -187,39 +187,28 @@ setup_git() {
 }
 
 readonly DOTFILES_REPO="${DOTFILES_REPO:-https://github.com/Ven0m0/dotfiles.git}"
-readonly YADM_DIR="${HOME}/.local/share/yadm/repo.git"
 
 setup_dotfiles() {
-  has yadm || { warn "yadm not found, skipping dotfiles"; return 0; }
-  if [[ ! -d $YADM_DIR ]]; then
-    log "Cloning dotfiles via yadm..."
-    # -b main: explicit branch avoids mismatch with GitHub default
-    # -f: force overwrite any conflicting files already on disk
-    # --bootstrap: run ~/.config/yadm/bootstrap after checkout
-    yadm clone -b main -f --bootstrap "$DOTFILES_REPO" || die "yadm clone failed"
+  has chezmoi || { warn "chezmoi not found, skipping dotfiles"; return 0; }
+  if [[ ! -d "${HOME}/.local/share/chezmoi" ]]; then
+    log "Initializing dotfiles via chezmoi..."
+    chezmoi init --apply "$DOTFILES_REPO" || die "chezmoi init failed"
   else
-    log "Dotfiles already cloned, pulling..."
-    yadm pull || warn "yadm pull failed"
-    # Ensure bootstrap is executable before running (yadm requires it)
-    chmod +x "${HOME}/.config/yadm/bootstrap" 2>/dev/null || true
-    yadm bootstrap || warn "yadm bootstrap failed"
+    log "Dotfiles already initialized, applying..."
+    chezmoi apply || warn "chezmoi apply failed"
   fi
 }
 
-# Called standalone if yadm bootstrap was skipped
+# Fallback deployment if chezmoi is not used
 deploy_home() {
-  local worktree
-  worktree="$(yadm config core.worktree 2>/dev/null || printf '%s' "$HOME")"
-  local home_dir="${worktree}/Home"
+  local repo_dir="${SCRIPT_DIR:-$HOME/dotfiles}"
+  local home_dir="${repo_dir}/Home"
   [[ -d $home_dir ]] || { warn "Home/ not found at $home_dir"; return 0; }
   local backup_dir="${HOME}/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
   log "Deploying Home/ → $HOME/  (backups → $backup_dir)"
-  # --no-delete: never remove files from $HOME that aren't in the repo
-  # --backup: preserve any overwritten file in $backup_dir for recovery
   rsync -a --backup --backup-dir="$backup_dir" \
     --exclude='.git' --exclude='.gitignore' \
     "${home_dir}/" "${HOME}/"
-  # Remove backup dir if nothing was actually backed up
   find "$backup_dir" -maxdepth 0 -empty -delete 2>/dev/null || true
 }
 
@@ -371,11 +360,10 @@ main() {
 
   setup_repos
   setup_git
-  install_pkgs       # pacman + AUR from pkg/*.txt — includes yadm, stow, konsave
-  setup_dotfiles     # yadm clone --bootstrap → triggers .config/yadm/bootstrap
-  # deploy_home is a fallback only — bootstrap already ran rsync.
-  # Re-running it is safe (no --delete) but wasteful; skip when yadm repo exists.
-  [[ ! -d $YADM_DIR ]] && deploy_home  # only on fresh clone (bootstrap may have failed)
+  install_pkgs       # pacman + AUR from pkg/*.txt — includes chezmoi, stow, konsave
+  setup_dotfiles     # chezmoi init --apply
+  # deploy_home is a fallback only
+  [[ ! -d "${HOME}/.local/share/chezmoi" ]] && deploy_home
   configure_shell
   link_system_configs
   apply_konsave_profile
