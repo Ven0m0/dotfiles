@@ -9,9 +9,12 @@
     "tombi-toml.tombi",
     "davidanson.vscode-markdownlint",
     "github.vscode-github-actions",
+    "github.vscode-pull-request-github",
     "oven.bun-vscode",
     "hverlin.mise-vscode",
     "the0807.uv-toolkit",
-    "ast-grep.ast-grep-vscode"
+    "ast-grep.ast-grep-vscode",
+    "mattgmak.find-it-faster",
+    "ndonfris.fish-lsp"
   ]
 }
