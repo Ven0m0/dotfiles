@@ -1,7 +1,7 @@
 
 
 ```bash
-> /dev/null 2>&1
+>/dev/null 2>&1
 ```
 
 source ~/.venv/bin/activate.fish
