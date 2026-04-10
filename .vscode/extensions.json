@@ -10,6 +10,8 @@
     "davidanson.vscode-markdownlint",
     "github.vscode-github-actions",
     "oven.bun-vscode",
+    "hverlin.mise-vscode",
+    "the0807.uv-toolkit",
     "ast-grep.ast-grep-vscode"
   ]
 }
