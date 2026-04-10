@@ -4,6 +4,7 @@
     "oxc.oxc-vscode",
     "detachhead.basedpyright",
     "mads-hartmann.bash-ide-vscode",
+    "timonwong.shellcheck",
     "redhat.vscode-yaml",
     "tombi-toml.tombi",
     "davidanson.vscode-markdownlint",
