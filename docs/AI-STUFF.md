@@ -168,7 +168,7 @@ Think about the best plan structure for agentic understanding. Use unambiguous i
 <details><summary>Multi-pr-merge</summary>
 
 ```text
-Apply all code suggestions in all pull requests. Merge the pr's together cleanly and intelligently into one pr, rebase it and squash merge it into main.
+Apply all code suggestions in all pull requests. Merge the pr's together cleanly and intelligently into one pr, rebase it and squash merge it into main. Delete the leftover branches after the merge and also delete any ghost branches.
 ```
 </details>
 <details><summary><b>🧹 Cleaner</b> — Aggressive dead code removal</summary>
