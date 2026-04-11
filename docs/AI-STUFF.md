@@ -1,7 +1,5 @@
 # LLM Prompts
-
 > Copy-paste prompts for AI-assisted development. Each prompt is self-contained and executable.
-
 <details><summary><b>PR Commands</b></summary>
 
 ```text
@@ -42,7 +40,6 @@
 
 ---
 ## Quick Tasks
-
 <details><summary><b>AGENTS.md/copilot-instructions.md</summary>
 
 ```text
@@ -113,12 +110,7 @@ Extract all TODO/FIXME/HACK/XXX/NOTE/WARN/DEPRECATED markers from the entire cod
 </investigate_before_answering>
 <use_parallel_tool_calls>
 Use `rg` and mcp-servers with subagents to discover all markers in parallel. Pattern:
-  rg -n "TODO|FIXME|HACK|XXX|WARN|DEPRECATED|NOTE\(.*\)" \
-     --type-add 'src:*.{sh,bash,py,ts,tsx,js,jsx,rs,go,lua,toml,yaml,yml,md}' \
-     -t src -t json -t c -t cpp \
-     --glob '!node_modules' --glob '!vendor' --glob '!dist' --glob '!.venv' \
-     --glob '!*.min.*' --glob '!*.lock' --glob '!generated'
-Simultaneously run: git log --oneline -20, cat README.md, fd -tf -e md docs/
+  rg -n "TODO|FIXME|HACK|XXX|WARN|DEPRECATED|NOTE\(.*\)" --type-add 'src:*.{sh,bash,py,ts,tsx,js,jsx,rs,go,lua,toml,yaml,yml,md}' -t src -t json --glob '!node_modules' --glob '!.venv' --glob '!*.lock' and `git log --oneline -20`
 </use_parallel_tool_calls>
 Steps:
 1. Collect: file, line number, full comment text, 5 lines surrounding context
@@ -148,13 +140,10 @@ Write PLAN.md with this structure:
 _Generated: {ISO date} · {N} tasks · Est. {total LOC range}_
 ## Summary
 {2-3 sentence executive summary of the overall work scope}
-
 ## Task Index (topological order)
-
 | # | ID | Title | Sev | Cat | Size | Blocks |
 |---|-----|-------|-----|-----|------|--------|
 | 1 | T001 | ... |  | bug | S | — |
-...
 ## Tasks
 ### T001 · {title}
 **File:** `path/to/file.ts:42`
@@ -168,13 +157,18 @@ _Generated: {ISO date} · {N} tasks · Est. {total LOC range}_
 - [ ] {specific, testable criterion}
 **Implementation:**
 {exact code pattern, type, function signature, or algorithm — not prose}
----
 After writing PLAN.md:
 - Run `wc -l PLAN.md` and report: total tasks, breakdown by severity, breakdown by category, estimated LOC delta totals (S/M/L/XL counts)
 - Do NOT resolve any TODOs — only document them
 - Do NOT modify any source files
 </answer>
 Think about the best plan structure for agentic understanding. Use unambiguous imperative language, avoid pronouns, anchor every task to file:line, never use "maybe", emit only machine-parseable task IDs (T\d{3}) for dependency references. Evaluate if xml-tags could help steer future agents in the right direction.
+```
+</details>
+<details><summary>Multi-pr-merge</summary>
+
+```text
+Apply all code suggestions in all pull requests. Merge the pr's together cleanly and intelligently into one pr, rebase it and squash merge it into main.
 ```
 </details>
 <details><summary><b>🧹 Cleaner</b> — Aggressive dead code removal</summary>
