@@ -174,7 +174,7 @@ After writing PLAN.md:
 - Do NOT resolve any TODOs — only document them
 - Do NOT modify any source files
 </answer>
-Agent targeting note: acceptance criteria and implementation hints are written for claude-sonnet-4-6, minimax-m2.7, gpt-5, and glm-5 — use unambiguous imperative language, avoid pronouns, anchor every task to file:line, never use "maybe" or "consider", emit only machine-parseable task IDs (T\d{3}) for dependency references.
+Think about the best plan structure for agentic understanding. Use unambiguous imperative language, avoid pronouns, anchor every task to file:line, never use "maybe", emit only machine-parseable task IDs (T\d{3}) for dependency references. Evaluate if xml-tags could help steer future agents in the right direction.
 ```
 </details>
 <details><summary><b>🧹 Cleaner</b> — Aggressive dead code removal</summary>
