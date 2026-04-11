@@ -112,7 +112,7 @@ Steps:
 Extract all TODO/FIXME/HACK/XXX/NOTE/WARN/DEPRECATED markers from the entire codebase and synthesize them into a machine-actionable PLAN.md at the repo root. Never speculate about code you have not opened.
 </investigate_before_answering>
 <use_parallel_tool_calls>
-Use `rg` and mcp-servers to discover all markers in parallel. Pattern:
+Use `rg` and mcp-servers with subagents to discover all markers in parallel. Pattern:
   rg -n "TODO|FIXME|HACK|XXX|WARN|DEPRECATED|NOTE\(.*\)" \
      --type-add 'src:*.{sh,bash,py,ts,tsx,js,jsx,rs,go,lua,toml,yaml,yml,md}' \
      -t src -t json -t c -t cpp \
