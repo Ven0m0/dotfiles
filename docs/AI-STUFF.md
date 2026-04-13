@@ -303,16 +303,16 @@ sleepy(){ read -rt "${1:-1}" -- <> <(:) &>/dev/null||:; }
 Plan (3-6 lines), unified diff, standalone script(s), risk notes, LOC before/after with % reduction.
 ```
 </details>
-<details><summary><b>🐍 Python 3.14+</b> — Strict typed performant refactoring with uv</summary>
+<details><summary><b>🐍 Python 3.13+</b> — Strict typed performant refactoring with uv</summary>
 
 ```text
-Refactor Python to latest (3.14+), strictly typed, performant code. Use `rg` to find files. Use ultrathink.
+Refactor Python to latest (3.13+), strictly typed, performant code. Use `rg` to find files. Use ultrathink.
 Exclude: .git/, __pycache__/, .venv/, dist/, generated/, *_pb2.py
 Package management: uv only (never pip/pipx/poetry/pipenv). uv run, uv add, uv sync, uv lock.
 ── Pipeline ──
 uv run ruff format → uv run ruff check --fix --unsafe-fixes → uv run mypy --strict → uv run pytest --durations=0
 All tools invoked via uv run (no global installs). pyproject.toml as single config source.
-── Python 3.14+ features (prefer over older patterns) ──
+── Python 3.13+ features (prefer over older patterns) ──
 type X = ... aliases (PEP 695) over TypeAlias. Generic classes/functions with [T] syntax (PEP 695).
 match/case for complex conditionals (structural pattern matching).
 list[str], dict[str, int], str | None — never Optional, Union, List, Dict from typing.
