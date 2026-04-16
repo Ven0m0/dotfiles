@@ -1,9 +1,7 @@
 import importlib.util
-import pathlib
-import pytest
-import subprocess
-import time
 import os
+import pathlib
+import subprocess
 
 # Load the script as a module
 script_path = pathlib.Path("Home/.local/bin/git-summmary.py")
