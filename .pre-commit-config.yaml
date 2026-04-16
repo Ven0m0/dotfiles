@@ -52,12 +52,12 @@ repos:
       - id: shfmt
         args: [-w, -i, "2", -bn, -ci, -sr]
   - repo: https://github.com/biomejs/pre-commit
-    rev: v2.4.11
+    rev: v2.4.12
     hooks:
       - id: biome-check
         additional_dependencies: ["@biomejs/biome@1.9.4"]
   - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: v0.1.69
+    rev: v0.1.72
     hooks:
       - id: rumdl      # Lint only (fails on issues)
       - id: rumdl-fmt  # Auto-format and fail if issues remain
