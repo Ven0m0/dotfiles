@@ -117,7 +117,11 @@ deploy_configs() {
     local hooks_file="${repo_dir}/hooks.toml"
     local valid_pkgs=()
     for pkg in "${packages[@]}"; do
-      [[ -d "${repo_dir}/${pkg}" ]] && valid_pkgs+=("$pkg") || warn "Directory not found: ${repo_dir}/${pkg}"
+      if [[ -d "${repo_dir}/${pkg}" ]]; then
+        valid_pkgs+=("$pkg")
+      else
+        warn "Directory not found: ${repo_dir}/${pkg}"
+      fi
     done
 
     if ((${#valid_pkgs[@]} > 0)); then
