@@ -6,16 +6,12 @@ IFS=$'\n\t'
 export LC_ALL=C
 
 has() { command -v -- "$1" &> /dev/null; }
-msg() { printf '%s\n' "$@"; }
-log() { printf '%s\n' "$@" >&2; }
 die() {
   printf '%s\n' "$1" >&2
   exit "${2:-1}"
 }
-readonly RED=$'\e[31m' GRN=$'\e[32m' YLW=$'\e[33m' DEF=$'\e[0m'
+readonly GRN=$'\e[32m' DEF=$'\e[0m'
 clog() { printf '%b%s%b\n' "$GRN" "$*" "$DEF" >&2; }
-cwarn() { printf '%b%s%b\n' "$YLW" "$*" "$DEF" >&2; }
-cerr() { printf '%b%s%b\n' "$RED" "$*" "$DEF" >&2; }
 
 usage() {
   cat << 'EOF'
