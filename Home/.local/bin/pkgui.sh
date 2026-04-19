@@ -152,24 +152,40 @@ _pkgui_search_aur_rpc() {
     return 1
   }
 
-  # Optimization: Batch generate previews from search results (avoids N curls)
+  # Optimization: Batch fetch full info for all search results (avoids N curls in preview)
   local cache_dir="$CACHE/aur_rpc"
   mkdir -p "$cache_dir"
-  jq -j '.results[] | .Name, "\u0000",
-    ("Name:         " + (.Name // "N/A") + "\n" +
-     "Version:     " + (.Version // "N/A") + "\n" +
-     "Maintainer:  " + (.Maintainer // "orphan") + "\n" +
-     "Votes:       " + (.NumVotes // 0 | tostring) + "\n" +
-     "Popularity:  " + (.Popularity // 0.0 | tostring) + "\n" +
-     "Out-of-date:  " + (if .OutOfDate then "YES" else "no" end) + "\n" +
-     "Description: " + (.Description // "N/A") + "\n" +
-     "URL:         " + (.URL // "N/A") + "\n"
-    ), "\u0000"' <<< "$raw" \
-    | while IFS= read -r -d '' name && IFS= read -r -d '' content; do
-      if [[ "$name" =~ ^[a-zA-Z0-9@._+-]+$ ]] && [[ "$name" != "." ]] && [[ "$name" != ".." ]] && [[ ! -e "$cache_dir/$name" ]]; then
-        printf '%s' "$content" > "$cache_dir/$name"
-      fi
-    done
+  local -a names
+  mapfile -t names < <(jq -r '.results[].Name' <<< "$raw")
+
+  for ((i = 0; i < ${#names[@]}; i += 50)); do
+    local batch=("${names[@]:i:50}")
+    local url="https://aur.archlinux.org/rpc/?v=5&type=info"
+    for n in "${batch[@]}"; do url+="&arg[]=$n"; done
+    local info_raw
+    info_raw=$(curl -fsSL "$url" 2>/dev/null)
+    [[ -z "$info_raw" ]] && continue
+
+    jq -j '.results[] | .Name, "\u0000",
+      ("Name:         " + (.Name // "N/A") + "\n" +
+       "Version:      " + (.Version // "N/A") + "\n" +
+       "Maintainer:   " + (.Maintainer // "orphan") + "\n" +
+       "Votes:        " + (.NumVotes // 0 | tostring) + "\n" +
+       "Popularity:   " + (.Popularity // 0.0 | tostring) + "\n" +
+       "Out-of-date:  " + (if .OutOfDate then "YES" else "no" end) + "\n" +
+       "Description:  " + (.Description // "N/A") + "\n" +
+       "URL:          " + (.URL // "N/A") + "\n" +
+       "License:      " + (.License // [] | join(", ")) + "\n" +
+       "Depends:      " + (.Depends // [] | join(", ")) + "\n" +
+       "MakeDeps:     " + (.MakeDepends // [] | join(", ")) + "\n" +
+       "OptDeps:      " + (.OptDepends // [] | join(", ")) + "\n"
+      ), "\u0000"' <<< "$info_raw" \
+      | while IFS= read -r -d '' name && IFS= read -r -d '' content; do
+        if [[ "$name" =~ ^[a-zA-Z0-9@._+-]+$ ]] && [[ "$name" != "." ]] && [[ "$name" != ".." ]]; then
+          printf '%s' "$content" > "$cache_dir/$name"
+        fi
+      done
+  done
 
   preview_fn='
     pkg=$(cut -f1 <<<{})
@@ -179,7 +195,7 @@ _pkgui_search_aur_rpc() {
     if [[ -s "$cache_file" ]]; then
       cat "$cache_file"
     else
-      out=$(curl -fsSL "https://aur.archlinux.org/rpc/?v=5&type=info&arg=$pkg" 2>/dev/null | jq -r ".results[0] | \"Name:         \(.Name // \"N/A\")\nVersion:     \(.Version // \"N/A\")\nMaintainer:  \(.Maintainer // \"orphan\")\nVotes:       \(.NumVotes // 0)\nPopularity:  \(.Popularity // 0.0)\nOut-of-date:  \(if .OutOfDate then \"YES\" else \"no\" end)\nDescription: \(.Description // \"N/A\")\nURL:         \(.URL // \"N/A\")\nLicense:     \(.License // [] | join(\", \"))\"")
+      out=$(curl -fsSL "https://aur.archlinux.org/rpc/?v=5&type=info&arg[]=$pkg" 2>/dev/null | jq -r ".results[0] | \"Name:         \(.Name // \"N/A\")\nVersion:      \(.Version // \"N/A\")\nMaintainer:   \(.Maintainer // \"orphan\")\nVotes:        \(.NumVotes // 0)\nPopularity:   \(.Popularity // 0.0)\nOut-of-date:  \(if .OutOfDate then \"YES\" else \"no\" end)\nDescription:  \(.Description // \"N/A\")\nURL:          \(.URL // \"N/A\")\nLicense:      \(.License // [] | join(\", \"))\nDepends:      \(.Depends // [] | join(\", \"))\nMakeDeps:     \(.MakeDepends // [] | join(\", \"))\nOptDeps:      \(.OptDepends // [] | join(\", \"))\"")
       if [[ -n "$out" && "$out" != "null" ]]; then
          echo "$out" | tee "$cache_file"
       else
