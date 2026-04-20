@@ -43,7 +43,7 @@
 <details><summary><b>AGENTS.md/copilot-instructions.md</summary>
 
 ```text
-create/update the [AGENTS.md](https://agents.md) and .github/copilot-instructions.md file . Use the best practices for both files and think about how to optimize them. Use `rg` for file discovery, ensure CLAUDE.md is a symlink to AGENTS.md
+create/update the [AGENTS.md](https://agents.md) and .github/copilot-instructions.md file . Use the best practices for both files and think about how to optimize them. Use `rg` for file discovery, ensure CLAUDE.md is a symlink to AGENTS.md . Run and apply "npx -y @yawlabs/ctxlint --depth 3 --mcp --strict --fix --yes" and "npx -y agnix --fix ."
 ```
 </details>
 <details><summary><b>🔍 Audit</b> — Quality, security, correctness sweep</summary>
