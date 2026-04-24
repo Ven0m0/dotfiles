@@ -30,7 +30,7 @@
 <details><summary><b>Agentic setup</summary>
 
 ```text
-create/update the [AGENTS.md](https://agents.md) and .github/copilot-instructions.md file . Use the best practices for both files and think about how to optimize them. Use `rg` for file discovery, ensure CLAUDE.md is a symlink to AGENTS.md . Run and apply "npx -y @yawlabs/ctxlint --depth 3 --mcp --strict --fix --yes" and "npx -y agnix --fix-safe .". Use the "copilot-init" skill to setup the ".github/workflows/copilot-setup-steps.yml" workflow.
+create/update the [AGENTS.md](https://agents.md) and .github/copilot-instructions.md file . Use the best practices for both files and think about how to optimize them. Use `rg` for file discovery, ensure CLAUDE.md is a symlink to AGENTS.md . Run and apply "npx -y @yawlabs/ctxlint --depth 3 --mcp --strict --fix --yes" and "npx -y agnix --fix-safe ."
 ```
 </details>
 <details><summary><b>🔍 Audit</b> — Quality, security, correctness sweep</summary>
