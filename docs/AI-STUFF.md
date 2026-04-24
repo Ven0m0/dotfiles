@@ -310,8 +310,8 @@ Refactor Python to latest (3.13+), strictly typed, performant code. Use `rg` to 
 Exclude: .git/, __pycache__/, .venv/, dist/, generated/, *_pb2.py
 Package management: uv only (never pip/pipx/poetry/pipenv). uv run, uv add, uv sync, uv lock.
 ── Pipeline ──
-uv run ruff format → uv run ruff check --fix --unsafe-fixes → uv run mypy --strict → uv run pytest --durations=0
-All tools invoked via uv run (no global installs). pyproject.toml as single config source.
+uv run ruff format → uv run ruff check --fix --unsafe-fixes → uv run ty check -> uv run basedpyright -> uv run mypy --strict → uv run pytest --durations=0
+All tools invoked via uv run (no global installs). pyproject.toml as single config source. Use ruff, ty and basedpyright for linting/formatting
 ── Python 3.13+ features (prefer over older patterns) ──
 type X = ... aliases (PEP 695) over TypeAlias. Generic classes/functions with [T] syntax (PEP 695).
 match/case for complex conditionals (structural pattern matching).
