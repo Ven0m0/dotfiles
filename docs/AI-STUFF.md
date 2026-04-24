@@ -12,9 +12,6 @@
 @copilot
 ```
 ```text
-@copilot code review[agent]
-```
-```text
 @codex[agent]
 ```
 ```text
@@ -24,26 +21,16 @@
 @claude[agent]
 ```
 ```text
-@cursoragent
-```
-```text
 @jules 
-```
-```text
-@coderabbitai
-```
-```text
-@cmux-agent
-@cto-new
 ```
 </details>
 
 ---
 ## Quick Tasks
-<details><summary><b>AGENTS.md/copilot-instructions.md</summary>
+<details><summary><b>Agentic setup</summary>
 
 ```text
-create/update the [AGENTS.md](https://agents.md) and .github/copilot-instructions.md file . Use the best practices for both files and think about how to optimize them. Use `rg` for file discovery, ensure CLAUDE.md is a symlink to AGENTS.md . Run and apply "npx -y @yawlabs/ctxlint --depth 3 --mcp --strict --fix --yes" and "npx -y agnix --fix-safe .". Use the "copilot-init" and "validate" skills.
+create/update the [AGENTS.md](https://agents.md) and .github/copilot-instructions.md file . Use the best practices for both files and think about how to optimize them. Use `rg` for file discovery, ensure CLAUDE.md is a symlink to AGENTS.md . Run and apply "npx -y @yawlabs/ctxlint --depth 3 --mcp --strict --fix --yes" and "npx -y agnix --fix-safe .". Use the "copilot-init" skill to setup the ".github/workflows/copilot-setup-steps.yml" workflow.
 ```
 </details>
 <details><summary><b>🔍 Audit</b> — Quality, security, correctness sweep</summary>
