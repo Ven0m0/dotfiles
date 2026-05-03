@@ -30,7 +30,7 @@
 <details><summary><b>Agentic setup</summary>
 
 ```text
-create/update the [AGENTS.md](https://agents.md) and use the best practices, think about how to optimize it. Use `rg` for file discovery, ensure CLAUDE.md is a symlink to AGENTS.md . Run and apply "npx -y @yawlabs/ctxlint --depth 3 --mcp --strict --fix --yes" and "npx -y agnix --fix-safe ."
+create/update the [AGENTS.md](https://agents.md) and use the best practices, think about how to optimize it. Use `rg` for file discovery, ensure CLAUDE.md is a symlink to AGENTS.md . Run and apply "npx -y @yawlabs/ctxlint --depth 5 --mcp --strict --fix --yes"
 ```
 </details>
 <details><summary><b>🔍 Audit</b> — Quality, security, correctness sweep</summary>
