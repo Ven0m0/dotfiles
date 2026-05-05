@@ -82,13 +82,18 @@ done
 # Check if running as root
 [[ $EUID -eq 0 ]] || die "This script must be run as root (use sudo)"
 
+HAS_STOW=false
+has stow && HAS_STOW=true
+HAS_TUCKR=false
+has tuckr && HAS_TUCKR=true
+
 deploy_configs() {
   local repo_dir="$1"
   local unlink="$2"
   shift 2
   local packages=("$@")
 
-  if has stow; then
+  if [[ "$HAS_STOW" == true ]]; then
     info "Using stow for deployment"
     local valid_pkgs=()
     for pkg in "${packages[@]}"; do
@@ -112,7 +117,7 @@ deploy_configs() {
         (cd "$repo_dir" && stow -t / -d . "${valid_pkgs[@]}") || warn "Failed to stow ${pkgs_str}"
       fi
     fi
-  elif has tuckr; then
+  elif [[ "$HAS_TUCKR" == true ]]; then
     info "Using tuckr for deployment (stow not available)"
     local hooks_file="${repo_dir}/hooks.toml"
     local valid_pkgs=()
