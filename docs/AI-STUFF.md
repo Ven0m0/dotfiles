@@ -155,7 +155,7 @@ Think about the best plan structure for agentic understanding. Use unambiguous i
 <details><summary>Create PLAN.md from TODO.md</summary>
 
 ```text
-<prompt><task>Convert /TODO.md at repo root into /PLAN.md implementation plan for a future agent session.</task><requirements>Preserve all actionable TODOs;infer missing steps,dependencies,order,validation;group into phases/milestones;add minimal repo context;no code implementation;flag ambiguities/blockers;use concrete file/module refs;keep execution-ready.</requirements><output>Write /PLAN.md in Markdown with:overview,assumptions,prioritized phases,tasks,dependencies,validation,open questions;no filler,no redesign.</output></prompt>
+<prompt><task>Convert @TODO.md at repo root into /PLAN.md implementation plan for a future agent session.</task><requirements>Preserve all actionable TODOs;infer missing steps,dependencies,order,validation;group into phases/milestones;add minimal repo context;no code implementation;flag ambiguities/blockers;use concrete file/module refs;keep execution-ready.</requirements><output>Write /PLAN.md in Markdown with:overview,assumptions,prioritized phases,tasks,dependencies,validation,open questions;no filler,no redesign.</output></prompt>
 ```
 </details>
 <details><summary>Multi-pr-merge</summary>
