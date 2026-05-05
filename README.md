@@ -90,3 +90,4 @@ curl -s https://get.x-cmd.com | sh; chmod +x $HOME/.x-cmd.root/bin/x-cmd && ./$H
 - [Searchxng](https://searx.dresden.network/) [Instances](https://searx.space)
 - [Brave search](https://search.brave.com)
 </details>
+
