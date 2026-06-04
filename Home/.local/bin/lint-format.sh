@@ -3,7 +3,16 @@
 set -euo pipefail
 shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C
-has() { command -v -- "$1" &> /dev/null; }
+declare -A _HAS_CACHE
+has() {
+  if [[ -v "_HAS_CACHE[$1]" ]]; then
+    return "${_HAS_CACHE[$1]}"
+  fi
+  command -v -- "$1" &> /dev/null
+  local res=$?
+  _HAS_CACHE[$1]=$res
+  return $res
+}
 msg() { printf '%s\n' "$@"; }
 log() { printf '%s\n' "$@" >&2; }
 die() {
