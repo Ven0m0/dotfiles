@@ -119,7 +119,7 @@ deploy_configs() {
   pkgs_str="${pkgs_str% }"
 
   if [[ "$HAS_STOW" == true ]]; then
-    if [[ $unlink == true ]]; then
+    if [[ "${unlink}" == true ]]; then
       info "Unstowing ${pkgs_str}"
       (cd "$repo_dir" && stow -t / -d . -D "${valid_pkgs[@]}") || warn "Failed to unstow ${pkgs_str}"
     else
@@ -128,13 +128,13 @@ deploy_configs() {
     fi
   else
     local hooks_file="${repo_dir}/hooks.toml"
-    if [[ $unlink == true ]]; then
+    if [[ "${unlink}" == true ]]; then
       info "Unlinking ${pkgs_str}"
       tuckr unlink -d "$repo_dir" -t / "${valid_pkgs[@]}" || warn "Failed to unlink ${pkgs_str}"
     else
       info "Linking ${pkgs_str} → / (tuckr)"
       local cmd=(tuckr link -d "$repo_dir" -t / "${valid_pkgs[@]}")
-      [[ -f $hooks_file ]] && cmd+=(-H "$hooks_file")
+      [[ -f "${hooks_file}" ]] && cmd+=(-H "${hooks_file}")
       "${cmd[@]}" || warn "Failed to link ${pkgs_str}"
     fi
   fi
