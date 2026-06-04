@@ -5,7 +5,9 @@ shopt -s nullglob globstar
 IFS=$'\n\t' LC_ALL=C
 declare -A _HAS_CACHE
 has() {
-  [[ -v "_HAS_CACHE[$1]" ]] && return "${_HAS_CACHE[$1]}"
+  if [[ -v "_HAS_CACHE[$1]" ]]; then
+    return "${_HAS_CACHE[$1]}"
+  fi
   command -v -- "$1" &> /dev/null
   local res=$?
   _HAS_CACHE[$1]=$res
