@@ -485,6 +485,7 @@ xorg-xinput
 xorg-xkill
 xorg-xrandr
 xorg-xwayland
+xpadneo-dkms
 xsettingsd
 yad
 yadm
