@@ -1,5 +1,8 @@
 import importlib.util
+import os
 import pathlib
+from unittest.mock import patch
+
 import pytest
 
 # Load the script as a module
@@ -48,3 +51,9 @@ def test_parse_usage_page_malformed():
     # Truncated long item
     assert steelseries_perms.parse_usage_page(b"\xFE") == 0
     assert steelseries_perms.parse_usage_page(b"\xFE\x01") == 0
+
+def test_set_device_permissions_error():
+    with patch("os.chmod") as mock_chmod:
+        mock_chmod.side_effect = OSError("Permission denied")
+        with pytest.raises(RuntimeError, match="Failed to set permissions"):
+            steelseries_perms.set_device_permissions("/dev/hidraw0")
