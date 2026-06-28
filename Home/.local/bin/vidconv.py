@@ -228,7 +228,7 @@ def find_files_fd(root: Path, exts: frozenset[str]) -> Iterator[Path]:
     )
     try:
         with subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, text=True, bufsize=1
+            cmd, stdout=subprocess.PIPE, text=True, bufsize=1, shell=False
         ) as proc:
             if proc.stdout:
                 for line in proc.stdout:
@@ -351,10 +351,14 @@ def run_ffmpeg(
     try:
         if quiet:
             subprocess.run(
-                cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                cmd,
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                shell=False,
             )
         else:
-            subprocess.run(cmd, check=True)
+            subprocess.run(cmd, check=True, shell=False)
         return True
     except subprocess.CalledProcessError:
         return False
