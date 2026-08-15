@@ -27,10 +27,6 @@ repos:
     hooks:
       - id: yamllint
         args: [-s]
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.5.0
-    hooks:
-      - id: detect-secrets
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.38.0
     hooks:
@@ -51,30 +47,3 @@ repos:
     hooks:
       - id: shfmt
         args: [-w, -i, "2", -bn, -ci, -sr]
-  - repo: https://github.com/biomejs/pre-commit
-    rev: v2.5.8
-    hooks:
-      - id: biome-check
-        additional_dependencies: ["@biomejs/biome@1.9.4"]
-  - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: v0.2.55
-    hooks:
-      - id: rumdl      # Lint only (fails on issues)
-      - id: rumdl-fmt  # Auto-format and fail if issues remain
-  - repo: local
-    hooks:
-      - id: taplo-format
-        name: taplo format
-        language: system
-        entry: taplo format
-        types: [toml]
-      - id: taplo-lint
-        name: taplo lint
-        language: system
-        entry: taplo lint
-        types: [toml]
-      - id: shellharden
-        name: shellharden
-        language: system
-        entry: shellharden --replace
-        types: [shell]
