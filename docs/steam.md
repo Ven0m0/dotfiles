@@ -8,6 +8,7 @@
 - https://github.com/Etaash-mathamsetty/Proton/blob/em-10/docs/FSR4.md
 - https://github.com/pythonlover02/DXVK-Sarek#shader-compilation
 - https://github.com/netborg-afps/dxvk-low-latency#dxvk-low-latency
+- https://github.com/netborg-afps/vkd3d-low-latency
 
 ### General
 
@@ -100,4 +101,4 @@ Wine regedit
 - The Witcher 3: `PROTON_ENABLE_NVAPI=1 PROTON_DXVK_GPLASYNC=1 VKD3D_CONFIG=dxr,dxr11 %command% -novid`
 
 
-`mangohud __GL__THREADED_OPTIMIZATIONS=1 PULSE_LATENCY_MSEC=30 DXVK_STATE_CACHE=1 PROTON_LOCAL_SHADER_CACHE=1 PROTON_DXVK_SAREK=1 PROTON_DXVK_LOWLATENCY=1 DXVK_ASYNC=1 DXVK_ENABLE_NVAPI=1 PROTON_NVIDIA_NVOPTIX=1 PROTON_NVIDIA_LIBS_NO_32BIT=1 PROTON_USE_EAC_LINUX=1 PROTON_ENABLE_NVAPI=1 PROTON_ENABLE_NGX_UPDATER=1 PROTON_DLSS_UPGRADE=1 PROTON_ENABLE_WAYLAND=1 PROTON_FSR4_UPGRADE=1 PROTON_USE_NTSYNC=1 DXVK_CONFIG="dxgi.syncInterval=0 VKD3D_CONFIG=dxr12,dxr,upload_hvv LD_PRELOAD="" XMODIFIERS="" mangohud dlss-swapper game-performance %command% -dx12 -full-screen -useallavailablecores -high`
+`mangohud __GL__THREADED_OPTIMIZATIONS=1 PULSE_LATENCY_MSEC=30 DXVK_STATE_CACHE=1 PROTON_LOCAL_SHADER_CACHE=1 PROTON_DXVK_SAREK=1 PROTON_DXVK_LOWLATENCY=1 DXVK_ASYNC=1 DXVK_ENABLE_NVAPI=1 PROTON_NVIDIA_NVOPTIX=1 PROTON_NVIDIA_LIBS_NO_32BIT=1 PROTON_USE_EAC_LINUX=1 PROTON_ENABLE_NVAPI=1 PROTON_ENABLE_NGX_UPDATER=1 PROTON_DLSS_UPGRADE=1 PROTON_ENABLE_WAYLAND=1 PROTON_FSR4_UPGRADE=1 PROTON_USE_NTSYNC=1 DXVK_CONFIG="dxgi.syncInterval=0 VKD3D_CONFIG="dxr12,dxr,upload_hvv,force_static_cbv,force_host_cached" LD_PRELOAD="" XMODIFIERS="" mangohud dlss-swapper game-performance %command% -dx12 -full-screen -useallavailablecores -high`
