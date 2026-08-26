@@ -3,3 +3,4 @@
 - https://github.com/dusklinux/dusky/blob/main/user_scripts/drives/ntfs_fix.sh
 - https://github.com/dusklinux/dusky/blob/main/user_scripts/drives/drive_manager.sh
 - add https://github.com/HalFrgrd/flyline to the setup
+- cleanup the bash config and simplify it
