@@ -11,7 +11,7 @@ repos:
       - id: fix-byte-order-marker
       - id: mixed-line-ending
   - repo: https://github.com/DetachHead/basedpyright-prek-mirror
-    rev: 1.40.1
+    rev: 1.40.2
     hooks:
       - id: basedpyright
   - repo: https://github.com/rhysd/actionlint
@@ -28,7 +28,7 @@ repos:
       - id: yamllint
         args: [-s]
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.38.2
+    rev: 0.39.0
     hooks:
       - id: check-dependabot
       - id: check-github-actions
